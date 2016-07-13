@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+    <TextView
+        android:id="@+id/pkg_heading"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:text="Other Packages"
+        android:textColor="#000000"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@android:color/white"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/other_pkg_list"
+        android:layout_below="@+id/pkg_heading"
+        android:scrollbarThumbVertical="@drawable/custom_scroll_style"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:divider="@null"
+        android:layout_gravity="center_horizontal" />
+
+</RelativeLayout>

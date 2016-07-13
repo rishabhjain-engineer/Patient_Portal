@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+    defaultConfig {
+        applicationId "com.hs.userportal"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 36
+        versionName "4.0.1"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                appendVersionName(variant, defaultConfig)
+            }
+        }
+    }
+}
+configurations {
+    all*.exclude group: 'com.android.support', module: 'support-v4'
+}
+def appendVersionName(variant, defaultConfig) {
+    variant.outputs.each { output ->
+        if (output.zipAlign) {
+            def file = output.outputFile
+            def fileName = file.name.replace("app-release.apk", "Patient Portal-" + defaultConfig.versionName  + "v.apk")
+            output.outputFile = new File(file.parent, fileName)
+        }
+
+        def file = output.packageApplication.outputFile
+        def fileName = file.name.replace("app-release.apk", "Patient Portal-" + defaultConfig.versionName + "v.apk")
+        output.packageApplication.outputFile = new File(file.parent, fileName)
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.google.android.gms:play-services-nearby:8.4.0'
+    compile 'dev.dworks.libs:astickyheader:0.1.0'
+    compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile files('libs/volley.jar')
+    compile files('libs/android-viewbadger.jar')
+   /* compile files('libs/commons-lang3-3.3.4.jar')*/
+    compile files('libs/itextpdf-5.5.7.jar')
+    compile files('libs/xmlworker-5.5.6.jar')
+    compile project(':FacebookSDK')
+    compile project(':SlidingMenuLibrary')
+    compile project(':ViewPagerIndicatorlibrary')
+    compile project(':swipelistview')
+    compile project(':demo_cloud_tagview')
+    compile project(':SegmentedControlLibrary')
+    compile project(':Simpl3r')
+
+}

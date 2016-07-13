@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eeeeee"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" >
+
+            <TextView
+                android:id="@+id/tvName1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recomend_lay"
+                android:layout_toLeftOf="@+id/linStar"
+                android:paddingLeft="10dp"
+                android:text="name"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/linStar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/recomend_lay"
+                android:gravity="right" >
+
+                <TextView
+                    android:id="@+id/tvStar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="#FFA500"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="-"
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvName1"
+                android:layout_toLeftOf="@+id/tvDistance"
+                android:paddingLeft="10dp"
+                android:text="area"
+                android:textColor="#404040" />
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/linStar"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingRight="10dp"
+                android:text="Distance"
+                android:textColor="#404040" />
+
+            <RelativeLayout
+                android:id="@+id/relDiscountDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvArea"
+                android:padding="10dp" >
+
+                <TextView
+                    android:id="@+id/tvDiscountDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Discount Details" />
+
+                <View
+                    android:id="@+id/view1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/tvDiscountDetails"
+                    android:layout_marginTop="5dp"
+                    android:background="#d3d3d3" />
+
+                <TextView
+                    android:id="@+id/tvActualPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/tvDiscountDetails"
+                    android:layout_marginTop="12dp"
+                    android:text="Actual Price" />
+
+                <TextView
+                    android:id="@+id/tvYourPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/tvDiscountDetails"
+                    android:layout_marginTop="12dp"
+                    android:gravity="right"
+                    android:text="Your Price"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@+id/tvYourPrice"
+                    android:layout_marginTop="5dp"
+                    android:background="#d3d3d3" />
+
+                <TextView
+                    android:id="@+id/tvDiscountPer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/view1"
+                    android:layout_alignRight="@+id/view1"
+                    android:text="Discount"
+                    android:textColor="#008000" />
+
+                <TextView
+                    android:id="@+id/discount_amnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvDiscountDetails"
+                    android:layout_marginTop="12dp"
+                    android:layout_toLeftOf="@+id/tvYourPrice"
+                    android:layout_toRightOf="@+id/tvActualPrice"
+                    android:gravity="center"
+                    android:text="amount" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relDiscountDetails"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" >
+
+                <Button
+                    android:id="@+id/bBook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/orange_button"
+                    android:text="BOOK TEST" />
+
+                <TextView
+                    android:id="@+id/tvTestCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/bBook"
+                    android:layout_alignBottom="@+id/bBook"
+                    android:layout_alignParentRight="true"
+                    android:text="" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/recomend_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp" >
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/button_recommended"
+                    android:padding="5dp"
+                    android:text="RECOMMENDED"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:id="@+id/recomend_lay1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@+id/tvName"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp">
+
+                    <TextView
+                        android:id="@+id/tie_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:padding="5dp"
+                        android:text="Sample pickup across city"
+                        android:textColor="#06B2E0"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:background="#d3d3d3" />
+    </LinearLayout>
+
+</LinearLayout>

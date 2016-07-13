@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="ADD MEMBER"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView6"
+        android:background="#FE975F"
+        android:clickable="false"
+        android:orientation="vertical" />
+
+    <EditText
+        android:id="@+id/patient_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edittext_corner"
+        android:digits="0,1,2,3,4,5,6,7,8,9"
+        android:ellipsize="start"
+        android:hint="Enter patient (PH) code"
+        android:inputType="number"
+        android:maxLines="1"
+        android:padding="11.5dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="14dp" />
+
+    <EditText
+        android:id="@+id/patient_relation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/patient_code"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_corner"
+        android:drawablePadding="15dp"
+        android:drawableRight="@drawable/down_arrow"
+        android:ellipsize="start"
+        android:hint="Select Relation"
+        android:inputType="text"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="14dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/send_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1DBBE3"
+            android:text="SEND REQUEST"
+            android:textColor="@android:color/white"
+            android:textSize="14dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/cancel_dialog"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:src="@drawable/edit_clear"
+        android:layout_alignTop="@+id/textView6"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="8dp"
+        android:clickable="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

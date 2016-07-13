@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:layout_marginTop="@dimen/feed_item_margin"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/order_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Order Summary"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:textColor="#565656"
+            android:layout_margin="20dp"/>
+
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:clickable="false"
+            android:layout_below="@+id/order_summary"
+            android:orientation="vertical"
+            android:background="#FE975F">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orderid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@+id/separator">
+
+        <TextView
+            android:id="@+id/order_id_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Order ID"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="16dp"
+            android:layout_weight="50"
+            android:textColor="#565656"
+            android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/order_id"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:layout_below="@+id/separator"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:clickable="false"
+            android:layout_below="@+id/orderid_layout"
+            android:orientation="vertical"
+            android:background="#C4C4C4">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orderdate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@+id/separator1">
+
+            <TextView
+                android:id="@+id/order_date_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Order Date"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:textColor="#565656"
+                android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/order_date"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:layout_below="@+id/separator1"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:clickable="false"
+            android:layout_below="@+id/orderdate_layout"
+            android:orientation="vertical"
+            android:background="#C4C4C4">
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/labname_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@+id/separator2">
+
+            <TextView
+                android:id="@+id/lab_name_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lab Name"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:textColor="#565656"
+                android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/lab_name"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:maxLines="2"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:layout_below="@+id/separator2"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:clickable="false"
+            android:layout_below="@+id/labname_layout"
+            android:orientation="vertical"
+            android:background="#C4C4C4">
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sample_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@+id/separator3">
+
+            <TextView
+                android:id="@+id/sample_pickup_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pickup Address"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:textColor="#565656"
+                android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/sample_pic_add"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="50"
+                android:layout_below="@+id/separator3"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:clickable="false"
+            android:layout_below="@+id/sample_layout"
+            android:orientation="vertical"
+            android:background="#C4C4C4">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/total_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@+id/separator4">
+
+            <TextView
+                android:id="@+id/total_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Grand Total"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:textColor="#565656"
+                android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/grand_total"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16dp"
+                android:layout_weight="50"
+                android:layout_below="@+id/separator3"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </merge>

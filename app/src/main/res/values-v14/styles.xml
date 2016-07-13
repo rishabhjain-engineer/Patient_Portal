@@ -1,0 +1,47 @@
+<resources>
+
+    <!--
+        Base application theme for API 14+. This theme completely replaces
+        AppBaseTheme from BOTH res/values/styles.xml and
+        res/values-v11/styles.xml on API 14+ devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- API 14 theme customizations can go here. -->
+    </style>
+<style name="btnStyleSeagull" parent="@android:style/Widget.Button">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:padding">10dip</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="EditTextStyle" parent="android:style/Widget.EditText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@drawable/edit</item>
+    </style>
+
+    <style name="AutoCompleteTextViewStyle" parent="android:style/Widget.AutoCompleteTextView">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@drawable/edit</item>
+    </style>
+
+    <style name="CustomWindowTitleBackground" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#1998ca</item>
+        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ApplicationStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:buttonStyle">@style/btnStyleSeagull</item>
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewStyle</item>
+        <item name="android:windowTitleSize">40dip</item>
+        <item name="android:actionBarStyle">@style/CustomWindowTitleBackground</item>
+    </style>
+     <style name="SelectableItem">
+        <item name="android:background">@android:drawable/list_selector_background</item>
+    </style>
+</resources>

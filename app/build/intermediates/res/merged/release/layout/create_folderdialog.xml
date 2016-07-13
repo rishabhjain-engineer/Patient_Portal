@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:text="Create folder"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView6"
+        android:background="#FE975F"
+        android:clickable="false"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/path"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:ellipsize="start"
+        android:maxLines="1"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/folder_name"
+        style="@style/EditTextCustomHolo1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="Enter Folder Name"
+        android:inputType="text|textNoSuggestions|textCapWords"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:maxLength="30"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/create_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1DBBE3"
+            android:text="CREATE"
+            android:textSize="14dp"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/create_btn"
+            android:layout_toEndOf="@+id/create_btn"
+            android:layout_toRightOf="@+id/create_btn"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="CANCEL"
+            android:textColor="@color/text_selector"
+            android:textSize="12dp"
+            android:visibility="gone"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</RelativeLayout>

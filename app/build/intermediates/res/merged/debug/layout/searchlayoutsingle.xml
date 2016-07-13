@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="280dp"
+
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+
+        android:layout_marginRight="5dp">
+
+
+        <EditText
+            android:id="@+id/etSearchtxt_action"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="0.65"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:focusable="true"
+            android:paddingLeft="15dp"
+            android:textColorHint="@android:color/darker_gray"
+            android:cursorVisible="true"
+            android:textCursorDrawable="@drawable/edit_cursor"
+            android:background="@drawable/edittext"
+            android:hint="Search Labs"
+            android:textSize="14sp" >
+            <requestFocus
+                />
+        </EditText>
+
+
+
+
+
+        <ImageView
+            android:id="@+id/deletsearch"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="0.15"
+            android:background="@drawable/edittext"
+
+            android:src="@drawable/crossc" />
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

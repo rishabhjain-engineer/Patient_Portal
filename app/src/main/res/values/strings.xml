@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Patient Portal</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="forgot">Forgot Password?</string>
+    <string name="help">FAQ\'s</string>
+    <string name="register"><u>New here? Sign Up</u></string>
+    <string name="about"><u>About Us</u></string>
+    <string name="cloud"><b>\u00A9 Copyright cloudchowk 2016. All rights reserved.</b></string>
+    <string name="blog"><u>Blog</u></string>
+    <string name="facebook"><u>Facebook</u></string>
+    <string name="twitter"><u>Twitter</u></string>
+    <string name="youtube"><u>Youtube</u></string>
+    <string name="name"><b>Find labs, save money, store medical records</b></string>
+    <string name="app_id">126834477650763</string>
+    <string name="file_vault">File Vault</string>
+    <string name="labs_loc">Labs Near You</string>
+    <string name="s3_access_key">AKIAIUG673POSGFZTX4A</string>
+    <string name="s3_secret">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</string>
+    <string name="s3_bucket">cc-clinic-fs</string>
+    <string name="direction">\ue001</string>
+    <string name="location">\ue000</string>
+    <string name="cross">\ue003</string>
+    <string name="check">\ue002</string>
+    <string name="seating">\ue006</string>
+    <string name="drinking">\ue005</string>
+    <string name="telephone">\ue007</string>
+    <string name="parking">\ue008</string>
+    <string name="washroom">\ue009</string>
+    <string name="close">\ue000</string>
+    <string name="labs">FIND LABS NEAR YOU</string>
+    <string name="info">\ue000</string>
+    <string name="coupon">I will visit the lab myself with a coupon.</string>
+    <string name="sample">Send a request to lab to pick up my sample.</string>
+    <string name="coupon_heading"><u>This coupon has been sent to your inbox as well.</u></string>
+    <string name="ratingtxt">The Patient Portal rating is an ever evolving highly intelligent system taking in over 30 quality parameters like the type of services offered to lab accreditations, making sure that you are able to make an informed decision and always have a hassle free experience.</string>
+    <string name="Terms"><u>Terms and Conditions.</u></string>
+    <string name="Apply">APPLY</string>
+    <string name="rupee">\u20B9</string>
+    <string name="description">Find labs, save money, store medical records.</string>
+    <string name="credit">Accepts credit \n cards</string>
+    <string name="ambulance">Ambulance \n Services</string>
+    <string name="promo">"Availed ₹850 off \nVia 'Fit50'</string>
+    <string name="package_amenities"> \u2022 Free sample collection\n\u2022 Quality Assurance\n\u2022 Online Test Reports</string>
+    <string-array name="education_infolist">
+        <item>High School</item>
+        <item>College</item>
+        <item>Post Grad</item>
+
+    </string-array>
+</resources>

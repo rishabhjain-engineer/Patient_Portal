@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\libs\android-viewbadger.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="f1303b50d535716ca7601c5014357b8435658313">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\2\android-viewbadger_b27f1d6a18824a7417cb24417a28f47cc4c61300\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\se.emilsjolander\StickyScrollViewItems\1.1.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="b17ff4914892992c91e7b585ed74c1e782c5d1a1">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\se.emilsjolander-StickyScrollViewItems-1.1.0_0bd587dfb2835ff2b9a01952a97e569f3e0ff1d0\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="04de44f90606c77f3b28cf44861f306290505aac">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-maps-8.4.0_2f350c9e5d3dad34f6338ac9cb3a65cc89852c42\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\libs\xmlworker-5.5.6.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="189e2a4427ad6d5396e3419a62b48d2cf55b601e">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\2\xmlworker-5.5.6_1a9807b1cd7a8f9e02fb004a5287a661e5ab45a6\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\libs\volley.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="d4aaa36e04ee71a83444f8367c97a46fda662d2c">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\2\volley_64135ee1207d9a36b4be6f08639d97e51dcad5af\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="9cad249cf62751a323d9af568caf12284b7d6062">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-nearby-8.4.0_42336424b0fa371afcbf5c572a7c57c629467100\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-21.0.3_84571c934a3e8e7cf05e989075f885daf44a02c9\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\libs\itextpdf-5.5.7.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="d7e93fdba02b9f296143b7c853c983facb827356">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\2\itextpdf-5.5.7_2cf7fd1ae9737ac4fdf5bedb6a159a33e637c31a\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-basement-8.4.0_69a8ff3f3272ca750982094121416950f3b6d610\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="312de768da65f04aab4963a189343a878c0563ae">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_6ace59cc07304cb03a7883b0377f031a0b044922\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a8412b654dab86d57bf90683367488211c8a81f1">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-location-8.4.0_b72225026cfd55a5da60cfbfc7f5499647d0b2ff\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="0535860dc1c5689ec76ef67520340fca4bda6f2a">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_d6e01c51ce397e4e4b70c37d9b1c332aaf5c172c\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-base-8.4.0_0c7b9de7a669e977ee03a57b6d257909332b7238\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\dev.dworks.libs\astickyheader\0.1.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="8e08e9c8ed4a880a1ab6f61183f958ff8d397192">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\dev.dworks.libs-astickyheader-0.1.0_c1a939656355f96d74a72d7790d33ecccb169635\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-basement-8.4.0_211d0caa2fd4ee1ee7c0c44182b064de5086379d\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\libs\android-viewbadger.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="f1303b50d535716ca7601c5014357b8435658313">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\2\android-viewbadger_f02b24bf88582e22cc3686839cf8c104ce713d92\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="78ea232052df889856dcb7b7b542707c89bb3bfb">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-multidex-1.0.1_f08c1ba5d8ff0f892e0f0bba9436b9c6f52cdbbd\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\Patient Portal\FacebookSDK\unspecified\jars\libs\android-support-v4.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="2d755c887a6b8c164ff5ab7c3053fabdd54cbf71">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\8\android-support-v4_8857ff0cb4052a4f3a6f30a234e58e49dedaa3a3\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\libs\universalimagelibrary.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a623e71e0c7d5d48c1efc1cd631f16de146928f1">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\2\universalimagelibrary_6803349f9b78135cfbb8f7003cb0d0568c55acd8\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="e3996565d09e4e1d0ec3c6cef9bf2df62c5f8e7e">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_c2483fc5e55ee6e25ac19ba9ecefb370dd6c824a\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="78ea232052df889856dcb7b7b542707c89bb3bfb">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-multidex-1.0.1_008c2d3ba2d3bef45af6332f2c004e38f9cd61d6\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\Patient Portal\FacebookSDK\unspecified\jars\libs\bolts.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="ea0b1e89d0fd15f0a4db148118562904b998ed76">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\8\bolts_2c63029514bee744c2831ea82036d576a29f58fa\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.4\5fe28b9518e58819180a43a850fbc0dd24b7c050\commons-lang3-3.4.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="5fe28b9518e58819180a43a850fbc0dd24b7c050">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\commons-lang3-3.4_c6b091972f5bca0ed0846854444de5953668ba14\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="e23012496c885f29342ec0ad5f890c8b33c5373d">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_8a6e83cff451b8d7134bca9369a8b49aa5bcdb17\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="04de44f90606c77f3b28cf44861f306290505aac">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-maps-8.4.0_9798cf17fc475dc035350313996e996be4c1f74a\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\libs\volley.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="d4aaa36e04ee71a83444f8367c97a46fda662d2c">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\2\volley_4622866d332e155df29826704ebcae33a36d9be8\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\Patient Portal\Simpl3r\unspecified\jars\libs\aws-android-sdk-1.4.3-s3.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="5bc0aee12d1c95f5672a2fb8ba2aff2aa9db996e">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\8\aws-android-sdk-1.4.3-s3_100351e3dfc2bba35f4bfdcb5b080cf2be9d0cb8\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\libs\universalimagelibrary.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a623e71e0c7d5d48c1efc1cd631f16de146928f1">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\2\universalimagelibrary_b901c7106c07031037544a0652aeed495c239669\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\libs\itextpdf-5.5.7.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="d7e93fdba02b9f296143b7c853c983facb827356">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\2\itextpdf-5.5.7_691bacbe6df38b1d994ba07540c404640bc97dda\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\zureka\FacebookSDK\unspecified\jars\libs\bolts.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="84d9037ef1cae4c0aab9d883d4ed8d170d073826">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\8\bolts_3c491e2d4fcc64b66864a2ad26b5deb58b43b5d2\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\libs\xmlworker-5.5.6.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="189e2a4427ad6d5396e3419a62b48d2cf55b601e">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\2\xmlworker-5.5.6_80bb3ed3eb5fbd23e0cbce133ce87da0d09903b1\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a8412b654dab86d57bf90683367488211c8a81f1">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-location-8.4.0_fab4aa399708527044a6204479aee932b40f11e2\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\zureka\Simpl3r\unspecified\jars\libs\aws-android-sdk-1.4.3-core.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="e6f2fcb95785cbb1329fc81de7fbe0ac999c0f4b">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\8\aws-android-sdk-1.4.3-core_8e4c15d9b9b57337294e3cc606e7551153c5bd72\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\se.emilsjolander\StickyScrollViewItems\1.1.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="b17ff4914892992c91e7b585ed74c1e782c5d1a1">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\se.emilsjolander-StickyScrollViewItems-1.1.0_496fc981ce3417a6d533b5eaf5f74651cde6034c\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\zureka\Simpl3r\unspecified\jars\libs\aws-android-sdk-1.4.3-s3.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="4486584e89eb164bfb05e70044a904727b21129f">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\8\aws-android-sdk-1.4.3-s3_b1d6ac417a6b5b2e99f64fb325244dae57103cde\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\dev.dworks.libs\astickyheader\0.1.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="8e08e9c8ed4a880a1ab6f61183f958ff8d397192">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\dev.dworks.libs-astickyheader-0.1.0_7f5387daa5a38e3cd5077250323edf9665dbd396\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\Patient Portal\Simpl3r\unspecified\jars\libs\aws-android-sdk-1.4.3-core.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="cd764b24d6bd92a2bca61bcb01399e8bbb5b9555">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\8\aws-android-sdk-1.4.3-core_1849ce243419d70c6ee1e5e21919ca9d82efdac3\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-21.0.3_b44d1fdb522fe3ae03053ba25bda6611c2aeb7a9\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-base-8.4.0_87404fca1ef4102fc3cbb6226f1ee109b02ba120\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\8.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="9cad249cf62751a323d9af568caf12284b7d6062">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.google.android.gms-play-services-nearby-8.4.0_8713954f7c1b1a478454f73361ddf39ba0242f09\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\10\library-2.4.0_d51f4c93079c30c3dc22621c1162d6c898d4d97b\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\ashish\Desktop\zureka\app\build\intermediates\exploded-aar\zureka\FacebookSDK\unspecified\jars\libs\android-support-v4.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="79e6aba0626cbddb4167cd2a045823b9031fec29">
+        <dex dex="C:\Users\ashish\Desktop\zureka\app\build\intermediates\transforms\dex\debug\folders\1000\8\android-support-v4_d6b4b7abd917036b9f67b5ddca804050576585b3\classes.dex" />
+    </item>
+
+</items>

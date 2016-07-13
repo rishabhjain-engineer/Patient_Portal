@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/feed_item_margin"
+            android:layout_marginRight="@dimen/feed_item_margin"
+            android:layout_marginTop="@dimen/feed_item_margin"
+            android:background="@drawable/bg_parent_round_history_green"
+            android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/enter_add"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/relHome1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/order_heading_green"
+                android:clickable="true"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:id="@+id/book_type_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Booking Type"
+                    android:maxLines="1"
+                    android:clickable="true"
+                    android:ellipsize="end"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"/>
+            </LinearLayout>
+            <RelativeLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/book_edit"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:visibility="gone"
+                android:layout_marginRight="4dp"
+                android:padding="10dp">
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/choose_optn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="100"
+                android:layout_below="@+id/relHome1">
+
+                <LinearLayout
+                    android:id="@+id/sample_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="@dimen/feed_item_margin"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:clickable="true"
+                    android:padding="12dp"
+                    android:layout_weight="50"
+                    android:background="@drawable/bg_parent_rounded_corner">
+
+                    <RelativeLayout
+                        android:layout_below="@+id/relHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/pickup"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true" />
+
+                        <TextView
+                            android:id="@+id/etSample"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_toRightOf="@+id/imageView2"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:text="@string/check"
+                            android:textColor="@color/check"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@+id/imageView2"
+                            android:textSize="14dp"
+                            android:gravity="center"
+                            android:text="Send a request to lab for sample pickup"
+                            android:textColor="#fe8534" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <!-- <LinearLayout
+                     android:id="@+id/sampl_btn"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="25dp"
+                     android:layout_marginBottom="20dp"
+                     android:layout_weight="1"
+                     android:layout_below="@+id/sample_lay"
+                     android:background="@drawable/orange_button"
+                     android:gravity="center"
+                     android:orientation="horizontal"
+                     android:padding="10dp" >
+
+                     <TextView
+                         android:id="@+id/tvChange"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_alignParentTop="true"
+                         android:layout_centerHorizontal="true"
+                         android:text="REQUEST PICKUP"
+                         android:textStyle="bold"
+                         android:textColor="#FFFFFF" />
+                 </LinearLayout>-->
+                <!--  <Button
+                      android:id="@+id/bSample"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="10dp"
+                      android:layout_marginLeft="20dp"
+                      android:layout_marginRight="20dp"
+                      android:layout_below="@+id/sample_lay"
+                      android:background="@drawable/orange_button"
+                      android:text="REQUEST PICKUP"
+                      android:textColor="#FFFFFF" />-->
+
+                <LinearLayout
+                    android:id="@+id/coupon_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:layout_weight="50"
+                    android:padding="12dp"
+                    android:layout_marginLeft="@dimen/feed_item_margin"
+                    android:layout_marginRight="@dimen/feed_item_margin"
+                    android:layout_below="@+id/bSample"
+                    android:background="@drawable/bg_parent_rounded_corner">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/bSample"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/coupon_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/coupon"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"/>
+                        <TextView
+                            android:id="@+id/etcoupon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_toRightOf="@+id/coupon_img"
+                            android:textSize="18sp"
+                            android:text="@string/check"
+                            android:textStyle="bold"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:textSize="14dp"
+                            android:layout_below="@+id/coupon_img"
+                            android:gravity="center"
+                            android:text="I will visit the lab myself with a coupon"
+                            android:textColor="#1998CA" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <!--  <Button
+                      android:id="@+id/generatcpn_id"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="10dp"
+                      android:layout_marginLeft="20dp"
+                      android:layout_marginRight="20dp"
+                      android:background="@drawable/button_selector"
+                      android:text="GENERATE COUPON"
+                      android:layout_below="@+id/coupon_lay"
+                      android:textColor="#FFFFFF" />-->
+            </LinearLayout>
+</RelativeLayout>
+        </RelativeLayout>
+        </LinearLayout>
+    </merge>

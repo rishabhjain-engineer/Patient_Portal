@@ -1,0 +1,2 @@
+include ':app', ':SegmentedControlLibrary', ':FacebookSDK', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r'
+include ':demo_cloud_tagview'

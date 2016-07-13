@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TableLayout
+        android:id="@+id/tlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        
+        android:shrinkColumns="*"
+        android:stretchColumns="*" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#d3d3d3"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="16"
+                android:gravity="center"
+                android:padding="10dip"
+                android:text="S.No"
+                android:textColor="#000000" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:padding="10dip"
+                android:text="Date"
+                android:textColor="#000000" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="22"
+                android:gravity="center"
+                android:padding="10dip"
+                android:text="Case Code"
+                android:textColor="#000000" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="22"
+                android:gravity="center"
+                android:padding="10dip"
+                android:text="Result Value"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/trDynamic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+
+</ScrollView>

@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hs="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/searchorigin"
+        android:showAsAction="ifRoom|collapseActionView"
+        hs:showAsAction="ifRoom|collapseActionView"
+        android:title="@null"
+        hs:actionLayout="@layout/searchlayoutsingle">
+
+    </item>
+    <!-- <item
+         android:id="@+id/sign_default"
+         android:title="SIGN IN"
+         android:showAsAction="always"
+        />-->
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/funnel"
+        android:showAsAction="always"
+        android:title="Filter"
+        hs:showAsAction="always" />
+</menu>

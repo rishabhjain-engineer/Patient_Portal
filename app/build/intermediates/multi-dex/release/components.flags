@@ -1,0 +1,305 @@
+-injars 'C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\transforms\jarMerging\release\jars\1\1f\combined.jar'
+-outjars 'C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\multi-dex\release\componentClasses.jar'
+
+-libraryjars 'C:\Users\ashish\AppData\Local\Android\sdk\build-tools\21.1.2\lib\shrinkedAndroid.jar'
+
+-forceprocessing
+-dontoptimize
+-dontobfuscate
+-dontusemixedcaseclassnames
+-dontpreverify
+-dontnote **,com.android.tools.fd.**,android.support.multidex.MultiDexExtractor
+-dontwarn **
+-printconfiguration 'C:\Users\ashish\Desktop\HS_Projects\Patient Portal\app\build\intermediates\multi-dex\release\components.flags'
+
+
+-keep class android.support.multidex.MultiDexApplication {
+    <init>();
+    void attachBaseContext(android.content.Context);
+}
+
+-keep class com.cloudchowk.patient.SplashScreen {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.UploadService {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MainActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.logout {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Register {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.update {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ViewOrderFiles {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.changepass {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.TabsActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ViewOrderReport {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Pkg_TabActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Invoice {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Education {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.OtherPackages {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Pkg_LabDetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.PackageTestDetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.residence {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Work {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Travel {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Personal {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Medical {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Booking_Info {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Booking_type {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Confirm_Order {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Mail {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Help {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.lablistdetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ReportStatus {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.GraphDetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.OrderHistory {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.OrderDetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.grouptest {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.allergylist {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Login_First {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MyFamily {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Profile {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.AboutUs {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MyNotification {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.TestHistory {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.viewpdf {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ImageGridActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ImagePagerActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Error {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.FAQ {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.PDFActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.SampleCirclesDefault {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Filevault {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Filevault2 {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.FileVaultMenu {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Filevaultcase {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.ExpandImage {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Packages {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.FilevaultDelete {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.LocationClass {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MapClass {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.SinglelabMap {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.PrivacyPolicy {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MapLabDetails {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.CouponActivity {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.PdfReader {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Height {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Weight {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.Allergy {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.AddWeight {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.MyHealth {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.UploadProfileService {
+    <init>();
+}
+
+-keep class com.cloudchowk.patient.IndividualLabTest {
+    <init>();
+}
+
+-keep class com.facebook.LoginActivity {
+    <init>();
+}
+
+-keep public class * extends android.app.backup.BackupAgent {
+    <init>();
+}
+
+-keep public class * extends java.lang.annotation.Annotation {
+    <fields>;
+    <methods>;
+}
+
+-keep class com.android.tools.fd.** {
+    <fields>;
+    <methods>;
+}

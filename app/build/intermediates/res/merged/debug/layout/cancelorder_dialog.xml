@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/folder_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="10dp"
+        android:text="Why you want to cancel this order?"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/folder_root"
+        android:background="#FE975F"
+        android:clickable="false"
+        android:orientation="vertical" />
+
+    <RadioGroup
+        android:id="@+id/radio_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I no longer wish to get my tests done."
+            android:textSize="14dp" />
+
+        <RadioButton
+            android:id="@+id/radio_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I found a better price somewhere else."
+            android:textSize="14dp" />
+
+        <RadioButton
+            android:id="@+id/radio_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I will get my tests done through someone else."
+            android:textSize="14dp" />
+
+        <RadioButton
+            android:id="@+id/radio_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I did not book this order."
+            android:textSize="14dp" />
+
+        <RadioButton
+            android:id="@+id/radio_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-12dp"
+            android:paddingTop="15dp"
+            android:text="I am not sure about this order and need help from a Zureka representative."
+            android:textSize="14dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/proceed_btn"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/radio_grp"
+        android:layout_marginTop="14dp"
+        android:background="#1DBBE3"
+        android:text="PROCEED"
+        android:textColor="@android:color/white"
+        android:textSize="12dp" />
+
+</RelativeLayout>

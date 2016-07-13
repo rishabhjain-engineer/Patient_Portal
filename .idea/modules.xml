@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/FacebookSDK/FacebookSDK.iml" filepath="$PROJECT_DIR$/FacebookSDK/FacebookSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Patient Portal.iml" filepath="$PROJECT_DIR$/Patient Portal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SegmentedControlLibrary/SegmentedControlLibrary.iml" filepath="$PROJECT_DIR$/SegmentedControlLibrary/SegmentedControlLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Simpl3r/Simpl3r.iml" filepath="$PROJECT_DIR$/Simpl3r/Simpl3r.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SlidingMenuLibrary/SlidingMenuLibrary.iml" filepath="$PROJECT_DIR$/SlidingMenuLibrary/SlidingMenuLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ViewPagerIndicatorlibrary/ViewPagerIndicatorlibrary.iml" filepath="$PROJECT_DIR$/ViewPagerIndicatorlibrary/ViewPagerIndicatorlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo_cloud_tagview/demo_cloud_tagview.iml" filepath="$PROJECT_DIR$/demo_cloud_tagview/demo_cloud_tagview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swipelistview/swipelistview.iml" filepath="$PROJECT_DIR$/swipelistview/swipelistview.iml" />
+    </modules>
+  </component>
+</project>

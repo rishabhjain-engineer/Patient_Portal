@@ -1,0 +1,838 @@
+[
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\profile_list_adapter_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\profile_list_adapter_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\booking_info.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\booking_info.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\weight_add.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\weight_add.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_radio.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_list_menu_item_radio.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\location.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\location.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\info.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\info.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\grid_view.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\grid_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_list_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_list_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\feed_update_count.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\feed_update_count.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\signup_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\signup_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_image.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_image.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\package_row_new1.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\package_row_new1.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_expanded_menu_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\report_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\report_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\height_add.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\height_add.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\cancelorder_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\cancelorder_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pkg_labdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pkg_labdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\labdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\labdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\activity_individual_lab.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\activity_individual_lab.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\mobileno_feild.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\mobileno_feild.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_checkbox.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_checkbox.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\activity_main.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\dashboard.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\myhealth_adapter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\myhealth_adapter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\testrow.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\testrow.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\packages.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\packages.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_activity_chooser_view.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\lablistdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\lablistdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\viewpdf.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\viewpdf.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_list_section_header.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_list_section_header.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_menu_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_list_menu_item_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\move_folderlist.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\move_folderlist.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_up_container.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_bar_up_container.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\residencenew.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\residencenew.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\places_list_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\places_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\folder_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\folder_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\expandimage.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\expandimage.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\list_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_search_box.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_search_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\myfamily.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\myfamily.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\simple_circles.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\simple_circles.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\update.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\update.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\place_autocomplete_fragment.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\layout\\place_autocomplete_fragment.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\search_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\search_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filter_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filter_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\walk.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\walk.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\vault_list_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\vault_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\member_detai_adapter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\member_detai_adapter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pdfactivity.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pdfactivity.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\final_book.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\final_book.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_search_view.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_search_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\tab.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\tab.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\item_grid_image.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\item_grid_image.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\package_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\package_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\single_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\single_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\autolist.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\autolist.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\otherpackages.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\otherpackages.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\booklist_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\booklist_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\resend_popup.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\resend_popup.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\weight_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\weight_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_file_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_file_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\medical.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\medical.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevault.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevault.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\privacypolicy.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\privacypolicy.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\invoice.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\invoice.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_sumary.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_sumary.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\login_first.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\login_first.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\height_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\height_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_activity_chooser_view_list_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_activity_chooser_view_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\group_test_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\group_test_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\faq.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\faq.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\place_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\place_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_family.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_family.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_view_list_nav_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\locationlist_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\locationlist_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_activity_circle_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_activity_circle_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\profile.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\reportstatus.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\reportstatus.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\activity_view_labs.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\activity_view_labs.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\myfamily_adapter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\myfamily_adapter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\orderhistory.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\orderhistory.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_file.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_file.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\slidingmenumain.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\SlidingMenuLibrary\\unspecified\\res\\layout\\slidingmenumain.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\package_row_new.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\package_row_new.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\promo.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\promo.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\education_new.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\education_new.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\viewimage.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\viewimage.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\support_simple_spinner_dropdown_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\dialog_login.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\dialog_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\tour.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\tour.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\ac_image_grid.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\ac_image_grid.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\package_toolbar.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\package_toolbar.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\custom_profile_raw.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\custom_profile_raw.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\center_filter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\center_filter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_title_bar.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_title_bar.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\view_order_report_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\view_order_report_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\activity_coupon.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\activity_coupon.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pdfreader.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pdfreader.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\error.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\error.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\ordersummary.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\ordersummary.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_search_dropdown_item_icons_2line.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_search_dropdown_item_icons_2line.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\package_filter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\package_filter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\testdialognew.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\testdialognew.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\spinner_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\spinner_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevaultdialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevaultdialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_login_activity_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_login_activity_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pkg_testetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pkg_testetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_activity_chooser_view_include.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_activity_chooser_view_include.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_placepickerfragment.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_placepickerfragment.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\tour_circles.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\tour_circles.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\price_detail.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\price_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\overlay.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\overlay.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\manage_order.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\manage_order.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_mode_close_item_material.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_mode_close_item_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\overlay_pkg.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\overlay_pkg.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\ac_image_pager.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\ac_image_pager.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_menu_item_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_menu_item_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevaultdelete.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevaultdelete.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\vault_listitem_delete.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\vault_listitem_delete.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\place_autocomplete_item_powered_by_google.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\layout\\place_autocomplete_item_powered_by_google.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\map_view.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\map_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_friendpickerfragment.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_friendpickerfragment.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_screen_simple.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple_overlay_action_mode.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\category_filter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\category_filter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\order_itemnew.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\order_itemnew.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_tooltip_bubble.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_tooltip_bubble.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\fbdialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\fbdialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\signup_confirm_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\signup_confirm_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_mode_bar.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\custom_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\custom_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_icon.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_list_menu_item_icon.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\lab_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\lab_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\custom_maplabmenu.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\custom_maplabmenu.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\testhistory.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\testhistory.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\testpkg_details.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\testpkg_details.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\spinner_dropdown_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\move_folder_adapter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\move_folder_adapter.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\map_lab_details.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\map_lab_details.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevaultmenu.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevaultmenu.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_placepickerfragment_list_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_placepickerfragment_list_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\booktype.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\booktype.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\graphdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\graphdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\select_tests.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\select_tests.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\booking_type.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\booking_type.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\place_autocomplete_progress.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\layout\\place_autocomplete_progress.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\worknew.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\worknew.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\confirm_order.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\confirm_order.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pkg_testdetails_new1.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pkg_testdetails_new1.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\add_member_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\add_member_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\popular_packages.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\popular_packages.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\disclaimer.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\disclaimer.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\place_autocomplete_item_prediction.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\layout\\place_autocomplete_item_prediction.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\tagview_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\demo_cloud_tagview\\unspecified\\res\\layout\\tagview_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_usersettingsfragment.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_usersettingsfragment.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\confirm_order_pg.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\confirm_order_pg.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\personal.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\personal.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\travelnew.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\travelnew.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevaultdeleteitem.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevaultdeleteitem.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\grid_image_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\grid_image_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\register.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\register.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\member_detail.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\member_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\viewreport.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\viewreport.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\loadingmore.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\loadingmore.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\item_pager_image.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\item_pager_image.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_simple_dropdown_hint.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_simple_dropdown_hint.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\splash.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\splash.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\call_me_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\call_me_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\allergi_dialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\allergi_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\grid_case.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\grid_case.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\logout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\logout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\dynamic_coupon_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\dynamic_coupon_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\mail.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\mail.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\labtour.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\labtour.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\allergylist.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\allergylist.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\test.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\test.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\single_labmap.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\single_labmap.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_item_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\parent_expandableview.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\parent_expandableview.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\childgroup_raw.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\childgroup_raw.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\header.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\header.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\zurekatour.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\zurekatour.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_title_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_action_bar_title_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\aboutus.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\aboutus.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_toolbar.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\layout\\abc_screen_toolbar.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\sticky.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\sticky.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\ordr_testdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\ordr_testdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\changepass.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\changepass.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\create_folderdialog.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\create_folderdialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\grid_casewise_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\grid_casewise_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\myhealth.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\myhealth.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\searchlayoutsingle.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\searchlayoutsingle.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\pkg_testdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\pkg_testdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\orderdetails.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\orderdetails.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\allergy.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\allergy.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_search_bar_layout.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_search_bar_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\filevault2.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\filevault2.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\test_list_item.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\test_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\dynamic_row.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\dynamic_row.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\select_member_order.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\select_member_order.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\mynotification.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\mynotification.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\com_facebook_picker_title_bar_stub.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\layout\\com_facebook_picker_title_bar_stub.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\view_order_report.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\view_order_report.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\grid_casewise_itemheader.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\grid_casewise_itemheader.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\release\\layout\\gender_filter.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\layout\\gender_filter.xml"
+    }
+]
