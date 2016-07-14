@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.content.Context;
 import android.location.Location;

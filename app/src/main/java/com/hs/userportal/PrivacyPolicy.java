@@ -1,8 +1,4 @@
-package com.cloudchowk.patient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
@@ -15,6 +11,10 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PrivacyPolicy extends ActionBarActivity {
 

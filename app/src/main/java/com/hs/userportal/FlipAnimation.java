@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

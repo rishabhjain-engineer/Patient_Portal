@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,7 +35,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;

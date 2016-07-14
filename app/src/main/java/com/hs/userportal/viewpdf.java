@@ -1,5 +1,4 @@
-package com.cloudchowk.patient;
-
+package com.hs.userportal;
 
 
 import android.app.ProgressDialog;
@@ -116,7 +115,7 @@ public class viewpdf extends ActionBarActivity {
 			if (!currentNetworkInfo.isConnected()) {
 
 				// showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

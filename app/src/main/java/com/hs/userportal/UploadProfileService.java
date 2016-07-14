@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -28,7 +28,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.readystatesoftware.simpl3r.UploadIterruptedException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;

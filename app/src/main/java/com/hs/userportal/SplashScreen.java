@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,17 +17,10 @@ import android.provider.Settings;
 import android.view.Window;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -36,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 
 public class SplashScreen extends Activity {

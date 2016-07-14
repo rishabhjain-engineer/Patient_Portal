@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\res\\merged\\androidTest\\debug\\values\\values.xml",
+        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\res\\merged\\androidTest\\debug\\values\\values.xml",
         "map": [
             {
                 "to": {
@@ -11,7 +11,7 @@
                     "endOffset": 452
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
@@ -30,7 +30,7 @@
                     "endOffset": 508
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
@@ -49,7 +49,7 @@
                     "endOffset": 561
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,
@@ -68,7 +68,7 @@
                     "endOffset": 617
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
@@ -87,7 +87,7 @@
                     "endOffset": 670
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\demo_cloud_tagview\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,

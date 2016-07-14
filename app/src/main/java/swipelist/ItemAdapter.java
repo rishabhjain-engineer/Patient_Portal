@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.cloudchowk.patient.IndividualLabTest;
-import com.cloudchowk.patient.R;
+import com.hs.userportal.IndividualLabTest;
+import com.hs.userportal.R;
 
 import java.util.List;
 

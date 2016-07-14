@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 /**
  * Created by ashish on 10/27/2015.

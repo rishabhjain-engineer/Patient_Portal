@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -465,7 +465,7 @@ if(RangeFrom!=null&&(!from_activity.equalsIgnoreCase("grouptest"))){
 
 			if (!currentNetworkInfo.isConnected()) {
 				// showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

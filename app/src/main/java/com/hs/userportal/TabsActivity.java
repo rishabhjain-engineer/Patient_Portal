@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 
 import android.app.AlertDialog;
@@ -477,7 +477,7 @@ public class TabsActivity extends TabActivity {
 			if (!currentNetworkInfo.isConnected()) {
 
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

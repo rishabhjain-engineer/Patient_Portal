@@ -3,7 +3,7 @@ package utils;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
-import com.cloudchowk.patient.R;
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 

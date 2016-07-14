@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;

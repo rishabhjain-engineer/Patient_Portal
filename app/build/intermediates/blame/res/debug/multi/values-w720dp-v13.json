@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\debug\\values-w720dp-v13\\values-w720dp-v13.xml",
+        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\values-w720dp-v13\\values-w720dp-v13.xml",
         "map": [
             {
                 "to": {
@@ -11,7 +11,7 @@
                     "endOffset": 127
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-w720dp\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-w720dp\\values.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,

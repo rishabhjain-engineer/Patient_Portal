@@ -1,7 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.io.File;
-import java.util.Random;
+package com.hs.userportal;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,8 +8,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.Random;
 
 public class NotificationHandler {
 	// Notification handler singleton

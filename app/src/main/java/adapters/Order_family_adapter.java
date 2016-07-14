@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.cloudchowk.patient.MyVolleySingleton;
-import com.cloudchowk.patient.R;
+import com.hs.userportal.MyVolleySingleton;
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

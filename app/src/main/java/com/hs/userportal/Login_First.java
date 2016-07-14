@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -93,7 +93,7 @@ public class Login_First extends Activity {
                 in.putExtra("fromActivity", "packages");
                 in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
             }
         });

@@ -1,11 +1,4 @@
-package com.cloudchowk.patient;
-
-
-import java.util.Random;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 
 import android.app.AlertDialog;
@@ -33,6 +26,12 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Random;
 
 public class Help extends ActionBarActivity {
 
@@ -317,7 +316,7 @@ public class Help extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				// showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

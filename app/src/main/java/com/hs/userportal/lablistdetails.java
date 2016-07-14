@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 
 import android.annotation.TargetApi;
@@ -468,7 +468,7 @@ public class lablistdetails extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), Error.class);
+                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
                 startActivity(i);
             }
         }
@@ -1097,7 +1097,7 @@ public class lablistdetails extends ActionBarActivity {
         overlay_dialog.setContentView(R.layout.select_member_order);
         ListView list_member = (ListView) overlay_dialog.findViewById(R.id.list_member);
         list_member.setAdapter(new Order_family_adapter(lablistdetails.this, family, logout.image_parse));
-        list_member.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list_member.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
                 check_ID = family.get(position).get("FamilyMemberId");

@@ -1,18 +1,18 @@
 [
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\dark_button_text_color.xml",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\dark_button_text_color.xml"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\button_text_color.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\button_text_color.xml"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\button_text_color.xml",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\button_text_color.xml"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\radio_unchecked.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\radio_unchecked.xml"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\radio_unchecked.xml",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\radio_unchecked.xml"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\radio_checked.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\radio_checked.xml"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\radio_checked.xml",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\radio_checked.xml"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\dark_button_text_color.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SegmentedControlLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\dark_button_text_color.xml"
     }
 ]

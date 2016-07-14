@@ -3,7 +3,7 @@ package config;
 import android.app.Activity;
 
 import com.android.volley.RequestQueue;
-import com.cloudchowk.patient.Services;
+import com.hs.userportal.Services;
 
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -217,7 +217,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             dialog.show();
         } else {
 
-            url1 = "https://androidquery.appspot.com/api/market?app=com.cloudchowk.patient";
+            url1 = "https://androidquery.appspot.com/api/market?app=";
 
             getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null,
                     new com.android.volley.Response.Listener<JSONObject>() {

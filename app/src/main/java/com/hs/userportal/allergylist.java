@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+
 
 public class allergylist extends ActionBarActivity {
 
@@ -35,7 +36,7 @@ public class allergylist extends ActionBarActivity {
 		alllist = i.getStringArrayListExtra("list");
 		select = i.getStringArrayListExtra("select");
         
-		Medical.selectlist.clear();		
+		Medical.selectlist.clear();
 		
 		adapter = new ArrayAdapter<String>(allergylist.this,
 				android.R.layout.simple_list_item_multiple_choice, alllist);

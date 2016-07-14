@@ -1,6 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.util.Date;
+package com.hs.userportal;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.util.Log;
+
+import java.util.Date;
 
 public class RateThisApp {
 

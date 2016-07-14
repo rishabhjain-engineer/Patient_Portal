@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.content.Context;
 import android.content.SharedPreferences;

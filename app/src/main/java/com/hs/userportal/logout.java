@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -66,10 +66,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import adapters.Myfamily_Adapter;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
-import utils.DataHolder;
 
 /**
  * Created by rahul2 on 10/29/2015.
@@ -1300,7 +1298,7 @@ public class logout extends Activity implements View.OnClickListener {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                Intent i = new Intent(getApplicationContext(), Error.class);
+                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
                 startActivity(i);
                 // showAppMsg();
             }

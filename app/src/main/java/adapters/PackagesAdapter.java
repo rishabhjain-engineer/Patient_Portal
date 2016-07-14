@@ -22,7 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cloudchowk.patient.R;
+
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\debug\\values-v11\\values-v11.xml",
+        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\values-v11\\values-v11.xml",
         "map": [
             {
                 "to": {
@@ -12,7 +12,7 @@
                     "endOffset": 187
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
@@ -33,7 +33,7 @@
                     "endOffset": 654
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 35,
                         "startColumn": 4,
@@ -54,7 +54,7 @@
                     "endOffset": 892
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 24,
                         "startColumn": 4,
@@ -75,7 +75,7 @@
                     "endOffset": 1311
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
@@ -96,7 +96,7 @@
                     "endOffset": 1736
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 10,
                         "startColumn": 4,
@@ -117,7 +117,7 @@
                     "endOffset": 2164
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 17,
                         "startColumn": 4,
@@ -138,7 +138,7 @@
                     "endOffset": 2590
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 24,
                         "startColumn": 4,
@@ -159,7 +159,7 @@
                     "endOffset": 3019
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 31,
                         "startColumn": 4,
@@ -180,7 +180,7 @@
                     "endOffset": 3444
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 38,
                         "startColumn": 4,
@@ -201,7 +201,7 @@
                     "endOffset": 3865
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 45,
                         "startColumn": 4,
@@ -222,7 +222,7 @@
                     "endOffset": 4300
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 52,
                         "startColumn": 4,
@@ -243,7 +243,7 @@
                     "endOffset": 4733
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 59,
                         "startColumn": 4,
@@ -264,7 +264,7 @@
                     "endOffset": 5180
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 66,
                         "startColumn": 4,
@@ -284,7 +284,7 @@
                     "endOffset": 5258
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 73,
                         "startColumn": 4,
@@ -303,7 +303,7 @@
                     "endOffset": 5350
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 75,
                         "startColumn": 4,
@@ -322,7 +322,7 @@
                     "endOffset": 5440
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 77,
                         "startColumn": 4,
@@ -342,7 +342,7 @@
                     "endOffset": 12169
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 79,
                         "startColumn": 4,
@@ -362,7 +362,7 @@
                     "endOffset": 12264
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 176,
                         "startColumn": 4,
@@ -381,7 +381,7 @@
                     "endOffset": 12381
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 178,
                         "startColumn": 4,
@@ -401,7 +401,7 @@
                     "endOffset": 12745
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 180,
                         "startColumn": 4,
@@ -422,7 +422,7 @@
                     "endOffset": 13058
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 29,
                         "startColumn": 4,
@@ -443,7 +443,7 @@
                     "endOffset": 13272
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 19,
                         "startColumn": 4,
@@ -464,7 +464,7 @@
                     "endOffset": 16909
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 186,
                         "startColumn": 4,
@@ -485,7 +485,7 @@
                     "endOffset": 20560
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 233,
                         "startColumn": 4,
@@ -506,7 +506,7 @@
                     "endOffset": 24336
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 280,
                         "startColumn": 4,
@@ -527,7 +527,7 @@
                     "endOffset": 28126
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-v11\\values.xml",
                     "position": {
                         "startLine": 328,
                         "startColumn": 4,
@@ -548,7 +548,7 @@
                     "endOffset": 28263
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 42,
                         "startColumn": 5,
@@ -569,7 +569,7 @@
                     "endOffset": 28692
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 9,
                         "startColumn": 0,

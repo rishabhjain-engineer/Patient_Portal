@@ -1,10 +1,5 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
-
-import java.util.Random;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -28,6 +23,11 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Random;
 
 
 public class Mail extends ActionBarActivity {
@@ -365,7 +365,7 @@ public class Mail extends ActionBarActivity {
 			if (!currentNetworkInfo.isConnected()) {
 
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

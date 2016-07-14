@@ -1,18 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -37,8 +23,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.StrictMode;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -59,6 +43,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class LabDetails extends ActionBarActivity {
     String id, caseid;
@@ -413,7 +411,7 @@ public class LabDetails extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), Error.class);
+                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
                 startActivity(i);
             }
         }

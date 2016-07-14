@@ -1,6 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.lang.ref.WeakReference;
+package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
@@ -17,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 public class CacheActivity extends ActionBarActivity implements OnScrollListener {
 

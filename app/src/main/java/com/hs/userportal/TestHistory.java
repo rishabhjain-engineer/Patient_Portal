@@ -1,8 +1,5 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,13 +11,14 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestHistory extends ActionBarActivity {
 	

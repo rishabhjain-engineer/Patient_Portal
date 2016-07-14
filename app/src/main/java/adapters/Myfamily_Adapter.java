@@ -12,13 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.cloudchowk.patient.MyFamily;
-import com.cloudchowk.patient.MyVolleySingleton;
-import com.cloudchowk.patient.R;
+import com.hs.userportal.MyFamily;
+import com.hs.userportal.MyVolleySingleton;
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

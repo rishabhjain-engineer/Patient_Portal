@@ -1,10 +1,4 @@
-package com.cloudchowk.patient;
-
-
-import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 
 import android.app.AlertDialog;
@@ -31,6 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MyNotification extends ActionBarActivity {
 
@@ -349,7 +348,7 @@ public class MyNotification extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), Error.class);
+                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
                 startActivity(i);
             }
         }

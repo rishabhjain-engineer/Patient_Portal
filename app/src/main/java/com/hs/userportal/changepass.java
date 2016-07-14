@@ -1,8 +1,5 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -30,6 +27,9 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class changepass extends ActionBarActivity {

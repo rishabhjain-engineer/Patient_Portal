@@ -1,11 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -34,13 +27,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.cloudchowk.patient.Constants.Extra;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ImageGridActivity extends ActionBarActivity {
 
@@ -233,8 +233,8 @@ public class ImageGridActivity extends ActionBarActivity {
 
 	private void startImagePagerActivity(int position) {
 		Intent intent = new Intent(this, ImagePagerActivity.class);
-		intent.putExtra(Extra.IMAGES, imageUrls);
-		intent.putExtra(Extra.IMAGE_POSITION, position);
+		intent.putExtra(Constants.Extra.IMAGES, imageUrls);
+		intent.putExtra(Constants.Extra.IMAGE_POSITION, position);
 		intent.putExtra("ImageName", imageName);
 		startActivity(intent);
 	}
@@ -445,7 +445,7 @@ public class ImageGridActivity extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				// showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

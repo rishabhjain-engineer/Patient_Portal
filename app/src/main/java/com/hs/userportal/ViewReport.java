@@ -1,9 +1,4 @@
-package com.cloudchowk.patient;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 
 import android.app.ProgressDialog;
@@ -23,11 +18,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ViewReport extends ActionBarActivity {
 
@@ -149,7 +147,7 @@ public class ViewReport extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), Error.class);
+                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
                 startActivity(i);
             }
         }

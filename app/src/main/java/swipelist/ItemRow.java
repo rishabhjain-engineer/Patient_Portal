@@ -1,7 +1,5 @@
 package swipelist;
 
-import android.graphics.drawable.Drawable;
-
 public class ItemRow {
 
 	String testname,priceactual,discountprice;

@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 
 import android.content.BroadcastReceiver;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+
 public class AboutUs extends ActionBarActivity {
 
 	TextView blog, facebook, twitter, youtube,vrsion;
@@ -30,7 +31,7 @@ public class AboutUs extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.aboutus);
+		setContentView(com.hs.userportal.R.layout.aboutus);
 
 		ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
@@ -41,11 +42,11 @@ public class AboutUs extends ActionBarActivity {
 		Intent get = getIntent();
 		from = get.getStringExtra("from");
 
-		blog = (TextView) findViewById(R.id.tvBlog);
-		facebook = (TextView) findViewById(R.id.tvFacebook);
-		twitter = (TextView) findViewById(R.id.tvTwitter);
-		youtube = (TextView) findViewById(R.id.tvYoutube);
-		vrsion = (TextView) findViewById(R.id.vrsion);
+		blog = (TextView) findViewById(com.hs.userportal.R.id.tvBlog);
+		facebook = (TextView) findViewById(com.hs.userportal.R.id.tvFacebook);
+		twitter = (TextView) findViewById(com.hs.userportal.R.id.tvTwitter);
+		youtube = (TextView) findViewById(com.hs.userportal.R.id.tvYoutube);
+		vrsion = (TextView) findViewById(com.hs.userportal.R.id.vrsion);
 		try {
 			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			String version1 = pInfo.versionName;

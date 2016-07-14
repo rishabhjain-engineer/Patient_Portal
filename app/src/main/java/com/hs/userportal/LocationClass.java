@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -38,7 +38,6 @@ import android.provider.Settings;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -86,8 +85,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.cloudchowk.patient.CustomTestlistAdapter.customTestButtonListener;
-import com.cloudchowk.patient.CustomlistAdapter.customButtonListener;
+
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
@@ -130,7 +128,7 @@ import networkmngr.ConnectionDetector;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class LocationClass extends ActionBarActivity
-        implements customButtonListener, customTestButtonListener, CustomButtonListener_Default {
+        implements CustomlistAdapter.customButtonListener, CustomTestlistAdapter.customTestButtonListener, CustomButtonListener_Default {
 
     static List<SortList> sortList = new ArrayList<SortList>();
     static List<SortList> sortList_defaultrating = new ArrayList<SortList>();
@@ -310,7 +308,7 @@ public class LocationClass extends ActionBarActivity
 
         });
 
-        lvLab.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvLab.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(LocationClass.this, MapLabDetails.class);

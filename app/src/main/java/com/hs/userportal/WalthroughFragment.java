@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

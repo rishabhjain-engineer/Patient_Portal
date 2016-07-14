@@ -1,9 +1,5 @@
 package adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -14,13 +10,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cloudchowk.patient.Helper;
-import com.cloudchowk.patient.R;
-import com.cloudchowk.patient.SortList;
-import com.cloudchowk.patient.TestModel;
+import com.hs.userportal.R;
+import com.hs.userportal.SortList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestDefaultAdapter extends BaseAdapter {
 	private Activity activity;

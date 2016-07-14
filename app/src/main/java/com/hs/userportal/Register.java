@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;

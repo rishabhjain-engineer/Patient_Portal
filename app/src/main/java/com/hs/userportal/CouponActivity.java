@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -69,7 +69,7 @@ public class CouponActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_coupon);		
+		setContentView(R.layout.activity_coupon);
 		layTotal = (LinearLayout) findViewById(R.id.layTotal);
 		testPricesDynamic = (LinearLayout) findViewById(R.id.coupon_dynamic);
 		bottom = (LinearLayout) findViewById(R.id.bottom);

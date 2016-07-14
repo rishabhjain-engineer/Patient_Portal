@@ -1,20 +1,16 @@
-package com.cloudchowk.patient;
-
-import com.amazonaws.services.s3.internal.BucketNameUtils;
+package com.hs.userportal;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class LabtourFragment extends Fragment {
 

@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class CustomList extends ArrayAdapter<String> {
 			ArrayList<String> ispublished, ArrayList<String> labnumber,
 			ImageView imageView) {
 
-		super(context, R.layout.list_item, description);
+		super(context,R.layout.list_item, description);
 
 		this.context = context;
 		this.description = description;

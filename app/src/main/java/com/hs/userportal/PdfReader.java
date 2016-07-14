@@ -1,9 +1,6 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
-import java.io.File;
-import java.io.IOException;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,11 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class PdfReader extends ActionBarActivity {

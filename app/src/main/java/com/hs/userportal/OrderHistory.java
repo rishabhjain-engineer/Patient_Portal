@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import adapters.Order_family_adapter;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 

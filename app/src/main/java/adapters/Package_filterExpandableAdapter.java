@@ -14,7 +14,8 @@ import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.Toast;
 
-import com.cloudchowk.patient.R;
+
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 

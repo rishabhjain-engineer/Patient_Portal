@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.cloudchowk.patient.R;
+
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

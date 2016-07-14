@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -409,7 +409,7 @@ ArrayList<HashMap<String,String>> jarr_info=new ArrayList<HashMap<String, String
 			if (!currentNetworkInfo.isConnected()) {
 
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}

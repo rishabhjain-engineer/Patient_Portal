@@ -1,4 +1,4 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

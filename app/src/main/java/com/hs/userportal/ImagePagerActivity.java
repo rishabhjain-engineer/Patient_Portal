@@ -1,8 +1,4 @@
-package com.cloudchowk.patient;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
+package com.hs.userportal;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,14 +23,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cloudchowk.patient.Constants.Extra;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class ImagePagerActivity extends ActionBarActivity {
 
@@ -67,8 +66,8 @@ public class ImagePagerActivity extends ActionBarActivity {
 
 		Bundle bundle = getIntent().getExtras();
 		assert bundle != null;
-		String[] imageUrls = bundle.getStringArray(Extra.IMAGES);
-		pagerPosition = bundle.getInt(Extra.IMAGE_POSITION, 0);
+		String[] imageUrls = bundle.getStringArray(Constants.Extra.IMAGES);
+		pagerPosition = bundle.getInt(Constants.Extra.IMAGE_POSITION, 0);
 
 		if (savedInstanceState != null) {
 			pagerPosition = savedInstanceState.getInt(STATE_POSITION);

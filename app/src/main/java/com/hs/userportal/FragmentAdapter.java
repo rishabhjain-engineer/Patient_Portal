@@ -1,13 +1,11 @@
-package com.cloudchowk.patient;
+package com.hs.userportal;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.amazonaws.services.s3.model.GetBucketAclRequest;
 import com.viewpagerindicator.IconPagerAdapter;
 
 public class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {

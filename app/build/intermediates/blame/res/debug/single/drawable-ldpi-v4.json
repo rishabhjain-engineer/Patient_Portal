@@ -1,14 +1,14 @@
 [
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\com_facebook_close.png",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\exploded-aar\\Patient Portal\\FacebookSDK\\unspecified\\res\\drawable-ldpi-v4\\com_facebook_close.png"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\com_facebook_close.png",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\patient-portal\\FacebookSDK\\unspecified\\res\\drawable-ldpi-v4\\com_facebook_close.png"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ic.png",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\drawable-ldpi\\ic.png"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ic_location.png",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable-ldpi\\ic_location.png"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ic_location.png",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\Patient Portal\\app\\src\\main\\res\\drawable-ldpi\\ic_location.png"
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi-v4\\ic.png",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable-ldpi\\ic.png"
     }
 ]

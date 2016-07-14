@@ -1,9 +1,4 @@
-package com.cloudchowk.patient;
-
-import org.json.JSONArray;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.hs.userportal;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -24,6 +19,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Profile extends ActionBarActivity {
 	JSONObject sendData, receiveData;
@@ -149,7 +148,7 @@ public class Profile extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), Error.class);
+				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
 				startActivity(i);
 			}
 		}
