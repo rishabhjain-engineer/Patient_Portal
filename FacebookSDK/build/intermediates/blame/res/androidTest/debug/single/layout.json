@@ -44,12 +44,12 @@
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\layout\\com_facebook_picker_checkbox.xml"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\com_facebook_picker_list_section_header.xml",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\layout\\com_facebook_picker_list_section_header.xml"
-    },
-    {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\com_facebook_search_bar_layout.xml",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\layout\\com_facebook_search_bar_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\com_facebook_picker_list_section_header.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\layout\\com_facebook_picker_list_section_header.xml"
     },
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\com_facebook_picker_image.xml",

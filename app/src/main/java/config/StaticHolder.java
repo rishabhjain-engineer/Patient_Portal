@@ -15,14 +15,14 @@ public class StaticHolder {
 
     /*Server Locations */
 
-     public final String BASE_URL = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //LIVE
+   //  public final String BASE_URL = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //LIVE
   //  public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
-    //public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
-    public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
+    public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
+  //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
     // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
-    // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
-    //  public final String BASE_URL1 = "http://192.168.1.202:86/";//local
-     public final String BASE_URL1 = "https://api.cloudchowk.com/";
+     public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
+      public final String BASE_URL1 = "http://192.168.1.202:86/";//local
+   //  public final String BASE_URL1 = "https://api.cloudchowk.com/";
    // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
 
     //APIs URLs
@@ -229,8 +229,8 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                url = "https://api.cloudchowk.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
-                // url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
+              //  url = "https://api.cloudchowk.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+                url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
                 break;
             case GetUserDetailsFromContactNoMobileService:
@@ -450,16 +450,16 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;
             case BASE_URL:
-                // url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
-                url = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //live
+                 url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
+               // url = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //live
                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
 
                 break;
             case LIVELOGIN_URL:
 
-                // url = "http://192.168.1.56:8085/"; //local  dheer   dheer@123
+                 url = "http://192.168.1.56:8085/"; //local  dheer   dheer@123
                 //  url ="http://192.168.1.107/";
-                url = "https://l141702.cloudchowk.com/";//live
+               // url = "https://l141702.cloudchowk.com/";//live
                 //   url = "https://d141702.cloudchowk.com/";//demo   /rahul2  androidios
                 break;
             case saveOtherDetail:

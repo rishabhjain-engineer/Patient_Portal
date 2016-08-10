@@ -26,11 +26,11 @@ public final class R {
 		public static final int shape_tagview = 0x7f02016c;
 	}
 	public static final class id {
-		public static final int tv_tag_item_contain = 0x7f0d0359;
-		public static final int tv_tag_item_delete = 0x7f0d035a;
+		public static final int tv_tag_item_contain = 0x7f0d0363;
+		public static final int tv_tag_item_delete = 0x7f0d0364;
 	}
 	public static final class layout {
-		public static final int tagview_item = 0x7f0400bc;
+		public static final int tagview_item = 0x7f0400c1;
 	}
 	public static final class string {
 		public static final int action_settings = 0x7f06004b;

@@ -193,7 +193,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.hs.userportal.lablistdetails"
-            android:label="Lab Details"
+            android:label="My Reports"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.hs.userportal.ReportRecords"
+            android:label="Case Details"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.hs.userportal.ReportStatus"

@@ -68,19 +68,21 @@ import java.util.HashMap;
 import java.util.List;
 
 import adapters.Order_family_adapter;
+import adapters.PastVisitAdapter;
 
 public class lablistdetails extends ActionBarActivity {
     String id, caseid;
     byte[] result = null;
     Services service;
-    ListView lv;
+  //  ListView lv;
     int check;
-    Button all, images;
-    TextView pat, nam, dob, blg, gen, bal, tvreferral;
+   // Button all, images;
+  //  TextView pat, nam, dob, blg, gen, bal, tvreferral;
+    String bal;
     JSONObject sendData, receiveData, pdfobject, receiveImageData;
     ArrayAdapter<String> adapter;
     String ptname = "";
-    ImageButton info;
+  //  ImageButton info;
     ArrayList<String> image = new ArrayList<String>();
     ArrayList<String> imageName = new ArrayList<String>();
     ArrayList<String> imageId = new ArrayList<String>();
@@ -93,14 +95,14 @@ public class lablistdetails extends ActionBarActivity {
     static ArrayList<String> labnumber = new ArrayList<String>();
     static ArrayList<String> testcomplete = new ArrayList<String>();
     static ArrayList<String> ispublished = new ArrayList<String>();
-    ImageView imageView;
+   // ImageView imageView;
     private String case_code;
     JSONArray subArray, subArray1, pdfarray;
     float paid = 0;
 
-    private SlidingMenu slidingMenu;
+  //  private SlidingMenu slidingMenu;
     ArrayList<String> casecode = new ArrayList<String>();
-    ListView lvcode;
+  //  ListView lvcode;
     JSONObject sendDataList, receiveDataList;
     List<HashMap<String, String>> fillMaps;
     ArrayList<String> dated = new ArrayList<String>();
@@ -112,7 +114,9 @@ public class lablistdetails extends ActionBarActivity {
     private String patientID, Member_Name;
     private int check_fill = 0;
     private String check_ID;
-    private LinearLayout buttonbar;
+    ListView past_visits;
+    private PastVisitAdapter past_adapt;
+  //  private LinearLayout buttonbar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -120,7 +124,7 @@ public class lablistdetails extends ActionBarActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.lablistdetails);
+        setContentView(R.layout.lablists);
         family.clear();
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
@@ -130,7 +134,7 @@ public class lablistdetails extends ActionBarActivity {
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setDisplayHomeAsUpEnabled(true);
 
-        slidingMenu = new SlidingMenu(this);
+      /*  slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.RIGHT);
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         slidingMenu.setShadowWidthRes(R.dimen.slidingmenu_shadow_width);
@@ -138,13 +142,14 @@ public class lablistdetails extends ActionBarActivity {
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
         slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        slidingMenu.setMenu(R.layout.labdetails);
+        slidingMenu.setMenu(R.layout.labdetails);*/
 
-        lv = (ListView) findViewById(R.id.lvlist);
+      //  lv = (ListView) findViewById(R.id.lvlist);
         select_member_lab = (EditText) findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
-        buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
-        lv.setOnTouchListener(new ListView.OnTouchListener() {
+        past_visits = (ListView) findViewById(R.id.past_visits);
+      //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
+      /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -153,11 +158,11 @@ public class lablistdetails extends ActionBarActivity {
                 return false;
             }
 
-        });
-        all = (Button) findViewById(R.id.allreport);
-        images = (Button) findViewById(R.id.viewImages);
+        });*/
+       /* all = (Button) findViewById(R.id.allreport);*/
+     /*   images = (Button) findViewById(R.id.viewImages);
         info = (ImageButton) findViewById(R.id.info);
-        imageView = (ImageView) findViewById(R.id.img);
+        imageView = (ImageView) findViewById(R.id.img);*/
         check = 0;
 
 
@@ -166,11 +171,11 @@ public class lablistdetails extends ActionBarActivity {
         StrictMode.setThreadPolicy(policy);
         service = new Services(lablistdetails.this);
         pdfarray = new JSONArray();
-        pat = (TextView) findViewById(R.id.tvpatient);
+       /* pat = (TextView) findViewById(R.id.tvpatient);
         nam = (TextView) findViewById(R.id.tvname);
         bal = (TextView) findViewById(R.id.tvbalance);
         blg = (TextView) findViewById(R.id.tvblood);
-        tvreferral = (TextView) findViewById(R.id.tvreferral);
+        tvreferral = (TextView) findViewById(R.id.tvreferral);*/
         // dor = (TextView) findViewById(R.id.tvdor);
         // gen = (TextView) findViewById(R.id.tvgender);
 
@@ -213,11 +218,11 @@ public class lablistdetails extends ActionBarActivity {
         adapter = new ArrayAdapter<String>(lablistdetails.this,
                 android.R.layout.simple_list_item_1, casecode);
         service = new Services(lablistdetails.this);
-        lvcode = (ListView) findViewById(R.id.lvcode);
+      //  lvcode = (ListView) findViewById(R.id.lvcode);
 
         new Authentication().execute();
 
-        lvcode.setOnItemClickListener(new OnItemClickListener() {
+        past_visits.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -231,8 +236,13 @@ public class lablistdetails extends ActionBarActivity {
                 check = 0;
                 caseid = idsent;
                 case_code = null;
-                slidingMenu.toggle();
-                new BackgroundProcess().execute();
+                Intent i = new Intent(lablistdetails.this,ReportRecords.class);
+                i.putExtra("caseId",caseid);
+                i.putExtra("id",id);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+              //  slidingMenu.toggle();
+              //  new BackgroundProcess().execute();
 
                 // Intent intt = new Intent(getApplicationContext(),
                 // lablistdetails.class);
@@ -243,7 +253,7 @@ public class lablistdetails extends ActionBarActivity {
             }
         });
 
-        images.setOnClickListener(new OnClickListener() {
+      /*  images.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -369,7 +379,7 @@ public class lablistdetails extends ActionBarActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
         select_member_lab.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -385,7 +395,7 @@ public class lablistdetails extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.lab, menu);
+       // getMenuInflater().inflate(R.menu.lab, menu);
         return true;
     }
 
@@ -413,7 +423,7 @@ public class lablistdetails extends ActionBarActivity {
                 // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 // startActivity(intent);
 
-                this.slidingMenu.toggle();
+               // this.slidingMenu.toggle();
 
                 return true;
 
@@ -475,7 +485,7 @@ public class lablistdetails extends ActionBarActivity {
     };
 
 
-    class pdfprocess extends AsyncTask<Void, Void, Void> {
+   /* class pdfprocess extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -646,7 +656,7 @@ public class lablistdetails extends ActionBarActivity {
             }
 
         }
-    }
+    }*/
 
     class Authentication extends AsyncTask<Void, Void, Void> {
 
@@ -740,7 +750,7 @@ public class lablistdetails extends ActionBarActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            buttonbar.setVisibility(View.VISIBLE);
+           // buttonbar.setVisibility(View.VISIBLE);
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
@@ -755,16 +765,16 @@ public class lablistdetails extends ActionBarActivity {
             super.onPostExecute(result);
 
             if (image.size() == 0) {
-                images.setBackgroundResource(R.drawable.grey_button);
-                images.setEnabled(false);
+               // images.setBackgroundResource(R.drawable.grey_button);
+              //  images.setEnabled(false);
             } else {
-                images.setBackgroundResource(R.drawable.button_selector);
-                images.setEnabled(true);
+               // images.setBackgroundResource(R.drawable.button_selector);
+               // images.setEnabled(true);
             }
 
             // ////////////////////////////
             String dataList = "";
-            try {
+           /* try {
 
                 casecode.clear();
                 dated.clear();
@@ -791,27 +801,31 @@ public class lablistdetails extends ActionBarActivity {
 
             String[] from = new String[]{"rowid", "col_1"};
             int[] to = new int[]{R.id.label, R.id.value};
-            fillMaps = new ArrayList<HashMap<String, String>>();
+            fillMaps = new ArrayList<>();
 
             for (int i = 0; i < subArrayList.length(); i++) {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("rowid", "" + casecode.get(i));
                 map.put("col_1", "" + dated.get(i));
                 fillMaps.add(map);
-            }
+            }*/
 
-            SimpleAdapter ad = new SimpleAdapter(lablistdetails.this, fillMaps,
-                    R.layout.row, from, to);
-            Parcelable state = lvcode.onSaveInstanceState();
-            lvcode.setAdapter(ad);
-            lvcode.onRestoreInstanceState(state);
-            ad.notifyDataSetChanged();
+           /* SimpleAdapter ad = new SimpleAdapter(lablistdetails.this, fillMaps,
+                    R.layout.row, from, to);*/
+            /*PastVisitAdapter past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
+         *//*   Parcelable state = past_visits.onSaveInstanceState();*//*
+            past_visits.setAdapter(past_adapt);*/
+            past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
+         /*   Parcelable state = past_visits.onSaveInstanceState();*/
+            past_visits.setAdapter(past_adapt);
+           /* past_visits.onRestoreInstanceState(state);*/
+          /*  past_adapt.notifyDataSetChanged();*/
 
             // ///////////////////////////
 
-            CustomList adapter = new CustomList(lablistdetails.this,
+          /*  CustomList adapter = new CustomList(lablistdetails.this,
                     description, sample, testcomplete, ispublished, labnumber,
-                    imageView);
+                    imageView);*/
             String data1;
             try {
                 sample.clear();
@@ -825,7 +839,7 @@ public class lablistdetails extends ActionBarActivity {
 
                 subArray1 = subArray.getJSONArray(0);
                 System.out.println(subArray1);
-
+/*
                 pat.setText(subArray1.getJSONObject(0)
                         .getString("LocationName"));
                 nam.setText(subArray1.getJSONObject(0).getString("AdviseDate"));
@@ -835,7 +849,7 @@ public class lablistdetails extends ActionBarActivity {
                     tvreferral.setText(subArray1.getJSONObject(0).getString("ReferrerName"));
                 } else {
                     tvreferral.setText("Self");
-                }
+                }*/
                 String discstring = subArray1.getJSONObject(0).getString(
                         "DiscountAmount");
                 // String discstring = Integer.toString(disc);
@@ -859,12 +873,14 @@ public class lablistdetails extends ActionBarActivity {
                 System.out.println("Discount:" + disc);
 
                 if (paid <= 0) {
-                    bal.setTextColor(Color.parseColor("#347C17"));
-                    bal.setText("PAID");
+                   /* bal.setTextColor(Color.parseColor("#347C17"));
+                    bal.setText("PAID");*/
+                    bal = "PAID";
                 } else {
 
-                    bal.setTextColor(Color.RED);
-                    bal.setText("DUE");
+                 /*   bal.setTextColor(Color.RED);
+                    bal.setText("DUE");*/
+                    bal = "DUE";
 
                 }
 
@@ -882,43 +898,43 @@ public class lablistdetails extends ActionBarActivity {
                             "IsTestCompleted"));
                     ispublished.add(subArray1.getJSONObject(i).getString(
                             "IsPublish")
-                            + bal.getText().toString());
+                            + bal);
 
                     if (!subArray1.getJSONObject(i).getString("IsPublish")
                             .equals("true")
-                            || !bal.getText().toString().equals("PAID")) {
+                            || !bal.equals("PAID")) {
                         check = check + 1;
                     }
                 }
 
             } catch (JSONException e) {
-                pat.setText("");
+                /*pat.setText("");
                 nam.setText("");
                 blg.setText("");
                 tvreferral.setText("");
                 blg.setText("");
-                bal.setText("");
+                bal.setText("");*/
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                buttonbar.setVisibility(View.GONE);
+              //  buttonbar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
 
             try {
                 if (check == subArray1.length()) {
-                    all.setEnabled(false);
+                 /*   all.setEnabled(false);
                     all.setBackgroundResource(R.drawable.grey_button);
                     images.setBackgroundResource(R.drawable.grey_button);
-                    images.setEnabled(false);
+                    images.setEnabled(false);*/
                 } else {
-                    all.setEnabled(true);
-                    all.setBackgroundResource(R.drawable.button_selector);
+                    /*all.setEnabled(true);
+                    all.setBackgroundResource(R.drawable.button_selector);*/
                 }
-                lv.setAdapter(adapter);
-                Utility.setListViewHeightBasedOnChildren(lv);
-                adapter.notifyDataSetChanged();
+               // lv.setAdapter(adapter);
+               // Utility.setListViewHeightBasedOnChildren(lv);
+               // adapter.notifyDataSetChanged();
             } catch (NullPointerException e) {
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                buttonbar.setVisibility(View.GONE);
+              //  buttonbar.setVisibility(View.GONE);
                 //finish();
             }
             progress.dismiss();
@@ -1046,6 +1062,35 @@ public class lablistdetails extends ActionBarActivity {
                             "ThumbImage"));
 
                 }
+
+                casecode.clear();
+                dated.clear();
+                dataList = receiveDataList.getString("d");
+                JSONObject cut1 = new JSONObject(dataList);
+                subArrayList = cut1.getJSONArray("Table");
+                for (int i = 0; i < subArrayList.length(); i++)
+
+                {
+
+                    casecode.add(subArrayList.getJSONObject(i).getString(
+                            "CaseCode"));
+                    caseidList.add(subArrayList.getJSONObject(i).getString(
+                            "CaseId"));
+                    dated.add(subArrayList.getJSONObject(i).getString(
+                            "TimeStamp"));
+
+                }
+
+            String[] from = new String[]{"rowid", "col_1"};
+            int[] to = new int[]{R.id.label, R.id.value};
+            fillMaps = new ArrayList<>();
+
+            for (int i = 0; i < subArrayList.length(); i++) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("rowid", "" + casecode.get(i));
+                map.put("col_1", "" + dated.get(i));
+                fillMaps.add(map);
+            }
 
             } catch (JSONException e) {
 
