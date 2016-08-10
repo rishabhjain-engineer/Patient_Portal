@@ -82,7 +82,7 @@
         jar="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         revision="21.1.2"
-        sha1="a8860756cf8c2b11d2e7fe3e3ff853d9937410ec">
+        sha1="3efcb95a813c1145f8a2ae81cf3fbea0611d9fa3">
         <dex dex="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_5d5bac74210ea2df5847382b783d1b45c30c03b1\classes.dex" />
     </item>
     <item
@@ -103,7 +103,7 @@
         jar="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         revision="21.1.2"
-        sha1="2e7b62334cb3f3acd7959ed2aee01acf2a0c6559">
+        sha1="15606057a0ff87fd21de4bbeadfb248660d8f10e">
         <dex dex="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_0f83651b1c9259b1e795e2375b82b1d641017a4a\classes.dex" />
     </item>
     <item

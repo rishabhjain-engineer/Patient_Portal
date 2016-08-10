@@ -104,13 +104,7 @@ public class Vault_delete_adapter extends BaseAdapter {
         });*/
         holder.delete.setId(position);
         holder.image_vault.setId(position);
-        /*View.OnClickListener yourClickListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                //put your desired action here
-                v.callOnClick();
-            }
-        };
-        holder.img_name.setOnClickListener(yourClickListener);*/
+
         holder.delete.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
