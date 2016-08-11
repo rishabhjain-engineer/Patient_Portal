@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:layout_marginTop="@dimen/feed_item_margin"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/order_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Test Details"
+            android:textColor="#565656"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/order_summary"
+            android:background="#FE975F"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/labid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/separator"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/order_id_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="50"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Booked On"
+                android:textColor="#565656"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/tvAdvice"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator"
+                android:layout_marginTop="20dp"
+                android:layout_weight="50"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text=""
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/labid_layout"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#C4C4C4"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/advisedate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/separator1"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/advise_date_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="50"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Sample Collected"
+                android:textColor="#565656"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/tvSample"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator1"
+                android:layout_marginTop="20dp"
+                android:layout_weight="50"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text=""
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separator2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/advisedate_layout"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#C4C4C4"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/casename_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/separator2"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/lab_name_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="50"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Reported On"
+                android:textColor="#565656"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/tvDOB"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator2"
+                android:layout_marginTop="20dp"
+                android:layout_weight="50"
+                android:maxLines="2"
+                android:text=""
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</merge>

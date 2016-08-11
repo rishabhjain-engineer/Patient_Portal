@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/profname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Test Details"
+            android:textColor="#565656"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/profname"
+            android:background="#FE975F"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/separator"
+            android:layout_marginBottom="8dp">
+
+            <RelativeLayout
+                android:id="@+id/heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:weightSum="300">
+
+                <TextView
+                    android:id="@+id/sno_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:text="#"
+                    android:textColor="#565656"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/amount_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_weight="50"
+                    android:text="Amount"
+                    android:textColor="#565656"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/test_details_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="54dp"
+                    android:layout_marginStart="54dp"
+                    android:layout_toEndOf="@+id/sno_heading"
+                    android:layout_toRightOf="@+id/sno_heading"
+                    android:layout_weight="200"
+                    android:text="Test Name"
+                    android:textColor="#565656"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/separator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/heading"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical"
+                android:visibility="gone"></LinearLayout>
+
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@android:color/transparent"
+                android:listSelector="@android:color/transparent"></ListView>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</merge>

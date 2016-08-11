@@ -1,6 +1,2 @@
-CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\hs\userportal\ReportRecords$pdfprocess$1$override.class
-CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\hs\userportal\ReportRecords$pdfprocess$3$override.class
-CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\hs\userportal\ReportRecords$pdfprocess$override.class
 CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\android\tools\fd\runtime\AppPatchesLoaderImpl.class
-CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\hs\userportal\ReportRecords$pdfprocess$2$override.class
-CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\hs\userportal\ReportRecords$BackgroundProcess$override.class
+CHANGED,C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\config\StaticHolder$override.class

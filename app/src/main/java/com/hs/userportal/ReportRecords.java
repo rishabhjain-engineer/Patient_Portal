@@ -11,16 +11,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +51,7 @@ public class ReportRecords extends ActionBarActivity {
             sub_total, discount, your_price;
     private ListView test_list;
     private LinearLayout invoice, viewReportLinear_id;
-    private ImageButton  spinner_action;
+    private ImageButton spinner_action;
     private String case_id = "";
     private Services service;
     private ProgressDialog progress;
@@ -139,6 +142,72 @@ public class ReportRecords extends ActionBarActivity {
 
             }
         });
+        test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    if (subArray1.getJSONObject(position).getString("IsPublish")
+                            .equalsIgnoreCase("true")
+                            && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
+                        Intent intent = new Intent(getApplicationContext(),
+                                ReportStatus.class);
+                        intent.putExtra("index", position);
+                        intent.putExtra("array", subArray1.toString());
+                        try {
+                            intent.putExtra("code", subArray1.getJSONObject(0)
+                                    .getString("PatientCode"));
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                    } else if (subArray1.getJSONObject(position).getString("IsPublish")
+                            .equalsIgnoreCase("true")
+                            && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {
+                        final Toast toast = Toast.makeText(
+                                getApplicationContext(), "Balance due",
+                                Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                toast.cancel();
+                            }
+                        }, 2000);
+
+                    } else if (subArray1.getJSONObject(position).getString("IsSampleReceived")
+                            .equals("true")) {
+                        final Toast toast = Toast.makeText(
+                                getApplicationContext(), "Result awaited",
+                                Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                toast.cancel();
+                            }
+                        }, 2000);
+                    } else {
+                        final Toast toast = Toast.makeText(
+                                getApplicationContext(),
+                                "Sample not collected", Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                toast.cancel();
+                            }
+                        }, 2000);
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setupActionBar() {
@@ -206,11 +275,11 @@ public class ReportRecords extends ActionBarActivity {
                 NestedListHelper.setListViewHeightBasedOnChildren(test_list);
             }
             tvpatient.setText(lab_name);
-            tvname.setText(patient_name);
+            tvname.setText(adviseDate);
             tvblood.setText(caseCode);
-            if(balance_status.equalsIgnoreCase("PAID")){
+            if (balance_status.equalsIgnoreCase("PAID")) {
                 tvbalance.setTextColor(Color.parseColor("#347C17"));
-            }else{
+            } else {
                 tvbalance.setTextColor(Color.RED);
             }
             tvbalance.setText(balance_status);
@@ -243,7 +312,9 @@ public class ReportRecords extends ActionBarActivity {
                         "LocationName");
                 String[] date = subArray1.getJSONObject(0).getString(
                         "AdviseDate").split(" ");
-                adviseDate = date[0];
+                if(date.length!=0) {
+                    adviseDate = date[0] + " " + date[1] + " " + date[2];
+                }
                 caseCode = subArray1.getJSONObject(0).getString(
                         "CaseCode");
                 patient_name = subArray1.getJSONObject(0).getString(

@@ -56,13 +56,15 @@ import java.util.List;
 import java.util.Set;
 
 import adapters.Report_Adapter;
+import utils.NestedListHelper;
 
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class ReportStatus extends ActionBarActivity {
     BufferedReader reader;
-    TextView advice, refer, dob, sample, profname;
-    Button breport, bgraph, bpdf;
+    TextView advice, /*refer,*/ dob, sample, profname;
+    Button breport;
+    LinearLayout  bgraph, bpdf;
     String patientId;
     SharedPreferences sharedPreferences;
     Services service;
@@ -94,7 +96,7 @@ public class ReportStatus extends ActionBarActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.reportstatus);
+        setContentView(R.layout.reportstatus_new);
 
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
@@ -109,7 +111,7 @@ public class ReportStatus extends ActionBarActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         patientId = sharedPreferences.getString("ke", "");
         advice = (TextView) findViewById(R.id.tvAdvice);
-        refer = (TextView) findViewById(R.id.tvReferred);
+       // refer = (TextView) findViewById(R.id.tvReferred);
         //spec = (TextView) findViewById(R.id.tvSpecimen);
         sample = (TextView) findViewById(R.id.tvSample);
         profname = (TextView) findViewById(R.id.profname);
@@ -117,9 +119,10 @@ public class ReportStatus extends ActionBarActivity {
         //report = (TextView) findViewById(R.id.tvReport);
         dob = (TextView) findViewById(R.id.tvDOB);
         //test = (TextView) findViewById(R.id.tvTest);
-        bpdf = (Button) findViewById(R.id.bPdf);
+        bpdf = (LinearLayout) findViewById(R.id.bPdf);
         list_view = (ListView) findViewById(R.id.list_view);
-        bgraph = (Button) findViewById(R.id.bGraph);
+        list_view.setFocusable(false);
+        bgraph = (LinearLayout) findViewById(R.id.bGraph);
         misc = new MiscellaneousTasks(ReportStatus.this);
         Intent z = getIntent();
         index = z.getIntExtra("index", 10);
@@ -145,9 +148,9 @@ public class ReportStatus extends ActionBarActivity {
 
 
             if (!jarray.getJSONObject(index).getString("ReferrerName").matches(((".*[a-kA-Zo-t]+.*")))) {
-                refer.setText("Self");
+               // refer.setText("Self");
             } else {
-                refer.setText(jarray.getJSONObject(index).getString("ReferrerName"));
+              //  refer.setText(jarray.getJSONObject(index).getString("ReferrerName"));
             }
             if(jarray.getJSONObject(index).getString("CollectionTime").equals("")
                     || jarray.getJSONObject(index).getString("CollectionTime").equalsIgnoreCase("null")) {
@@ -960,6 +963,7 @@ public class ReportStatus extends ActionBarActivity {
                     profname.setText(reportarray.getJSONObject(0).getString("ProfileName"));
                 }
                 list_view.setAdapter(new Report_Adapter(reportarray, ReportStatus.this));
+                NestedListHelper.setListViewHeightBasedOnChildren(list_view);
                 list_view.setVisibility(View.VISIBLE);
                // parentLayout.setVisibility(View.GONE);
                 for (int z = 0; z < reportarray.length(); z++) {
@@ -1450,7 +1454,7 @@ public class ReportStatus extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+    //    getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
