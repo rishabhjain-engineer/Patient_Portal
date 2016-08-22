@@ -62,7 +62,7 @@ public class SplashScreen extends Activity {
         sendData = new JSONObject();
         ConnectionDetector con = new ConnectionDetector(SplashScreen.this);
         if (!con.isConnectingToInternet()) {
-            Toast.makeText(getApplicationContext(), "No Internet.Please connect to internet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "No internet connection.Please connect to internet.", Toast.LENGTH_LONG).show();
            // finish();
         }
         /*new Handler().postDelayed(new Runnable() {

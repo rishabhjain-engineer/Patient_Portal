@@ -49,20 +49,24 @@ public class PastVisitAdapter extends BaseAdapter {
         if (inflater == null)
             inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.row, null);
+            convertView = inflater.inflate(R.layout.pastvisit_item, null);
             holder = new ViewHolder();
             holder.label = (TextView) convertView.findViewById(R.id.label);
             holder.value = (TextView) convertView.findViewById(R.id.value);
+            holder.labName = (TextView) convertView.findViewById(R.id.labName);
+            holder.test_list = (TextView) convertView.findViewById(R.id.test_list);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.label.setText(array.get(position).get("rowid"));
-        holder.value.setText(array.get(position).get("col_1"));
+        holder.label.setText(array.get(position).get("CaseCode"));
+        holder.value.setText(array.get(position).get("TimeStamp"));
+        holder.labName.setText(array.get(position).get("ApplicationName"));
+        holder.test_list.setText(array.get(position).get("TestName"));
         return convertView;
     }
 
     static class ViewHolder {
-        TextView label, value;
+        TextView label, value, labName, test_list;
     }
 }

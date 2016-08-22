@@ -95,6 +95,8 @@ public class lablistdetails extends ActionBarActivity {
     static ArrayList<String> labnumber = new ArrayList<String>();
     static ArrayList<String> testcomplete = new ArrayList<String>();
     static ArrayList<String> ispublished = new ArrayList<String>();
+    private List<HashMap<String, String>> caseArray = new ArrayList<>();
+    private List<HashMap<String, String>> pastVisitArray = new ArrayList<>();
    // ImageView imageView;
     private String case_code;
     JSONArray subArray, subArray1, pdfarray;
@@ -230,7 +232,7 @@ public class lablistdetails extends ActionBarActivity {
                 // TODO Auto-generated method stub
 
                 String idsent;
-                idsent = caseidList.get(arg2);
+                idsent = pastVisitArray.get(arg2).get("CaseId");
 
                 System.out.println("arg=" + arg2);
                 check = 0;
@@ -815,7 +817,7 @@ public class lablistdetails extends ActionBarActivity {
             /*PastVisitAdapter past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
          *//*   Parcelable state = past_visits.onSaveInstanceState();*//*
             past_visits.setAdapter(past_adapt);*/
-            past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
+            past_adapt = new PastVisitAdapter(lablistdetails.this,pastVisitArray);
          /*   Parcelable state = past_visits.onSaveInstanceState();*/
             past_visits.setAdapter(past_adapt);
            /* past_visits.onRestoreInstanceState(state);*/
@@ -978,9 +980,26 @@ public class lablistdetails extends ActionBarActivity {
                 if (subArrayList.length() == 0) {
                     caseid = "";
                 }
+                HashMap<String, String> hmap ;
+                caseArray.clear();
                 for (int i = 0; i < subArrayList.length(); i++)
 
                 {
+                    hmap = new HashMap<>();
+                    hmap.put("CaseId",subArrayList.getJSONObject(i).getString(
+                            "CaseId"));
+                    hmap.put("CaseCode",subArrayList.getJSONObject(i).getString(
+                            "CaseCode"));
+                    hmap.put("TimeStamp",subArrayList.getJSONObject(i).getString(
+                        "TimeStamp"));
+                    hmap.put("InvestigationId",subArrayList.getJSONObject(i).getString(
+                        "InvestigationId"));
+                    hmap.put("TestName",subArrayList.getJSONObject(i).getString(
+                        "TestName"));
+                    hmap.put("ApplicationName",subArrayList.getJSONObject(i).getString(
+                        "ApplicationName"));
+                    caseArray.add(hmap);
+
 
                     casecode.add(subArrayList.getJSONObject(i).getString(
                             "CaseCode"));
@@ -1097,10 +1116,40 @@ public class lablistdetails extends ActionBarActivity {
                 e.printStackTrace();
 
             }
-            // //////////////////////////////////////////
+            // combining the test names
 
+            pastVisitArray.clear();
+            HashMap<String,String> hmap_alias;
+            try {
+                for (int i = 0; i < caseArray.size()-1; i++) {
+                    hmap_alias = new HashMap<>();
+                    hmap_alias.put("CaseId",caseArray.get(i).get("CaseId"));
+                    hmap_alias.put("CaseCode",caseArray.get(i).get("CaseCode"));
+                    hmap_alias.put("TimeStamp",caseArray.get(i).get("TimeStamp"));
+                    hmap_alias.put("InvestigationId",caseArray.get(i).get("InvestigationId"));
+                    hmap_alias.put("ApplicationName",caseArray.get(i).get("ApplicationName"));
+                    String caseCode = caseArray.get(i).get("CaseCode");
+                    StringBuffer test_name = new StringBuffer();
+                    int j = 1;
+                    test_name.append(j + ". " + caseArray.get(i).get("TestName"));
+                    for (int k = i + 1; k < caseArray.size(); k++) {
+                        if (caseCode.equalsIgnoreCase(caseArray.get(k).get("CaseCode"))){
+                            j++;
+                            test_name.append("\n" + j + ". " + caseArray.get(k).get("TestName"));
+                            caseArray.remove(k);
+                            k--;
+                        }
+                    }
+                    hmap_alias.put("TestName",test_name.toString());
+                    pastVisitArray.add(hmap_alias);
+                }
+            }catch (Exception ex){
+                 ex.printStackTrace();
+            }
             return null;
         }
+
+
 
     }
 

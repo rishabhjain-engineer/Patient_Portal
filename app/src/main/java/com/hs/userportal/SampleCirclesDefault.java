@@ -60,7 +60,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		try {
 			if (walk.equals("walk")) {
 				login.setVisibility(View.VISIBLE);
-				signup.setVisibility(View.VISIBLE);
+				//signup.setVisibility(View.VISIBLE);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -125,7 +125,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		// TODO Auto-generated method stub
 
 		if (walk.equals("walk")) {
-			signup.setVisibility(View.VISIBLE);
+			//signup.setVisibility(View.VISIBLE);
 			login.setVisibility(View.VISIBLE);
 			Intent startMain = new Intent(Intent.ACTION_MAIN);
 			startMain.addCategory(Intent.CATEGORY_HOME);

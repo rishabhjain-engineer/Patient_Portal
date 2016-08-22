@@ -22,7 +22,7 @@
             android:textSize="16dp"
             android:textStyle="bold" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/spinner_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,8 +30,11 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
-            android:background="@drawable/test_info"
+            android:text="@string/info"
+            android:textColor="#1DBBE3"
+            android:textSize="22dp"
             android:clickable="true" />
+
 
         <LinearLayout
             android:id="@+id/separator"

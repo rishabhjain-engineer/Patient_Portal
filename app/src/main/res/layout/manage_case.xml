@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="25dp"
-                    android:src="@drawable/invoice" />
+                    android:src="@drawable/invoice1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="25dp"
-                    android:src="@drawable/pdf" />
+                    android:src="@drawable/pdf1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -106,6 +106,7 @@
             android:layout_below="@+id/main_layout"
             android:background="#C4C4C4"
             android:clickable="false"
+            android:visibility="gone"
             android:orientation="vertical"></LinearLayout>
 
     </RelativeLayout>

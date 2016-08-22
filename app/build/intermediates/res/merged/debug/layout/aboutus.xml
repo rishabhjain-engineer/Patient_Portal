@@ -2,28 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo_update" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView1"
-       android:gravity="center"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:text="@string/name"
-       android:textSize="18dp"
-        android:textColor="#1998ca" />
+        android:textColor="#1DBBE3"
+        android:textSize="18dp" />
 
     <LinearLayout
         android:id="@+id/Lin"
@@ -31,9 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tvBlog"
@@ -86,10 +89,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
+        android:gravity="center"
         android:text="@string/cloud"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12dp" />
 
     <TextView
+        android:id="@+id/vrsion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
@@ -97,7 +103,6 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-       android:id="@+id/vrsion"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#7f7f7f" />
 

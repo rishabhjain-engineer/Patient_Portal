@@ -4,7 +4,7 @@
     api-level="21"
     density="xxhdpi"
     format="7"
-    timestamp="26425686009265"
+    timestamp="17593350807671"
     token="-7895440998358028004" >
 
     <task
@@ -21,13 +21,18 @@
         duration="0" />
 
     <artifact
-        location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\outputs\apk\app-debug.apk"
-        type="MAIN" />
+        location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\res\resources-debug.ap_"
+        type="RESOURCES" />
 
-    <build timestamp="26425686009265" >
+    <build timestamp="17522519637220" >
         <artifact
             location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\outputs\apk\app-debug.apk"
             type="MAIN" />
+    </build>
+    <build timestamp="17593350807671" >
+        <artifact
+            location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\res\resources-debug.ap_"
+            type="RESOURCES" />
     </build>
 
 </instant-run>

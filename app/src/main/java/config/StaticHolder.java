@@ -15,14 +15,14 @@ public class StaticHolder {
 
     /*Server Locations */
 
-     public final String BASE_URL = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //LIVE
+   //  public final String BASE_URL = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //LIVE
   //  public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
-  //  public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
-    public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
+    public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
+  //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
     // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
-  //   public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
-   //   public final String BASE_URL1 = "http://192.168.1.202:86/";//local
-     public final String BASE_URL1 = "https://api.cloudchowk.com/";
+    public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
+     public final String BASE_URL1 = "http://192.168.1.202:86/";//local
+    // public final String BASE_URL1 = "https://api.cloudchowk.com/";
    // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
 
     //APIs URLs
@@ -121,12 +121,9 @@ public class StaticHolder {
     // public static final String HOME_PACKAGE_URL = BASE_URL + "HomePackage";
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
-    ;
-
 
     Services_static serviceName;
     Activity context;
-    RequestQueue queue;
     JSONObject sendData;
     String[] url_parts = {
             "PatientModule/PatientService.asmx/", "WebServices/CredentialsService.asmx/", "StaffModule/StaffService.asmx", "SupplierModule/SupplierMasterService.asmx/",
@@ -142,17 +139,12 @@ public class StaticHolder {
     public StaticHolder(Activity activity, Services_static serviceName) {
         this.serviceName = serviceName;
         this.context = activity;
-        // this.sendData = sendData;
     }
 
     public StaticHolder(Services_static serviceName) {
         this.serviceName = serviceName;
-        //  this.context = activity;
-        // this.sendData = sendData;
     }
 
-    // StaticHolder staticobj=new StaticHolder(Activity.this,Services.Login,senddata);
-    // staticobj.allInOneTask();
     public String request_Url() {
         String url = null;
         switch (serviceName) {
@@ -218,23 +210,20 @@ public class StaticHolder {
                 break;
 
             case GetPatientTestImagesInCase:
-                //  url = LIVELOGIN_URL + "LaboratoryModule/LISService.asmx/GetPatientTestImagesInCase";
                 url = BASE_URL + "GetPatientTestImagesInCase";
                 break;
             case PatientFileVault:
                 url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/PatientFileVault";
                 break;
             case UpdateImage:
-                // url = LIVELOGIN_URL + "laboratorymodule/LISService.asmx/UpdateImage";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                url = "https://api.cloudchowk.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
-             //   url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
+             //   url = "https://api.cloudchowk.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+                url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
                 break;
             case GetUserDetailsFromContactNoMobileService:
-                // url = LIVELOGIN_URL + "CommonMasterModule/CommonMasterService.asmx/GetUserDetailsFromContactNoMobileService";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/GetUserDetailsFromContactNoMobileService";
                 break;
             case GetPatientFiles:
@@ -265,7 +254,7 @@ public class StaticHolder {
                 url = BASE_URL + "GetAllObjectFromS3";
                 break;
             case FindLabsTest:
-                url = BASE_URL + "FindLabsTest";      //
+                url = BASE_URL + "FindLabsTest";
                 break;
             case GetPatientHistory:
                 url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientHistory";
@@ -287,7 +276,6 @@ public class StaticHolder {
                 url = BASE_URL + "GetAdvisedInvestigationDetailMobile";
                 break;
             case GetAllLisPatientCaseDetailMobile:
-                // url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";
                 url = BASE_URL + "GetAllLisPatientCaseDetailMobile";
                 break;
             case UploadPrescriptionMail:
@@ -306,15 +294,12 @@ public class StaticHolder {
                 url = BASE_URL + "SendCouponWithOutTestViaEmail";
                 break;
             case GetPatientTestRangeDataMobile:
-                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientTestRangeDataMobile";
                 url = BASE_URL + "GetPatientTestRangeDataMobile";
                 break;
             case GetPatientVerification:
-                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientVerification";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/GetPatientVerification";
                 break;
             case EmailVerificationClinic:
-                // url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/EmailVerificationClinic";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/SendMailiOS";
                 break;
 
@@ -330,7 +315,6 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckEmailIdIsExist";
                 break;
             case CheckAliasExistMobile:
-                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckAliasExistMobile";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/CheckAliasExistMobile";
                 break;
             case IsUserNameAliasExists:
@@ -394,11 +378,9 @@ public class StaticHolder {
                 url = BASE_URL + "CheckLabrangefrom_area";
                 break;
             case IsUserAuthenticated:
-                // url = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/IsUserAuthenticated";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/IsUserAuthenticated";
                 break;
             case agreeTermsCondition:
-                //url = LIVELOGIN_URL + "StaffModule/StaffService.asmx/agreeTermsCondition";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/agreeTermsCondition";
                 break;
             case GetPatient:
@@ -415,7 +397,6 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/ResendSmsVerifyCodeClinic";
                 break;
             case CheckVerifyCodeClinic:
-                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckVerifyCodeClinic";
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/CheckVerifyCode";
                 break;
             case GetCityList1:
@@ -450,16 +431,16 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;
             case BASE_URL:
-                // url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
-                url = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //live
+                 url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
+               // url = "https://api.cloudchowk.com/WebServices/LabService.asmx/"; //live
                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
 
                 break;
             case LIVELOGIN_URL:
 
-                // url = "http://192.168.1.56:8085/"; //local  dheer   dheer@123
+                 url = "http://192.168.1.56:8085/"; //local  dheer   dheer@123
                 //  url ="http://192.168.1.107/";
-                url = "https://l141702.cloudchowk.com/";//live
+               // url = "https://l141702.cloudchowk.com/";//live
                 //   url = "https://d141702.cloudchowk.com/";//demo   /rahul2  androidios
                 break;
             case saveOtherDetail:
@@ -471,7 +452,7 @@ public class StaticHolder {
                 break;
 
             case CreateLockFolder:
-                url = BASE_URL + "CreateLockFolder";   //AcceptRequest
+                url = BASE_URL + "CreateLockFolder";
                 break;
 
             case DeleteObject:
@@ -497,11 +478,9 @@ public class StaticHolder {
                 break;
 
             case GetCountryList:
-                // url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetCountryList";
                 url = BASE_URL + "getCountries";
                 break;
             case getNationality:
-                //  url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetCountryList";
                 url = BASE_URL + "getNationality";
                 break;
             case saveBasicDetail:
@@ -536,7 +515,6 @@ public class StaticHolder {
         switch (serviceName) {
             case LogIn:
                 System.out.println("login.");
-                // receiveData=login();
                 receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
                 break;
 
@@ -577,7 +555,6 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords
     }
-
 
 }
 

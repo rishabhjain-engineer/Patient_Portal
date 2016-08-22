@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -51,7 +52,7 @@ public class ReportRecords extends ActionBarActivity {
             sub_total, discount, your_price;
     private ListView test_list;
     private LinearLayout invoice, viewReportLinear_id;
-    private ImageButton spinner_action;
+    private TextView spinner_action;
     private String case_id = "";
     private Services service;
     private ProgressDialog progress;
@@ -94,7 +95,9 @@ public class ReportRecords extends ActionBarActivity {
         your_price = (TextView) findViewById(R.id.your_price);
         invoice = (LinearLayout) findViewById(R.id.invoice);
         viewReportLinear_id = (LinearLayout) findViewById(R.id.viewReportLinear_id);
-        spinner_action = (ImageButton) findViewById(R.id.spinner_action);
+        Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
+        spinner_action = (TextView) findViewById(R.id.spinner_action);
+        spinner_action.setTypeface(tf);
         test_list = (ListView) findViewById(R.id.test_list);
         test_list.setFocusable(false);
         invoice.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +164,7 @@ public class ReportRecords extends ActionBarActivity {
                             e.printStackTrace();
                         }
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     } else if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
                             && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {
