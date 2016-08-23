@@ -60,7 +60,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		try {
 			if (walk.equals("walk")) {
 				login.setVisibility(View.VISIBLE);
-				//signup.setVisibility(View.VISIBLE);
+				signup.setVisibility(View.VISIBLE);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -92,8 +92,8 @@ public class SampleCirclesDefault extends FragmentActivity {
 				editor.putBoolean("openLocation", false);
 				editor.commit();
 
-				Intent i = new Intent(SampleCirclesDefault.this, LocationClass.class);
-				i.putExtra("from", "walk");
+				Intent i = new Intent(SampleCirclesDefault.this, Register.class);
+				//i.putExtra("from", "walk");
 				startActivity(i);
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				finish();
@@ -125,7 +125,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		// TODO Auto-generated method stub
 
 		if (walk.equals("walk")) {
-			//signup.setVisibility(View.VISIBLE);
+			signup.setVisibility(View.VISIBLE);
 			login.setVisibility(View.VISIBLE);
 			Intent startMain = new Intent(Intent.ACTION_MAIN);
 			startMain.addCategory(Intent.CATEGORY_HOME);

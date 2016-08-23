@@ -1403,7 +1403,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 //dharmendraiimt08@gmail.com
                                 user_Name = "";
 
-                                if (genderFB.trim().equalsIgnoreCase("male")) {
+                                if (genderFB!=null&&genderFB.trim().equalsIgnoreCase("male")) {
                                     gender = "Male";
                                 } else {
                                     gender = "Female";

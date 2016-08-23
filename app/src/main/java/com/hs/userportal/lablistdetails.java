@@ -51,6 +51,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.json.JSONArray;
@@ -63,26 +71,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
+import config.StaticHolder;
 
 public class lablistdetails extends ActionBarActivity {
     String id, caseid;
     byte[] result = null;
     Services service;
-  //  ListView lv;
+    //  ListView lv;
     int check;
-   // Button all, images;
-  //  TextView pat, nam, dob, blg, gen, bal, tvreferral;
+    // Button all, images;
+    //  TextView pat, nam, dob, blg, gen, bal, tvreferral;
     String bal;
     JSONObject sendData, receiveData, pdfobject, receiveImageData;
     ArrayAdapter<String> adapter;
     String ptname = "";
-  //  ImageButton info;
+    //  ImageButton info;
     ArrayList<String> image = new ArrayList<String>();
     ArrayList<String> imageName = new ArrayList<String>();
     ArrayList<String> imageId = new ArrayList<String>();
@@ -97,14 +109,17 @@ public class lablistdetails extends ActionBarActivity {
     static ArrayList<String> ispublished = new ArrayList<String>();
     private List<HashMap<String, String>> caseArray = new ArrayList<>();
     private List<HashMap<String, String>> pastVisitArray = new ArrayList<>();
-   // ImageView imageView;
+    private List<OrderList> sortList = new ArrayList<OrderList>();
+    private List<HashMap<String, String>> sortList_alias = new ArrayList<>();
+    JsonObjectRequest jr;
+    // ImageView imageView;
     private String case_code;
     JSONArray subArray, subArray1, pdfarray;
     float paid = 0;
 
-  //  private SlidingMenu slidingMenu;
+    //  private SlidingMenu slidingMenu;
     ArrayList<String> casecode = new ArrayList<String>();
-  //  ListView lvcode;
+    //  ListView lvcode;
     JSONObject sendDataList, receiveDataList;
     List<HashMap<String, String>> fillMaps;
     ArrayList<String> dated = new ArrayList<String>();
@@ -113,12 +128,15 @@ public class lablistdetails extends ActionBarActivity {
     private EditText select_member_lab;
     ArrayList<HashMap<String, String>> family = new ArrayList<>();
     public static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
+    public List<HashMap<String, String>> order_listarr = new ArrayList<>();
     private String patientID, Member_Name;
     private int check_fill = 0;
     private String check_ID;
     ListView past_visits;
     private PastVisitAdapter past_adapt;
-  //  private LinearLayout buttonbar;
+    private String checkID;
+    RequestQueue queue;
+    //  private LinearLayout buttonbar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -136,6 +154,7 @@ public class lablistdetails extends ActionBarActivity {
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setDisplayHomeAsUpEnabled(true);
 
+        queue = Volley.newRequestQueue(this);
       /*  slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.RIGHT);
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -146,11 +165,11 @@ public class lablistdetails extends ActionBarActivity {
         slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         slidingMenu.setMenu(R.layout.labdetails);*/
 
-      //  lv = (ListView) findViewById(R.id.lvlist);
+        //  lv = (ListView) findViewById(R.id.lvlist);
         select_member_lab = (EditText) findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) findViewById(R.id.past_visits);
-      //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
+        //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -191,8 +210,8 @@ public class lablistdetails extends ActionBarActivity {
         patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
 
         if (check_fill == 0) {
-            for(int chk = 0; chk<family.size(); chk++){
-                if(family.get(chk).get("FirstName").equalsIgnoreCase("Self")){
+            for (int chk = 0; chk < family.size(); chk++) {
+                if (family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
                     family.remove(chk);
                 }
             }
@@ -204,12 +223,16 @@ public class lablistdetails extends ActionBarActivity {
             hmap.put("FamilyMemberId", patientID);
             family.add(hmap);
         }
-        for (int c = 0; c < family.size(); c++) {
-            if (family.get(c).get("HM").equals("1")) {
-                select_member_lab.setVisibility(View.GONE);
+
+        if (family.size() == 1) {
+            select_member_lab.setVisibility(View.GONE);
+        } else {
+            for (int c = 0; c < family.size(); c++) {
+                if (family.get(c).get("HM").equals("1")) {
+                    select_member_lab.setVisibility(View.GONE);
+                }
             }
         }
-
         static_family.addAll(family);
         check_fill = 1;
         // caseid = z.getStringExtra("caseid");
@@ -220,7 +243,7 @@ public class lablistdetails extends ActionBarActivity {
         adapter = new ArrayAdapter<String>(lablistdetails.this,
                 android.R.layout.simple_list_item_1, casecode);
         service = new Services(lablistdetails.this);
-      //  lvcode = (ListView) findViewById(R.id.lvcode);
+        //  lvcode = (ListView) findViewById(R.id.lvcode);
 
         new Authentication().execute();
 
@@ -231,20 +254,60 @@ public class lablistdetails extends ActionBarActivity {
                                     long arg3) {
                 // TODO Auto-generated method stub
 
-                String idsent;
-                idsent = pastVisitArray.get(arg2).get("CaseId");
+                if(pastVisitArray.get(arg2).get("TYPE").equalsIgnoreCase("ZUREKA")){
+                    Intent i = new Intent(lablistdetails.this, OrderDetails.class);
+                    i.putExtra("OrderId", pastVisitArray.get(arg2).get("OrderId"));
+                    i.putExtra("OrderDate", pastVisitArray.get(arg2).get("TimeStamp"));
+                    i.putExtra("LabName", pastVisitArray.get(arg2).get("CentreName"));
+                    i.putExtra("Address", pastVisitArray.get(arg2).get("BillingAddress"));
+                    try {
 
-                System.out.println("arg=" + arg2);
-                check = 0;
-                caseid = idsent;
-                case_code = null;
-                Intent i = new Intent(lablistdetails.this,ReportRecords.class);
-                i.putExtra("caseId",caseid);
-                i.putExtra("id",id);
-                startActivity(i);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-              //  slidingMenu.toggle();
-              //  new BackgroundProcess().execute();
+                        i.putExtra("GrandTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
+                        i.putExtra("SubTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderActualAmount"))));
+                        i.putExtra("Discount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderDiscount"))));
+                        if (!pastVisitArray.get(arg2).get("PromoCodeDiscount").equals("null") && pastVisitArray.get(arg2).get("PromoCodeDiscount")!= null) {
+                            double bilingamnt = Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")) -
+                                    Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"));
+                            i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                            i.putExtra("promo_codeDiscount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"))));
+
+                        } else if (!pastVisitArray.get(arg2).get("DiscountInPercentage").equals("null") && pastVisitArray.get(arg2).get("DiscountInPercentage")!= null) {
+                            double bilingamnt = (Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))) *
+                                    (1 - ((int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage")))) / 100);
+                            i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                            i.putExtra("promo_codeDiscount", (int) Math.round((Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
+                                    * (Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage"))) / 100));
+                        } else {
+                            i.putExtra("YourPrice", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
+                            i.putExtra("promo_codeDiscount", 0);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    i.putExtra("TestName", pastVisitArray.get(arg2).get("TestName"));
+                    i.putExtra("perTextActualPrice_str", pastVisitArray.get(arg2).get("perTextActualPrice_str"));
+                    i.putExtra("OrderStatus", pastVisitArray.get(arg2).get("OrderStatus"));
+                    i.putExtra("SamplePickupstatus", pastVisitArray.get(arg2).get("SamplePickupstatus"));
+                    i.putExtra("scroll_position", String.valueOf(arg2));
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }else {
+                    String idsent;
+                    idsent = pastVisitArray.get(arg2).get("CaseId");
+
+                    System.out.println("arg=" + arg2);
+                    check = 0;
+                    caseid = idsent;
+                    case_code = null;
+                    Intent i = new Intent(lablistdetails.this, ReportRecords.class);
+                    i.putExtra("caseId", caseid);
+                    i.putExtra("id", id);
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+                //  slidingMenu.toggle();
+                //  new BackgroundProcess().execute();
 
                 // Intent intt = new Intent(getApplicationContext(),
                 // lablistdetails.class);
@@ -397,7 +460,7 @@ public class lablistdetails extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(R.menu.lab, menu);
+        // getMenuInflater().inflate(R.menu.lab, menu);
         return true;
     }
 
@@ -425,7 +488,7 @@ public class lablistdetails extends ActionBarActivity {
                 // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 // startActivity(intent);
 
-               // this.slidingMenu.toggle();
+                // this.slidingMenu.toggle();
 
                 return true;
 
@@ -752,7 +815,7 @@ public class lablistdetails extends ActionBarActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-           // buttonbar.setVisibility(View.VISIBLE);
+            // buttonbar.setVisibility(View.VISIBLE);
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
@@ -767,11 +830,11 @@ public class lablistdetails extends ActionBarActivity {
             super.onPostExecute(result);
 
             if (image.size() == 0) {
-               // images.setBackgroundResource(R.drawable.grey_button);
-              //  images.setEnabled(false);
+                // images.setBackgroundResource(R.drawable.grey_button);
+                //  images.setEnabled(false);
             } else {
-               // images.setBackgroundResource(R.drawable.button_selector);
-               // images.setEnabled(true);
+                // images.setBackgroundResource(R.drawable.button_selector);
+                // images.setEnabled(true);
             }
 
             // ////////////////////////////
@@ -817,7 +880,7 @@ public class lablistdetails extends ActionBarActivity {
             /*PastVisitAdapter past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
          *//*   Parcelable state = past_visits.onSaveInstanceState();*//*
             past_visits.setAdapter(past_adapt);*/
-            past_adapt = new PastVisitAdapter(lablistdetails.this,pastVisitArray);
+            past_adapt = new PastVisitAdapter(lablistdetails.this, pastVisitArray);
          /*   Parcelable state = past_visits.onSaveInstanceState();*/
             past_visits.setAdapter(past_adapt);
            /* past_visits.onRestoreInstanceState(state);*/
@@ -917,7 +980,7 @@ public class lablistdetails extends ActionBarActivity {
                 blg.setText("");
                 bal.setText("");*/
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-              //  buttonbar.setVisibility(View.GONE);
+                //  buttonbar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
 
@@ -931,15 +994,19 @@ public class lablistdetails extends ActionBarActivity {
                     /*all.setEnabled(true);
                     all.setBackgroundResource(R.drawable.button_selector);*/
                 }
-               // lv.setAdapter(adapter);
-               // Utility.setListViewHeightBasedOnChildren(lv);
-               // adapter.notifyDataSetChanged();
+                // lv.setAdapter(adapter);
+                // Utility.setListViewHeightBasedOnChildren(lv);
+                // adapter.notifyDataSetChanged();
             } catch (NullPointerException e) {
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-              //  buttonbar.setVisibility(View.GONE);
+                //  buttonbar.setVisibility(View.GONE);
                 //finish();
             }
-            progress.dismiss();
+
+            //===========================getting order list=============================//
+
+            getOrderList();
+            // progress.dismiss();
         }
 
         @Override
@@ -980,24 +1047,37 @@ public class lablistdetails extends ActionBarActivity {
                 if (subArrayList.length() == 0) {
                     caseid = "";
                 }
-                HashMap<String, String> hmap ;
+                HashMap<String, String> hmap;
                 caseArray.clear();
                 for (int i = 0; i < subArrayList.length(); i++)
 
                 {
                     hmap = new HashMap<>();
-                    hmap.put("CaseId",subArrayList.getJSONObject(i).getString(
+                    hmap.put("CaseId", subArrayList.getJSONObject(i).getString(
                             "CaseId"));
-                    hmap.put("CaseCode",subArrayList.getJSONObject(i).getString(
+                    hmap.put("CaseCode", subArrayList.getJSONObject(i).getString(
                             "CaseCode"));
-                    hmap.put("TimeStamp",subArrayList.getJSONObject(i).getString(
-                        "TimeStamp"));
-                    hmap.put("InvestigationId",subArrayList.getJSONObject(i).getString(
-                        "InvestigationId"));
-                    hmap.put("TestName",subArrayList.getJSONObject(i).getString(
-                        "TestName"));
-                    hmap.put("ApplicationName",subArrayList.getJSONObject(i).getString(
-                        "ApplicationName"));
+                    hmap.put("TimeStamp", subArrayList.getJSONObject(i).getString(
+                            "TimeStamp"));
+                    hmap.put("InvestigationId", subArrayList.getJSONObject(i).getString(
+                            "InvestigationId"));
+                    hmap.put("TestName", subArrayList.getJSONObject(i).getString(
+                            "TestName"));
+                    hmap.put("ApplicationName", subArrayList.getJSONObject(i).getString(
+                            "ApplicationName"));
+                    hmap.put("ActualAmount", subArrayList.getJSONObject(i).getString(
+                            "ActualAmount"));
+                    hmap.put("DiscountAmount", subArrayList.getJSONObject(i).getString(
+                            "DiscountAmount"));
+                    hmap.put("InitialAmount", subArrayList.getJSONObject(i).getString(
+                            "InitialAmount"));
+                    hmap.put("PaidAmount", subArrayList.getJSONObject(i).getString(
+                            "PaidAmount"));
+                    hmap.put("RefundAmount", subArrayList.getJSONObject(i).getString(
+                            "RefundAmount"));
+                    hmap.put("TaxRate", subArrayList.getJSONObject(i).getString(
+                            "TaxRate"));
+                    hmap.put("TYPE", "Lab");
                     caseArray.add(hmap);
 
 
@@ -1100,16 +1180,16 @@ public class lablistdetails extends ActionBarActivity {
 
                 }
 
-            String[] from = new String[]{"rowid", "col_1"};
-            int[] to = new int[]{R.id.label, R.id.value};
-            fillMaps = new ArrayList<>();
+                String[] from = new String[]{"rowid", "col_1"};
+                int[] to = new int[]{R.id.label, R.id.value};
+                fillMaps = new ArrayList<>();
 
-            for (int i = 0; i < subArrayList.length(); i++) {
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put("rowid", "" + casecode.get(i));
-                map.put("col_1", "" + dated.get(i));
-                fillMaps.add(map);
-            }
+                for (int i = 0; i < subArrayList.length(); i++) {
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("rowid", "" + casecode.get(i));
+                    map.put("col_1", "" + dated.get(i));
+                    fillMaps.add(map);
+                }
 
             } catch (JSONException e) {
 
@@ -1119,36 +1199,42 @@ public class lablistdetails extends ActionBarActivity {
             // combining the test names
 
             pastVisitArray.clear();
-            HashMap<String,String> hmap_alias;
+            HashMap<String, String> hmap_alias;
             try {
-                for (int i = 0; i < caseArray.size()-1; i++) {
+                for (int i = 0; i < caseArray.size() - 1; i++) {
                     hmap_alias = new HashMap<>();
-                    hmap_alias.put("CaseId",caseArray.get(i).get("CaseId"));
-                    hmap_alias.put("CaseCode",caseArray.get(i).get("CaseCode"));
-                    hmap_alias.put("TimeStamp",caseArray.get(i).get("TimeStamp"));
-                    hmap_alias.put("InvestigationId",caseArray.get(i).get("InvestigationId"));
-                    hmap_alias.put("ApplicationName",caseArray.get(i).get("ApplicationName"));
+                    hmap_alias.put("CaseId", caseArray.get(i).get("CaseId"));
+                    hmap_alias.put("CaseCode", caseArray.get(i).get("CaseCode"));
+                    hmap_alias.put("TimeStamp", caseArray.get(i).get("TimeStamp"));
+                    hmap_alias.put("InvestigationId", caseArray.get(i).get("InvestigationId"));
+                    hmap_alias.put("ApplicationName", caseArray.get(i).get("ApplicationName"));
+                    hmap_alias.put("PaidAmount", caseArray.get(i).get("PaidAmount"));
+                    hmap_alias.put("ActualAmount", caseArray.get(i).get("ActualAmount"));
+                    hmap_alias.put("DiscountAmount", caseArray.get(i).get("DiscountAmount"));
+                    hmap_alias.put("InitialAmount", caseArray.get(i).get("InitialAmount"));
+                    hmap_alias.put("RefundAmount", caseArray.get(i).get("RefundAmount"));
+                    hmap_alias.put("TaxRate", caseArray.get(i).get("TaxRate"));
+                    hmap_alias.put("TYPE", caseArray.get(i).get("TYPE"));
                     String caseCode = caseArray.get(i).get("CaseCode");
                     StringBuffer test_name = new StringBuffer();
                     int j = 1;
                     test_name.append(j + ". " + caseArray.get(i).get("TestName"));
                     for (int k = i + 1; k < caseArray.size(); k++) {
-                        if (caseCode.equalsIgnoreCase(caseArray.get(k).get("CaseCode"))){
+                        if (caseCode.equalsIgnoreCase(caseArray.get(k).get("CaseCode"))) {
                             j++;
                             test_name.append("\n" + j + ". " + caseArray.get(k).get("TestName"));
                             caseArray.remove(k);
                             k--;
                         }
                     }
-                    hmap_alias.put("TestName",test_name.toString());
+                    hmap_alias.put("TestName", test_name.toString());
                     pastVisitArray.add(hmap_alias);
                 }
-            }catch (Exception ex){
-                 ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
             return null;
         }
-
 
 
     }
@@ -1210,5 +1296,214 @@ public class lablistdetails extends ActionBarActivity {
             }
         });
         overlay_dialog.show();
+    }
+
+    public void getOrderList() {
+
+        try {
+            sendData = new JSONObject();
+            patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+            Intent i = getIntent();
+            String checkid = i.getStringExtra("id");
+            if (checkid != null) {
+                patientID = checkid;
+            }
+            if (checkid == null && checkID != null) {
+                patientID = checkID;
+            }
+            if (patientID != null) {
+                sendData.put("userId", patientID);//   //patientID //"825D9C5A-4CF3-4440-BFE9-810E39CADDC1"
+            }
+            StaticHolder sttc_holdr = new StaticHolder(lablistdetails.this, StaticHolder.Services_static.GetOrderHistoryDetails);
+            String url = sttc_holdr.request_Url();
+            jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    String imageData = null;
+                    JSONObject obj = null;
+                    try {
+                        imageData = response.getString("d");
+
+                        JSONObject cut = new JSONObject(imageData);
+                        JSONArray orderarray = cut.getJSONArray("Table");
+                        if (orderarray.length() != 0) {
+                            sortList.clear();
+                            for (int i = 0; i < orderarray.length(); i++) {
+                                obj = orderarray.getJSONObject(i);
+                                HashMap<String, String> hmap = new HashMap<String, String>();
+                                hmap.put("BillingAddress", obj.getString("BillingAddress"));//
+                                hmap.put("PromoCodeDiscount", obj.getString("PromoCodeDiscount"));
+                                hmap.put("CentreName", obj.getString("CentreName"));
+                                hmap.put("DiscountInPercentage", obj.getString("DiscountInPercentage"));
+
+                                if (obj.getString("OrderActualAmount") != null)
+                                    hmap.put("OrderActualAmount", obj.getString("OrderActualAmount"));
+                                if (obj.getString("OrderBillingAmount") != null)
+                                    hmap.put("OrderBillingAmount", obj.getString("OrderBillingAmount"));
+                                hmap.put("TimeStamp", obj.getString("OrderDateTime"));
+
+                                if (obj.getString("OrderDiscount") != null)
+                                    hmap.put("OrderDiscount", obj.getString("OrderDiscount"));
+
+
+                                hmap.put("OrderId", obj.getString("OrderId"));
+                                hmap.put("TestName", obj.getString("TestName"));
+                                hmap.put("TestId", obj.getString("TestId"));
+                                //  hmap.put("OrderhistoryId", obj.getString("OrderhistoryId"));
+                                hmap.put("UserId", obj.getString("UserId"));
+                                if (obj.has("OrderStatus") && obj.getString("OrderStatus") != null) {//missing on live--------------------
+                                    hmap.put("OrderStatus", obj.getString("OrderStatus"));
+                                } else {
+                                    hmap.put("OrderStatus", "");
+                                }
+                                if (obj.has("SamplePickupstatus")) { //missing on live--------------------
+                                    hmap.put("SamplePickupstatus", obj.getString("SamplePickupstatus"));
+                                } else {
+                                    hmap.put("SamplePickupstatus", "");
+                                }
+                                order_listarr.add(hmap);
+                            }
+
+                            //--------------------------------- combine two tests of same coupon_id or order_id ------------------------------------//
+
+                            for (int i = 0; i < order_listarr.size() - 1; i++) {
+                                StringBuffer str = new StringBuffer();
+                                StringBuffer str_peractual_amnt = new StringBuffer();
+                                int j = 1;
+                                double orderactualamunt = 0.0;
+                                if (order_listarr.get(i).get("OrderActualAmount") != null && (!order_listarr.get(i).get("OrderActualAmount").equalsIgnoreCase("null"))) {
+                                    orderactualamunt = Double.parseDouble(order_listarr.get(i).get("OrderActualAmount"));
+
+                                    str.append(j + ". " + order_listarr.get(i).get("TestName"));
+
+                                    Double pp = Double.parseDouble(order_listarr.get(i).get("OrderActualAmount").toString());
+                                    str_peractual_amnt.append("₹ " + String.valueOf(pp.intValue()));
+                                    for (int k = i + 1; k < order_listarr.size(); k++) {
+                                        String hji = order_listarr.get(i).get("OrderId");
+                                        String hjk = order_listarr.get(k).get("OrderId");
+                                        if (order_listarr.get(i).get("OrderId").equals(order_listarr.get(k).get("OrderId"))) {
+                                            j++;
+
+                                            str.append("\n" + j + ". " + order_listarr.get(k).get("TestName"));
+                                            Double pp1 = Double.parseDouble(order_listarr.get(k).get("OrderActualAmount").toString());
+                                            str_peractual_amnt.append("\n₹ " + String.valueOf(pp1.intValue()));
+                                            orderactualamunt = orderactualamunt + Double.parseDouble(order_listarr.get(k).get("OrderActualAmount").toString());
+                                            order_listarr.remove(k);
+                                            k--;
+
+                                        }
+                                    }
+                                } else {
+                                    str.append(order_listarr.get(i).get("TestName"));
+                                }
+                                OrderList ordr = new OrderList();
+
+                                ordr.setBillingAddress(order_listarr.get(i).get("BillingAddress"));
+                                ordr.setCentreName(order_listarr.get(i).get("CentreName"));
+                                ordr.setPromoCodeDiscount(order_listarr.get(i).get("PromoCodeDiscount"));
+                                ordr.setDiscountInPercentage(order_listarr.get(i).get("DiscountInPercentage"));
+                                ordr.setOrderActualAmount(String.valueOf(Math.round(orderactualamunt)));
+                                ordr.setOrderBillingAmount(order_listarr.get(i).get("OrderBillingAmount"));
+                                ordr.setOrderDateTime(order_listarr.get(i).get("TimeStamp"));
+                                ordr.setOrderDiscount(order_listarr.get(i).get("OrderDiscount"));
+                                ordr.setOrderId(order_listarr.get(i).get("OrderId"));
+                                ordr.setTestName(str.toString());
+                                ordr.setStr_peractual_amnt(str_peractual_amnt.toString());
+                                ordr.setTestId(order_listarr.get(i).get("TestId"));
+                                ordr.setUserId(order_listarr.get(i).get("UserId"));
+                                ordr.setOrderStatus(order_listarr.get(i).get("OrderStatus"));
+                                ordr.setSamplePickupstatus(order_listarr.get(i).get("SamplePickupstatus"));
+                                sortList.add(ordr);
+
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (sortList.size() != 0) {
+                        HashMap<String, String> hmap;
+                        sortList_alias.clear();
+                        for (int i = 0; i < sortList.size(); i++) {
+                            hmap = new HashMap<>();
+                            hmap.put("TestName", sortList.get(i).getTestName());
+                            hmap.put("BillingAddress", sortList.get(i).getBillingAddress());
+                            hmap.put("CentreName", sortList.get(i).getCentreName());
+                            hmap.put("PromoCodeDiscount", sortList.get(i).getPromoCodeDiscount());
+                            hmap.put("DiscountInPercentage", sortList.get(i).getDiscountInPercentage());
+                            hmap.put("OrderActualAmount", sortList.get(i).getOrderActualAmount());
+                            hmap.put("OrderBillingAmount", sortList.get(i).getOrderBillingAmount());
+                            hmap.put("TimeStamp", sortList.get(i).getOrderDateTime());
+                            hmap.put("OrderDiscount", sortList.get(i).getOrderDiscount());
+                            hmap.put("OrderId", sortList.get(i).getOrderId());
+                            hmap.put("perTextActualPrice_str", sortList.get(i).getStr_peractual_amnt());
+                            hmap.put("TestId", sortList.get(i).getTestId());
+                            hmap.put("OrderStatus", sortList.get(i).getOrderStatus());
+                            hmap.put("SamplePickupstatus", sortList.get(i).getSamplePickupstatus());
+                            hmap.put("TYPE", "Zureka");
+                            sortList_alias.add(hmap);
+                        }
+                    }
+                    if (sortList_alias.size() != 0) {
+                        pastVisitArray.addAll(sortList_alias);
+                        sortHashListByDate(pastVisitArray);
+                    }
+                    past_adapt.notifyDataSetChanged();
+                    progress.dismiss();
+                    // }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(), "Some error occurred please try again later.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        int socketTimeout1 = 30000;
+        RetryPolicy policy1 = new DefaultRetryPolicy(socketTimeout1, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jr.setRetryPolicy(policy1);
+        queue.add(jr);
+    }
+
+
+    public List<HashMap<String, String>> sortHashListByDate(List<HashMap<String, String>> list) {
+
+        for (int i = 0; i < list.size() - 1; i++) {
+
+
+            for (int j = i; j < list.size(); j++) {
+                try {
+                    String first = list.get(i).get("TimeStamp");
+                    String second = list.get(j).get("TimeStamp");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss a");
+                    Date date1 = sdf.parse(first);
+                    Date date2 = sdf.parse(second);
+
+                    if (date1.compareTo(date2) < 0) {//it means first is greater than second
+                        HashMap<String, String> firstitem = list.get(i);
+                        HashMap<String, String> seconditem = list.get(j);
+                        //swap position first with second
+
+                        list.add(i, seconditem);
+                        list.add(j, firstitem);
+                        list.remove(i + 1);
+                        list.remove(j + 1);
+
+
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 }

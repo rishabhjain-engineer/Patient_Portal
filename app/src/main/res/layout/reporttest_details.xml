@@ -92,7 +92,7 @@
                 android:layout_weight="50"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Sample Collected"
+                android:text="Collected On"
                 android:textColor="#565656"
                 android:textSize="16dp" />
 

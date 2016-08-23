@@ -45,54 +45,50 @@
 
             <LinearLayout
                 android:id="@+id/bGraph"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:layout_weight="50"
                 android:background="@drawable/layout_selector"
                 android:clickable="true"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="25dp"
-                    android:src="@drawable/history" />
-
                 <TextView
+                    android:id="@+id/history_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="   History   " />
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:drawablePadding="30dp"
+                    android:drawableTop="@drawable/history"
+                    android:textColor="#565656"
+                    android:text="History" />
 
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/bPdf"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:layout_weight="50"
                 android:background="@drawable/layout_selector"
                 android:clickable="true"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="25dp"
-                    android:src="@drawable/pdf" />
-
                 <TextView
+                    android:id="@+id/pdf_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="Download" />
+                    android:layout_margin="5dp"
+                    android:drawablePadding="30dp"
+                    android:drawableTop="@drawable/pdf1"
+                    android:gravity="center"
+                    android:textColor="#565656"
+                    android:text="PDF" />
 
             </LinearLayout>
 
@@ -106,7 +102,8 @@
             android:layout_below="@+id/main_layout"
             android:background="#C4C4C4"
             android:clickable="false"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"
+            android:visibility="gone"></LinearLayout>
 
     </RelativeLayout>
 

@@ -4,35 +4,30 @@
     api-level="21"
     density="xxhdpi"
     format="7"
-    timestamp="17593350807671"
+    timestamp="20127744345147"
     token="-7895440998358028004" >
 
     <task
         name="javac"
-        duration="0" />
+        duration="5116" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="0" />
+        duration="26" />
     <task
         name="verifier"
-        duration="0" />
+        duration="2" />
 
     <artifact
-        location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\res\resources-debug.ap_"
-        type="RESOURCES" />
+        location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\outputs\apk\app-debug.apk"
+        type="MAIN" />
 
-    <build timestamp="17522519637220" >
+    <build timestamp="20127744345147" >
         <artifact
             location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\outputs\apk\app-debug.apk"
             type="MAIN" />
-    </build>
-    <build timestamp="17593350807671" >
-        <artifact
-            location="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\res\resources-debug.ap_"
-            type="RESOURCES" />
     </build>
 
 </instant-run>

@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,7 +48,7 @@ import utils.NestedListHelper;
 public class ReportRecords extends ActionBarActivity {
 
     private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral,
-            sub_total, discount, your_price;
+            sub_total, discount, your_price, viewFiles_text, viewReports_text;
     private ListView test_list;
     private LinearLayout invoice, viewReportLinear_id;
     private TextView spinner_action;
@@ -94,6 +93,8 @@ public class ReportRecords extends ActionBarActivity {
         discount = (TextView) findViewById(R.id.discount);
         your_price = (TextView) findViewById(R.id.your_price);
         invoice = (LinearLayout) findViewById(R.id.invoice);
+        viewFiles_text = (TextView) findViewById(R.id.viewFiles_text);
+        viewReports_text = (TextView) findViewById(R.id.viewReports_text);
         viewReportLinear_id = (LinearLayout) findViewById(R.id.viewReportLinear_id);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
         spinner_action = (TextView) findViewById(R.id.spinner_action);
@@ -269,9 +270,17 @@ public class ReportRecords extends ActionBarActivity {
             if (check == subArrayLen) {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disableinvoice, 0, 0);
+                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablepdf, 0, 0);
+                viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
+                viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
                 viewReportLinear_id.setClickable(true);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
+                viewFiles_text.setTextColor(Color.parseColor("#565656"));
+                viewReports_text.setTextColor(Color.parseColor("#565656"));
             }
             if (test_array.size() != 0) {
                 ReportTestAdapter testAdapter = new ReportTestAdapter(ReportRecords.this, test_array);
@@ -293,8 +302,12 @@ public class ReportRecords extends ActionBarActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disableinvoice, 0, 0);
+                viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+                viewFiles_text.setTextColor(Color.parseColor("#565656"));
             }
             progress.dismiss();
         }

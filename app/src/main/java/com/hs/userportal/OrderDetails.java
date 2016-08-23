@@ -484,10 +484,10 @@ public class OrderDetails extends ActionBarActivity {
     }
 
     public void onBackPressed() {
-       /* super.onBackPressed();*/
-        Intent i = new Intent(OrderDetails.this, OrderHistory.class);
+        super.onBackPressed();
+       /* Intent i = new Intent(OrderDetails.this, OrderHistory.class);
         i.putExtra("scroll_position", scroll_position);
-        startActivity(i);
+        startActivity(i);*/
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }

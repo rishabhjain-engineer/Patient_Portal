@@ -61,7 +61,6 @@
                 android:layout_height="match_parent"
                android:background="#666666"
                 android:paddingBottom="13dp"
-                android:visibility="gone"
                 android:paddingTop="13dp" />
 
             <Button
@@ -71,9 +70,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/sample_button"
                 android:padding="13dp"
-                android:text="FIND LABS"
+                android:text="SIGN UP"
                 android:textSize="18sp"
-                android:visibility="gone" />
+                />
         </LinearLayout>
     </LinearLayout>
 

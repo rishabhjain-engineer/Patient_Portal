@@ -22,12 +22,12 @@ public final class R {
 	public static final class drawable {
 		public static final int cross = 0x7f0200c0;
 		public static final int delt = 0x7f0200d2;
-		public static final int ic_launcher = 0x7f020110;
-		public static final int shape_tagview = 0x7f020170;
+		public static final int ic_launcher = 0x7f020113;
+		public static final int shape_tagview = 0x7f020173;
 	}
 	public static final class id {
-		public static final int tv_tag_item_contain = 0x7f0d0364;
-		public static final int tv_tag_item_delete = 0x7f0d0365;
+		public static final int tv_tag_item_contain = 0x7f0d036b;
+		public static final int tv_tag_item_delete = 0x7f0d036c;
 	}
 	public static final class layout {
 		public static final int tagview_item = 0x7f0400c6;

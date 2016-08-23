@@ -45,54 +45,50 @@
 
             <LinearLayout
                 android:id="@+id/invoice"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:layout_weight="50"
                 android:background="@drawable/layout_selector"
                 android:clickable="true"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="25dp"
-                    android:src="@drawable/invoice1" />
-
                 <TextView
+                    android:id="@+id/viewFiles_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="              View Files                " />
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:drawablePadding="30dp"
+                    android:drawableTop="@drawable/invoice1"
+                    android:text="View Files"
+                    android:textColor="#565656"/>
 
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/viewReportLinear_id"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:layout_weight="50"
                 android:background="@drawable/layout_selector"
                 android:clickable="true"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="25dp"
-                    android:src="@drawable/pdf1" />
-
                 <TextView
+                    android:id="@+id/viewReports_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:text="       View Full Reports        " />
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:drawablePadding="30dp"
+                    android:textColor="#565656"
+                    android:drawableTop="@drawable/pdf1"
+                    android:text="View Reports" />
 
             </LinearLayout>
 
@@ -106,8 +102,8 @@
             android:layout_below="@+id/main_layout"
             android:background="#C4C4C4"
             android:clickable="false"
-            android:visibility="gone"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"
+            android:visibility="gone"></LinearLayout>
 
     </RelativeLayout>
 

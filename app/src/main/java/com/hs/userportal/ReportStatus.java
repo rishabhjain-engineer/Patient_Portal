@@ -63,7 +63,7 @@ import utils.NestedListHelper;
 public class ReportStatus extends ActionBarActivity {
     BufferedReader reader;
     TextView advice, /*refer,*/
-            dob, sample, profname;
+            dob, sample, profname, history_text, pdf_text;
     Button breport;
     LinearLayout bgraph, bpdf;
     String patientId;
@@ -90,7 +90,8 @@ public class ReportStatus extends ActionBarActivity {
     int index, singlechartposition;
     public static ProgressDialog progress;
     String phcode;
-    String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null, RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
+    String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null,
+            RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -117,6 +118,8 @@ public class ReportStatus extends ActionBarActivity {
         //spec = (TextView) findViewById(R.id.tvSpecimen);
         sample = (TextView) findViewById(R.id.tvSample);
         profname = (TextView) findViewById(R.id.profname);
+        history_text = (TextView) findViewById(R.id.history_text);
+        pdf_text = (TextView) findViewById(R.id.pdf_text);
         //lab = (TextView) findViewById(R.id.tvLab);
         //report = (TextView) findViewById(R.id.tvReport);
         dob = (TextView) findViewById(R.id.tvDOB);
@@ -177,7 +180,9 @@ public class ReportStatus extends ActionBarActivity {
                     .equals("null")) {
                 breport.setVisibility(View.GONE);
                 // bpdf.setVisibility(View.GONE);
-                bgraph.setVisibility(View.GONE);
+              //  bgraph.setVisibility(View.GONE);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setTextColor(Color.parseColor("#b2b2b2"));
 
             }
 
@@ -1193,7 +1198,9 @@ public class ReportStatus extends ActionBarActivity {
 
 
             if (k == 0) {
-                bgraph.setVisibility(View.GONE);
+                //bgraph.setVisibility(View.GONE);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
 
             int j = 0;
@@ -1214,7 +1221,9 @@ public class ReportStatus extends ActionBarActivity {
             }
 
             if (j == results.length()) {
-                bgraph.setVisibility(View.GONE);
+              //  bgraph.setVisibility(View.GONE);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
             if (progress != null)
                 progress.dismiss();
