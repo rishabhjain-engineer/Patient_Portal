@@ -396,6 +396,11 @@
         <activity
             android:name="com.hs.userportal.AddWeight"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.hs.userportal.GraphDetailsNew"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.hs.userportal.MyHealth"
             android:configChanges="orientation|screenSize"

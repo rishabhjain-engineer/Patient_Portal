@@ -2,92 +2,101 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
     android:layout_height="fill_parent"
-    android:fillViewport="true" >
+    android:background="@android:color/white"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <WebView
             android:id="@+id/graphResults"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/bullet_indicator2"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/criticalbtn1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
 
-                android:clickable="false"
-                android:background="#FFFF00"/>
+                android:background="#FFFF00"
+                android:clickable="false" />
+
             <TextView
                 android:id="@+id/belownormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Critical Low: "
-                android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
-                android:textSize="12dp"/>
+                android:layout_marginLeft="10dp"
+                android:text="Critical Low: "
+                android:textSize="12dp" />
         </LinearLayout>
-<LinearLayout
-    android:id="@+id/bullet_indicator"
-    android:layout_width="wrap_content"
-    android:layout_margin="10dp"
-    android:orientation="horizontal"
-    android:layout_height="wrap_content">
-   <Button
-       android:layout_width="20dp"
-       android:layout_height="20dp"
-       android:clickable="false"
-       android:background="#0C740C"/>
-    <TextView
-        android:id="@+id/normal_txtval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Normal Value"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="center"
-        android:textSize="12dp"/>
 
-</LinearLayout>
-    <LinearLayout
-        android:id="@+id/bullet_indicator1"
-        android:layout_width="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/criticalbtn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-
-            android:clickable="false"
-            android:background="#FFFF00"/>
-        <TextView
-            android:id="@+id/critical_lowval"
+        <LinearLayout
+            android:id="@+id/bullet_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normal Value"
-            android:layout_marginLeft="10dp"
-            android:layout_gravity="center"
-            android:textSize="12dp"/>
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="#0C740C"
+                android:clickable="false" />
+
+            <TextView
+                android:id="@+id/normal_txtval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="Normal Value"
+                android:textSize="12dp" />
+
         </LinearLayout>
 
-       <ListView
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-          android:dividerHeight="1.2dp"
-           android:id="@+id/graph_listview_id">
+        <LinearLayout
+            android:id="@+id/bullet_indicator1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
 
-       </ListView>
+            <Button
+                android:id="@+id/criticalbtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+
+                android:background="#FFFF00"
+                android:clickable="false" />
+
+            <TextView
+                android:id="@+id/critical_lowval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="Normal Value"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/graph_listview_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="1.2dp">
+
+        </ListView>
     </LinearLayout>
 
 </ScrollView>

@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:2:1-430:12
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:2:1-435:12
 	package
 		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:4:5-32
 		INJECTED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml
@@ -129,7 +129,7 @@ ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\Andro
 	android:name
 		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:49:9-49
 application
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:52:5-428:19
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:52:5-433:19
 MERGED from [com.android.support:appcompat-v7:21.0.3] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\AndroidManifest.xml:16:5-19
 MERGED from [com.google.android.gms:play-services-maps:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\8.4.0\AndroidManifest.xml:27:5-20
 MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\AndroidManifest.xml:20:5-24:19
@@ -718,54 +718,60 @@ ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\Andro
 		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:398:13-49
 	android:name
 		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:397:13-55
-activity#com.hs.userportal.MyHealth
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:399:9-402:52
+activity#com.hs.userportal.GraphDetailsNew
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:400:9-402:52
 	android:screenOrientation
 		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:402:13-49
-	android:configChanges
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:401:13-59
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:400:13-54
-service#com.hs.userportal.UploadProfileService
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:404:9-74
-	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:404:18-71
-activity#com.hs.userportal.IndividualLabTest
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:406:9-410:55
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:401:13-61
+activity#com.hs.userportal.MyHealth
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:404:9-407:52
 	android:screenOrientation
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:409:13-49
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:407:13-49
+	android:configChanges
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:406:13-59
+	android:name
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:405:13-54
+service#com.hs.userportal.UploadProfileService
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:409:9-74
+	android:name
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:409:18-71
+activity#com.hs.userportal.IndividualLabTest
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:411:9-415:55
+	android:screenOrientation
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:414:13-49
 	android:label
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:408:13-32
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:413:13-32
 	android:windowSoftInputMode
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:410:13-52
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:415:13-52
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:407:13-63
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:412:13-63
 meta-data#com.facebook.sdk.ApplicationId
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:412:9-414:46
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:417:9-419:46
 	android:value
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:414:13-43
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:419:13-43
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:413:13-58
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:418:13-58
 meta-data#com.google.android.maps.v2.API_KEY
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:415:9-417:71
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:420:9-422:71
 	android:value
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:417:13-68
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:422:13-68
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:416:13-62
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:421:13-62
 meta-data#com.google.android.gms.version
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:422:9-424:69
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:427:9-429:69
 MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:8.4.0] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:424:13-66
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:429:13-66
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:423:13-58
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:428:13-58
 activity#com.facebook.LoginActivity
-ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:426:9-63
+ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:431:9-63
 	android:name
-		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:426:19-60
+		ADDED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml:431:19-60
 uses-sdk
 INJECTED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support:multidex:1.0.1] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\AndroidManifest.xml:18:5-42
@@ -790,6 +796,7 @@ MERGED from [patient-portal:ViewPagerIndicatorlibrary:unspecified] C:\Users\ashi
 MERGED from [patient-portal:swipelistview:unspecified] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\patient-portal\swipelistview\unspecified\AndroidManifest.xml:24:5-26:41
 MERGED from [patient-portal:demo_cloud_tagview:unspecified] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\patient-portal\demo_cloud_tagview\unspecified\AndroidManifest.xml:7:5-9:41
 MERGED from [patient-portal:Simpl3r:unspecified] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\patient-portal\Simpl3r\unspecified\AndroidManifest.xml:7:5-9:41
+MERGED from [patient-portal:MPChartLib:unspecified] C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\exploded-aar\patient-portal\MPChartLib\unspecified\AndroidManifest.xml:18:5-20:41
 	android:targetSdkVersion
 		INJECTED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\src\main\AndroidManifest.xml

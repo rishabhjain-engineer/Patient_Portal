@@ -81,54 +81,54 @@ class Authentication extends AsyncTask<Void, Void, Void> {
 				});
 				dialog.show();
 
-			}else{
-				if(activityname.equals("IndividualLabTest")&&whichbtn.equals("requestpickup")){
-				((IndividualLabTest) context).requestpickup();
-				}else if(activityname.equals("IndividualLabTest")&&whichbtn.equals("generatecoupon")){
-					((IndividualLabTest) context).generatecoupon();
-					
-				}else if(activityname.equals("IndividualLabTest")&&whichbtn.equals("getdetailmenu")){
-					((IndividualLabTest) context).detail_andsampleTask("getdetail");
-					
-					
-				}
-				else if(activityname.equals("MapLabDetails")&&whichbtn.equals("getdetailmenu")){
-					((MapLabDetails) context). detail_andsampleTask("getdetail");
-					
-					
-				}else if(activityname.equals("MapLabDetails")&&whichbtn.equals("getoffer")){
-					((MapLabDetails) context).getoffer();
-					
-				}else if(activityname.equals("MapLabDetails")&&whichbtn.equals("samplerequest")){
-					((MapLabDetails) context).detail_andsampleTask("samplebutton");
-					
-				}else if(activityname.equals("MapLabDetails")&&whichbtn.equals("getcouponevnt")){
-					((MapLabDetails) context).getcouponevnt();
-					
-				}else if(activityname.equals("update")&&whichbtn.equals("")){
-					((update) context).startBackgroundprocess();
-				}else if(activityname.equals("residence")&&whichbtn.equals("")){
-                    ((residence) context).startBackgroundprocess();
-                }else if(activityname.equals("Work")&&whichbtn.equals("")){
-                    ((Work) context).startBackgroundprocess();
-                }else if(activityname.equals("Education")&&whichbtn.equals("")){
-                    ((Education) context).startBackgroundprocess();
-                }else if(activityname.equals("Travel")&&whichbtn.equals("")){
-                    ((Travel) context).startBackgroundprocess();
-                }else if(activityname.equals("MyHealth")&&whichbtn.equals("")){
-                }else if(activityname.equals("Height")&&whichbtn.equals("")){
-                    ((Height) context).startBackgroundprocess();
-                }else if(activityname.equals("Weight")&&whichbtn.equals("")){
-                    ((Weight) context).startBackgroundprocess();
-                }else if(activityname.equals("Filevault")&&whichbtn.equals("")){
-					((Filevault) context).createLockFolder();
-				}else if(activityname.equals("Filevault2")&&whichbtn.equals("")){
-                    ((Filevault2) context).startBackgroundprocess();
-                }else if(activityname.equals("MyFamily")&&whichbtn.equals("")){
-                    ((MyFamily) context). LoadFamilyMembers();
-				}
-			}
+			}else {
+                if (activityname.equals("IndividualLabTest") && whichbtn.equals("requestpickup")) {
+                    ((IndividualLabTest) context).requestpickup();
+                } else if (activityname.equals("IndividualLabTest") && whichbtn.equals("generatecoupon")) {
+                    ((IndividualLabTest) context).generatecoupon();
 
+                } else if (activityname.equals("IndividualLabTest") && whichbtn.equals("getdetailmenu")) {
+                    ((IndividualLabTest) context).detail_andsampleTask("getdetail");
+
+
+                } else if (activityname.equals("MapLabDetails") && whichbtn.equals("getdetailmenu")) {
+                    ((MapLabDetails) context).detail_andsampleTask("getdetail");
+
+
+                } else if (activityname.equals("MapLabDetails") && whichbtn.equals("getoffer")) {
+                    ((MapLabDetails) context).getoffer();
+
+                } else if (activityname.equals("MapLabDetails") && whichbtn.equals("samplerequest")) {
+                    ((MapLabDetails) context).detail_andsampleTask("samplebutton");
+
+                } else if (activityname.equals("MapLabDetails") && whichbtn.equals("getcouponevnt")) {
+                    ((MapLabDetails) context).getcouponevnt();
+
+                } else if (activityname.equals("update") && whichbtn.equals("")) {
+                    ((update) context).startBackgroundprocess();
+                } else if (activityname.equals("residence") && whichbtn.equals("")) {
+                    ((residence) context).startBackgroundprocess();
+                } else if (activityname.equals("Work") && whichbtn.equals("")) {
+                    ((Work) context).startBackgroundprocess();
+                } else if (activityname.equals("Education") && whichbtn.equals("")) {
+                    ((Education) context).startBackgroundprocess();
+                } else if (activityname.equals("Travel") && whichbtn.equals("")) {
+                    ((Travel) context).startBackgroundprocess();
+                } else if (activityname.equals("MyHealth") && whichbtn.equals("")) {
+                } else if (activityname.equals("Height") && whichbtn.equals("")) {
+                    ((Height) context).startBackgroundprocess();
+                } else if (activityname.equals("Weight") && whichbtn.equals("")) {
+                    ((Weight) context).startBackgroundprocess();
+                } else if (activityname.equals("Filevault") && whichbtn.equals("")) {
+                    ((Filevault) context).createLockFolder();
+                } else if (activityname.equals("Filevault2") && whichbtn.equals("")) {
+                    ((Filevault2) context).startBackgroundprocess();
+                } else if (activityname.equals("MyFamily") && whichbtn.equals("")) {
+                    ((MyFamily) context).LoadFamilyMembers();
+                } else if (activityname.equalsIgnoreCase("ReportRecords") && whichbtn.equals("")) {
+                    ((ReportRecords) context).startBackgroundProcess();
+                }
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

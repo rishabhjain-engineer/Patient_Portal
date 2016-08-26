@@ -1,0 +1,433 @@
+package com.hs.userportal;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.text.SpannableString;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
+
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import adapters.Group_testAdapter;
+import utils.MyMarkerView;
+
+/**
+ * Created by ashish on 7/15/2016.
+ */
+public class GraphDetailsNew extends ActionBarActivity {
+    private LineChart linechart;
+    private PieChart pi_chart;
+
+    ScrollView scroll;
+    ArrayList<String> chartvakueList;
+    List<String> chartDates = new ArrayList<String>();
+    List<String> chartValues = new ArrayList<String>();
+    List<String> casecodes = new ArrayList<String>();
+    List<String> caseIds = new ArrayList<String>();
+    List<String> chartunitList;
+    String caseindex = "";
+    private Group_testAdapter adapter;
+    String RangeFrom = null, RangeTo = null;
+    Services service;
+    private ListView graph_listview_id;
+    int maxYrange = 0;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.graphdetails_new);
+        ActionBar action = getSupportActionBar();
+        action.setBackgroundDrawable(new ColorDrawable(Color
+                .parseColor("#1DBBE3")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setDisplayHomeAsUpEnabled(true);
+        //line chart graph
+        linechart = (LineChart) findViewById(R.id.linechart);
+        pi_chart = (PieChart) findViewById(R.id.pi_chart);
+        scroll = (ScrollView) findViewById(R.id.scroll);
+        graph_listview_id = (ListView) findViewById(R.id.graph_listview_id);
+        chartvakueList = new ArrayList<String>();
+        chartvakueList = getIntent().getStringArrayListExtra("values");
+        // finding screen width and height--------------------------------------
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.heightPixels;
+        int width = displaymetrics.widthPixels;
+
+        // Assigning height of graph dynamically----------------------------------
+
+        if (getIntent().getStringExtra("chart_type").equals("line")) {
+            pi_chart.setVisibility(View.GONE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                    linechart.getLayoutParams();
+            params.height = Math.round(height / 2);
+            linechart.setLayoutParams(params);
+            MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+            // set the marker to the chart
+            linechart.setMarkerView(mv);
+            linechart.animateX(3500);
+            setLinechart();
+        } else {
+            linechart.setVisibility(View.VISIBLE);
+            pi_chart.setVisibility(View.VISIBLE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                    pi_chart.getLayoutParams();
+            params.height = Math.round(height / 2);
+            pi_chart.setLayoutParams(params);
+            setPiChart();
+        }
+
+
+        // scroll view up to ------------------------------------
+        scroll.smoothScrollTo(0, Math.round(height / 2));
+
+        Bundle extras = getIntent().getExtras();
+        try {
+            RangeFrom = extras.getString("RangeFrom");
+            RangeTo = extras.getString("RangeTo");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        chartDates = getIntent().getStringArrayListExtra("dates");
+        chartValues = getIntent().getStringArrayListExtra("values");
+        casecodes = getIntent().getStringArrayListExtra("case");
+        caseIds = getIntent().getStringArrayListExtra("caseIds");
+        chartunitList = getIntent().getStringArrayListExtra("unitList");
+        if (chartunitList == null) {
+            chartunitList = new ArrayList<String>();
+            for (int i = 0; i <casecodes.size(); i++) {
+                chartunitList.add(extras.getString("UnitCode"));
+            }
+        }
+
+        adapter = new Group_testAdapter(this, chartDates, chartValues, casecodes, chartunitList, RangeFrom, RangeTo);
+        graph_listview_id.setAdapter(adapter);
+
+        Utility.setListViewHeightBasedOnChildren(graph_listview_id);
+        adapter.notifyDataSetChanged();
+
+        graph_listview_id.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    return true; // Indicates that this has been handled by you and will not be forwarded further.
+                }
+                return false;
+            }
+
+        });
+        graph_listview_id.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                caseindex = casecodes.get(position);
+                System.out.println(caseindex);
+                Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
+                in.putExtra("id", logout.id);
+                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                in.putExtra("caseId",caseIds.get(position));
+                startActivity(in);
+                finish();
+            }
+        });
+    }
+
+
+    private void setData(int count, float range) {
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+
+        for (int i = 0; i <count; i++) {
+
+            float val = Float.parseFloat(chartvakueList.get(i));
+            values.add(new Entry(i, val));
+        }
+
+        LineDataSet set1;
+
+        if (linechart.getData() != null &&
+                linechart.getData().getDataSetCount() > 0) {
+            set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
+            set1.setValues(values);
+            linechart.getData().notifyDataChanged();
+            linechart.notifyDataSetChanged();
+        } else {
+            // create a dataset and give it a type
+            set1 = new LineDataSet(values, getIntent().getStringExtra("chartNames"));
+
+            set1.disableDashedLine();
+            set1.setColor(Color.parseColor("#FF8409"));
+            set1.setCircleColor(Color.parseColor("#FF8409"));
+            set1.setLineWidth(1.5f);
+            set1.setCircleRadius(3.5f);
+            set1.setDrawCircleHole(true);
+            set1.setCircleHoleRadius(7f);
+            set1.setDrawFilled(false);
+            set1.setDrawValues(false);
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            dataSets.add(set1); // add the datasets
+
+            // create a data object with the datasets
+            LineData data = new LineData(dataSets);
+
+            // set data
+            linechart.setData(data);
+        }
+    }
+
+    public static class Utility {
+        public static void setListViewHeightBasedOnChildren(ListView listView) {
+            ListAdapter listAdapter = listView.getAdapter();
+
+            if (listAdapter == null) {
+                // pre-condition
+                return;
+            }
+
+            int totalHeight = listView.getPaddingTop()
+                    + listView.getPaddingBottom();
+            for (int i = 0; i < listAdapter.getCount(); i++) {
+                View listItem = listAdapter.getView(i, null, listView);
+                if (listItem instanceof ViewGroup) {
+                    listItem.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                }
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight
+                    + (listView.getDividerHeight()
+                    * (listAdapter.getCount() - 1));
+            listView.setLayoutParams(params);
+        }
+    }
+
+    public void setLinechart() {
+
+        linechart.setDrawGridBackground(false);
+
+        for (int i = 0; i < chartvakueList.size(); i++) {
+            if (maxYrange < Math.round(Float.parseFloat(chartvakueList.get(i)))) {
+                maxYrange = Math.round(Float.parseFloat(chartvakueList.get(i)));
+            }
+        }
+        linechart.setDescription("");
+        linechart.setNoDataTextDescription("You need to provide data for the chart.");
+
+        // enable touch gestures
+        linechart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        linechart.setDragEnabled(true);
+        linechart.setScaleEnabled(true);
+
+        linechart.setPinchZoom(true);
+
+
+        // x-axis limit line
+        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.enableDashedLine(10f, 10f, 0f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
+        llXAxis.setEnabled(false);
+
+        XAxis xAxis = linechart.getXAxis();
+        //xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setXOffset(0f);
+        xAxis.setEnabled(true);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setAxisMinValue(0f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1.0f);
+
+
+
+
+
+        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
+        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
+
+
+        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+
+        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
+        ll1.setLineWidth(4f);
+        ll1.enableDashedLine(10f, 10f, 0f);
+        ll1.setEnabled(false);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll1.setTextSize(10f);
+        ll1.setTypeface(tf);
+
+        LimitLine ll2 = new LimitLine(0f, "Lower Limit");
+        ll2.setLineWidth(4f);
+        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        ll2.setTextSize(10f);
+        ll2.setTypeface(tf);
+        ll2.setEnabled(false);
+
+        YAxis leftAxis = linechart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+        /*leftAxis.addLimitLine(ll1);
+        leftAxis.addLimitLine(ll2);*/
+        leftAxis.setAxisMaxValue(maxYrange + maxYrange / 4);
+        leftAxis.setAxisMinValue(0f);
+        leftAxis.setYOffset(0f);
+        leftAxis.enableGridDashedLine(0f, 0f, 0f);
+        leftAxis.setDrawZeroLine(false);
+        // leftAxis.setEnabled(false);
+        // limit lines are drawn behind data (and not on top)
+        leftAxis.setDrawLimitLinesBehindData(true);
+        linechart.getAxisRight().setEnabled(false);
+
+        //linechart.getViewPortHandler().setMaximumScaleY(2f);
+        //linechart.getViewPortHandler().setMaximumScaleX(2f);
+
+        // add data
+
+        setData(chartvakueList.size(), 100);
+
+//        linechart.setVisibleXRange(20);
+//        linechart.setVisibleYRange(20f, AxisDependency.LEFT);
+//        linechart.centerViewTo(20, 50, AxisDependency.LEFT);
+
+        linechart.animateX(2500);
+        //linechart.invalidate();
+
+        // get the legend (only possible after setting data)
+        Legend l = linechart.getLegend();
+
+        // modify the legend ...
+        // l.setPosition(LegendPosition.LEFT_OF_CHART);
+        l.setForm(Legend.LegendForm.SQUARE);
+
+        // dont forget to refresh the
+        //drawing
+        // linechart.invalidate(); 
+    }
+
+    public void setPiChart() {
+      
+       /* MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
+
+        // set the marker to the chart
+        pi_chart.setMarkerView(mv);
+        pi_chart.setDrawMarkerViews(true);*/
+
+        pi_chart.setDescription("");
+
+        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
+
+        pi_chart.setCenterTextTypeface(tf);
+        pi_chart.setCenterText(generateCenterText());
+        pi_chart.setCenterTextSize(10f);
+        pi_chart.setCenterTextTypeface(tf);
+        pi_chart.setRotationEnabled(false);
+
+        // radius of the center hole in percent of maximum radius
+       /* pi_chart.setHoleRadius(45f);
+        pi_chart.setTransparentCircleRadius(50f);*/
+        pi_chart.setDrawHoleEnabled(true);
+        pi_chart.setHoleColor(Color.WHITE);
+
+        pi_chart.setTransparentCircleColor(Color.WHITE);
+        pi_chart.setTransparentCircleAlpha(110);
+
+        pi_chart.setHoleRadius(58f);
+        pi_chart.setTransparentCircleRadius(61f);
+
+        pi_chart.setDrawCenterText(true);
+
+        pi_chart.setHighlightPerTapEnabled(true);
+        pi_chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+
+        pi_chart.setDrawEntryLabels(!pi_chart.isDrawEntryLabelsEnabled());
+        pi_chart.invalidate();
+
+        Legend l = pi_chart.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        l.setXEntrySpace(17f);
+        l.setYEntrySpace(0f);
+        l.setXOffset(10f);
+
+        pi_chart.setData(generatePieData());
+    }
+
+    private SpannableString generateCenterText() {
+        SpannableString s = new SpannableString(" ");
+      //  s.setSpan(new RelativeSizeSpan(2f), 0, 15, 0);
+       // s.setSpan(new RelativeSizeSpan(1.5f), 15, s.length(), 0);
+       // s.setSpan(new ForegroundColorSpan(Color.GRAY), 15, s.length(), 0);
+        return s;
+    }
+
+    protected PieData generatePieData() {
+        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+       // int count = StatDetails.gender_list.size();
+     //   ArrayList<HashMap<String, String>> alias = new ArrayList<>();
+      //  alias.addAll(StatDetails.gender_list);
+
+        ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
+        for (int i = 0; i < chartvakueList.size(); i++) {
+            // entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i+1)));
+           /* String sex = alias.get(i).get("Sex");
+            String check = alias.get(i).get("IMCount");*/
+            float values = Float.valueOf(i+1);
+            entries1.add(new PieEntry((float) values, "abc"));
+        }
+
+        PieDataSet ds1 = new PieDataSet(entries1, "");
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add(Color.parseColor("#8EBC00"));
+        colors.add(Color.parseColor("#309B46"));
+        ds1.setColors(colors);
+        ds1.setSliceSpace(1.1f);
+        ds1.setValueTextColor(Color.BLACK);
+        ds1.setValueTextSize(12f);
+        ds1.setValueLinePart1Length(0.2f);
+        ds1.setValueLinePart2Length(0.4f);
+        // dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        ds1.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        PieData d = new PieData(ds1);
+        d.setValueTypeface(tf);
+
+        return d;
+    }
+
+
+
+}

@@ -73,7 +73,9 @@ public class ReportRecords extends ActionBarActivity {
         initUI();
         setupActionBar();
         getExtras();
-        new BackgroundProcess().execute();
+        new Authentication(ReportRecords.this, "ReportRecords", "").execute();
+
+      //  new BackgroundProcess().execute();
     }
 
     private void initUI() {
@@ -253,8 +255,10 @@ public class ReportRecords extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    class BackgroundProcess extends AsyncTask<Void, Void, Void> {
+    public void startBackgroundProcess(){
+        new BackgroundProcess().execute();
+    }
+     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -602,5 +606,12 @@ public class ReportRecords extends ActionBarActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Helper.authentication_flag == true) {
+            finish();
+        }
+    }
 }
 

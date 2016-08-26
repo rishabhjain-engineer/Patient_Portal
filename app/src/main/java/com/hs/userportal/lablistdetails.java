@@ -12,43 +12,32 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -59,18 +48,11 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -254,7 +236,7 @@ public class lablistdetails extends ActionBarActivity {
                                     long arg3) {
                 // TODO Auto-generated method stub
 
-                if(pastVisitArray.get(arg2).get("TYPE").equalsIgnoreCase("ZUREKA")){
+                if (pastVisitArray.get(arg2).get("TYPE").equalsIgnoreCase("ZUREKA")) {
                     Intent i = new Intent(lablistdetails.this, OrderDetails.class);
                     i.putExtra("OrderId", pastVisitArray.get(arg2).get("OrderId"));
                     i.putExtra("OrderDate", pastVisitArray.get(arg2).get("TimeStamp"));
@@ -265,13 +247,13 @@ public class lablistdetails extends ActionBarActivity {
                         i.putExtra("GrandTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
                         i.putExtra("SubTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderActualAmount"))));
                         i.putExtra("Discount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderDiscount"))));
-                        if (!pastVisitArray.get(arg2).get("PromoCodeDiscount").equals("null") && pastVisitArray.get(arg2).get("PromoCodeDiscount")!= null) {
+                        if (!pastVisitArray.get(arg2).get("PromoCodeDiscount").equals("null") && pastVisitArray.get(arg2).get("PromoCodeDiscount") != null) {
                             double bilingamnt = Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")) -
                                     Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"));
                             i.putExtra("YourPrice", (int) Math.round(bilingamnt));
                             i.putExtra("promo_codeDiscount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"))));
 
-                        } else if (!pastVisitArray.get(arg2).get("DiscountInPercentage").equals("null") && pastVisitArray.get(arg2).get("DiscountInPercentage")!= null) {
+                        } else if (!pastVisitArray.get(arg2).get("DiscountInPercentage").equals("null") && pastVisitArray.get(arg2).get("DiscountInPercentage") != null) {
                             double bilingamnt = (Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))) *
                                     (1 - ((int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage")))) / 100);
                             i.putExtra("YourPrice", (int) Math.round(bilingamnt));
@@ -292,7 +274,7 @@ public class lablistdetails extends ActionBarActivity {
                     i.putExtra("scroll_position", String.valueOf(arg2));
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }else {
+                } else {
                     String idsent;
                     idsent = pastVisitArray.get(arg2).get("CaseId");
 
@@ -813,7 +795,7 @@ public class lablistdetails extends ActionBarActivity {
             super.onPreExecute();
             progress = new ProgressDialog(lablistdetails.this);
             progress.setCancelable(false);
-            progress.setMessage("Loading...");
+            progress.setMessage("Syncing test records ...");
             progress.setIndeterminate(true);
             // buttonbar.setVisibility(View.VISIBLE);
             subArrayList = new JSONArray(new ArrayList<String>());
@@ -1201,7 +1183,7 @@ public class lablistdetails extends ActionBarActivity {
             pastVisitArray.clear();
             HashMap<String, String> hmap_alias;
             try {
-                for (int i = 0; i < caseArray.size() - 1; i++) {
+                for (int i = 0; i < caseArray.size(); i++) {
                     hmap_alias = new HashMap<>();
                     hmap_alias.put("CaseId", caseArray.get(i).get("CaseId"));
                     hmap_alias.put("CaseCode", caseArray.get(i).get("CaseCode"));
@@ -1368,7 +1350,7 @@ public class lablistdetails extends ActionBarActivity {
 
                             //--------------------------------- combine two tests of same coupon_id or order_id ------------------------------------//
 
-                            for (int i = 0; i < order_listarr.size() - 1; i++) {
+                            for (int i = 0; i < order_listarr.size(); i++) {
                                 StringBuffer str = new StringBuffer();
                                 StringBuffer str_peractual_amnt = new StringBuffer();
                                 int j = 1;
@@ -1448,11 +1430,8 @@ public class lablistdetails extends ActionBarActivity {
                     }
                     if (sortList_alias.size() != 0) {
                         pastVisitArray.addAll(sortList_alias);
-                        sortHashListByDate(pastVisitArray);
+                        new MergeTests().execute();
                     }
-                    past_adapt.notifyDataSetChanged();
-                    progress.dismiss();
-                    // }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -1475,7 +1454,6 @@ public class lablistdetails extends ActionBarActivity {
 
 
     public List<HashMap<String, String>> sortHashListByDate(List<HashMap<String, String>> list) {
-
         for (int i = 0; i < list.size() - 1; i++) {
 
 
@@ -1505,5 +1483,24 @@ public class lablistdetails extends ActionBarActivity {
             }
         }
         return list;
+    }
+
+    class MergeTests extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            sortHashListByDate(pastVisitArray);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            past_adapt.notifyDataSetChanged();
+            progress.dismiss();
+        }
     }
 }

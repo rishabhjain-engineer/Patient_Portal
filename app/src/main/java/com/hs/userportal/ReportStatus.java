@@ -84,6 +84,7 @@ public class ReportStatus extends ActionBarActivity {
     List<String> chartValues = new ArrayList<String>();
     List<String> intentdate = new ArrayList<String>();
     List<String> intentcase = new ArrayList<String>();
+    List<String> intentcaseId = new ArrayList<String>();
     List<String> piechartvalue = new ArrayList<String>();
     private graphprocess mTask;
     byte[] result = null;
@@ -238,82 +239,12 @@ public class ReportStatus extends ActionBarActivity {
                     chartDates.clear();
                     chartNames.clear();
                     intentcase.clear();
+                    intentcaseId.clear();
                     chartValues.clear();
                     divDataBullet = "";
 
                     if (results != null && results.length() == 1) {
                         callSingleGraph(singlechartposition);
-            /*        try {
-
-                        unit = results.getJSONObject(0).getString("UnitCode");
-
-                        resultvalue = results.getJSONObject(0).getString("ResultValue");
-                        description = results.getJSONObject(0).getString("Description");
-                        dateadvise = results.getJSONObject(0).getString("AdviseDate");
-                        casecode = results.getJSONObject(0).getString("CaseCode");
-                        RangeFrom = results.getJSONObject(0).getString("RangeFrom");
-                        if(RangeFrom.equals("null")){
-                            RangeFrom="0";
-                        }
-
-                        RangeTo = results.getJSONObject(0).getString("RangeTo");
-                        if(RangeTo.equals("null")){
-                            RangeTo="0";
-                        }
-                        UnitCode = results.getJSONObject(0).getString("UnitCode");
-                        if(UnitCode.equals("null")){
-                            UnitCode="";
-                        }
-                        ResultValue = results.getJSONObject(0).getString("ResultValue");
-                        criticalhigh = results.getJSONObject(0).getString("CriticalHigh");
-                        if(criticalhigh.equals("null")){
-                            criticalhigh="0";
-                        }
-                        criticallow = results.getJSONObject(0).getString("CriticalLow");
-                        if(criticallow.equals("null")){
-                            criticallow="0";
-                        }
-                        chartValues.add(ResultValue);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        unit = null;
-                        resultvalue = null;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        unit = null;
-                        resultvalue = null;
-                    }
-
-                        Intent intent = new Intent(
-                                ReportStatus.this,
-                                GraphDetails.class);
-                        piechartvalue.add(resultvalue);
-
-
-                        chartNames.add(description);
-
-
-                        String testString = Integer
-                                .toString(count);
-                        chartDates.add("0");
-                        intentdate.add(dateadvise);
-                        intentcase.add(casecode);
-                        //intent.putExtra("data", db);
-                        intent.putStringArrayListExtra("dates",
-                                (ArrayList<String>) intentdate);
-                        intent.putStringArrayListExtra("values",
-                                (ArrayList<String>) chartValues);
-                        intent.putStringArrayListExtra("case",
-                                (ArrayList<String>) intentcase);
-                        intent.putExtra("RangeFrom", RangeFrom);
-                        intent.putExtra("RangeTo", RangeTo);
-                        intent.putExtra("UnitCode", UnitCode);
-                        intent.putExtra("ResultValue", ResultValue);
-                        intent.putExtra("CriticalHigh", criticalhigh);
-                        intent.putExtra("CriticalLow", criticallow);
-                        intent.putExtra("from_activity", "ReportStatus");
-                        startActivity(intent);*/
 
                     } else if (results != null && results.length() > 1) {
 
@@ -325,12 +256,6 @@ public class ReportStatus extends ActionBarActivity {
 
                                 Intent intent = new Intent(getApplicationContext(),
                                         grouptest.class);
-                              /*  intent.putExtra("RangeFrom", RangeFrom);
-                                intent.putExtra("RangeTo", RangeTo);
-                                intent.putExtra("UnitCode", UnitCode);
-                                intent.putExtra("ResultValue", ResultValue);
-                                intent.putExtra("CriticalHigh", criticalhigh);
-                                intent.putExtra("CriticalLow", criticallow);*/
                                 intent.putExtra("group", results.toString());
                                 startActivity(intent);
                             } else {
@@ -372,6 +297,7 @@ public class ReportStatus extends ActionBarActivity {
                                                         .getString("AdviseDate"));
                                                 intentcase.add(tempObject
                                                         .getString("CaseCode"));
+                                                intentcaseId.add(tempObject.getString("CaseId"));
                                             }
 
                                         } else {
@@ -408,6 +334,7 @@ public class ReportStatus extends ActionBarActivity {
                                                         .getString("AdviseDate"));
                                                 intentcase.add(tempObject
                                                         .getString("CaseCode"));
+                                                intentcaseId.add(tempObject.getString("CaseId"));
                                             }
 
                                             if (!chartNames.contains(tempObject
@@ -493,31 +420,40 @@ public class ReportStatus extends ActionBarActivity {
 
                                         Intent intent = new Intent(
                                                 ReportStatus.this,
-                                                GraphDetails.class);
+                                                GraphDetailsNew.class);
                                         intent.putExtra("data", db);
+                                        intent.putExtra("chart_type", "line");
                                         intent.putStringArrayListExtra("dates",
                                                 (ArrayList<String>) intentdate);
                                         intent.putStringArrayListExtra("values",
                                                 (ArrayList<String>) chartValues);
+                                        if(chartNames.size()!=0)
+                                            intent.putExtra("chartNames",
+                                                    chartNames.get(0));
+                                        else
+                                            intent.putExtra("chartNames",
+                                                    "");
                                         intent.putStringArrayListExtra("case",
                                                 (ArrayList<String>) intentcase);
-                                        if (RangeFrom == null || RangeFrom.equals(null)) {
-                                            RangeFrom = "";
+                                        intent.putStringArrayListExtra("caseIds",
+                                                (ArrayList<String>) intentcaseId);
+                                        if(RangeFrom==null || RangeFrom.equals(null)){
+                                            RangeFrom="";
                                         }
-                                        if (RangeTo == null || RangeTo.equals(null)) {
-                                            RangeTo = "";
+                                        if(RangeTo==null || RangeTo.equals(null)){
+                                            RangeTo="";
                                         }
-                                        if (UnitCode == null || UnitCode.equals(null)) {
-                                            UnitCode = "";
+                                        if(UnitCode==null || UnitCode.equals(null)){
+                                            UnitCode="";
                                         }
-                                        if (ResultValue == null || ResultValue.equals(null)) {
-                                            ResultValue = "";
+                                        if(ResultValue==null || ResultValue.equals(null)){
+                                            ResultValue="";
                                         }
-                                        if (criticalhigh == null || criticalhigh.equals(null)) {
-                                            criticalhigh = "";
+                                        if(criticalhigh==null || criticalhigh.equals(null)){
+                                            criticalhigh="";
                                         }
-                                        if (criticallow == null || criticallow.equals(null)) {
-                                            criticallow = "";
+                                        if(criticallow==null || criticallow.equals(null)){
+                                            criticallow="";
                                         }
                                         intent.putExtra("RangeFrom", RangeFrom);
                                         intent.putExtra("RangeTo", RangeTo);
@@ -529,9 +465,6 @@ public class ReportStatus extends ActionBarActivity {
 
                                         startActivity(intent);
                                     } else {
-                                       /* for (int i = 0; i < results.length(); i++) {
-                                            singlechartposition
-                                        }*/
                                         callSingleGraph(singlechartposition);
                                     }
                                 } else {
@@ -603,9 +536,9 @@ public class ReportStatus extends ActionBarActivity {
                                             (ArrayList<String>) intentcase);
                                     intent.putExtra("RangeFrom", "");
                                     intent.putExtra("RangeTo", "");
-                                    intent.putExtra("UnitCode", "");
+                                    intent.putExtra("UnitCode","");
                                     intent.putExtra("ResultValue", "");
-                                    intent.putExtra("CriticalHigh", "");
+                                    intent.putExtra("CriticalHigh","");
                                     intent.putExtra("CriticalLow", "");
                                     intent.putExtra("from_activity", "grouptest");
 
@@ -657,6 +590,7 @@ public class ReportStatus extends ActionBarActivity {
                                                 .getString("AdviseDate"));
                                         intentcase.add(tempObject
                                                 .getString("CaseCode"));
+                                        intentcaseId.add(tempObject.getString("CaseId"));
 
                                     }
 
@@ -687,6 +621,7 @@ public class ReportStatus extends ActionBarActivity {
                                                 .getString("AdviseDate"));
                                         intentcase.add(tempObject
                                                 .getString("CaseCode"));
+                                        intentcaseId.add(tempObject.getString("CaseId"));
 
                                     }
 
@@ -767,19 +702,29 @@ public class ReportStatus extends ActionBarActivity {
                                         + "</div></body></html>";
 
                                 Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetails.class);
+                                        GraphDetailsNew.class);
+                                intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
+                                if(chartNames.size()!=0)
+                                    intent.putExtra("chartNames",
+                                            chartNames.get(0));
+                                else
+                                    intent.putExtra("chartNames",
+                                            "");
                                 intent.putStringArrayListExtra("dates",
                                         (ArrayList<String>) intentdate);
                                 intent.putStringArrayListExtra("values",
                                         (ArrayList<String>) chartValues);
+
                                 intent.putStringArrayListExtra("case",
                                         (ArrayList<String>) intentcase);
+                                intent.putStringArrayListExtra("caseIds",
+                                        (ArrayList<String>) intentcaseId);
                                 intent.putExtra("RangeFrom", "");
                                 intent.putExtra("RangeTo", "");
-                                intent.putExtra("UnitCode", "");
+                                intent.putExtra("UnitCode","");
                                 intent.putExtra("ResultValue", "");
-                                intent.putExtra("CriticalHigh", "");
+                                intent.putExtra("CriticalHigh","");
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
@@ -836,7 +781,8 @@ public class ReportStatus extends ActionBarActivity {
                                         + "}],tooltip: {visible: true,"
                                         + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
 
-                                Intent intent = new Intent(ReportStatus.this,
+                                Intent intent = new Intent(
+                                        ReportStatus.this,
                                         GraphDetails.class);
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -845,15 +791,16 @@ public class ReportStatus extends ActionBarActivity {
                                         (ArrayList<String>) piechartvalue);
                                 intent.putStringArrayListExtra("case",
                                         (ArrayList<String>) intentcase);
-                                intent.putExtra("RangeFrom", RangeFrom);
-                                intent.putExtra("RangeTo", RangeTo);
-                                intent.putExtra("UnitCode", UnitCode);
-                                intent.putExtra("ResultValue", ResultValue);
-                                intent.putExtra("CriticalHigh", criticalhigh);
-                                intent.putExtra("CriticalLow", criticallow);
+                                intent.putExtra("RangeFrom", "");
+                                intent.putExtra("RangeTo", "");
+                                intent.putExtra("UnitCode","");
+                                intent.putExtra("ResultValue", "");
+                                intent.putExtra("CriticalHigh","");
+                                intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
-                                startActivity(intent);
 
+                                startActivity(intent);
+                                finish();
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -1583,7 +1530,6 @@ public class ReportStatus extends ActionBarActivity {
                                     editor.commit();
                                     dialog.dismiss();
                                     Helper.authentication_flag = true;
-
                                     finish();
                                     overridePendingTransition(
                                             R.anim.slide_in_right,
@@ -1642,9 +1588,11 @@ public class ReportStatus extends ActionBarActivity {
     };
 
     public void callSingleGraph(int position) {
+        String result_type="";
         try {
             chartValues.clear();
             intentcase.clear();
+            intentcaseId.clear();
             intentdate.clear();
             unit = results.getJSONObject(position).getString("UnitCode");
 
@@ -1652,7 +1600,9 @@ public class ReportStatus extends ActionBarActivity {
             description = results.getJSONObject(position).getString("Description");
             dateadvise = results.getJSONObject(position).getString("AdviseDate");
             casecode = results.getJSONObject(position).getString("CaseCode");
+            intentcaseId.add(results.getJSONObject(position).getString("CaseId"));
             RangeFrom = results.getJSONObject(position).getString("RangeFrom");
+            result_type = results.getJSONObject(position).getString("ResultType");
             if (RangeFrom.equals("null")) {
                 RangeFrom = "0";
             }
@@ -1700,20 +1650,77 @@ public class ReportStatus extends ActionBarActivity {
         chartDates.add("0");
         intentdate.add(dateadvise);
         intentcase.add(casecode);
-        //intent.putExtra("data", db);
+        if(result_type.equalsIgnoreCase("Words")) {
+            int i = 0;
+            List<String> uniquepie = new ArrayList<String>();
+            float[] uniqueval = new float[100];
+            float[] m = new float[100];
+            Set<String> uniqueSet = new HashSet<String>(chartValues);
+            for (String temp : uniqueSet)
+
+            {
+                float pievalue = (Collections.frequency(chartValues, temp));
+                System.out.println(temp + ": " + pievalue);
+                uniquepie.add(temp);
+                uniqueval[i] = pievalue;
+                i++;
+            }
+
+            System.out.println(uniquepie);
+
+            for (int l = 0; l < uniquepie.size(); l++) {
+                m[l] = (uniqueval[l] / chartValues.size()) * 100;
+                System.out.println(m[l]);    // m array has all percentage values
+                String.format("%.2f", m[l]);
+            }
+
+            JSONArray one = new JSONArray();
+
+
+            for (int j = 0; j < uniquepie.size(); j++) {
+                JSONObject two = new JSONObject();
+                try {
+                    two.put("category", uniquepie.get(j));
+                    two.put("value", m[j]);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                one.put(two);
+            }
+
+
+            db = "<!DOCTYPE html><html><head><style>html{ font-size: 12px; font-family: Arial, Helvetica, sans-serif; }"
+                    + "</style><title></title><link href='kendo.common.min.css' rel='stylesheet' />"
+                    + "<link href='kendo.dataviz.metro.min.css' rel='stylesheet'/>"
+                    + "<link href='kendo.dataviz.min.css' rel='stylesheet' />"
+                    + "<link href='kendo.metro.min.css' rel='stylesheet'/><script src='jquery-1.9.1.js'></script><script src='kendo.all.min.js'></script>"
+                    + "</head><body><div id='example' class='k-content'><div class='chart-wrapper'><div id='chart' ></div></div>"
+                    + "<script>function createChart() {$('#chart').kendoChart({title: {position: 'bottom',text:' " + chartNames.get(0) + "'},"
+                    + "legend: {visible: false},chartArea: {background: ''},seriesDefaults: {labels: {visible: true,background: 'transparent',template: '#= category #: #= (Math.round(value * 100) / 100)#%'}},"
+                    + "series: [{type: 'pie',startAngle: 200,padding: 80,data: " + one + "}],tooltip: {visible: true,"
+                    + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
+
+            intent.putExtra("data", db);
+            intent.putExtra("from_activity", "grouptest");
+        }else{
+            intent.putExtra("from_activity", "ReportStatus");
+        }
         intent.putStringArrayListExtra("dates",
                 (ArrayList<String>) intentdate);
         intent.putStringArrayListExtra("values",
                 (ArrayList<String>) chartValues);
         intent.putStringArrayListExtra("case",
                 (ArrayList<String>) intentcase);
+        intent.putStringArrayListExtra("caseIds",
+                (ArrayList<String>) intentcaseId);
         intent.putExtra("RangeFrom", RangeFrom);
         intent.putExtra("RangeTo", RangeTo);
         intent.putExtra("UnitCode", UnitCode);
         intent.putExtra("ResultValue", ResultValue);
         intent.putExtra("CriticalHigh", criticalhigh);
         intent.putExtra("CriticalLow", criticallow);
-        intent.putExtra("from_activity", "ReportStatus");
         startActivity(intent);
     }
 }

@@ -64,5 +64,5 @@ dependencies {
     compile project(':demo_cloud_tagview')
     compile project(':SegmentedControlLibrary')
     compile project(':Simpl3r')
-
+    compile project(':MPChartLib')
 }

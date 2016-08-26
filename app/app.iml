@@ -140,6 +140,7 @@
     <orderEntry type="module" module-name="Simpl3r" exported="" />
     <orderEntry type="module" module-name="SlidingMenuLibrary" exported="" />
     <orderEntry type="module" module-name="demo_cloud_tagview" exported="" />
+    <orderEntry type="module" module-name="MPChartLib" exported="" />
     <orderEntry type="module" module-name="FacebookSDK" exported="" />
     <orderEntry type="module" module-name="SegmentedControlLibrary" exported="" />
   </component>
