@@ -56,18 +56,20 @@ public class Group_testAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
             convertView = inflater.inflate(R.layout.group_test_row, null);
-
-
             TextView test_name = (TextView)convertView.findViewById(R.id.test_name);
             TextView result_value = (TextView)convertView.findViewById(R.id.result_value);
             TextView reference_range = (TextView)convertView.findViewById(R.id.reference_range);
             test_name.setText(String.valueOf(position+1)+".  "+chartDates.get(position));
+        if(chartunitlist.size()!=0/* && chartunitlist.get(position)!=null*/) {
             result_value.setText(chartValues.get(position) + " " + chartunitlist.get(position));
+        }else{
+            result_value.setText(chartValues.get(position));
+        }
         try {
             if(Float.parseFloat(RangeFrom)>Float.parseFloat(chartValues.get(position))||Float.parseFloat(RangeTo)<Float.parseFloat(chartValues.get(position))){
                 result_value.setTextColor(Color.parseColor("#FF2D2D"));
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
            /* if(check_result_color==true){

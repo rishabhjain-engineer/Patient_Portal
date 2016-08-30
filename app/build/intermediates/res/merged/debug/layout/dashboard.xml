@@ -268,7 +268,7 @@
                         android:layout_marginLeft="5dp"
                         android:padding="10dp"
                         android:text="My Reports"
-                        android:textColor="#3395C5"
+                        android:textColor="#F5AE4C"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -339,7 +339,7 @@
                         android:layout_marginLeft="5dp"
                         android:padding="10dp"
                         android:text="File Vault"
-                        android:textColor="#D97252"
+                        android:textColor="#D971AC"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -375,7 +375,7 @@
                         android:layout_marginLeft="5dp"
                         android:padding="10dp"
                         android:text="My Family"
-                        android:textColor="#FF8000"
+                        android:textColor="#8EC051"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -483,7 +483,7 @@
                         android:layout_marginLeft="5dp"
                         android:padding="10dp"
                         android:text="Link acount with facebook"
-                        android:textColor="#3A5795"
+                        android:textColor="#3B5998"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 

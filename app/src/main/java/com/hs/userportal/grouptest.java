@@ -139,6 +139,7 @@ public class grouptest extends ActionBarActivity {
 
 
                         String dateString = tempObject.getString("AdviseDate");
+                        UnitCode = tempObject.getString("UnitCode");
                         System.out.println(dateString);
 
                         if (dateString.contains(" "))
@@ -266,7 +267,7 @@ public class grouptest extends ActionBarActivity {
                             + "legend: {visible: false},chartArea: {background: ''},seriesDefaults: {labels: {visible: true,background: 'transparent',template: '#= category #: #= (Math.round(value * 100) / 100)#%'}},"
                             + "series: [{type: 'pie',startAngle: 200,padding: 80,data: " + one + "}],tooltip: {visible: true,"
                             + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
-                    Intent intent = new Intent(grouptest.this, GraphDetails.class);
+                  /*  Intent intent = new Intent(grouptest.this, GraphDetails.class);
                     intent.putExtra("data", db);
 
                     intent.putStringArrayListExtra("dates",
@@ -277,13 +278,7 @@ public class grouptest extends ActionBarActivity {
                             (ArrayList<String>) intentcase);
                     intent.putStringArrayListExtra("unitList",
                             (ArrayList<String>) chartunitList);
-                    int pos=0;
-                    for(int k=0;i<jarr_info.size();k++){
-                        if(description.equalsIgnoreCase(jarr_info.get(k).get("Description"))){
-                            pos=k;
-                            break;
-                        }
-                    }
+
 
                     intent.putExtra("RangeFrom", jarr_info.get(pos).get("RangeFrom"));
                     intent.putExtra("RangeTo", jarr_info.get(pos).get("RangeTo"));
@@ -292,7 +287,37 @@ public class grouptest extends ActionBarActivity {
                     intent.putExtra("CriticalHigh", jarr_info.get(pos).get("CriticalHigh"));
                     intent.putExtra("CriticalLow", jarr_info.get(pos).get("CriticalLow"));
                     intent.putExtra("from_activity", "grouptest");
-                    startActivity(intent);
+                    startActivity(intent);*/
+
+                    int pos=0;
+                    for(int k=0;i<jarr_info.size();k++){
+                        if(description.equalsIgnoreCase(jarr_info.get(k).get("Description"))){
+                            pos=k;
+                            break;
+                        }
+                    }
+                    Intent intent1 = new Intent(grouptest.this,
+                            GraphDetailsNew.class);
+                    intent1.putExtra("chart_type", "Pie");
+                    intent1.putExtra("data", db);
+                    intent1.putStringArrayListExtra("dates",
+                            (ArrayList<String>) intentdate);
+                    intent1.putStringArrayListExtra("values",
+                            (ArrayList<String>) chartValues);
+                    intent1.putStringArrayListExtra("case",
+                            (ArrayList<String>) intentcase);
+                    intent1.putStringArrayListExtra("caseIds",
+                            (ArrayList<String>) intentcaseId);
+                    intent1.putExtra("chartNames",
+                            chartNames.get(0));
+                    intent1.putExtra("RangeFrom", jarr_info.get(pos).get("RangeFrom"));
+                    intent1.putExtra("RangeTo", jarr_info.get(pos).get("RangeTo"));
+                    intent1.putExtra("UnitCode", jarr_info.get(pos).get("UnitCode"));
+                    intent1.putExtra("ResultValue", jarr_info.get(pos).get("ResultValue"));
+                    intent1.putExtra("CriticalHigh", jarr_info.get(pos).get("CriticalHigh"));
+                    intent1.putExtra("CriticalLow", jarr_info.get(pos).get("CriticalLow"));
+                    intent1.putExtra("from_activity", "grouptest");
+                    startActivity(intent1);
 
                 } else {
                     if (chartValues.size() > 1) {
@@ -460,6 +485,7 @@ public class grouptest extends ActionBarActivity {
         intent.putExtra("CriticalHigh", CriticalHigh);
         intent.putExtra("CriticalLow", CriticalLow);
         intent.putExtra("from_activity", "ReportStatus");
+        intent.putExtra("ActionTitle",description);
         startActivity(intent);
     }
 

@@ -192,21 +192,16 @@ public class ReportStatus extends ActionBarActivity {
             e.printStackTrace();
         }
 
-
         bpdf.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-
                 new pdfprocess().execute();
-
             }
         });
 
-
         new Authentication().execute();
-
 
         bgraph.setOnClickListener(new OnClickListener() {
 
@@ -264,7 +259,7 @@ public class ReportStatus extends ActionBarActivity {
                                     try {
                                         JSONObject tempObject = results
                                                 .getJSONObject(i);
-
+                                        UnitCode = tempObject.getString("UnitCode");
                                         if (tempObject.getString("ResultType") // new
                                                 // code
                                                 .equals("Words")
@@ -385,7 +380,6 @@ public class ReportStatus extends ActionBarActivity {
                                                                 .getString("RangeTo"),
                                                         tempObject
                                                                 .getString("CriticalHigh"));
-
                                             }
 
                                         }
@@ -523,7 +517,7 @@ public class ReportStatus extends ActionBarActivity {
                                             + one
                                             + "}],tooltip: {visible: true,"
                                             + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
-
+/*
                                     Intent intent = new Intent(
                                             ReportStatus.this,
                                             GraphDetails.class);
@@ -543,7 +537,28 @@ public class ReportStatus extends ActionBarActivity {
                                     intent.putExtra("from_activity", "grouptest");
 
                                     startActivity(intent);
-                                    finish();
+                                    finish();*/
+                                    Intent intent = new Intent(ReportStatus.this,
+                                            GraphDetailsNew.class);
+                                    intent.putExtra("chart_type", "Pie");
+                                    intent.putExtra("data", db);
+                                    intent.putStringArrayListExtra("dates",
+                                            (ArrayList<String>) intentdate);
+                                    intent.putStringArrayListExtra("values",
+                                            (ArrayList<String>) piechartvalue);
+                                    intent.putStringArrayListExtra("case",
+                                            (ArrayList<String>) intentcase);
+                                    intent.putStringArrayListExtra("caseIds",
+                                            (ArrayList<String>) intentcaseId);
+                                    intent.putExtra("RangeFrom", RangeFrom);
+                                    intent.putExtra("RangeTo", RangeTo);
+                                    intent.putExtra("UnitCode", UnitCode);
+                                    intent.putExtra("ResultValue", ResultValue);
+                                    intent.putExtra("CriticalHigh", criticalhigh);
+                                    intent.putExtra("CriticalLow", criticallow);
+                                    intent.putExtra("chartNames", chartNames.get(0));
+                                    intent.putExtra("from_activity", "grouptest");
+                                    startActivity(intent);
 
                                 }
 
@@ -781,7 +796,7 @@ public class ReportStatus extends ActionBarActivity {
                                         + "}],tooltip: {visible: true,"
                                         + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
 
-                                Intent intent = new Intent(
+                               /* Intent intent = new Intent(
                                         ReportStatus.this,
                                         GraphDetails.class);
                                 intent.putExtra("data", db);
@@ -800,7 +815,29 @@ public class ReportStatus extends ActionBarActivity {
                                 intent.putExtra("from_activity", "grouptest");
 
                                 startActivity(intent);
-                                finish();
+                                finish();*/
+
+                                Intent intent = new Intent(ReportStatus.this,
+                                        GraphDetailsNew.class);
+                                intent.putExtra("chart_type", "Pie");
+                                intent.putExtra("data", db);
+                                intent.putStringArrayListExtra("dates",
+                                        (ArrayList<String>) intentdate);
+                                intent.putStringArrayListExtra("values",
+                                        (ArrayList<String>) piechartvalue);
+                                intent.putStringArrayListExtra("case",
+                                        (ArrayList<String>) intentcase);
+                                intent.putStringArrayListExtra("caseIds",
+                                        (ArrayList<String>) intentcaseId);
+                                intent.putExtra("RangeFrom", RangeFrom);
+                                intent.putExtra("RangeTo", RangeTo);
+                                intent.putExtra("UnitCode", UnitCode);
+                                intent.putExtra("ResultValue", ResultValue);
+                                intent.putExtra("CriticalHigh", criticalhigh);
+                                intent.putExtra("CriticalLow", criticallow);
+                                intent.putExtra("chartNames", chartNames.get(0));
+                                intent.putExtra("from_activity", "grouptest");
+                                startActivity(intent);
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -1636,20 +1673,13 @@ public class ReportStatus extends ActionBarActivity {
             resultvalue = null;
         }
 
-        Intent intent = new Intent(
-                ReportStatus.this,
-                GraphDetails.class);
-        piechartvalue.add(resultvalue);
-
-
-        chartNames.add(description);
-
-
-   /* String testString = Integer
+        /* String testString = Integer
             .toString(count);*/
         chartDates.add("0");
         intentdate.add(dateadvise);
         intentcase.add(casecode);
+        piechartvalue.add(resultvalue);
+        chartNames.add(description);
         if(result_type.equalsIgnoreCase("Words")) {
             int i = 0;
             List<String> uniquepie = new ArrayList<String>();
@@ -1702,25 +1732,50 @@ public class ReportStatus extends ActionBarActivity {
                     + "series: [{type: 'pie',startAngle: 200,padding: 80,data: " + one + "}],tooltip: {visible: true,"
                     + "format: '{0}%'}});}$(document).ready(createChart);$(document).bind('kendo:skinChange', createChart);</script></div></body></html>";
 
-            intent.putExtra("data", db);
-            intent.putExtra("from_activity", "grouptest");
+           /* intent.putExtra("data", db);
+            intent.putExtra("from_activity", "grouptest");*/
+            Intent intent1 = new Intent(ReportStatus.this,
+                    GraphDetailsNew.class);
+            intent1.putExtra("chart_type", "Pie");
+            intent1.putExtra("data", db);
+            intent1.putStringArrayListExtra("dates",
+                    (ArrayList<String>) intentdate);
+            intent1.putStringArrayListExtra("values",
+                    (ArrayList<String>) piechartvalue);
+            intent1.putStringArrayListExtra("case",
+                    (ArrayList<String>) intentcase);
+            intent1.putStringArrayListExtra("caseIds",
+                    (ArrayList<String>) intentcaseId);
+            intent1.putExtra("RangeFrom", RangeFrom);
+            intent1.putExtra("RangeTo", RangeTo);
+            intent1.putExtra("UnitCode", UnitCode);
+            intent1.putExtra("ResultValue", ResultValue);
+            intent1.putExtra("CriticalHigh", criticalhigh);
+            intent1.putExtra("CriticalLow", criticallow);
+            intent1.putExtra("chartNames", chartNames.get(0));
+            intent1.putExtra("from_activity", "grouptest");
+            startActivity(intent1);
         }else{
+            Intent intent = new Intent(
+                    ReportStatus.this,
+                    GraphDetails.class);
             intent.putExtra("from_activity", "ReportStatus");
+            intent.putStringArrayListExtra("dates",
+                    (ArrayList<String>) intentdate);
+            intent.putStringArrayListExtra("values",
+                    (ArrayList<String>) chartValues);
+            intent.putStringArrayListExtra("case",
+                    (ArrayList<String>) intentcase);
+            intent.putStringArrayListExtra("caseIds",
+                    (ArrayList<String>) intentcaseId);
+            intent.putExtra("RangeFrom", RangeFrom);
+            intent.putExtra("RangeTo", RangeTo);
+            intent.putExtra("UnitCode", UnitCode);
+            intent.putExtra("ResultValue", ResultValue);
+            intent.putExtra("CriticalHigh", criticalhigh);
+            intent.putExtra("CriticalLow", criticallow);
+            intent.putExtra("ActionTitle",description);
+            startActivity(intent);
         }
-        intent.putStringArrayListExtra("dates",
-                (ArrayList<String>) intentdate);
-        intent.putStringArrayListExtra("values",
-                (ArrayList<String>) chartValues);
-        intent.putStringArrayListExtra("case",
-                (ArrayList<String>) intentcase);
-        intent.putStringArrayListExtra("caseIds",
-                (ArrayList<String>) intentcaseId);
-        intent.putExtra("RangeFrom", RangeFrom);
-        intent.putExtra("RangeTo", RangeTo);
-        intent.putExtra("UnitCode", UnitCode);
-        intent.putExtra("ResultValue", ResultValue);
-        intent.putExtra("CriticalHigh", criticalhigh);
-        intent.putExtra("CriticalLow", criticallow);
-        startActivity(intent);
     }
 }

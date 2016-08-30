@@ -74,6 +74,7 @@ public class GraphDetails extends ActionBarActivity {
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setDisplayHomeAsUpEnabled(true);
+        action.setTitle(getIntent().getExtras().getString("ActionTitle"));
         bullet_indicator1 = (LinearLayout) findViewById(R.id.bullet_indicator1);
         bullet_indicator = (LinearLayout) findViewById(R.id.bullet_indicator);
         bullet_indicator2 = (LinearLayout) findViewById(R.id.bullet_indicator2);
@@ -185,7 +186,7 @@ public class GraphDetails extends ActionBarActivity {
                     "                     from:" + CriticalLow + ", to:" + RangeFrom + ", color: \"#FFFF00\", opacity: .8\n" +
 
                     "                    }, {\n" +
-                    "                from:" + RangeFrom + ", to:" + RangeTo + ", color: \"green\", opacity: .8\n" +
+                    "                from:" + RangeFrom + ", to:" + RangeTo + ", color: \"#8EBC00\", opacity: .8\n" +
                     "                    },{ " +
                     "                        from:" + RangeTo + ", to:" + CriticalHigh + ", color: \"#FF9797\",\n" +
                     "                    }],\n" +
