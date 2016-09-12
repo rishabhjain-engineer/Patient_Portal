@@ -113,8 +113,14 @@ public class GraphDetails extends ActionBarActivity {
             caseIds = getIntent().getStringArrayListExtra("caseIds");
             String strtxt = null;
             if (!CriticalLow.contains(".")) {
-                if (Integer.parseInt(CriticalLow) == Integer.parseInt(RangeFrom)) {
-                    bullet_indicator2.setVisibility(View.GONE);
+                if(!RangeFrom.contains(".")){
+                    if (Integer.parseInt(CriticalLow) == Float.parseFloat(RangeFrom)) {
+                        bullet_indicator2.setVisibility(View.GONE);
+                    }else{
+                        if (Integer.parseInt(CriticalLow) == Integer.parseInt(RangeFrom)) {
+                            bullet_indicator2.setVisibility(View.GONE);
+                        }
+                    }
                 }
             } else {
                 if (Float.parseFloat(CriticalLow) == Float.parseFloat(RangeFrom)) {

@@ -229,11 +229,11 @@ public class GraphDetailsNew extends ActionBarActivity {
         linechart.setDescription("");
         linechart.setNoDataTextDescription("You need to provide data for the chart.");
         // enable touch gestures
-        linechart.setTouchEnabled(true);
+        linechart.setTouchEnabled(false);
         // enable scaling and dragging
         linechart.setDragEnabled(true);
         linechart.setScaleEnabled(true);
-        linechart.setPinchZoom(true);
+        linechart.setPinchZoom(false);
         // x-axis limit line
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
         llXAxis.setLineWidth(4f);

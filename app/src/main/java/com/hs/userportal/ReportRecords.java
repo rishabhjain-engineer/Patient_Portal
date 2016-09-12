@@ -150,7 +150,7 @@ public class ReportRecords extends ActionBarActivity {
         });
         test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
                 try {
                     if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
@@ -159,6 +159,7 @@ public class ReportRecords extends ActionBarActivity {
                                 ReportStatus.class);
                         intent.putExtra("index", position);
                         intent.putExtra("array", subArray1.toString());
+                        intent.putExtra("USER_ID", id);
                         try {
                             intent.putExtra("code", subArray1.getJSONObject(0)
                                     .getString("PatientCode"));

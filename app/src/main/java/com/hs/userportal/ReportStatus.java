@@ -51,12 +51,14 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import adapters.Report_Adapter;
 import utils.NestedListHelper;
+import utils.NestedListHelper1;
 
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -93,6 +95,7 @@ public class ReportStatus extends ActionBarActivity {
     String phcode;
     String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null,
             RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
+    private int iscomment=0;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -113,7 +116,6 @@ public class ReportStatus extends ActionBarActivity {
         StrictMode.setThreadPolicy(policy);
         service = new Services(ReportStatus.this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
         advice = (TextView) findViewById(R.id.tvAdvice);
         // refer = (TextView) findViewById(R.id.tvReferred);
         //spec = (TextView) findViewById(R.id.tvSpecimen);
@@ -134,6 +136,7 @@ public class ReportStatus extends ActionBarActivity {
         index = z.getIntExtra("index", 10);
         String jarr = z.getStringExtra("array");
         phcode = z.getStringExtra("code");
+        patientId = z.getStringExtra("USER_ID");
         progress = new ProgressDialog(ReportStatus.this);
         sendarray = new JSONArray();
         pdfdata = new JSONArray();
@@ -953,7 +956,20 @@ public class ReportStatus extends ActionBarActivity {
                     profname.setText(reportarray.getJSONObject(0).getString("ProfileName"));
                 }
                 list_view.setAdapter(new Report_Adapter(reportarray, ReportStatus.this));
-                NestedListHelper.setListViewHeightBasedOnChildren(list_view);
+                for (int i = 0; i < reportarray.length(); i++) {
+                    try {
+                        if (reportarray.getJSONObject(i).getString("ResultType").equalsIgnoreCase("Comment")) {
+                            iscomment=1;
+                        }
+                    } catch (JSONException jse) {
+                        jse.printStackTrace();
+                    }
+                }
+                if(iscomment!=1) {
+                    NestedListHelper.setListViewHeightBasedOnChildren(list_view);
+                }else{
+                    NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
+                }
                 list_view.setVisibility(View.VISIBLE);
                 // parentLayout.setVisibility(View.GONE);
                 for (int z = 0; z < reportarray.length(); z++) {

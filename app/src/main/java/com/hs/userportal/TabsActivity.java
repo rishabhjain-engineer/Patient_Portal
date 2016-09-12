@@ -173,14 +173,16 @@ public class TabsActivity extends TabActivity {
 		tabHost.addTab(spec);
 
 		// Tab 6
-		tab = inflater.inflate(R.layout.tab, getTabWidget(), false);
+        //-------------------hide it -----------------
+		/*tab = inflater.inflate(R.layout.tab, getTabWidget(), false);
 		label = (TextView) tab.findViewById(R.id.tabLabel);
 		label.setText("My Health");
 		intent = new Intent(this, MyHealth.class);
 		spec = tabHost.newTabSpec("myhealth").setIndicator(tab)
 				.setContent(intent);
 		intent.putExtra("id", id);
-		tabHost.addTab(spec);
+		intent.putExtra("show_blood", "no");
+		tabHost.addTab(spec);*/
 
 
 
@@ -214,7 +216,7 @@ public class TabsActivity extends TabActivity {
 		tabHost.getTabWidget().getChildAt(2).getLayoutParams().width = width;
 		tabHost.getTabWidget().getChildAt(3).getLayoutParams().width = width;
 		tabHost.getTabWidget().getChildAt(4).getLayoutParams().width = width;
-		tabHost.getTabWidget().getChildAt(5).getLayoutParams().width = width;
+		//tabHost.getTabWidget().getChildAt(5).getLayoutParams().width = width;
 		//tabHost.getTabWidget().getChildAt(6).getLayoutParams().width = width;
 
 		for (int ii = 0; ii < tabHost.getTabWidget().getTabCount(); ii++) {
@@ -261,10 +263,10 @@ public class TabsActivity extends TabActivity {
 				} else if (tag.equals("travel")) {
 					tabView = getTabWidget().getChildAt(4);
 
-				} else if (tag.equals("myhealth")) {
+				}/* else if (tag.equals("myhealth")) {
 					tabView = getTabWidget().getChildAt(5);
 
-				} /*else if (tag.equals("medical")) {
+				}*/ /*else if (tag.equals("medical")) {
 					tabView = getTabWidget().getChildAt(6);
 				}*/
 

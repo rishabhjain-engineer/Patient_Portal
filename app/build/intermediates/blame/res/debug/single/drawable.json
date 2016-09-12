@@ -92,12 +92,20 @@
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\ic_exchngfolder.png"
     },
     {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_myhealth.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\btn_myhealth.xml"
+    },
+    {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bg_card.xml",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\bg_card.xml"
     },
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\password.png",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\password.png"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\glassy_bg.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\glassy_bg.xml"
     },
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\faq.png",
@@ -360,6 +368,10 @@
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\apptheme_edit_text_holo_light1.xml"
     },
     {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\option_bg.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\option_bg.xml"
+    },
+    {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_save.png",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\ic_save.png"
     },
@@ -588,6 +600,10 @@
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\patient-portal\\FacebookSDK\\unspecified\\res\\drawable\\com_facebook_logo.png"
     },
     {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\repeat_line.png",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\repeat_line.png"
+    },
+    {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bell.png",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\bell.png"
     },
@@ -750,6 +766,10 @@
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\addfile_pressed.png",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\addfile_pressed.png"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\blood_bg.xml",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\src\\main\\res\\drawable\\blood_bg.xml"
     },
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\com_facebook_button_blue.xml",

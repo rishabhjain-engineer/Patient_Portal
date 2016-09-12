@@ -51,7 +51,7 @@
             <Button
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="#0C740C"
+                android:background="#8EBC00"
                 android:clickable="false" />
 
             <TextView

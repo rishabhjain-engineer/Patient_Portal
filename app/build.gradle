@@ -52,6 +52,7 @@ dependencies {
     compile 'dev.dworks.libs:astickyheader:0.1.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
     compile files('libs/volley.jar')
     compile files('libs/android-viewbadger.jar')
    /* compile files('libs/commons-lang3-3.3.4.jar')*/

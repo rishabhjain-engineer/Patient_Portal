@@ -60,7 +60,7 @@ public class Group_testAdapter extends BaseAdapter {
             TextView result_value = (TextView)convertView.findViewById(R.id.result_value);
             TextView reference_range = (TextView)convertView.findViewById(R.id.reference_range);
             test_name.setText(String.valueOf(position+1)+".  "+chartDates.get(position));
-        if(chartunitlist.size()!=0/* && chartunitlist.get(position)!=null*/) {
+        if(chartunitlist.size()!=0 && chartunitlist.get(position)!=null) {
             result_value.setText(chartValues.get(position) + " " + chartunitlist.get(position));
         }else{
             result_value.setText(chartValues.get(position));

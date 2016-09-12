@@ -24,12 +24,12 @@
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\com_facebook_tooltip_blue_xout.png"
     },
     {
-        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\com_facebook_button_grey_normal.9.png",
-        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\com_facebook_button_grey_normal.9.png"
-    },
-    {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\com_facebook_tooltip_black_bottomnub.png",
         "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\com_facebook_tooltip_black_bottomnub.png"
+    },
+    {
+        "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\com_facebook_button_grey_normal.9.png",
+        "source": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\com_facebook_button_grey_normal.9.png"
     },
     {
         "merged": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\FacebookSDK\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\com_facebook_logo.png",

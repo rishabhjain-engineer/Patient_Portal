@@ -1202,7 +1202,9 @@ public class lablistdetails extends ActionBarActivity {
                     int j = 1;
                     test_name.append(j + ". " + caseArray.get(i).get("TestName"));
                     for (int k = i + 1; k < caseArray.size(); k++) {
-                        if (caseCode.equalsIgnoreCase(caseArray.get(k).get("CaseCode"))) {
+                        if (caseCode.equalsIgnoreCase(caseArray.get(k).get("CaseCode")) &&
+                                (!caseArray.get(i).get("TestName")
+                                        .equalsIgnoreCase(caseArray.get(k).get("TestName")))) {
                             j++;
                             test_name.append("\n" + j + ". " + caseArray.get(k).get("TestName"));
                             caseArray.remove(k);
@@ -1362,23 +1364,40 @@ public class lablistdetails extends ActionBarActivity {
 
                                     Double pp = Double.parseDouble(order_listarr.get(i).get("OrderActualAmount").toString());
                                     str_peractual_amnt.append("₹ " + String.valueOf(pp.intValue()));
-                                    for (int k = i + 1; k < order_listarr.size(); k++) {
+                                    for (int k = i+1; k < order_listarr.size(); k++) {
                                         String hji = order_listarr.get(i).get("OrderId");
                                         String hjk = order_listarr.get(k).get("OrderId");
                                         if (order_listarr.get(i).get("OrderId").equals(order_listarr.get(k).get("OrderId"))) {
-                                            j++;
-
-                                            str.append("\n" + j + ". " + order_listarr.get(k).get("TestName"));
+                                            if (!order_listarr.get(i).get("TestName").equalsIgnoreCase(order_listarr.get(k).get("TestName"))) {
+                                                j++;
+                                                str.append("\n" + j + ". " + order_listarr.get(k).get("TestName"));
+                                               // order_listarr.remove(k);
+                                               // k--;
+                                            }
                                             Double pp1 = Double.parseDouble(order_listarr.get(k).get("OrderActualAmount").toString());
                                             str_peractual_amnt.append("\n₹ " + String.valueOf(pp1.intValue()));
                                             orderactualamunt = orderactualamunt + Double.parseDouble(order_listarr.get(k).get("OrderActualAmount").toString());
                                             order_listarr.remove(k);
                                             k--;
-
                                         }
                                     }
                                 } else {
-                                    str.append(order_listarr.get(i).get("TestName"));
+                                    int j1=1;
+                                    str.append(j1 + ". " +order_listarr.get(i).get("TestName"));
+                                    for (int k = i+1; k < order_listarr.size(); k++) {
+                                        String hji = order_listarr.get(i).get("OrderId");
+                                        String hjk = order_listarr.get(k).get("OrderId");
+                                        if (order_listarr.get(i).get("OrderId").equals(order_listarr.get(k).get("OrderId"))) {
+                                            if (!order_listarr.get(i).get("TestName").equalsIgnoreCase(order_listarr.get(k).get("TestName"))) {
+                                                j1++;
+                                                str.append("\n" + j1 + ". " + order_listarr.get(k).get("TestName"));
+                                                // k--;
+                                            }
+                                            order_listarr.remove(k);
+                                            k--;
+                                        }
+                                    }
+
                                 }
                                 OrderList ordr = new OrderList();
 

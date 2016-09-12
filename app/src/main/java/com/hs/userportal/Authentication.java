@@ -115,6 +115,7 @@ class Authentication extends AsyncTask<Void, Void, Void> {
                 } else if (activityname.equals("Travel") && whichbtn.equals("")) {
                     ((Travel) context).startBackgroundprocess();
                 } else if (activityname.equals("MyHealth") && whichbtn.equals("")) {
+                    ((MyHealth) context).startBackgroundProcess();
                 } else if (activityname.equals("Height") && whichbtn.equals("")) {
                     ((Height) context).startBackgroundprocess();
                 } else if (activityname.equals("Weight") && whichbtn.equals("")) {

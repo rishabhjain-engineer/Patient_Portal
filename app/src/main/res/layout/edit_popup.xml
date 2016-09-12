@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:text="Update Blood group"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView6"
+        android:background="#FE975F"
+        android:clickable="false"
+        android:orientation="vertical" />
+
+    <EditText
+        android:id="@+id/bGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView6"
+        android:layout_alignStart="@+id/textView6"
+        android:layout_centerVertical="true"
+        android:background="@drawable/edittext_corner"
+        android:digits="A,O,B,+,-"
+        android:ellipsize="start"
+        android:hint="Enter new Blood group"
+        android:inputType="textCapCharacters"
+        android:maxLines="1"
+        android:padding="11.5dp"
+        android:singleLine="true"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="14dp" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/send_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1DBBE3"
+            android:text="UPDATE"
+            android:textColor="@android:color/white"
+            android:textSize="14dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/cancel_dialog"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView6"
+        android:clickable="true"
+        android:paddingLeft="8dp"
+        android:src="@drawable/edit_clear" />
+
+</RelativeLayout>

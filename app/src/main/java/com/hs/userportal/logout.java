@@ -43,8 +43,13 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -74,10 +79,11 @@ import networkmngr.ConnectionDetector;
  */
 public class logout extends Activity implements View.OnClickListener {
     private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages,
-            facebooklink, my_family;
+            facebooklink, my_family, my_health;
     private LinearLayout linearLayout2, menu;
     private ImageButton editimg, menuimgbtn;
     private ImageView user_pic;
+
     TextView marq, username, noti_count, patient_id;
     ProgressBar imageProgress;
     String PH;
@@ -116,12 +122,14 @@ public class logout extends Activity implements View.OnClickListener {
     public static String image_parse;
     private static RequestQueue request;
     static String emailid;
+    private ImageLoader mImageLoader;
 
     protected void onCreate(Bundle savedInBundle) {
         super.onCreate(savedInBundle);
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInBundle);
         setContentView(R.layout.dashboard);
+        mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
         inializeobj();
     }
 
@@ -134,6 +142,7 @@ public class logout extends Activity implements View.OnClickListener {
         order_history = (RelativeLayout) findViewById(R.id.order_history);
         packages = (RelativeLayout) findViewById(R.id.packages);
         my_family = (RelativeLayout) findViewById(R.id.my_family);
+        my_health = (RelativeLayout) findViewById(R.id.my_health);
         //logout=(LinearLayout)findViewById(R.id.logout);
         editimg = (ImageButton) findViewById(R.id.editimg);
         username = (TextView) findViewById(R.id.username);
@@ -170,6 +179,16 @@ public class logout extends Activity implements View.OnClickListener {
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
             intent.putExtra("fbLinkedID", fbLinkedID);*/
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        my_health.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyHealth.class);
+                intent.putExtra("id", id);
+                intent.putExtra("show_blood", "yes");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -622,7 +641,6 @@ public class logout extends Activity implements View.OnClickListener {
                             image_parse = abc;
                             String def = subArray.getJSONObject(0).getString("ThumbImage");
                             String path = subArray.getJSONObject(0).getString("Path");
-
                             pic = path + abc;
                             thumbpic = path + def;
                             Bitmap bitmap;
@@ -640,17 +658,32 @@ public class logout extends Activity implements View.OnClickListener {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
+                           /* float left = (float) bitmap.getHeight() / 2;
+                            float top = (float) bitmap.getWidth() / 2;
+                            float right = (float) bitmap.getHeight() / 2;
+                            float bottom = (float) bitmap.getWidth() / 2;
+                            canvas.drawRect(left,top,right,bottom, paint);*/
+                          //  canvas.drawRect(rect,paint);
+
                             canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                             canvas.drawBitmap(bitmap, rect, rect, paint);
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
+                                   /* Glide.with(logout.this)
+                                            .load(pic.replaceAll(" ", "%20"))
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .override(500,Target.SIZE_ORIGINAL)
+                                            .fitCenter()
+                                            .into(user_pic);*/
 
                                     user_pic.setImageBitmap(output);
+                                 //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
                                 }
                             });
+
                         } else {
                             Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + fbLinkedID + "/picture?type=large").getContent());
 
@@ -662,14 +695,21 @@ public class logout extends Activity implements View.OnClickListener {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
-                            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
+                            canvas.drawRect(rect,paint);
+                           canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                             canvas.drawBitmap(bitmap, rect, rect, paint);
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
-
+                                   /* Glide.with(logout.this)
+                                            .load(pic.replaceAll(" ", "%20"))
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .override(500,Target.SIZE_ORIGINAL)
+                                            .fitCenter()
+                                            .into(user_pic);*/
                                     user_pic.setImageBitmap(output);
+                                   // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
                                     // setProgressBarIndeterminateVisibility(false);
                                 }
@@ -1361,9 +1401,9 @@ public class logout extends Activity implements View.OnClickListener {
                 String abc = subArray.getJSONObject(0).getString("Image");
                 String def = subArray.getJSONObject(0).getString("ThumbImage");
                 String path = subArray.getJSONObject(0).getString("Path");
-
                 pic = path + abc;
                 thumbpic = path + def;
+
 
                 Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(thumbpic).getContent());
 
@@ -1375,14 +1415,21 @@ public class logout extends Activity implements View.OnClickListener {
 
                 paint.setAntiAlias(true);
                 canvas.drawARGB(0, 0, 0, 0);
-                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
+              //  canvas.drawRect(rect,paint);
+              canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 canvas.drawBitmap(bitmap, rect, rect, paint);
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-
+                      /*  Glide.with(logout.this)
+                                .load(pic.replaceAll(" ", "%20"))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .override(500,Target.SIZE_ORIGINAL)
+                                .fitCenter()
+                                .into(user_pic);*/
                         user_pic.setImageBitmap(output);
+                       // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                         imageProgress.setVisibility(View.INVISIBLE);
                     }
                 });

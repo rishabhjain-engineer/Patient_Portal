@@ -15,14 +15,14 @@ public class StaticHolder {
 
     /*Server Locations */
 
-     public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE
+  //   public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE
   //  public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
-  //  public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
+    public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
   //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
     // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
    // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
-    // public final String BASE_URL1 = "http://192.168.1.202:86/";//local
-     public final String BASE_URL1 = "https://api.healthscion.com/";
+     public final String BASE_URL1 = "http://192.168.1.202:86/";//local
+   //  public final String BASE_URL1 = "https://api.healthscion.com/";
    // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
 
     //APIs URLs
@@ -274,8 +274,8 @@ public class StaticHolder {
             case GetAdvisedInvestigationDetailMobile:
                 url = BASE_URL + "GetAdvisedInvestigationDetailMobile";
                 break;
-            case GetAllLisPatientCaseDetailMobile:
-                url = BASE_URL + "GetAllLisPatientCaseDetailMobile";
+            case GetAllLisPatientCaseDetailMobileNew:
+                url = BASE_URL + "GetAllLisPatientCaseDetailMobileNew";
                 break;
             case UploadPrescriptionMail:
                 url = BASE_URL + "UploadPrescriptionMail";
@@ -430,8 +430,8 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;*/
             case BASE_URL:
-                // url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
-                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live
+                 url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
+               // url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live
                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
 
                 break;
@@ -500,6 +500,12 @@ public class StaticHolder {
             case GetMemberRecords:
                 url = BASE_URL + "GetMemberRecords";
                 break;
+            case getpatientHistoryDetails:
+                url = BASE_URL + "getpatientHistoryDetails";
+                break;
+            case Updatepatientbloodgroup:
+                url = BASE_URL +"Updatepatientbloodgroup";
+                break;
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -539,7 +545,7 @@ public class StaticHolder {
         DeletePatientFiles, GetPatientImagesInCase, GetAutoAreaSearch, checkAliasExist, GetLabByTest,
         FindLabsTest, GetPatientHistory, getBasicDetails, saveOtherDetail, GetOthersFromArea,
         GetAllVaccines, GetPatientAlertList, GetAdvisedInvestigationDetailMobile,
-        GetAllLisPatientCaseDetailMobile, SendLabContactDetail, UpdateContact, SamplePickUp, BookTest,
+        GetAllLisPatientCaseDetailMobileNew, SendLabContactDetail, UpdateContact, SamplePickUp, BookTest,
         GetLabList, GetAllTestData, GetPhotographData, GetDoctorData, GetCentreData, GetPatient,
         GetpatienttestReport, GetAllCompletedTestDetailsOfPatient, UploadPrescriptionMail,
         SendCouponWithTestViaSMSNew, SendCouponWithOutTestViaSMS, SendCouponWithTestViaEmailNew,
@@ -552,7 +558,8 @@ public class StaticHolder {
         GetCityList, AllPackage, HomePackage, BASE_URL, LIVELOGIN_URL, CallmePatient, CancelOrder,
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
-        GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords
+        GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
+        Updatepatientbloodgroup
     }
 
 }

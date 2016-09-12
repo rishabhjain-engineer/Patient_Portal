@@ -37,7 +37,8 @@ public class Report_Adapter extends BaseAdapter {
         this.activity = activity;
         for (int i = 0; i < size; i++) {
             try {
-                if (reportarray.getJSONObject(i).getString("ActualProfileName").equalsIgnoreCase(reportarray.getJSONObject(i).getString("NewProfileName"))) {
+                if (reportarray.getJSONObject(i).getString("ActualProfileName")
+                        .equalsIgnoreCase(reportarray.getJSONObject(i).getString("NewProfileName"))) {
                     HashMap<String, String> hmap = new HashMap<String, String>();
                     hmap.put("ResultType", reportarray.getJSONObject(i).getString("ResultType"));
                     hmap.put("Description", reportarray.getJSONObject(i).getString("Description"));
@@ -56,7 +57,8 @@ public class Report_Adapter extends BaseAdapter {
 
         for (int k = 0; k < reportarray.length(); k++) {
             try {
-                if (!reportarray.getJSONObject(k).getString("ActualProfileName").equalsIgnoreCase(reportarray.getJSONObject(k).getString("NewProfileName"))) {
+                if (!reportarray.getJSONObject(k).getString("ActualProfileName")
+                        .equalsIgnoreCase(reportarray.getJSONObject(k).getString("NewProfileName"))) {
                     HashMap<String, String> hmap = new HashMap<String, String>();
                     hmap.put("ResultType", reportarray.getJSONObject(k).getString("ResultType"));
                     hmap.put("Description", reportarray.getJSONObject(k).getString("Description"));

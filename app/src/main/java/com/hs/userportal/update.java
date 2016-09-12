@@ -110,7 +110,7 @@ public class update extends FragmentActivity {
     String city_id = "", country_id = "", state_id = "", area_id = "",
             imgid = "", imgname = "", fbLinked, fbLinkedID;
     String passw = "";
-    private EditText sal, fn, mn, ln, un, em, sex, cont, blood, religion, nationality,
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality,
             father, husband;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
@@ -166,7 +166,7 @@ public class update extends FragmentActivity {
 
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.update);
+        setContentView(R.layout.update_new);
         service = new Services(update.this);
         // nationlist = getResources().getStringArray(R.array.national_list);
         Intent i = getIntent();
@@ -197,7 +197,7 @@ public class update extends FragmentActivity {
         em.setFocusable(true);
         // house = (EditText) findViewById(R.id.editTextHome);
         sex = (EditText) findViewById(R.id.editText10);
-        blood = (EditText) findViewById(R.id.editText8);
+      //  blood = (EditText) findViewById(R.id.editText8);
         nationality = (EditText) findViewById(R.id.Nationality);
         cont = (EditText) findViewById(R.id.etName);
         religion = (EditText) findViewById(R.id.editText9);
@@ -294,8 +294,8 @@ public class update extends FragmentActivity {
                                 update.this);
 
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Pick from Gallery",
-                                        "Take from Camera", "Get from Facebook"},
+                        builder.setItems(new CharSequence[]{"Photo Library",
+                                        "Take from Camera", "Take from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -305,9 +305,29 @@ public class update extends FragmentActivity {
                                             case 0:
 
 
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                                intent.setType("image/*");
-                                                startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                                Intent intent = new Intent(
+                                                        Intent.ACTION_PICK,
+                                                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+
+                                               /* intent.putExtra("crop", "true");
+                                                intent.putExtra("aspectX", 2);
+                                                intent.putExtra("aspectY", 1);
+                                                intent.putExtra("outputX", 250);
+                                                intent.putExtra("outputY", 250);*/
+
+                                                try {
+
+                                                    intent.putExtra("return-data",
+                                                            true);
+                                                    startActivityForResult(
+                                                            Intent.createChooser(
+                                                                    intent,
+                                                                    "Select File"),
+                                                            PICK_FROM_GALLERY);
+
+                                                } catch (ActivityNotFoundException e) {
+
+                                                }
                                                 break;
 
                                             case 1:
@@ -345,7 +365,7 @@ public class update extends FragmentActivity {
                                 update.this);
 
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Pick from Gallery",
+                        builder.setItems(new CharSequence[]{"Photo Library",
                                         "Take from Camera"},
                                 new DialogInterface.OnClickListener() {
 
@@ -356,10 +376,29 @@ public class update extends FragmentActivity {
                                             case 0:
 
 
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                                intent.setType("image/*");
-                                                startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                                Intent intent = new Intent(
+                                                        Intent.ACTION_PICK,
+                                                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 
+                                               /* intent.putExtra("crop", "true");
+                                                intent.putExtra("aspectX", 3);
+                                                intent.putExtra("aspectY", 2);
+                                                intent.putExtra("outputX", 250);
+                                                intent.putExtra("outputY", 250);*/
+
+                                                try {
+
+                                                    intent.putExtra("return-data",
+                                                            true);
+                                                    startActivityForResult(
+                                                            Intent.createChooser(
+                                                                    intent,
+                                                                    "Select File"),
+                                                            PICK_FROM_GALLERY);
+
+                                                } catch (ActivityNotFoundException e) {
+
+                                                }
                                                 break;
 
                                             case 1:
@@ -392,8 +431,8 @@ public class update extends FragmentActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Pick from Gallery",
-                                        "Get from Facebook"},
+                        builder.setItems(new CharSequence[]{"Photo Library",
+                                        "Take from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -419,7 +458,7 @@ public class update extends FragmentActivity {
                                                     startActivityForResult(
                                                             Intent.createChooser(
                                                                     intent,
-                                                                    "Complete action using"),
+                                                                    "Select File"),
                                                             PICK_FROM_GALLERY);
 
                                                 } catch (ActivityNotFoundException e) {
@@ -444,7 +483,7 @@ public class update extends FragmentActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(
                                 update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Pick from Gallery"},
+                        builder.setItems(new CharSequence[]{"Photo Library"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -470,7 +509,7 @@ public class update extends FragmentActivity {
                                                     startActivityForResult(
                                                             Intent.createChooser(
                                                                     intent,
-                                                                    "Complete action using"),
+                                                                    "Select File"),
                                                             PICK_FROM_GALLERY);
 
                                                 } catch (ActivityNotFoundException e) {
@@ -699,7 +738,7 @@ public class update extends FragmentActivity {
         final ArrayAdapter<String> bloodadapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_dropdown_item, bloodlist);
 
-        blood.setInputType(InputType.TYPE_NULL);
+       /* blood.setInputType(InputType.TYPE_NULL);
         blood.setOnTouchListener(new OnTouchListener() {
 
             @Override
@@ -725,7 +764,7 @@ public class update extends FragmentActivity {
                 return false;
             }
         });
-
+*/
 
         final ArrayAdapter<String> genderadapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_dropdown_item, genderlist);
@@ -1013,7 +1052,7 @@ public class update extends FragmentActivity {
             LastName = ln.getText().toString().trim();
             UserNameAlias = un.getText().toString().trim();
             Sex = sex.getText().toString().trim();
-            BloodGroup = blood.getText().toString().trim();
+            BloodGroup =/* blood.getText().toString().trim();*/"";
             DOB = etDOB.getText().toString().trim();
             HusbandName = husband.getText().toString().trim();
             FatherName = father.getText().toString().trim();
@@ -1196,7 +1235,7 @@ public class update extends FragmentActivity {
                         basic.put("LastName", LastName);
                         basic.put("UserNameAlias", UserNameAlias);
                         basic.put("Sex", Sex);
-                        basic.put("BloodGroup", BloodGroup);
+                       /* basic.put("BloodGroup", BloodGroup);*/
                         basic.put("DOB", DOB);
                         basic.put("HusbandName", HusbandName);
                         basic.put("FatherName", FatherName);
@@ -1371,13 +1410,13 @@ public class update extends FragmentActivity {
                 }
                 check_username = un.getText().toString();
                 if (email_varification != null && email_varification.equals("0")) {
-                    email_varifyid.setText("Email is not Verified");
+                    email_varifyid.setText("Email is not verified");
                     email_varifyid.setVisibility(View.VISIBLE);
                 } else {
                     email_varifyid.setVisibility(View.GONE);
                 }
                 if (mobile_varification != null&& mobile_varification.equals("0")) {
-                    contact_varifyid.setText("Contact number is not Verified");
+                    contact_varifyid.setText("Contact number is not verified");
                     contact_varifyid.setVisibility(View.VISIBLE);
                 } else {
                     contact_varifyid.setVisibility(View.GONE);
@@ -1388,7 +1427,7 @@ public class update extends FragmentActivity {
                 cont.setText(ContactNo);
 
 
-                blood.setText(BloodGroup);
+                /*blood.setText(BloodGroup);*/
 
                 nationality.setText(Nationality);
 
@@ -1458,7 +1497,7 @@ public class update extends FragmentActivity {
                     //  basic.put("Address", house.getText().toString());
                     basic.put("Age", "0");
                     basic.put("AreaId", area_id);
-                    basic.put("BloodGroup", blood.getText().toString());
+                   /* basic.put("BloodGroup","" *//*blood.getText().toString()*//*);*/
                     basic.put("CityId", city_id);
                     basic.put("Comments", "");
                     basic.put("ContactNo", cont.getText().toString());

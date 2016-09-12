@@ -227,14 +227,24 @@
                     android:orientation="horizontal"
                     android:padding="5dp">
 
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/userdash" />
+
                     <TextView
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="30dp"
                         android:padding="10dp"
                         android:text="My Profile"
-                        android:textColor="#33B29A"
+                        android:textColor="#2d95bf"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -262,13 +272,23 @@
                     android:orientation="horizontal"
                     android:padding="5dp">
 
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/reportdash" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="30dp"
                         android:padding="10dp"
                         android:text="My Reports"
-                        android:textColor="#F5AE4C"
+                        android:textColor="#f15a5a"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -333,13 +353,23 @@
                     android:orientation="horizontal"
                     android:padding="5dp">
 
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/filedash" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="30dp"
                         android:padding="10dp"
                         android:text="File Vault"
-                        android:textColor="#D971AC"
+                        android:textColor="#4eba6f"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -368,14 +398,24 @@
                     android:orientation="horizontal"
                     android:padding="5dp">
 
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/familydash" />
+
                     <TextView
                         android:id="@+id/family"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="30dp"
                         android:padding="10dp"
                         android:text="My Family"
-                        android:textColor="#8EC051"
+                        android:textColor="#f0c419"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
@@ -400,9 +440,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/layout_selector"
                     android:clickable="true"
-                    android:visibility="gone"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -461,12 +501,50 @@
                         android:background="@drawable/arrow_grey" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/my_health"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_selector"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/filedash" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:padding="10dp"
+                        android:text="My Health"
+                        android:textColor="#D971AC"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/arrow_grey" />
+
+                </RelativeLayout>
+
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="0.25dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="#80808080"
-                    android:visibility="gone"></View>
+                    android:background="#80808080"></View>
 
                 <RelativeLayout
                     android:id="@+id/link"
@@ -476,11 +554,20 @@
                     android:clickable="true"
                     android:orientation="horizontal"
                     android:padding="5dp">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/facebookdash" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="30dp"
                         android:padding="10dp"
                         android:text="Link acount with facebook"
                         android:textColor="#3B5998"
@@ -532,14 +619,14 @@
         android:id="@+id/patient_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:background="#F4F4F4"
         android:gravity="center"
         android:padding="8dp"
         android:text="Patient ID:"
         android:textColor="#1DBBE3"
         android:textSize="14dp"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:textStyle="bold" />
 </RelativeLayout>

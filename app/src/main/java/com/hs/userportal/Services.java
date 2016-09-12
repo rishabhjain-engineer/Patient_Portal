@@ -28,858 +28,862 @@ import java.io.UnsupportedEncodingException;
 import config.StaticHolder;
 
 public class Services {
-	/* Variables declaration */
+    /* Variables declaration */
 
-	HttpClient client;
-	HttpPost request;
-	HttpResponse response;
-	JSONObject receiveData, temp, titleJSON;
-	JSONArray values;
-	String url, line;
-	static Header[] cookies;
-	BufferedReader reader;
-	StringBuilder sb;
-	Context context;
-	public static String hoja = "";
-	static String checknet = "no";
+    HttpClient client;
+    HttpPost request;
+    HttpResponse response;
+    JSONObject receiveData, temp, titleJSON;
+    JSONArray values;
+    String url, line;
+    static Header[] cookies;
+    BufferedReader reader;
+    StringBuilder sb;
+    Context context;
+    public static String hoja = "";
+    static String checknet = "no";
 
 	/*static String init = "https://l141702.cloudchowk.com";*/
 
 	/*static String init ="https://l141702.cloudchowk.com/";*///"http://192.168.1.202:81";//"https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";////;
-															// //////
-	// static String init = "http://192.168.1.56";
+    // //////
+    // static String init = "http://192.168.1.56";
 
-	public Services(Context context) {
-		client = new DefaultHttpClient();
-		this.context = context;
-		if (MainActivity.demo.equals("true")) {
+    public Services(Context context) {
+        client = new DefaultHttpClient();
+        this.context = context;
+        if (MainActivity.demo.equals("true")) {
 
-			// init = "http://192.168.1.45:8083";
+            // init = "http://192.168.1.45:8083";
 
-			// init = "http://192.168.1.56";
-			// init = "http://192.168.1.202:81";
+            // init = "http://192.168.1.56";
+            // init = "http://192.168.1.202:81";
 			/*init ="https://d141702.cloudchowk.com/";*///"https://demo0421.cloudchowk.com";//"https://d141702.cloudchowk.com/";//"https://demo0421.cloudchowk.com";//////;//////
-			// init = "http://192.168.1.122";
-			// init = "https://l141702.cloudchowk.com";
-			// init = "http://192.168.1.122:8084";
-			// init= "http://192.168.1.106";
+            // init = "http://192.168.1.122";
+            // init = "https://l141702.cloudchowk.com";
+            // init = "http://192.168.1.122:8084";
+            // init= "http://192.168.1.106";
 
-		} else {
-			// init = "http://192.168.1.122";
-			// init = "https://l141702.cloudchowk.com";
-			/*init ="https://l141702.cloudchowk.com/"*/;//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";//////;////
-														
-														// //replace by
-			// init = "http://192.168.1.202:81";
-			// init = "http://192.168.1.56";
-			// init = "http://192.168.1.122:8084";
-			// init= "http://192.168.1.106";
-		}
+        } else {
+            // init = "http://192.168.1.122";
+            // init = "https://l141702.cloudchowk.com";
+			/*init ="https://l141702.cloudchowk.com/"*/
+            ;//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";//////;////
 
-	}
+            // //replace by
+            // init = "http://192.168.1.202:81";
+            // init = "http://192.168.1.56";
+            // init = "http://192.168.1.122:8084";
+            // init= "http://192.168.1.106";
+        }
 
-	public JSONObject LogIn(JSONObject sendData,String url) {// {"browserType":"4.4.2","UserName":"dheer","applicationType":"Mobile","rememberMe":"false","Password":"dheer@123"}
+    }
+
+    public JSONObject LogIn(JSONObject sendData, String url) {// {"browserType":"4.4.2","UserName":"dheer","applicationType":"Mobile","rememberMe":"false","Password":"dheer@123"}
 
 	/*	url = init + "/CredentialsModule/CredentialService.asmx/LogIn";*/ // http://192.168.1.202:81/CredentialsModule/CredentialService.asmx/LogIn
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		try {
+        try {
 
-			// URL myUrl = new URL(url);
-			// URLConnection connection = myUrl.openConnection();
-			// connection.setConnectTimeout(5000);
-			// connection.connect();
-			response = getThreadSafeClient().execute(request);
-			String result = response.toString();
+            // URL myUrl = new URL(url);
+            // URLConnection connection = myUrl.openConnection();
+            // connection.setConnectTimeout(5000);
+            // connection.connect();
+            response = getThreadSafeClient().execute(request);
+            String result = response.toString();
 
-			cookies = response.getHeaders("Set-Cookie");
+            cookies = response.getHeaders("Set-Cookie");
 
 			/* **** SAVING COOKIE DATA ON PHONE STORAGE *** */
-			String cookieData = "";
+            String cookieData = "";
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";"; // ASP.NET_SessionId=spghlyjtkcymxiw5d0pzm3u0;
-															// path=/; HttpOnly;
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";"; // ASP.NET_SessionId=spghlyjtkcymxiw5d0pzm3u0;
+                // path=/; HttpOnly;
 
-			}
-			hoja = cookieData;
-			MainActivity.cook = hoja;
-			LocationClass.cook = hoja;
+            }
+            hoja = cookieData;
+            MainActivity.cook = hoja;
+            LocationClass.cook = hoja;
 
-			// System.out.println(hoja);
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
+            // System.out.println(hoja);
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
 
-			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			Log.e("Client", "Error checking internet connection", e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.e("IO", "Error checking internet connection", e);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            Log.e("Client", "Error checking internet connection", e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.e("IO", "Error checking internet connection", e);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
 
-			Log.e("JSON", "Error checking internet connection", e);
-		}
+            Log.e("JSON", "Error checking internet connection", e);
+        }
 
-		return receiveData;
+        return receiveData;
 
-		// LOGOUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // LOGOUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	}
+    }
 
-	public JSONObject GetCredentialDetails(JSONObject sendData) {
+    public JSONObject GetCredentialDetails(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/GetCredentialDetails";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetCredentialDetails);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetCredentialDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}// https://l141702.cloudchowk.com/CredentialsModule/CredentialService.asmx/GetCredentialDetails
+    }// https://l141702.cloudchowk.com/CredentialsModule/CredentialService.asmx/GetCredentialDetails
 
-	public JSONObject PatientDisclaimer(JSONObject sendData) {
+    public JSONObject PatientDisclaimer(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/PatientDisclaimer";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.PatientDisclaimer);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientDisclaimer);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject IsUserAuthenticated(JSONObject sendData) {
+    public JSONObject IsUserAuthenticated(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject AgreeService(JSONObject sendData) {
+    public JSONObject AgreeService(JSONObject sendData) {
 
 		/*url = init + "/StaffModule/StaffService.asmx/agreeTermsCondition";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.agreeTermsCondition);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.agreeTermsCondition);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject LogOut(JSONObject sendData) {
+    public JSONObject LogOut(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/LogOutIOS";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.LogOutIOS);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.LogOutIOS);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		try {
+        try {
 
-			response = getThreadSafeClient().execute(request);
-			cookies = response.getHeaders("Set-Cookie");
+            response = getThreadSafeClient().execute(request);
+            cookies = response.getHeaders("Set-Cookie");
 
-			String cookieData = "";
+            String cookieData = "";
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
-			}
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
+            }
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
 
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return receiveData;
+        return receiveData;
 
-	}
+    }
 
-	// GETTING INFORMATION FROM AREA!!!!!!!!!!!!!!!!!!!!!!!!
+    // GETTING INFORMATION FROM AREA!!!!!!!!!!!!!!!!!!!!!!!!
 
-	public JSONObject fromarea(JSONObject sendData) {
+    public JSONObject fromarea(JSONObject sendData) {
 		/*url = init + "/SupplierModule/SupplierMasterService.asmx/GetAutoAreaSearch";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAutoAreaSearch);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAutoAreaSearch);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
 
-			// URL myUrl = new URL(url);
-			// URLConnection connection = myUrl.openConnection();
-			// connection.setConnectTimeout(5000);
-			// connection.connect();
-			response = getThreadSafeClient().execute(request);
+            // URL myUrl = new URL(url);
+            // URLConnection connection = myUrl.openConnection();
+            // connection.setConnectTimeout(5000);
+            // connection.connect();
+            response = getThreadSafeClient().execute(request);
 
-			cookies = response.getHeaders("Set-Cookie");
+            cookies = response.getHeaders("Set-Cookie");
 
-			String cookieData = "";
+            String cookieData = "";
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
-			}
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
+            }
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
 
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return receiveData;
+        return receiveData;
 
-	}
+    }
 
-	// To Check For User name!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // To Check For User name!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	public JSONObject useralias(JSONObject sendData) {
-
-		/*url = init + "/CommonMasterModule/CommonMasterService.asmx/checkAliasExist";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.checkAliasExist);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
-
-	}
-	public JSONObject IsUserNameAliasExists(JSONObject sendData) {
+    public JSONObject useralias(JSONObject sendData) {
 
 		/*url = init + "/CommonMasterModule/CommonMasterService.asmx/checkAliasExist";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.IsUserNameAliasExists);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.checkAliasExist);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
-	// Common Method Called!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
 
-	public static DefaultHttpClient getThreadSafeClient() {
-		DefaultHttpClient client = new DefaultHttpClient();
-		ClientConnectionManager mgr = client.getConnectionManager();
-		HttpParams params = client.getParams();
-		client = new DefaultHttpClient(new ThreadSafeClientConnManager(params, mgr.getSchemeRegistry()), params);
-		return client;
-	}
+    public JSONObject IsUserNameAliasExists(JSONObject sendData) {
 
-	public JSONObject common(JSONObject sendData, String url) {
-		// System.out.println("hahahahahahahahahahaha");
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
-		// System.out.println(hoja);
+		/*url = init + "/CommonMasterModule/CommonMasterService.asmx/checkAliasExist";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserNameAliasExists);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    }
+    // Common Method Called!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-		try {
+    public static DefaultHttpClient getThreadSafeClient() {
+        DefaultHttpClient client = new DefaultHttpClient();
+        ClientConnectionManager mgr = client.getConnectionManager();
+        HttpParams params = client.getParams();
+        client = new DefaultHttpClient(new ThreadSafeClientConnManager(params, mgr.getSchemeRegistry()), params);
+        return client;
+    }
 
-			// URL myUrl = new URL(url);
-			// URLConnection connection = myUrl.openConnection();
-			// connection.setConnectTimeout(3000);
-			// connection.connect();
+    public JSONObject common(JSONObject sendData, String url) {
+        // System.out.println("hahahahahahahahahahaha");
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
+        // System.out.println(hoja);
 
-			// response = getThreadSafeClient().execute(request);
-			response = getThreadSafeClient().execute(request);
-			cookies = response.getHeaders("Set-Cookie");
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-			String cookieData = "";
+        try {
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
-			}
-			// System.out.println(hoja);
+            // URL myUrl = new URL(url);
+            // URLConnection connection = myUrl.openConnection();
+            // connection.setConnectTimeout(3000);
+            // connection.connect();
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            // response = getThreadSafeClient().execute(request);
+            response = getThreadSafeClient().execute(request);
+            cookies = response.getHeaders("Set-Cookie");
 
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            String cookieData = "";
 
-			receiveData = new JSONObject(new String(sb));
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
+            }
+            // System.out.println(hoja);
 
-		} catch (ClientProtocolException e) {
-			checknet = "yes";
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-			checknet = "yes";
-		} catch (JSONException e) {
-			checknet = "yes";
-			e.printStackTrace();
-		}catch(Exception e){
-			checknet ="yes";
-			e.printStackTrace();
-		}
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
 
-		return receiveData;
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-	}
+            receiveData = new JSONObject(new String(sb));
 
-	public String common1(JSONObject sendData, String url) {
-		// System.out.println("hahahahahahahahahahaha");
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
-		// System.out.println(hoja);
+        } catch (ClientProtocolException e) {
+            checknet = "yes";
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            checknet = "yes";
+        } catch (JSONException e) {
+            checknet = "yes";
+            e.printStackTrace();
+        } catch (Exception e) {
+            checknet = "yes";
+            e.printStackTrace();
+        }
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        return receiveData;
 
-		try {
+    }
 
-			// URL myUrl = new URL(url);
-			// URLConnection connection = myUrl.openConnection();
-			// connection.setConnectTimeout(3000);
-			// connection.connect();
-			// response = getThreadSafeClient().execute(request);
+    public String common1(JSONObject sendData, String url) {
+        // System.out.println("hahahahahahahahahahaha");
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
+        // System.out.println(hoja);
 
-			response = getThreadSafeClient().execute(request);
-			cookies = response.getHeaders("Set-Cookie");
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-			String cookieData = "";
+        try {
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
-			}
-			// System.out.println(hoja);
+            // URL myUrl = new URL(url);
+            // URLConnection connection = myUrl.openConnection();
+            // connection.setConnectTimeout(3000);
+            // connection.connect();
+            // response = getThreadSafeClient().execute(request);
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            response = getThreadSafeClient().execute(request);
+            cookies = response.getHeaders("Set-Cookie");
 
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            String cookieData = "";
 
-		} catch (ClientProtocolException e) {
-			checknet = "yes";
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-			checknet = "yes";
-		}
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
+            }
+            // System.out.println(hoja);
 
-		return sb.toString();
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
 
-	}
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-	public JSONObject checkemail(JSONObject sendData) {
+        } catch (ClientProtocolException e) {
+            checknet = "yes";
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            checknet = "yes";
+        }
+
+        return sb.toString();
+
+    }
+
+    public JSONObject checkemail(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/CheckEmailIdIsExist";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.CheckEmailIdIsExistMobile);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.CheckEmailIdIsExistMobile);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject submit(JSONObject sendData) {
+    public JSONObject submit(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/SignUpPatient";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.SignUpPatient);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.SignUpPatient);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject patienthistory(JSONObject sendData) {
+    public JSONObject patienthistory(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientHistory);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientHistory);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject changepassword(JSONObject sendData) {
+    public JSONObject changepassword(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/ChangePasswordIOS";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.ChangePasswordIOS);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.ChangePasswordIOS);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject otherarea(JSONObject sendData) {
+    public JSONObject otherarea(JSONObject sendData) {
 
 		/*url = init + "/CommonMasterModule/UIService.asmx/GetOthersFromArea";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetOthersFromArea);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetOthersFromArea);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject vaccine(JSONObject sendData) {
+    public JSONObject vaccine(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllVaccines";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAllVaccines);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllVaccines);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}//
-	public JSONObject action_member(JSONObject sendData) {
+    }//
 
-		/*url = init + "/PatientModule/PatientService.asmx/GetPatientAlertList";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.AcceptRequest);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
-
-	}
-	public JSONObject allergy(JSONObject sendData) {
+    public JSONObject action_member(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetPatientAlertList";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientAlertList);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AcceptRequest);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject register(JSONObject sendData) {
+    public JSONObject allergy(JSONObject sendData) {
+
+		/*url = init + "/PatientModule/PatientService.asmx/GetPatientAlertList";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientAlertList);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
+    public JSONObject register(JSONObject sendData) {
 
 	/*	url = init + "/laboratorymodule/LISService.asmx/Register";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.Register);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.Register);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject patientinvestigation(JSONObject sendData) {
+    public JSONObject patientinvestigation(JSONObject sendData) {
 
 		/*url = init + "/LaboratoryModule/LISService.asmx/GetAdvisedInvestigationDetailMobile";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAdvisedInvestigationDetailMobile);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAdvisedInvestigationDetailMobile);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject patientstatus(JSONObject sendData) {
+    public JSONObject patientstatus(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobile);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
-		// System.out.println(hoja);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
+        // System.out.println(hoja);
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		try {
-			response = getThreadSafeClient().execute(request);
+        try {
+            response = getThreadSafeClient().execute(request);
 
-			cookies = response.getHeaders("Set-Cookie");
+            cookies = response.getHeaders("Set-Cookie");
 
-			String cookieData = "";
+            String cookieData = "";
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
-			}
-			// System.out.println(hoja);
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
+            }
+            // System.out.println(hoja);
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
 
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return receiveData;
+        return receiveData;
 
-	}
+    }
 
-	public JSONObject getpatient(JSONObject sendData) {
+    public JSONObject getpatient(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientBedAssignmentService.asmx/GetPatient";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatient);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatient);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	// public JSONObject getTestReportPDF(JSONObject sendData) {
-	//
-	// url = init+"/LaboratoryModule/LISService.asmx/GetpatienttestReport";
-	// request = new HttpPost(url);
-	// request.setHeader("Content-type", "application/json");
-	// request.setHeader("Accept", "application/octet-stream");
-	// request.setHeader("Cookie", hoja);
-	// // System.out.println(hoja);
-	//
-	// try {
-	// request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-	// } catch (UnsupportedEncodingException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// //System.out.println("1");
-	// try {
-	// response = getThreadSafeClient().execute(request);
-	//
-	// cookies = response.getHeaders("Set-Cookie");
-	//
-	// String cookieData = "";
-	//
-	// for (int i = 0; i < cookies.length; i++) {
-	// cookieData += cookies[i].getValue() + ";";
-	// }
-	// // System.out.println("2");
-	//
-	// FileOutputStream outputStream;
-	// outputStream = context.openFileOutput("Cookie-Data",
-	// Context.MODE_PRIVATE);
-	// outputStream.write(cookieData.getBytes());
-	// outputStream.close();
-	//
-	// reader = new BufferedReader(new InputStreamReader(response
-	// .getEntity().getContent()));
-	// sb = new StringBuilder();
-	// while ((line = reader.readLine()) != null) {
-	// sb.append(line + "\n");
-	// }
-	//
-	// System.out.println(sb);
-	// System.out.println("3");
-	// receiveData = new JSONObject(new String(sb));
-	// Log.i("REPORT DETAILS", receiveData.toString());
-	// } catch (ClientProtocolException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } catch (JSONException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// return receiveData;
-	// }
-	String pdf;
+    // public JSONObject getTestReportPDF(JSONObject sendData) {
+    //
+    // url = init+"/LaboratoryModule/LISService.asmx/GetpatienttestReport";
+    // request = new HttpPost(url);
+    // request.setHeader("Content-type", "application/json");
+    // request.setHeader("Accept", "application/octet-stream");
+    // request.setHeader("Cookie", hoja);
+    // // System.out.println(hoja);
+    //
+    // try {
+    // request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+    // } catch (UnsupportedEncodingException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    // //System.out.println("1");
+    // try {
+    // response = getThreadSafeClient().execute(request);
+    //
+    // cookies = response.getHeaders("Set-Cookie");
+    //
+    // String cookieData = "";
+    //
+    // for (int i = 0; i < cookies.length; i++) {
+    // cookieData += cookies[i].getValue() + ";";
+    // }
+    // // System.out.println("2");
+    //
+    // FileOutputStream outputStream;
+    // outputStream = context.openFileOutput("Cookie-Data",
+    // Context.MODE_PRIVATE);
+    // outputStream.write(cookieData.getBytes());
+    // outputStream.close();
+    //
+    // reader = new BufferedReader(new InputStreamReader(response
+    // .getEntity().getContent()));
+    // sb = new StringBuilder();
+    // while ((line = reader.readLine()) != null) {
+    // sb.append(line + "\n");
+    // }
+    //
+    // System.out.println(sb);
+    // System.out.println("3");
+    // receiveData = new JSONObject(new String(sb));
+    // Log.i("REPORT DETAILS", receiveData.toString());
+    // } catch (ClientProtocolException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // } catch (IOException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // } catch (JSONException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    //
+    // return receiveData;
+    // }
+    String pdf;
 
-	public String getTestReportPDF(JSONObject sendData) {
+    public String getTestReportPDF(JSONObject sendData) {
 
 		/*url = init + "/LaboratoryModule/LISService.asmx/GetpatienttestReport";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetpatienttestReport);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
-		String cookieData = "";
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetpatienttestReport);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
+        String cookieData = "";
 
-		for (int i = 0; i < cookies.length; i++) {
-			cookieData += cookies[i].getValue() + ";";
-		}
+        for (int i = 0; i < cookies.length; i++) {
+            cookieData += cookies[i].getValue() + ";";
+        }
 
-		request.addHeader("Cookie", cookieData);
+        request.addHeader("Cookie", cookieData);
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-			response = getThreadSafeClient().execute(request);
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+            response = getThreadSafeClient().execute(request);
 
-			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			pdf = sb.toString();
+            pdf = sb.toString();
 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return pdf;
-	}
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return pdf;
+    }
 
-	public JSONObject forgotpassword(JSONObject sendData) {
+    public JSONObject forgotpassword(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/ForgotPassword";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.ForgotPassword);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.ForgotPassword);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject findhelp(JSONObject sendData) {
+    public JSONObject findhelp(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/NeedHelp";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.NeedHelp);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.NeedHelp);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject patienttestdetails(JSONObject sendData) {
+    public JSONObject patienttestdetails(JSONObject sendData) {
 
 		/*url = init + "/LaboratoryModule/LISInvestigationWorklistService.asmx/GetAllCompletedTestDetailsOfPatient";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAllCompletedTestDetailsOfPatient);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllCompletedTestDetailsOfPatient);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONArray graphreport(JSONObject sendData) {
+    public JSONArray graphreport(JSONObject sendData) {
 		/*url = init + "/PatientModule/PatientService.asmx/GetPatientTestRangeDataMobile";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientTestRangeDataMobile);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
-		request.setHeader("Cookie", hoja);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientTestRangeDataMobile);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Cookie", hoja);
 
-		String cookieData = "";
+        String cookieData = "";
 
-		for (int i = 0; i < cookies.length; i++) {
-			cookieData += cookies[i].getValue() + ";";
-		}
+        for (int i = 0; i < cookies.length; i++) {
+            cookieData += cookies[i].getValue() + ";";
+        }
 
-		request.addHeader("Cookie", cookieData);
+        request.addHeader("Cookie", cookieData);
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-			response = getThreadSafeClient().execute(request);
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+            response = getThreadSafeClient().execute(request);
 
-			HttpEntity entity = response.getEntity();
-			reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            HttpEntity entity = response.getEntity();
+            reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-			// Log.i("TEST DETAILS", receiveData.toString());
+            // Log.i("TEST DETAILS", receiveData.toString());
 
-			String p = receiveData.get("d").toString();
-			temp = new JSONObject(p);
-			values = temp.getJSONArray("Table");
+            String p = receiveData.get("d").toString();
+            temp = new JSONObject(p);
+            values = temp.getJSONArray("Table");
 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return values;
+        return values;
 
-	}
+    }
 
-	public JSONObject verify(JSONObject sendData) {
+    public JSONObject verify(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetPatientVerification";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientVerification);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientVerification);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject verifyemail(JSONObject sendData) {
+    public JSONObject verifyemail(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/EmailVerificationClinic";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.EmailVerificationClinic);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.EmailVerificationClinic);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject verifyresendsms(JSONObject sendData) {
+    public JSONObject verifyresendsms(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/ResendSmsVerifyCodeClinic";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.ResendSmsVerifyCodeClinic);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.ResendSmsVerifyCodeClinic);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject verifysms(JSONObject sendData) {
+    public JSONObject verifysms(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/CheckVerifyCodeClinic";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.CheckVerifyCodeClinic);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.CheckVerifyCodeClinic);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject citylist(JSONObject sendData) {
+    public JSONObject citylist(JSONObject sendData) {
 
 	/*	url = init + "/CommonMasterModule/CommonMasterService.asmx/GetCityList1";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetCityList1);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetCityList1);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject citylist1(JSONObject sendData) {
+    public JSONObject citylist1(JSONObject sendData) {
 
 		/*url = init + "/CommonMasterModule/UIService.asmx/GetCityList";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetCityList);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetCityList);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject statefromcity(JSONObject sendData) {
+    public JSONObject statefromcity(JSONObject sendData) {
 
 	/*	url = init + "/CommonMasterModule/UIService.asmx/GetStateFromCity";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetStateFromCity);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetStateFromCity);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
 	/*public JSONObject countrylist(JSONObject sendData) {
 
@@ -891,145 +895,145 @@ public class Services {
 
 	}*/
 
-	public JSONObject statelist(JSONObject sendData) {
+    public JSONObject statelist(JSONObject sendData) {
 
 		/*url = init + "/CommonMasterModule/UIService.asmx/GetStateList";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetStateList);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
-
-	}
-
-	public JSONObject pdfreport(JSONObject sendData) {
-
-		/*url = init + "/LaboratoryModule/lisservice.asmx/GetPatientTestReportMobile";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientTestReportMobile);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
-
-	}
-
-	public JSONObject getnation(JSONObject sendData) {
-
-		/*url = init + "/CommonMasterModule/UIService.asmx/GetAllNationality";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetAllNationality);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
-
-	}
-
-	public JSONObject fblink(JSONObject sendData) {
-
-		/*url = init + "/CredentialsModule/CredentialService.asmx/FacebookLinked";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.FacebookLinked);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
-
-	}
-
-    public JSONObject saveBasicDetail(JSONObject sendData) {
-
- /* url = init + "/laboratorymodule/LISService.asmx/Register";*/
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.saveBasicDetail);
-        String url=sttc_holdr.request_Url();
-        JSONObject abc = common(sendData,url);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetStateList);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
         return abc;
 
     }
 
-	public JSONObject fblogin(JSONObject sendData) {
+    public JSONObject pdfreport(JSONObject sendData) {
+
+		/*url = init + "/LaboratoryModule/lisservice.asmx/GetPatientTestReportMobile";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientTestReportMobile);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
+    public JSONObject getnation(JSONObject sendData) {
+
+		/*url = init + "/CommonMasterModule/UIService.asmx/GetAllNationality";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllNationality);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
+    public JSONObject fblink(JSONObject sendData) {
+
+		/*url = init + "/CredentialsModule/CredentialService.asmx/FacebookLinked";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.FacebookLinked);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
+    public JSONObject saveBasicDetail(JSONObject sendData) {
+
+ /* url = init + "/laboratorymodule/LISService.asmx/Register";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.saveBasicDetail);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
+    public JSONObject fblogin(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/FacebookLoginMobile";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.FacebookLoginMobile);
-		String url=sttc_holdr.request_Url();
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/json");
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.FacebookLoginMobile);
+        String url = sttc_holdr.request_Url();
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/json");
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		try {
+        try {
 
-			// URL myUrl = new URL(url);
-			// URLConnection connection = myUrl.openConnection();
-			// connection.setConnectTimeout(5000);
-			// connection.connect();
-			response = getThreadSafeClient().execute(request);
+            // URL myUrl = new URL(url);
+            // URLConnection connection = myUrl.openConnection();
+            // connection.setConnectTimeout(5000);
+            // connection.connect();
+            response = getThreadSafeClient().execute(request);
 
-			cookies = response.getHeaders("Set-Cookie");
+            cookies = response.getHeaders("Set-Cookie");
 
 			/* **** SAVING COOKIE DATA ON PHONE STORAGE *** */
-			String cookieData = "";
+            String cookieData = "";
 
-			for (int i = 0; i < cookies.length; i++) {
-				cookieData += cookies[i].getValue() + ";";
+            for (int i = 0; i < cookies.length; i++) {
+                cookieData += cookies[i].getValue() + ";";
 
-			}
-			hoja = cookieData;
-			MainActivity.cook = hoja;
+            }
+            hoja = cookieData;
+            MainActivity.cook = hoja;
 
-			FileOutputStream outputStream;
-			outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
-			outputStream.write(cookieData.getBytes());
-			outputStream.close();
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
+            outputStream.write(cookieData.getBytes());
+            outputStream.close();
 
-			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
+            receiveData = new JSONObject(new String(sb));
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			Log.e("Client", "Error checking internet connection", e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.e("IO", "Error checking internet connection", e);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            Log.e("Client", "Error checking internet connection", e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.e("IO", "Error checking internet connection", e);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
 
-			Log.e("JSON", "Error checking internet connection", e);
-		}
+            Log.e("JSON", "Error checking internet connection", e);
+        }
 
-		return receiveData;
+        return receiveData;
 
-	}
+    }
 
-	public JSONObject fbunlink(JSONObject sendData) {
+    public JSONObject fbunlink(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/FacebookUnLinked";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.FacebookUnLinked);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.FacebookUnLinked);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject deleteSingularDetails(JSONObject sendData) {
+    public JSONObject deleteSingularDetails(JSONObject sendData) {
 
   /*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.deleteSingularDetails);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.deleteSingularDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
     public JSONObject saveHealthDetail(JSONObject sendData) {
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.saveHealthDetail);
-        String url=sttc_holdr.request_Url();
-        JSONObject abc = common(sendData,url);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.saveHealthDetail);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
         return abc;
 
     }
@@ -1037,17 +1041,18 @@ public class Services {
     public JSONObject countrylist(JSONObject sendData) {
 
 
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetCountryList);
-        String url=sttc_holdr.request_Url();
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetCountryList);
+        String url = sttc_holdr.request_Url();
         JSONObject abc = common(sendData, url);
         return abc;
 
     }
+
     public JSONObject nationalityList(JSONObject sendData) {
 
 
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.getNationality);
-        String url=sttc_holdr.request_Url();
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getNationality);
+        String url = sttc_holdr.request_Url();
         JSONObject abc = common(sendData, url);
         return abc;
 
@@ -1056,166 +1061,176 @@ public class Services {
     public JSONObject getAllergies(JSONObject sendData) {
 
   /*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.getAllergies);
-        String url=sttc_holdr.request_Url();
-        JSONObject abc = common(sendData,url);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getAllergies);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
         return abc;
 
     }
 
-	public JSONObject GetUserDetails(JSONObject sendData) {
+    public JSONObject GetUserDetails(JSONObject sendData) {
 
 	/*	url = init + "/CredentialsModule/CredentialService.asmx/GetUserDeatils";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetUserDeatils);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserDeatils);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject ViewImages(JSONObject sendData) {
+    public JSONObject ViewImages(JSONObject sendData) {
 
 		/*url = init + "/LaboratoryModule/LISService.asmx/GetPatientTestImagesInCase";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetPatientTestImagesInCase);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPatientTestImagesInCase);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject UpdateImage(JSONObject sendData) {
+    public JSONObject UpdateImage(JSONObject sendData) {
 
 		/*url = init + "/laboratorymodule/LISService.asmx/UpdateImage";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.UpdateImage);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.UpdateImage);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public byte[] pdf(JSONObject sendData) {
-		byte[] fileContents = null;
-		//url =  "https://l141702.cloudchowk.com/LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetpatienttestReportAndroid);
-		String url=sttc_holdr.request_Url();
-		//String url = "https://patient.cloudchowk.com:8081/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
-		request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setHeader("Accept", "application/octet-stream");
-		request.setHeader("Cookie", hoja);
-		String cookieData = "";
+    public byte[] pdf(JSONObject sendData) {
+        byte[] fileContents = null;
+        //url =  "https://l141702.cloudchowk.com/LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetpatienttestReportAndroid);
+        String url = sttc_holdr.request_Url();
+        //String url = "https://patient.cloudchowk.com:8081/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/octet-stream");
+        request.setHeader("Cookie", hoja);
+        String cookieData = "";
 
-		for (int i = 0; i < cookies.length; i++) {
-			cookieData += cookies[i].getValue() + ";";
-		}
+        for (int i = 0; i < cookies.length; i++) {
+            cookieData += cookies[i].getValue() + ";";
+        }
 
-		request.addHeader("Cookie", cookieData);
+        request.addHeader("Cookie", cookieData);
 
-		try {
-			request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
-			response = client.execute(request);
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+            response = client.execute(request);
 
-			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			sb = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
 
-			receiveData = new JSONObject(new String(sb));
-			Log.i("REPORT DETAILS", receiveData.toString());
+            receiveData = new JSONObject(new String(sb));
+            Log.i("REPORT DETAILS", receiveData.toString());
 
-			String p = receiveData.get("d").toString();
-			String[] byteValues = p.substring(1, p.length() - 1).split(",");
-			byte[] bytes = new byte[byteValues.length];
-			Log.i("byteValues", byteValues.toString());
-			for (int i = 0, len = bytes.length; i < len; i++) {
-				bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
-			}
+            String p = receiveData.get("d").toString();
+            String[] byteValues = p.substring(1, p.length() - 1).split(",");
+            byte[] bytes = new byte[byteValues.length];
+            Log.i("byteValues", byteValues.toString());
+            for (int i = 0, len = bytes.length; i < len; i++) {
+                bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
+            }
 
-			Log.i("adksa", p);
+            Log.i("adksa", p);
 
-			fileContents = bytes;
-			Log.v("contents!!", fileContents.toString());
+            fileContents = bytes;
+            Log.v("contents!!", fileContents.toString());
 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch(NumberFormatException ex){
-			Toast.makeText(context,"Some error occured, Please try again later!",Toast.LENGTH_LONG).show();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NumberFormatException ex) {
+            Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
             ReportStatus.progress.dismiss();
-            ReportStatus.progress=null;
-		}
-		return fileContents;
-	}
+            ReportStatus.progress = null;
+        }
+        return fileContents;
+    }
 
-	public JSONObject uploadUmage(JSONObject sendData) {
+    public JSONObject uploadUmage(JSONObject sendData) {
 
 	/*	url = init + "/PatientModule/PatientService.asmx/PatientFileVault";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.PatientFileVault);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientFileVault);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject patienBasicDetails(JSONObject sendData) {
+    public JSONObject patienBasicDetails(JSONObject sendData) {
 
   /*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.getBasicDetails);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getBasicDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
+
+    public JSONObject getpatientHistoryDetails(JSONObject sendData) {
+
+  /*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getpatientHistoryDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
 
     public JSONObject saveOtherDetail(JSONObject sendData) {
 
   /*url = init + "/PatientModule/PatientService.asmx/GetPatientHistory";*/
-        StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.saveOtherDetail);
-        String url=sttc_holdr.request_Url();
-        JSONObject abc = common(sendData,url);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.saveOtherDetail);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
         return abc;
 
     }
 
-	public JSONObject GetUserDisclaimer(JSONObject sendData) {
+    public JSONObject GetUserDisclaimer(JSONObject sendData) {
 
 		/*url = init + "/StaffModule/StaffService.asmx/GetUserDisclaimer";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetUserDisclaimer);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserDisclaimer);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject GetPackage_TestDetails(JSONObject sendData) {
+    public JSONObject GetPackage_TestDetails(JSONObject sendData) {
 
 		/*url = init + "/StaffModule/StaffService.asmx/GetUserDisclaimer";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.SinglePackageDetails);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.SinglePackageDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject GetUserDetailsFromContactNoMobileService(JSONObject sendData) {
+    public JSONObject GetUserDetailsFromContactNoMobileService(JSONObject sendData) {
 
 		/*url = init + "/CommonMasterModule/CommonMasterService.asmx/GetUserDetailsFromContactNoMobileService";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetUserDetailsFromContactNoMobileService);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData, url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserDetailsFromContactNoMobileService);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
 	/*public JSONObject SignUpPatient(JSONObject sendData) {
 
@@ -1225,23 +1240,23 @@ public class Services {
 
 	}*/
 
-	public JSONObject getLabfromTest(JSONObject sendData) {
+    public JSONObject getLabfromTest(JSONObject sendData) {
 
 		/*url = LocationClass.init + "/GetLabByTest";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.GetLabByTest);
-		String url=sttc_holdr.request_Url();
-		JSONObject abc = common(sendData,url);
-		return abc;
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetLabByTest);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
 
-	}
+    }
 
-	public JSONObject sendContactToServer(JSONObject sendData) {
-		// TODO Auto-generated method stub
+    public JSONObject sendContactToServer(JSONObject sendData) {
+        // TODO Auto-generated method stub
 		/* url = "https://patient.cloudchowk.com:8081/WebServices/LabService.asmx/UpdateContact";*/
-		StaticHolder sttc_holdr=new StaticHolder(StaticHolder.Services_static.UpdateContact);
-		String url=sttc_holdr.request_Url();
-		JSONObject jsonobj = common(sendData,url);
-		return jsonobj;
-	}
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.UpdateContact);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonobj = common(sendData, url);
+        return jsonobj;
+    }
 
 }

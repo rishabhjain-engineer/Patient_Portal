@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvPatient"
@@ -26,9 +26,9 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:text="Booked On"
-                android:textStyle="bold"
                 android:textColor="#000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAdvice"
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView5"
@@ -65,10 +65,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
-                android:textStyle="bold"
                 android:text="Sample Collected"
                 android:textColor="#000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSample"
@@ -78,6 +78,7 @@
                 android:layout_weight="1"
                 android:textColor="#000000"
                 android:textSize="14sp" />
+
             <LinearLayout
                 android:id="@+id/separator3"
                 android:layout_width="match_parent"
@@ -95,8 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView13"
@@ -105,17 +106,17 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:text="Reported On"
-                android:textStyle="bold"
                 android:textColor="#000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDOB"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
-                android:layout_marginBottom="2dp"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -136,8 +137,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:visibility="gone"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvBG"
@@ -253,8 +254,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:background="@drawable/line"
-             />
+            android:background="@null" />
 
         <LinearLayout
             android:id="@+id/dynamic"

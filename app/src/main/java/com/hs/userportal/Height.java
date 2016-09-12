@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +54,7 @@ import java.util.List;
 
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
+import utils.MyMarkerView;
 
 public class Height extends ActionBarActivity {
 
@@ -63,6 +75,8 @@ public class Height extends ActionBarActivity {
     String parenthistory_ID;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
+    private LineChart linechart;
+    int maxYrange = 0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -95,9 +109,9 @@ public class Height extends ActionBarActivity {
         misc = new MiscellaneousTasks(Height.this);
         Intent z = getIntent();
         id = z.getStringExtra("id");
-        new Authentication(Height.this,"Height","").execute();
+        new Authentication(Height.this, "Height", "").execute();
 
-       // new BackgroundProcess().execute();
+        // new BackgroundProcess().execute();
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,6 +147,139 @@ public class Height extends ActionBarActivity {
                 dialog.show();
             }
         });
+        linechart = (LineChart) findViewById(R.id.lineChart);
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.heightPixels;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                linechart.getLayoutParams();
+        params.height = Math.round(height / 2);
+        linechart.setLayoutParams(params);
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+        // set the marker to the chart
+        linechart.setMarkerView(mv);
+    }
+
+    public void setLinechart() {
+        linechart.setDrawGridBackground(false);
+        for (int i = 0; i < chartValues.size(); i++) {
+            if (maxYrange < Math.round(Float.parseFloat(chartValues.get(i)))) {
+                maxYrange = Math.round(Float.parseFloat(chartValues.get(i)));
+            }
+        }
+        linechart.setDescription("");
+        linechart.setNoDataTextDescription("You need to provide data for the chart.");
+        // enable touch gestures
+        linechart.setTouchEnabled(true);
+        // enable scaling and dragging
+        linechart.setDragEnabled(true);
+        linechart.setScaleEnabled(true);
+        linechart.setPinchZoom(true);
+        // x-axis limit line
+        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.enableDashedLine(10f, 10f, 0f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
+        llXAxis.setEnabled(false);
+        XAxis xAxis = linechart.getXAxis();
+        //xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setXOffset(0f);
+        xAxis.setEnabled(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setAxisMinValue(0f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1.0f);
+        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
+        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
+        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
+        ll1.setLineWidth(4f);
+        ll1.enableDashedLine(10f, 10f, 0f);
+        ll1.setEnabled(false);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll1.setTextSize(10f);
+        ll1.setTypeface(tf);
+
+        LimitLine ll2 = new LimitLine(0f, "Lower Limit");
+        ll2.setLineWidth(4f);
+        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        ll2.setTextSize(10f);
+        ll2.setTypeface(tf);
+        ll2.setEnabled(false);
+
+        YAxis leftAxis = linechart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+        /*leftAxis.addLimitLine(ll1);
+        leftAxis.addLimitLine(ll2);*/
+        leftAxis.setAxisMaxValue(maxYrange + maxYrange / 4);
+        leftAxis.setAxisMinValue(0f);
+        leftAxis.setYOffset(0f);
+        leftAxis.enableGridDashedLine(0f, 0f, 0f);
+        leftAxis.setDrawZeroLine(false);
+        // leftAxis.setEnabled(false);
+        // limit lines are drawn behind data (and not on top)
+        leftAxis.setDrawLimitLinesBehindData(true);
+        linechart.getAxisRight().setEnabled(false);
+
+        //linechart.getViewPortHandler().setMaximumScaleY(2f);
+        //linechart.getViewPortHandler().setMaximumScaleX(2f);
+
+        // add data
+        setData(chartValues.size(), 100);
+
+//        linechart.setVisibleXRange(20);
+//        linechart.setVisibleYRange(20f, AxisDependency.LEFT);
+//        linechart.centerViewTo(20, 50, AxisDependency.LEFT);
+
+        linechart.animateX(2500);
+        //linechart.invalidate();
+        // get the legend (only possible after setting data)
+        Legend l = linechart.getLegend();
+        // modify the legend ...
+        // l.setPosition(LegendPosition.LEFT_OF_CHART);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setEnabled(false);
+        // don't forget to refresh the
+        //drawing
+        linechart.invalidate();
+    }
+
+    private void setData(int count, float range) {
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        for (int i = 0; i < count; i++) {
+            float val = Float.parseFloat(chartValues.get(i));
+            values.add(new Entry(i, val));
+        }
+        LineDataSet set1;
+        if (linechart.getData() != null &&
+                linechart.getData().getDataSetCount() > 0) {
+            set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
+            set1.setValues(values);
+            linechart.getData().notifyDataChanged();
+            linechart.notifyDataSetChanged();
+        } else {
+            // create a data set and give it a type
+            set1 = new LineDataSet(values, getIntent().getStringExtra("chartNames"));
+            set1.disableDashedLine();
+            set1.setColor(Color.parseColor("#FF8409"));
+            set1.setCircleColor(Color.parseColor("#FF8409"));
+            set1.setLineWidth(1.5f);
+            set1.setCircleRadius(3.5f);
+            set1.setDrawCircleHole(true);
+            set1.setCircleHoleRadius(7f);
+            set1.setDrawFilled(false);
+            set1.setDrawValues(false);
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            dataSets.add(set1); // add the datasets
+            // create a data object with the datasets
+            LineData data = new LineData(dataSets);
+            // set data
+            linechart.setData(data);
+        }
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
@@ -233,10 +380,12 @@ public class Height extends ActionBarActivity {
                         "\n" +
                         "</body>\n" +
                         "</html>";
+                setLinechart();
             } catch (Exception e) {
                 e.printStackTrace();
+                progress.dismiss();
             }
-            weight_graphView.setWebViewClient(new WebViewClient() {
+           /* weight_graphView.setWebViewClient(new WebViewClient() {
 
                 @Override
                 public void onPageFinished(WebView view, String url) {
@@ -253,8 +402,8 @@ public class Height extends ActionBarActivity {
             } else {
                 weight_graphView.setVisibility(View.GONE);
                 progress.dismiss();
-            }
-            //  progress.dismiss();
+            }*/
+            progress.dismiss();
         }
 
         @Override
@@ -332,7 +481,7 @@ public class Height extends ActionBarActivity {
                 i.putExtra("htype", "height");
                 startActivity(i);
                 finish();
-               // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             default:
@@ -382,7 +531,7 @@ public class Height extends ActionBarActivity {
         progress.show();
         sendData = new JSONObject();
         try {
-            sendData.put("patientHistoryId",parenthistory_ID);
+            sendData.put("patientHistoryId", parenthistory_ID);
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -395,12 +544,12 @@ public class Height extends ActionBarActivity {
                 System.out.println(response);
 
                 try {
-                    if(response.getString("d").equalsIgnoreCase("success")){
+                    if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(Height.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         finish();
                         startActivity(getIntent());
-                    }else{
+                    } else {
                         Toast.makeText(Height.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -425,7 +574,7 @@ public class Height extends ActionBarActivity {
         queue.add(jr);
     }
 
-    public void startBackgroundprocess(){
+    public void startBackgroundprocess() {
         new BackgroundProcess().execute();
     }
 
