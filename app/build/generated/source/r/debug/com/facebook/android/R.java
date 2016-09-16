@@ -69,7 +69,7 @@ public final class R {
 		public static final int com_facebook_list_section_header_background = 0x7f02007b;
 		public static final int com_facebook_loginbutton_silver = 0x7f02007c;
 		public static final int com_facebook_logo = 0x7f02007d;
-		public static final int com_facebook_picker_default_separator_color = 0x7f0201a3;
+		public static final int com_facebook_picker_default_separator_color = 0x7f0201a8;
 		public static final int com_facebook_picker_item_background = 0x7f02007e;
 		public static final int com_facebook_picker_list_focused = 0x7f02007f;
 		public static final int com_facebook_picker_list_longpressed = 0x7f020080;
@@ -172,9 +172,9 @@ public final class R {
 		public static final int com_facebook_usersettingsfragment_not_logged_in = 0x7f060046;
 	}
 	public static final class style {
-		public static final int com_facebook_loginview_default_style = 0x7f0a0105;
-		public static final int com_facebook_loginview_silver_style = 0x7f0a0106;
-		public static final int tooltip_bubble_text = 0x7f0a0107;
+		public static final int com_facebook_loginview_default_style = 0x7f0a0106;
+		public static final int com_facebook_loginview_silver_style = 0x7f0a0107;
+		public static final int tooltip_bubble_text = 0x7f0a0108;
 	}
 	public static final class styleable {
 		public static final int[] com_facebook_friend_picker_fragment = { 0x7f010105 };

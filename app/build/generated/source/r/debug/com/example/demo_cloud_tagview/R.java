@@ -21,16 +21,16 @@ public final class R {
 	}
 	public static final class drawable {
 		public static final int cross = 0x7f0200c3;
-		public static final int delt = 0x7f0200d5;
-		public static final int ic_launcher = 0x7f02011a;
-		public static final int shape_tagview = 0x7f02017e;
+		public static final int delt = 0x7f0200d6;
+		public static final int ic_launcher = 0x7f02011c;
+		public static final int shape_tagview = 0x7f020183;
 	}
 	public static final class id {
-		public static final int tv_tag_item_contain = 0x7f0d037c;
-		public static final int tv_tag_item_delete = 0x7f0d037d;
+		public static final int tv_tag_item_contain = 0x7f0d0381;
+		public static final int tv_tag_item_delete = 0x7f0d0382;
 	}
 	public static final class layout {
-		public static final int tagview_item = 0x7f0400ca;
+		public static final int tagview_item = 0x7f0400cb;
 	}
 	public static final class string {
 		public static final int action_settings = 0x7f06004b;

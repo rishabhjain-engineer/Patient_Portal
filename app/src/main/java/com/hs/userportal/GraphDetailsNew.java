@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,8 +69,8 @@ public class GraphDetailsNew extends ActionBarActivity {
         setContentView(R.layout.graphdetails_new);
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+                .parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         String title = getIntent().getStringExtra("chartNames");
         action.setTitle(title);
@@ -229,11 +231,11 @@ public class GraphDetailsNew extends ActionBarActivity {
         linechart.setDescription("");
         linechart.setNoDataTextDescription("You need to provide data for the chart.");
         // enable touch gestures
-        linechart.setTouchEnabled(false);
+        linechart.setTouchEnabled(true);
         // enable scaling and dragging
         linechart.setDragEnabled(true);
         linechart.setScaleEnabled(true);
-        linechart.setPinchZoom(false);
+        linechart.setPinchZoom(true);
         // x-axis limit line
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
         llXAxis.setLineWidth(4f);
@@ -376,6 +378,24 @@ public class GraphDetailsNew extends ActionBarActivity {
         d.setValueTypeface(tf);
 
         return d;
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 

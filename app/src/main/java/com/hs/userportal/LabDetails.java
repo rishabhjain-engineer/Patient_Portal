@@ -105,8 +105,8 @@ public class LabDetails extends ActionBarActivity {
         progress = new ProgressDialog(LabDetails.this);
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+                .parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
 
         slidingMenu = new SlidingMenu(this);
@@ -493,7 +493,7 @@ public class LabDetails extends ActionBarActivity {
 
 
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(sendData);
+            result = service.pdf(sendData,"LabDetails");
             String temp = null;
             try {
                 temp = new String(result, "UTF-8");

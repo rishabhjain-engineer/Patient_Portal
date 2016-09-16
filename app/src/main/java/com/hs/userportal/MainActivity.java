@@ -181,8 +181,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         queue = Volley.newRequestQueue(this);
 
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

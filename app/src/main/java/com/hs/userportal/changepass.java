@@ -58,8 +58,8 @@ public class changepass extends ActionBarActivity {
 
 		ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
-				.parseColor("#1998ca")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#1998ca")));
+				.parseColor("#3cbed8")));
+		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
 
 		

@@ -29,8 +29,8 @@ public class Error extends ActionBarActivity {
 		this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
 		ActionBar action = getSupportActionBar();
-		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 
 		iv = (ImageView) findViewById(R.id.IVNotFound);
 		mLoadingView = findViewById(R.id.pbError);

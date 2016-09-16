@@ -29,8 +29,8 @@ public class PdfReader extends ActionBarActivity {
 		setContentView(R.layout.pdfreader);
 
 		ActionBar action = getSupportActionBar();
-		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
 
 		// Actionbar with search option

@@ -35,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,10 +44,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -96,6 +99,7 @@ public class ReportStatus extends ActionBarActivity {
     String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null,
             RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
     private int iscomment=0;
+    public static ProgressBar progress_bar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -107,8 +111,8 @@ public class ReportStatus extends ActionBarActivity {
 
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+                .parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -131,6 +135,10 @@ public class ReportStatus extends ActionBarActivity {
         list_view = (ListView) findViewById(R.id.list_view);
         list_view.setFocusable(false);
         bgraph = (LinearLayout) findViewById(R.id.bGraph);
+        progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
+        progress_bar.setProgress(0);
+        progress_bar.setSecondaryProgress(2);
+        progress_bar.setMax(100);
         misc = new MiscellaneousTasks(ReportStatus.this);
         Intent z = getIntent();
         index = z.getIntExtra("index", 10);
@@ -1233,33 +1241,38 @@ public class ReportStatus extends ActionBarActivity {
 
     }
 
-    class pdfprocess extends AsyncTask<Void, Void, Void> {
+    class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(ReportStatus.this);
+           /* progress = new ProgressDialog(ReportStatus.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
-            progress.setIndeterminate(true);
-            ReportStatus.this.runOnUiThread(new Runnable() {
+            progress.setIndeterminate(true);*/
+           /* ReportStatus.this.runOnUiThread(new Runnable() {
 
                 public void run() {
                     if (progress != null)
-                        progress.show();
+                       // progress.show();
                 }
-            });
-
+            });*/
+            progress_bar.setVisibility(View.VISIBLE);
+            progress_bar.setProgress(0);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-
+            int count ;
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+            ReportStatus.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    progress_bar.setProgress(2);
+                    progress_bar.setSecondaryProgress(3);
+                }
+            });
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -1289,7 +1302,12 @@ public class ReportStatus extends ActionBarActivity {
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfdata);
                 sendData.put("UserId", patientId);
-
+                ReportStatus.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        progress_bar.setProgress(6);
+                        progress_bar.setSecondaryProgress(7);
+                    }
+                });
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -1303,9 +1321,15 @@ public class ReportStatus extends ActionBarActivity {
                 // TODO Auto-generated catch block
                 e2.printStackTrace();
             }
-
+            ReportStatus.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    progress_bar.setProgress(9);
+                    progress_bar.setSecondaryProgress(10);
+                }
+            });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(sendData);
+            result = service.pdf(sendData,"Report Status");
+            int lenghtOfFile = result.length;
             String temp = null;
             try {
                 temp = new String(result, "UTF-8");
@@ -1318,7 +1342,19 @@ public class ReportStatus extends ActionBarActivity {
             OutputStream out;
             try {
                 out = new FileOutputStream(reportFile);
-                out.write(result);
+                InputStream input = new ByteArrayInputStream(result);
+                out = new FileOutputStream(reportFile);
+
+                byte data[] = new byte[1024];
+
+                long total = 15;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                    out.write(result);
+                }
+                out.flush();
                 out.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -1375,9 +1411,9 @@ public class ReportStatus extends ActionBarActivity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
 
-            if (progress != null)
-                progress.dismiss();
-
+            /*if (progress != null)
+                progress.dismiss();*/
+            progress_bar.setVisibility(View.GONE);
 
             try {
 
@@ -1457,6 +1493,17 @@ public class ReportStatus extends ActionBarActivity {
 //			startActivity(i);
 //			progress.dismiss();
 
+        }
+
+        /**
+         * Updating progress bar
+         */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+            progress_bar.setIndeterminate(false);
+            progress_bar.setMax(100);
+            progress_bar.setProgress(Integer.parseInt(progress[0]));
+            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);
         }
 
     }

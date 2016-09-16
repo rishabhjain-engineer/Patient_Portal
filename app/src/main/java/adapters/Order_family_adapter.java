@@ -60,7 +60,7 @@ public class Order_family_adapter extends BaseAdapter {
         folder_name.setText(family_member.get(position).get("FirstName")+" "+ family_member.get(position).get("LastName"));
         image.setDefaultImageResId(R.drawable.dashpic_update);
         image.setAdjustViewBounds(true);
-        image.setImageUrl("https://files.cloudchowk.com/" + family_member.get(position)
+        image.setImageUrl("https://files.healthscion.com/" + family_member.get(position)
                 .get("Image"), mImageLoader);
         return convertView;
     }

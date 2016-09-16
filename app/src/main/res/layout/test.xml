@@ -25,7 +25,6 @@
                 android:id="@+id/tabcontainer"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-
                 android:orientation="vertical">
 
                 <HorizontalScrollView

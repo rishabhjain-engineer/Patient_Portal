@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,8 +66,8 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
 
     static class ViewHolder {
         TextView member_name, relation_member, test_name, result, accept, deny, head_member,
-                test_name_head, blood_group;
-        LinearLayout pending_request;
+                test_name_head, blood_group,amount,status;
+        LinearLayout pending_request, amount_header;
         NetworkImageView user_pic;
         Spinner options;
         private DataHolder data;
@@ -91,7 +92,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
         if (inflater == null)
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.myfamily_adapter, null);
+            convertView = inflater.inflate(R.layout.myfamily_adapter_new, null);
             holder = new ViewHolder();
             if (spinnerlist_adapter.length != 0) {
                 holder.data = spinnerlist_adapter[position];
@@ -104,10 +105,13 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
             holder.deny = (TextView) convertView.findViewById(R.id.deny);
             holder.head_member = (TextView) convertView.findViewById(R.id.head_member);
             holder.pending_request = (LinearLayout) convertView.findViewById(R.id.pending_request);
+            holder.amount_header = (LinearLayout) convertView.findViewById(R.id.amount_header);
             holder.user_pic = (NetworkImageView) convertView.findViewById(R.id.user_pic);
             holder.options = (Spinner) convertView.findViewById(R.id.options);
             holder.blood_group = (TextView) convertView.findViewById(R.id.blood_group);
             holder.test_name_head = (TextView) convertView.findViewById(R.id.test_name_head);
+            holder.amount = (TextView) convertView.findViewById(R.id.amount);
+            holder.status = (TextView) convertView.findViewById(R.id.status);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -135,20 +139,29 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
             holder.options.setVisibility(View.VISIBLE);
             holder.user_pic.setDefaultImageResId(R.drawable.dashpic_update);
             holder.user_pic.setAdjustViewBounds(true);
-            holder.user_pic.setImageUrl("https://files.cloudchowk.com/" + family_arr_list.get(position)
+            holder.user_pic.setImageUrl("https://files.healthscion.com/" + family_arr_list.get(position)
                     .get("Image"), mImageLoader);
             if (family_arr_list.get(position).get("HM").equals("2")) {
                 holder.blood_group.setVisibility(View.VISIBLE);
                 String check_bld = family_arr_list.get(position).get("BloodGroup");
-
+                holder.amount_header.setVisibility(View.VISIBLE);
+                Double amount_req = Double.valueOf(family_arr_list.get(position).get("TotalActualAmount"));
+                holder.amount.setText("₹ "+ String.format("%.2f", amount_req));
+                Float balanceCheck = Float.parseFloat(family_arr_list.get(position).get("Balance"));
+                if(balanceCheck == 0.00){
+                    holder.status.setText("PAID");
+                    holder.status.setTextColor(Color.parseColor("#319731"));
+                }else{
+                    holder.status.setText("DUE");
+                    holder.status.setTextColor(Color.RED);
+                }
                 if (!check_bld.equalsIgnoreCase("")) {
-                    holder.blood_group.setText("BloodGroup: " + family_arr_list.get(position).get("BloodGroup"));
+                    holder.blood_group.setText(family_arr_list.get(position).get("BloodGroup"));
                 } else {
-                    holder.blood_group.setText("BloodGroup:  ");
+                    holder.blood_group.setText("-");
                     //holder.blood_group.setVisibility(View.GONE);
                 }
-                holder.relation_member.setText("Relation: " + family_arr_list.get(position).get("RelationName"));
-
+                holder.relation_member.setText(family_arr_list.get(position).get("RelationName"));
                 if (family_arr_list.get(position).containsKey("IsTestCompletedNew")) {
                   /*  if (family_arr_list.get(position).get("IsTestCompletedNew").equals("1"))*/ {
                         holder.test_name.setVisibility(View.VISIBLE);
@@ -191,15 +204,17 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                 holder.test_name.setVisibility(View.GONE);
                 // holder.result.setVisibility(View.GONE);
                 holder.test_name_head.setVisibility(View.GONE);
+                holder.amount_header.setVisibility(View.GONE);
                 holder.relation_member.setText(family_arr_list.get(position).get("Age") + ", " + family_arr_list.get(position).get("Sex"));
             }
            /* adapter = new ArrayAdapter(activity, R.layout.spinner_item, revoke);
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_itemandroid.R.layout.simple_spinner_dropdown_item);
             holder.options.setAdapter(adapter);*/
         } else {
+            holder.amount_header.setVisibility(View.GONE);
             if (family_arr_list.get(position).get("HM").equals("2")) {
                 holder.member_name.setText(family_arr_list.get(position).get("PatientCode"));
-                holder.relation_member.setText("Relation: " + family_arr_list.get(position).get("RelationName"));
+                holder.relation_member.setText(family_arr_list.get(position).get("RelationName"));
                 holder.pending_request.setVisibility(View.GONE);
                 holder.options.setVisibility(View.VISIBLE);
                 holder.head_member.setVisibility(View.VISIBLE);

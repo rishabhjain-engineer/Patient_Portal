@@ -169,8 +169,8 @@ public class Register extends ActionBarActivity {
         final Helper helper = new Helper();
 
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         etFirst = (EditText) findViewById(R.id.etFirst);
     /*	etlast = (EditText) findViewById(R.id.etlast);*/
@@ -1647,7 +1647,16 @@ public class Register extends ActionBarActivity {
                         // intent.putExtra("tpwd", tpwd);
 
                         startActivity(intent);
-                    } else {
+                    }else if (fromActivity.equalsIgnoreCase("anyother_activity")){
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln);
+                        // intent.putExtra("tpwd", tpwd);
+
+                        startActivity(intent);
+                    }else {
                         Register.this.finish();
                     }
                 } else {
@@ -1924,7 +1933,6 @@ public class Register extends ActionBarActivity {
                         intent.putExtra("pass", password);
                         intent.putExtra("fn", fnln);
                         // intent.putExtra("tpwd", tpwd);
-
                         startActivity(intent);
                     } else {
                         Register.this.finish();

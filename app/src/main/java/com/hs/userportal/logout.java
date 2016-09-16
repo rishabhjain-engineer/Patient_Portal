@@ -89,7 +89,7 @@ public class logout extends Activity implements View.OnClickListener {
     String PH;
     ProgressDialog progress;
     Services service;
-    public static String id,privatery_id;
+    public static String id, privatery_id;
     String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
     String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
     final int PIC_CROP = 3;
@@ -259,7 +259,7 @@ public class logout extends Activity implements View.OnClickListener {
                         update.verify = "0";
                         intent.putExtra("family", family_object);
                         String member = username.getText().toString();
-                        intent.putExtra("Member_Name",member);
+                        intent.putExtra("Member_Name", member);
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     } else {
@@ -289,7 +289,7 @@ public class logout extends Activity implements View.OnClickListener {
         service = new Services(this);
         Intent i = getIntent();
         id = i.getStringExtra("id");
-        privatery_id=id;
+        privatery_id = id;
         PH = i.getStringExtra("PH");
         user = i.getStringExtra("user");
         passw = i.getStringExtra("pass");
@@ -357,7 +357,7 @@ public class logout extends Activity implements View.OnClickListener {
                     update.verify = "0";
                     intent.putExtra("family", family_object);
                     String member = username.getText().toString();
-                    intent.putExtra("Member_Name",member);
+                    intent.putExtra("Member_Name", member);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
@@ -451,7 +451,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
 
-                if (!authentication.equals("true")) {
+                if (authentication.equals("false")) {
 
                     AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
                     dialog.setTitle("Session timed out!");
@@ -525,7 +525,7 @@ public class logout extends Activity implements View.OnClickListener {
                 }
 */
                 family_object.clear();
-                image_parse="";
+                image_parse = "";
                 progress.dismiss();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -542,10 +542,36 @@ public class logout extends Activity implements View.OnClickListener {
                 // Toast.makeText(getApplicationContext(),
                 // "Log out unsuccessful.",Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
+                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.clear();
+                editor.commit();
+
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
+                // MainActivity.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(logout.this);
+               /* if( MainActivity.sharedPreferences!=null) {
+                    SharedPreferences.Editor editor1 = MainActivity.sharedPreferences.edit();
+                    editor1.clear();
+                    editor1.commit();
+                }
+*/
+                family_object.clear();
+                image_parse = "";
+                progress.dismiss();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                output = null;
+                update.bitmap = null;
+                update.verify = "0";
+                user_pic.setImageResource(R.drawable.dashpic_update);
+                finish();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
+                progress.dismiss();
             }
-
 
         }
 
@@ -663,7 +689,7 @@ public class logout extends Activity implements View.OnClickListener {
                             float right = (float) bitmap.getHeight() / 2;
                             float bottom = (float) bitmap.getWidth() / 2;
                             canvas.drawRect(left,top,right,bottom, paint);*/
-                          //  canvas.drawRect(rect,paint);
+                            //  canvas.drawRect(rect,paint);
 
                             canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -679,7 +705,7 @@ public class logout extends Activity implements View.OnClickListener {
                                             .into(user_pic);*/
 
                                     user_pic.setImageBitmap(output);
-                                 //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
+                                    //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
                                 }
                             });
@@ -695,8 +721,8 @@ public class logout extends Activity implements View.OnClickListener {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
-                            canvas.drawRect(rect,paint);
-                           canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
+                            canvas.drawRect(rect, paint);
+                            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                             canvas.drawBitmap(bitmap, rect, rect, paint);
 
@@ -709,7 +735,7 @@ public class logout extends Activity implements View.OnClickListener {
                                             .fitCenter()
                                             .into(user_pic);*/
                                     user_pic.setImageBitmap(output);
-                                   // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
+                                    // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
                                     // setProgressBarIndeterminateVisibility(false);
                                 }
@@ -1047,7 +1073,7 @@ public class logout extends Activity implements View.OnClickListener {
 
         menu.findItem(MENU_LINK).setVisible(false);
 
-      //  this.setupMessagesBadge(menu.findItem(R.id.action_count));
+        //  this.setupMessagesBadge(menu.findItem(R.id.action_count));
 
         if (unlinkmenu == 1) {
             // menu.findItem(MENU_LINK).setVisible(true);
@@ -1415,8 +1441,8 @@ public class logout extends Activity implements View.OnClickListener {
 
                 paint.setAntiAlias(true);
                 canvas.drawARGB(0, 0, 0, 0);
-              //  canvas.drawRect(rect,paint);
-              canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
+                //  canvas.drawRect(rect,paint);
+                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 canvas.drawBitmap(bitmap, rect, rect, paint);
 
@@ -1429,7 +1455,7 @@ public class logout extends Activity implements View.OnClickListener {
                                 .fitCenter()
                                 .into(user_pic);*/
                         user_pic.setImageBitmap(output);
-                       // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
+                        // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                         imageProgress.setVisibility(View.INVISIBLE);
                     }
                 });
@@ -1484,7 +1510,7 @@ public class logout extends Activity implements View.OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        id=privatery_id;
+        id = privatery_id;
         find_family();
         if (Helper.authentication_flag == true) {
             finish();
@@ -1559,8 +1585,7 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             try {
-
-                if (!authentication.equals("true")) {
+                if (authentication.equals("false")) {
 
                     AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
                     dialog.setTitle("Session timed out!");

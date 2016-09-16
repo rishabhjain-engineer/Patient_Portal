@@ -34,8 +34,8 @@ public class PrivacyPolicy extends ActionBarActivity {
 
 		ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
-				.parseColor("#1DBBE3")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+				.parseColor("#3cbed8")));
+		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
 
 		privacy = (WebView) findViewById(R.id.webPrivacy);

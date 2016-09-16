@@ -51,7 +51,7 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
     private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest
             , height_latest, allergies;
     private String id, show_blood, bgroup,  height,  weight;
-    private LinearLayout bgHeader;
+    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
@@ -73,10 +73,13 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
         height_latest = (TextView) findViewById(R.id.height_latest);
         allergies = (TextView) findViewById(R.id.allergies);
         bgHeader = (LinearLayout) findViewById(R.id.bgHeader);
+        weightLayout = (LinearLayout) findViewById(R.id.weightLayout);
+        heightLayout = (LinearLayout) findViewById(R.id.heightLayout);
+        allergyLayout = (LinearLayout) findViewById(R.id.allergyLayout);
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+                .parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         action.setTitle("My Health");
         new Authentication(MyHealth.this, "MyHealth", "").execute();
@@ -121,6 +124,34 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
                 showdialog();
             }
         });
+        weightLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MyHealth.this, Weight.class);
+                in.putExtra("id", id);
+                startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        heightLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MyHealth.this, Height.class);
+                in.putExtra("id", id);
+                startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        allergyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MyHealth.this, Allergy.class);
+                in.putExtra("id", id);
+                startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
 
     }
 
@@ -315,6 +346,66 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
             }
             return null;
         }
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new BackgroundProcessResume().execute();
+    }
+
+    class BackgroundProcessResume extends AsyncTask<Void, Void, Void> {
+        ProgressDialog progress;
+        JSONObject receiveData1;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            blood_group.setText(bgroup);
+            if(!height.equalsIgnoreCase("null")) {
+                height_latest.setText(height);
+            }else{
+                height_latest.setText("-");
+            }
+            if(!weight.equalsIgnoreCase("null")){
+                weight_latest.setText(weight);
+            }else{
+                weight_latest.setText("-");
+            }if(allergy_no!=0){
+                allergies.setText(String.valueOf(allergy_no));
+            }else{
+                allergies.setText("-");
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+
+                sendData1.put("UserId", id);
+                receiveData1 = service.getpatientHistoryDetails(sendData1);
+                String data = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.getJSONArray("Table");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    bgroup = obj.getString("BloodGroup");
+                    height = obj.getString("height");
+                    weight = obj.getString("weight");
+                    String[] array = obj.getString("allergiesName").split(",");
+                    allergy_no = array.length;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }

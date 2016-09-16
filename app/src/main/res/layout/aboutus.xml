@@ -85,11 +85,13 @@
 
     <TextView
         android:id="@+id/bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
+        android:padding="8dp"
+        android:background="#5a5a5d"
+        android:textColor="@android:color/white"
         android:gravity="center"
         android:text="@string/cloud"
         android:textAppearance="?android:attr/textAppearanceSmall"

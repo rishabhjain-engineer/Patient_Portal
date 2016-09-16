@@ -88,8 +88,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myfamily);
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
@@ -608,6 +608,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                 hmap.put("Result", json_obj.getString("Result"));
                                 hmap.put("Unit", json_obj.getString("Unit"));
                                 hmap.put("IsTestCompletedNew", json_obj.getString("IsTestCompletedNew"));
+                                hmap.put("TotalActualAmount", json_obj.getString("TotalActualAmount"));
+                                hmap.put("Balance", json_obj.getString("Balance"));
                                 family_test_object.add(hmap);
                             }
                         }
@@ -618,24 +620,28 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                         if (family_test_object.size() == 1) {
                             HashMap<String, String> sorted_hmap = new HashMap<String, String>();
                             sorted_hmap.put("userid", family_test_object.get(0).get("userid"));
-                            sorted_hmap.put("TestName", family_test_object.get(0).get("TestName"));
+                            sorted_hmap.put("TestName", "1."+family_test_object.get(0).get("TestName"));
                             sorted_hmap.put("DateOfReport", family_test_object.get(0).get("IsTestCompletedNew"));
                             sorted_hmap.put("Result", family_test_object.get(0).get("IsTestCompletedNew"));
                             sorted_hmap.put("Unit", family_test_object.get(0).get("IsTestCompletedNew"));
                             sorted_hmap.put("IsTestCompletedNew", family_test_object.get(0).get("IsTestCompletedNew"));
+                            sorted_hmap.put("TotalActualAmount", family_test_object.get(0).get("TotalActualAmount"));
+                            sorted_hmap.put("Balance", family_test_object.get(0).get("Balance"));
                             sorted_list.add(sorted_hmap);
                         } else {
-                            for (int l = 0; l < family_test_object.size() - 1; l++) {
+                            for (int l = 0; l <family_test_object.size(); l++) {
                                 StringBuffer str_test = new StringBuffer();
+                                int num = 1;
                                 HashMap<String, String> sorted_hmap = new HashMap<String, String>();
-                                for (int k = l + 1; k < family_test_object.size(); k++) {
+                                for (int k = l + 1; k <family_test_object.size(); k++) {
                                     if (family_test_object.get(l).get("userid").equals(family_test_object.get(k).get("userid"))
                                            /* && family_test_object.get(k).get("IsTestCompletedNew").equals("1")*/) {
 
                                         if(check_commas==0){
-                                            str_test.append(family_test_object.get(k - 1).get("TestName"));
+                                            str_test.append(num +". "+family_test_object.get(k - 1).get("TestName"));
                                         }else{
-                                            str_test.append(", " + family_test_object.get(k - 1).get("TestName"));
+                                            num++;
+                                            str_test.append("\n" + num + ". " + family_test_object.get(k - 1).get("TestName"));
                                         }check_commas++;
                                         //sorted_hmap.put("userid",family_test_object.get(k).get("userid"));
                                         sorted_hmap.put("TestName", str_test.toString());
@@ -648,14 +654,18 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                         k--;
                                     } else {
                                         check_commas=0;
-                                        if (!family_test_object.get(k).get("IsTestCompletedNew").equals("null")) {
-                                            str_test.append(family_test_object.get(l).get("TestName") + "#");
+                                       /* if (!family_test_object.get(k).get("IsTestCompletedNew").equals("null"))*/ {
+                                            str_test.append("1. "+family_test_object.get(l).get("TestName") + "#");
                                             check_userids = family_test_object.get(l).get("userid");
-                                        } else {
+                                        } /*else {
 
-                                        }
+                                        }*/
 
                                     }
+                                }
+                                if(num==family_test_object.size()){
+                                    num++;
+                                    str_test.append("\n" + num + ". " + family_test_object.get(num-2).get("TestName"));
                                 }
                                 sorted_hmap.put("userid", family_test_object.get(l).get("userid"));
                                 sorted_hmap.put("TestName", str_test.toString());
@@ -663,6 +673,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                 sorted_hmap.put("Result", family_test_object.get(l).get("IsTestCompletedNew"));
                                 sorted_hmap.put("Unit", family_test_object.get(l).get("IsTestCompletedNew"));
                                 sorted_hmap.put("IsTestCompletedNew", family_test_object.get(l).get("IsTestCompletedNew"));
+                                sorted_hmap.put("TotalActualAmount", family_test_object.get(l).get("TotalActualAmount"));
+                                sorted_hmap.put("Balance", family_test_object.get(l).get("Balance"));
                                 sorted_list.add(sorted_hmap);
                             }
                         }
@@ -690,6 +702,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                 sorted_hmap1.put("Result", "");
                                 sorted_hmap1.put("Unit", "");
                                 sorted_hmap1.put("IsTestCompletedNew", "");
+                                sorted_hmap1.put("TotalActualAmount", "");
+                                sorted_hmap1.put("Balance", "");
                                 sorted_list.add(sorted_hmap1);
                             }
                         }
@@ -700,6 +714,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                     HashMap<String, String> hmap1 = family_object.get(k);
                                     hmap1.put("TestName", sorted_list.get(l).get("TestName"));
                                     hmap1.put("IsTestCompletedNew", sorted_list.get(l).get("IsTestCompletedNew"));
+                                    hmap1.put("TotalActualAmount", family_test_object.get(l).get("TotalActualAmount"));
+                                    hmap1.put("Balance", family_test_object.get(l).get("Balance"));
                                     family_object.remove(k);
                                     family_object.add(k, hmap1);
                                     break;
@@ -711,6 +727,8 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
                                 HashMap<String, String> hmap2 = family_object.get(i);
                                 hmap2.put("TestName", "");
                                 hmap2.put("IsTestCompletedNew", "");
+                                hmap2.put("TotalActualAmount", "");
+                                hmap2.put("Balance","");
                                 family_object.remove(i);
                                 family_object.add(i, hmap2);
                             }

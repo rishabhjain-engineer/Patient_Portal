@@ -179,8 +179,8 @@ public class Filevault2 extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         mhelper = new Helper();
         Intent i = getIntent();

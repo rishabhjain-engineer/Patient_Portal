@@ -12,7 +12,7 @@ public class WalthroughFragment extends Fragment {
 
 	public static final String POSITION_KEY = "FragmentPositionKey";
 	private int position;
-	LinearLayout walk1, walk2,/* walk3,*/ walk4;
+	LinearLayout walk1, walk2, walk3, walk4;
 	RelativeLayout walk0;
 	
 
@@ -41,13 +41,13 @@ public class WalthroughFragment extends Fragment {
 		walk0 = (RelativeLayout) view.findViewById(R.id.walk0);
 		walk1 = (LinearLayout) view.findViewById(R.id.walk1);
 		walk2 = (LinearLayout) view.findViewById(R.id.walk2);
-		//walk3 = (LinearLayout) view.findViewById(R.id.walk3);
+		walk3 = (LinearLayout) view.findViewById(R.id.walk3);
         walk4 = (LinearLayout) view.findViewById(R.id.walk4);
 
 		walk0.setVisibility(View.GONE);
 		walk1.setVisibility(View.GONE);
 		walk2.setVisibility(View.GONE);
-	//	walk3.setVisibility(View.GONE);
+		walk3.setVisibility(View.GONE);
         walk4.setVisibility(View.GONE);
 
 		if (position == 0) {
@@ -55,36 +55,36 @@ public class WalthroughFragment extends Fragment {
 			walk0.setVisibility(View.VISIBLE);
 			walk1.setVisibility(View.GONE);
 			walk2.setVisibility(View.GONE);
-		//	walk3.setVisibility(View.GONE);
+			walk3.setVisibility(View.GONE);
             walk4.setVisibility(View.GONE);
 		}else if (position == 1) {
 			// view = inflater.inflate(R.layout.walk, container, false);
 			walk1.setVisibility(View.VISIBLE);
 			walk0.setVisibility(View.GONE);
 			walk2.setVisibility(View.GONE);
-		//	walk3.setVisibility(View.GONE);
+			walk3.setVisibility(View.GONE);
             walk4.setVisibility(View.GONE);
 		} else if (position == 2) {
 			// view = inflater.inflate(R.layout.walk, container, false);
 			walk2.setVisibility(View.VISIBLE);
 			walk0.setVisibility(View.GONE);
 			walk1.setVisibility(View.GONE);
-		//	walk3.setVisibility(View.GONE);
+			walk3.setVisibility(View.GONE);
             walk4.setVisibility(View.GONE);
 		} else if (position == 3) {
 			// view = inflater.inflate(R.layout.walk, container, false);
-			walk4.setVisibility(View.VISIBLE);
+			walk4.setVisibility(View.GONE);
 			walk1.setVisibility(View.GONE);
 			walk2.setVisibility(View.GONE);
-			//walk3.setVisibility(View.GONE);
+			walk3.setVisibility(View.VISIBLE);
 			walk0.setVisibility(View.GONE);
-		}/*else if(position == 4){
+		}else if(position == 4){
             walk4.setVisibility(View.VISIBLE);
             walk1.setVisibility(View.GONE);
             walk2.setVisibility(View.GONE);
             walk3.setVisibility(View.GONE);
             walk0.setVisibility(View.GONE);
-        }*/
+        }
 		return view;
 
 	}

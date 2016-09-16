@@ -72,8 +72,8 @@ public class ViewOrderReport extends ActionBarActivity {
         setContentView(R.layout.view_order_report);
 
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         reportthumbImage.clear();
         report_url.clear();
@@ -294,7 +294,7 @@ public class ViewOrderReport extends ActionBarActivity {
 
                     if (report_url.get(position).contains(".pdf")) {
                         Intent i = new Intent(ViewOrderReport.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + report_url.get(position));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + report_url.get(position));
                         i.putExtra("imagename", report_url.get(position));
                         startActivity(i);
                         /* try{
@@ -322,7 +322,7 @@ public class ViewOrderReport extends ActionBarActivity {
 					   }*/
 
                         if (removeonejpg != null) {
-                            i.putExtra("image", "https://files.cloudchowk.com/" + report_url.get(position));
+                            i.putExtra("image", "https://files.healthscion.com/" + report_url.get(position));
                             i.putExtra("imagename", "");
                             startActivity(i);
                         }
@@ -353,7 +353,7 @@ public class ViewOrderReport extends ActionBarActivity {
                 mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
                 mNetworkImageView.setAdjustViewBounds(true);
 
-                mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + reportthumbImage.get(position), mImageLoader);
+                mNetworkImageView.setImageUrl("https://files.healthscion.com/" + reportthumbImage.get(position), mImageLoader);
             }
 
           /*  holder.checkbox.setChecked(thumbnailsselection[position]);*/

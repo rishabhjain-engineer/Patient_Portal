@@ -23,16 +23,16 @@ public final class R {
 	}
 	public static final class drawable {
 		public static final int button_text_color = 0x7f020065;
-		public static final int dark_button_text_color = 0x7f0200ca;
-		public static final int radio_checked = 0x7f020164;
-		public static final int radio_unchecked = 0x7f020165;
+		public static final int dark_button_text_color = 0x7f0200cb;
+		public static final int radio_checked = 0x7f020166;
+		public static final int radio_unchecked = 0x7f020167;
 	}
 	public static final class string {
 		public static final int app_name = 0x7f06004e;
 	}
 	public static final class style {
-		public static final int DarkRadioButton = 0x7f0a0086;
-		public static final int RadioButton = 0x7f0a0090;
+		public static final int DarkRadioButton = 0x7f0a0087;
+		public static final int RadioButton = 0x7f0a0091;
 	}
 	public static final class styleable {
 		public static final int[] SegmentedGroup = { 0x7f01005c, 0x7f01005d, 0x7f01005e, 0x7f01005f };
