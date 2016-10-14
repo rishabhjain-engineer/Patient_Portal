@@ -8,11 +8,11 @@ package com.emilsjolander.components.StickyScrollViewItems;
 
 public final class R {
 	public static final class attr {
-		public static final int stuckShadowDrawable = 0x7f010076;
-		public static final int stuckShadowHeight = 0x7f010075;
+		public static final int stuckShadowDrawable = 0x7f0100e9;
+		public static final int stuckShadowHeight = 0x7f0100e8;
 	}
 	public static final class styleable {
-		public static final int[] StickyScrollView = { 0x7f010075, 0x7f010076 };
+		public static final int[] StickyScrollView = { 0x7f0100e8, 0x7f0100e9 };
 		public static final int StickyScrollView_stuckShadowDrawable = 1;
 		public static final int StickyScrollView_stuckShadowHeight = 0;
 	}

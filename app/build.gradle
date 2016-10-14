@@ -1,33 +1,37 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+    useLibrary  'org.apache.http.legacy'
     dexOptions {
-        incremental true
         javaMaxHeapSize "4g"
     }
     defaultConfig {
         applicationId "com.hs.userportal"
-        minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 3
+        versionName "1.2"
         multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 appendVersionName(variant, defaultConfig)
             }
         }
     }
+    aaptOptions {
+        cruncherEnabled = false
+    }
 }
-configurations {
+/*configurations {
     all*.exclude group: 'com.android.support', module: 'support-v4'
-}
+}*/
 def appendVersionName(variant, defaultConfig) {
     variant.outputs.each { output ->
         if (output.zipAlign) {
@@ -45,20 +49,18 @@ def appendVersionName(variant, defaultConfig) {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+/*    compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.google.android.gms:play-services-nearby:8.4.0'
+    compile 'com.google.android.gms:play-services-nearby:8.4.0'*/
     compile 'dev.dworks.libs:astickyheader:0.1.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.facebook.android:facebook-android-sdk:4.15.0'
     compile files('libs/volley.jar')
     compile files('libs/android-viewbadger.jar')
-   /* compile files('libs/commons-lang3-3.3.4.jar')*/
     compile files('libs/itextpdf-5.5.7.jar')
     compile files('libs/xmlworker-5.5.6.jar')
-    compile project(':FacebookSDK')
     compile project(':SlidingMenuLibrary')
     compile project(':ViewPagerIndicatorlibrary')
     compile project(':swipelistview')

@@ -1,14 +1,14 @@
 [
     {
-        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SlidingMenuLibrary\\build\\intermediates\\res\\merged\\debug\\values\\values.xml",
+        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SlidingMenuLibrary\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
         "map": [
             {
                 "to": {
-                    "startLine": 3,
+                    "startLine": 14,
                     "startColumn": 4,
-                    "startOffset": 961,
+                    "startOffset": 1092,
                     "endColumn": 42,
-                    "endOffset": 999
+                    "endOffset": 1130
                 },
                 "from": {
                     "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\SlidingMenuLibrary\\res\\values\\ids.xml",

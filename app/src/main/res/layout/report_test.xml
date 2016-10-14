@@ -30,10 +30,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
+            android:clickable="true"
             android:text="@string/info"
             android:textColor="#1DBBE3"
-            android:textSize="22dp"
-            android:clickable="true" />
+            android:textSize="22dp" />
 
 
         <LinearLayout

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FacebookSDK/FacebookSDK.iml" filepath="$PROJECT_DIR$/FacebookSDK/FacebookSDK.iml" />
       <module fileurl="file://$PROJECT_DIR$/MPChartLib/MPChartLib.iml" filepath="$PROJECT_DIR$/MPChartLib/MPChartLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/SegmentedControlLibrary/SegmentedControlLibrary.iml" filepath="$PROJECT_DIR$/SegmentedControlLibrary/SegmentedControlLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/Simpl3r/Simpl3r.iml" filepath="$PROJECT_DIR$/Simpl3r/Simpl3r.iml" />

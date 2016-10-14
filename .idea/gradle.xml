@@ -9,7 +9,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/FacebookSDK" />
             <option value="$PROJECT_DIR$/MPChartLib" />
             <option value="$PROJECT_DIR$/SegmentedControlLibrary" />
             <option value="$PROJECT_DIR$/Simpl3r" />
@@ -20,20 +19,7 @@
             <option value="$PROJECT_DIR$/swipelistview" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/FacebookSDK" />
-            <option value="$PROJECT_DIR$/MPChartLib" />
-            <option value="$PROJECT_DIR$/SegmentedControlLibrary" />
-            <option value="$PROJECT_DIR$/Simpl3r" />
-            <option value="$PROJECT_DIR$/SlidingMenuLibrary" />
-            <option value="$PROJECT_DIR$/ViewPagerIndicatorlibrary" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/demo_cloud_tagview" />
-            <option value="$PROJECT_DIR$/swipelistview" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

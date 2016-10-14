@@ -49,9 +49,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.Session;
+/*import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
+import com.facebook.UiLifecycleHelper;*/
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,14 +103,14 @@ public class Pkg_LabDetails extends Activity {
     String getTvfunctionality = "cp";
     Typeface tf;
     Uri Imguri;
-    private UiLifecycleHelper uiHelper;
+  //  private UiLifecycleHelper uiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+      //  uiHelper = new UiLifecycleHelper(this, callback);
+      //  uiHelper.onCreate(savedInstanceState);
         setContentView(R.layout.pkg_labdetails);
         queue = Volley.newRequestQueue(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1329,8 +1329,8 @@ public class Pkg_LabDetails extends Activity {
         }
 
 		/* super.onActivityResult(requestCode, resultCode, data); */
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+       /* Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);*/
     }
 
     public String getPath(Uri uri, Activity activity) {
@@ -1390,7 +1390,7 @@ public class Pkg_LabDetails extends Activity {
         }
         return path;
     }
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    /*private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
         } else if (state.isClosed()) {
@@ -1403,7 +1403,7 @@ public class Pkg_LabDetails extends Activity {
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStateChange(session, state, exception);
         }
-    };
+    };*/
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub

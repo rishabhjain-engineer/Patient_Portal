@@ -86,11 +86,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -222,7 +217,7 @@ public class LocationClass extends ActionBarActivity
     CheckBox cbOurClient;
     CheckBox cbHomeColl;
     CheckBox cbTwentyFour;
-    private UiLifecycleHelper uiHelper;
+  //  private UiLifecycleHelper uiHelper;
     public static final String MyPREFERENCES = "MyPrefs";
     String userID, fbdata, uName, passw;
     public static String init = "https://patient.cloudchowk.com:8081/WebServices/LabService.asmx";
@@ -242,8 +237,8 @@ public class LocationClass extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+      //  uiHelper = new UiLifecycleHelper(this, callback);
+      //  uiHelper.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_labs);
         queue = Volley.newRequestQueue(this);
 
@@ -1359,9 +1354,11 @@ public class LocationClass extends ActionBarActivity
 
     @Override
     public void onBackPressed() {
+/*
 
         Session session = Session.getActiveSession();
         session.closeAndClearTokenInformation();
+*/
 
         Intent check = getIntent();
         if (check.hasExtra("from")) {
@@ -2132,7 +2129,7 @@ public class LocationClass extends ActionBarActivity
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(LocationClass.this);
         if (miscTasks.isNetworkAvailable()) {
 
-            Session session = Session.getActiveSession();
+          /*  Session session = Session.getActiveSession();
             if (session != null && (session.isOpened())) {
                 // onSessionStateChange(session, session.getState(),
                 // null);
@@ -2156,7 +2153,7 @@ public class LocationClass extends ActionBarActivity
                 }).executeAsync();
             }
 
-            uiHelper.onResume();
+            uiHelper.onResume();*/
 
         }
 
@@ -2201,8 +2198,8 @@ public class LocationClass extends ActionBarActivity
                 if (fbdata.equals("Login Successfully")) {
 
                     Log.i("FB Login", "Run GetCredentialDetails");
-                    Session session = Session.getActiveSession();
-                    session.closeAndClearTokenInformation();
+                    /*Session session = Session.getActiveSession();
+                    session.closeAndClearTokenInformation();*/
 
                     String userCredential;
                     sendData = new JSONObject();
@@ -2276,7 +2273,7 @@ public class LocationClass extends ActionBarActivity
 
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+   /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
         } else if (state.isClosed()) {
@@ -2290,9 +2287,9 @@ public class LocationClass extends ActionBarActivity
             onSessionStateChange(session, state, exception);
         }
     };
-
+*/
     private void onClickLogin() {
-        Session session = Session.getActiveSession();
+       /* Session session = Session.getActiveSession();
         if (!session.isOpened() && !session.isClosed()) {
             session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile"))
                     .setCallback(callback));
@@ -2302,19 +2299,19 @@ public class LocationClass extends ActionBarActivity
         } else if (session.isOpened()) {
             session.closeAndClearTokenInformation();
             Session.openActiveSession(this, true, callback);
-        }
+        }*/
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        uiHelper.onPause();
+       // uiHelper.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        uiHelper.onDestroy();
+       // uiHelper.onDestroy();
         from_widget = "";
         LocationClass.this.finish();
     }
@@ -2322,7 +2319,7 @@ public class LocationClass extends ActionBarActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
+       // uiHelper.onSaveInstanceState(outState);
     }
 
     @Override
@@ -2415,8 +2412,8 @@ public class LocationClass extends ActionBarActivity
         }
 
 		/* super.onActivityResult(requestCode, resultCode, data); */
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+      /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);*/
     }
 
     String userNameDialog = "";

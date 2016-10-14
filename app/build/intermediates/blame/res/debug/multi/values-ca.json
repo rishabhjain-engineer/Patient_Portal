@@ -1,23 +1,23 @@
 [
     {
-        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\res\\merged\\debug\\values-ca\\values-ca.xml",
+        "outputFile": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ca\\values-ca.xml",
         "map": [
             {
                 "to": {
                     "startLine": 2,
                     "startColumn": 4,
-                    "startOffset": 105,
+                    "startOffset": 55,
                     "endColumn": 117,
-                    "endOffset": 218
+                    "endOffset": 168
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 3,
+                        "startLine": 2,
                         "startColumn": 4,
-                        "startOffset": 56,
+                        "startOffset": 55,
                         "endColumn": 117,
-                        "endOffset": 169
+                        "endOffset": 168
                     }
                 }
             },
@@ -25,18 +25,18 @@
                 "to": {
                     "startLine": 3,
                     "startColumn": 4,
-                    "startOffset": 223,
+                    "startOffset": 173,
                     "endColumn": 107,
-                    "endOffset": 326
+                    "endOffset": 276
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 4,
+                        "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 174,
+                        "startOffset": 173,
                         "endColumn": 107,
-                        "endOffset": 277
+                        "endOffset": 276
                     }
                 }
             },
@@ -44,18 +44,18 @@
                 "to": {
                     "startLine": 4,
                     "startColumn": 4,
-                    "startOffset": 331,
+                    "startOffset": 281,
                     "endColumn": 122,
-                    "endOffset": 449
+                    "endOffset": 399
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 5,
+                        "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 282,
+                        "startOffset": 281,
                         "endColumn": 122,
-                        "endOffset": 400
+                        "endOffset": 399
                     }
                 }
             },
@@ -63,18 +63,18 @@
                 "to": {
                     "startLine": 5,
                     "startColumn": 4,
-                    "startOffset": 454,
+                    "startOffset": 404,
                     "endColumn": 105,
-                    "endOffset": 555
+                    "endOffset": 505
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 6,
+                        "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 405,
+                        "startOffset": 404,
                         "endColumn": 105,
-                        "endOffset": 506
+                        "endOffset": 505
                     }
                 }
             },
@@ -82,18 +82,18 @@
                 "to": {
                     "startLine": 6,
                     "startColumn": 4,
-                    "startOffset": 560,
+                    "startOffset": 510,
                     "endColumn": 106,
-                    "endOffset": 662
+                    "endOffset": 612
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 7,
+                        "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 511,
+                        "startOffset": 510,
                         "endColumn": 106,
-                        "endOffset": 613
+                        "endOffset": 612
                     }
                 }
             },
@@ -101,18 +101,18 @@
                 "to": {
                     "startLine": 7,
                     "startColumn": 4,
-                    "startOffset": 667,
+                    "startOffset": 617,
                     "endColumn": 82,
-                    "endOffset": 745
+                    "endOffset": 695
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 8,
+                        "startLine": 7,
                         "startColumn": 4,
-                        "startOffset": 618,
+                        "startOffset": 617,
                         "endColumn": 82,
-                        "endOffset": 696
+                        "endOffset": 695
                     }
                 }
             },
@@ -120,18 +120,18 @@
                 "to": {
                     "startLine": 8,
                     "startColumn": 4,
-                    "startOffset": 750,
+                    "startOffset": 700,
                     "endColumn": 107,
-                    "endOffset": 853
+                    "endOffset": 803
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 9,
+                        "startLine": 8,
                         "startColumn": 4,
-                        "startOffset": 701,
+                        "startOffset": 700,
                         "endColumn": 107,
-                        "endOffset": 804
+                        "endOffset": 803
                     }
                 }
             },
@@ -139,18 +139,18 @@
                 "to": {
                     "startLine": 9,
                     "startColumn": 4,
-                    "startOffset": 858,
+                    "startOffset": 808,
                     "endColumn": 125,
-                    "endOffset": 979
+                    "endOffset": 929
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 10,
+                        "startLine": 9,
                         "startColumn": 4,
-                        "startOffset": 809,
+                        "startOffset": 808,
                         "endColumn": 125,
-                        "endOffset": 930
+                        "endOffset": 929
                     }
                 }
             },
@@ -158,18 +158,18 @@
                 "to": {
                     "startLine": 10,
                     "startColumn": 4,
-                    "startOffset": 984,
-                    "endColumn": 110,
-                    "endOffset": 1090
+                    "startOffset": 934,
+                    "endColumn": 83,
+                    "endOffset": 1013
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 11,
+                        "startLine": 10,
                         "startColumn": 4,
-                        "startOffset": 935,
-                        "endColumn": 110,
-                        "endOffset": 1041
+                        "startOffset": 934,
+                        "endColumn": 83,
+                        "endOffset": 1013
                     }
                 }
             },
@@ -177,18 +177,18 @@
                 "to": {
                     "startLine": 11,
                     "startColumn": 4,
-                    "startOffset": 1095,
-                    "endColumn": 108,
-                    "endOffset": 1199
+                    "startOffset": 1018,
+                    "endColumn": 80,
+                    "endOffset": 1094
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 12,
+                        "startLine": 11,
                         "startColumn": 4,
-                        "startOffset": 1046,
-                        "endColumn": 108,
-                        "endOffset": 1150
+                        "startOffset": 1018,
+                        "endColumn": 80,
+                        "endOffset": 1094
                     }
                 }
             },
@@ -196,18 +196,18 @@
                 "to": {
                     "startLine": 12,
                     "startColumn": 4,
-                    "startOffset": 1204,
-                    "endColumn": 97,
-                    "endOffset": 1297
+                    "startOffset": 1099,
+                    "endColumn": 82,
+                    "endOffset": 1177
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 13,
+                        "startLine": 12,
                         "startColumn": 4,
-                        "startOffset": 1155,
-                        "endColumn": 97,
-                        "endOffset": 1248
+                        "startOffset": 1099,
+                        "endColumn": 82,
+                        "endOffset": 1177
                     }
                 }
             },
@@ -215,18 +215,18 @@
                 "to": {
                     "startLine": 13,
                     "startColumn": 4,
-                    "startOffset": 1302,
-                    "endColumn": 109,
-                    "endOffset": 1407
+                    "startOffset": 1182,
+                    "endColumn": 110,
+                    "endOffset": 1288
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 14,
+                        "startLine": 13,
                         "startColumn": 4,
-                        "startOffset": 1253,
-                        "endColumn": 109,
-                        "endOffset": 1358
+                        "startOffset": 1182,
+                        "endColumn": 110,
+                        "endOffset": 1288
                     }
                 }
             },
@@ -234,18 +234,18 @@
                 "to": {
                     "startLine": 14,
                     "startColumn": 4,
-                    "startOffset": 1412,
-                    "endColumn": 103,
-                    "endOffset": 1511
+                    "startOffset": 1293,
+                    "endColumn": 108,
+                    "endOffset": 1397
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 15,
+                        "startLine": 14,
                         "startColumn": 4,
-                        "startOffset": 1363,
-                        "endColumn": 103,
-                        "endOffset": 1462
+                        "startOffset": 1293,
+                        "endColumn": 108,
+                        "endOffset": 1397
                     }
                 }
             },
@@ -253,18 +253,18 @@
                 "to": {
                     "startLine": 15,
                     "startColumn": 4,
-                    "startOffset": 1516,
-                    "endColumn": 107,
-                    "endOffset": 1619
+                    "startOffset": 1402,
+                    "endColumn": 97,
+                    "endOffset": 1495
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 16,
+                        "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 1467,
-                        "endColumn": 107,
-                        "endOffset": 1570
+                        "startOffset": 1402,
+                        "endColumn": 97,
+                        "endOffset": 1495
                     }
                 }
             },
@@ -272,18 +272,18 @@
                 "to": {
                     "startLine": 16,
                     "startColumn": 4,
-                    "startOffset": 1624,
-                    "endColumn": 122,
-                    "endOffset": 1742
+                    "startOffset": 1500,
+                    "endColumn": 109,
+                    "endOffset": 1605
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\21.0.3\\res\\values-ca\\values.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 17,
+                        "startLine": 16,
                         "startColumn": 4,
-                        "startOffset": 1575,
-                        "endColumn": 122,
-                        "endOffset": 1693
+                        "startOffset": 1500,
+                        "endColumn": 109,
+                        "endOffset": 1605
                     }
                 }
             },
@@ -291,18 +291,18 @@
                 "to": {
                     "startLine": 17,
                     "startColumn": 4,
-                    "startOffset": 1747,
-                    "endColumn": 268,
-                    "endOffset": 2011
+                    "startOffset": 1610,
+                    "endColumn": 103,
+                    "endOffset": 1709
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 24,
+                        "startLine": 17,
                         "startColumn": 4,
-                        "startOffset": 3576,
-                        "endColumn": 272,
-                        "endOffset": 3844
+                        "startOffset": 1610,
+                        "endColumn": 103,
+                        "endOffset": 1709
                     }
                 }
             },
@@ -310,18 +310,18 @@
                 "to": {
                     "startLine": 18,
                     "startColumn": 4,
-                    "startOffset": 2016,
-                    "endColumn": 133,
-                    "endOffset": 2145
+                    "startOffset": 1714,
+                    "endColumn": 107,
+                    "endOffset": 1817
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 10,
+                        "startLine": 18,
                         "startColumn": 4,
-                        "startOffset": 1341,
-                        "endColumn": 133,
-                        "endOffset": 1470
+                        "startOffset": 1714,
+                        "endColumn": 107,
+                        "endOffset": 1817
                     }
                 }
             },
@@ -329,18 +329,18 @@
                 "to": {
                     "startLine": 19,
                     "startColumn": 4,
-                    "startOffset": 2150,
-                    "endColumn": 187,
-                    "endOffset": 2333
+                    "startOffset": 1822,
+                    "endColumn": 122,
+                    "endOffset": 1940
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 9,
+                        "startLine": 19,
                         "startColumn": 4,
-                        "startOffset": 1149,
-                        "endColumn": 191,
-                        "endOffset": 1336
+                        "startOffset": 1822,
+                        "endColumn": 122,
+                        "endOffset": 1940
                     }
                 }
             },
@@ -348,18 +348,18 @@
                 "to": {
                     "startLine": 20,
                     "startColumn": 4,
-                    "startOffset": 2338,
-                    "endColumn": 132,
-                    "endOffset": 2466
+                    "startOffset": 1945,
+                    "endColumn": 98,
+                    "endOffset": 2039
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 8,
+                        "startLine": 20,
                         "startColumn": 4,
-                        "startOffset": 1016,
-                        "endColumn": 132,
-                        "endOffset": 1144
+                        "startOffset": 1945,
+                        "endColumn": 98,
+                        "endOffset": 2039
                     }
                 }
             },
@@ -367,18 +367,18 @@
                 "to": {
                     "startLine": 21,
                     "startColumn": 4,
-                    "startOffset": 2471,
-                    "endColumn": 133,
-                    "endOffset": 2600
+                    "startOffset": 2044,
+                    "endColumn": 80,
+                    "endOffset": 2120
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
-                        "startLine": 7,
+                        "startLine": 21,
                         "startColumn": 4,
-                        "startOffset": 882,
-                        "endColumn": 133,
-                        "endOffset": 1011
+                        "startOffset": 2044,
+                        "endColumn": 80,
+                        "endOffset": 2120
                     }
                 }
             },
@@ -386,493 +386,18 @@
                 "to": {
                     "startLine": 22,
                     "startColumn": 4,
-                    "startOffset": 2605,
-                    "endColumn": 214,
-                    "endOffset": 2815
+                    "startOffset": 2125,
+                    "endColumn": 100,
+                    "endOffset": 2221
                 },
                 "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 5,
-                        "startColumn": 4,
-                        "startOffset": 443,
-                        "endColumn": 218,
-                        "endOffset": 657
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 23,
-                    "startColumn": 4,
-                    "startOffset": 2820,
-                    "endColumn": 215,
-                    "endOffset": 3031
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 6,
-                        "startColumn": 4,
-                        "startOffset": 662,
-                        "endColumn": 219,
-                        "endOffset": 877
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 24,
-                    "startColumn": 4,
-                    "startOffset": 3036,
-                    "endColumn": 132,
-                    "endOffset": 3164
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 4,
-                        "startColumn": 4,
-                        "startOffset": 310,
-                        "endColumn": 132,
-                        "endOffset": 438
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 25,
-                    "startColumn": 4,
-                    "startOffset": 3169,
-                    "endColumn": 184,
-                    "endOffset": 3349
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 19,
-                        "startColumn": 4,
-                        "startOffset": 2793,
-                        "endColumn": 184,
-                        "endOffset": 2973
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 26,
-                    "startColumn": 4,
-                    "startOffset": 3354,
-                    "endColumn": 120,
-                    "endOffset": 3470
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 18,
-                        "startColumn": 4,
-                        "startOffset": 2672,
-                        "endColumn": 120,
-                        "endOffset": 2788
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 27,
-                    "startColumn": 4,
-                    "startOffset": 3475,
-                    "endColumn": 176,
-                    "endOffset": 3647
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 17,
-                        "startColumn": 4,
-                        "startOffset": 2495,
-                        "endColumn": 176,
-                        "endOffset": 2667
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 28,
-                    "startColumn": 4,
-                    "startOffset": 3652,
-                    "endColumn": 120,
-                    "endOffset": 3768
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 16,
-                        "startColumn": 4,
-                        "startOffset": 2374,
-                        "endColumn": 120,
-                        "endOffset": 2490
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 29,
-                    "startColumn": 4,
-                    "startOffset": 3773,
-                    "endColumn": 139,
-                    "endOffset": 3908
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 3,
-                        "startColumn": 4,
-                        "startOffset": 170,
-                        "endColumn": 139,
-                        "endOffset": 305
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 30,
-                    "startColumn": 4,
-                    "startOffset": 3913,
-                    "endColumn": 164,
-                    "endOffset": 4073
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 28,
-                        "startColumn": 4,
-                        "startOffset": 4299,
-                        "endColumn": 164,
-                        "endOffset": 4459
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 31,
-                    "startColumn": 4,
-                    "startOffset": 4078,
-                    "endColumn": 128,
-                    "endOffset": 4202
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 27,
-                        "startColumn": 4,
-                        "startOffset": 4170,
-                        "endColumn": 128,
-                        "endOffset": 4294
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 32,
-                    "startColumn": 4,
-                    "startOffset": 4207,
-                    "endColumn": 188,
-                    "endOffset": 4391
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 26,
-                        "startColumn": 4,
-                        "startOffset": 3981,
-                        "endColumn": 188,
-                        "endOffset": 4165
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 33,
-                    "startColumn": 4,
-                    "startOffset": 4396,
-                    "endColumn": 131,
-                    "endOffset": 4523
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 25,
-                        "startColumn": 4,
-                        "startOffset": 3849,
-                        "endColumn": 131,
-                        "endOffset": 3976
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 34,
-                    "startColumn": 4,
-                    "startOffset": 4528,
-                    "endColumn": 253,
-                    "endOffset": 4777
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-basement\\8.4.0\\res\\values-ca\\common_strings.xml",
-                    "position": {
-                        "startLine": 3,
-                        "startColumn": 4,
-                        "startOffset": 170,
-                        "endColumn": 257,
-                        "endOffset": 423
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 35,
-                    "startColumn": 4,
-                    "startOffset": 4782,
-                    "endColumn": 262,
-                    "endOffset": 5040
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 21,
-                        "startColumn": 4,
-                        "startOffset": 3104,
-                        "endColumn": 266,
-                        "endOffset": 3366
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 36,
-                    "startColumn": 4,
-                    "startOffset": 5045,
-                    "endColumn": 125,
-                    "endOffset": 5166
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 20,
-                        "startColumn": 4,
-                        "startOffset": 2978,
-                        "endColumn": 125,
-                        "endOffset": 3099
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 37,
-                    "startColumn": 4,
-                    "startOffset": 5171,
-                    "endColumn": 110,
-                    "endOffset": 5277
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
+                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.2.1\\res\\values-ca\\values-ca.xml",
                     "position": {
                         "startLine": 22,
                         "startColumn": 4,
-                        "startOffset": 3371,
-                        "endColumn": 110,
-                        "endOffset": 3477
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 38,
-                    "startColumn": 4,
-                    "startOffset": 5282,
-                    "endColumn": 193,
-                    "endOffset": 5471
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 12,
-                        "startColumn": 4,
-                        "startOffset": 1612,
-                        "endColumn": 197,
-                        "endOffset": 1805
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 39,
-                    "startColumn": 4,
-                    "startOffset": 5476,
-                    "endColumn": 136,
-                    "endOffset": 5608
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 11,
-                        "startColumn": 4,
-                        "startOffset": 1475,
-                        "endColumn": 136,
-                        "endOffset": 1607
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 40,
-                    "startColumn": 4,
-                    "startOffset": 5613,
-                    "endColumn": 227,
-                    "endOffset": 5836
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 15,
-                        "startColumn": 4,
-                        "startOffset": 2142,
-                        "endColumn": 231,
-                        "endOffset": 2369
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 41,
-                    "startColumn": 4,
-                    "startOffset": 5841,
-                    "endColumn": 140,
-                    "endOffset": 5977
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 14,
-                        "startColumn": 4,
-                        "startOffset": 2001,
-                        "endColumn": 140,
-                        "endOffset": 2137
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 42,
-                    "startColumn": 4,
-                    "startOffset": 5982,
-                    "endColumn": 190,
-                    "endOffset": 6168
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 13,
-                        "startColumn": 4,
-                        "startOffset": 1810,
-                        "endColumn": 190,
-                        "endOffset": 1996
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 43,
-                    "startColumn": 4,
-                    "startOffset": 6173,
-                    "endColumn": 93,
-                    "endOffset": 6262
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 23,
-                        "startColumn": 4,
-                        "startOffset": 3482,
-                        "endColumn": 93,
-                        "endOffset": 3571
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 44,
-                    "startColumn": 4,
-                    "startOffset": 6267,
-                    "endColumn": 97,
-                    "endOffset": 6360
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 29,
-                        "startColumn": 4,
-                        "startOffset": 4464,
-                        "endColumn": 97,
-                        "endOffset": 4557
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 45,
-                    "startColumn": 4,
-                    "startOffset": 6365,
-                    "endColumn": 116,
-                    "endOffset": 6477
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\8.4.0\\res\\values-ca\\base_strings.xml",
-                    "position": {
-                        "startLine": 30,
-                        "startColumn": 4,
-                        "startOffset": 4562,
-                        "endColumn": 116,
-                        "endOffset": 4674
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 46,
-                    "startColumn": 4,
-                    "startOffset": 6482,
-                    "endColumn": 106,
-                    "endOffset": 6584
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\values-ca\\location_strings.xml",
-                    "position": {
-                        "startLine": 6,
-                        "startColumn": 4,
-                        "startOffset": 325,
-                        "endColumn": 106,
-                        "endOffset": 427
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 47,
-                    "startColumn": 4,
-                    "startOffset": 6589,
-                    "endColumn": 94,
-                    "endOffset": 6679
-                },
-                "from": {
-                    "file": "C:\\Users\\ashish\\Desktop\\HS_Projects\\patient-portal\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-location\\8.4.0\\res\\values-ca\\location_strings.xml",
-                    "position": {
-                        "startLine": 5,
-                        "startColumn": 4,
-                        "startOffset": 230,
-                        "endColumn": 94,
-                        "endOffset": 320
+                        "startOffset": 2125,
+                        "endColumn": 100,
+                        "endOffset": 2221
                     }
                 }
             }

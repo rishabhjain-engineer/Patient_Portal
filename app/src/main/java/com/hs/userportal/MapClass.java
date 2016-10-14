@@ -44,16 +44,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +57,7 @@ import java.util.List;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class MapClass extends ActionBarActivity {
 
-	GoogleMap googleMap;
+//	GoogleMap googleMap;
 	int locationCount = 1;
 	JSONArray gpsarray, centreArray;
 	JSONObject sendData;
@@ -220,10 +210,10 @@ public class MapClass extends ActionBarActivity {
 		currentlat = i.getDoubleExtra("lat", 28.56);
 		currentlng = i.getDoubleExtra("lng", 77.23);
 
-		googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+		/*googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 		googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(currentlat, currentlng)));
 
-		googleMap.animateCamera(CameraUpdateFactory.zoomTo(1));
+		googleMap.animateCamera(CameraUpdateFactory.zoomTo(1));*/
 
 		sortListMap = new ArrayList<SortList>();
 
@@ -232,17 +222,17 @@ public class MapClass extends ActionBarActivity {
 		}
 
 		// Getting Google Play availability status
-		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+		/*int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());*/
 
 		// Showing status
-		if (status != ConnectionResult.SUCCESS) { // Google Play Services are
+	/*	if (status != ConnectionResult.SUCCESS) { // Google Play Services are
 			// not available
 
 			int requestCode = 10;
 			Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
 			dialog.show();
 
-		} else { // Google Play Services are available
+		}*/ /*else { // Google Play Services are available
 
 			for (int k = 0; k < sortListMap.size(); k++) {
 
@@ -261,10 +251,10 @@ public class MapClass extends ActionBarActivity {
 				drawMarker(new LatLng(latitude, longitude), CentreName, CentreArea);
 
 			}
+*/
+			/*googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(currentlat, currentlng)));
 
-			googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(currentlat, currentlng)));
-
-			googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+			googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));*/
 
 			// progress = ProgressDialog.show(this, "", "Loading..", true);
 			// sendData = new JSONObject();
@@ -353,7 +343,7 @@ public class MapClass extends ActionBarActivity {
 			// queue.add(jr);
 
 			// Enabling MyLocation Layer of Google Map
-			googleMap.setMyLocationEnabled(true);
+			//googleMap.setMyLocationEnabled(true);
 
 		}
 
@@ -412,7 +402,7 @@ public class MapClass extends ActionBarActivity {
 		// }
 		// });
 
-		googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+		/*googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 
@@ -437,7 +427,7 @@ public class MapClass extends ActionBarActivity {
 				}
 
 			}
-		});
+		});*/
 
 		// googleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 		//
@@ -471,9 +461,9 @@ public class MapClass extends ActionBarActivity {
 		// }
 		// });
 
-	}
+	/*}*/
 
-	private void drawMarker(LatLng point, String title, String Area) {
+	/*private void drawMarker(LatLng point, String title, String Area) {
 		// Creating an instance of MarkerOptions
 		MarkerOptions markerOptions = new MarkerOptions();
 
@@ -495,7 +485,7 @@ public class MapClass extends ActionBarActivity {
 		markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 		// Adding marker on the Google Map
 		googleMap.addMarker(markerOptions);
-	}
+	}*/
 
 	private void GetLabData() {
 		progressCircle.setVisibility(View.VISIBLE);

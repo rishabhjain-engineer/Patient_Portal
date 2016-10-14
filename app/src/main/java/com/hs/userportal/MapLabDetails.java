@@ -52,14 +52,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.Session;
+/*import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.facebook.UiLifecycleHelper;*/
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +90,7 @@ public class MapLabDetails extends ActionBarActivity {
     static String patientId = null, sample_or_detailbtn_check = null;
     ProgressDialog progress, progressDialog;
     LinearLayout linearLayoutImage;
-    GoogleMap googleMap;
+    //GoogleMap googleMap;
     TextView tvLabName, tvEmail, tvContact, tvAddress, tvRadio, tvPath, tvOwner, tvLandline, tvWebsite, tvEstYear,
             tvXray, tvCT, tvMRI, tvDigital, tvHomeColl, tvHomeCharge, tvOnlineReport, tvNabl, tvOtherAcc, tvPayment,
             tvPaymentText, tvAmbulance, tvAmbContact, tvParking, tvLabCat, tvDrinking, tvWashroom, tvSeating, tvAmbCall,
@@ -113,14 +108,14 @@ public class MapLabDetails extends ActionBarActivity {
     Typeface tf;
     Button upload_MapLab;
     Uri Imguri;
-    private UiLifecycleHelper uiHelper;
+   /* private UiLifecycleHelper uiHelper;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+       /* uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstanceState);*/
         setContentView(R.layout.map_lab_details);
         queue = Volley.newRequestQueue(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -260,7 +255,7 @@ public class MapLabDetails extends ActionBarActivity {
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setDisplayHomeAsUpEnabled(true);
 
-        googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+       /* googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
         if (googleMap != null) {
             googleMap.setMyLocationEnabled(true);
 
@@ -268,7 +263,7 @@ public class MapLabDetails extends ActionBarActivity {
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             googleMap.getUiSettings().setScrollGesturesEnabled(false);
             googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        }
+        }*/
         GetLabData();
         GetImageData();
         GetDoctorData();
@@ -952,7 +947,7 @@ public class MapLabDetails extends ActionBarActivity {
                 String[] parts = latlong.split(",");
                 lat = parts[0].trim();
                 lng = parts[1].trim();
-                drawMarker(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)), CentreName, CentreArea);
+               /* drawMarker(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)), CentreName, CentreArea);
                 if (googleMap != null) {
                     googleMap.moveCamera(
                             CameraUpdateFactory.newLatLng(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng))));
@@ -960,7 +955,7 @@ public class MapLabDetails extends ActionBarActivity {
                     // Setting the zoom level in the map on last
                     // position is clicked
                     googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-                }
+                }*/
 
             }
         }, new Response.ErrorListener() {
@@ -1089,7 +1084,7 @@ public class MapLabDetails extends ActionBarActivity {
         return x;
     }
 
-    private void drawMarker(LatLng point, String title, String Area) {
+  /*  private void drawMarker(LatLng point, String title, String Area) {
         // Creating an instance of MarkerOptions
         MarkerOptions markerOptions = new MarkerOptions();
 
@@ -1100,7 +1095,7 @@ public class MapLabDetails extends ActionBarActivity {
         // Adding marker on the Google Map
         if (googleMap != null)
             googleMap.addMarker(markerOptions);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -1498,8 +1493,8 @@ public class MapLabDetails extends ActionBarActivity {
         }
 
 		/* super.onActivityResult(requestCode, resultCode, data); */
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+       /* Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);*/
     }
 
     public String getPath(Uri uri, Activity activity) {
@@ -1560,7 +1555,7 @@ public class MapLabDetails extends ActionBarActivity {
         return path;
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+   /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
         } else if (state.isClosed()) {
@@ -1573,7 +1568,7 @@ public class MapLabDetails extends ActionBarActivity {
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStateChange(session, state, exception);
         }
-    };
+    };*/
 
     @Override
     protected void onResume() {

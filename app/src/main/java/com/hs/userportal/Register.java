@@ -57,20 +57,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
+import com.facebook.*;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,9 +115,9 @@ public class Register extends ActionBarActivity {
     private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,20})";
 
     LinearLayout lPersonal, lAccount;
-    private UiLifecycleHelper uiHelper;
+    //    private UiLifecycleHelper uiHelper;
     StaticHolder staticobj;
-    String userID;
+    public static String userID;
     static int cyear;
     static int month;
     static int day;
@@ -135,6 +134,10 @@ public class Register extends ActionBarActivity {
     protected static String fromActivity;
     private String emailsmsphone;
     private Boolean multipleLinked;
+    private LoginButton login_button;
+    private CallbackManager callbackManager = null;
+    private AccessTokenTracker mtracker = null;
+    private ProfileTracker mprofileTracker = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,11 +161,27 @@ public class Register extends ActionBarActivity {
         if (fromActivity == null) {
             fromActivity = "anyother_activity";
         }
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+        //uiHelper = new UiLifecycleHelper(this, callback);
+        // uiHelper.onCreate(savedInstanceState);
 
-        Session session = Session.getActiveSession();
-        session.closeAndClearTokenInformation();
+      /*  Session session = Session.getActiveSession();
+        session.closeAndClearTokenInformation();*/
+
+        callbackManager = CallbackManager.Factory.create();
+        mtracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            }
+        };
+        mprofileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(com.facebook.Profile oldProfile, com.facebook.Profile currentProfile) {
+
+            }
+        };
+
+        mtracker.startTracking();
+        mprofileTracker.startTracking();
 
         setContentView(R.layout.register);
 
@@ -180,6 +199,9 @@ public class Register extends ActionBarActivity {
         etCpass = (EditText) findViewById(R.id.etConfirm);
         etDOB = (EditText) findViewById(R.id.etDOB);
         etContact = (EditText) findViewById(R.id.etContact);
+        login_button = (LoginButton) findViewById(R.id.login_button);
+        login_button.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+        login_button.registerCallback(callbackManager, callback);
         etContact.setOnEditorActionListener(new OnEditorActionListener() {
             @SuppressWarnings("deprecation")
             @Override
@@ -354,8 +376,8 @@ public class Register extends ActionBarActivity {
 
                     e.printStackTrace();
                 }
-				/*String url = "https://patient.cloudchowk.com:8081/"
-						+ "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
+                /*String url = "https://patient.cloudchowk.com:8081/"
+                        + "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
                 StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.CheckEmailIdIsExistMobile);
                 String url = sttc_holdr.request_Url();
                 jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -416,8 +438,8 @@ public class Register extends ActionBarActivity {
 
                     e.printStackTrace();
                 }
-				/*String url = "https://patient.cloudchowk.com:8081/"
-						+ "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
+                /*String url = "https://patient.cloudchowk.com:8081/"
+                        + "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
                 StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.IsContactExist);
                 String url = sttc_holdr.request_Url();
                 jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -507,7 +529,7 @@ public class Register extends ActionBarActivity {
                         }
 
 						/*String url = "https://patient.cloudchowk.com:8081/"
-								+ "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
+                                + "WebServices/LabService.asmx/CheckEmailIdIsExistMobile";*/
                         StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.CheckEmailIdIsExistMobile);
                         String url = sttc_holdr.request_Url();
                         jr = new JsonObjectRequest(Request.Method.POST, url, sendData,
@@ -561,7 +583,7 @@ public class Register extends ActionBarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!s.equals("")) {
+                if (!s.equals("")) {
                     sendData = new JSONObject();
                     try {
 
@@ -622,7 +644,7 @@ public class Register extends ActionBarActivity {
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
                 // TODO Auto-generated method stub
-                String len =  etUser.getText().toString();
+                String len = etUser.getText().toString();
                 if (!hasfocus && !len.equals("")) {
 
                     sendData = new JSONObject();
@@ -692,7 +714,7 @@ public class Register extends ActionBarActivity {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         });
-		/*
+        /*
 		 * etEmail.setOnFocusChangeListener(new OnFocusChangeListener() {
 		 * 
 		 * @Override public void onFocusChange(View v, boolean hasFocus) {
@@ -1298,7 +1320,7 @@ public class Register extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Session session = Session.getActiveSession();
+               /* Session session = Session.getActiveSession();
                 List<String> permissions = new ArrayList<String>();
                 permissions.add("user_birthday");
                 permissions.add("email");
@@ -1315,13 +1337,14 @@ public class Register extends ActionBarActivity {
                     session.closeAndClearTokenInformation();
                     Session.openActiveSession(Register.this, true, permissions, callback);
 
-                }
+                }*/
 				/*Session s = new Session(Register.this);
 				Session.setActiveSession(s);
 				Session.OpenRequest request = new Session.OpenRequest(Register.this);
 				request.setPermissions(Arrays.asList("basic_info", "email"));
 				request.setCallback(callback );
 				s.openForRead(request);*/
+                login_button.performClick();
             }
         });
 
@@ -1329,9 +1352,9 @@ public class Register extends ActionBarActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+       /* Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+       // uiHelper.onActivityResult(requestCode, resultCode, data);
 
         Session session = Session.getActiveSession();
         if (session != null && (session.isOpened()) || (session.isClosed())) {
@@ -1385,8 +1408,8 @@ public class Register extends ActionBarActivity {
 
                             // String url = Services.init +
                             // "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";
-							/*String url = "https://patient.cloudchowk.com:8081/"
-									+ "WebServices/LabService.asmx/EmailIdExistFacebook";*/
+							*//*String url = "https://patient.cloudchowk.com:8081/"
+									+ "WebServices/LabService.asmx/EmailIdExistFacebook";*//*
                             // EmailIdExistFacebook
                             StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.EmailIdExistFacebook);
                             String url = sttc_holdr.request_Url();
@@ -1444,11 +1467,16 @@ public class Register extends ActionBarActivity {
                     }
                 }
             }).executeAsync();
-        }
+        }*/
 
     }
 
-    ;
+    @Override
+    public void onStop() {
+        super.onStop();
+        mtracker.stopTracking();
+        mprofileTracker.stopTracking();
+    }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -1505,7 +1533,7 @@ public class Register extends ActionBarActivity {
         }
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+   /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
 
@@ -1519,7 +1547,7 @@ public class Register extends ActionBarActivity {
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStateChange(session, state, exception);
         }
-    };
+    };*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1536,7 +1564,7 @@ public class Register extends ActionBarActivity {
     }
 
     public void onBackPressed() {
-       // check_contact_number = 0;
+        // check_contact_number = 0;
         if (lAccount.getVisibility() == View.VISIBLE) {
 
             lAccount.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_right));
@@ -1547,12 +1575,10 @@ public class Register extends ActionBarActivity {
 
         } else {
             super.onBackPressed();
-            Session session = Session.getActiveSession();
-            session.closeAndClearTokenInformation();
+           /* Session session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();*/
         }
     }
-
-    ;
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
@@ -1647,7 +1673,7 @@ public class Register extends ActionBarActivity {
                         // intent.putExtra("tpwd", tpwd);
 
                         startActivity(intent);
-                    }else if (fromActivity.equalsIgnoreCase("anyother_activity")){
+                    } else if (fromActivity.equalsIgnoreCase("anyother_activity")) {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
@@ -1656,7 +1682,7 @@ public class Register extends ActionBarActivity {
                         // intent.putExtra("tpwd", tpwd);
 
                         startActivity(intent);
-                    }else {
+                    } else {
                         Register.this.finish();
                     }
                 } else {
@@ -1770,7 +1796,7 @@ public class Register extends ActionBarActivity {
                 if (data.equals("Login Successfully")) {
 
                     sendData = new JSONObject();
-                    sendData.put("UserRole","Patient");
+                    sendData.put("UserRole", "Patient");
                     disclaimerData = service.PatientDisclaimer(sendData);
                     System.out.println("Disclaimer: " + disclaimerData);
 
@@ -2149,7 +2175,9 @@ public class Register extends ActionBarActivity {
 								 * ) ; session . closeAndClearTokenInformation (
 								 * ) ;
 								 */
-                                finish();
+                                new Login().execute();
+                                /*facebookLogin(UserCodeFromEmail);*/
+                                //   finish();
                                 return;
                             }
                         } else {
@@ -2188,7 +2216,6 @@ public class Register extends ActionBarActivity {
         } catch (JSONException e2) {
             e2.printStackTrace();
         }
-        System.out.println("GetUserCodeFromEmail" + sendData);
         StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.CheckEmailIdIsExistMobile);
         String url = sttc_holdr.request_Url();
         jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2242,7 +2269,8 @@ public class Register extends ActionBarActivity {
                                         sendData.put("Email", eMail.trim());
                                         sendData.put("ContactNo", contactNo.trim());
                                         sendData.put("Gender", gender.trim());
-                                        sendData.put("DateOfBirth", dateofBirth.trim());
+                                        String[] array = dateofBirth.split("/");
+                                        sendData.put("DateOfBirth", array[1] + "/" + array[0] + "/" + array[2]);
                                         sendData.put("AreaId", "ECEF69B3-6BAC-4784-9407-8E82B5642387");
                                         sendData.put("CountryId", "1");
                                         sendData.put("StateId", "1");
@@ -2277,8 +2305,6 @@ public class Register extends ActionBarActivity {
                                                 StaticHolder staticobj = new StaticHolder(Register.this, StaticHolder.Services_static.SignUpByPatient, sendData);
                                                 receive = staticobj.request_services();
                                                 //receive = service.SignUpPatient(sendData);
-                                                System.out.println(receive);
-
                                                 runOnUiThread(new Runnable() {
                                                     public void run() {
                                                         progress.dismiss();
@@ -2311,13 +2337,17 @@ public class Register extends ActionBarActivity {
 																 * closeAndClearTokenInformation
 																 * ( ) ;
 																 */
-                                                                finish();
+                                                                UserCodeFromEmail = receive.getString("d");
+                                                                new Login().execute();
+                                                                // facebookLogin(UserCodeFromEmail);
+                                                                // finish();
                                                                 return;
 
                                                             } else {
                                                                 Toast.makeText(getApplicationContext(),
                                                                         "Some error occurred.", Toast.LENGTH_SHORT)
                                                                         .show();
+                                                                LoginManager.getInstance().logOut();
                                                             }
                                                         } catch (Exception e) {
                                                             // TODO
@@ -2325,6 +2355,7 @@ public class Register extends ActionBarActivity {
                                                             // catch
                                                             // block
                                                             e.printStackTrace();
+                                                            LoginManager.getInstance().logOut();
                                                         }
 
                                                     }
@@ -2338,6 +2369,7 @@ public class Register extends ActionBarActivity {
                                                         progress.dismiss();
                                                     }
                                                 });
+                                                LoginManager.getInstance().logOut();
 
                                             }
                                         }
@@ -2361,6 +2393,7 @@ public class Register extends ActionBarActivity {
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    LoginManager.getInstance().logOut();
                 }
 
             }
@@ -2368,10 +2401,12 @@ public class Register extends ActionBarActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 System.out.println(error);
+                LoginManager.getInstance().logOut();
             }
         });
         queue.add(jr);
     }
+
 
     public void open_forgot_dialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Register.this);
@@ -2448,7 +2483,7 @@ public class Register extends ActionBarActivity {
             try {
                 if (receiveForgetData.getString("d").equals("\"MoreMobileNoExist\"")) {
 
-                   // multipleLinked = false;
+                    // multipleLinked = false;
                     multipleLinked = true;
                     sendData = new JSONObject();
                     sendData.put("contactNo", emailsmsphone);
@@ -2647,8 +2682,8 @@ public class Register extends ActionBarActivity {
             public void onClick(View v) {
                 open_forgot_dialog();
                 overlay_dialog.dismiss();
-               // finish();
-               // check_contact_number = 0;
+                // finish();
+                // check_contact_number = 0;
             }
         });
         continue_password.setOnClickListener(new OnClickListener() {
@@ -2716,7 +2751,7 @@ public class Register extends ActionBarActivity {
                     });
                     dialog.show();
 
-                }else {
+                } else {
                     // lPersonal.animate().translationX(-lPersonal.getWidth()).alpha(0.0f).setDuration(1000)
                     // .setListener(new AnimatorListenerAdapter() {
                     // @Override
@@ -2745,10 +2780,331 @@ public class Register extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 overlay_dialog.dismiss();
-               // check_contact_number = 0;
+                // check_contact_number = 0;
             }
         });
 
         overlay_dialog.show();
     }
+
+    FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            // JSON of FB ID as response.
+                            try {
+                                userID = object.getString("id");
+                                firstName = object.getString("first_name");
+                                fnln = firstName;
+                                lastName = object.getString("last_name");
+                                try {
+                                    eMail = object.getString("email");
+                                } catch (NullPointerException ex) {
+                                    eMail = "";
+                                }
+                                dateofBirth = object.getString("birthday");
+                                String genderFB = object.getString("gender");
+                                if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
+                                    gender = "Male";
+                                } else {
+                                    gender = "Female";
+                                }
+                                contactNo = "";
+                                sendData = new JSONObject();
+                                sendData.put("EmailId", eMail);
+                                StaticHolder sttc_holdr = new StaticHolder(Register.this, StaticHolder.Services_static.EmailIdExistFacebook);
+                                String url = sttc_holdr.request_Url();
+                                jr = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
+                                        new com.android.volley.Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                // Exist or Not-Exist
+                                                try {
+                                                    String emdata = response.getString("d");
+                                                    if (emdata.equals("Exist")) {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "An account exist with this email id. Create account with other email.",
+                                                                Toast.LENGTH_LONG).show();
+                                                        GetUserCodeFromEmail();
+
+                                                    } else {
+
+                                                        CheckEmailIdIsExistMobile();
+
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    // TODO Auto-generated catch block
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        System.out.println(error);
+                                    }
+                                });
+                                queue.add(jr);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };
+
+
+    class Login extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progress;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progress = new ProgressDialog(Register.this);
+            progress.setCancelable(false);
+            progress.setTitle("Logging in...");
+            progress.setMessage("Please wait...");
+            progress.setIndeterminate(true);
+            Register.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    progress.show();
+                }
+            });
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            progress.dismiss();
+            if (chkDisclaimer == 1) {
+
+                // Agree disclaimer automatically
+                new Agree().execute();
+
+            } else if (chkerror == 1) {
+
+                alert = new AlertDialog.Builder(Register.this).create();
+                alert.setTitle("Message");
+                try {
+                    alert.setMessage(receiveData.getString("d"));
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+                alert.show();
+
+            } else if (chklogin == 1) {
+
+                // System.out.println(fnln);
+                Editor editor = sharedpreferences.edit();
+                editor.putString("name", userName);
+                editor.putString("pass", password);
+
+                editor.commit();
+
+                Editor e = sharedPreferences.edit();
+                e.putString("un", userName);
+                e.putString("pw", password);
+                e.putString("ke", cop);
+                e.putString("fnln", fnln);
+                e.putString("cook", cook);
+
+                Intent intent = new Intent(getApplicationContext(), logout.class);
+                intent.putExtra("id", cop);
+                intent.putExtra("user", uName);
+                intent.putExtra("pass", uPassword);
+                intent.putExtra("fn", fnln);
+
+            }
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            chkerror = 0;
+            chklogin = 0;
+            chkDisclaimer = 0;
+
+            // publishProgress();
+
+            if (userName.contains("/")) {
+
+                uName = userName.substring(1);
+
+            } else {
+                uName = userName;
+            }
+
+            sendData = new JSONObject();
+
+            try {
+
+                sendData.put("UserName", UserCodeFromEmail);
+                sendData.put("Password", JSONObject.NULL);
+                sendData.put("applicationType", "Mobile");
+                sendData.put("browserType", buildNo);
+                sendData.put("rememberMe", "false");
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            System.out.println(sendData);
+            StaticHolder staticobj = new StaticHolder(Register.this, StaticHolder.Services_static.LogIn, sendData);
+            receiveData = staticobj.request_services();
+            //receiveData = service.LogIn(sendData);
+            abc = receiveData.toString();
+            System.out.println(receiveData);
+            JSONObject sdsa = sendData;
+            try {
+                String data = receiveData.getString("d");
+                System.out.println(data);
+
+                if (data.equals("Login Successfully")) {
+
+                    sendData = new JSONObject();
+                    sendData.put("UserRole", "Patient");
+                    disclaimerData = service.PatientDisclaimer(sendData);
+                    System.out.println("Disclaimer: " + disclaimerData);
+
+                    if (disclaimerData.get("d").equals("Agreed")) {
+                        chklogin = 1;
+                        sendData = new JSONObject();
+                        receiveData = service.GetCredentialDetails(sendData);
+                        String userCredential = receiveData.getString("d");
+                        JSONObject cut = new JSONObject(userCredential);
+                        subArray = cut.getJSONArray("Table");
+                        cop = subArray.getJSONObject(0).getString("UserId");
+                        if (subArray.getJSONObject(0).has("ContactNo")) {
+                            contactNumber = subArray.getJSONObject(0).getString("ContactNo");
+                        } else {
+                            contactNumber = "nill";
+                        }
+                        fnln = subArray.getJSONObject(0).getString("FirstName");
+
+                    } else {
+
+                        chkDisclaimer = 1;
+                        JSONObject cut;
+                        disclaimer = disclaimerData.getString("d");
+                        cut = new JSONObject(disclaimer);
+                        disclaimerArray = cut.getJSONArray("Table");
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                        disclaimerDateTime = sdf.format(new Date());
+                        System.out.println(disclaimerDateTime);
+
+                        // Calendar cal = Calendar.getInstance();
+                        // disclaimerDateTime =
+                        // cal.get(Calendar.YEAR)+"/"+(cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DATE)+"
+                        // "+cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE);
+
+                        disclaimerInformation = disclaimerArray.getJSONObject(0).getString("disclaimerInformation");
+                        disclaimerVersion = disclaimerArray.getJSONObject(0).getString("versionNo");
+                        // disclaimerUserId =
+                        // disclaimerArray.getJSONObject(0).getString("LoginUserId");
+                        // disclaimerDateTime =
+                        // disclaimerArray.getJSONObject(0).getString("dateTime");
+
+                    }
+
+                } else {
+                    chkerror = 1;
+                }
+
+            } catch (JSONException e) {
+
+                try {
+                    String data = receiveData.getString("Message");
+
+                    if (data.indexOf("Authentication failed.") != -1) {
+                        Register.this.runOnUiThread(new Runnable() {
+                            public void run() {
+
+                                alert = new AlertDialog.Builder(Register.this).create();
+                                alert.setTitle("Message");
+                                alert.setMessage("Unexpected error. Please try again after sometime.");
+
+                                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
+                                        new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                dialog.dismiss();
+
+                                            }
+                                        });
+
+                                alert.show();
+
+                            }
+                        });
+                        return null;
+                    } else {
+                        Register.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                alert = new AlertDialog.Builder(Register.this).create();
+                                alert.setTitle("Message");
+                                alert.setMessage("Unexpected error. Please try again after sometime.");
+
+                                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
+                                        new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                dialog.dismiss();
+
+                                            }
+                                        });
+
+                                alert.show();
+                            }
+                        });
+                        return null;
+                    }
+                } catch (JSONException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+    }
+
 }

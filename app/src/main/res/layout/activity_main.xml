@@ -149,9 +149,32 @@
                     android:layout_weight="40"
                     android:background="#CCCCCC" />
             </LinearLayout>
+            <FrameLayout
+                android:id="@+id/FrameLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/authButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/facebook_button"
+                    android:drawableLeft="@drawable/fb"
+                    android:text="LOGIN WITH FACEBOOK" />
+
+            </FrameLayout>
 
             <Button
-                android:id="@+id/authButton"
+                android:id="@+id/authButton_alias"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -159,7 +182,8 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/facebook_button"
                 android:drawableLeft="@drawable/fb"
-                android:text="LOGIN WITH FACEBOOK" />
+                android:text="LOGIN WITH FACEBOOK"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/relLabs"

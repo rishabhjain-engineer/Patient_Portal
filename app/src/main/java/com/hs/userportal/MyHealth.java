@@ -306,12 +306,12 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
             super.onPostExecute(result);
             blood_group.setText(bgroup);
             if(!height.equalsIgnoreCase("null")) {
-                height_latest.setText(height);
+                height_latest.setText(height+" cm");
             }else{
                 height_latest.setText("-");
             }
             if(!weight.equalsIgnoreCase("null")){
-                weight_latest.setText(weight);
+                weight_latest.setText(weight+" Kg");
             }else{
                 weight_latest.setText("-");
             }if(allergy_no!=0){
@@ -368,12 +368,12 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
             super.onPostExecute(result);
             blood_group.setText(bgroup);
             if(!height.equalsIgnoreCase("null")) {
-                height_latest.setText(height);
+                height_latest.setText(height+" cm");
             }else{
                 height_latest.setText("-");
             }
             if(!weight.equalsIgnoreCase("null")){
-                weight_latest.setText(weight);
+                weight_latest.setText(weight+" Kg");
             }else{
                 weight_latest.setText("-");
             }if(allergy_no!=0){

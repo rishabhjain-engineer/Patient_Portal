@@ -8,10 +8,10 @@ package com.readystatesoftware.simpl3r;
 
 public final class R {
 	public static final class string {
-		public static final int app_name = 0x7f06004e;
+		public static final int app_name = 0x7f060039;
 	}
 	public static final class style {
-		public static final int AppBaseTheme = 0x7f0a0002;
-		public static final int AppTheme = 0x7f0a006c;
+		public static final int AppBaseTheme = 0x7f08000b;
+		public static final int AppTheme = 0x7f080096;
 	}
 }

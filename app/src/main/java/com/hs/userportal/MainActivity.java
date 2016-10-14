@@ -50,12 +50,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
+import com.facebook.*;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     int fbLogin = 0, fbDisc = 0, fberror = 0;
     AlertDialog alert;
     Dialog dialog1;
-    String abc, id, cop, fnln, tpwd, lastname,PH;
+    String abc, id, cop, fnln, tpwd, lastname, PH;
     private SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
@@ -106,9 +104,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     SharedPreferences sharedpreferences;
     SharedPreferences demoPreferences;
     static String demo = "false";
-    private UiLifecycleHelper uiHelper;
-    Button authButton;
-    String userID;
+    //  private UiLifecycleHelper uiHelper;
+    private Button authButton;
+    private LoginButton login_button;
+    public static String userID = "";
     ProgressDialog fbProgress;
     String fbUser;
     String fbdata;
@@ -126,6 +125,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     String gender = "Male";
     String firstName = "", lastName = "", eMail = "", user_Name = "", password1 = "", contactNo = "", dateofBirth = "",
             cPassword = "", middleName = "";
+    private CallbackManager callbackManager = null;
+    private AccessTokenTracker mtracker = null;
+    private ProfileTracker mprofileTracker = null;
 
     @Override
     public void onBackPressed() {
@@ -160,9 +162,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+        //uiHelper = new UiLifecycleHelper(this, callback);
+        //  uiHelper.onCreate(savedInstanceState);
         // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        callbackManager = CallbackManager.Factory.create();
+        mtracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            }
+        };
+        mprofileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(com.facebook.Profile oldProfile, com.facebook.Profile currentProfile) {
+            }
+        };
+
+        mtracker.startTracking();
+        mprofileTracker.startTracking();
         setContentView(R.layout.activity_main);
 
         userName = (EditText) findViewById(R.id.etSubject);
@@ -176,6 +192,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         cb = (CheckBox) findViewById(R.id.checkBox1);
         register = (Button) findViewById(R.id.register);
         authButton = (Button) findViewById(R.id.authButton);
+        login_button = (LoginButton) findViewById(R.id.login_button);
+        login_button.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+        login_button.registerCallback(callbackManager, callback);
         Intent in = getIntent();
         from_Activity = in.getStringExtra("fromActivity");
         queue = Volley.newRequestQueue(this);
@@ -199,6 +218,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         // System.exit(1);
         // }
         // });
+
+
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getStringExtra("from logout").equalsIgnoreCase("logout")) {
+                LoginManager.getInstance().logOut();
+            }
+        }
 
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(MainActivity.this);
         if (!miscTasks.isNetworkAvailable()) {
@@ -228,7 +254,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
                             try {
                                 String marketVersion = response.getString("version");
-							/*	double market_vervalue = Double.parseDouble(marketVersion);*/
+                            /*	double market_vervalue = Double.parseDouble(marketVersion);*/
 
                                 PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                                 String version = pInfo.versionName;
@@ -322,7 +348,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         });
 
 		/*locationName.setTypeface(Typeface.createFromAsset(getAssets(), "icons.ttf"));
-		locationName.setText(R.string.location);*/
+        locationName.setText(R.string.location);*/
 
         labsNear.setOnClickListener(new OnClickListener() {
 
@@ -381,7 +407,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         LinearLayout.LayoutParams.MATCH_PARENT);
 
                 input.setBackgroundResource(R.drawable.textfield_activated_holo_light);
-               // input.setPadding(25, 10, 25, 10);
+                // input.setPadding(25, 10, 25, 10);
                 input.setPadding(60, 10, 45, 10);
                 input.setTextColor(Color.BLACK);
                 input.setLayoutParams(lp);
@@ -414,7 +440,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         });
 
 		/*
-		 * register.setOnClickListener(new OnClickListener() {
+         * register.setOnClickListener(new OnClickListener() {
 		 * 
 		 * @Override public void onClick(View v) { // TODO Auto-generated method
 		 * stub
@@ -432,10 +458,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 onClickLogin();
             }
         });
-
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+   /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
         } else if (state.isClosed()) {
@@ -448,10 +473,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStateChange(session, state, exception);
         }
-    };
+    };*/
 
     private void onClickLogin() {
-        Session session = Session.getActiveSession();
+        login_button.performClick();
+       /* Session session = Session.getActiveSession();
         if (!session.isOpened() && !session.isClosed()) {
             session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile","email","user_birthday","user_friends"))
                     .setCallback(callback));
@@ -461,7 +487,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         } else if (session.isOpened()) {
             session.closeAndClearTokenInformation();
             Session.openActiveSession(this, true, callback);
-        }
+        }*/
     }
 
     @Override
@@ -486,7 +512,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
 
             } else {
-
                 new BackgroundProcess().execute();
             }
         }
@@ -538,8 +563,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 });
 
                 alert.show();
-                Session session = Session.getActiveSession();
-                session.closeAndClearTokenInformation();
+               /* Session session = Session.getActiveSession();
+                session.closeAndClearTokenInformation();*/
 
             } else if (fbLogin == 1) {
                 fbProgress.dismiss();
@@ -575,7 +600,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
                         i.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln+ " " + lastname);
+                        i.putExtra("fn", fnln + " " + lastname);
                         i.putExtra("pass", "omg");
                         // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
                         startActivity(i);
@@ -679,13 +704,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 fbdata = receiveData.getString("d");
                 if (fbdata.equals("Login Successfully")) {
 
-                    Session session = Session.getActiveSession();
-                    session.closeAndClearTokenInformation();
+                   /* Session session = Session.getActiveSession();
+                    session.closeAndClearTokenInformation();*/
 
                     try {
 
                         sendData = new JSONObject();
-                        sendData.put("UserRole","Patient");
+                        sendData.put("UserRole", "Patient");
                         disclaimerData = service.PatientDisclaimer(sendData);
                         System.out.println("Disclaimer: " + disclaimerData);
 
@@ -801,7 +826,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            progress.dismiss();
             if (chkDisclaimer == 1) {
                 // Agree disclaimer automatically
                 new Agree().execute();
@@ -842,7 +866,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("un", uName);
                     e.putString("pw", uPassword);
                     e.putString("ke", cop);
-                    e.putString("fnln", fnln+ " " + lastname);
+                    e.putString("fnln", fnln + " " + lastname);
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
@@ -862,7 +886,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         intent.putExtra("PH", PH);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln+ " " + lastname);
+                        intent.putExtra("fn", fnln + " " + lastname);
                         // intent.putExtra("tpwd", tpwd);
                         Helper.authentication_flag = false;
                         startActivity(intent);
@@ -932,7 +956,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     dialog1.show();
                 }
             }
-
+            progress.dismiss();
         }
 
         @Override
@@ -943,8 +967,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             chkDisclaimer = 0;
 
             // publishProgress();
-            String sd=userName.getText().toString();
-           if(userName.getText().toString()!=null && (!userName.getText().toString().equalsIgnoreCase(""))) {
+            String sd = userName.getText().toString();
+            if (userName.getText().toString() != null && (!userName.getText().toString().equalsIgnoreCase(""))) {
                 uName = userName.getText().toString();
             }
 
@@ -990,7 +1014,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     if (data.equals("Login Successfully")) {
 
                         sendData = new JSONObject();
-                        sendData.put("UserRole","Patient");
+                        sendData.put("UserRole", "Patient");
                         disclaimerData = service.PatientDisclaimer(sendData);
                         System.out.println("Disclaimer: " + disclaimerData);
 
@@ -1022,8 +1046,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             disclaimerArray = cut.getJSONArray("Table");
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-                            String disclaimerDateTime = sdf.format(new Date());
-                            System.out.println(disclaimerDateTime);
+                             disclaimerDateTime = sdf.format(new Date());
 
                             // Calendar cal = Calendar.getInstance();
                             // disclaimerDateTime =
@@ -1190,7 +1213,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("un", uName);
                     e.putString("pw", uPassword);
                     e.putString("ke", cop);
-                    e.putString("fnln", fnln+ " " + lastname);
+                    e.putString("fnln", fnln + " " + lastname);
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
@@ -1207,7 +1230,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         intent.putExtra("PH", PH);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln+ " " + lastname);
+                        intent.putExtra("fn", fnln + " " + lastname);
                         // intent.putExtra("tpwd", tpwd);
                         Helper.authentication_flag = false;
                         startActivity(intent);
@@ -1215,7 +1238,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         //finish();
                     }
                 }
-            } catch (JSONException e1) {
+            } catch (Exception e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -1237,6 +1260,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 fnln = subArray.getJSONObject(0).getString("FirstName");
                 lastname = subArray.getJSONObject(0).getString("LastName");
                 id = subArray.getJSONObject(0).getString("UserId");
+                PH = subArray.getJSONObject(0).getString("UserCode");
                 sendData.put("UserId", id);
                 sendData.put("versionNo", disclaimerVersion);
                 sendData.put("DateTime", disclaimerDateTime);
@@ -1262,8 +1286,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         if (miscTasks.isNetworkAvailable()) {
 
 
-
-            uiHelper.onResume();
+            //uiHelper.onResume();
 
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             // adding by me for internal login or not if login then open logout
@@ -1337,27 +1360,28 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        uiHelper.onPause();
+        //uiHelper.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        uiHelper.onDestroy();
+        //uiHelper.onDestroy();
         MainActivity.this.finish();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
+        //uiHelper.onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        /*Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        //uiHelper.onActivityResult(requestCode, resultCode, data);
         Session session = Session.getActiveSession();
         if (session != null && (session.isOpened())) {
             // onSessionStateChange(session, session.getState(),
@@ -1389,9 +1413,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 userID = user.getId();
 
                                 firstName = user.getFirstName();
-                                fnln=firstName;
+                                fnln = firstName;
                                 lastName = user.getLastName();
-                                lastname=lastName;
+                                lastname = lastName;
                                 dateofBirth = user.getBirthday();
                                 //dateofBirth = "01-01-2000";
                                 contactNo = "";
@@ -1403,7 +1427,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 //dharmendraiimt08@gmail.com
                                 user_Name = "";
 
-                                if (genderFB!=null&&genderFB.trim().equalsIgnoreCase("male")) {
+                                if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
                                     gender = "Male";
                                 } else {
                                     gender = "Female";
@@ -1423,8 +1447,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
                                 // String url = Services.init +
                                 // "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";
-							/*String url = "https://patient.cloudchowk.com:8081/"
-									+ "WebServices/LabService.asmx/EmailIdExistFacebook";*/
+                            *//*String url = "https://patient.cloudchowk.com:8081/"
+                                    + "WebServices/LabService.asmx/EmailIdExistFacebook";*//*
                                 // EmailIdExistFacebook
                                 StaticHolder sttc_holdr = new StaticHolder(MainActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
                                 String url = sttc_holdr.request_Url();
@@ -1438,9 +1462,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                                 try {
                                                     String emdata = response.getString("d");
                                                     if (emdata.equals("Exist")) {
-                                                          /*  Toast.makeText(getApplicationContext(),
-                                                                    "An account exist with this email id. Create account with other email.",
-                                                                    Toast.LENGTH_LONG).show();*/
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "An account exist with this email id. Create account with other email.",
+                                                                Toast.LENGTH_LONG).show();
                                                         GetUserCodeFromEmail();
 
                                                     } else {
@@ -1485,8 +1509,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     }
                 }
             }).executeAsync();
-        }
-
+        }*/
     }
 
     @Override
@@ -1504,7 +1527,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             case android.R.id.home:
 
 			/*onBackPressed();
-			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 			finish();*/
                 Intent backNav = new Intent(MainActivity.this, SampleCirclesDefault.class);
                 backNav.putExtra("walk", "walk");
@@ -1618,8 +1641,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             try {
                 if (receiveForgetData.getString("d").equals("\"MoreMobileNoExist\"")) {
 
-                  //  multipleLinked = false;
-                     multipleLinked = true;
+                    //  multipleLinked = false;
+                    multipleLinked = true;
                     sendData = new JSONObject();
                     sendData.put("contactNo", emailsmsphone);
                     receivePatientData = service.GetUserDetailsFromContactNoMobileService(sendData);
@@ -1954,7 +1977,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("un", uName);
                     e.putString("pw", uPassword);
                     e.putString("ke", cop);
-                    e.putString("fnln", fnln+ " " + lastname);
+                    e.putString("fnln", fnln + " " + lastname);
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
@@ -1965,7 +1988,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     intent.putExtra("PH", PH);
                     intent.putExtra("user", uName);
                     intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln+ " " + lastname);
+                    intent.putExtra("fn", fnln + " " + lastname);
                     // intent.putExtra("tpwd", tpwd);
                     Helper.authentication_flag = false;
                     startActivity(intent);
@@ -1976,7 +1999,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
                         i.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln+ " " + lastname);
+                        i.putExtra("fn", fnln + " " + lastname);
                         i.putExtra("pass", "omg");
                         // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
                         startActivity(i);
@@ -1998,7 +2021,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("un", uName);
                     e.putString("pw", uPassword);
                     e.putString("ke", cop);
-                    e.putString("fnln", fnln+ " " + lastname);
+                    e.putString("fnln", fnln + " " + lastname);
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
@@ -2009,7 +2032,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     intent.putExtra("PH", PH);
                     intent.putExtra("user", uName);
                     intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln+ " " + lastname);
+                    intent.putExtra("fn", fnln + " " + lastname);
                     // intent.putExtra("tpwd", tpwd);
                     Helper.authentication_flag = false;
                     startActivity(intent);
@@ -2052,8 +2075,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 Editor editor1 = newpref.edit();
                                 editor1.putString("nameKey", "fbLogin");
                                 editor1.commit();
-								/*
-								 * Session session = Session .getActiveSession (
+                                /*
+                                 * Session session = Session .getActiveSession (
 								 * ) ; session . closeAndClearTokenInformation (
 								 * ) ;
 								 */
@@ -2129,5 +2152,98 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             }
         });
         queue.add(jr);
+    }
+
+    FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            // JSON of FB ID as response.
+                            try {
+                                userID = object.getString("id");
+                                firstName = object.getString("first_name");
+                                fnln = firstName;
+                                lastName = object.getString("last_name");
+                                lastname = lastName;
+                                try {
+                                    eMail = object.getString("email");
+                                } catch (NullPointerException ex) {
+                                    eMail = "";
+                                }
+                                dateofBirth = object.getString("birthday");
+                                String genderFB = object.getString("gender");
+                                if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
+                                    gender = "Male";
+                                } else {
+                                    gender = "Female";
+                                }
+                                contactNo = "";
+                                sendData = new JSONObject();
+                                sendData.put("EmailId", eMail);
+                                StaticHolder sttc_holdr = new StaticHolder(MainActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
+                                String url = sttc_holdr.request_Url();
+                                jr = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
+                                        new com.android.volley.Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                // Exist or Not-Exist
+                                                try {
+                                                    String emdata = response.getString("d");
+                                                    if (emdata.equals("Exist")) {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "An account exist with this email id. Create account with other email.",
+                                                                Toast.LENGTH_LONG).show();
+                                                        GetUserCodeFromEmail();
+
+                                                    } else {
+
+                                                        CheckEmailIdIsExistMobile();
+
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    // TODO Auto-generated catch block
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        System.out.println(error);
+                                    }
+                                });
+                                queue.add(jr);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mtracker.stopTracking();
+        mprofileTracker.stopTracking();
     }
 }

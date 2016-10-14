@@ -45,16 +45,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
-import com.facebook.Request;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
+import com.facebook.*;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,12 +62,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+
+/*import com.facebook.Request;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;*/
 
 /**
  * Created by rahul2 on 10/29/2015.
@@ -108,7 +108,7 @@ public class logout extends Activity implements View.OnClickListener {
     String dated;
     ByteArrayOutputStream byteArrayOutputStream;
     List<String> marqueeStringSet = new ArrayList<String>();
-    private UiLifecycleHelper uiHelper;
+    /* private UiLifecycleHelper uiHelper;*/
     static ArrayList<String> testcomplete = new ArrayList<String>();
     static ArrayList<String> ispublished = new ArrayList<String>();
     static String notiem = "no", notisms = "no";
@@ -123,11 +123,31 @@ public class logout extends Activity implements View.OnClickListener {
     private static RequestQueue request;
     static String emailid;
     private ImageLoader mImageLoader;
+    private LoginButton login_button;
+    private CallbackManager callbackManager = null;
+    private AccessTokenTracker mtracker = null;
+    private ProfileTracker mprofileTracker = null;
+    private String facebookPic;
 
     protected void onCreate(Bundle savedInBundle) {
         super.onCreate(savedInBundle);
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInBundle);
+       /* uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInBundle);*/
+        callbackManager = CallbackManager.Factory.create();
+        mtracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+            }
+        };
+        mprofileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(com.facebook.Profile oldProfile, com.facebook.Profile currentProfile) {
+
+            }
+        };
+
+        mtracker.startTracking();
+        mprofileTracker.startTracking();
         setContentView(R.layout.dashboard);
         mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
         inializeobj();
@@ -143,12 +163,19 @@ public class logout extends Activity implements View.OnClickListener {
         packages = (RelativeLayout) findViewById(R.id.packages);
         my_family = (RelativeLayout) findViewById(R.id.my_family);
         my_health = (RelativeLayout) findViewById(R.id.my_health);
+        if (!new MainActivity().userID.equalsIgnoreCase("")) {
+          facebookPic = new MainActivity().userID;
+        } else {
+            facebookPic = new Register().userID;
+        }
         //logout=(LinearLayout)findViewById(R.id.logout);
         editimg = (ImageButton) findViewById(R.id.editimg);
         username = (TextView) findViewById(R.id.username);
         user_pic = (ImageView) findViewById(R.id.user_pic);
         imageProgress = (ProgressBar) findViewById(R.id.progressBar);
         facebooklink = (RelativeLayout) findViewById(R.id.link);
+        login_button = (LoginButton) findViewById(R.id.login_button);
+        login_button.registerCallback(callbackManager, callback);
         notification = (ImageButton) findViewById(R.id.notification);
         menuimgbtn = (ImageButton) findViewById(R.id.menuimgbtn);
         menu = (LinearLayout) findViewById(R.id.menu);
@@ -504,8 +531,8 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
 
             try {
-                Session session = Session.getActiveSession();
-                session.closeAndClearTokenInformation();
+               /* Session session = Session.getActiveSession();
+                session.closeAndClearTokenInformation();*/
                 String data = receiveData.getString("d");
                 // Toast.makeText(getApplicationContext(),
                 // "Log out successful.",Toast.LENGTH_SHORT).show();
@@ -529,12 +556,16 @@ public class logout extends Activity implements View.OnClickListener {
                 progress.dismiss();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("from logout", "logout");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 output = null;
                 update.bitmap = null;
                 update.verify = "0";
                 user_pic.setImageResource(R.drawable.dashpic_update);
+                LoginManager.getInstance().logOut();
+                new MainActivity().userID = "";
+                new Register().userID = "";
                 finish();
 
             } catch (JSONException e) {
@@ -561,12 +592,16 @@ public class logout extends Activity implements View.OnClickListener {
                 progress.dismiss();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("from logout", "logout");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 output = null;
                 update.bitmap = null;
                 update.verify = "0";
                 user_pic.setImageResource(R.drawable.dashpic_update);
+                LoginManager.getInstance().logOut();
+                new MainActivity().userID = "";
+                new Register().userID = "";
                 finish();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -711,7 +746,13 @@ public class logout extends Activity implements View.OnClickListener {
                             });
 
                         } else {
-                            Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + fbLinkedID + "/picture?type=large").getContent());
+                            Bitmap bitmap;
+                            /*if (!new MainActivity().userID.equalsIgnoreCase("")) {
+                                bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new MainActivity().userID + "/picture?type=large").getContent());
+                            } else {
+                                bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new Register().userID + "/picture?type=large").getContent());
+                            }*/
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" +facebookPic+ "/picture?type=large").getContent());
 
                             output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(output);
@@ -721,7 +762,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
-                            canvas.drawRect(rect, paint);
+                            // canvas.drawRect(rect, paint);
                             canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
                             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                             canvas.drawBitmap(bitmap, rect, rect, paint);
@@ -742,7 +783,7 @@ public class logout extends Activity implements View.OnClickListener {
                             });
                         }
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             }.start();
@@ -1280,8 +1321,8 @@ public class logout extends Activity implements View.OnClickListener {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            Session session = Session.getActiveSession();
-            session.closeAndClearTokenInformation();
+            /*Session session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();*/
             progress.dismiss();
         }
     }
@@ -1483,7 +1524,7 @@ public class logout extends Activity implements View.OnClickListener {
         // TODO Auto-generated method stub
         super.onPause();
         this.unregisterReceiver(this.mConnReceiver);
-        uiHelper.onPause();
+        //  uiHelper.onPause();
         if (progress != null) {
             progress.dismiss();
             progress = null;
@@ -1494,7 +1535,7 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        uiHelper.onDestroy();
+        // uiHelper.onDestroy();
         logout.this.finish();
         output = null;
         update.verify = "0";
@@ -1503,7 +1544,7 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
+        // uiHelper.onSaveInstanceState(outState);
     }
 
     @Override
@@ -1520,7 +1561,7 @@ public class logout extends Activity implements View.OnClickListener {
 			   }*/
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        uiHelper.onResume();
+        //uiHelper.onResume();
         new Authenticationfromresume().execute();
 
         if (update.verify.equals("1")) {
@@ -1620,8 +1661,8 @@ public class logout extends Activity implements View.OnClickListener {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+      /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
 
         Session session = Session.getActiveSession();
@@ -1645,34 +1686,33 @@ public class logout extends Activity implements View.OnClickListener {
                     }
                 }
             }).executeAsync();
-        }
+        }*/
 
     }
 
-    ;
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-        if (state.isOpened()) {
-            Log.i("", "Logged in...");
+    /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+         if (state.isOpened()) {
+             Log.i("", "Logged in...");
 
-        } else if (state.isClosed()) {
-            Log.i("", "Logged out...");
-            // authButton.setText(" Link account with Facebook");
-            // unlinkmenu = 0;
-            // authButton.setVisibility(View.VISIBLE);
-        }
-    }
+         } else if (state.isClosed()) {
+             Log.i("", "Logged out...");
+             // authButton.setText(" Link account with Facebook");
+             // unlinkmenu = 0;
+             // authButton.setVisibility(View.VISIBLE);
+         }
+     }
 
-    private Session.StatusCallback callback = new Session.StatusCallback() {
-        @Override
-        public void call(Session session, SessionState state, Exception exception) {
-            onSessionStateChange(session, state, exception);
-        }
-    };
-
+     private Session.StatusCallback callback = new Session.StatusCallback() {
+         @Override
+         public void call(Session session, SessionState state, Exception exception) {
+             onSessionStateChange(session, state, exception);
+         }
+     };
+ */
     private void onClickLink() {
-
-        Session session = Session.getActiveSession();
+        login_button.performClick();
+       /* Session session = Session.getActiveSession();
         if (!session.isOpened() && !session.isClosed()) {
             session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile"))
                     .setCallback(callback));
@@ -1680,7 +1720,7 @@ public class logout extends Activity implements View.OnClickListener {
             // start Facebook Login
             Session.openActiveSession(this, true, callback);
 
-        }
+        }*/
     }
 
     class fbLinkAsync extends AsyncTask<Void, Void, Void> {
@@ -1783,13 +1823,13 @@ public class logout extends Activity implements View.OnClickListener {
                     });
                     fbDialog.show();
                 } else {
-                    Session session = Session.getActiveSession();
+                  /*  Session session = Session.getActiveSession();
                     session.closeAndClearTokenInformation();
-
+*/
                     alertFB = new AlertDialog.Builder(logout.this).create();
 
                     alertFB.setTitle("Error");
-                    alertFB.setMessage("Your Facebook account is already linked with some other cloudchowk account!");
+                    alertFB.setMessage("Your Facebook account is already linked with some other Healthscion account!");
 
                     alertFB.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 
@@ -1984,4 +2024,37 @@ public class logout extends Activity implements View.OnClickListener {
         });
         request.add(family);
     }
+    FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            // JSON of FB ID as response.
+                            try {
+                                userID = object.getString("id");
+                                new fbLinkAsync().execute();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };
 }

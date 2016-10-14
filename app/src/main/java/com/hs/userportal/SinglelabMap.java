@@ -10,13 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+
 
 import org.json.JSONObject;
 
@@ -35,18 +29,18 @@ import java.util.List;
  */
 public class SinglelabMap extends ActionBarActivity {
 
-    GoogleMap googleMap;
+    //GoogleMap googleMap;
     String lat, lng, devicelat, devicelong;
     String CentreName = "", CentreArea = "";
-    PolylineOptions polylineOptions;
-    ArrayList<LatLng> mMarkerPoints;
+   // PolylineOptions polylineOptions;
+   // ArrayList<LatLng> mMarkerPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         // Initializing
-        mMarkerPoints = new ArrayList<LatLng>();
+       // mMarkerPoints = new ArrayList<LatLng>();
         Intent i = getIntent();
         lat = i.getStringExtra("Latitude");
         lng = i.getStringExtra("Longitude");
@@ -59,21 +53,21 @@ public class SinglelabMap extends ActionBarActivity {
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setDisplayHomeAsUpEnabled(true);
-        googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.single_map)).getMap();
-        if (googleMap != null) {
+       // googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.single_map)).getMap();
+        /*if (googleMap != null) {
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setZoomControlsEnabled(false);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             googleMap.getUiSettings().setScrollGesturesEnabled(true);
             googleMap.getUiSettings().setRotateGesturesEnabled(true);
-        }
+        }*/
         // drawMarker(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)), CentreName, CentreArea);
-        LatLng startPoint = new LatLng(Double.parseDouble(devicelat), Double.parseDouble(devicelong));
-        LatLng endPoint = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-        drawMarker(startPoint,"Your Location :)",Helper.locationFromCoordinates);
-        drawMarker(endPoint,CentreName, CentreArea);
+      /*  LatLng startPoint = new LatLng(Double.parseDouble(devicelat), Double.parseDouble(devicelong));
+        LatLng endPoint = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));*/
+       /* drawMarker(startPoint,"Your Location :)",Helper.locationFromCoordinates);
+        drawMarker(endPoint,CentreName, CentreArea);*/
 
-        if (googleMap != null) {
+      /*  if (googleMap != null) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Double.parseDouble(devicelat), Double.parseDouble(devicelong))));
 
             // Setting the zoom level in the map on last
@@ -94,7 +88,7 @@ public class SinglelabMap extends ActionBarActivity {
 
             // Start downloading json data from Google Directions API
             downloadTask.execute(url);
-        }
+        }*/
     }
 
    /* private void drawMarker(LatLng point, String title, String Area) {
@@ -112,7 +106,7 @@ public class SinglelabMap extends ActionBarActivity {
     }*/
 
 
-    private void drawMarker(LatLng point,String title, String Area) {
+   /* private void drawMarker(LatLng point,String title, String Area) {
         mMarkerPoints.add(point);
 
         // Creating MarkerOptions
@@ -121,10 +115,10 @@ public class SinglelabMap extends ActionBarActivity {
         // Setting the position of the marker
         options.position(point);
 
-        /**
+        *//**
          * For the start location, the color of marker is GREEN and
          * for the end location, the color of marker is RED.
-         */
+         *//*
         if (mMarkerPoints.size() == 1) {
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             options.snippet(Area);
@@ -140,7 +134,7 @@ public class SinglelabMap extends ActionBarActivity {
         // Add new marker to the Google Map Android API V2
         googleMap.addMarker(options);
     }
-
+*/
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -151,7 +145,7 @@ public class SinglelabMap extends ActionBarActivity {
         return true;
     }
 
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+    /*private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -172,7 +166,7 @@ public class SinglelabMap extends ActionBarActivity {
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
 
         return url;
-    }
+    }*/
 
     /**
      * A method to download json data from url
@@ -277,7 +271,7 @@ public class SinglelabMap extends ActionBarActivity {
         // Executes in UI thread, after the parsing process
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points = null;
+           /* ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
 
             // Traversing through all the routes
@@ -307,7 +301,7 @@ public class SinglelabMap extends ActionBarActivity {
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            googleMap.addPolyline(lineOptions);
+            googleMap.addPolyline(lineOptions);*/
         }
     }
 

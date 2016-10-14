@@ -8,13 +8,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <!--<permission android:name="android.permission.MANAGE_USERS"
-        android:protectionLevel="signature|system"/>-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.MANAGE_USERS" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
@@ -424,11 +421,16 @@
         <!-- AIzaSyBeKiVCcMy9tvlZ4-wOEgAphDmIJsFseVI-->//sajat given
         <!--AIzaSyDPEeIalPb11XO0RLOX5B0XkwklHBwUGws-->
 
-        <meta-data
+       <!-- <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <activity android:name="com.facebook.LoginActivity" />
+            android:value="@integer/google_play_services_version" />-->
+<!--
+        <activity android:name="com.facebook.LoginActivity" />-->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
     </application>
 

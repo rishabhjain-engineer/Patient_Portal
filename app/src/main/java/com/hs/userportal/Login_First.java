@@ -20,12 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +37,6 @@ public class Login_First extends Activity {
     String uName, uPassword, contactNumber;
     String userID,fbdata,buildNo;
     String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
-    private UiLifecycleHelper uiHelper;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
@@ -63,8 +56,8 @@ public class Login_First extends Activity {
     protected  void  onCreate(Bundle savedInstancestate){
         super.onCreate(savedInstancestate);
         setContentView(R.layout.login_first);
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstancestate);
+       /* uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstancestate);*/
 
         initializeObj();
         loginwith_fb.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +92,7 @@ public class Login_First extends Activity {
         });
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+  /*  private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i("", "Logged in...");
         } else if (state.isClosed()) {
@@ -112,10 +105,10 @@ public class Login_First extends Activity {
         public void call(Session session, SessionState state, Exception exception) {
             onSessionStateChange(session, state, exception);
         }
-    };
+    };*/
 
     private void onClickLogin() {
-        Session session = Session.getActiveSession();
+      /*  Session session = Session.getActiveSession();
         if (!session.isOpened() && !session.isClosed()) {
             session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile"))
                     .setCallback(callback));
@@ -125,7 +118,7 @@ public class Login_First extends Activity {
         } else if (session.isOpened()) {
             session.closeAndClearTokenInformation();
             Session.openActiveSession(this, true, callback);
-        }
+        }*/
     }
 
     public void initializeObj(){
@@ -185,8 +178,8 @@ public class Login_First extends Activity {
                 });
 
                 alert.show();
-                Session session = Session.getActiveSession();
-                session.closeAndClearTokenInformation();
+             /*   Session session = Session.getActiveSession();
+                session.closeAndClearTokenInformation();*/
 
             } else if (fbLogin == 1) {
                 fbProgress.dismiss();
@@ -321,8 +314,8 @@ public class Login_First extends Activity {
                 fbdata = receiveData.getString("d");
                 if (fbdata.equals("Login Successfully")) {
 
-                    Session session = Session.getActiveSession();
-                    session.closeAndClearTokenInformation();
+                   /* Session session = Session.getActiveSession();
+                    session.closeAndClearTokenInformation();*/
 
                     try {
 
@@ -630,7 +623,7 @@ public class Login_First extends Activity {
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(Login_First.this);
         if (miscTasks.isNetworkAvailable()) {
 
-            Session session = Session.getActiveSession();
+            /*Session session = Session.getActiveSession();
             if (session != null && (session.isOpened())) {
                 // onSessionStateChange(session, session.getState(),
                 // null);
@@ -658,7 +651,7 @@ public class Login_First extends Activity {
             }
 
             uiHelper.onResume();
-
+*/
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             // adding by me for internal login or not if login then open logout
             // class as a landing
@@ -727,27 +720,27 @@ public class Login_First extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-        uiHelper.onPause();
+      //  uiHelper.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        uiHelper.onDestroy();
+       // uiHelper.onDestroy();
         Login_First.this.finish();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
+      //  uiHelper.onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+       /* Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);*/
     }
 
     public void onBackPressed() {

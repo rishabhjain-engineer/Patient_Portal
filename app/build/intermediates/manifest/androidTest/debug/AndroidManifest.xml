@@ -3,8 +3,8 @@
     package="com.hs.userportal.test" >
 
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="24" />
 
     <instrumentation
         android:name="com.android.test.runner.MultiDexTestRunner"

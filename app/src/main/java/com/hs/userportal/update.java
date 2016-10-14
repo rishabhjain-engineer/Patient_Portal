@@ -977,7 +977,7 @@ public class update extends FragmentActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
+
             String url = String
                     .format("https://graph.facebook.com/%s/picture?type=large",
                             fbLinkedID);
