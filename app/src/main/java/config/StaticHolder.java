@@ -17,7 +17,7 @@ public class StaticHolder {
 
      public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE
   //  public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
- //   public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
+  // public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
   //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
     // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
    // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local

@@ -69,7 +69,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.0"
-        sha1="6acaafcbae76e1278d70952906825f4e6adb91da">
+        sha1="8143381a6714f7ad0111495c530efb90a17ea5aa">
         <dex dex="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_5d5bac74210ea2df5847382b783d1b45c30c03b1\classes.dex" />
     </item>
     <item
@@ -454,7 +454,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.0"
-        sha1="d28212c8b65741b7a089ffc77ef5f0c8d3597c56">
+        sha1="7207608f28a6b2540af879b482d105147e2aea0c">
         <dex dex="C:\Users\ashish\Desktop\HS_Projects\patient-portal\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_0f83651b1c9259b1e795e2375b82b1d641017a4a\classes.dex" />
     </item>
     <item

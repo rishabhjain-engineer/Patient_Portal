@@ -66,7 +66,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
 
     static class ViewHolder {
         TextView member_name, relation_member, test_name, result, accept, deny, head_member,
-                test_name_head, blood_group,amount,status;
+                test_name_head, blood_group, amount, status, status_header;
         LinearLayout pending_request, amount_header;
         NetworkImageView user_pic;
         Spinner options;
@@ -112,6 +112,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
             holder.test_name_head = (TextView) convertView.findViewById(R.id.test_name_head);
             holder.amount = (TextView) convertView.findViewById(R.id.amount);
             holder.status = (TextView) convertView.findViewById(R.id.status);
+            holder.status_header = (TextView) convertView.findViewById(R.id.status_header);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -145,16 +146,33 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                 holder.blood_group.setVisibility(View.VISIBLE);
                 String check_bld = family_arr_list.get(position).get("BloodGroup");
                 holder.amount_header.setVisibility(View.VISIBLE);
-                Double amount_req = Double.valueOf(family_arr_list.get(position).get("TotalActualAmount"));
-                holder.amount.setText("₹ "+ String.format("%.2f", amount_req));
-                Float balanceCheck = Float.parseFloat(family_arr_list.get(position).get("Balance"));
-                if(balanceCheck == 0.00){
-                    holder.status.setText("PAID");
-                    holder.status.setTextColor(Color.parseColor("#319731"));
-                }else{
-                    holder.status.setText("DUE");
-                    holder.status.setTextColor(Color.RED);
+                Double amount_req = 0.0;
+                if (family_arr_list.get(position).containsKey("TotalActualAmount")) {
+                    amount_req = Double.valueOf(family_arr_list.get(position).get("TotalActualAmount"));
                 }
+                if(amount_req ==0.0){
+                    holder.amount_header.setVisibility(View.GONE);
+                    holder.amount.setVisibility(View.GONE);
+                }else{
+                    holder.amount_header.setVisibility(View.VISIBLE);
+                    holder.amount.setVisibility(View.VISIBLE);
+                    holder.amount.setText("₹ " + String.format("%.2f", amount_req));
+                }
+
+                if (family_arr_list.get(position).containsKey("Balance")) {
+                    Float balanceCheck  = Float.parseFloat(family_arr_list.get(position).get("Balance"));
+                    holder.status_header.setVisibility(View.VISIBLE);
+                    if (balanceCheck == 0.00) {
+                        holder.status.setText("PAID");
+                        holder.status.setTextColor(Color.parseColor("#319731"));
+                    } else {
+                        holder.status.setText("DUE");
+                        holder.status.setTextColor(Color.RED);
+                    }
+                }else{
+                    holder.status_header.setVisibility(View.GONE);
+                }
+
                 if (!check_bld.equalsIgnoreCase("")) {
                     holder.blood_group.setText(family_arr_list.get(position).get("BloodGroup"));
                 } else {
@@ -163,7 +181,8 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                 }
                 holder.relation_member.setText(family_arr_list.get(position).get("RelationName"));
                 if (family_arr_list.get(position).containsKey("IsTestCompletedNew")) {
-                  /*  if (family_arr_list.get(position).get("IsTestCompletedNew").equals("1"))*/ {
+                  /*  if (family_arr_list.get(position).get("IsTestCompletedNew").equals("1"))*/
+                    {
                         holder.test_name.setVisibility(View.VISIBLE);
                         // holder.result.setVisibility(View.VISIBLE);
                         holder.test_name_head.setVisibility(View.VISIBLE);
@@ -281,7 +300,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                         }
                     });*/
 
-                    AlertDialog.Builder b=  new  AlertDialog.Builder(activity)
+                    AlertDialog.Builder b = new AlertDialog.Builder(activity)
                             .setTitle("Are you sure you want to resend the request?")
                             .setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
@@ -332,7 +351,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                     // Showing Alert Message
                     alertDialog.show();*/
 
-                    AlertDialog.Builder b=  new  AlertDialog.Builder(activity)
+                    AlertDialog.Builder b = new AlertDialog.Builder(activity)
                             .setTitle("Are you sure you want to revoke this member?")
                             .setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
@@ -363,8 +382,8 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                         listener.onButton_action_click(position, "4");
                     }*/
 
-                }else if(hol.getText().equals("Remove Member")){
-                    AlertDialog.Builder b=  new  AlertDialog.Builder(activity)
+                } else if (hol.getText().equals("Remove Member")) {
+                    AlertDialog.Builder b = new AlertDialog.Builder(activity)
                             .setTitle("Are you sure you want to remove this member?")
                             .setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
@@ -387,8 +406,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                             );
                     b.create();
                     b.show();
-                }
-                else if (hol.getText().equals("Cancel Request")) {
+                } else if (hol.getText().equals("Cancel Request")) {
 
                    /* final AlertDialog alertDialog = new AlertDialog.Builder(
                             activity).create();
@@ -407,7 +425,7 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                     // Showing Alert Message
                     alertDialog.show();*/
 
-                    AlertDialog.Builder b=  new  AlertDialog.Builder(activity)
+                    AlertDialog.Builder b = new AlertDialog.Builder(activity)
                             .setTitle("Are you sure you want to cancel the request?")
                             .setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {

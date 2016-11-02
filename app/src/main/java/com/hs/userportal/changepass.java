@@ -166,9 +166,7 @@ public class changepass extends ActionBarActivity {
 				
 				
 				else {
-
 					receiveData = service.changepassword(sendData);
-					System.out.println(receiveData);
 					String str="";
 					try {
 						str = receiveData.getString("d");

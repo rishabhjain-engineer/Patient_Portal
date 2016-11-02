@@ -138,6 +138,7 @@ public class Register extends ActionBarActivity {
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
+    private String PH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1949,6 +1950,7 @@ public class Register extends ActionBarActivity {
                     e.putString("ke", cop);
                     e.putString("fnln", fnln);
                     e.putString("cook", cook);
+                    e.putString("PH", PH);
                     // e.putString("tp", tpwd);
                     e.commit();
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
@@ -1958,10 +1960,18 @@ public class Register extends ActionBarActivity {
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", password);
                         intent.putExtra("fn", fnln);
+                        intent.putExtra("PH", PH);
                         // intent.putExtra("tpwd", tpwd);
                         startActivity(intent);
                     } else {
-                        Register.this.finish();
+                        Intent intent = new Intent(Register.this, logout.class);
+                        intent.putExtra("id", cop);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", password);
+                        intent.putExtra("fn", fnln);
+                        intent.putExtra("PH", PH);
+                        // intent.putExtra("tpwd", tpwd);
+                        startActivity(intent);
                     }
                 }
             } catch (JSONException e1) {
@@ -1988,13 +1998,11 @@ public class Register extends ActionBarActivity {
                 sendData.put("UserId", id);
                 sendData.put("versionNo", disclaimerVersion);
                 sendData.put("DateTime", disclaimerDateTime);
-                System.out.println(sendData);
 
             } catch (JSONException e) {
-
+                receiveData = service.AgreeService(sendData);
                 e.printStackTrace();
             }
-
             receiveData = service.AgreeService(sendData);
             System.out.println(receiveData);
 
@@ -2169,6 +2177,7 @@ public class Register extends ActionBarActivity {
                                 newpref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                                 Editor editor1 = newpref.edit();
                                 editor1.putString("nameKey", "fbLogin");
+                                editor.putString("passwordKey", "fblogin");
                                 editor1.commit();
 								/*
 								 * Session session = Session .getActiveSession (
@@ -2315,7 +2324,7 @@ public class Register extends ActionBarActivity {
                                                                         Toast.LENGTH_LONG).show();
 
                                                                 Editor editor = sharedPreferences.edit();
-
+                                                                PH = receive.getString("d");
                                                                 if (fromLocation) {
                                                                     editor.putBoolean("FinishLocation", true);
                                                                 }
@@ -2325,6 +2334,7 @@ public class Register extends ActionBarActivity {
                                                                         Context.MODE_PRIVATE);
                                                                 Editor editor1 = newpref.edit();
                                                                 editor1.putString("nameKey", "fbLogin");
+                                                                editor1.putString("passwordKey", "fbLogin");
                                                                 editor1.commit();
 
 																/*
@@ -2924,8 +2934,6 @@ public class Register extends ActionBarActivity {
                 alert.show();
 
             } else if (chklogin == 1) {
-
-                // System.out.println(fnln);
                 Editor editor = sharedpreferences.edit();
                 editor.putString("name", userName);
                 editor.putString("pass", password);
@@ -2938,12 +2946,15 @@ public class Register extends ActionBarActivity {
                 e.putString("ke", cop);
                 e.putString("fnln", fnln);
                 e.putString("cook", cook);
+                e.putString("PH", PH);
+                editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), logout.class);
                 intent.putExtra("id", cop);
                 intent.putExtra("user", uName);
                 intent.putExtra("pass", uPassword);
                 intent.putExtra("fn", fnln);
+                intent.putExtra("PH", PH);
 
             }
 
@@ -3083,12 +3094,9 @@ public class Register extends ActionBarActivity {
                                         new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int id) {
-
                                                 dialog.dismiss();
-
                                             }
                                         });
-
                                 alert.show();
                             }
                         });
@@ -3101,10 +3109,7 @@ public class Register extends ActionBarActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             return null;
-
         }
     }
-
 }

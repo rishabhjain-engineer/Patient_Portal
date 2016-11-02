@@ -251,11 +251,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         public void onResponse(JSONObject response) {
 
                             System.out.println("Response: " + response);
-
                             try {
                                 String marketVersion = response.getString("version");
                             /*	double market_vervalue = Double.parseDouble(marketVersion);*/
-
                                 PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                                 String version = pInfo.versionName;
                                 //	double currentversion = Double.parseDouble(version);
@@ -998,8 +996,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-            System.out.println("Login credential" + "" + sendData);
             StaticHolder staticobj = new StaticHolder(MainActivity.this, StaticHolder.Services_static.LogIn, sendData);
             receiveData = staticobj.request_services();
             //receiveData = service.LogIn(sendData);
@@ -1299,7 +1295,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     // new Authentication().execute();
 
                     Intent i = new Intent(MainActivity.this, logout.class);
-                    System.out.println("hahaha");
                     String name = sharedPreferences.getString("un", "");
                     String pwd = sharedPreferences.getString("pw", "");
                     String uid = sharedPreferences.getString("ke", "");

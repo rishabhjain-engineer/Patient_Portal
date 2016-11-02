@@ -948,9 +948,6 @@ public class logout extends Activity implements View.OnClickListener {
                 logout.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }
-
-            System.out.println("Get User Details" + receiveDataFb);
-
             if (receiveDataFb.toString().equals("{\"d\":\"{}\"}")) {
 
                 System.out.println("get user details are empty");
@@ -1643,6 +1640,7 @@ public class logout extends Activity implements View.OnClickListener {
                             editor.clear();
                             editor.commit();
                             dialog.dismiss();
+                            LoginManager.getInstance().logOut();
                             finish();
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
