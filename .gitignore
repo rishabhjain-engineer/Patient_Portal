@@ -1,0 +1,12 @@
+# For androit studio project
+*.iml
+.gradle
+/local.properties
+.DS_Store
+import-summary.txt
+/captures
+.externalNativeBuild
+*~
+**/build
+**/.idea
+
