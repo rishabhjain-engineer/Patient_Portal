@@ -193,7 +193,7 @@ public class ReportStatus extends ActionBarActivity {
                 breport.setVisibility(View.GONE);
                 // bpdf.setVisibility(View.GONE);
               //  bgraph.setVisibility(View.GONE);
-                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
 
             }
@@ -1207,7 +1207,7 @@ public class ReportStatus extends ActionBarActivity {
 
             if (k == 0) {
                 //bgraph.setVisibility(View.GONE);
-                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
 
@@ -1230,7 +1230,7 @@ public class ReportStatus extends ActionBarActivity {
 
             if (j == results.length()) {
               //  bgraph.setVisibility(View.GONE);
-                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablehistory, 0, 0);
+                history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
             if (progress != null)

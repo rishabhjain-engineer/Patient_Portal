@@ -285,8 +285,8 @@ public class ReportRecords extends ActionBarActivity {
             if (check == subArrayLen) {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disableinvoice, 0, 0);
-                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disablepdf, 0, 0);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
                 viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
@@ -317,7 +317,7 @@ public class ReportRecords extends ActionBarActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disableinvoice, 0, 0);
+                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
