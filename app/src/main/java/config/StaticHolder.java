@@ -395,9 +395,6 @@ public class StaticHolder {
             case ResendSmsVerifyCodeClinic:
                 url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/ResendSmsVerifyCodeClinic";
                 break;
-            case CheckVerifyCodeClinic:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/CheckVerifyCode";
-                break;
             case GetCityList1:
                 url = LIVELOGIN_URL + "CommonMasterModule/CommonMasterService.asmx/GetCityList1";
                 break;
@@ -414,6 +411,10 @@ public class StaticHolder {
           /*  case GetAllNationality:
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetAllNationality";
                 break;*/
+            case CheckVerifyCodeClinic:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/CheckVerifyCode";
+                break;
+
             case CallmePatient:
                 url = BASE_URL + "CallmePatient";
                 break;
