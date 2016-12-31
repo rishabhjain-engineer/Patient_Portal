@@ -53,7 +53,6 @@ public class SplashScreen extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.splash);
         sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

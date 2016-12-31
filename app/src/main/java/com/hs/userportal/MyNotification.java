@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -25,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amazonaws.transform.VoidStaxUnmarshaller;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +47,6 @@ public class MyNotification extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 
         Intent i = getIntent();
@@ -59,23 +61,12 @@ public class MyNotification extends ActionBarActivity {
         setContentView(R.layout.mynotification);
 
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
 
         service = new Services(MyNotification.this);
         nonoti = (TextView) findViewById(R.id.tvNoNoti);
-
-//		LinearLayout parentLayout = (LinearLayout) findViewById(R.id.container);
-//		parentLayout.setOrientation(LinearLayout.VERTICAL);
-//		TextView emv = new TextView(this);
-//		emv.setText(("Description"));
-//		parentLayout.addView(emv);
-//		TextView smsv = new TextView(this);
-//		smsv.setText(("Description"));
-//		parentLayout.addView(smsv);
-
         nonoti.setVisibility(View.GONE);
 
         if (logout.notiem.equals("yes")) {
@@ -103,8 +94,6 @@ public class MyNotification extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // TODO Auto-generated method stub
-
                 String selectedFromList = (notifications.getItemAtPosition(position).toString());
                 if (selectedFromList.equals("Resend Verification link to E-mail")) {
                     sendData = new JSONObject();
@@ -118,14 +107,7 @@ public class MyNotification extends ActionBarActivity {
 
                         e.printStackTrace();
                     }
-                    System.out.println(sendData);
-                    receiveData = service.verifyemail(sendData);
-                    System.out.println(receiveData);
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Verification link has been sent to your registered E-mail address.",
-                            Toast.LENGTH_SHORT).show();
-
+                    new MyAsynckTask(sendData, true, false).execute();
                 }
 
                 if (selectedFromList.equals("Resend Verification code to registered phone")) {
@@ -156,10 +138,7 @@ public class MyNotification extends ActionBarActivity {
 
                                     if (input.getText().toString()
                                             .equals("")) {
-                                        Toast.makeText(
-                                                getApplicationContext(),
-                                                "This field cannnot be left blank!",
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         sendData = new JSONObject();
                                         try {
@@ -170,29 +149,7 @@ public class MyNotification extends ActionBarActivity {
 
                                             e.printStackTrace();
                                         }
-                                        System.out.println(sendData);
-                                        receiveData = service.verifysms(sendData);
-                                        System.out.println(receiveData);
-
-                                        String data, verify;
-                                        try {
-                                            data = receiveData.getString("d");
-                                            JSONObject cut = new JSONObject(data);
-                                            verify = cut.getString("VerifyMessage");
-                                            System.out.println(verify);
-
-                                            if (verify.equals("verified")) {
-                                                Toast.makeText(getApplicationContext(), "Verified Successfully", Toast.LENGTH_SHORT).show();
-                                                noti.remove(1);
-                                                notifications.setAdapter(adapter);
-                                                adapter.notifyDataSetChanged();
-                                            }
-
-                                        } catch (JSONException e) {
-                                            // TODO Auto-generated catch block
-                                            e.printStackTrace();
-                                        }
-
+                                        new MyAsynckTask(sendData, false, true);
 
                                     }
 
@@ -213,29 +170,6 @@ public class MyNotification extends ActionBarActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-
-										/*sendData = new JSONObject();
-                                        try {
-											sendData.put("patientcode",usid);
-											sendData.put("applicationid","00000000-0000-0000-0000-000000000000" );
-
-										}
-
-										catch (JSONException e) {
-
-											e.printStackTrace();
-										}
-										System.out.println(sendData);
-										receiveData = service.verifyresendsms(sendData);
-										System.out.println(receiveData);
-										try {
-											Toast.makeText(
-													getApplicationContext(),receiveData.getString("d"),Toast.LENGTH_SHORT).show();
-										} catch (JSONException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}*/
-
                                     sendData = new JSONObject();
                                     try {
                                         sendData.put("userid", usid);
@@ -247,13 +181,7 @@ public class MyNotification extends ActionBarActivity {
 
                                         e.printStackTrace();
                                     }
-                                    System.out.println(sendData);
-                                    receiveData = service.verifyemail(sendData);
-                                    System.out.println(receiveData);
-                                    Toast.makeText(
-                                            getApplicationContext(),
-                                            "SMS sent successfully.",
-                                            Toast.LENGTH_SHORT).show();
+                                    new MyAsynckTask(sendData, true, false).execute();
 
                                 }
 
@@ -314,20 +242,13 @@ public class MyNotification extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
-
         this.unregisterReceiver(this.mConnReceiver);
-
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
-
-        this.registerReceiver(this.mConnReceiver, new IntentFilter(
-                ConnectivityManager.CONNECTIVITY_ACTION));
-
+        this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         super.onResume();
     }
 
@@ -354,5 +275,50 @@ public class MyNotification extends ActionBarActivity {
         }
     };
 
+    private class MyAsynckTask extends AsyncTask<Void, Void, Void> {
+        JSONObject dataToSend;
+        boolean verifyEmail, verifysms;
+
+        MyAsynckTask(JSONObject jsonObject, boolean verifyEmail, boolean verifysms) {
+            dataToSend = jsonObject;
+            this.verifyEmail = verifyEmail;
+            this.verifysms = verifysms;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (verifyEmail) {
+                service.verifyemail(dataToSend);
+            } else if (verifysms) {
+                receiveData = service.verifysms(sendData);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (verifyEmail) {
+                Toast.makeText(getApplicationContext(), "SMS sent successfully.", Toast.LENGTH_SHORT).show();
+            } else if (verifysms) {
+                String data, verify;
+                try {
+                    data = receiveData.getString("d");
+                    JSONObject cut = new JSONObject(data);
+                    verify = cut.getString("VerifyMessage");
+                    if (verify.equals("verified")) {
+                        Toast.makeText(getApplicationContext(), "Verified Successfully", Toast.LENGTH_SHORT).show();
+                        noti.remove(1);
+                        notifications.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
 
 }
