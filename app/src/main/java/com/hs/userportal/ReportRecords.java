@@ -288,14 +288,14 @@ public class ReportRecords extends ActionBarActivity {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
                 viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
-                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
+                //viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
                 viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
                 viewReportLinear_id.setClickable(true);
                 viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
-                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
+               // viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
                 viewReports_text.setTextColor(Color.parseColor("#565656"));
             }
