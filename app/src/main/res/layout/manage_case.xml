@@ -72,7 +72,7 @@
             <RelativeLayout
                 android:id="@+id/viewReportLinear_id"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:background="@color/light_gray"
                 android:clickable="true"
                 android:orientation="horizontal">
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:drawablePadding="30dp"
-                    android:gravity="center"
+                    android:textSize="15dp"
                     android:layout_centerVertical="true"
                     android:text="View Reports"
                     android:textColor="#565656" />
@@ -92,10 +92,10 @@
                     android:id="@+id/pdf_image"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/pdf1"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerInside"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="right" />
 
             </RelativeLayout>
