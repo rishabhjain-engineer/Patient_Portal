@@ -60,7 +60,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		try {
 			if (walk.equals("walk")) {
 				login.setVisibility(View.VISIBLE);
-				signup.setVisibility(View.VISIBLE);
+				signup.setVisibility(View.GONE);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
