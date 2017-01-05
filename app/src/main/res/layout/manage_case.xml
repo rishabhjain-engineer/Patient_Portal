@@ -94,9 +94,9 @@
                     android:src="@drawable/pdf1"
                     android:layout_marginRight="10dp"
                     android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:scaleType="centerInside"
-                    android:layout_gravity="right"
-                    android:layout_height="40dp" />
+                    android:layout_gravity="right" />
 
             </RelativeLayout>
 
