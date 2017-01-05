@@ -51,46 +51,54 @@
                 android:layout_weight="50"
                 android:background="@drawable/layout_selector"
                 android:clickable="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/viewFiles_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center"
                     android:layout_margin="5dp"
                     android:drawablePadding="30dp"
                     android:drawableTop="@drawable/invoice1"
+                    android:gravity="center"
                     android:text="View Files"
-                    android:textColor="#565656"/>
+                    android:textColor="#565656" />
 
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/viewReportLinear_id"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="50"
-                android:background="@drawable/layout_selector"
+                android:background="@color/light_gray"
                 android:clickable="true"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/viewReports_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="10dp"
                     android:drawablePadding="30dp"
-                    android:textColor="#565656"
-                    android:drawableTop="@drawable/pdf1"
-                    android:text="View Reports" />
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:text="View Reports"
+                    android:textColor="#565656" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/pdf_image"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/pdf1"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerInside"
+                    android:layout_gravity="right" />
+
+            </RelativeLayout>
 
 
         </LinearLayout>

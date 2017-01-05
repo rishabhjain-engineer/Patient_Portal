@@ -72,10 +72,7 @@ public class SplashScreen extends Activity {
                         Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
-
-                        Intent intentMain = new Intent(getApplicationContext(),
-                                MainActivity.class);
-
+                        Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intentMain);
                         finish();
                     }
