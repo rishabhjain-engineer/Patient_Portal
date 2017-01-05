@@ -413,7 +413,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:padding="10dp"
-                        android:text="Repository"
+                        android:text="My Repository"
                         android:textColor="#4eba6f"
                         android:textSize="16dp"
                         android:textStyle="bold" />

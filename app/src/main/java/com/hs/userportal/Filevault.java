@@ -98,7 +98,7 @@ public class Filevault extends ActionBarActivity {
     private ArrayList<HashMap<String, String>> S3Objects_folder;
     private ArrayList<HashMap<String, String>> S3Objects_details;
     // static ArrayList<String> thumbImage = new ArrayList<String>();
-   public static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
+    public static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> alias_thumbImage_folder = new ArrayList<HashMap<String, String>>();
     static ArrayList<String> imageName = new ArrayList<String>();
@@ -120,7 +120,7 @@ public class Filevault extends ActionBarActivity {
     private ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
     int count;
-   public static Menu menu_toggle;
+    public static Menu menu_toggle;
     ArrayList<String> imageId = new ArrayList<String>();
     String imageIdsToBeSent = "";
     RequestQueue queue;
@@ -151,7 +151,7 @@ public class Filevault extends ActionBarActivity {
     private static ArrayList<String> folder_path = new ArrayList<String>();
     static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM
             + "/Patient Portal";
-   public static Uri Imguri;
+    public static Uri Imguri;
     static boolean refresh_vault1 = true;
     String[] rem_dup_folder;
     String check_view = "";
@@ -162,6 +162,7 @@ public class Filevault extends ActionBarActivity {
     private TextView warning_msg;
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
+    private Handler mHandler;
 
     /*@Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -904,7 +905,7 @@ public class Filevault extends ActionBarActivity {
             // ,Toast.LENGTH_LONG ).show();
             System.out.println(b.getString(UploadService.MSG_EXTRA));
             int percent = b.getInt(UploadService.PERCENT_EXTRA);
-            if(bar!=null) {
+            if (bar != null) {
                 bar.setIndeterminate(percent < 0);
                 bar.setProgress(percent);
             }
@@ -954,11 +955,11 @@ public class Filevault extends ActionBarActivity {
                 System.out.println(path);
 
                 File imageFile = new File(path);
-                String path1=imageFile.getAbsolutePath();
-                String splitfo_lenthcheck []=path1.split("/");
-                int filenamelength=splitfo_lenthcheck[splitfo_lenthcheck.length-1].length();
+                String path1 = imageFile.getAbsolutePath();
+                String splitfo_lenthcheck[] = path1.split("/");
+                int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
                 long check = ((imageFile.length() / 1024));
-                if (check < 10000&&filenamelength<99) {
+                if (check < 10000 && filenamelength < 99) {
 
                     String splitstr[];
                     String chosenimg = "";
@@ -1028,12 +1029,12 @@ public class Filevault extends ActionBarActivity {
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
-                    String[]  splitstr;
-                    String  chosenimg="";
+                    String[] splitstr;
+                    String chosenimg = "";
                     String stringcheck = "", exhistimg = "false";
                     int leangth = 0;
                     if (path.contains("/")) {
-                      splitstr = imageFile.getAbsolutePath().split("/");
+                        splitstr = imageFile.getAbsolutePath().split("/");
                         chosenimg = splitstr[splitstr.length - 1];
                     }
                     for (int i = 0; i < thumbImage.size(); i++) {
@@ -1069,7 +1070,7 @@ public class Filevault extends ActionBarActivity {
                         pic = "data:image/jpeg;base64," + pic;
                         picname = "camera.jpg";
 
-                       // finish();
+                        // finish();
                         startActivity(getIntent());
                     }
                 } else {
@@ -2585,11 +2586,11 @@ public class Filevault extends ActionBarActivity {
                                 File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
 
-                                      boolean b=photo.delete();
-                                     String df="";
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    boolean b = photo.delete();
+                                    String df = "";
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
                                 } else {
                                     photo = new File(getCacheDir(), "test1.jpg");
                                 }
@@ -2749,6 +2750,7 @@ public class Filevault extends ActionBarActivity {
 
     public void createLockFolder() {
         req = Volley.newRequestQueue(this);
+        mHandler = new Handler();
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.CreateLockFolder);
         String url = sttc_holdr.request_Url();
         JSONObject data = new JSONObject();
@@ -2793,12 +2795,16 @@ public class Filevault extends ActionBarActivity {
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
-       pd = new ProgressDialog(Filevault.this);
-        pd.setMessage("Loading Vault .....");
-        pd.setCanceledOnTouchOutside(false);
+        Filevault.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pd = new ProgressDialog(Filevault.this);
+                pd.setMessage("Loading Vault .....");
+                pd.setCanceledOnTouchOutside(false);
 
                 pd.show();
-
+            }
+        });
 
         try {
             s3data.put("Key", "");
