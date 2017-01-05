@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +55,8 @@ public class ReportRecords extends ActionBarActivity {
     private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral,
             sub_total, discount, your_price, viewFiles_text, viewReports_text;
     private ListView test_list;
-    private LinearLayout invoice, viewReportLinear_id;
+    private LinearLayout invoice;
+    private RelativeLayout viewReportLinear_id;
     private TextView spinner_action;
     private String case_id = "";
     private Services service;
@@ -102,7 +104,7 @@ public class ReportRecords extends ActionBarActivity {
         invoice = (LinearLayout) findViewById(R.id.invoice);
         viewFiles_text = (TextView) findViewById(R.id.viewFiles_text);
         viewReports_text = (TextView) findViewById(R.id.viewReports_text);
-        viewReportLinear_id = (LinearLayout) findViewById(R.id.viewReportLinear_id);
+        viewReportLinear_id = (RelativeLayout) findViewById(R.id.viewReportLinear_id);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
         spinner_action = (TextView) findViewById(R.id.spinner_action);
         progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
