@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -1042,7 +1043,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             disclaimerArray = cut.getJSONArray("Table");
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-                             disclaimerDateTime = sdf.format(new Date());
+                            disclaimerDateTime = sdf.format(new Date());
 
                             // Calendar cal = Calendar.getInstance();
                             // disclaimerDateTime =
@@ -2080,7 +2081,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 return;
                             }
                         } else {
-							/*
+                            /*
 							 * Toast.makeText(getApplicationContext(),
 							 * "Error in Uploading File . Please check Internet Connection !"
 							 * , Toast.LENGTH_SHORT) .show();
@@ -2234,6 +2235,28 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         }
     };
+
+
+    /**
+     * Hides the soft on screen keyboard.
+     *
+     * @return True : If request was executed successfully. It may return false if it fails in attempt
+     * to hide keyboard.
+     */
+    public boolean hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View view = getCurrentFocus();
+        if (view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return hideSoftKeyboard();
+    }
 
     @Override
     public void onStop() {
