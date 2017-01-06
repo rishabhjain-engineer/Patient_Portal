@@ -1440,10 +1440,14 @@ public class lablistdetails extends ActionBarActivity {
                             hmap.put("OrderId", sortList.get(i).getOrderId());
                             hmap.put("perTextActualPrice_str", sortList.get(i).getStr_peractual_amnt());
                             hmap.put("TestId", sortList.get(i).getTestId());
+                            String orderStatus = sortList.get(i).getOrderStatus();
+                            String pickUpStatus = sortList.get(i).getSamplePickupstatus();
                             hmap.put("OrderStatus", sortList.get(i).getOrderStatus());
                             hmap.put("SamplePickupstatus", sortList.get(i).getSamplePickupstatus());
                             hmap.put("TYPE", "Zureka");
-                            sortList_alias.add(hmap);
+                           if("1".equalsIgnoreCase(orderStatus) && "true".equalsIgnoreCase(pickUpStatus)){
+                                sortList_alias.add(hmap);
+                            }
                         }
                     }
                     if (sortList_alias.size() != 0) {
