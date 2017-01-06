@@ -1174,8 +1174,10 @@ public class Services {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NumberFormatException ex) {
-            Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
-            ReportStatus.progress.dismiss();
+           // Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
+            if(ReportStatus.progress != null){
+                ReportStatus.progress.dismiss();
+            }
             ReportStatus.progress = null;
         }
         if(actName.equalsIgnoreCase("Report Status")) {

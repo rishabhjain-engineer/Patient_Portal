@@ -318,7 +318,7 @@ public class ReportRecords extends ActionBarActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
-               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+               //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
@@ -531,37 +531,38 @@ public class ReportRecords extends ActionBarActivity {
             });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData,"ReportRecords");
-            int lenghtOfFile = result.length;
-            String temp = null;
-            try {
-                temp = new String(result, "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-            Log.v("View & result==null", reportFile.getAbsolutePath());
-            Log.v("Content of PDF", temp);
-            OutputStream out;
-            try {
-                InputStream input = new ByteArrayInputStream(result);
-                out = new FileOutputStream(reportFile);
-
-                byte data[] = new byte[1024];
-
-                long total = 14;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-                    out.write(result);
+            if(result != null){
+                int lenghtOfFile = result.length;
+                String temp = null;
+                try {
+                    temp = new String(result, "UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
                 }
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                Log.v("View & result==null", reportFile.getAbsolutePath());
+                Log.v("Content of PDF", temp);
+                OutputStream out;
+                try {
+                    InputStream input = new ByteArrayInputStream(result);
+                    out = new FileOutputStream(reportFile);
 
+                    byte data[] = new byte[1024];
+
+                    long total = 14;
+
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                        out.write(result);
+                    }
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             // System.out.println(sendData);
             //
             // receiveData = service.pdfreport(sendData);
