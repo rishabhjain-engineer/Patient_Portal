@@ -223,6 +223,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="100"
+            android:visibility="gone"
             android:layout_below="@+id/separator4">
 
             <TextView
