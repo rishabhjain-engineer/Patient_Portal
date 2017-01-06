@@ -124,6 +124,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="5dp"
             android:gravity="right"
+            android:visibility="gone"
             android:layout_alignEnd="@+id/test_name" />
 
         <TextView
