@@ -219,8 +219,9 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
-                // url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
+               // url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+                url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
                 break;
             case GetUserDetailsFromContactNoMobileService:
