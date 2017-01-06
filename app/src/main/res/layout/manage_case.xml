@@ -70,11 +70,10 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:background="@drawable/layout_selector"
                 android:id="@+id/viewReportLinear_id"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:background="@color/light_gray"
-                android:clickable="true"
                 android:orientation="horizontal">
 
                 <TextView
@@ -90,13 +89,23 @@
 
                 <ImageView
                     android:id="@+id/pdf_image"
-                    android:layout_alignParentRight="true"
                     android:src="@drawable/pdf1"
+                    android:layout_toLeftOf="@+id/arrow_button"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="2dp"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="right" />
+
+                <ImageButton
+                    android:id="@+id/arrow_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/arrow_grey" />
 
             </RelativeLayout>
 
