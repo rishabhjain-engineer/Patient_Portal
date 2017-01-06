@@ -587,7 +587,9 @@ public class logout extends Activity implements View.OnClickListener {
                     editor1.commit();
                 }
 */
-                family_object.clear();
+                if (family_object != null) {
+                    family_object.clear();
+                }
                 image_parse = "";
                 progress.dismiss();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -912,7 +914,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                                 }
 
-                                if (subArrayList.length() == 0) {
+                                if (subArrayList != null && subArrayList.length() == 0) {
                                     marq.setVisibility(View.GONE);
                                     linearLayout2.setVisibility(View.GONE);
                                 }

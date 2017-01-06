@@ -285,6 +285,7 @@ public class ReportRecords extends ActionBarActivity {
             if (check == subArrayLen) {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
+
                // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 //viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
