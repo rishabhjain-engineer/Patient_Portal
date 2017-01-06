@@ -73,6 +73,7 @@ public class ReportRecords extends ActionBarActivity {
     ArrayList<String> imageId = new ArrayList<String>();
     ArrayList<String> thumbImage = new ArrayList<String>();
     public static ProgressBar progress_bar;
+    private String mShaowDetailAction;   /* 0 - show test details, 1 - show popup message and then show test details,  2 - show popup message and then do nothing*/
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -659,6 +660,24 @@ public class ReportRecords extends ActionBarActivity {
         super.onResume();
         if (Helper.authentication_flag == true) {
             finish();
+        }
+    }
+
+    private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 }

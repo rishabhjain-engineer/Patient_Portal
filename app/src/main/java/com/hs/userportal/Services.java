@@ -339,6 +339,7 @@ public class Services {
 
     public JSONObject common(JSONObject sendData, String url) {
         // System.out.println("hahahahahahahahahahaha");
+        Log.i("url:", "url:"+url);
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
@@ -562,6 +563,7 @@ public class Services {
     public JSONObject patientstatus(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
+
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
         String url = sttc_holdr.request_Url();
         request = new HttpPost(url);
@@ -1282,6 +1284,13 @@ public class Services {
         String url = sttc_holdr.request_Url();
         JSONObject jsonobj = common(sendData, url);
         return jsonobj;
+    }
+
+    public JSONObject patientbussinessModel(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.patientbussinessModel);
+        String url = sttc_holdr.request_Url();
+        JSONObject receivedJsonObj = common(sendData, url);
+        return receivedJsonObj;
     }
 
 }
