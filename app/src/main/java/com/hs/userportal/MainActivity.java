@@ -954,6 +954,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     });
                     dialog1.show();
                 }
+            }else if(receiveData == null){
+                Toast.makeText(getApplicationContext(), "User Name or Password is incorrect.", Toast.LENGTH_LONG).show();
             }
             progress.dismiss();
         }

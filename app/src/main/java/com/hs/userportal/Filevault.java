@@ -2779,7 +2779,7 @@ public class Filevault extends ActionBarActivity {
         req.add(lock_folder);
     }
 
-    public void startBackgroundprocess() {
+    private void startBackgroundprocess() {
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
@@ -2795,17 +2795,10 @@ public class Filevault extends ActionBarActivity {
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
-        Filevault.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                pd = new ProgressDialog(Filevault.this);
-                pd.setMessage("Loading Vault .....");
-                pd.setCanceledOnTouchOutside(false);
-
-                pd.show();
-            }
-        });
-
+        pd = new ProgressDialog(Filevault.this);
+        pd.setMessage("Loading Vault .....");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
         try {
             s3data.put("Key", "");
             s3data.put("patientId", patientId);

@@ -129,10 +129,8 @@ public class ReportRecords extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
+                viewReportLinear_id.setClickable(false);
                 new pdfprocess().execute();
-
             }
         });
         spinner_action.setOnClickListener(new View.OnClickListener() {
@@ -287,14 +285,15 @@ public class ReportRecords extends ActionBarActivity {
             if (check == subArrayLen) {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+
+               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 //viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
                 viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
                 viewReportLinear_id.setClickable(true);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+                //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
                // viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
                 viewReports_text.setTextColor(Color.parseColor("#565656"));
@@ -319,11 +318,11 @@ public class ReportRecords extends ActionBarActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
             }
             progress.dismiss();
@@ -454,17 +453,7 @@ public class ReportRecords extends ActionBarActivity {
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-           // progress = new ProgressDialog(ReportRecords.this);
-           // progress.setCancelable(false);
-           // progress.setMessage("Loading...");
-           // progress.setIndeterminate(true);
-            ReportRecords.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    //progress.show();
-                }
-            });
             progress_bar.setVisibility(View.VISIBLE);
             progress_bar.setProgress(0);
         }
@@ -584,7 +573,7 @@ public class ReportRecords extends ActionBarActivity {
         protected void onPostExecute(Void result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
+            viewReportLinear_id.setClickable(true);
             try {
               //  progress.dismiss();
                 progress_bar.setVisibility(View.GONE);
