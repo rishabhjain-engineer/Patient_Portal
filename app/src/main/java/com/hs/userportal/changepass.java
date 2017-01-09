@@ -166,8 +166,9 @@ public class changepass extends ActionBarActivity {
 				
 				
 				else {
-					receiveData = service.changepassword(sendData);
-					String str="";
+					new ChangePasswordAsyncTask(sendData).execute();
+				//	receiveData = service.changepassword(sendData);
+					/*String str="";
 					try {
 						str = receiveData.getString("d");
 					} catch (JSONException e) {
@@ -185,7 +186,7 @@ public class changepass extends ActionBarActivity {
 							toast.cancel();
 						}
 					}, 1500);
-					finish();
+					finish();*/
 
 				}
 
@@ -194,6 +195,46 @@ public class changepass extends ActionBarActivity {
 
 	}
 
+	class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void>{
+
+		private JSONObject dataToSend;
+
+		public ChangePasswordAsyncTask(JSONObject sendData) {
+			dataToSend = sendData;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			receiveData = service.changepassword(dataToSend);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void aVoid) {
+			super.onPostExecute(aVoid);
+			String str="";
+			try {
+				str = receiveData.getString("d");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			final Toast toast = Toast.makeText(getApplicationContext(),
+					str, Toast.LENGTH_SHORT);
+			toast.show();
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					toast.cancel();
+				}
+			}, 1500);
+			finish();
+
+		}
+
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
