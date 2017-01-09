@@ -22,6 +22,7 @@ import android.webkit.WebView;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -147,8 +148,9 @@ public class ViewReport extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(ViewReport.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+               /* Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };

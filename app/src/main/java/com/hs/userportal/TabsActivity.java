@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TabsActivity extends TabActivity {
 
@@ -479,8 +480,9 @@ public class TabsActivity extends TabActivity {
 			if (!currentNetworkInfo.isConnected()) {
 
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);
+				Toast.makeText(TabsActivity.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+				startActivity(i);*/
 			}
 		}
 	};

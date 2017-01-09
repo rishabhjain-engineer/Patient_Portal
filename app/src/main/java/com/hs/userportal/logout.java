@@ -1404,8 +1404,9 @@ public class logout extends Activity implements View.OnClickListener {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(logout.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
                 // showAppMsg();
             }
         }
