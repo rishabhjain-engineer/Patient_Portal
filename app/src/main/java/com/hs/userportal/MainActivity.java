@@ -238,7 +238,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -1334,7 +1334,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -1897,7 +1897,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-                        MainActivity.this.finish();
+                       dialog.dismiss();
 
                     }
                 });

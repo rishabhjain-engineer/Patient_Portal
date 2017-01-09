@@ -74,17 +74,17 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="Remember me"
+                android:visibility="gone"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textview1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:text="@string/forgot"
-                android:textColor="@color/text_selector"
+                android:textColor="#00f"
                 android:textSize="14sp" />
         </RelativeLayout>
 
