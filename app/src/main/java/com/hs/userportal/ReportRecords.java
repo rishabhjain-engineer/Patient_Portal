@@ -156,7 +156,7 @@ public class ReportRecords extends ActionBarActivity {
 
             }
         });
-        test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
                 try {
@@ -223,7 +223,7 @@ public class ReportRecords extends ActionBarActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
     }
 
     private void setupActionBar() {
