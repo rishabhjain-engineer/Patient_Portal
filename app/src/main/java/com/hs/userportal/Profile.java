@@ -148,8 +148,9 @@ public class Profile extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);
+				Toast.makeText(Profile.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+				startActivity(i);*/
 			}
 		}
 	};
