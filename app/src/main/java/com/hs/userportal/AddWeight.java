@@ -56,8 +56,16 @@ public class AddWeight extends ActionBarActivity {
         cyear = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         int month1 = c.get(Calendar.MONTH) + 1;
+        String monthInString = "01";
+        if(month1 < 10){
+            monthInString = "0"+ month1; //on server side expectation is of 01, 02 like this
+        }
         day = c.get(Calendar.DAY_OF_MONTH);
-        lasstCheckedDate.setText(String.valueOf(day) + "/" + String.valueOf(month1) + "/" + String.valueOf(cyear));
+        String dateInString = "01";
+        if(day < 10){
+            dateInString = "0"+day;
+        }
+        lasstCheckedDate.setText(dateInString + "/" + monthInString + "/" + String.valueOf(cyear));
 
         Intent z = getIntent();
         id = z.getStringExtra("id");
