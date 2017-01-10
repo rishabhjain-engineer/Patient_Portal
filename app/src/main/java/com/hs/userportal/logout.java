@@ -366,8 +366,11 @@ public class logout extends Activity implements View.OnClickListener {
             ex.printStackTrace();
         }
 
-        new Authentication().execute();
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
     }
 
     @Override
@@ -1579,8 +1582,11 @@ public class logout extends Activity implements View.OnClickListener {
 			   }*/
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
         //uiHelper.onResume();
-        new Authenticationfromresume().execute();
+        new Authenticationfromresume().execute();}
 
         if (update.verify.equals("1")) {
             try {

@@ -69,6 +69,7 @@ import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
+import networkmngr.NetworkChangeListener;
 import swipelist.ItemAdapter;
 import swipelist.ItemRow;
 
@@ -1346,16 +1347,24 @@ public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.
 
             @Override
             public void onClick(View v) {
-                if (sharedpreferences.getBoolean("openLocation", false)) {
-                    new Authentication(IndividualLabTest.this, "IndividualLabTest", "getdetailmenu").execute();
-                    sample_or_detailbtn_check = "getdetail";
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(IndividualLabTest.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
                 } else {
+
+                if (sharedpreferences.getBoolean("openLocation", false)) {
+
+
+                        new Authentication(IndividualLabTest.this, "IndividualLabTest", "getdetailmenu").execute();
+                        sample_or_detailbtn_check = "getdetail";
+                    }
+                 else {
                     showSignInSignUp("from_getDetail_button");
                     sample_or_detailbtn_check = "getdetail";
                 }
                 // detail_andsampleTask("getdetail")
                 //
-            }
+            } }
         });
 
         if (itemuser != null) {

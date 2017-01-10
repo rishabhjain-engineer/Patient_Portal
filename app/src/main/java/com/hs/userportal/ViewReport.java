@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import networkmngr.NetworkChangeListener;
+
 public class ViewReport extends ActionBarActivity {
 
     TextView patient, name, sex, age, tv5, report, labno, tv9, tv10;
@@ -414,7 +416,11 @@ public class ViewReport extends ActionBarActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(ViewReport.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
         new Authentication(ViewReport.this, "Common", "onresume").execute();
-    }
+    }}
 
 }

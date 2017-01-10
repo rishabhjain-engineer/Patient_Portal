@@ -54,6 +54,7 @@ import java.util.List;
 
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.MyMarkerView;
 
 public class Weight extends ActionBarActivity {
@@ -95,7 +96,12 @@ public class Weight extends ActionBarActivity {
         // settings.setUseWideViewPort(true);
 
         // view.setInitialScale(140);
-        new Authentication(Weight.this, "Weight", "").execute();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Weight.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Weight.this, "Weight", "").execute();
+        }
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(false);
         weight_graphView.getSettings().setDisplayZoomControls(false);

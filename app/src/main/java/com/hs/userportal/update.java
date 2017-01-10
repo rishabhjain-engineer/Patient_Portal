@@ -78,6 +78,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 @SuppressLint("NewApi")
 public class update extends FragmentActivity {
@@ -270,9 +271,11 @@ public class update extends FragmentActivity {
 
         final PackageManager pm = getPackageManager();
 
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(update.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
         // new Authentication().execute();
-        new Authentication(update.this, "update", "").execute();
+        new Authentication(update.this, "update", "").execute(); }
         //new BackgroundProcess().execute();
 
         if (pic.matches((".*[a-kA-Zo-t]+.*"))) {

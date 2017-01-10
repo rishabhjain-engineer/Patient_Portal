@@ -40,6 +40,7 @@ import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 
 /**
  * Created by ashish on 10/27/2015.
@@ -403,8 +404,12 @@ public class OrderHistory extends ActionBarActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        new Authentication(OrderHistory.this, "Common", "onresume").execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(OrderHistory.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(OrderHistory.this, "Common", "onresume").execute();
+        }
     }
 
     public void showdialog() {

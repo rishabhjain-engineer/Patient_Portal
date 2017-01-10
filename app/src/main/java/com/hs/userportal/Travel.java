@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
+import networkmngr.NetworkChangeListener;
 
 public class Travel extends FragmentActivity {
 
@@ -129,9 +130,14 @@ public class Travel extends FragmentActivity {
                 android.R.layout.simple_list_item_1, m_listItems);*/
         m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Travel");
 
-        new Authentication(Travel.this, "Travel", "").execute();
-        //  new BackgroundProcess().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Travel.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+
+            new Authentication(Travel.this, "Travel", "").execute();
+            //  new BackgroundProcess().execute();
+        }
         co.setInputType(InputType.TYPE_NULL);
         co.setOnTouchListener(new View.OnTouchListener() {
 

@@ -45,6 +45,7 @@ import java.util.HashMap;
 
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
 
@@ -82,7 +83,10 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         action.setTitle("My Health");
-        new Authentication(MyHealth.this, "MyHealth", "").execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(MyHealth.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+        new Authentication(MyHealth.this, "MyHealth", "").execute();}
         Intent z = getIntent();
         id = z.getStringExtra("id");
         show_blood = z.getStringExtra("show_blood");

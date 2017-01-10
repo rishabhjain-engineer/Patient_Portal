@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Set;
 
 import adapters.Report_Adapter;
+import networkmngr.NetworkChangeListener;
 import utils.NestedListHelper;
 import utils.NestedListHelper1;
 
@@ -212,8 +213,12 @@ public class ReportStatus extends ActionBarActivity {
             }
         });
 
-        new Authentication().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(ReportStatus.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
 
+            new Authentication().execute();
+        }
         bgraph.setOnClickListener(new OnClickListener() {
 
             @Override

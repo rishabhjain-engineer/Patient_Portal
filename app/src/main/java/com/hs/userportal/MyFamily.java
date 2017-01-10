@@ -46,6 +46,7 @@ import java.util.HashMap;
 
 import adapters.Myfamily_Adapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.DataHolder;
 
 /**
@@ -105,7 +106,11 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
         Intent i = getIntent();
         User_ID = i.getStringExtra("id");
         members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
-        new Authentication(MyFamily.this, "MyFamily", "").execute();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(MyFamily.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+        new Authentication(MyFamily.this, "MyFamily", "").execute(); }
         // LoadFamilyMembers();
         family_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

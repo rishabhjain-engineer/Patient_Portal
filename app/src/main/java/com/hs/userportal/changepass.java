@@ -31,6 +31,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import networkmngr.NetworkChangeListener;
+
 
 public class changepass extends ActionBarActivity {
 	EditText old, pass, cpass;
@@ -359,6 +361,11 @@ public class changepass extends ActionBarActivity {
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+
+
+		if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+			Toast.makeText(changepass.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+		}else{
 		
 		new Authentication().execute();
 		
@@ -366,7 +373,7 @@ public class changepass extends ActionBarActivity {
 				ConnectivityManager.CONNECTIVITY_ACTION));
 		
 		super.onResume();
-	}
+	}}
 	
 	private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
