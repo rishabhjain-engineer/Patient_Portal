@@ -50,6 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
+import networkmngr.NetworkChangeListener;
 
 public class Education extends FragmentActivity implements AdapterView.OnItemSelectedListener
 
@@ -182,7 +183,12 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
         m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Education");
-        new Authentication(Education.this, "Education", "").execute();
+
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Education.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
+        new Authentication(Education.this, "Education", "").execute();}
 
         //new BackgroundProcess().execute();
         co.setInputType(InputType.TYPE_NULL);

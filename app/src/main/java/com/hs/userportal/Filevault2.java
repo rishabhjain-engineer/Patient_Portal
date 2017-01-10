@@ -78,6 +78,7 @@ import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.NavFolder;
 
 /**
@@ -267,8 +268,11 @@ public class Filevault2 extends ActionBarActivity {
                 builder1.show();
             }
         });
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Filevault2.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
        /* if(!check_load){*/
-        new Authentication(Filevault2.this, "Filevault2", "").execute();
+        new Authentication(Filevault2.this, "Filevault2", "").execute(); }
 
 
      /*

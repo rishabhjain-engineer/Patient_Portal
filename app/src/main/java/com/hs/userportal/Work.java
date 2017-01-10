@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
+import networkmngr.NetworkChangeListener;
 
 public class Work extends FragmentActivity {
 	AlertDialog alertDialog, alert;
@@ -228,8 +229,11 @@ public class Work extends FragmentActivity {
             }
         });
 
-        new Authentication(Work.this,"Work","").execute();
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Work.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Work.this, "Work", "").execute();
+        }
         //new BackgroundProcess().execute();
 
 		lv.setOnItemClickListener(new OnItemClickListener() {

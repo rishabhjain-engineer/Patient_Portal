@@ -62,6 +62,7 @@ import java.util.List;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class lablistdetails extends ActionBarActivity {
     String id, caseid;
@@ -226,8 +227,12 @@ public class lablistdetails extends ActionBarActivity {
         service = new Services(lablistdetails.this);
         //  lvcode = (ListView) findViewById(R.id.lvcode);
 
-        new Authentication().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(lablistdetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
         past_visits.setOnItemClickListener(new OnItemClickListener() {
 
             @Override

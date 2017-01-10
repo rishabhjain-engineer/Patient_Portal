@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class Pkg_LabDetails extends Activity {
     JSONArray centreArray, ImageArray, getDoctorArray;
@@ -951,6 +952,11 @@ public class Pkg_LabDetails extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(Pkg_LabDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+
                 // TODO Auto-generated method stub
                 if (sharedpreferences.getBoolean("openLocation", false)) {
                     new Authentication(Pkg_LabDetails.this, "MapLabDetails", "getdetailmenu").execute();
@@ -960,7 +966,7 @@ public class Pkg_LabDetails extends Activity {
                     sample_or_detailbtn_check = "getdetail";
                 }
 
-            }
+            }}
         });
 
         if(itemuser!=null){

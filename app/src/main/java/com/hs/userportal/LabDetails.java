@@ -58,6 +58,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import networkmngr.NetworkChangeListener;
+
 public class LabDetails extends ActionBarActivity {
     String id, caseid;
     byte[] result = null;
@@ -147,8 +149,12 @@ public class LabDetails extends ActionBarActivity {
         service = new Services(LabDetails.this);
         lvcode = (ListView) findViewById(R.id.lvcode);
 
-        new Authentication().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(LabDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
         lvcode.setOnItemClickListener(new OnItemClickListener() {
 
             @Override

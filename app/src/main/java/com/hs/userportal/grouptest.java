@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import networkmngr.NetworkChangeListener;
+
 public class grouptest extends ActionBarActivity {
 
     ListView l;
@@ -553,9 +555,13 @@ public class grouptest extends ActionBarActivity {
                 ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onResume();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(grouptest.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
         if (Helper.authentication_flag == true) {
             finish();
-        }
+        }}
     }
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {

@@ -81,6 +81,7 @@ import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.NavFolder;
 
 public class Filevault extends ActionBarActivity {
@@ -194,7 +195,12 @@ public class Filevault extends ActionBarActivity {
         patientId = sharedPreferences.getString("ke", "");
         warning_msg = (TextView) findViewById(R.id.warning_msg);
         //refresh_vault1 = view_list;
-        new Authentication(Filevault.this, "Filevault", "").execute();
+
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Filevault.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
+        new Authentication(Filevault.this, "Filevault", "").execute(); }
 
 
        /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2620,9 +2626,13 @@ public class Filevault extends ActionBarActivity {
         // queue.add(jr);
         Helper help = new Helper();
         help.folder_path.clear();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Filevault.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
         if (Helper.authentication_flag == true) {
             finish();
-        }
+        }}
 
     }
 

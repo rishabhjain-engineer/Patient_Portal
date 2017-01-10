@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 /**
  * Created by ashish on 10/28/2015.
@@ -593,8 +594,12 @@ public class OrderDetails extends ActionBarActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        new Authentication(OrderDetails.this, "Common", "onresume").execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(OrderDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(OrderDetails.this, "Common", "onresume").execute();
+        }
     }
 
     private void gettingOrderDetailsData() {

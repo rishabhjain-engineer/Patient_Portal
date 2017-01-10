@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class MapLabDetails extends ActionBarActivity {
     JSONArray centreArray, ImageArray, getDoctorArray;
@@ -272,23 +273,28 @@ public class MapLabDetails extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
 
-                if (getTvfunctionality.equals("cp")) {
-                    if (sharedpreferences.getBoolean("openLocation", false)) {
-                        new Authentication(MapLabDetails.this, "MapLabDetails", "getoffer").execute();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(MapLabDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                }else {
 
+                    // TODO Auto-generated method stub
+
+                    if (getTvfunctionality.equals("cp")) {
+                        if (sharedpreferences.getBoolean("openLocation", false)) {
+                            new Authentication(MapLabDetails.this, "MapLabDetails", "getoffer").execute();
+
+
+                        } else {
+
+                            showSignInSignUp("from_getDetail_button");
+
+                        }
 
                     } else {
 
-                        showSignInSignUp("from_getDetail_button");
-
-                    }
-
-                } else {
-
-                    if (sharedpreferences.getBoolean("openLocation", false)) {
-                        new Authentication(MapLabDetails.this, "MapLabDetails", "getcouponevnt").execute();
+                        if (sharedpreferences.getBoolean("openLocation", false)) {
+                            new Authentication(MapLabDetails.this, "MapLabDetails", "getcouponevnt").execute();
                         /*Intent intent = new Intent(MapLabDetails.this, CouponActivity.class);
 						try {
 							intent.putExtra("TestDetails", "Send Null");
@@ -302,11 +308,12 @@ public class MapLabDetails extends ActionBarActivity {
 						}
 						startActivity(intent);*/
 
-                    } else {
+                        } else {
 
-                        showSignInSignUp("from_getDetail_button");
+                            showSignInSignUp("from_getDetail_button");
 
 
+                        }
                     }
                 }
 

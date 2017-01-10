@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
+import networkmngr.NetworkChangeListener;
 
 public class residence extends FragmentActivity {
     String checkedit="";
@@ -144,9 +145,13 @@ public class residence extends FragmentActivity {
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
         m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Residence");
-        new Authentication(residence.this,"residence","").execute();
-       // new BackgroundProcess().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(residence.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(residence.this, "residence", "").execute();
+            // new BackgroundProcess().execute();
+        }
         country.setInputType(InputType.TYPE_NULL);
         country.setOnTouchListener(new View.OnTouchListener() {
 

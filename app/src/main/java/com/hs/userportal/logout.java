@@ -67,6 +67,7 @@ import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 
 /*import com.facebook.Request;
 import com.facebook.Session;
@@ -213,12 +214,17 @@ public class logout extends Activity implements View.OnClickListener {
         my_health.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
                 Intent intent = new Intent(getApplicationContext(), MyHealth.class);
                 intent.putExtra("id", id);
                 intent.putExtra("show_blood", "yes");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+            }}
         });
         user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,6 +285,10 @@ public class logout extends Activity implements View.OnClickListener {
         linearLayout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
                 if (subArrayList != null) {
                     if (id != null && subArrayList.length() > 0) {
                         Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
@@ -292,7 +302,7 @@ public class logout extends Activity implements View.OnClickListener {
                     } else {
                         Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
                     }
-                }
+                } }
             }
         });
 
@@ -356,94 +366,105 @@ public class logout extends Activity implements View.OnClickListener {
             ex.printStackTrace();
         }
 
-        new Authentication().execute();
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
     }
 
     @Override
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
 
-        // getId() returns this view's identifier.
-        if (v.getId() == R.id.update_profile) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
-            intent.putExtra("id", id);
-            intent.putExtra("pass", passw);
-            intent.putExtra("pic", pic);
-            intent.putExtra("picname", picname);
-            intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.lab_records) {
-            // setText() sets the string value of the TextView
-            if (subArrayList != null) {
-                if (id != null && subArrayList.length() > 0) {
-                    Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                    intent.putExtra("id", id);
-                    update.verify = "0";
-                    intent.putExtra("family", family_object);
-                    String member = username.getText().toString();
-                    intent.putExtra("Member_Name", member);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } else {
-                    Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else if (v.getId() == R.id.find_labs) {
-            // setText() sets the string value of the TextView
-            SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
-                    Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean("openLocation", true);
-            editor.commit();
-            Intent intent = new Intent(logout.this, LocationClass.class);
-            intent.putExtra("PatientId", id);
-            update.verify = "0";
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+        }
+        else {
 
-        } else if (v.getId() == R.id.file_vault) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, Filevault.class);
-            intent.putExtra("id", id);
-            update.verify = "0";
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.order_history) {
-            // setText() sets the string value of the TextView
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, OrderHistory.class);
-            update.verify = "0";
-            intent.putExtra("family", family_object);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.packages) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, Packages.class);
-            update.verify = "0";
+
+            // getId() returns this view's identifier.
+            if (v.getId() == R.id.update_profile) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("pass", passw);
+                intent.putExtra("pic", pic);
+                intent.putExtra("picname", picname);
+                intent.putExtra("fbLinked", fbLinked);
+                intent.putExtra("fbLinkedID", fbLinkedID);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.lab_records) {
+                // setText() sets the string value of the TextView
+                if (subArrayList != null) {
+                    if (id != null && subArrayList.length() > 0) {
+                        Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                        intent.putExtra("id", id);
+                        update.verify = "0";
+                        intent.putExtra("family", family_object);
+                        String member = username.getText().toString();
+                        intent.putExtra("Member_Name", member);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else if (v.getId() == R.id.find_labs) {
+                // setText() sets the string value of the TextView
+                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("openLocation", true);
+                editor.commit();
+                Intent intent = new Intent(logout.this, LocationClass.class);
+                intent.putExtra("PatientId", id);
+                update.verify = "0";
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            } else if (v.getId() == R.id.file_vault) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, Filevault.class);
+                intent.putExtra("id", id);
+                update.verify = "0";
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.order_history) {
+                // setText() sets the string value of the TextView
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, OrderHistory.class);
+                update.verify = "0";
+                intent.putExtra("family", family_object);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.packages) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, Packages.class);
+                update.verify = "0";
               /*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.logout) {
-            // setText() sets the string value of the TextView
-            logout();
-        } else if (v.getId() == R.id.editimg) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(getApplicationContext(), MyFamily.class);
-            intent.putExtra("id", id);
-            intent.putExtra("family", family_object);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.logout) {
+                // setText() sets the string value of the TextView
+                logout();
+            } else if (v.getId() == R.id.editimg) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(getApplicationContext(), MyFamily.class);
+                intent.putExtra("id", id);
+                intent.putExtra("family", family_object);
            /* intent.putExtra("pass", passw);
             intent.putExtra("pic", pic);
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
             intent.putExtra("fbLinkedID", fbLinkedID);*/
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.link) {
-            // setText() sets the string value of the TextView
-            onClickLink();
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.link) {
+                // setText() sets the string value of the TextView
+                onClickLink();
+            }
+
         }
     }
 
@@ -1561,8 +1582,11 @@ public class logout extends Activity implements View.OnClickListener {
 			   }*/
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
         //uiHelper.onResume();
-        new Authenticationfromresume().execute();
+        new Authenticationfromresume().execute();}
 
         if (update.verify.equals("1")) {
             try {
