@@ -425,6 +425,7 @@ public class TabsActivity extends TabActivity {
 				dialog.dismiss();
 			}
 		});
+		dialog.show();
 	}
 
 	@Override

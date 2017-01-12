@@ -21,62 +21,58 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class FAQ extends ActionBarActivity {
 
-	ImageButton support;
-	WebView supportView;
-	String link;
-	SegmentedGroup segmented;
-	WebView supportViewFaq;
+    ImageButton support;
+    WebView supportView;
+    String link;
+    SegmentedGroup segmented;
+    WebView supportViewFaq;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.faq);
-		ActionBar action = getSupportActionBar();
-		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setDisplayHomeAsUpEnabled(true);
-		supportView = (WebView) findViewById(R.id.faqWebview);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.faq);
+        ActionBar action = getSupportActionBar();
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setDisplayHomeAsUpEnabled(true);
+        supportView = (WebView) findViewById(R.id.faqWebview);
 
 
-		supportView.setWebViewClient((new WebViewClient(){
+        supportView.setWebViewClient((new WebViewClient() {
 
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url){
-				if(url.startsWith(WebView.SCHEME_TEL)) {
-					/*Intent email = new Intent(Intent.ACTION_SEND);
-					email.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@cloudchowk.com" });
-					// need this to prompts email client only
-					email.setType("message/rfc822");
-					startActivity(Intent.createChooser(email, "Choose an Email client :"));*/
-					try {
-						Intent intent = new Intent(Intent.ACTION_DIAL);
-						intent.setData(Uri.parse(url));
-						startActivity(intent);
-					} catch (android.content.ActivityNotFoundException e) {
-						e.printStackTrace();
-					}
-					return true;
-				}else if (url.startsWith("sms:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith(WebView.SCHEME_GEO) || url.startsWith("maps:")){
-					try {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse(url));
-						startActivity(intent);
-						return true;
-					} catch (android.content.ActivityNotFoundException e) {
-						e.printStackTrace();
-					}
-					return true;
-				}
-				return super.shouldOverrideUrlLoading(view, url);
-			}
-		}));
-		link = "file:///android_asset/faq.html";
-		supportView.loadUrl(link);
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith(WebView.SCHEME_TEL)) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                } else if (url.startsWith(WebView.SCHEME_MAILTO)) {
+                    try {
+                        Intent email = new Intent(Intent.ACTION_SEND);
+                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
+                        email.setType("message/rfc822");
+                        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                        return true;
+                    } catch (android.content.ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        }));
+        link = "file:///android_asset/faq.html";
+        supportView.loadUrl(link);
 
 
 	/*	supportViewFaq = (WebView) findViewById(R.id.faqZureka);
-		segmented = (SegmentedGroup) findViewById(R.id.segmentLabTest);
+        segmented = (SegmentedGroup) findViewById(R.id.segmentLabTest);
 		support = (ImageButton) findViewById(R.id.support);
 		segmented.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -117,20 +113,21 @@ public class FAQ extends ActionBarActivity {
 			}
 		});*/
 
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-	@Override
-	public void onBackPressed() {
-		finish();
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
