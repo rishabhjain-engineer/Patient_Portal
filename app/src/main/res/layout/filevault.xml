@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/gray_medium"
         android:padding="5dp"
+        android:gravity="center"
         android:text="@string/file_extension_text"
         android:textColor="#000"
         android:textSize="12dp" />
