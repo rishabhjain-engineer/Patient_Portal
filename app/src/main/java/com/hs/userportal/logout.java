@@ -1285,6 +1285,13 @@ public class logout extends Activity implements View.OnClickListener {
                 startActivity(change);
                 return true;
 
+            case R.id.terms_and_condition:
+
+                Intent termsAndCondition = new Intent(logout.this, PrivacyPolicy.class);
+                startActivity(termsAndCondition);
+                return true;
+
+
             case R.id.action_logout:
                 logout();
                 return true;
