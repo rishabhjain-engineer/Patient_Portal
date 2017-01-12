@@ -176,6 +176,11 @@ public class Filevault extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault);
+        pd = new ProgressDialog(Filevault.this);
+        pd.setMessage("Loading Vault .....");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
@@ -2805,10 +2810,6 @@ public class Filevault extends ActionBarActivity {
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
-        pd = new ProgressDialog(Filevault.this);
-        pd.setMessage("Loading Vault .....");
-        pd.setCanceledOnTouchOutside(false);
-        pd.show();
         try {
             s3data.put("Key", "");
             s3data.put("patientId", patientId);
