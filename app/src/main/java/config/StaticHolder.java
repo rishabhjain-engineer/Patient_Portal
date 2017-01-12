@@ -166,7 +166,7 @@ public class StaticHolder {
                 break;
             case ChangePasswordIOS:
                 //url = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/ChangePasswordIOS";
-                url = BASE_URL1 + "WebServices/CredentialService.asmx/ChangePasswordIOS";
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/ChangePasswordIOS";
                 break;
             /*case Register:
                 url = LIVELOGIN_URL + "laboratorymodule/LISService.asmx/Register";

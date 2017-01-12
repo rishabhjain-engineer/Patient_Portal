@@ -49,7 +49,7 @@ public class changepass extends ActionBarActivity {
      /*     1. atleast one small character [a-z]
             2. Password length allowed [ 8-16]*/
 
-    private final String PASSWORD_PATTERN = "/^(?=.*[a-zA-Z])(?=.*[0-9]).+$/";
+    private final String PASSWORD_PATTERN = "^[a-zA-Z0-9@\\\\#$%&*()_+\\]\\[';:?.,!^-]{8,16}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +119,18 @@ public class changepass extends ActionBarActivity {
                             }
                         });
                         alertDialog.show();
-                    }else if(!isValidPassword(mNewPassword) || mNewPassword.length() < 8 || mNewPassword.length() > 16){
+                    }else if (mNewPassword.equals(mOldPassword)) {
+                        alertDialog = new AlertDialog.Builder(changepass.this).create();
+                        alertDialog.setTitle("Message");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setMessage("Old and new password should not be same.");
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                    }else if(!isValidPassword(mNewPassword)){
                         final AlertDialog alertDialog = new AlertDialog.Builder(changepass.this).create();
                         alertDialog.setTitle("Alert!");
                         alertDialog.setCancelable(false);
