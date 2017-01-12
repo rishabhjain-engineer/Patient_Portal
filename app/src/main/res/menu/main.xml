@@ -44,6 +44,12 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Change Password"/>
+
+    <item
+        android:id="@+id/terms_and_condition"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Terms &amp; Conditions"/>
     
     <item
         android:id="@+id/action_logout"

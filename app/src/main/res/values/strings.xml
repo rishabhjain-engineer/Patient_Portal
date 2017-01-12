@@ -47,6 +47,7 @@
         <item>High School</item>
         <item>College</item>
         <item>Post Grad</item>
-
     </string-array>
+    <string name="file_extension_text"><![CDATA[File extension should be \u2022png, \u2022jpg, \u2022bmp, \u2022gif, \u2022pdf, \u2022doc, \u2022docx, \u2022xls, \u2022xlsx. File name and size should be less than 99 characters and 10 MB respectively.]]></string>
+
 </resources>
