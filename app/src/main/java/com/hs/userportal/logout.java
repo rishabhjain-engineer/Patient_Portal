@@ -1722,26 +1722,25 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-
     /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-         if (state.isOpened()) {
-             Log.i("", "Logged in...");
+             if (state.isOpened()) {
+                 Log.i("", "Logged in...");
 
-         } else if (state.isClosed()) {
-             Log.i("", "Logged out...");
-             // authButton.setText(" Link account with Facebook");
-             // unlinkmenu = 0;
-             // authButton.setVisibility(View.VISIBLE);
+             } else if (state.isClosed()) {
+                 Log.i("", "Logged out...");
+                 // authButton.setText(" Link account with Facebook");
+                 // unlinkmenu = 0;
+                 // authButton.setVisibility(View.VISIBLE);
+             }
          }
-     }
 
-     private Session.StatusCallback callback = new Session.StatusCallback() {
-         @Override
-         public void call(Session session, SessionState state, Exception exception) {
-             onSessionStateChange(session, state, exception);
-         }
-     };
- */
+         private Session.StatusCallback callback = new Session.StatusCallback() {
+             @Override
+             public void call(Session session, SessionState state, Exception exception) {
+                 onSessionStateChange(session, state, exception);
+             }
+         };
+     */
     private void onClickLink() {
         login_button.performClick();
        /* Session session = Session.getActiveSession();
