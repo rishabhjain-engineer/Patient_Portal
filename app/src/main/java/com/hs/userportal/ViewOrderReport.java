@@ -301,7 +301,7 @@ public class ViewOrderReport extends ActionBarActivity {
                                // Toast.makeText(getBaseContext(), "Opening PDF... ", Toast.LENGTH_SHORT).show();
 					            Intent inte = new Intent(Intent.ACTION_VIEW);
 					            inte.setDataAndType(
-					                    Uri.parse("https://files.cloudchowk.com/"+ imageName.get(position)),
+					                    Uri.parse("https://files.healthscion.com/"+ imageName.get(position)),
 					                    "application/pdf");
 
 					            startActivity(inte);

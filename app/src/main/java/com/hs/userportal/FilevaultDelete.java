@@ -282,7 +282,7 @@ public class FilevaultDelete extends ActionBarActivity {
 			mNetworkImageView.setDefaultImageResId(R.drawable.ic_empty);
 			mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
 			mNetworkImageView.setAdjustViewBounds(true);
-			mNetworkImageView.setImageUrl("https://files.cloudchowk.com/"
+			mNetworkImageView.setImageUrl("https://files.healthscion.com/"
 					+ thumbImage.get(position), mImageLoader);
 
 			holder.checkbox.setChecked(thumbnailsselection[position]);

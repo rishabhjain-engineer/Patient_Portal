@@ -367,7 +367,7 @@ public class Filevault extends ActionBarActivity {
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -375,7 +375,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening PDF... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -385,7 +385,7 @@ public class Filevault extends ActionBarActivity {
 
                 } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -393,7 +393,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening DOC... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -402,7 +402,7 @@ public class Filevault extends ActionBarActivity {
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -410,7 +410,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -419,7 +419,7 @@ public class Filevault extends ActionBarActivity {
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -427,7 +427,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -447,9 +447,9 @@ public class Filevault extends ActionBarActivity {
                         String image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         String image_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/", "");
                         if (image_url.contains("/FileVault/Personal/")) {
-                            i.putExtra("image", "https://files.cloudchowk.com/" + image_url.replaceAll(" ", "%20"));
+                            i.putExtra("image", "https://files.healthscion.com/" + image_url.replaceAll(" ", "%20"));
                         } else {
-                            i.putExtra("image", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + image_url.replaceAll(" ", "%20"));
+                            i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + image_url.replaceAll(" ", "%20"));
                         }
                         i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                         startActivity(i);
@@ -647,7 +647,7 @@ public class Filevault extends ActionBarActivity {
 
                     if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -655,7 +655,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening PDF... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -665,7 +665,7 @@ public class Filevault extends ActionBarActivity {
 
                     } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -673,7 +673,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening DOC... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -682,7 +682,7 @@ public class Filevault extends ActionBarActivity {
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -690,7 +690,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -699,7 +699,7 @@ public class Filevault extends ActionBarActivity {
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -707,7 +707,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -729,9 +729,9 @@ public class Filevault extends ActionBarActivity {
                             String image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                             String image_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                             if (image_url.contains("/FileVault/Personal/")) {
-                                i.putExtra("image", "https://files.cloudchowk.com/" + image_url);
+                                i.putExtra("image", "https://files.healthscion.com/" + image_url);
                             } else {
-                                i.putExtra("image", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + image_url);
+                                i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + image_url);
                             }
                             i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                             startActivity(i);
@@ -763,7 +763,7 @@ public class Filevault extends ActionBarActivity {
                 mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
                 mNetworkImageView.setAdjustViewBounds(true);
 
-                mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + thumbImage.get(position), mImageLoader);
+                mNetworkImageView.setImageUrl("https://files.healthscion.com/" + thumbImage.get(position), mImageLoader);
             }*/
 
            /* for (int l = 0; l < S3Objects.size(); l++) {*/
@@ -806,9 +806,9 @@ public class Filevault extends ActionBarActivity {
                         thumbimg = thumbImage.get(position).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
                     }
                     if (!thumbImage.get(position).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                        mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        mNetworkImageView.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
-                        mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        mNetworkImageView.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".pdf") &&
                         !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")
@@ -1309,7 +1309,7 @@ public class Filevault extends ActionBarActivity {
 
                                         if (thumbnailsselection[i]) {
 
-                                            ImageRequest ir = new ImageRequest("https://files.cloudchowk.com/" + thumbImage.get(i).get("Personal3"),
+                                            ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
                                                     new Response.Listener<Bitmap>() {
 
                                                         @Override
@@ -1416,7 +1416,7 @@ public class Filevault extends ActionBarActivity {
 
                                     if (thumbnailsselection[i]) {
 
-                                        ImageRequest ir = new ImageRequest("https://files.cloudchowk.com/" + thumbImage.get(i).get("Personal3"),
+                                        ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
                                                 new Response.Listener<Bitmap>() {
 
                                                     @Override
