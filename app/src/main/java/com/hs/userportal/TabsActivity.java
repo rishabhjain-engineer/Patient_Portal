@@ -367,33 +367,23 @@ public class TabsActivity extends TabActivity {
 		case R.id.action_home:
 
 			alert = new AlertDialog.Builder(TabsActivity.this).create();
-
 			alert.setTitle("Message");
 			alert.setMessage("Any unsaved changes will be lost. Are you sure you want to go back?");
-
 			alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
 					new DialogInterface.OnClickListener() {
-
 						public void onClick(DialogInterface dialog, int id) {
-
-							Intent backNav = new Intent(
-									getApplicationContext(), logout.class);
+							Intent backNav = new Intent(getApplicationContext(), logout.class);
 							backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 							startActivity(backNav);
-
 						}
 					});
 
 			alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Stay",
 					new DialogInterface.OnClickListener() {
-
 						public void onClick(DialogInterface dialog, int id) {
-
 							dialog.dismiss();
-
 						}
 					});
-
 			alert.show();
 			return true;
 
