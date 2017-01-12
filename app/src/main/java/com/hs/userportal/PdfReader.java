@@ -70,7 +70,7 @@ public class PdfReader extends ActionBarActivity {
 
 		@Override
 		protected String doInBackground(String... strings) {
-			String fileUrl = strings[0]; // ->https://files.cloudchowk.com/62181ffc-6f94-4b83-9334-395b8cb0960d/FileVault/d_2015-05-13
+			String fileUrl = strings[0]; // ->https://files.healthscion.com/62181ffc-6f94-4b83-9334-395b8cb0960d/FileVault/d_2015-05-13
 											// (1).pdf
 			fileName = strings[1]; // ->d_2015-05-13 (1).pdf
 			String extStorageDirectory = Environment.getExternalStorageDirectory().toString();

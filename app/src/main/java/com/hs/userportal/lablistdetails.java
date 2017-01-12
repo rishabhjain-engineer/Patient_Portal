@@ -993,7 +993,9 @@ public class lablistdetails extends ActionBarActivity {
             //===========================getting order list=============================//
 
             getOrderList();
-            progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
         }
 
         @Override

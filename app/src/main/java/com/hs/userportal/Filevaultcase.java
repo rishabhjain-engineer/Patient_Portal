@@ -173,7 +173,7 @@ public class Filevaultcase extends ActionBarActivity {
 //				Intent i = new Intent(Filevaultcase.this, ExpandImage.class);
 //				i.putExtra(
 //						"image",
-//						"https://files.cloudchowk.com/"+ imageName.get(position));
+//						"https://files.healthscion.com/"+ imageName.get(position));
 //				startActivity(i);
 //
 //			}
@@ -276,7 +276,7 @@ public class Filevaultcase extends ActionBarActivity {
 			mNetworkImageView.setDefaultImageResId(R.drawable.box);
 			mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
 			mNetworkImageView.setAdjustViewBounds(true);
-			mNetworkImageView.setImageUrl("https://files.cloudchowk.com/"
+			mNetworkImageView.setImageUrl("https://files.healthscion.com/"
 					+ thumbImage.get(position), mImageLoader);
 			
 			
@@ -295,7 +295,7 @@ public class Filevaultcase extends ActionBarActivity {
 					}
 					
 					Intent i = new Intent(Filevaultcase.this, ExpandImage.class);
-					i.putExtra("image","https://files.cloudchowk.com/"+ imageName.get(position));
+					i.putExtra("image","https://files.healthscion.com/"+ imageName.get(position));
 					i.putExtra("imagename",imageNametobesent.get(position));
 					
 					startActivity(i);
