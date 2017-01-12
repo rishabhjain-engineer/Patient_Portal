@@ -959,11 +959,8 @@ public class Filevault extends ActionBarActivity {
 
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-
                 Uri selectedImageUri = data.getData();
-
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
 
                 File imageFile = new File(path);
                 String path1 = imageFile.getAbsolutePath();
@@ -971,7 +968,6 @@ public class Filevault extends ActionBarActivity {
                 int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
                 long check = ((imageFile.length() / 1024));
                 if (check < 10000 && filenamelength < 99) {
-
                     String splitstr[];
                     String chosenimg = "";
                     String stringcheck = "", exhistimg = "false";
@@ -992,8 +988,6 @@ public class Filevault extends ActionBarActivity {
 
                         }
                     }
-
-
                     Intent intent = new Intent(this, UploadService.class);
                     intent.putExtra(UploadService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
