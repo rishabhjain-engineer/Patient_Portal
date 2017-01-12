@@ -993,7 +993,7 @@ public class lablistdetails extends ActionBarActivity {
             //===========================getting order list=============================//
 
             getOrderList();
-            // progress.dismiss();
+            progress.dismiss();
         }
 
         @Override
