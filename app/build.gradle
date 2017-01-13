@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.hs.userportal"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 22
         versionCode 4
         versionName "2.0"
         multiDexEnabled true
