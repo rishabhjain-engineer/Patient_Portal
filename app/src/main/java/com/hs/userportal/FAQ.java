@@ -71,50 +71,6 @@ public class FAQ extends ActionBarActivity {
         }));
         link = "file:///android_asset/faq.html";
         supportView.loadUrl(link);
-
-
-	/*	supportViewFaq = (WebView) findViewById(R.id.faqZureka);
-        segmented = (SegmentedGroup) findViewById(R.id.segmentLabTest);
-		support = (ImageButton) findViewById(R.id.support);
-		segmented.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				switch (checkedId) {
-				case R.id.rLabs:
-					supportView.setVisibility(View.VISIBLE);
-					supportViewFaq.setVisibility(View.GONE);
-					return;
-				case R.id.rZureka:
-					supportViewFaq.setVisibility(View.VISIBLE);
-					supportView.setVisibility(View.GONE);
-					return;
-
-				}
-			}
-		});
-
-		link = "file:///android_asset/faq.html";
-		supportView.loadUrl(link);
-		supportView.getSettings().setLoadWithOverviewMode(true);
-
-
-		supportViewFaq.loadUrl(link);
-		supportViewFaq.getSettings().setLoadWithOverviewMode(true);
-
-		support.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent email = new Intent(Intent.ACTION_SEND);
-				email.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@cloudchowk.com" });
-				// need this to prompts email client only
-				email.setType("message/rfc822");
-				startActivity(Intent.createChooser(email, "Choose an Email client :"));
-			}
-		});*/
-
     }
 
     @Override
