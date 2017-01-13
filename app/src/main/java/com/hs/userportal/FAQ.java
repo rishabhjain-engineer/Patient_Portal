@@ -52,19 +52,21 @@ public class FAQ extends ActionBarActivity {
                         e.printStackTrace();
                     }
                     return true;
-                } else if (url.startsWith(WebView.SCHEME_MAILTO)) {
+                } else if (url.contains("support@healthscion.com")) {
                     try {
-                        Intent email = new Intent(Intent.ACTION_SEND);
-                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
-                        email.setType("message/rfc822");
-                        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
+                        startActivity(Intent.createChooser(emailIntent, "Email via"));
                         return true;
                     } catch (android.content.ActivityNotFoundException e) {
                         e.printStackTrace();
                     }
                     return true;
+                }else{
+
                 }
-                return super.shouldOverrideUrlLoading(view, url);
+                return true;
             }
         }));
         link = "file:///android_asset/faq.html";
