@@ -413,7 +413,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:padding="10dp"
-                        android:text="File Vault"
+                        android:text="My Repository"
                         android:textColor="#4eba6f"
                         android:textSize="16dp"
                         android:textStyle="bold" />
@@ -440,6 +440,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/layout_selector"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:orientation="horizontal"
                     android:padding="5dp">
 

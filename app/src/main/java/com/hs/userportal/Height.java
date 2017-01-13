@@ -54,6 +54,7 @@ import java.util.List;
 
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.MyMarkerView;
 
 public class Height extends ActionBarActivity {
@@ -109,7 +110,11 @@ public class Height extends ActionBarActivity {
         misc = new MiscellaneousTasks(Height.this);
         Intent z = getIntent();
         id = z.getStringExtra("id");
-        new Authentication(Height.this, "Height", "").execute();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Height.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
+        new Authentication(Height.this, "Height", "").execute();}
 
         // new BackgroundProcess().execute();
         bsave.setOnClickListener(new View.OnClickListener() {

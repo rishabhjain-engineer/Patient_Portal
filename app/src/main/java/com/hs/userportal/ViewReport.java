@@ -22,10 +22,13 @@ import android.webkit.WebView;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import networkmngr.NetworkChangeListener;
 
 public class ViewReport extends ActionBarActivity {
 
@@ -147,8 +150,9 @@ public class ViewReport extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(ViewReport.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+               /* Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };
@@ -412,7 +416,11 @@ public class ViewReport extends ActionBarActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(ViewReport.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
         new Authentication(ViewReport.this, "Common", "onresume").execute();
-    }
+    }}
 
 }

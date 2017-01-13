@@ -43,7 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="300"
             android:layout_margin="5dp"
             android:visibility="gone"
             android:padding="10dp">
@@ -52,7 +51,6 @@
                 android:id="@+id/sno_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50"
                 android:text="#"
                 android:textSize="16dp"
                 android:textColor="#565656"
@@ -61,7 +59,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50"
                 android:text="Amount"
                 android:textSize="16dp"
                 android:textColor="#565656"
@@ -74,7 +71,6 @@
                 android:id="@+id/test_details_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="200"
                 android:text="Test Name"
                 android:textSize="16dp"
                 android:textColor="#565656"
@@ -100,10 +96,9 @@
 
     <RelativeLayout
         android:id="@+id/text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="300"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
@@ -116,27 +111,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:text=""
             android:textSize="16dp"
             android:textColor="#565656"
             android:id="@+id/amount"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="5dp"
-            android:gravity="right"
-            android:layout_alignEnd="@+id/test_name" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/test_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="250"
             android:layout_marginLeft="8dp"
-            android:text=""
-            android:paddingRight="20dp"
-            android:layout_marginRight="10dp"
+            android:paddingRight="3dp"
             android:layout_alignParentLeft="true"
-            android:textSize="16dp"
+            android:textSize="13dp"
             android:ellipsize="end"
             android:textColor="#565656"
             android:layout_alignTop="@+id/amount"

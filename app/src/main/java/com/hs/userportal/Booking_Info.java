@@ -83,6 +83,7 @@ import config.StaticHolder;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
+import networkmngr.NetworkChangeListener;
 import swipelist.ItemRow;
 
 /**
@@ -683,6 +684,10 @@ public class Booking_Info extends ActionBarActivity {
 
                     } else {
                         placeOrderClicked();
+
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(Booking_Info.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        }else{
                       /*  patientId = sharedPreferences.getString("ke", "");
 
                         if (patientId != "" && patientId != null && (!patientId.equals(""))) {
@@ -690,7 +695,7 @@ public class Booking_Info extends ActionBarActivity {
                         }else{
                             placeOrderClicked();
                         }*/
-                    }
+                    }}
                 } else {
                     if (!confirm_chk.isChecked()) {
                         Toast.makeText(Booking_Info.this, "Please Agree with Terms & Conditions", Toast.LENGTH_SHORT).show();

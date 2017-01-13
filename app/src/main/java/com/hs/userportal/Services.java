@@ -562,6 +562,7 @@ public class Services {
     public JSONObject patientstatus(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
+
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
         String url = sttc_holdr.request_Url();
         request = new HttpPost(url);
@@ -1174,8 +1175,10 @@ public class Services {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NumberFormatException ex) {
-            Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
-            ReportStatus.progress.dismiss();
+           // Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
+            if(ReportStatus.progress != null){
+                ReportStatus.progress.dismiss();
+            }
             ReportStatus.progress = null;
         }
         if(actName.equalsIgnoreCase("Report Status")) {
@@ -1280,6 +1283,13 @@ public class Services {
         String url = sttc_holdr.request_Url();
         JSONObject jsonobj = common(sendData, url);
         return jsonobj;
+    }
+
+    public JSONObject patientbussinessModel(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.patientbussinessModel);
+        String url = sttc_holdr.request_Url();
+        JSONObject receivedJsonObj = common(sendData, url);
+        return receivedJsonObj;
     }
 
 }

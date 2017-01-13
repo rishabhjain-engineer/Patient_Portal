@@ -17,7 +17,7 @@
             android:layout_margin="20dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Test Details"
+            android:text="Report Status"
             android:textColor="#565656"
             android:textSize="16dp"
             android:textStyle="bold" />

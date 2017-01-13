@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -90,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion,
             disclaimerDateTime, disclaimer;
 
-    int chkDisclaimer = 0, chklogin = 0, chkerror = 0;
+    int chkDisclaimer = 0, chklogin = 0, mChkError = 0;
     int fbLogin = 0, fbDisc = 0, fberror = 0;
     AlertDialog alert;
     Dialog dialog1;
@@ -237,7 +238,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -814,11 +815,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             progress.setTitle("Logging in...");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            MainActivity.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
+            progress.show();
         }
 
         @Override
@@ -828,17 +825,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 // Agree disclaimer automatically
                 new Agree().execute();
 
-            } else if (chkerror == 1) {
-
+            } else if (mChkError == 1) {
+                String receivedMsg = receiveData.optString("d");
                 alert = new AlertDialog.Builder(MainActivity.this).create();
-                alert.setTitle("Message");
-                try {
-                    alert.setMessage(receiveData.getString("d"));
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                alert.setTitle("Alert!");
 
+                if (receivedMsg.contains("@")) {
+                    String msgArray[] = receivedMsg.split("@");
+                    if ("1".equalsIgnoreCase(msgArray[1])) {
+                        alert.setMessage(msgArray[0]);
+                    } else if ("2".equalsIgnoreCase(msgArray[1])) {
+                        alert.setMessage(msgArray[0]);
+                    }
+                } else {
+                    alert.setMessage(receivedMsg);
+                }
                 alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
@@ -847,7 +848,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
                     }
                 });
-
                 alert.show();
 
             } else if (chklogin == 1) {
@@ -953,6 +953,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     });
                     dialog1.show();
                 }
+            } else if (receiveData == null) {
+                Toast.makeText(getApplicationContext(), "User Name or Password is incorrect.", Toast.LENGTH_LONG).show();
             }
             progress.dismiss();
         }
@@ -960,7 +962,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         @Override
         protected Void doInBackground(Void... params) {
 
-            chkerror = 0;
+            mChkError = 0;
             chklogin = 0;
             chkDisclaimer = 0;
 
@@ -993,7 +995,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 sendData.put("rememberMe", rem);
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             StaticHolder staticobj = new StaticHolder(MainActivity.this, StaticHolder.Services_static.LogIn, sendData);
@@ -1001,12 +1002,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             //receiveData = service.LogIn(sendData);
 
             if (receiveData != null) {
-                abc = receiveData.toString();
-                System.out.println(receiveData);
                 try {
                     String data = receiveData.getString("d");
-                    System.out.println(data);
-
                     if (data.equals("Login Successfully")) {
 
                         sendData = new JSONObject();
@@ -1042,7 +1039,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             disclaimerArray = cut.getJSONArray("Table");
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-                             disclaimerDateTime = sdf.format(new Date());
+                            disclaimerDateTime = sdf.format(new Date());
 
                             // Calendar cal = Calendar.getInstance();
                             // disclaimerDateTime =
@@ -1059,7 +1056,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         }
 
                     } else {
-                        chkerror = 1;
+                        mChkError = 1;
                     }
 
                 } catch (JSONException e) {
@@ -1079,7 +1076,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                             new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int id) {
-
                                                     dialog.dismiss();
 
                                                 }
@@ -1096,14 +1092,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                     alert = new AlertDialog.Builder(MainActivity.this).create();
                                     alert.setTitle("Message");
                                     alert.setMessage("Unexpected error. Please try again after sometime.");
-
                                     alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
                                             new DialogInterface.OnClickListener() {
-
                                                 public void onClick(DialogInterface dialog, int id) {
-
                                                     dialog.dismiss();
-
                                                 }
                                             });
 
@@ -1113,10 +1105,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             return null;
                         }
                     } catch (JSONException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -1331,7 +1321,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -1894,7 +1884,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-                        MainActivity.this.finish();
+                        dialog.dismiss();
 
                     }
                 });
@@ -2080,8 +2070,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 return;
                             }
                         } else {
-							/*
-							 * Toast.makeText(getApplicationContext(),
+                            /*
+                             * Toast.makeText(getApplicationContext(),
 							 * "Error in Uploading File . Please check Internet Connection !"
 							 * , Toast.LENGTH_SHORT) .show();
 							 */
@@ -2234,6 +2224,28 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         }
     };
+
+
+    /**
+     * Hides the soft on screen keyboard.
+     *
+     * @return True : If request was executed successfully. It may return false if it fails in attempt
+     * to hide keyboard.
+     */
+    public boolean hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View view = getCurrentFocus();
+        if (view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return hideSoftKeyboard();
+    }
 
     @Override
     public void onStop() {

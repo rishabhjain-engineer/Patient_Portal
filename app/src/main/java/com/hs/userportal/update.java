@@ -78,6 +78,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 @SuppressLint("NewApi")
 public class update extends FragmentActivity {
@@ -270,9 +271,11 @@ public class update extends FragmentActivity {
 
         final PackageManager pm = getPackageManager();
 
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(update.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
         // new Authentication().execute();
-        new Authentication(update.this, "update", "").execute();
+        new Authentication(update.this, "update", "").execute(); }
         //new BackgroundProcess().execute();
 
         if (pic.matches((".*[a-kA-Zo-t]+.*"))) {
@@ -641,10 +644,12 @@ public class update extends FragmentActivity {
                         e.printStackTrace();
                     }
 
-                    receiveData = service.checkemail(sendData);
+
+                    new CheckmailAsynctask(sendData).execute();
+//                    receiveData = service.checkemail(sendData);
                     System.out.println("checkemail" + receiveData);
 
-                    try {
+                    /*try {
                         emdata = receiveData.getString("d");
                         if (emdata.equals("true")) {
                             final Toast toast = Toast.makeText(
@@ -665,7 +670,7 @@ public class update extends FragmentActivity {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
+*/
                 }
 
             }
@@ -926,6 +931,48 @@ public class update extends FragmentActivity {
         });
     }
 
+
+    class CheckmailAsynctask extends AsyncTask<Void, Void, Void>{
+
+        JSONObject dataToSend;
+        public CheckmailAsynctask(JSONObject sendData) {
+            dataToSend = sendData;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            receiveData = service.checkemail(dataToSend);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            try {
+                emdata = receiveData.getString("d");
+                if (emdata.equals("true")) {
+                    final Toast toast = Toast.makeText(
+                            getApplicationContext(),
+                            "This E-mail is already registered!",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            toast.cancel();
+                        }
+                    }, 2000);
+                }
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+    }
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Config.ARGB_8888);

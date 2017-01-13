@@ -2,16 +2,16 @@
     <string name="app_name">HealthScion</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="forgot">Forgot Password?</string>
+    <string name="forgot"><u>Forgot Password?</u></string>
     <string name="help">FAQ\'s</string>
     <string name="register"><u>New here? Sign Up</u></string>
     <string name="about"><u>About Us</u></string>
-    <string name="cloud"><b>\u00A9 2016 HealthScion Technologies Pvt. Ltd.  \nAll Rights reserved.</b></string>
+    <string name="cloud"><b>\u00A9 2017 HealthScion Technologies Pvt. Ltd.  \nAll Rights reserved.</b></string>
     <string name="blog"><u>Blog</u></string>
     <string name="facebook"><u>Facebook</u></string>
     <string name="twitter"><u>Twitter</u></string>
     <string name="youtube"><u>Youtube</u></string>
-    <string name="name"><b>Find labs, save money, store medical records</b></string>
+    <string name="name"><b>View reports and manage health records</b></string>
     <string name="app_id">608699132624495</string>
      <!--126834477650763-->
     <string name="file_vault">File Vault</string>
@@ -47,6 +47,7 @@
         <item>High School</item>
         <item>College</item>
         <item>Post Grad</item>
-
     </string-array>
+    <string name="file_extension_text"><![CDATA[File extension should be \u2022png, \u2022jpg, \u2022bmp, \u2022gif, \u2022pdf, \u2022doc, \u2022docx, \u2022xls, \u2022xlsx. File name and size should be less than 99 characters and 10 MB respectively.]]></string>
+
 </resources>

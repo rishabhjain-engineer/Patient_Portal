@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,323 +32,246 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import networkmngr.NetworkChangeListener;
+
 
 public class changepass extends ActionBarActivity {
-	EditText old, pass, cpass;
-	Button b;
-	JSONObject sendData, receiveData;
-	Services service;
-	AlertDialog alertDialog;
-	String id;
-	String authentication = "";
+    EditText old, pass, cpass;
+    Button b;
+    Services service;
+    AlertDialog alertDialog;
+    String id;
+    String authentication = "";
+    String mOldPassword, mNewPassword, mConfirmPassword;
+     /*     1. atleast one small character [a-z]
+            2. Password length allowed [ 8-16]*/
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-				
-		
-		setContentView(R.layout.changepass);
-		service = new Services(changepass.this);
-		Intent i = getIntent();
-		id = i.getStringExtra("id");
-		old = (EditText) findViewById(R.id.etSubject);
-		pass = (EditText) findViewById(R.id.etContact);
-		cpass = (EditText) findViewById(R.id.editText4);
-		b = (Button) findViewById(R.id.bSend);
+    private final String PASSWORD_PATTERN = "^[a-zA-Z0-9@\\\\#$%&*()_+\\]\\[';:?.,!^-]{8,16}$";
 
-		ActionBar action = getSupportActionBar();
-		action.setBackgroundDrawable(new ColorDrawable(Color
-				.parseColor("#3cbed8")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setDisplayHomeAsUpEnabled(true);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.changepass);
+        service = new Services(changepass.this);
+        Intent i = getIntent();
+        id = i.getStringExtra("id");
+        old = (EditText) findViewById(R.id.etSubject);
+        pass = (EditText) findViewById(R.id.etContact);
+        cpass = (EditText) findViewById(R.id.editText4);
+        b = (Button) findViewById(R.id.bSend);
+        ActionBar action = getSupportActionBar();
+        action.setBackgroundDrawable(new ColorDrawable(Color
+                .parseColor("#3cbed8")));
+        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setDisplayHomeAsUpEnabled(true);
+        cpass.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-		
-		
-		cpass.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasfocus) {
+                if (!hasfocus) {
+                    if (!cpass.getText().toString()
+                            .equals(pass.getText().toString())) {
 
-			@Override
-			public void onFocusChange(View v, boolean hasfocus) {
-				// TODO Auto-generated method stub
+                        cpass.setError(Html
+                                .fromHtml("Passwords don't match!"));
 
-				if (!hasfocus) {
-					if (!cpass.getText().toString()
-							.equals(pass.getText().toString())) {
+                    }
+                }
+            }
+        });
 
-						cpass.setError(Html
-								.fromHtml("Passwords don't match!"));
+        pass.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-					}
+            @Override
+            public void onFocusChange(View v, boolean hasfocus) {
+                if (!hasfocus) {
+                    int unlength = pass.length();
+                    if (unlength < 1) {
+                        pass.setError(Html.fromHtml("Please enter a new password."));
+                    }
+                }
+            }
+        });
 
-				}
 
-			}
-		});
+        b.setOnClickListener(new OnClickListener() {
 
-		pass.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onClick(View arg0) {
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    mOldPassword = old.getEditableText().toString();
+                    mNewPassword = pass.getEditableText().toString();
+                    mConfirmPassword = cpass.getEditableText().toString();
 
-			@Override
-			public void onFocusChange(View v, boolean hasfocus) {
-				// TODO Auto-generated method stub
+                    if (TextUtils.isEmpty(mOldPassword) || TextUtils.isEmpty(mNewPassword) || TextUtils.isEmpty(mConfirmPassword)) {
+                        Toast.makeText(getApplicationContext(), "No field can be left blank", Toast.LENGTH_SHORT).show();
+                    } else if (!mNewPassword.equals(mConfirmPassword)) {
+                        alertDialog = new AlertDialog.Builder(changepass.this).create();
+                        alertDialog.setTitle("Message");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setMessage("Password and confirm password field should be same!");
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                    }else if (mNewPassword.equals(mOldPassword)) {
+                        alertDialog = new AlertDialog.Builder(changepass.this).create();
+                        alertDialog.setTitle("Message");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setMessage("Old and new password should not be same.");
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                    }else if(!isValidPassword(mNewPassword)){
+                        final AlertDialog alertDialog = new AlertDialog.Builder(changepass.this).create();
+                        alertDialog.setTitle("Alert!");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setMessage("Password is not satisfying mentioned condition.");
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                    } else {
+                        new Authentication().execute();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No Internet Connection, Please check", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
-				if (!hasfocus) {
-					int unlength = pass.length();
-					if (unlength < 1) {
+    }
 
-						pass.setError(Html
-								.fromHtml("Please enter a new password."));
-					}
+    class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void> {
 
-				}
+        private JSONObject dataToSend, receiveChangPassData;
 
-			}
-		});
-		
-		
-		b.setOnClickListener(new OnClickListener() {
+        public ChangePasswordAsyncTask(JSONObject sendData) {
+            dataToSend = sendData;
+        }
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+        @Override
+        protected Void doInBackground(Void... params) {
+            receiveChangPassData = service.changepassword(dataToSend);
+            return null;
+        }
 
-				
-				
-				sendData = new JSONObject();
-				try {
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            String str = "Some Server Error";
+            try {
+                str = receiveChangPassData.getString("d");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        }
 
-					sendData.put("UserId", id);
-					sendData.put("Password", old.getText().toString());
-					sendData.put("NewPassword", pass.getText().toString());
+    }
 
-				}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
 
-				catch (JSONException e) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-					e.printStackTrace();
-				}
+        switch (item.getItemId()) {
 
-				System.out.println(sendData);
-				
-				if (old.getText().toString().equals("")
-						|| pass.getText().toString().equals("")
-						|| cpass.getText().toString().equals("")) {
-					final Toast toast = Toast.makeText(getApplicationContext(),
-							"No field can be left blank", Toast.LENGTH_SHORT);
-					toast.show();
-				}
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_home:
+                Intent intent = new Intent(getApplicationContext(), logout.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+                return true;
 
-				
-				else if (!pass.getText().toString()
-						.equals(cpass.getText().toString())) {
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-					alertDialog = new AlertDialog.Builder(changepass.this)
-							.create();
 
-					// Setting Dialog Title
-					alertDialog.setTitle("Message");
+    class Authentication extends AsyncTask<Void, Void, Void> {
+        JSONObject sendData, receiveData;
 
-					// Setting Dialog Message
-					alertDialog
-							.setMessage("Password and confirm password field should be same!");
+        @Override
+        protected Void doInBackground(Void... params) {
 
-					// Setting OK Button
-					alertDialog.setButton("OK",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
+            try {
+                sendData = new JSONObject();
+                receiveData = service.IsUserAuthenticated(sendData);
+                System.out.println("IsUserAuthenticated: " + receiveData);
+                authentication = receiveData.getString("d");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-									// TODO Add your code for the button here.
-								}
-							});
-					// Showing Alert Message
-					alertDialog.show();
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (!authentication.equals("true")) {
+                AlertDialog dialog = new AlertDialog.Builder(changepass.this).create();
+                dialog.setTitle("Session timed out!");
+                dialog.setMessage("Session expired. Please login again.");
+                dialog.setCancelable(false);
+                dialog.setButton("OK",
+                        new DialogInterface.OnClickListener() {
 
-				}
-				
-				
-				else {
-					receiveData = service.changepassword(sendData);
-					String str="";
-					try {
-						str = receiveData.getString("d");
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                                Editor editor = sharedpreferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                dialog.dismiss();
+                                finish();
 
-					final Toast toast = Toast.makeText(getApplicationContext(),
-							str, Toast.LENGTH_SHORT);
-					toast.show();
-					Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							toast.cancel();
-						}
-					}, 1500);
-					finish();
+                            }
+                        });
+                dialog.show();
 
-				}
-
-			}
-		});
-
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.home, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		switch (item.getItemId()) {
-		
-		case android.R.id.home:
-//			Intent backNav = new Intent(getApplicationContext(), logout.class);
-//			backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//
-//			startActivity(backNav);
-			
-			finish();
-			
-			return true;
-		
-		case R.id.action_home:
-
-			Intent intent = new Intent(getApplicationContext(), logout.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
-			startActivity(intent);
-			return true;
-
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-	
-	
-	class Authentication extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-
-			try {
-				sendData = new JSONObject();
-				receiveData = service.IsUserAuthenticated(sendData);
-				System.out.println("IsUserAuthenticated: " + receiveData);
-				authentication = receiveData.getString("d");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			try {
-
-				if (!authentication.equals("true")) {
-
-					AlertDialog dialog = new AlertDialog.Builder(changepass.this)
-							.create();
-					dialog.setTitle("Session timed out!");
-					dialog.setMessage("Session expired. Please login again.");
-					dialog.setCancelable(false);
-					dialog.setButton("OK",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Auto-generated method stub
-
-									SharedPreferences sharedpreferences = getSharedPreferences(
-											"MyPrefs", MODE_PRIVATE);
-									Editor editor = sharedpreferences.edit();
-									editor.clear();
-									editor.commit();
-									dialog.dismiss();
-									finish();
-									overridePendingTransition(
-											R.anim.slide_in_right,
-											R.anim.slide_out_left);
-
-								}
-							});
-					dialog.show();
-
-				} 
-
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-
-		}
-	}
-
-	
-	
-	@Override
-	public void onBackPressed() {
-		finish();
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		
-		this.unregisterReceiver(this.mConnReceiver);
-		
-		super.onPause();
-	}
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		
-		new Authentication().execute();
-		
-		this.registerReceiver(this.mConnReceiver, new IntentFilter(
-				ConnectivityManager.CONNECTIVITY_ACTION));
-		
-		super.onResume();
-	}
-	
-	private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            boolean noConnectivity = intent.getBooleanExtra(
-                    ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            String reason = intent
-                    .getStringExtra(ConnectivityManager.EXTRA_REASON);
-            boolean isFailover = intent.getBooleanExtra(
-                    ConnectivityManager.EXTRA_IS_FAILOVER, false);
-
-            NetworkInfo currentNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-            NetworkInfo otherNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-
-            if (!currentNetworkInfo.isConnected()) {
-            	//showAppMsg();
-            	Intent i = new Intent(getApplicationContext(), Error.class);
-				startActivity(i);
-			
+            } else {
+                sendData = new JSONObject();
+                try {
+                    sendData.put("UserId", id);
+                    sendData.put("Password", mOldPassword);
+                    sendData.put("NewPassword", mNewPassword);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                new ChangePasswordAsyncTask(sendData).execute();
             }
         }
-    };
+    }
 
+    /**
+     * if password is valid returns true otherwise false
+     *
+     * @param password
+     * @return
+     */
+    public boolean isValidPassword(String password) {
+        Pattern pattern;
+        Matcher matcher;
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
 }

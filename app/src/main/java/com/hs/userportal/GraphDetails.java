@@ -33,6 +33,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.Group_testAdapter;
+import networkmngr.NetworkChangeListener;
 
 public class GraphDetails extends ActionBarActivity {
 
@@ -99,7 +101,11 @@ public class GraphDetails extends ActionBarActivity {
             e.printStackTrace();
         }
         String from_activity = extras.getString("from_activity");
-        new Authentication().execute();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(GraphDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
+        new Authentication().execute();}
         if (RangeFrom != null && (!from_activity.equalsIgnoreCase("grouptest"))) {
             bullet_indicator1.setVisibility(View.VISIBLE);
             bullet_indicator.setVisibility(View.VISIBLE);
@@ -482,8 +488,9 @@ public class GraphDetails extends ActionBarActivity {
 
             if (!currentNetworkInfo.isConnected()) {
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(GraphDetails.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };

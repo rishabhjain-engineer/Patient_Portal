@@ -23,6 +23,7 @@ import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TabsActivity extends TabActivity {
 
@@ -364,36 +366,7 @@ public class TabsActivity extends TabActivity {
 			return true;
 
 		case R.id.action_home:
-
-			alert = new AlertDialog.Builder(TabsActivity.this).create();
-
-			alert.setTitle("Message");
-			alert.setMessage("Any unsaved changes will be lost. Are you sure you want to go back?");
-
-			alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog, int id) {
-
-							Intent backNav = new Intent(
-									getApplicationContext(), logout.class);
-							backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-							startActivity(backNav);
-
-						}
-					});
-
-			alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Stay",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog, int id) {
-
-							dialog.dismiss();
-
-						}
-					});
-
-			alert.show();
+			showUnsavedAlertDialog();
 			return true;
 
 		default:
@@ -403,44 +376,58 @@ public class TabsActivity extends TabActivity {
 
 	@Override
 	public void onBackPressed() {
+		showUnsavedAlertDialog();
+	}
 
-		alert = new AlertDialog.Builder(TabsActivity.this).create();
-
-		alert.setTitle("Message");
+	private void showUnsavedAlertDialog() {
+		/*alert = new AlertDialog.Builder(TabsActivity.this).create();
+		alert.setTitle("Alert!");
 		alert.setMessage("Any unsaved changes will be lost. Are you sure you want to go back?");
-
-		alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-				new DialogInterface.OnClickListener() {
-
+		alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-
-						/*Intent backNav = new Intent(getApplicationContext(),
-								logout.class);
-						backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-						startActivity(backNav);*/
 						dialog.dismiss();
-                         TabsActivity.super.onBackPressed();
+						TabsActivity.super.onBackPressed();
 						overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 						update.Imguri=null;
 						finish();
-
 					}
 				});
-
 		alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Stay",
 				new DialogInterface.OnClickListener() {
-
 					public void onClick(DialogInterface dialog, int id) {
-
 						dialog.dismiss();
-
 					}
 				});
+		alert.show();*/
 
-		alert.show();
+		final Dialog dialog = new Dialog(TabsActivity.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.unsaved_alert_dialog);
+		dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
+		Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+		Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
 
+		okBTN.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				update.Imguri=null;
+				finish();
+			}
+		});
+		stayButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -479,8 +466,9 @@ public class TabsActivity extends TabActivity {
 			if (!currentNetworkInfo.isConnected()) {
 
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);
+				Toast.makeText(TabsActivity.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+				startActivity(i);*/
 			}
 		}
 	};

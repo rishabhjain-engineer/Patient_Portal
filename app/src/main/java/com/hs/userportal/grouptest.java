@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import networkmngr.NetworkChangeListener;
 
 public class grouptest extends ActionBarActivity {
 
@@ -552,9 +555,13 @@ public class grouptest extends ActionBarActivity {
                 ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onResume();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(grouptest.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
         if (Helper.authentication_flag == true) {
             finish();
-        }
+        }}
     }
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
@@ -574,8 +581,10 @@ public class grouptest extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+
+                Toast.makeText(grouptest.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+               /* Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };

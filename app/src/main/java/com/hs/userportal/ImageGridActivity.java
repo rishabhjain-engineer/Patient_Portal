@@ -26,6 +26,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -445,8 +446,9 @@ public class ImageGridActivity extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				// showAppMsg();
-				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);
+				Toast.makeText(ImageGridActivity.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+				startActivity(i);*/
 			}
 		}
 	};

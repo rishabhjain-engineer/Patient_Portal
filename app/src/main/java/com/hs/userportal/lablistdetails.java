@@ -62,6 +62,7 @@ import java.util.List;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class lablistdetails extends ActionBarActivity {
     String id, caseid;
@@ -226,8 +227,12 @@ public class lablistdetails extends ActionBarActivity {
         service = new Services(lablistdetails.this);
         //  lvcode = (ListView) findViewById(R.id.lvcode);
 
-        new Authentication().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(lablistdetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
         past_visits.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -524,8 +529,9 @@ public class lablistdetails extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(lablistdetails.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+              /*  Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };
@@ -987,7 +993,9 @@ public class lablistdetails extends ActionBarActivity {
             //===========================getting order list=============================//
 
             getOrderList();
-            // progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
         }
 
         @Override
@@ -1440,10 +1448,14 @@ public class lablistdetails extends ActionBarActivity {
                             hmap.put("OrderId", sortList.get(i).getOrderId());
                             hmap.put("perTextActualPrice_str", sortList.get(i).getStr_peractual_amnt());
                             hmap.put("TestId", sortList.get(i).getTestId());
+                            String orderStatus = sortList.get(i).getOrderStatus();
+                            String pickUpStatus = sortList.get(i).getSamplePickupstatus();
                             hmap.put("OrderStatus", sortList.get(i).getOrderStatus());
                             hmap.put("SamplePickupstatus", sortList.get(i).getSamplePickupstatus());
                             hmap.put("TYPE", "Zureka");
-                            sortList_alias.add(hmap);
+                           if("1".equalsIgnoreCase(orderStatus) && "true".equalsIgnoreCase(pickUpStatus)){
+                                sortList_alias.add(hmap);
+                            }
                         }
                     }
                     if (sortList_alias.size() != 0) {
