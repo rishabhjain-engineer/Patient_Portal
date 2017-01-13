@@ -52,67 +52,25 @@ public class FAQ extends ActionBarActivity {
                         e.printStackTrace();
                     }
                     return true;
-                } else if (url.startsWith(WebView.SCHEME_MAILTO)) {
+                } else if (url.contains("support@healthscion.com")) {
                     try {
-                        Intent email = new Intent(Intent.ACTION_SEND);
-                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
-                        email.setType("message/rfc822");
-                        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        emailIntent.setType("plain/text");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
+                        startActivity(Intent.createChooser(emailIntent, "Email via"));
                         return true;
                     } catch (android.content.ActivityNotFoundException e) {
                         e.printStackTrace();
                     }
                     return true;
+                }else{
+
                 }
-                return super.shouldOverrideUrlLoading(view, url);
+                return true;
             }
         }));
         link = "file:///android_asset/faq.html";
         supportView.loadUrl(link);
-
-
-	/*	supportViewFaq = (WebView) findViewById(R.id.faqZureka);
-        segmented = (SegmentedGroup) findViewById(R.id.segmentLabTest);
-		support = (ImageButton) findViewById(R.id.support);
-		segmented.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				switch (checkedId) {
-				case R.id.rLabs:
-					supportView.setVisibility(View.VISIBLE);
-					supportViewFaq.setVisibility(View.GONE);
-					return;
-				case R.id.rZureka:
-					supportViewFaq.setVisibility(View.VISIBLE);
-					supportView.setVisibility(View.GONE);
-					return;
-
-				}
-			}
-		});
-
-		link = "file:///android_asset/faq.html";
-		supportView.loadUrl(link);
-		supportView.getSettings().setLoadWithOverviewMode(true);
-
-
-		supportViewFaq.loadUrl(link);
-		supportViewFaq.getSettings().setLoadWithOverviewMode(true);
-
-		support.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent email = new Intent(Intent.ACTION_SEND);
-				email.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@cloudchowk.com" });
-				// need this to prompts email client only
-				email.setType("message/rfc822");
-				startActivity(Intent.createChooser(email, "Choose an Email client :"));
-			}
-		});*/
-
     }
 
     @Override
