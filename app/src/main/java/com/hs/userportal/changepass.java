@@ -40,7 +40,7 @@ import networkmngr.NetworkChangeListener;
 
 public class changepass extends ActionBarActivity {
     EditText old, pass, cpass;
-    Button b;
+    Button mChangePassowrdBtn;
     Services service;
     AlertDialog alertDialog;
     String id;
@@ -61,7 +61,7 @@ public class changepass extends ActionBarActivity {
         old = (EditText) findViewById(R.id.etSubject);
         pass = (EditText) findViewById(R.id.etContact);
         cpass = (EditText) findViewById(R.id.editText4);
-        b = (Button) findViewById(R.id.bSend);
+        mChangePassowrdBtn = (Button) findViewById(R.id.bSend);
         ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color
                 .parseColor("#3cbed8")));
@@ -97,10 +97,11 @@ public class changepass extends ActionBarActivity {
         });
 
 
-        b.setOnClickListener(new OnClickListener() {
+        mChangePassowrdBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
+                mChangePassowrdBtn.setClickable(false);
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     mOldPassword = old.getEditableText().toString();
                     mNewPassword = pass.getEditableText().toString();
@@ -115,6 +116,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Password and confirm password field should be same!");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -126,6 +128,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Old and new password should not be same.");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -137,6 +140,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Password is not satisfying mentioned condition.");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -225,6 +229,7 @@ public class changepass extends ActionBarActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            mChangePassowrdBtn.setClickable(true);
             if (!authentication.equals("true")) {
                 AlertDialog dialog = new AlertDialog.Builder(changepass.this).create();
                 dialog.setTitle("Session timed out!");
