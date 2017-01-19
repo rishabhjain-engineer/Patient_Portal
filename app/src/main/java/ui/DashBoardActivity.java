@@ -1,6 +1,6 @@
-package com.hs.userportal;
+/*
+package ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -22,34 +22,54 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.*;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
+import com.hs.userportal.AboutUs;
+import com.hs.userportal.FAQ;
+import com.hs.userportal.Filevault;
+import com.hs.userportal.Help;
+import com.hs.userportal.Helper;
+import com.hs.userportal.LocationClass;
+import com.hs.userportal.MainActivity;
+import com.hs.userportal.MyFamily;
+import com.hs.userportal.MyNotification;
+import com.hs.userportal.MyVolleySingleton;
+import com.hs.userportal.OrderHistory;
+import com.hs.userportal.Packages;
+import com.hs.userportal.PrivacyPolicy;
+import com.hs.userportal.R;
+import com.hs.userportal.Register;
+import com.hs.userportal.TabsActivity;
+import com.hs.userportal.changepass;
+import com.hs.userportal.lablistdetails;
+import com.hs.userportal.logout;
+import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,77 +83,30 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 
-/*import com.facebook.Request;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;*/
-
+*/
 /**
- * Created by rahul2 on 10/29/2015.
- */
-public class logout extends Activity implements View.OnClickListener {
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages,
-            facebooklink, my_family, my_health;
-    private LinearLayout linearLayout2, menu;
-    private ImageButton editimg, menuimgbtn;
-    private ImageView user_pic;
+ * Created by android1 on 19/1/17.
+ *//*
 
-    TextView marq, username, noti_count, patient_id;
-    ProgressBar imageProgress;
-    String PH;
-    ProgressDialog progress;
-    Services service;
-    public static String id, privatery_id;
-    String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
-    String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
-    final int PIC_CROP = 3;
-    TextView emv, smsv, fbName, members;
-    Bitmap output = null;
-    public static int noti = 0;
-    JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink,
-            receiveDataUnLink, receiveDataList, receiveDataList2;
-    JSONArray subArray, fbSubArray, subArrayList;
-    public static int unlinkmenu;
-    int checkpublish = 0;
-    int checkcomplete = 0;
-    int pos;
-    String casecode;
-    String userID, fbP;
-    String dated;
-    ByteArrayOutputStream byteArrayOutputStream;
-    List<String> marqueeStringSet = new ArrayList<String>();
-    /* private UiLifecycleHelper uiHelper;*/
-    static ArrayList<String> testcomplete = new ArrayList<String>();
-    static ArrayList<String> ispublished = new ArrayList<String>();
-    static String notiem = "no", notisms = "no";
-    public static final int MENU_LINK = Menu.FIRST;
-    AlertDialog alert, alertFB;
-    ImageButton notification;
-    Dialog fbDialog;
-    private JsonObjectRequest family;
-    private JSONArray family_arr;
-    private ArrayList<HashMap<String, String>> family_object;
-    public static String image_parse;
-    private static RequestQueue request;
-    static String emailid;
-    private ImageLoader mImageLoader;
-    private LoginButton login_button;
+
+public class DashBoardActivity extends BaseActivity {
+
     private CallbackManager mCallbackManager = null;
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
-    private String facebookPic;
+    private ImageLoader mImageLoader;
+    private String userID;
 
-    protected void onCreate(Bundle savedInBundle) {
-        super.onCreate(savedInBundle);
-       /* uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInBundle);*/
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.test1);
+
         mCallbackManager = CallbackManager.Factory.create();
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -146,231 +119,12 @@ public class logout extends Activity implements View.OnClickListener {
 
             }
         };
-
         mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
-        setContentView(R.layout.dashboard);
-        mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
-        inializeobj();
-    }
 
-    public void inializeobj() {
-        update_profile = (RelativeLayout) findViewById(R.id.update_profile);
-        linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
-        lab_records = (RelativeLayout) findViewById(R.id.lab_records);
-        find_labs = (RelativeLayout) findViewById(R.id.find_labs);
-        file_vault = (RelativeLayout) findViewById(R.id.file_vault);
-        order_history = (RelativeLayout) findViewById(R.id.order_history);
-        packages = (RelativeLayout) findViewById(R.id.packages);
-        my_family = (RelativeLayout) findViewById(R.id.my_family);
-        my_health = (RelativeLayout) findViewById(R.id.my_health);
-        if (!new MainActivity().userID.equalsIgnoreCase("")) {
-          facebookPic = new MainActivity().userID;
-        } else {
-            facebookPic = new Register().userID;
-        }
-        //logout=(LinearLayout)findViewById(R.id.logout);
-        editimg = (ImageButton) findViewById(R.id.editimg);
-        username = (TextView) findViewById(R.id.username);
-        user_pic = (ImageView) findViewById(R.id.user_pic);
-        imageProgress = (ProgressBar) findViewById(R.id.progressBar);
-        facebooklink = (RelativeLayout) findViewById(R.id.link);
-        login_button = (LoginButton) findViewById(R.id.login_button);
-        login_button.registerCallback(mCallbackManager, facebookCallback);
-        notification = (ImageButton) findViewById(R.id.notification);
-        menuimgbtn = (ImageButton) findViewById(R.id.menuimgbtn);
-        menu = (LinearLayout) findViewById(R.id.menu);
-        noti_count = (TextView) findViewById(R.id.noti_count);
-        noti_count.setVisibility(View.GONE);
-        patient_id = (TextView) findViewById(R.id.patient_id);
-        members = (TextView) findViewById(R.id.members);
-        menuimgbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openOptionsMenu();
-            }
-        });
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openOptionsMenu();
-            }
-        });
-        my_family.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MyFamily.class);
-                intent.putExtra("id", id);
-                intent.putExtra("family", family_object);
-           /* intent.putExtra("pass", passw);
-            intent.putExtra("pic", pic);
-            intent.putExtra("picname", picname);
-            intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);*/
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-        my_health.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mImageLoader = MyVolleySingleton.getInstance(this).getImageLoader();
+        //inializeobj();
 
-                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                Intent intent = new Intent(getApplicationContext(), MyHealth.class);
-                intent.putExtra("id", id);
-                intent.putExtra("show_blood", "yes");
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }}
-        });
-        user_pic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("pass", passw);
-                intent.putExtra("pic", pic);
-                intent.putExtra("picname", picname);
-                intent.putExtra("fbLinked", fbLinked);
-                intent.putExtra("fbLinkedID", fbLinkedID);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentNot = new Intent(getApplicationContext(), MyNotification.class);
-
-                try {
-                    intentNot.putExtra("userid", id);
-                    intentNot.putExtra("userName", name);
-                    intentNot.putExtra("ContactNo", subArray.getJSONObject(0).getString("ContactNo"));
-                    intentNot.putExtra("patientcode", subArray.getJSONObject(0).getString("patientCode"));
-                    intentNot.putExtra("UserMailId", subArray.getJSONObject(0).getString("Email"));
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                startActivity(intentNot);
-            }
-        });
-
-        noti_count.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentNot = new Intent(getApplicationContext(), MyNotification.class);
-
-                try {
-                    intentNot.putExtra("userid", id);
-                    intentNot.putExtra("userName", name);
-                    intentNot.putExtra("ContactNo", subArray.getJSONObject(0).getString("ContactNo"));
-                    intentNot.putExtra("patientcode", subArray.getJSONObject(0).getString("patientCode"));
-                    intentNot.putExtra("UserMailId", subArray.getJSONObject(0).getString("Email"));
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                startActivity(intentNot);
-            }
-        });
-
-        linearLayout2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                if (subArrayList != null) {
-                    if (id != null && subArrayList.length() > 0) {
-                        Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                        intent.putExtra("id", id);
-                        update.verify = "0";
-                        intent.putExtra("family", family_object);
-                        String member = username.getText().toString();
-                        intent.putExtra("Member_Name", member);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                    }
-                } }
-            }
-        });
-
-        facebooklink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickLink();
-            }
-        });
-        marq = (TextView) findViewById(R.id.marquee);
-        TextView tv = (TextView) this.findViewById(R.id.marquee);
-        tv.setSelected(true);
-        update_profile.setOnClickListener(this);
-        lab_records.setOnClickListener(this);
-        find_labs.setOnClickListener(this);
-        file_vault.setOnClickListener(this);
-        order_history.setOnClickListener(this);
-        packages.setOnClickListener(this);
-        // logout.setOnClickListener(this);
-        editimg.setOnClickListener(this);
-        service = new Services(this);
-        Intent i = getIntent();
-        id = i.getStringExtra("id");
-        privatery_id = id;
-        PH = i.getStringExtra("PH");
-        user = i.getStringExtra("user");
-        passw = i.getStringExtra("pass");
-        name = i.getStringExtra("fn");
-        Helper.resend_name = name;
-        username.setText(name);
-        patient_id.setText("Your ID: " + PH);
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Do something after 5s = 5000ms
-                imageProgress.setVisibility(View.INVISIBLE);
-            }
-        }, 5000);
-
-        noti = 0;
-        try {
-            String storeId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("patientId", "");
-            System.out.println("storeId: " + storeId);
-            if (storeId != null && !storeId.contains(id)) {
-                /*Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
-                intentTour.putExtra("name", name);
-                intentTour.putExtra("walk", "tour");
-                startActivity(intentTour);*/
-                // Save the state
-                if (storeId.trim().equals("")) {
-                    storeId = id;
-                } else {
-                    storeId = storeId + "," + id;
-                }
-                System.out.println("storeId Saved: " + storeId);
-                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("patientId", storeId).commit();
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
-            new Authentication().execute();
-        }
     }
 
     @Override
@@ -442,7 +196,9 @@ public class logout extends Activity implements View.OnClickListener {
                 // setText() sets the string value of the TextView
                 Intent intent = new Intent(logout.this, Packages.class);
                 update.verify = "0";
-              /*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
+              */
+/*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*//*
+
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.logout) {
@@ -453,11 +209,13 @@ public class logout extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(getApplicationContext(), MyFamily.class);
                 intent.putExtra("id", id);
                 intent.putExtra("family", family_object);
-           /* intent.putExtra("pass", passw);
+           */
+/* intent.putExtra("pass", passw);
             intent.putExtra("pic", pic);
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);*/
+            intent.putExtra("fbLinkedID", fbLinkedID);*//*
+
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.link) {
@@ -470,23 +228,20 @@ public class logout extends Activity implements View.OnClickListener {
 
 
     class Authentication extends AsyncTask<Void, Void, Void> {
-
+        JSONObject autenticationSendData, autenticationReceiveData;
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
 
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
+                autenticationSendData = new JSONObject();
+                autenticationReceiveData = service.IsUserAuthenticated(autenticationSendData);
                 System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
+                authentication = autenticationReceiveData.getString("d");
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -524,7 +279,7 @@ public class logout extends Activity implements View.OnClickListener {
                     dialog.show();
 
                 } else {
-                    new BackgroundProcess().execute();
+                    BackgroundProcess().execute();
 
                 }
 
@@ -552,8 +307,10 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
 
             try {
-               /* Session session = Session.getActiveSession();
-                session.closeAndClearTokenInformation();*/
+               */
+/* Session session = Session.getActiveSession();
+                session.closeAndClearTokenInformation();*//*
+
                 String data = receiveData.getString("d");
                 // Toast.makeText(getApplicationContext(),
                 // "Log out successful.",Toast.LENGTH_SHORT).show();
@@ -566,12 +323,14 @@ public class logout extends Activity implements View.OnClickListener {
 
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
                 // MainActivity.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(logout.this);
-               /* if( MainActivity.sharedPreferences!=null) {
+               */
+/* if( MainActivity.sharedPreferences!=null) {
                     SharedPreferences.Editor editor1 = MainActivity.sharedPreferences.edit();
                     editor1.clear();
                     editor1.commit();
                 }
-*/
+*//*
+
                 family_object.clear();
                 image_parse = "";
                 progress.dismiss();
@@ -602,12 +361,14 @@ public class logout extends Activity implements View.OnClickListener {
 
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
                 // MainActivity.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(logout.this);
-               /* if( MainActivity.sharedPreferences!=null) {
+               */
+/* if( MainActivity.sharedPreferences!=null) {
                     SharedPreferences.Editor editor1 = MainActivity.sharedPreferences.edit();
                     editor1.clear();
                     editor1.commit();
                 }
-*/
+*//*
+
                 if (family_object != null) {
                     family_object.clear();
                 }
@@ -656,7 +417,7 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-    class BackgroundProcess extends AsyncTask<Void, Void, Void> {
+    private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -742,11 +503,13 @@ public class logout extends Activity implements View.OnClickListener {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
-                           /* float left = (float) bitmap.getHeight() / 2;
+                           */
+/* float left = (float) bitmap.getHeight() / 2;
                             float top = (float) bitmap.getWidth() / 2;
                             float right = (float) bitmap.getHeight() / 2;
                             float bottom = (float) bitmap.getWidth() / 2;
-                            canvas.drawRect(left,top,right,bottom, paint);*/
+                            canvas.drawRect(left,top,right,bottom, paint);*//*
+
                             //  canvas.drawRect(rect,paint);
 
                             canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
@@ -755,12 +518,14 @@ public class logout extends Activity implements View.OnClickListener {
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                   /* Glide.with(logout.this)
+                                   */
+/* Glide.with(logout.this)
                                             .load(pic.replaceAll(" ", "%20"))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(500,Target.SIZE_ORIGINAL)
                                             .fitCenter()
-                                            .into(user_pic);*/
+                                            .into(user_pic);*//*
+
 
                                     user_pic.setImageBitmap(output);
                                     //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
@@ -770,11 +535,13 @@ public class logout extends Activity implements View.OnClickListener {
 
                         } else {
                             Bitmap bitmap;
-                            /*if (!new MainActivity().userID.equalsIgnoreCase("")) {
+                            */
+/*if (!new MainActivity().userID.equalsIgnoreCase("")) {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new MainActivity().userID + "/picture?type=large").getContent());
                             } else {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new Register().userID + "/picture?type=large").getContent());
-                            }*/
+                            }*//*
+
                             bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" +facebookPic+ "/picture?type=large").getContent());
 
                             output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -792,12 +559,14 @@ public class logout extends Activity implements View.OnClickListener {
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                   /* Glide.with(logout.this)
+                                   */
+/* Glide.with(logout.this)
                                             .load(pic.replaceAll(" ", "%20"))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(500,Target.SIZE_ORIGINAL)
                                             .fitCenter()
-                                            .into(user_pic);*/
+                                            .into(user_pic);*//*
+
                                     user_pic.setImageBitmap(output);
                                     // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
@@ -1217,7 +986,8 @@ public class logout extends Activity implements View.OnClickListener {
 
         switch (item.getItemId()) {
 
-		/*
+		*/
+/*
          * case R.id.action_count:
 		 *
 		 * progress = new ProgressDialog(logout.this);
@@ -1239,26 +1009,31 @@ public class logout extends Activity implements View.OnClickListener {
 		 * e.printStackTrace(); }
 		 *
 		 * startActivity(intentNot); return true;
-		 */
+		 *//*
+
 
             case MENU_LINK:
-                new FbUnlinkAsync().execute();
+                new logout.FbUnlinkAsync().execute();
                 return true;
 
-           /* case R.id.action_profile:
+           */
+/* case R.id.action_profile:
 
                 Intent intentPro = new Intent(getApplicationContext(), Profile.class);
                 intentPro.putExtra("id", id);
                 startActivity(intentPro);
-                return true;*/
+                return true;*//*
 
-            /*case R.id.action_tour:
+
+            */
+/*case R.id.action_tour:
                 Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                 intentTour.putExtra("name", name);
                 intentTour.putExtra("walk", "tour");
                 startActivity(intentTour);
 
-                return true;*/
+                return true;*//*
+
 
             case R.id.action_contact:
                 Intent intentContact = new Intent(getApplicationContext(), Help.class);
@@ -1348,8 +1123,10 @@ public class logout extends Activity implements View.OnClickListener {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            /*Session session = Session.getActiveSession();
-            session.closeAndClearTokenInformation();*/
+            */
+/*Session session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();*//*
+
             progress.dismiss();
         }
     }
@@ -1365,7 +1142,7 @@ public class logout extends Activity implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int id) {
                 ConnectionDetector isInternetOn = new ConnectionDetector(logout.this);
                 if (isInternetOn.isConnectingToInternet())
-                    new BackGroundProcessTab().execute();
+                    new logout.BackGroundProcessTab().execute();
                 else {
                     Toast.makeText(getApplicationContext(), "No Internet connection Try again Later!", Toast.LENGTH_LONG).show();
                 }
@@ -1399,7 +1176,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                 ConnectionDetector isInternetOn = new ConnectionDetector(logout.this);
                 if (isInternetOn.isConnectingToInternet())
-                    new BackGroundProcessTab().execute();
+                    new logout.BackGroundProcessTab().execute();
                 else {
                     Toast.makeText(getApplicationContext(), "No Internet connection Try again Later!", Toast.LENGTH_LONG).show();
                 }
@@ -1433,8 +1210,10 @@ public class logout extends Activity implements View.OnClickListener {
 
             if (!currentNetworkInfo.isConnected()) {
                 Toast.makeText(logout.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);*/
+                */
+/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*//*
+
                 // showAppMsg();
             }
         }
@@ -1544,7 +1323,7 @@ public class logout extends Activity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         // uiHelper.onDestroy();
-       finish();
+        finish();
         output = null;
         update.verify = "0";
     }
@@ -1564,20 +1343,23 @@ public class logout extends Activity implements View.OnClickListener {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        /*if (sharedpreferences.getBoolean("openLocation", false)) {
+        */
+/*if (sharedpreferences.getBoolean("openLocation", false)) {
                new Authentication(logout.this,"logout","onresume").execute();
-			   }*/
+			   }*//*
+
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         }else {
-        //uiHelper.onResume();
-        new AuthenticationfromresumeAsyncTask().execute();}
+            //uiHelper.onResume();
+            new logout.AuthenticationfromresumeAsyncTask().execute();}
 
         if (update.verify.equals("1")) {
             try {
-                /*Bitmap bitmap = update.bitmap;
+                */
+/*Bitmap bitmap = update.bitmap;
 
                 Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(output);
@@ -1592,8 +1374,9 @@ public class logout extends Activity implements View.OnClickListener {
 
                 user_pic.setImageBitmap(output);
                 imageProgress.setVisibility(View.INVISIBLE);
-                new imagesync().execute();*/
-                new BackgroundProcess().execute();
+                new imagesync().execute();*//*
+
+                new logout.BackgroundProcess().execute();
 
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -1674,7 +1457,8 @@ public class logout extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-      /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+      */
+/*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
 
         Session session = Session.getActiveSession();
@@ -1698,11 +1482,13 @@ public class logout extends Activity implements View.OnClickListener {
                     }
                 }
             }).executeAsync();
-        }*/
+        }*//*
+
 
     }
 
-    /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    */
+/* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
              if (state.isOpened()) {
                  Log.i("", "Logged in...");
 
@@ -1720,7 +1506,8 @@ public class logout extends Activity implements View.OnClickListener {
                  onSessionStateChange(session, state, exception);
              }
          };
-     */
+     *//*
+
     private void onClickLink() {
         login_button.performClick();
     }
@@ -1810,7 +1597,7 @@ public class logout extends Activity implements View.OnClickListener {
                         @Override
                         public void onClick(View v) {
 
-                            new FbImagePull().execute();
+                            new logout.FbImagePull().execute();
                             progress.dismiss();
                         }
                     });
@@ -1825,9 +1612,11 @@ public class logout extends Activity implements View.OnClickListener {
                     });
                     fbDialog.show();
                 } else {
-                  /*  Session session = Session.getActiveSession();
+                  */
+/*  Session session = Session.getActiveSession();
                     session.closeAndClearTokenInformation();
-*/
+*//*
+
                     alertFB = new AlertDialog.Builder(logout.this).create();
 
                     alertFB.setTitle("Error");
@@ -1905,7 +1694,7 @@ public class logout extends Activity implements View.OnClickListener {
                 progress.dismiss();
                 if (receiveFbImageSave.getString("d").equals("\"Patient Image updated Successfully\"")) {
 
-                    new Imagesync().execute();
+                    new logout.Imagesync().execute();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Profile picture couldn't be updated. Please try again!",
@@ -2031,17 +1820,17 @@ public class logout extends Activity implements View.OnClickListener {
         @Override
         public void onSuccess(LoginResult loginResult) {
             GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            // JSON of FB ID as response.
-                            try {
-                                userID = object.getString("id");
-                                new FbLinkAsync().execute();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    });
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    // JSON of FB ID as response.
+                    try {
+                        userID = object.getString("id");
+                        new FbLinkAsync().execute();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
             request.setParameters(parameters);
@@ -2059,3 +1848,5 @@ public class logout extends Activity implements View.OnClickListener {
         }
     };
 }
+
+*/
