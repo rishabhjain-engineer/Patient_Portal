@@ -83,85 +83,79 @@ import networkmngr.NetworkChangeListener;
 @SuppressLint("NewApi")
 public class update extends FragmentActivity {
 
-    static Uri Imguri;
 
-    public static Context mcontext;
     private TextView email_varifyid, contact_varifyid;
-    ByteArrayOutputStream byteArrayOutputStream;
+    private ByteArrayOutputStream byteArrayOutputStream;
     private Pattern pattern;
     private Matcher matcher;
-    public static Bitmap bitmap;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    String aliascheck;
-    public static String verify = "0";
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    String id, emdata;
-    private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master",
-            "Baby", "Baby Of"};
-    private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian",
-            "Jain", "Buddhist", "Other"};
-    private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+",
-            "AB-"};
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private String aliascheck;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private String id, emdata;
+    private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master", "Baby", "Baby Of"};
+    private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian", "Jain", "Buddhist", "Other"};
+    private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private String[] genderlist = {"Male", "Female"};
-    ProgressDialog progress;
+    private ProgressDialog progress;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
-    String city_id = "", country_id = "", state_id = "", area_id = "",
-            imgid = "", imgname = "", fbLinked, fbLinkedID;
-    String passw = "";
-    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality,
-            father, husband;
+    private String city_id = "", country_id = "", state_id = "", area_id = "", imgid = "", imgname = "", fbLinked, fbLinkedID;
+    private String passw = "";
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
     // AutoCompleteTextView area;
-    JSONObject sendData, receiveData, sendData1, receiveData1, basic,
-            sendbasic, residence, newdata;
-    Services service;
-    JSONArray subArray, subArray1, commonarray, areaarray, newarray, newarray1,
-            newarray2, nationarray;
-    static JSONArray arraybasic;
-    static JSONArray arrayedu;
-    static JSONArray arraywork;
-    static JSONArray arraytravel;
-    static JSONArray arrayres;
-    static JSONArray arraymed;
-    static JSONArray arrayper;
-    ArrayList<String> areaa = new ArrayList<String>();
-    ArrayList<String> countryy = new ArrayList<String>();
-    ArrayList<String> statee = new ArrayList<String>();
-    ArrayList<String> cityy = new ArrayList<String>();
-    ArrayList<String> pinn = new ArrayList<String>();
-    ArrayList<String> cityid = new ArrayList<String>();
-    ArrayList<String> countryid = new ArrayList<String>();
-    ArrayList<String> stateid = new ArrayList<String>();
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    ArrayList<String> areaid = new ArrayList<String>();
-    String[] nationlist;
-    Button finishbtn;
-    String nationid;
-    ImageButton dp, dpchange;
-    byte[] byteArray;
-    String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
+    private JSONObject sendData, receiveData, sendData1, receiveData1, basic, sendbasic, residence, newdata;
+    private Services service;
+    private JSONArray subArray, subArray1, commonarray, areaarray, newarray, newarray1, newarray2, nationarray;
+    private ArrayList<String> areaa = new ArrayList<String>();
+    private ArrayList<String> countryy = new ArrayList<String>();
+    private ArrayList<String> statee = new ArrayList<String>();
+    private ArrayList<String> cityy = new ArrayList<String>();
+    private ArrayList<String> pinn = new ArrayList<String>();
+    private ArrayList<String> cityid = new ArrayList<String>();
+    private ArrayList<String> countryid = new ArrayList<String>();
+    private ArrayList<String> stateid = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private ArrayList<String> areaid = new ArrayList<String>();
+    private String[] nationlist;
+    private Button finishbtn;
+    private String nationid;
+    private ImageButton dp, dpchange;
+    private byte[] byteArray;
+    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
+    private String email_varification, mobile_varification;
+    private String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> list = new ArrayList<String>();
+    private ProgressDialog ghoom;
+    private RadioGroup rg;
+    private String authentication = "";
+    private static int cyear;
+    private static int month;
+    private static int day;
+    private static int selection;
+    private static JSONObject receiveFbImageSave;
+    private String check_username;
+    private Dialog fbDialog;
 
-    String email_varification, mobile_varification;
 
-    String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
-    ArrayAdapter<String> adapter1;
-    ArrayList<String> list = new ArrayList<String>();
-    ProgressDialog ghoom;
-    RadioGroup rg;
-    String authentication = "";
-   static int cyear;
-    static int month;
-    static int day;
-    static int selection;
-    static private JSONObject receiveFbImageSave;
-    String check_username;
-    Dialog fbDialog;
-    Bitmap output = null;
+
+    public static JSONArray arraybasic;
+    public static JSONArray arrayedu;
+    public static JSONArray arraywork;
+    public static JSONArray arraytravel;
+    public static JSONArray arrayres;
+    public static JSONArray arraymed;
+    public static JSONArray arrayper;
+    public static String verify = "0";
+    public Bitmap output = null;
+    public static Bitmap bitmap;
+    public static Uri Imguri;
+    public static Context mcontext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

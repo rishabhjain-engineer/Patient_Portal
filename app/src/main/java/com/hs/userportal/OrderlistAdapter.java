@@ -18,6 +18,7 @@ import java.util.List;
  * Created by ashish on 10/27/2015.
  */
 public class OrderlistAdapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private List<OrderList> orderlist;

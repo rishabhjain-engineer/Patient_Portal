@@ -32,13 +32,13 @@ import java.util.Random;
 
 public class Mail extends ActionBarActivity {
 
-	EditText name, lab, subject, captcha, contact, message;
-	Button send, cancel;
-	String nam, con, mes, compose, sub;
-	JSONObject sendData, receiveData, mainObject;
-	Services service;
-	AlertDialog alertDialog;
-	int i1;
+	private EditText name, lab, subject, captcha, contact, message;
+	private Button send, cancel;
+	private String nam, con, mes, compose, sub;
+	private JSONObject sendData, receiveData, mainObject;
+	private Services service;
+	private AlertDialog alertDialog;
+	private int i1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

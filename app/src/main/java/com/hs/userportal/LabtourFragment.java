@@ -14,14 +14,18 @@ import android.widget.TextView;
 
 public class LabtourFragment extends Fragment {
 
-	public static final String POSITION_KEY = "FragmentPositionKey";
+
 	private int position;
-	LinearLayout tour2, tour3, tour4, tour5, tour0_1, tour0, tour1;
-	ImageView image;
-	TextView welcome, skip_scr1, skip_scr2, skip_scr3, skip_scr4, skip_scr5, skip_scr6;
-	Button exit, bTour_Zureka, bTour_Continue, tour, bZurekaTour;
+	private LinearLayout tour2, tour3, tour4, tour5, tour0_1, tour0, tour1;
+	private ImageView image;
+	private TextView welcome, skip_scr1, skip_scr2, skip_scr3, skip_scr4, skip_scr5, skip_scr6;
+	private Button exit, bTour_Zureka, bTour_Continue, tour, bZurekaTour;
 	//RelativeLayout buttonbar;
-	static int current_Screencheck = 0;
+
+
+	public static int current_Screencheck = 0;
+	public static final String POSITION_KEY = "FragmentPositionKey";
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

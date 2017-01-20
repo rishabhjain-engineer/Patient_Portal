@@ -67,40 +67,41 @@ import utils.NestedListHelper1;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class ReportStatus extends ActionBarActivity {
-    BufferedReader reader;
-    TextView advice, /*refer,*/
-            dob, sample, profname, history_text, pdf_text;
-    Button breport;
-    LinearLayout bgraph, bpdf;
-    String patientId;
-    SharedPreferences sharedPreferences;
-    Services service;
-    JSONArray jarray, sendarray, results, pdfdata, reportarray;
-    JSONObject j, sendData, receiveData, pdfobject;
-    String ptname = "";
-    String divDataBullet = "", jqueryDataBullet = "", db;
-    String casid, pdf;
+
+    private BufferedReader reader;
+    private TextView advice, /*refer,*/dob, sample, profname, history_text, pdf_text;
+    private Button breport;
+    private LinearLayout bgraph, bpdf;
+    private String patientId;
+    private SharedPreferences sharedPreferences;
+    private Services service;
+    private JSONArray jarray, sendarray, results, pdfdata, reportarray;
+    private JSONObject j, sendData, receiveData, pdfobject;
+    private String ptname = "";
+    private String divDataBullet = "", jqueryDataBullet = "", db;
+    private String casid, pdf;
     private ListView list_view;
-    OutputStream fileOut;
-    String authentication = "";
-    LinearLayout parentLayout;
-    MiscellaneousTasks misc;
-    List<String> chartDates = new ArrayList<String>();
-    List<String> chartNames = new ArrayList<String>();
-    List<String> chartValues = new ArrayList<String>();
-    List<String> intentdate = new ArrayList<String>();
-    List<String> intentcase = new ArrayList<String>();
-    List<String> intentcaseId = new ArrayList<String>();
-    List<String> piechartvalue = new ArrayList<String>();
+    private OutputStream fileOut;
+    private String authentication = "";
+    private LinearLayout parentLayout;
+    private MiscellaneousTasks misc;
+    private List<String> chartDates = new ArrayList<String>();
+    private List<String> chartNames = new ArrayList<String>();
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> intentdate = new ArrayList<String>();
+    private List<String> intentcase = new ArrayList<String>();
+    private List<String> intentcaseId = new ArrayList<String>();
+    private List<String> piechartvalue = new ArrayList<String>();
     private graphprocess mTask;
-    byte[] result = null;
-    int index, singlechartposition;
-    public static ProgressDialog progress;
-    String phcode;
-    String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null,
-            RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
+    private byte[] result = null;
+    private int index, singlechartposition;
+    private String phcode;
+    private String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null, RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
     private int iscomment=0;
+
+
     public static ProgressBar progress_bar;
+    public static ProgressDialog progress;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override

@@ -19,13 +19,12 @@ import android.widget.ListView;
 
 public class allergylist extends ActionBarActivity {
 
-	String temp;
-	ArrayList<String> alllist = new ArrayList<String>();
-	ArrayList<String> select = new ArrayList<String>();
-	ListView l;
-	Button b;
-
-	ArrayAdapter<String> adapter;
+	private String temp;
+	private ArrayList<String> alllist = new ArrayList<String>();
+	private ArrayList<String> select = new ArrayList<String>();
+	private ListView l;
+	private Button b;
+	private ArrayAdapter<String> adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

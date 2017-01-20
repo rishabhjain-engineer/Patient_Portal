@@ -35,23 +35,23 @@ import networkmngr.NetworkChangeListener;
 
 public class grouptest extends ActionBarActivity {
 
-    ListView l;
-    ArrayAdapter<String> adapter;
-    JSONArray jarray;
-    String divDataBullet = "", jqueryDataBullet = "", db;
-    MiscellaneousTasks misc;
-    String RangeFrom = null, RangeTo = null, UnitCode = "", ResultValue, CriticalHigh, CriticalLow;
-    List<String> chartDates = new ArrayList<String>();
-    List<String> chartNames = new ArrayList<String>();
-    List<String> intentdate = new ArrayList<String>();
-    List<String> resulttype = new ArrayList<String>();
-    List<String> intentcase = new ArrayList<String>();
-    List<String> intentcaseId = new ArrayList<String>();
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartunitList = new ArrayList<String>();
-    List<String> piechartvalue = new ArrayList<String>();
-    ArrayList<String> desc = new ArrayList<String>();
-    ArrayList<HashMap<String, String>> jarr_info = new ArrayList<HashMap<String, String>>();
+    private ListView l;
+    private ArrayAdapter<String> adapter;
+    private JSONArray jarray;
+    private String divDataBullet = "", jqueryDataBullet = "", db;
+    private MiscellaneousTasks misc;
+    private String RangeFrom = null, RangeTo = null, UnitCode = "", ResultValue, CriticalHigh, CriticalLow;
+    private List<String> chartDates = new ArrayList<String>();
+    private List<String> chartNames = new ArrayList<String>();
+    private List<String> intentdate = new ArrayList<String>();
+    private List<String> resulttype = new ArrayList<String>();
+    private List<String> intentcase = new ArrayList<String>();
+    private List<String> intentcaseId = new ArrayList<String>();
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartunitList = new ArrayList<String>();
+    private List<String> piechartvalue = new ArrayList<String>();
+    private ArrayList<String> desc = new ArrayList<String>();
+    private ArrayList<HashMap<String, String>> jarr_info = new ArrayList<HashMap<String, String>>();
     private int singlechartposition;
 
     @Override

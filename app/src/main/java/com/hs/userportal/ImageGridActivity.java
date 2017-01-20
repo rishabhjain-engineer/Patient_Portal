@@ -45,31 +45,28 @@ import java.util.concurrent.ExecutionException;
 
 public class ImageGridActivity extends ActionBarActivity {
 
-	static String[] imageUrls, thumbimageUrls, pdfUrls;
-	AbsListView listView;
-	DisplayImageOptions options;
-	protected ImageLoader imageLoader;
-	ArrayList<String> image = new ArrayList<String>();
-	ArrayList<String> imagePath = new ArrayList<String>();
-	ArrayList<String> imageName = new ArrayList<String>();
-	ArrayList<String> imageId = new ArrayList<String>();
-	ArrayList<String> thumbImage = new ArrayList<String>();
-	ArrayList<String> thumbImagePath = new ArrayList<String>();
-	
-	ArrayList<String> path = new ArrayList<String>();
-
-	ArrayList<String> pdf = new ArrayList<String>();
-	ArrayList<String> pdfPath = new ArrayList<String>();
-	ArrayList<String> pdfName = new ArrayList<String>();
-	ArrayList<String> pdfId = new ArrayList<String>();
-	ArrayList<String> pdfThumb = new ArrayList<String>();
-
-	JSONArray subArrayImage;
-	ProgressDialog progress;
-	JSONObject sendData, receiveData;
-	Services service;
-	String caseid;
-	GridView gridPDF;
+	private static String[] imageUrls, thumbimageUrls, pdfUrls;
+	private AbsListView listView;
+	private DisplayImageOptions options;
+	private ImageLoader imageLoader;
+	private ArrayList<String> image = new ArrayList<String>();
+	private ArrayList<String> imagePath = new ArrayList<String>();
+	private ArrayList<String> imageName = new ArrayList<String>();
+	private ArrayList<String> imageId = new ArrayList<String>();
+	private ArrayList<String> thumbImage = new ArrayList<String>();
+	private ArrayList<String> thumbImagePath = new ArrayList<String>();
+	private	ArrayList<String> path = new ArrayList<String>();
+	private ArrayList<String> pdf = new ArrayList<String>();
+	private ArrayList<String> pdfPath = new ArrayList<String>();
+	private ArrayList<String> pdfName = new ArrayList<String>();
+	private ArrayList<String> pdfId = new ArrayList<String>();
+	private ArrayList<String> pdfThumb = new ArrayList<String>();
+	private	JSONArray subArrayImage;
+	private ProgressDialog progress;
+	private JSONObject sendData, receiveData;
+	private Services service;
+	private String caseid;
+	private GridView gridPDF;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

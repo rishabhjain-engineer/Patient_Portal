@@ -10,12 +10,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MyLocation {
-    Timer timer1;
-    LocationManager lm;
-    LocationResult locationResult;
-    boolean gps_enabled=false;
-    boolean network_enabled=false;
-    Context ctx;
+
+    private Timer timer1;
+    private LocationManager lm;
+    private LocationResult locationResult;
+    private boolean gps_enabled=false;
+    private boolean network_enabled=false;
+    private Context ctx;
 
     public boolean getLocation(Context context, LocationResult result)
     {

@@ -55,47 +55,44 @@ import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 
 public class residence extends FragmentActivity {
-    String checkedit="";
-    ArrayList<String> patienthistorylist=new ArrayList<String>();
-    ArrayList<String> m_listItems = new ArrayList<String>();
-    ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
-    CheckBox present;
-    Custom_profile_adapter m_adapter;
-    int i = 0;
 
-
+    private String checkedit="";
+    private ArrayList<String> patienthistorylist=new ArrayList<String>();
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
+    private CheckBox present;
+    private Custom_profile_adapter m_adapter;
+    private int i = 0;
     private EditText city, country, state,add, pincode, house;
     private static EditText from,to;
-    ListView l;
-    AlertDialog alertDialog;
-    AlertDialog alert;
-    ProgressDialog progress, ghoom;
-
-    Button addbtn;
-    JSONObject sendData, receiveData, sendData1, receiveData1;
+    private ListView l;
+    private AlertDialog alertDialog;
+    private AlertDialog alert;
+    private ProgressDialog progress, ghoom;
+    private Button addbtn;
+    private JSONObject sendData, receiveData, sendData1, receiveData1;
     private ScrollView scroll_id;
-    Services service;
-    JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
-    String[] nationlist ;
-
-    JSONArray residearray;
-    ArrayAdapter<String> adapter1;
-    ArrayList<String> areaa = new ArrayList<String>();
-    ArrayList<String> countryy = new ArrayList<String>();
-    ArrayList<String> statee = new ArrayList<String>();
-    ArrayList<String> cityy = new ArrayList<String>();
-    ArrayList<String> pinn = new ArrayList<String>();
-    ArrayList<String> list = new ArrayList<String>();
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    SharedPreferences sharedPreferences;
-    String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
-    ArrayAdapter<String> adapter;
-    Date date1, date2,datecurrent;
+    private Services service;
+    private JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
+    private String[] nationlist ;
+    private JSONArray residearray;
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> areaa = new ArrayList<String>();
+    private ArrayList<String> countryy = new ArrayList<String>();
+    private ArrayList<String> statee = new ArrayList<String>();
+    private ArrayList<String> cityy = new ArrayList<String>();
+    private ArrayList<String> pinn = new ArrayList<String>();
+    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private SharedPreferences sharedPreferences;
+    private String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
+    private ArrayAdapter<String> adapter;
+    private Date date1, date2,datecurrent;
     private String PatientHistoryId="", Address, cityName, stateName, CountryName, Pincode, dates, Name;
-    static int stno,month2,year2,day2,month1,year1,day1;
-    Calendar c;
-    int selection;
+    private static int stno,month2,year2,day2,month1,year1,day1;
+    private Calendar c;
+    private int selection;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override

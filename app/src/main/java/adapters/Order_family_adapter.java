@@ -20,8 +20,9 @@ import java.util.HashMap;
  * Created by ashish on 4/25/2016.
  */
 public class Order_family_adapter extends BaseAdapter {
-    Activity activity;
-    ArrayList<HashMap<String, String>> family_member;
+
+    private Activity activity;
+    private ArrayList<HashMap<String, String>> family_member;
     private LayoutInflater inflater;
     private ImageLoader mImageLoader;
 

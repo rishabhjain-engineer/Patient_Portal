@@ -36,13 +36,13 @@ import java.util.ArrayList;
 
 public class MyNotification extends ActionBarActivity {
 
-    ListView notifications;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> noti = new ArrayList<String>();
-    String usid, user, cont, code, mailid;
-    Services service;
-    JSONObject sendData, receiveData;
-    TextView nonoti;
+    private ListView notifications;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> noti = new ArrayList<String>();
+    private String usid, user, cont, code, mailid;
+    private Services service;
+    private JSONObject sendData, receiveData;
+    private TextView nonoti;
 
 
     @Override

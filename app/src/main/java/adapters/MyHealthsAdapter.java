@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 
 public class MyHealthsAdapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> OrderReportList;

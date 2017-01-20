@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 public class CustomList extends ArrayAdapter<String> {
 	private final Activity context;
-
 	private final ArrayList<String> description;
 	private final ArrayList<String> sample;
 	private final ArrayList<String> labnumber;

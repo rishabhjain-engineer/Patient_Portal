@@ -23,8 +23,8 @@ import android.widget.TextView;
 
 public class AboutUs extends ActionBarActivity {
 
-	TextView blog, facebook, twitter, youtube,vrsion;
-	String from;
+	private TextView blog, facebook, twitter, youtube,vrsion;
+	private String from;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

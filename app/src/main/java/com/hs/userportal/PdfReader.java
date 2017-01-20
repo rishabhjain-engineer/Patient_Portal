@@ -21,7 +21,8 @@ import java.io.IOException;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class PdfReader extends ActionBarActivity {
-	WebView webview_id;
+
+	private WebView webview_id;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -58,34 +58,33 @@ import java.util.List;
 public class MapClass extends ActionBarActivity {
 
 //	GoogleMap googleMap;
-	int locationCount = 1;
-	JSONArray gpsarray, centreArray;
-	JSONObject sendData;
-	RequestQueue queue;
-	static String pic_Map = null;
-	String picname = "";
-
-	ByteArrayOutputStream byteArrayOutputStream;
-	byte[] byteArray;
+    private int locationCount = 1;
+	private JSONArray gpsarray, centreArray;
+	private JSONObject sendData;
+	private RequestQueue queue;
+	private static String pic_Map = null;
+	private String picname = "";
+	private ByteArrayOutputStream byteArrayOutputStream;
+	private byte[] byteArray;
 	private static final int PICK_FROM_CAMERA = 1;
 	private static final int PICK_FROM_GALLERY = 2;
-	JsonObjectRequest jr;
-	ProgressDialog progress;
-	String[] parts;
-	String lat = "";
-	String CentreName, CentreArea;
-	String lng = "";
-	String CentreId;
-	TextView tvLabName, tvEmail, tvContact, tvAddress, tvRadio, tvPath;
-	TextView monday, tuesday, wednesday, thursday, friday, saturday, sunday;
-	ProgressBar progressCircle;
-	FrameLayout frame;
-	LinearLayout linear, layoutHours, layoutOpen;
-	Double currentlat, currentlng, latitude, longitude;
-	List<SortList> sortListMap;
-	Button upload_btnMap;
-	SharedPreferences sharedpreferences;
-	Uri Imguri;
+	private JsonObjectRequest jr;
+	private ProgressDialog progress;
+	private String[] parts;
+	private String lat = "";
+	private String CentreName, CentreArea;
+	private String lng = "";
+	private String CentreId;
+	private TextView tvLabName, tvEmail, tvContact, tvAddress, tvRadio, tvPath;
+	private TextView monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+	private ProgressBar progressCircle;
+	private FrameLayout frame;
+	private LinearLayout linear, layoutHours, layoutOpen;
+	private Double currentlat, currentlng, latitude, longitude;
+	private List<SortList> sortListMap;
+	private Button upload_btnMap;
+	private SharedPreferences sharedpreferences;
+	private Uri Imguri;
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@SuppressLint("NewApi")

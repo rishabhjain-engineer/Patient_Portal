@@ -74,61 +74,58 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 
-    CheckBox cb;
-    EditText userName, password;
-    public TextView forgot;
-    Button labsNear;
-    Button logIn, register;
-    JSONObject receive;
-    String uName, uPassword, contactNumber;
-    String UserCodeFromEmail = null;
-    JSONArray fbarray, subArray, disclaimerArray;
-    JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData,
-            receivePatientData;
-    JSONObject sendData1;
-    Services service;
-    Animation animFadein;
-    String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion,
-            disclaimerDateTime, disclaimer;
-
-    int chkDisclaimer = 0, chklogin = 0, mChkError = 0;
-    int fbLogin = 0, fbDisc = 0, fberror = 0;
-    AlertDialog alert;
-    Dialog dialog1;
-    String abc, id, cop, fnln, tpwd, lastname, PH;
+    private CheckBox cb;
+    private EditText userName, password;
+    private TextView forgot;
+    private Button labsNear;
+    private Button logIn, register;
+    private JSONObject receive;
+    private String uName, uPassword, contactNumber;
+    private String UserCodeFromEmail = null;
+    private JSONArray fbarray, subArray, disclaimerArray;
+    private JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
+    private JSONObject sendData1;
+    private Services service;
+    private Animation animFadein;
+    private String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
+    private int chkDisclaimer = 0, chklogin = 0, mChkError = 0;
+    private int fbLogin = 0, fbDisc = 0, fberror = 0;
+    private AlertDialog alert;
+    private Dialog dialog1;
+    private String abc, id, cop, fnln, tpwd, lastname, PH;
     private SharedPreferences sharedPreferences;
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    public static final String key = "key";
-    static String cook = "";
-    SharedPreferences sharedpreferences;
-    SharedPreferences demoPreferences;
-    static String demo = "false";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private static final String key = "key";
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences demoPreferences;
     //  private UiLifecycleHelper uiHelper;
     private Button authButton;
     private LoginButton login_button;
     public static String userID = "";
-    ProgressDialog fbProgress;
-    String fbUser;
-    String fbdata;
-    ProgressDialog progress;
-    static String authentication;
-    JsonObjectRequest getRequest;
-    String url1, nameFromRegister = "";
-    RequestQueue queue;
-    JsonObjectRequest jr;
-    SharedPreferences newpref;
-    PackageInfo pInfo;
-    String buildNo, from_Activity;
-    String emailsmsphone;
-    Boolean multipleLinked;
-    String gender = "Male";
-    String firstName = "", lastName = "", eMail = "", user_Name = "", password1 = "", contactNo = "", dateofBirth = "",
-            cPassword = "", middleName = "";
+    private ProgressDialog fbProgress;
+    private String fbUser;
+    private String fbdata;
+    private ProgressDialog progress;
+    private static String authentication;
+    private JsonObjectRequest getRequest;
+    private String url1, nameFromRegister = "";
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
+    private SharedPreferences newpref;
+    private PackageInfo pInfo;
+    private String buildNo, from_Activity;
+    private String emailsmsphone;
+    private Boolean multipleLinked;
+    private String gender = "Male";
+    private String firstName = "", lastName = "", eMail = "", user_Name = "", password1 = "", contactNo = "", dateofBirth = "", cPassword = "", middleName = "";
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
+
+    public static String cook = "";
+    public static String demo = "false";
+    public static final String MyPREFERENCES = "MyPrefs";
 
     @Override
     public void onBackPressed() {

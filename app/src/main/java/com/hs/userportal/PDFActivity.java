@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 public class PDFActivity extends ActionBarActivity {
 
-	WebView pdfview;
-	String pdf, pdfName;
-	TextView pdfnameTV;
-	ProgressDialog progressBar;
+	private WebView pdfview;
+	private String pdf, pdfName;
+	private TextView pdfnameTV;
+	private ProgressDialog progressBar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

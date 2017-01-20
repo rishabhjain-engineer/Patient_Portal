@@ -31,13 +31,13 @@ import config.StaticHolder;
 
 public class FileVaultMenu extends ActionBarActivity {
 
-    LinearLayout personal, casewise;
-    String id;
-    RequestQueue queue;
-    JsonObjectRequest jr, jr1;
-    JSONObject sendData;
-    JSONArray subArrayImage, subArrayImagecase;
-    TextView tvPersonal, tvCasewise;
+    private LinearLayout personal, casewise;
+    private String id;
+    private RequestQueue queue;
+    private JsonObjectRequest jr, jr1;
+    private JSONObject sendData;
+    private JSONArray subArrayImage, subArrayImagecase;
+    private TextView tvPersonal, tvCasewise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

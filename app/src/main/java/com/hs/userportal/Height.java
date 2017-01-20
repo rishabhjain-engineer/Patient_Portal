@@ -62,22 +62,22 @@ public class Height extends ActionBarActivity {
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    ProgressDialog progress;
-    JSONObject sendData;
+    private ProgressDialog progress;
+    private JSONObject sendData;
     private String id;
     private TextView wt_heading;
-    MiscellaneousTasks misc;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartValues1 = new ArrayList<String>();
-    List<String> chartDates = new ArrayList<String>();
+    private MiscellaneousTasks misc;
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartValues1 = new ArrayList<String>();
+    private List<String> chartDates = new ArrayList<String>();
     private Services service;
-    String parenthistory_ID;
+    private String parenthistory_ID;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    int maxYrange = 0;
+    private int maxYrange = 0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {

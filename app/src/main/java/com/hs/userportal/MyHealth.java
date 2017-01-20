@@ -49,15 +49,13 @@ import networkmngr.NetworkChangeListener;
 
 public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
 
-    private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest
-            , height_latest, allergies;
+    private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest, height_latest, allergies;
     private String id, show_blood, bgroup,  height,  weight;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
-    private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+",
-            "AB-"};
+    private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private int allergy_no;
 
     @Override

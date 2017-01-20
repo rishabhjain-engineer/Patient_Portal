@@ -11,9 +11,10 @@ import android.widget.RelativeLayout;
 public class WalthroughFragment extends Fragment {
 
 	public static final String POSITION_KEY = "FragmentPositionKey";
+
 	private int position;
-	LinearLayout walk1, walk2, walk3, walk4;
-	RelativeLayout walk0;
+	private LinearLayout walk1, walk2, walk3, walk4;
+	private RelativeLayout walk0;
 	
 
 	@Override

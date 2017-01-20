@@ -10,7 +10,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 public class MiscellaneousTasks {
-	Context context;
+
+	private Context context;
 
 	public MiscellaneousTasks(Context context) {
 		this.context = context;

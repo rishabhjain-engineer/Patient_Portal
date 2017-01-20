@@ -9,13 +9,10 @@ import android.view.animation.Transformation;
 
 public class FlipAnimation extends Animation {
 	private Camera camera;
-
 	private View fromView;
 	private View toView;
-
 	private float centerX;
 	private float centerY;
-
 	private boolean forward = true;
 
 	/**

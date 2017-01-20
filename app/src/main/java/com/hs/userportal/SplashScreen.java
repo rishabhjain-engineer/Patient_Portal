@@ -35,18 +35,17 @@ import networkmngr.ConnectionDetector;
 public class SplashScreen extends Activity {
 
 
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    ArrayList<HashMap<String, String>> packageAlllist;
-    ArrayList<HashMap<String, String>> packageHome_list;
-    SharedPreferences sharedpreferences, sharedPreferences;
-    RequestQueue queue;
-    JsonObjectRequest jr;
-    JSONObject sendData;
-
-    Double currentlat, currentlon, defaultLat, defaultLong;
-    String locationFromCoordinates;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private ArrayList<HashMap<String, String>> packageAlllist;
+    private ArrayList<HashMap<String, String>> packageHome_list;
+    private SharedPreferences sharedpreferences, sharedPreferences;
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
+    private JSONObject sendData;
+    private Double currentlat, currentlon, defaultLat, defaultLong;
+    private String locationFromCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

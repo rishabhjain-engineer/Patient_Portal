@@ -64,20 +64,20 @@ public class Weight extends ActionBarActivity {
     private Button bsave;
     private String id;
     private TextView wt_heading;
-    JSONObject sendData;
-    String parenthistory_ID;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    MiscellaneousTasks misc;
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartValues1 = new ArrayList<String>();
-    List<String> chartDates = new ArrayList<String>();
+    private JSONObject sendData;
+    private String parenthistory_ID;
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private MiscellaneousTasks misc;
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartValues1 = new ArrayList<String>();
+    private List<String> chartDates = new ArrayList<String>();
     private Services service;
-    ProgressDialog progress;
+    private ProgressDialog progress;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    int maxYrange = 0;
+    private int maxYrange = 0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {

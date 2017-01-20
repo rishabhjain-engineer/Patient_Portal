@@ -30,19 +30,19 @@ import config.StaticHolder;
 public class Services {
     /* Variables declaration */
 
-    HttpClient client;
-    HttpPost request;
-    HttpResponse response;
-    JSONObject receiveData, temp, titleJSON;
-    JSONArray values;
-    String url, line;
-    static Header[] cookies;
-    BufferedReader reader;
-    StringBuilder sb;
-    Context context;
-    public static String hoja = "";
-    static String checknet = "no";
+    private HttpClient client;
+    private HttpPost request;
+    private HttpResponse response;
+    private JSONObject receiveData, temp, titleJSON;
+    private JSONArray values;
+    private String url, line;
+    private static Header[] cookies;
+    private BufferedReader reader;
+    private StringBuilder sb;
+    private Context context;
+    private static String checknet = "no";
 
+    public static String hoja = "";
 	/*static String init = "https://l141702.cloudchowk.com";*/
 
 	/*static String init ="https://l141702.cloudchowk.com/";*///"http://192.168.1.202:81";//"https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";////;

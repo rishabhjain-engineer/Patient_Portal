@@ -79,59 +79,50 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class Register extends ActionBarActivity {
 
-    EditText etFirst, etlast, etUser, etPass, etCpass;
-    static EditText etEmail;
-    String uName, uPassword, contactNumber, buildNo;
-    String UserCodeFromEmail = null;
+    private EditText etFirst, etlast, etUser, etPass, etCpass;
+    private static EditText etEmail;
+    private String uName, uPassword, contactNumber, buildNo;
+    private String UserCodeFromEmail = null;
     private TextView terms_conditions, terms;
-
-    String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
-    static EditText etDOB;
-    JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
-    JSONArray fbarray, subArray, disclaimerArray;
+    private String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
+    private static EditText etDOB;
+    private JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
+    private JSONArray fbarray, subArray, disclaimerArray;
     private int chkDisclaimer = 0, chklogin = 0, chkerror = 0;
-    int fbLogin = 0, fbDisc = 0, fberror = 0;
-    ;
-    AlertDialog alert;
-    EditText etContact;
-    SharedPreferences demoPreferences;
-    Services service;
-    SharedPreferences sharedpreferences;
-    public static final String MyPREFERENCES = "MyPrefs";
-    Button bSend, bReset, bFB, bNext;
-
-    static String demo = "false";
-    JsonObjectRequest jr, jr1;
-    static String cook = "";
+    private int fbLogin = 0, fbDisc = 0, fberror = 0;
+    private AlertDialog alert;
+    private EditText etContact;
+    private SharedPreferences demoPreferences;
+    private Services service;
+    private SharedPreferences sharedpreferences;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private Button bSend, bReset, bFB, bNext;
+    private static String demo = "false";
+    private JsonObjectRequest jr, jr1;
+    private static String cook = "";
     private Pattern pattern, pattern1;
     private Matcher matcher, matcher1;
-    RequestQueue queue;
-    JSONObject receive;
-    String abc, id, cop, fnln, tpwd;
-    ProgressDialog progress;
-    int fromfb = 0;
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private RequestQueue queue;
+    private JSONObject receive;
+    private String abc, id, cop, fnln, tpwd;
+    private ProgressDialog progress;
+    private int fromfb = 0;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,20})";
-
-    LinearLayout lPersonal, lAccount;
+    private LinearLayout lPersonal, lAccount;
     //    private UiLifecycleHelper uiHelper;
-    StaticHolder staticobj;
-    public static String userID;
-    static int cyear;
-    static int month;
-    static int day;
-
-    RadioButton bMale, bFemale;
-    SegmentedGroup segmented;
-    String gender = "Male";
-    String firstName = "", lastName = "", eMail = "", userName = "", password = "", contactNo = "", dateofBirth = "",
-            cPassword = "", middleName = "";
-    SharedPreferences sharedPreferences;
-
-    SharedPreferences newpref;
-    Boolean fromLocation;
-    protected static String fromActivity;
+    private StaticHolder staticobj;
+    private static int cyear;
+    private static int month;
+    private static int day;
+    private RadioButton bMale, bFemale;
+    private SegmentedGroup segmented;
+    private String gender = "Male";
+    private String firstName = "", lastName = "", eMail = "", userName = "", password = "", contactNo = "", dateofBirth = "", cPassword = "", middleName = "";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences newpref;
+    private Boolean fromLocation;
+    private static String fromActivity;
     private String emailsmsphone;
     private Boolean multipleLinked;
     private LoginButton login_button;
@@ -139,6 +130,9 @@ public class Register extends ActionBarActivity {
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
     private String PH;
+
+
+    public static String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

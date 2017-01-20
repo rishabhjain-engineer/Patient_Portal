@@ -79,56 +79,56 @@ import com.facebook.model.GraphUser;*/
  * Created by rahul2 on 10/29/2015.
  */
 public class logout extends Activity implements View.OnClickListener {
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages,
-            facebooklink, my_family, my_health;
+
+    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
     private LinearLayout linearLayout2, menu;
     private ImageButton editimg, menuimgbtn;
     private ImageView user_pic;
-
-    TextView marq, username, noti_count, patient_id;
-    ProgressBar imageProgress;
-    String PH;
-    ProgressDialog progress;
-    Services service;
-    public static String id, privatery_id;
-    String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
-    String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
-    final int PIC_CROP = 3;
-    TextView emv, smsv, fbName, members;
-    Bitmap output = null;
-    public static int noti = 0;
-    JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink,
-            receiveDataUnLink, receiveDataList, receiveDataList2;
-    JSONArray subArray, fbSubArray, subArrayList;
-    public static int unlinkmenu;
-    int checkpublish = 0;
-    int checkcomplete = 0;
-    int pos;
-    String casecode;
-    String userID, fbP;
-    String dated;
-    ByteArrayOutputStream byteArrayOutputStream;
-    List<String> marqueeStringSet = new ArrayList<String>();
+    private TextView marq, username, noti_count, patient_id;
+    private ProgressBar imageProgress;
+    private String PH;
+    private ProgressDialog progress;
+    private Services service;
+    private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
+    private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
+    private final int PIC_CROP = 3;
+    private TextView emv, smsv, fbName, members;
+    private Bitmap output = null;
+    private static int noti = 0;
+    private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
+    private JSONArray subArray, fbSubArray, subArrayList;
+    private static int unlinkmenu;
+    private int checkpublish = 0;
+    private int checkcomplete = 0;
+    private int pos;
+    private String casecode;
+    private String userID, fbP;
+    private String dated;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private List<String> marqueeStringSet = new ArrayList<String>();
     /* private UiLifecycleHelper uiHelper;*/
-    static ArrayList<String> testcomplete = new ArrayList<String>();
-    static ArrayList<String> ispublished = new ArrayList<String>();
-    static String notiem = "no", notisms = "no";
-    public static final int MENU_LINK = Menu.FIRST;
-    AlertDialog alert, alertFB;
-    ImageButton notification;
-    Dialog fbDialog;
+    private static ArrayList<String> testcomplete = new ArrayList<String>();
+    private static ArrayList<String> ispublished = new ArrayList<String>();
+    public static String notiem = "no", notisms = "no";
+    private static final int MENU_LINK = Menu.FIRST;
+    private AlertDialog alert, alertFB;
+    private ImageButton notification;
+    private Dialog fbDialog;
     private JsonObjectRequest family;
     private JSONArray family_arr;
     private ArrayList<HashMap<String, String>> family_object;
-    public static String image_parse;
     private static RequestQueue request;
-    static String emailid;
     private ImageLoader mImageLoader;
     private LoginButton login_button;
     private CallbackManager mCallbackManager = null;
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
+
+
+    public static String image_parse;
+    public static String emailid;
+    public static String id, privatery_id;
 
     protected void onCreate(Bundle savedInBundle) {
         super.onCreate(savedInBundle);

@@ -55,49 +55,46 @@ import networkmngr.NetworkChangeListener;
 public class Education extends FragmentActivity implements AdapterView.OnItemSelectedListener
 
 {
-    String checkedit = "", PatientHistoryId = "";
-    ArrayList<String> patienthistorylist = new ArrayList<String>();
-    String[] nationlist;
-    ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
-    static int month2, year2, day2, month1, year1, day1;
-    Calendar c;
-    AlertDialog alertDialog;
-    int i = 0;
-    EditText pi, ad, educationspinner;
+    private String checkedit = "", PatientHistoryId = "";
+    private ArrayList<String> patienthistorylist = new ArrayList<String>();
+    private String[] nationlist;
+    private ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
+    private static int month2, year2, day2, month1, year1, day1;
+    private Calendar c;
+    private AlertDialog alertDialog;
+    private int i = 0;
+    private EditText pi, ad, educationspinner;
     //  Spinner educationspinner;
     private String eductionstring;
-    AlertDialog alert;
-    static EditText from, to;
+    private AlertDialog alert;
+    private static EditText from, to;
     private ScrollView scroll_id;
     //AutoCompleteTextView ar;
     private EditText ci, st, co;
-    ProgressDialog progress, ghoom;
-    ListView lv;
-    Button add;
-    Services service;
-    JSONObject sendData1, receiveData1, education, sendedu, receiveData,
-            sendData, newdata;
-    JSONArray subArray, subArray1, arraywork, temparray, subArrayEd, newarray,
-            newarray1, newarray2;
+    private ProgressDialog progress, ghoom;
+    private ListView lv;
+    private Button add;
+    private Services service;
+    private JSONObject sendData1, receiveData1, education, sendedu, receiveData, sendData, newdata;
+    private JSONArray subArray, subArray1, arraywork, temparray, subArrayEd, newarray, newarray1, newarray2;
+    private JSONArray educatearray;
+    private String countryval = "", cityval = "", stateval = "";
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> area = new ArrayList<String>();
+    private ArrayList<String> country = new ArrayList<String>();
+    private ArrayList<String> state = new ArrayList<String>();
+    private ArrayList<String> city = new ArrayList<String>();
+    private ArrayList<String> pin = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private Date date1, date2, datecurrent;
+    private String id;
+    private Custom_profile_adapter m_adapter;
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private CheckBox present;
+    private ArrayAdapter<CharSequence> adapter;
+    private int selection;
 
-    JSONArray educatearray;
-    ;
-    String countryval = "", cityval = "", stateval = "";
-    ArrayAdapter<String> adapter1;
-    ArrayList<String> area = new ArrayList<String>();
-    ArrayList<String> country = new ArrayList<String>();
-    ArrayList<String> state = new ArrayList<String>();
-    ArrayList<String> city = new ArrayList<String>();
-    ArrayList<String> pin = new ArrayList<String>();
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    Date date1, date2, datecurrent;
-    String id;
-    Custom_profile_adapter m_adapter;
-    ArrayList<String> m_listItems = new ArrayList<String>();
-    CheckBox present;
-    ArrayAdapter<CharSequence> adapter;
-    int selection;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);

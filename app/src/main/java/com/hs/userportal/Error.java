@@ -17,7 +17,7 @@ import android.widget.ImageView;
 
 public class Error extends ActionBarActivity {
 
-	ImageView iv;
+	private ImageView iv;
 	private View mLoadingView;
 
 	@Override

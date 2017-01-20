@@ -28,29 +28,32 @@ import java.util.List;
 
 public class Medical extends FragmentActivity {
 
-	static String allergy = "";
-	String showlist, list_retrieved;
-	int i = 0;
-	ListView l;
-	ArrayList<String> list = new ArrayList<String>();
-	Button add, finish, back;
-	ProgressDialog progress, ghoom;
-	Services service;
-	String id;
-	JSONObject sendData, receiveData, medical, sendmedical, sendData1,
-			receiveData1;
-	JSONArray subArray, temparray;
-	AlertDialog alertDialog, alert;
+
+	private String showlist, list_retrieved;
+	private int i = 0;
+	private ListView l;
+	private ArrayList<String> list = new ArrayList<String>();
+	private Button add, finish, back;
+	private ProgressDialog progress, ghoom;
+	private Services service;
+	private String id;
+	private JSONObject sendData, receiveData, medical, sendmedical, sendData1, receiveData1;
+	private JSONArray subArray, temparray;
+	private AlertDialog alertDialog, alert;
 	// static JSONArray arraymed;
-	JSONArray medicalarray;
-	String vacid;
+	private JSONArray medicalarray;
+	private String vacid;
 	// ArrayList<String> vaclist = new ArrayList<String>();
 	// ArrayList<String> vacretrieve = new ArrayList<String>();
 	// ArrayList<String> vacidlist = new ArrayList<String>();
-	static ArrayList<String> selectlist = new ArrayList<String>();
-	ArrayList<String> alllist = new ArrayList<String>();
-	ArrayAdapter<String> adapter1;
-	ArrayAdapter<String> adapter;
+
+	private ArrayList<String> alllist = new ArrayList<String>();
+	private ArrayAdapter<String> adapter1;
+	private ArrayAdapter<String> adapter;
+
+
+	public static String allergy = "";
+	public static ArrayList<String> selectlist = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

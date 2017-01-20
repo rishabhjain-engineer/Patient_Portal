@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestDefaultAdapter extends BaseAdapter {
+
 	private Activity activity;
 	private LayoutInflater inflater;
 	private List<SortList> SortList;
 	private static ArrayList<SortList> privatearray;
-	String checkwhichsegment_calls;
+	private String checkwhichsegment_calls;
 
 	public TestDefaultAdapter(Activity activity, List<SortList> SortList, String string) {
 		this.activity = activity;

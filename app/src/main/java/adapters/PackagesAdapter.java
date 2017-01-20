@@ -30,14 +30,14 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class PackagesAdapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> SortList;
-    static ArrayList<HashMap<String, String>> privatearray;
-    ViewHolder holder = null;
-
-    Animation leftAnimation;
-    Animation rightAnimation;
+    private static ArrayList<HashMap<String, String>> privatearray;
+    private ViewHolder holder = null;
+    private Animation leftAnimation;
+    private Animation rightAnimation;
 
     public PackagesAdapter(Activity activity, ArrayList<HashMap<String, String>> SortList) {
         this.activity = activity;
