@@ -125,8 +125,8 @@ public class logout extends Activity implements View.OnClickListener {
     static String emailid;
     private ImageLoader mImageLoader;
     private LoginButton login_button;
-    private CallbackManager callbackManager = null;
-    private AccessTokenTracker mtracker = null;
+    private CallbackManager mCallbackManager = null;
+    private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
 
@@ -134,8 +134,8 @@ public class logout extends Activity implements View.OnClickListener {
         super.onCreate(savedInBundle);
        /* uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInBundle);*/
-        callbackManager = CallbackManager.Factory.create();
-        mtracker = new AccessTokenTracker() {
+        mCallbackManager = CallbackManager.Factory.create();
+        mAccessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
             }
@@ -147,7 +147,7 @@ public class logout extends Activity implements View.OnClickListener {
             }
         };
 
-        mtracker.startTracking();
+        mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
         setContentView(R.layout.dashboard);
         mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
@@ -176,7 +176,7 @@ public class logout extends Activity implements View.OnClickListener {
         imageProgress = (ProgressBar) findViewById(R.id.progressBar);
         facebooklink = (RelativeLayout) findViewById(R.id.link);
         login_button = (LoginButton) findViewById(R.id.login_button);
-        login_button.registerCallback(callbackManager, callback);
+        login_button.registerCallback(mCallbackManager, facebookCallback);
         notification = (ImageButton) findViewById(R.id.notification);
         menuimgbtn = (ImageButton) findViewById(R.id.menuimgbtn);
         menu = (LinearLayout) findViewById(R.id.menu);
@@ -703,7 +703,7 @@ public class logout extends Activity implements View.OnClickListener {
                     fbLinked = "true";
                     fbLinkedID = fbSubArray.getJSONObject(0).getString("FacebookId");
                 }
-                find_family();
+                findFamily();
             } catch (JSONException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -1242,7 +1242,7 @@ public class logout extends Activity implements View.OnClickListener {
 		 */
 
             case MENU_LINK:
-                new fbUnlinkAsync().execute();
+                new FbUnlinkAsync().execute();
                 return true;
 
            /* case R.id.action_profile:
@@ -1301,7 +1301,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    class fbUnlinkAsync extends AsyncTask<Void, Void, Void> {
+    private class FbUnlinkAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1440,9 +1440,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     };
 
-    class imagesync extends AsyncTask<Void, Void, Void>
-
-    {
+    private class Imagesync extends AsyncTask<Void, Void, Void> {
 
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1460,16 +1458,17 @@ public class logout extends Activity implements View.OnClickListener {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (progress != null)
+            if (progress != null) {
                 progress.dismiss();
-
+            }
+            user_pic.setImageBitmap(output);
+            // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
+            imageProgress.setVisibility(View.INVISIBLE);
             // new BackgroundProcess().execute();
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
 
             sendData = new JSONObject();
             try {
@@ -1488,7 +1487,6 @@ public class logout extends Activity implements View.OnClickListener {
                 subArray = cut.getJSONArray("Table");
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1515,28 +1513,11 @@ public class logout extends Activity implements View.OnClickListener {
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 canvas.drawBitmap(bitmap, rect, rect, paint);
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                      /*  Glide.with(logout.this)
-                                .load(pic.replaceAll(" ", "%20"))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .override(500,Target.SIZE_ORIGINAL)
-                                .fitCenter()
-                                .into(user_pic);*/
-                        user_pic.setImageBitmap(output);
-                        // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
-                        imageProgress.setVisibility(View.INVISIBLE);
-                    }
-                });
-
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -1549,7 +1530,6 @@ public class logout extends Activity implements View.OnClickListener {
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         this.unregisterReceiver(this.mConnReceiver);
         //  uiHelper.onPause();
@@ -1564,7 +1544,7 @@ public class logout extends Activity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         // uiHelper.onDestroy();
-        logout.this.finish();
+       finish();
         output = null;
         update.verify = "0";
     }
@@ -1580,7 +1560,7 @@ public class logout extends Activity implements View.OnClickListener {
         // TODO Auto-generated method stub
         super.onResume();
         id = privatery_id;
-        find_family();
+        findFamily();
         if (Helper.authentication_flag == true) {
             finish();
         }
@@ -1593,7 +1573,7 @@ public class logout extends Activity implements View.OnClickListener {
             Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         }else {
         //uiHelper.onResume();
-        new Authenticationfromresume().execute();}
+        new AuthenticationfromresumeAsyncTask().execute();}
 
         if (update.verify.equals("1")) {
             try {
@@ -1625,7 +1605,7 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-    class Authenticationfromresume extends AsyncTask<Void, Void, Void> {
+    private class AuthenticationfromresumeAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1693,7 +1673,7 @@ public class logout extends Activity implements View.OnClickListener {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
       /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
 
@@ -1743,18 +1723,9 @@ public class logout extends Activity implements View.OnClickListener {
      */
     private void onClickLink() {
         login_button.performClick();
-       /* Session session = Session.getActiveSession();
-        if (!session.isOpened() && !session.isClosed()) {
-            session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile"))
-                    .setCallback(callback));
-        } else if (session.isClosed()) {
-            // start Facebook Login
-            Session.openActiveSession(this, true, callback);
-
-        }*/
     }
 
-    class fbLinkAsync extends AsyncTask<Void, Void, Void> {
+    private class FbLinkAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1839,7 +1810,7 @@ public class logout extends Activity implements View.OnClickListener {
                         @Override
                         public void onClick(View v) {
 
-                            new fbImagePull().execute();
+                            new FbImagePull().execute();
                             progress.dismiss();
                         }
                     });
@@ -1888,7 +1859,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    class fbImagePull extends AsyncTask<Void, Void, Void> {
+    private class FbImagePull extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1934,7 +1905,7 @@ public class logout extends Activity implements View.OnClickListener {
                 progress.dismiss();
                 if (receiveFbImageSave.getString("d").equals("\"Patient Image updated Successfully\"")) {
 
-                    new imagesync().execute();
+                    new Imagesync().execute();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Profile picture couldn't be updated. Please try again!",
@@ -1948,7 +1919,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
@@ -1974,7 +1945,7 @@ public class logout extends Activity implements View.OnClickListener {
         return output;
     }
 
-    public void find_family() {
+    private void findFamily() {
         request = Volley.newRequestQueue(this);
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetMember);
         String url = static_holder.request_Url();
@@ -2055,18 +2026,17 @@ public class logout extends Activity implements View.OnClickListener {
         });
         request.add(family);
     }
-    FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+
+    private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            GraphRequest request = GraphRequest.newMeRequest(
-                    loginResult.getAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
+            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             // JSON of FB ID as response.
                             try {
                                 userID = object.getString("id");
-                                new fbLinkAsync().execute();
+                                new FbLinkAsync().execute();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
