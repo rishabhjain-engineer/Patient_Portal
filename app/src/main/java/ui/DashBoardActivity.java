@@ -108,11 +108,11 @@ import com.facebook.model.GraphUser;*/
  */
 public class DashBoardActivity extends BaseActivity implements View.OnClickListener {
 
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
-    private LinearLayout linearLayout2, menu;
-    private ImageButton editimg, menuimgbtn;
-    private ImageView user_pic;
-    private TextView marq, username, noti_count, patient_id;
+    //private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
+    //private LinearLayout linearLayout2, menu;
+    //private ImageButton editimg, menuimgbtn;
+    //private ImageView user_pic;
+    //private TextView marq, username, noti_count, patient_id;
     private ProgressBar imageProgress;
     private String PH;
     private ProgressDialog progress;
@@ -120,7 +120,7 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
     private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private final int PIC_CROP = 3;
-    private TextView emv, smsv, fbName, members;
+   // private TextView emv, smsv, fbName, members;
     private Bitmap output = null;
     private static int noti = 0;
     private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
@@ -140,7 +140,7 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
     public static String notiem = "no", notisms = "no";
     private static final int MENU_LINK = Menu.FIRST;
     private AlertDialog alert, alertFB;
-    private ImageButton notification;
+    //private ImageButton notification;
     private Dialog fbDialog;
     private JsonObjectRequest family;
     private JSONArray family_arr;
@@ -152,7 +152,11 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
-
+    ///////////////////////////////////////
+    private ImageView user_pic;
+    private TextView username, fbName, marq, noti_count;
+    private RelativeLayout facebooklink;
+    private LinearLayout linearLayout2;
 
     public static String image_parse;
     public static String emailid;
@@ -177,12 +181,22 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
 
         mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
-        setContentView(R.layout.dashboard);
+        setContentView(R.layout.test1);
         mImageLoader = MyVolleySingleton.getInstance(this).getImageLoader();
         inializeobj();
     }
 
-    public void inializeobj() {
+    private void inializeobj(){
+        user_pic = (ImageView) findViewById(R.id.user_pic);
+        username = (TextView) findViewById(R.id.username);
+        facebooklink = (RelativeLayout) findViewById(R.id.link);
+        marq = (TextView) findViewById(R.id.marquee);
+        noti_count = (TextView) findViewById(R.id.noti_count);
+        linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
+
+    }
+
+   /* public void inializeobj() {
         update_profile = (RelativeLayout) findViewById(R.id.update_profile);
         linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
         lab_records = (RelativeLayout) findViewById(R.id.lab_records);
@@ -230,11 +244,11 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
                 Intent intent = new Intent(getApplicationContext(), MyFamily.class);
                 intent.putExtra("id", id);
                 intent.putExtra("family", family_object);
-           /* intent.putExtra("pass", passw);
+           *//* intent.putExtra("pass", passw);
             intent.putExtra("pic", pic);
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);*/
+            intent.putExtra("fbLinkedID", fbLinkedID);*//*
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -376,10 +390,10 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
             String storeId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("patientId", "");
             System.out.println("storeId: " + storeId);
             if (storeId != null && !storeId.contains(id)) {
-                /*Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
+                *//*Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                 intentTour.putExtra("name", name);
                 intentTour.putExtra("walk", "tour");
-                startActivity(intentTour);*/
+                startActivity(intentTour);*//*
                 // Save the state
                 if (storeId.trim().equals("")) {
                     storeId = id;
@@ -399,7 +413,7 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
         }else {
             new Authentication().execute();
         }
-    }
+    }*/
 
     @Override
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
@@ -2014,7 +2028,7 @@ public class DashBoardActivity extends BaseActivity implements View.OnClickListe
                         }
                         int s = family_object.size();
                         String size = new DecimalFormat("00").format(s);
-                        members.setText(size);
+                        //members.setText(size); //commented By Ayaz
                     }
                 } catch (JSONException je) {
                     je.printStackTrace();
