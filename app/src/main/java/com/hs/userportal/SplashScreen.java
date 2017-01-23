@@ -67,8 +67,7 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
 
-                sharedpreferences = getSharedPreferences(MyPREFERENCES,
-                        Context.MODE_PRIVATE);
+                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
                         Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
@@ -76,8 +75,7 @@ public class SplashScreen extends Activity {
                         finish();
                     }
                 } else {
-                    Intent intentWalk = new Intent(getApplicationContext(),
-                            SampleCirclesDefault.class);
+                    Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                     intentWalk.putExtra("walk", "walk");
                     intentWalk.putExtra("pos", 0);
                     startActivity(intentWalk);
