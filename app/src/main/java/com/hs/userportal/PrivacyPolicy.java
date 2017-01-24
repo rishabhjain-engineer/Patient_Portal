@@ -18,13 +18,13 @@ import org.json.JSONObject;
 
 public class PrivacyPolicy extends ActionBarActivity {
 
-	WebView privacy;
-	Button ok;
-	JSONObject sendData,receiveData;
-	JSONArray subArray;
-	Services service;
-	String disclaimer;
-	ProgressDialog progress;
+	private WebView privacy;
+	private Button ok;
+	private JSONObject sendData,receiveData;
+	private JSONArray subArray;
+	private Services service;
+	private String disclaimer;
+	private ProgressDialog progress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

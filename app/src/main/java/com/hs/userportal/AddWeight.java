@@ -37,7 +37,7 @@ public class AddWeight extends ActionBarActivity {
     private TextView weight;
     private String id, htype;
     private Services service;
-    static int cyear, month, day;
+    private static int cyear, month, day;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {

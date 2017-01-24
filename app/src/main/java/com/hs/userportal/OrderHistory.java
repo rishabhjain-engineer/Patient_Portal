@@ -47,18 +47,18 @@ import networkmngr.NetworkChangeListener;
  */
 public class OrderHistory extends ActionBarActivity {
 
-    JSONArray orderarray;
-    ConnectionDetector con;
+    private JSONArray orderarray;
+    private ConnectionDetector con;
     private ListView order_list;
-    JsonObjectRequest jr;
-    String patientID;
-    RequestQueue queue;
-    ProgressDialog progressDialog;
-    String scroll_position = null;
+    private JsonObjectRequest jr;
+    private String patientID;
+    private RequestQueue queue;
+    private ProgressDialog progressDialog;
+    private String scroll_position = null;
     private OrderlistAdapter adapter;
-    ArrayList<HashMap<String, String>> order_listarr = new ArrayList<HashMap<String, String>>();
-    JSONObject sendData;
-    List<OrderList> sortList = new ArrayList<OrderList>();
+    private ArrayList<HashMap<String, String>> order_listarr = new ArrayList<HashMap<String, String>>();
+    private JSONObject sendData;
+    private List<OrderList> sortList = new ArrayList<OrderList>();
    // ArrayList<HashMap<String, String>> family = new ArrayList<>();
     private EditText select_member;
     private int check_fill =0;

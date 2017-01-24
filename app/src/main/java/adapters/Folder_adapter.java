@@ -23,8 +23,9 @@ import java.util.HashMap;
  * Created by ashish on 2/11/2016.
  */
 public class Folder_adapter extends BaseAdapter {
-    Activity activity;
-    ArrayList<HashMap<String, String>> folder;
+
+    private Activity activity;
+    private ArrayList<HashMap<String, String>> folder;
     private LayoutInflater inflater;
     private String patientId;
     private String path_buffer;

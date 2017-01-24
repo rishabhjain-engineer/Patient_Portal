@@ -1,4 +1,3 @@
-/*
 package ui;
 
 import android.app.AlertDialog;
@@ -22,8 +21,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Base64;
 import android.view.Menu;
@@ -31,10 +30,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -48,8 +52,10 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.ProfileTracker;
+//import com.facebook.R;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.AboutUs;
 import com.hs.userportal.FAQ;
 import com.hs.userportal.Filevault;
@@ -58,13 +64,14 @@ import com.hs.userportal.Helper;
 import com.hs.userportal.LocationClass;
 import com.hs.userportal.MainActivity;
 import com.hs.userportal.MyFamily;
+import com.hs.userportal.MyHealth;
 import com.hs.userportal.MyNotification;
 import com.hs.userportal.MyVolleySingleton;
 import com.hs.userportal.OrderHistory;
 import com.hs.userportal.Packages;
 import com.hs.userportal.PrivacyPolicy;
-import com.hs.userportal.R;
 import com.hs.userportal.Register;
+import com.hs.userportal.Services;
 import com.hs.userportal.TabsActivity;
 import com.hs.userportal.changepass;
 import com.hs.userportal.lablistdetails;
@@ -83,30 +90,82 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import com.hs.userportal.R;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 
-*/
+/*import com.facebook.Request;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;*/
+
 /**
- * Created by android1 on 19/1/17.
- *//*
+ * Created by rahul2 on 10/29/2015.
+ */
+public class DashBoardActivity extends BaseActivity implements View.OnClickListener {
 
-
-public class DashBoardActivity extends BaseActivity {
-
+    //private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
+    //private LinearLayout linearLayout2, menu;
+    //private ImageButton editimg, menuimgbtn;
+    //private ImageView user_pic;
+    //private TextView marq, username, noti_count, patient_id;
+    private ProgressBar imageProgress;
+    private String PH;
+    private ProgressDialog progress;
+    private Services service;
+    private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
+    private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
+    private final int PIC_CROP = 3;
+   // private TextView emv, smsv, fbName, members;
+    private Bitmap output = null;
+    private static int noti = 0;
+    private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
+    private JSONArray subArray, fbSubArray, subArrayList;
+    private static int unlinkmenu;
+    private int checkpublish = 0;
+    private int checkcomplete = 0;
+    private int pos;
+    private String casecode;
+    private String userID, fbP;
+    private String dated;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private List<String> marqueeStringSet = new ArrayList<String>();
+    /* private UiLifecycleHelper uiHelper;*/
+    private static ArrayList<String> testcomplete = new ArrayList<String>();
+    private static ArrayList<String> ispublished = new ArrayList<String>();
+    public static String notiem = "no", notisms = "no";
+    private static final int MENU_LINK = Menu.FIRST;
+    private AlertDialog alert, alertFB;
+    //private ImageButton notification;
+    private Dialog fbDialog;
+    private JsonObjectRequest family;
+    private JSONArray family_arr;
+    private ArrayList<HashMap<String, String>> family_object;
+    private static RequestQueue request;
+    private ImageLoader mImageLoader;
+    private LoginButton login_button;
     private CallbackManager mCallbackManager = null;
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
-    private ImageLoader mImageLoader;
-    private String userID;
+    private String facebookPic;
+    ///////////////////////////////////////
+    private ImageView user_pic;
+    private TextView username, fbName, marq, noti_count;
+    private RelativeLayout facebooklink;
+    private LinearLayout linearLayout2;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.test1);
+    public static String image_parse;
+    public static String emailid;
+    public static String id, privatery_id;
 
+    protected void onCreate(Bundle savedInBundle) {
+        super.onCreate(savedInBundle);
+       /* uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInBundle);*/
         mCallbackManager = CallbackManager.Factory.create();
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -119,13 +178,242 @@ public class DashBoardActivity extends BaseActivity {
 
             }
         };
+
         mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
-
+        setContentView(R.layout.test1);
         mImageLoader = MyVolleySingleton.getInstance(this).getImageLoader();
-        //inializeobj();
+        inializeobj();
+    }
+
+    private void inializeobj(){
+        user_pic = (ImageView) findViewById(R.id.user_pic);
+        username = (TextView) findViewById(R.id.username);
+        facebooklink = (RelativeLayout) findViewById(R.id.link);
+        marq = (TextView) findViewById(R.id.marquee);
+        noti_count = (TextView) findViewById(R.id.noti_count);
+        linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
 
     }
+
+   /* public void inializeobj() {
+        update_profile = (RelativeLayout) findViewById(R.id.update_profile);
+        linearLayout2 = (LinearLayout) findViewById(R.id.linearLayout2);
+        lab_records = (RelativeLayout) findViewById(R.id.lab_records);
+        find_labs = (RelativeLayout) findViewById(R.id.find_labs);
+        file_vault = (RelativeLayout) findViewById(R.id.file_vault);
+        order_history = (RelativeLayout) findViewById(R.id.order_history);
+        packages = (RelativeLayout) findViewById(R.id.packages);
+        my_family = (RelativeLayout) findViewById(R.id.my_family);
+        my_health = (RelativeLayout) findViewById(R.id.my_health);
+        if (!new MainActivity().userID.equalsIgnoreCase("")) {
+            facebookPic = new MainActivity().userID;
+        } else {
+            facebookPic = new Register().userID;
+        }
+        //logout=(LinearLayout)findViewById(R.id.logout);
+        editimg = (ImageButton) findViewById(R.id.editimg);
+        username = (TextView) findViewById(R.id.username);
+        user_pic = (ImageView) findViewById(R.id.user_pic);
+        imageProgress = (ProgressBar) findViewById(R.id.progressBar);
+        facebooklink = (RelativeLayout) findViewById(R.id.link);
+        login_button = (LoginButton) findViewById(R.id.login_button);
+        login_button.registerCallback(mCallbackManager, facebookCallback);
+        notification = (ImageButton) findViewById(R.id.notification);
+        menuimgbtn = (ImageButton) findViewById(R.id.menuimgbtn);
+        menu = (LinearLayout) findViewById(R.id.menu);
+        noti_count = (TextView) findViewById(R.id.noti_count);
+        noti_count.setVisibility(View.GONE);
+        patient_id = (TextView) findViewById(R.id.patient_id);
+        members = (TextView) findViewById(R.id.members);
+        menuimgbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOptionsMenu();
+            }
+        });
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOptionsMenu();
+            }
+        });
+        my_family.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyFamily.class);
+                intent.putExtra("id", id);
+                intent.putExtra("family", family_object);
+           *//* intent.putExtra("pass", passw);
+            intent.putExtra("pic", pic);
+            intent.putExtra("picname", picname);
+            intent.putExtra("fbLinked", fbLinked);
+            intent.putExtra("fbLinkedID", fbLinkedID);*//*
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        my_health.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(DashBoardActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(getApplicationContext(), MyHealth.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("show_blood", "yes");
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }}
+        });
+        user_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("pass", passw);
+                intent.putExtra("pic", pic);
+                intent.putExtra("picname", picname);
+                intent.putExtra("fbLinked", fbLinked);
+                intent.putExtra("fbLinkedID", fbLinkedID);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentNot = new Intent(getApplicationContext(), MyNotification.class);
+
+                try {
+                    intentNot.putExtra("userid", id);
+                    intentNot.putExtra("userName", name);
+                    intentNot.putExtra("ContactNo", subArray.getJSONObject(0).getString("ContactNo"));
+                    intentNot.putExtra("patientcode", subArray.getJSONObject(0).getString("patientCode"));
+                    intentNot.putExtra("UserMailId", subArray.getJSONObject(0).getString("Email"));
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                startActivity(intentNot);
+            }
+        });
+
+        noti_count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentNot = new Intent(getApplicationContext(), MyNotification.class);
+
+                try {
+                    intentNot.putExtra("userid", id);
+                    intentNot.putExtra("userName", name);
+                    intentNot.putExtra("ContactNo", subArray.getJSONObject(0).getString("ContactNo"));
+                    intentNot.putExtra("patientcode", subArray.getJSONObject(0).getString("patientCode"));
+                    intentNot.putExtra("UserMailId", subArray.getJSONObject(0).getString("Email"));
+
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                startActivity(intentNot);
+            }
+        });
+
+        linearLayout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(DashBoardActivity.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (subArrayList != null) {
+                        if (id != null && subArrayList.length() > 0) {
+                            Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                            intent.putExtra("id", id);
+                            update.verify = "0";
+                            intent.putExtra("family", family_object);
+                            String member = username.getText().toString();
+                            intent.putExtra("Member_Name", member);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                        }
+                    } }
+            }
+        });
+
+        facebooklink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickLink();
+            }
+        });
+        marq = (TextView) findViewById(R.id.marquee);
+        TextView tv = (TextView) this.findViewById(R.id.marquee);
+        tv.setSelected(true);
+        update_profile.setOnClickListener(this);
+        lab_records.setOnClickListener(this);
+        find_labs.setOnClickListener(this);
+        file_vault.setOnClickListener(this);
+        order_history.setOnClickListener(this);
+        packages.setOnClickListener(this);
+        // logout.setOnClickListener(this);
+        editimg.setOnClickListener(this);
+        service = new Services(this);
+        Intent i = getIntent();
+        id = i.getStringExtra("id");
+        privatery_id = id;
+        PH = i.getStringExtra("PH");
+        user = i.getStringExtra("user");
+        passw = i.getStringExtra("pass");
+        name = i.getStringExtra("fn");
+        Helper.resend_name = name;
+        username.setText(name);
+        patient_id.setText("Your ID: " + PH);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                imageProgress.setVisibility(View.INVISIBLE);
+            }
+        }, 5000);
+
+        noti = 0;
+        try {
+            String storeId = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("patientId", "");
+            System.out.println("storeId: " + storeId);
+            if (storeId != null && !storeId.contains(id)) {
+                *//*Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
+                intentTour.putExtra("name", name);
+                intentTour.putExtra("walk", "tour");
+                startActivity(intentTour);*//*
+                // Save the state
+                if (storeId.trim().equals("")) {
+                    storeId = id;
+                } else {
+                    storeId = storeId + "," + id;
+                }
+                System.out.println("storeId Saved: " + storeId);
+                getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putString("patientId", storeId).commit();
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(DashBoardActivity.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
+    }*/
 
     @Override
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
@@ -171,7 +459,7 @@ public class DashBoardActivity extends BaseActivity {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("openLocation", true);
                 editor.commit();
-                Intent intent = new Intent(logout.this, LocationClass.class);
+                Intent intent = new Intent(DashBoardActivity.this, LocationClass.class);
                 intent.putExtra("PatientId", id);
                 update.verify = "0";
                 startActivity(intent);
@@ -179,7 +467,7 @@ public class DashBoardActivity extends BaseActivity {
 
             } else if (v.getId() == R.id.file_vault) {
                 // setText() sets the string value of the TextView
-                Intent intent = new Intent(logout.this, Filevault.class);
+                Intent intent = new Intent(DashBoardActivity.this, Filevault.class);
                 intent.putExtra("id", id);
                 update.verify = "0";
                 startActivity(intent);
@@ -187,18 +475,16 @@ public class DashBoardActivity extends BaseActivity {
             } else if (v.getId() == R.id.order_history) {
                 // setText() sets the string value of the TextView
                 // setText() sets the string value of the TextView
-                Intent intent = new Intent(logout.this, OrderHistory.class);
+                Intent intent = new Intent(DashBoardActivity.this, OrderHistory.class);
                 update.verify = "0";
                 intent.putExtra("family", family_object);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.packages) {
                 // setText() sets the string value of the TextView
-                Intent intent = new Intent(logout.this, Packages.class);
+                Intent intent = new Intent(DashBoardActivity.this, Packages.class);
                 update.verify = "0";
-              */
-/*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*//*
-
+              /*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.logout) {
@@ -209,13 +495,11 @@ public class DashBoardActivity extends BaseActivity {
                 Intent intent = new Intent(getApplicationContext(), MyFamily.class);
                 intent.putExtra("id", id);
                 intent.putExtra("family", family_object);
-           */
-/* intent.putExtra("pass", passw);
+           /* intent.putExtra("pass", passw);
             intent.putExtra("pic", pic);
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);*//*
-
+            intent.putExtra("fbLinkedID", fbLinkedID);*/
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.link) {
@@ -228,20 +512,23 @@ public class DashBoardActivity extends BaseActivity {
 
 
     class Authentication extends AsyncTask<Void, Void, Void> {
-        JSONObject autenticationSendData, autenticationReceiveData;
+
         @Override
         protected void onPreExecute() {
+            // TODO Auto-generated method stub
             super.onPreExecute();
 
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
             try {
-                autenticationSendData = new JSONObject();
-                autenticationReceiveData = service.IsUserAuthenticated(autenticationSendData);
+                sendData = new JSONObject();
+                receiveData = service.IsUserAuthenticated(sendData);
                 System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = autenticationReceiveData.getString("d");
+                authentication = receiveData.getString("d");
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -256,7 +543,7 @@ public class DashBoardActivity extends BaseActivity {
 
                 if (authentication.equals("false")) {
 
-                    AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
+                    AlertDialog dialog = new AlertDialog.Builder(DashBoardActivity.this).create();
                     dialog.setTitle("Session timed out!");
                     dialog.setMessage("Session expired. Please login again.");
                     dialog.setCancelable(false);
@@ -279,7 +566,7 @@ public class DashBoardActivity extends BaseActivity {
                     dialog.show();
 
                 } else {
-                    BackgroundProcess().execute();
+                    new BackgroundProcess().execute();
 
                 }
 
@@ -296,7 +583,7 @@ public class DashBoardActivity extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setMessage("Loading...");
             progress.setCancelable(false);
             progress.setIndeterminate(true);
@@ -307,10 +594,8 @@ public class DashBoardActivity extends BaseActivity {
             super.onPostExecute(result);
 
             try {
-               */
-/* Session session = Session.getActiveSession();
-                session.closeAndClearTokenInformation();*//*
-
+               /* Session session = Session.getActiveSession();
+                session.closeAndClearTokenInformation();*/
                 String data = receiveData.getString("d");
                 // Toast.makeText(getApplicationContext(),
                 // "Log out successful.",Toast.LENGTH_SHORT).show();
@@ -323,14 +608,12 @@ public class DashBoardActivity extends BaseActivity {
 
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
                 // MainActivity.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(logout.this);
-               */
-/* if( MainActivity.sharedPreferences!=null) {
+               /* if( MainActivity.sharedPreferences!=null) {
                     SharedPreferences.Editor editor1 = MainActivity.sharedPreferences.edit();
                     editor1.clear();
                     editor1.commit();
                 }
-*//*
-
+*/
                 family_object.clear();
                 image_parse = "";
                 progress.dismiss();
@@ -361,14 +644,12 @@ public class DashBoardActivity extends BaseActivity {
 
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
                 // MainActivity.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(logout.this);
-               */
-/* if( MainActivity.sharedPreferences!=null) {
+               /* if( MainActivity.sharedPreferences!=null) {
                     SharedPreferences.Editor editor1 = MainActivity.sharedPreferences.edit();
                     editor1.clear();
                     editor1.commit();
                 }
-*//*
-
+*/
                 if (family_object != null) {
                     family_object.clear();
                 }
@@ -417,24 +698,18 @@ public class DashBoardActivity extends BaseActivity {
 
     }
 
-    private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
+    class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setCancelable(false);
             progress.setCanceledOnTouchOutside(true);
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            logout.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-
-                }
-            });
-
+            progress.show();
         }
 
         protected void onPostExecute(Void result) {
@@ -503,13 +778,11 @@ public class DashBoardActivity extends BaseActivity {
 
                             paint.setAntiAlias(true);
                             canvas.drawARGB(0, 0, 0, 0);
-                           */
-/* float left = (float) bitmap.getHeight() / 2;
+                           /* float left = (float) bitmap.getHeight() / 2;
                             float top = (float) bitmap.getWidth() / 2;
                             float right = (float) bitmap.getHeight() / 2;
                             float bottom = (float) bitmap.getWidth() / 2;
-                            canvas.drawRect(left,top,right,bottom, paint);*//*
-
+                            canvas.drawRect(left,top,right,bottom, paint);*/
                             //  canvas.drawRect(rect,paint);
 
                             canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
@@ -518,14 +791,12 @@ public class DashBoardActivity extends BaseActivity {
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                   */
-/* Glide.with(logout.this)
+                                   /* Glide.with(logout.this)
                                             .load(pic.replaceAll(" ", "%20"))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(500,Target.SIZE_ORIGINAL)
                                             .fitCenter()
-                                            .into(user_pic);*//*
-
+                                            .into(user_pic);*/
 
                                     user_pic.setImageBitmap(output);
                                     //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
@@ -535,13 +806,11 @@ public class DashBoardActivity extends BaseActivity {
 
                         } else {
                             Bitmap bitmap;
-                            */
-/*if (!new MainActivity().userID.equalsIgnoreCase("")) {
+                            /*if (!new MainActivity().userID.equalsIgnoreCase("")) {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new MainActivity().userID + "/picture?type=large").getContent());
                             } else {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new Register().userID + "/picture?type=large").getContent());
-                            }*//*
-
+                            }*/
                             bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" +facebookPic+ "/picture?type=large").getContent());
 
                             output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -559,14 +828,12 @@ public class DashBoardActivity extends BaseActivity {
 
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                   */
-/* Glide.with(logout.this)
+                                   /* Glide.with(logout.this)
                                             .load(pic.replaceAll(" ", "%20"))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(500,Target.SIZE_ORIGINAL)
                                             .fitCenter()
-                                            .into(user_pic);*//*
-
+                                            .into(user_pic);*/
                                     user_pic.setImageBitmap(output);
                                     // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
@@ -737,7 +1004,7 @@ public class DashBoardActivity extends BaseActivity {
                 editor.clear();
                 editor.commit();
                 finish();
-                logout.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                DashBoardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }
             if (receiveDataFb.toString().equals("{\"d\":\"{}\"}")) {
@@ -748,7 +1015,7 @@ public class DashBoardActivity extends BaseActivity {
                 editor.clear();
                 editor.commit();
                 finish();
-                logout.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                DashBoardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }
 
@@ -815,7 +1082,7 @@ public class DashBoardActivity extends BaseActivity {
                 editor.clear();
                 editor.commit();
                 finish();
-                logout.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                DashBoardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }
 
@@ -875,7 +1142,7 @@ public class DashBoardActivity extends BaseActivity {
                 editor.clear();
                 editor.commit();
                 finish();
-                logout.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                DashBoardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
 
             // try {
@@ -986,8 +1253,7 @@ public class DashBoardActivity extends BaseActivity {
 
         switch (item.getItemId()) {
 
-		*/
-/*
+		/*
          * case R.id.action_count:
 		 *
 		 * progress = new ProgressDialog(logout.this);
@@ -1009,31 +1275,26 @@ public class DashBoardActivity extends BaseActivity {
 		 * e.printStackTrace(); }
 		 *
 		 * startActivity(intentNot); return true;
-		 *//*
-
+		 */
 
             case MENU_LINK:
-                new logout.FbUnlinkAsync().execute();
+                new FbUnlinkAsync().execute();
                 return true;
 
-           */
-/* case R.id.action_profile:
+           /* case R.id.action_profile:
 
                 Intent intentPro = new Intent(getApplicationContext(), Profile.class);
                 intentPro.putExtra("id", id);
                 startActivity(intentPro);
-                return true;*//*
+                return true;*/
 
-
-            */
-/*case R.id.action_tour:
+            /*case R.id.action_tour:
                 Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                 intentTour.putExtra("name", name);
                 intentTour.putExtra("walk", "tour");
                 startActivity(intentTour);
 
-                return true;*//*
-
+                return true;*/
 
             case R.id.action_contact:
                 Intent intentContact = new Intent(getApplicationContext(), Help.class);
@@ -1062,7 +1323,7 @@ public class DashBoardActivity extends BaseActivity {
 
             case R.id.terms_and_condition:
 
-                Intent termsAndCondition = new Intent(logout.this, PrivacyPolicy.class);
+                Intent termsAndCondition = new Intent(DashBoardActivity.this, PrivacyPolicy.class);
                 startActivity(termsAndCondition);
                 return true;
 
@@ -1082,15 +1343,11 @@ public class DashBoardActivity extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            logout.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
+            progress.show();
         }
 
         @Override
@@ -1123,16 +1380,14 @@ public class DashBoardActivity extends BaseActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            */
-/*Session session = Session.getActiveSession();
-            session.closeAndClearTokenInformation();*//*
-
+            /*Session session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();*/
             progress.dismiss();
         }
     }
 
     public void logout() {
-        alert = new AlertDialog.Builder(logout.this).create();
+        alert = new AlertDialog.Builder(DashBoardActivity.this).create();
 
         alert.setTitle("Message");
         alert.setMessage("Are you sure you want to Logout?");
@@ -1140,9 +1395,9 @@ public class DashBoardActivity extends BaseActivity {
         alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
-                ConnectionDetector isInternetOn = new ConnectionDetector(logout.this);
+                ConnectionDetector isInternetOn = new ConnectionDetector(DashBoardActivity.this);
                 if (isInternetOn.isConnectingToInternet())
-                    new logout.BackGroundProcessTab().execute();
+                    new BackGroundProcessTab().execute();
                 else {
                     Toast.makeText(getApplicationContext(), "No Internet connection Try again Later!", Toast.LENGTH_LONG).show();
                 }
@@ -1165,7 +1420,7 @@ public class DashBoardActivity extends BaseActivity {
     public void onBackPressed() {
         // TODO Auto-generated method stub
 
-        alert = new AlertDialog.Builder(logout.this).create();
+        alert = new AlertDialog.Builder(DashBoardActivity.this).create();
 
         alert.setTitle("Message");
         alert.setMessage("Are you sure you want to Logout?");
@@ -1174,9 +1429,9 @@ public class DashBoardActivity extends BaseActivity {
 
             public void onClick(DialogInterface dialog, int id) {
 
-                ConnectionDetector isInternetOn = new ConnectionDetector(logout.this);
+                ConnectionDetector isInternetOn = new ConnectionDetector(DashBoardActivity.this);
                 if (isInternetOn.isConnectingToInternet())
-                    new logout.BackGroundProcessTab().execute();
+                    new BackGroundProcessTab().execute();
                 else {
                     Toast.makeText(getApplicationContext(), "No Internet connection Try again Later!", Toast.LENGTH_LONG).show();
                 }
@@ -1209,11 +1464,9 @@ public class DashBoardActivity extends BaseActivity {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                Toast.makeText(logout.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-                */
-/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);*//*
-
+                Toast.makeText(DashBoardActivity.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
                 // showAppMsg();
             }
         }
@@ -1224,15 +1477,10 @@ public class DashBoardActivity extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setCancelable(true);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            logout.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    //  progress.show();
-                }
-            });
         }
 
         protected void onPostExecute(Void result) {
@@ -1343,23 +1591,20 @@ public class DashBoardActivity extends BaseActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        */
-/*if (sharedpreferences.getBoolean("openLocation", false)) {
+        /*if (sharedpreferences.getBoolean("openLocation", false)) {
                new Authentication(logout.this,"logout","onresume").execute();
-			   }*//*
-
+			   }*/
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DashBoardActivity.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         }else {
             //uiHelper.onResume();
-            new logout.AuthenticationfromresumeAsyncTask().execute();}
+            new AuthenticationfromresumeAsyncTask().execute();}
 
         if (update.verify.equals("1")) {
             try {
-                */
-/*Bitmap bitmap = update.bitmap;
+                /*Bitmap bitmap = update.bitmap;
 
                 Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(output);
@@ -1374,9 +1619,8 @@ public class DashBoardActivity extends BaseActivity {
 
                 user_pic.setImageBitmap(output);
                 imageProgress.setVisibility(View.INVISIBLE);
-                new imagesync().execute();*//*
-
-                new logout.BackgroundProcess().execute();
+                new imagesync().execute();*/
+                new BackgroundProcess().execute();
 
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -1422,7 +1666,7 @@ public class DashBoardActivity extends BaseActivity {
             try {
                 if (authentication.equals("false")) {
 
-                    AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
+                    AlertDialog dialog = new AlertDialog.Builder(DashBoardActivity.this).create();
                     dialog.setTitle("Session timed out!");
                     dialog.setMessage("Session expired. Please login again.");
                     dialog.setCancelable(false);
@@ -1457,8 +1701,7 @@ public class DashBoardActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-      */
-/*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+      /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
 
         Session session = Session.getActiveSession();
@@ -1482,13 +1725,11 @@ public class DashBoardActivity extends BaseActivity {
                     }
                 }
             }).executeAsync();
-        }*//*
-
+        }*/
 
     }
 
-    */
-/* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
              if (state.isOpened()) {
                  Log.i("", "Logged in...");
 
@@ -1506,8 +1747,7 @@ public class DashBoardActivity extends BaseActivity {
                  onSessionStateChange(session, state, exception);
              }
          };
-     *//*
-
+     */
     private void onClickLink() {
         login_button.performClick();
     }
@@ -1518,15 +1758,11 @@ public class DashBoardActivity extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            logout.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
+            progress.show();
         }
 
         @Override
@@ -1556,7 +1792,7 @@ public class DashBoardActivity extends BaseActivity {
                     fbLinked = "true";
                     System.out.println("Un-link = " + unlinkmenu);
 
-                    fbDialog = new Dialog(logout.this, android.R.style.Theme_DeviceDefault_Light_Dialog);
+                    fbDialog = new Dialog(DashBoardActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog);
                     fbDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
                     fbDialog.setCancelable(false);
@@ -1597,7 +1833,7 @@ public class DashBoardActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
 
-                            new logout.FbImagePull().execute();
+                            new FbImagePull().execute();
                             progress.dismiss();
                         }
                     });
@@ -1612,12 +1848,10 @@ public class DashBoardActivity extends BaseActivity {
                     });
                     fbDialog.show();
                 } else {
-                  */
-/*  Session session = Session.getActiveSession();
+                  /*  Session session = Session.getActiveSession();
                     session.closeAndClearTokenInformation();
-*//*
-
-                    alertFB = new AlertDialog.Builder(logout.this).create();
+*/
+                    alertFB = new AlertDialog.Builder(DashBoardActivity.this).create();
 
                     alertFB.setTitle("Error");
                     alertFB.setMessage("Your Facebook account is already linked with some other Healthscion account!");
@@ -1653,15 +1887,11 @@ public class DashBoardActivity extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(logout.this);
+            progress = new ProgressDialog(DashBoardActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            logout.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
+            progress.show();
         }
 
         @Override
@@ -1694,7 +1924,7 @@ public class DashBoardActivity extends BaseActivity {
                 progress.dismiss();
                 if (receiveFbImageSave.getString("d").equals("\"Patient Image updated Successfully\"")) {
 
-                    new logout.Imagesync().execute();
+                    new Imagesync().execute();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Profile picture couldn't be updated. Please try again!",
@@ -1798,7 +2028,7 @@ public class DashBoardActivity extends BaseActivity {
                         }
                         int s = family_object.size();
                         String size = new DecimalFormat("00").format(s);
-                        members.setText(size);
+                        //members.setText(size); //commented By Ayaz
                     }
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -1848,5 +2078,3 @@ public class DashBoardActivity extends BaseActivity {
         }
     };
 }
-
-*/

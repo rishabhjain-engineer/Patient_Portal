@@ -51,43 +51,39 @@ import networkmngr.NetworkChangeListener;
 
 public class Travel extends FragmentActivity {
 
-    String checkedit = "", PatientHistoryId = "";
-    ArrayList<String> patienthistorylist = new ArrayList<String>();
-    String[] nationlist;
+    private String checkedit = "", PatientHistoryId = "";
+    private ArrayList<String> patienthistorylist = new ArrayList<String>();
+    private String[] nationlist;
     private EditText ci, st, co, description;
-    static int month2, year2, day2, month1, year1, day1;
-    Calendar c;
-    ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
-
-
-    AlertDialog alertDialog, alert;
-    int i = 0;
-    EditText wo, pi;
-    static EditText from, to;
-    String countryval = "", stateval = "", cityval = "";
+    private static int month2, year2, day2, month1, year1, day1;
+    private Calendar c;
+    private ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
+    private AlertDialog alertDialog, alert;
+    private int i = 0;
+    private EditText wo, pi;
+    private static EditText from, to;
+    private String countryval = "", stateval = "", cityval = "";
     private ScrollView scroll_id;
-    ListView lv;
-    CheckBox present;
-    Date date1, date2, datecurrent;
-    Button add;
-    Services service;
-    ProgressDialog progress, ghoom;
-    JSONObject sendData1, receiveData1, receiveData, sendData;
-    JSONArray subArray, temparray, subArrayTr, subArray1, newarray1, newarray2, newarray;
+    private ListView lv;
+    private CheckBox present;
+    private Date date1, date2, datecurrent;
+    private Button add;
+    private Services service;
+    private ProgressDialog progress, ghoom;
+    private JSONObject sendData1, receiveData1, receiveData, sendData;
+    private JSONArray subArray, temparray, subArrayTr, subArray1, newarray1, newarray2, newarray;
     // static JSONArray arraytravel;
     // JSONArray arraytravel;
     // JSONArray arrayper;
     // JSONArray arraymed;
-    JSONArray travelarray;
-    ArrayAdapter<String> adapter1;
-
-
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    String id;
-    Custom_profile_adapter m_adapter;
-    ArrayList<String> m_listItems = new ArrayList<String>();
-    int selection;
+    private JSONArray travelarray;
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private String id;
+    private Custom_profile_adapter m_adapter;
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private int selection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

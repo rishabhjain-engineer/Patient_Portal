@@ -21,11 +21,11 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class FAQ extends ActionBarActivity {
 
-    ImageButton support;
-    WebView supportView;
-    String link;
-    SegmentedGroup segmented;
-    WebView supportViewFaq;
+    private ImageButton support;
+    private WebView supportView;
+    private String link;
+    private SegmentedGroup segmented;
+    private WebView supportViewFaq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -49,15 +49,13 @@ import networkmngr.NetworkChangeListener;
 
 public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
 
-    private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest
-            , height_latest, allergies;
+    private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest, height_latest, allergies;
     private String id, show_blood, bgroup,  height,  weight;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
-    private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+",
-            "AB-"};
+    private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private int allergy_no;
 
     @Override
@@ -167,11 +165,19 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
         overlay_dialog.setCanceledOnTouchOutside(true);
         overlay_dialog.setContentView(R.layout.edit_popup);
         Button send_request = (Button) overlay_dialog.findViewById(R.id.send_request);
-        ImageView cancel_dialog = (ImageView) overlay_dialog.findViewById(R.id.cancel_dialog);
+        final ImageView cancel_dialog = (ImageView) overlay_dialog.findViewById(R.id.cancel_dialog);
         final EditText bGroup = (EditText) overlay_dialog.findViewById(R.id.bGroup);
         /*InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(bGroup.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
         bGroup.requestFocus();*/
+
+        cancel_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                overlay_dialog.dismiss();
+            }
+        });
+
         send_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +185,9 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
                 if (blood == "" || blood.equals("")) {
                     bGroup.setError("Please enter Blood group.");
                     Toast.makeText(MyHealth.this, "Please enter Blood group.", Toast.LENGTH_SHORT).show();
+
+
+
                 } else {
                     overlay_dialog.dismiss();
                     sendrequest(blood, id);
@@ -205,8 +214,7 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
                                         public void onClick(
                                                 DialogInterface dialog,
                                                 int which) {
-                                            bGroup.setText(bloodList[which]
-                                                    .toString());
+                                            bGroup.setText(bloodList[which].toString());
 
                                             dialog.dismiss();
                                         }

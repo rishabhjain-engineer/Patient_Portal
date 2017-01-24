@@ -17,15 +17,16 @@ import com.viewpagerindicator.PageIndicator;
 
 public class SampleCirclesDefault extends FragmentActivity {
 
-	FragmentAdapter mAdapter;
-	ViewPager mPager;
-	PageIndicator mIndicator;
-	Button login, signup;
-	static String name, walk = "", transition = "";
-	static int pos;
-	static boolean refresh = false;
-	static boolean refresh1 = false;
+	private FragmentAdapter mAdapter;
+	private ViewPager mPager;
+	private PageIndicator mIndicator;
+	private Button login, signup;
+	private static int pos;
+	private static boolean refresh = false;
+	private static boolean refresh1 = false;
 
+
+	public static String name, walk = "", transition = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -125,7 +126,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 		// TODO Auto-generated method stub
 
 		if (walk.equals("walk")) {
-			signup.setVisibility(View.VISIBLE);
+			//signup.setVisibility(View.VISIBLE);
 			login.setVisibility(View.VISIBLE);
 			Intent startMain = new Intent(Intent.ACTION_MAIN);
 			startMain.addCategory(Intent.CATEGORY_HOME);

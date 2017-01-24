@@ -44,10 +44,10 @@ public class Invoice extends ActionBarActivity {
 
     private WebView invoice_web;
     private ProgressDialog progressDialog;
-    JSONObject sendreport_data;
+    private JSONObject sendreport_data;
     private JsonObjectRequest jr;
     private RequestQueue queue;
-    String imageData = null, path;
+    private String imageData = null, path;
 
     protected void onCreate(Bundle savedBundle) {
         super.onCreate(savedBundle);

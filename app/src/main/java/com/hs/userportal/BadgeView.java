@@ -24,35 +24,27 @@ import android.widget.TextView;
 
 public class BadgeView extends TextView {
 
-	public static final int POSITION_TOP_LEFT = 1;
-	public static final int POSITION_TOP_RIGHT = 2;
-	public static final int POSITION_BOTTOM_LEFT = 3;
-	public static final int POSITION_BOTTOM_RIGHT = 4;
-	public static final int POSITION_CENTER = 5;
-
+	private static final int POSITION_TOP_LEFT = 1;
+	private static final int POSITION_TOP_RIGHT = 2;
+	private static final int POSITION_BOTTOM_LEFT = 3;
+	private static final int POSITION_BOTTOM_RIGHT = 4;
+	private static final int POSITION_CENTER = 5;
 	private static final int DEFAULT_MARGIN_DIP = 5;
 	private static final int DEFAULT_LR_PADDING_DIP = 5;
 	private static final int DEFAULT_CORNER_RADIUS_DIP = 8;
 	private static final int DEFAULT_POSITION = POSITION_TOP_RIGHT;
-	private static final int DEFAULT_BADGE_COLOR = Color
-			.parseColor("#CCFF0000"); // Color.RED;
+	private static final int DEFAULT_BADGE_COLOR = Color.parseColor("#CCFF0000"); // Color.RED;
 	private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
-
 	private static Animation fadeIn;
 	private static Animation fadeOut;
-
 	private Context context;
 	private View target;
-
 	private int badgePosition;
 	private int badgeMarginH;
 	private int badgeMarginV;
 	private int badgeColor;
-
 	private boolean isShown;
-
 	private ShapeDrawable badgeBg;
-
 	private int targetTabIndex;
 
 	public BadgeView(Context context) {

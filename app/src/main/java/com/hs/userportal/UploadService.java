@@ -52,18 +52,19 @@ public class UploadService extends IntentService {
     public static final String PERCENT_EXTRA = "percent";
     public static final String MSG_EXTRA = "msg";
     public static final String uploadfrom = "uploadfrom";
-    JSONObject sendData;
-    String patientId;
+
+
+    private JSONObject sendData;
+    private String patientId;
     private static final int NOTIFY_ID_UPLOAD = 1337;
-    RequestQueue queue1, queue2;
+    private RequestQueue queue1, queue2;
     private AmazonS3Client s3Client;
     private Uploader uploader;
-    JsonObjectRequest jr1, jr2;
+    private JsonObjectRequest jr1, jr2;
     private NotificationManager nm;
-    final Handler handler = new Handler();
-
-    String fname, afterDecode, uplodfrm;
-    String add_path, exhistimg, stringcheck;
+    private final Handler handler = new Handler();
+    private String fname, afterDecode, uplodfrm;
+    private String add_path, exhistimg, stringcheck;
 
     public UploadService() {
         super("simpl3r-example-upload");

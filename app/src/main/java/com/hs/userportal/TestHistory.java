@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestHistory extends ActionBarActivity {
-	
-	
-	List<String> chartDates= new ArrayList<String>();;
-	List<String> chartValues= new ArrayList<String>();;
-	List<String> casecodes= new ArrayList<String>();;
-	TableLayout tl;
+
+
+	private List<String> chartDates= new ArrayList<String>();;
+	private List<String> chartValues= new ArrayList<String>();;
+	private List<String> casecodes= new ArrayList<String>();;
+	private TableLayout tl;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -24,9 +24,9 @@ import swipelist.ItemRow;
 
 public class Bookinglist_rowadapter extends ArrayAdapter<ItemRow> {
 
-    List<ItemRow> data;
-    Context context;
-    int layoutResID;
+    private List<ItemRow> data;
+    private Context context;
+    private int layoutResID;
 
     public Bookinglist_rowadapter(Context context, int layoutResourceId,List<ItemRow> data) {
         super(context, layoutResourceId, data);

@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
  */
 
 public class BaseActivity extends AppCompatActivity {
+
     protected ActionBar mActionBar;
 
     @Override

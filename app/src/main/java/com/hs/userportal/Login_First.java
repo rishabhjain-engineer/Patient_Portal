@@ -33,25 +33,26 @@ import java.util.Date;
  * Created by rahul2 on 10/27/2015.
  */
 public class Login_First extends Activity {
-    Button loginwith_zrk,findlabs_nerby, loginwith_fb;
-    String uName, uPassword, contactNumber;
-    String userID,fbdata,buildNo;
-    String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    public static final String key = "key";
-    static String cook = "";
-    SharedPreferences sharedpreferences,sharedPreferences;
-    String  nameFromRegister = "";
-    ProgressDialog fbProgress,progress;
-    int fbLogin = 0, fbDisc = 0, fberror = 0;
-    AlertDialog alert;
-    Dialog dialog1;
-    String abc, id, cop, fnln, tpwd;
-    JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
-    JSONArray fbarray, subArray, disclaimerArray;
-    Services service;
+
+    private Button loginwith_zrk,findlabs_nerby, loginwith_fb;
+    private String uName, uPassword, contactNumber;
+    private String userID,fbdata,buildNo;
+    private String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private static final String key = "key";
+    private static String cook = "";
+    private SharedPreferences sharedpreferences,sharedPreferences;
+    private String  nameFromRegister = "";
+    private ProgressDialog fbProgress,progress;
+    private int fbLogin = 0, fbDisc = 0, fberror = 0;
+    private AlertDialog alert;
+    private Dialog dialog1;
+    private String abc, id, cop, fnln, tpwd;
+    private JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
+    private JSONArray fbarray, subArray, disclaimerArray;
+    private Services service;
 
     protected  void  onCreate(Bundle savedInstancestate){
         super.onCreate(savedInstancestate);

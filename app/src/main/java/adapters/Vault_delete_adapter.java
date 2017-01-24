@@ -27,6 +27,7 @@ import java.util.HashMap;
  * Created by ashish on 2/5/2016.
  */
 public class Vault_delete_adapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> data_list;

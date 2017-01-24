@@ -50,9 +50,9 @@ public class Pkg_TabActivity extends TabActivity {
     private static TabHost tabHost;
     private static TabHost.TabSpec spec;
     private static Intent intent;
-    JSONArray testDetailBookingArray, priceArray;
+    private JSONArray testDetailBookingArray, priceArray;
     private static LayoutInflater inflater;
-    HorizontalScrollView mHorizontalScrollView;
+    private HorizontalScrollView mHorizontalScrollView;
     private View tab;
     private TextView label, mrp, price_head, offer_head;
     private Button book_pkg;
@@ -61,11 +61,11 @@ public class Pkg_TabActivity extends TabActivity {
     private ImageView cal_me;
     private int tabWidth, currentTab, position;
     private String patientId;
-    JSONObject sendData, sendDataBookinginfo, sendCouponData;
+    private JSONObject sendData, sendDataBookinginfo, sendCouponData;
     // int currentTab;
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private View previousView;
-    RequestQueue queue;
+    private RequestQueue queue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

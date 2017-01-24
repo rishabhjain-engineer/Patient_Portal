@@ -17,13 +17,13 @@ import android.widget.TextView;
 public class
 		TestFragment extends Fragment {
 
-	public static final String POSITION_KEY = "FragmentPositionKey";
+	private static final String POSITION_KEY = "FragmentPositionKey";
 	private int position;
-	LinearLayout tour1, tour2, tour3, tour4, tour0, tour5;
-	ImageView image;
-	TextView welcome;
-	Button tour, exit;
-	RelativeLayout buttonbar;
+	private LinearLayout tour1, tour2, tour3, tour4, tour0, tour5;
+	private ImageView image;
+	private TextView welcome;
+	private Button tour, exit;
+	private RelativeLayout buttonbar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

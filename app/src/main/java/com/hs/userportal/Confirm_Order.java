@@ -22,9 +22,8 @@ import java.util.List;
  */
 public class Confirm_Order extends ActionBarActivity {
 
-    private TextView test_container, subtotal, discount_order, promoamnt, price, lab_name, contact_no,
-            promodiscnt, sample_pick_label,confirmation_order;
-    String subtot, dis, price_amt, centre, phno, prom_dis, tests, Coupon;
+    private TextView test_container, subtotal, discount_order, promoamnt, price, lab_name, contact_no, promodiscnt, sample_pick_label,confirmation_order;
+    private String subtot, dis, price_amt, centre, phno, prom_dis, tests, Coupon;
 
     protected void onCreate(Bundle savedInstancestate) {
         super.onCreate(savedInstancestate);

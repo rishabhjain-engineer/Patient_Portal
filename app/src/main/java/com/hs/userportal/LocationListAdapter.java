@@ -8,13 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class LocationListAdapter extends BaseAdapter {
-	 
+
 		// Declare Variables
-		Context context;
-		String[] rank;
-		String[] country;
-		String[] population;
-		LayoutInflater inflater;
+	private Context context;
+	private String[] rank;
+	private String[] country;
+	private String[] population;
+	private	LayoutInflater inflater;
 	 
 		public LocationListAdapter(Context context, String[] rank, String[] country, String[] population) {
 			this.context = context;

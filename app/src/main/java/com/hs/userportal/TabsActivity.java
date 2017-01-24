@@ -39,16 +39,16 @@ public class TabsActivity extends TabActivity {
 	private static TabHost.TabSpec spec;
 	private static Intent intent;
 	private static LayoutInflater inflater;
-    LinearLayout footer;
-	RelativeLayout hide_tool;
-	HorizontalScrollView mHorizontalScrollView;
-	AlertDialog alert;
+	private LinearLayout footer;
+	private RelativeLayout hide_tool;
+	private HorizontalScrollView mHorizontalScrollView;
+	private AlertDialog alert;
     private ImageView cal_me,back_pic;
 	private View tab;
 	private TextView label;
 	private TextView divider,pkg_title;
-	int tabWidth;
-	int currentTab;
+	private int tabWidth;
+	private int currentTab;
 	private View previousView;
 
 	@Override

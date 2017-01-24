@@ -39,13 +39,13 @@ import networkmngr.NetworkChangeListener;
 
 
 public class changepass extends ActionBarActivity {
-    EditText old, pass, cpass;
-    Button mChangePassowrdBtn;
-    Services service;
-    AlertDialog alertDialog;
-    String id;
-    String authentication = "";
-    String mOldPassword, mNewPassword, mConfirmPassword;
+    private EditText old, pass, cpass;
+    private Button mChangePassowrdBtn;
+    private Services service;
+    private AlertDialog alertDialog;
+    private String id;
+    private String authentication = "";
+    private String mOldPassword, mNewPassword, mConfirmPassword;
      /*     1. atleast one small character [a-z]
             2. Password length allowed [ 8-16]*/
 

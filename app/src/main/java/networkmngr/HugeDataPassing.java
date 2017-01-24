@@ -7,10 +7,11 @@ import android.os.Parcelable;
  * Created by ashish on 12/9/2015.
  */
 public class HugeDataPassing implements Parcelable {
-  public String sendCouponArray;
-  public  String priceArray;
-  public  String sendData;
-  public  String testDetailBookingArray;
+
+    public String sendCouponArray;
+    public  String priceArray;
+    public  String sendData;
+    public  String testDetailBookingArray;
 
     public HugeDataPassing(String priceArray, String sendCouponArray, String sendData, String testDetailBookingArray) {
         this.priceArray = priceArray;

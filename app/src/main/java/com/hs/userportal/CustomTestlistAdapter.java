@@ -24,7 +24,7 @@ public class CustomTestlistAdapter extends BaseAdapter {
 	private List<TestModel> TestList;
 	private static List<TestModel> privatearray;
 	public static boolean searchtxt=false;
-	int recomd_show = 0;
+	private int recomd_show = 0;
 
 	public CustomTestlistAdapter(Activity activity, List<TestModel> TestList) {
 		this.activity = activity;

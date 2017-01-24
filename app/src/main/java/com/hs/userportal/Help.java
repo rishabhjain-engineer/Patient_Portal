@@ -35,19 +35,18 @@ import java.util.Random;
 
 public class Help extends ActionBarActivity {
 
-	EditText name, lab,subject, captcha, contact, message;
-	Button send, cancel;
-	String nam, con, mes, compose, sub;
-	JSONObject sendData, receiveData, mainObject;
-	Services service;
-	JSONArray subArray;
-	AlertDialog alertDialog;
-	ProgressDialog mProgressDialog, progress;
-
-	Handler mHandler;
-	Application mApplication;
-	int i1;
-	String id;
+	private EditText name, lab,subject, captcha, contact, message;
+	private Button send, cancel;
+	private String nam, con, mes, compose, sub;
+	private JSONObject sendData, receiveData, mainObject;
+	private Services service;
+	private JSONArray subArray;
+	private AlertDialog alertDialog;
+	private ProgressDialog mProgressDialog, progress;
+	private Handler mHandler;
+	private Application mApplication;
+	private int i1;
+	private String id;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ package com.hs.userportal;
  * Created by rahul2 on 08-Apr-15.
  */
 public class SortList {
+
 	private String name;
 	private String area;
 	private String centerID;
