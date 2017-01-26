@@ -315,8 +315,7 @@ public class Filevault extends ActionBarActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(Filevault.this);
                 builder1.setTitle("Message");
-                builder1.setItems(new CharSequence[]{"Create Folder", "Upload Files"},
-                        new DialogInterface.OnClickListener() {
+                builder1.setItems(new CharSequence[]{"Create Folder", "Upload Files"}, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

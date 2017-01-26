@@ -243,8 +243,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
             url1 = "https://androidquery.appspot.com/api/market?app=";
 
-            getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null,
-                    new com.android.volley.Response.Listener<JSONObject>() {
+            getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
 
@@ -489,29 +488,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     public void onClick(View arg0) {
         // TODO Auto-generated method stub
-
-		/* ** Checking for empty editTexts *** */
+        /* ** Checking for empty editTexts *** */
         if (arg0.getId() == R.id.bSend) {
             if (userName.getText().toString().trim().equals("")) {
-
                 userName.setError("Enter Username first!");
-
                 return;
             } else if (password.getText().toString().trim().equals("")) {
                 password.setError("Enter Password first!");
                 return;
             }
-
 		/* Executing background thread */
             ConnectionDetector con = new ConnectionDetector(MainActivity.this);
             if (!con.isConnectingToInternet()) {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-
             } else {
                 new BackgroundProcess().execute();
             }
         }
-
     }
 
     class FBProcess extends AsyncTask<Void, Void, Void> {

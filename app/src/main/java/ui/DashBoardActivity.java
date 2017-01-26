@@ -103,9 +103,6 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;*/
 
-/**
- * Created by rahul2 on 10/29/2015.
- */
 public class DashBoardActivity extends BaseActivity implements View.OnClickListener {
 
     //private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
