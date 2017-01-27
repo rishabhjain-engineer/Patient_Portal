@@ -68,6 +68,7 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 
 /*import com.facebook.Request;
 import com.facebook.Session;
@@ -325,12 +326,12 @@ public class logout extends Activity implements View.OnClickListener {
         editimg.setOnClickListener(this);
         service = new Services(this);
         Intent getIntent = getIntent();
-        id = getIntent.getStringExtra("id");
+        id = AppConstant.ID;
         privatery_id = id;
-        PH = getIntent.getStringExtra("PH");
-        user = getIntent.getStringExtra("user");
-        passw = getIntent.getStringExtra("pass");
-        name = getIntent.getStringExtra("fn");
+        PH = AppConstant.PH;
+        user = AppConstant.USER;
+        passw = AppConstant.PASS;
+        name = AppConstant.FN;
         Helper.resend_name = name;
         username.setText(name);
         patient_id.setText("Your ID: " + PH);
