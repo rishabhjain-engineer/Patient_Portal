@@ -11,7 +11,7 @@ public class PreferenceHelper {
 
     private static PreferenceHelper INSTANCE = null;
     private SharedPreferences mSharedPreferences = null;
-    private static final String PREFERENCE_FILE_NAME = "freeway_pref_file";
+    private static final String PREFERENCE_FILE_NAME = "patient_pref_file";
 
     public static PreferenceHelper getInstance(){
         if(INSTANCE == null){

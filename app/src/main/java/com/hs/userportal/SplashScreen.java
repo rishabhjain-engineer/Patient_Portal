@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import networkmngr.ConnectionDetector;
+import ui.QuestionireActivity;
 
 public class SplashScreen extends Activity {
 
@@ -75,12 +76,15 @@ public class SplashScreen extends Activity {
                         finish();
                     }
                 } else {
-                    Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
+                    /*Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                     intentWalk.putExtra("walk", "walk");
                     intentWalk.putExtra("pos", 0);
                     startActivity(intentWalk);
-                    overridePendingTransition(R.anim.pull_up_from_bottom,
-                            R.anim.push_out_to_bottom);
+                    overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
+                    finish();*/
+
+                    Intent intentWalk = new Intent(SplashScreen.this, QuestionireActivity.class);
+                    startActivity(intentWalk);
                     finish();
                 }
             }

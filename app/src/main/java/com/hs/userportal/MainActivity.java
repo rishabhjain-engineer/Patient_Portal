@@ -70,7 +70,8 @@ import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class MainActivity extends ActionBarActivity implements OnClickListener {
+public class
+MainActivity extends ActionBarActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 

@@ -399,6 +399,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="ui.QuestionireActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.hs.userportal.MyHealth"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
