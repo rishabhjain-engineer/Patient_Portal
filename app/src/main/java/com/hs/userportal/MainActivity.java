@@ -877,18 +877,21 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         onBackPressed();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                            openQuestionirePage();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), logout.class);
+                            intent.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            intent.putExtra("user", uName);
+                            intent.putExtra("pass", uPassword);
+                            intent.putExtra("fn", fnln + " " + lastname);
+                            // intent.putExtra("tpwd", tpwd);
+                            Helper.authentication_flag = false;
+                            startActivity(intent);
 
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
-                        intent.putExtra("id", cop);
-                        intent.putExtra("PH", PH);
-                        intent.putExtra("user", uName);
-                        intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln + " " + lastname);
-                        // intent.putExtra("tpwd", tpwd);
-                        Helper.authentication_flag = false;
-                        startActivity(intent);
-
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
                         //finish();
                     }
                 } else {
@@ -1209,18 +1212,22 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     } else {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                            openQuestionirePage();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), logout.class);
+                            intent.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            intent.putExtra("user", uName);
+                            intent.putExtra("pass", uPassword);
+                            intent.putExtra("fn", fnln + " " + lastname);
+                            // intent.putExtra("tpwd", tpwd);
+                            Helper.authentication_flag = false;
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            //finish();
+                        }
 
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
-                        intent.putExtra("id", cop);
-                        intent.putExtra("PH", PH);
-                        intent.putExtra("user", uName);
-                        intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln + " " + lastname);
-                        // intent.putExtra("tpwd", tpwd);
-                        Helper.authentication_flag = false;
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        //finish();
                     }
                 }
             } catch (Exception e1) {
@@ -1282,32 +1289,35 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                 if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
 
                     // new Authentication().execute();
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent i = new Intent(MainActivity.this, logout.class);
+                        String name = sharedPreferences.getString("un", "");
+                        String pwd = sharedPreferences.getString("pw", "");
+                        String uid = sharedPreferences.getString("ke", "");
+                        String first = sharedPreferences.getString("fnln", "");
+                        String tp = sharedpreferences.getString("tp", "");
+                        String cd = sharedPreferences.getString("cook", "");
+                        String PH = sharedPreferences.getString("PH", "");
+                        Services.hoja = cd;
 
-                    Intent i = new Intent(MainActivity.this, logout.class);
-                    String name = sharedPreferences.getString("un", "");
-                    String pwd = sharedPreferences.getString("pw", "");
-                    String uid = sharedPreferences.getString("ke", "");
-                    String first = sharedPreferences.getString("fnln", "");
-                    String tp = sharedpreferences.getString("tp", "");
-                    String cd = sharedPreferences.getString("cook", "");
-                    String PH = sharedPreferences.getString("PH", "");
-                    Services.hoja = cd;
+                        System.out.println(name);
+                        System.out.println(pwd);
+                        System.out.println(uid);
+                        System.out.println(PH);
 
-                    System.out.println(name);
-                    System.out.println(pwd);
-                    System.out.println(uid);
-                    System.out.println(PH);
-
-                    i.putExtra("user", name);
-                    i.putExtra("pass", pwd);
-                    i.putExtra("id", uid);
-                    i.putExtra("fn", first);
-                    i.putExtra("PH", PH);
-                    // i.putExtra("tpwd", tp);
-                    Helper.authentication_flag = false;
-                    startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    // finish();
+                        i.putExtra("user", name);
+                        i.putExtra("pass", pwd);
+                        i.putExtra("id", uid);
+                        i.putExtra("fn", first);
+                        i.putExtra("PH", PH);
+                        // i.putExtra("tpwd", tp);
+                        Helper.authentication_flag = false;
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        // finish();
+                    }
                 }
             }
         } else {
@@ -1967,30 +1977,34 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    Intent i = new Intent(MainActivity.this, logout.class);
-                    try {
-                        Helper.authentication_flag = false;
-                        i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
-                        i.putExtra("id", cop);
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln + " " + lastname);
-                        i.putExtra("pass", "omg");
-                        // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
-                        startActivity(i);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } catch (JSONException ex) {
-                        // TODO Auto-generated catch block
-                        ex.printStackTrace();
+                        Intent i = new Intent(MainActivity.this, logout.class);
+                        try {
+                            Helper.authentication_flag = false;
+                            i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
+                            i.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            i.putExtra("fn", fnln + " " + lastname);
+                            i.putExtra("pass", "omg");
+                            // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
+                            startActivity(i);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } catch (JSONException ex) {
+                            // TODO Auto-generated catch block
+                            ex.printStackTrace();
+                        }
                     }
                     //finish();
 
@@ -2010,17 +2024,22 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
                     e.commit();
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
+                        intent.putExtra("PH", PH);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                     //finish();
                 }
             }
