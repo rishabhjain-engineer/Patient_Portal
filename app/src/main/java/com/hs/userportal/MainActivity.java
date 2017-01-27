@@ -68,13 +68,14 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import ui.BaseActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class
-MainActivity extends ActionBarActivity implements OnClickListener {
+MainActivity extends BaseActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 
@@ -203,10 +204,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
         from_Activity = in.getStringExtra("fromActivity");
         queue = Volley.newRequestQueue(this);
 
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
