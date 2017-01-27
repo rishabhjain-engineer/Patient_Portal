@@ -4,30 +4,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/app_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/question_tv"
+        android:layout_marginLeft="20dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo_update" />
+
     <TextView
         android:id="@+id/question_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Have you checked your blood pressue?"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/upload_report_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/question_tv"
-        android:layout_marginTop="15dp">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/question_ok_tv"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp" />
+            android:layout_gravity="center_vertical"
+            android:text="Upload Report"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/image_view"
@@ -36,7 +49,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
             android:src="@drawable/personalvault" />
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

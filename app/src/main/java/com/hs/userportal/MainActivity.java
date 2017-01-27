@@ -68,6 +68,7 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import ui.QuestionireActivity;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class
@@ -2243,5 +2244,11 @@ MainActivity extends ActionBarActivity implements OnClickListener {
         super.onStop();
         mtracker.stopTracking();
         mprofileTracker.stopTracking();
+    }
+
+    private void openQuestionirePage() {
+        Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
+        startActivity(intentWalk);
+        finish();
     }
 }
