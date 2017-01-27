@@ -20,6 +20,6 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/report_fragmment_img_view"
-        android:text="Hi whats going gone" />
+        android:text="Hi whats going on" />
 
 </RelativeLayout>

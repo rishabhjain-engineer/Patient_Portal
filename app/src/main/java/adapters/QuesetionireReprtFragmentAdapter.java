@@ -1,28 +1,38 @@
 package adapters;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.hs.userportal.R;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by android1 on 27/1/17.
+ * Created by ayaz on 27/1/17.
  */
 
 public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
 
-    public QuesetionireReprtFragmentAdapter(Activity activity) {
+    private Context mContext;
+    List<String> mQuestionList = new ArrayList<String>();
+
+    public QuesetionireReprtFragmentAdapter(Context context, List<String> countryList) {
+        mContext = context;
+        mQuestionList = countryList;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return mQuestionList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mQuestionList.get(position);
     }
 
     @Override
@@ -30,8 +40,25 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
         return 0;
     }
 
+    private class ViewHolder {
+        ImageView imageView;
+        TextView questionTextview;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.fragmnet_questionire_view, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = (ImageView) convertView.findViewById(R.id.report_fragmment_img_view);
+            holder.questionTextview = (TextView) convertView.findViewById(R.id.report_fragmment_tv);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        //holder.countryCode.setText(mContryList.get(position).getCountryCode());
+        return convertView;
     }
+
 }
