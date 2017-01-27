@@ -30,6 +30,8 @@ public class QuestionireActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionire);
+        setupActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         Button skipButton = (Button) findViewById(R.id.skip_button);
 
@@ -48,6 +50,6 @@ public class QuestionireActivity extends BaseActivity {
 
         mCircleIndicator = (CirclePageIndicator) findViewById(R.id.circle_indicator);
         mCircleIndicator.setViewPager(mViewPager);
-        // mPager.setCurrentItem(pos);
+        //mViewPager.setCurrentItem(pos);
     }
 }
