@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import ui.QuestionireActivity;
+import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class
@@ -128,6 +129,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
     public static String cook = "";
     public static String demo = "false";
     public static final String MyPREFERENCES = "MyPrefs";
+    private PreferenceHelper mPreferenceHelper;
 
     @Override
     public void onBackPressed() {
@@ -180,6 +182,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
         mtracker.startTracking();
         mprofileTracker.startTracking();
         setContentView(R.layout.activity_main);
+        mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
 
         userName = (EditText) findViewById(R.id.etSubject);
         password = (EditText) findViewById(R.id.etContact);
@@ -575,31 +578,35 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
-
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    Intent i = new Intent(MainActivity.this, logout.class);
-                    try {
-                        i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
-                        i.putExtra("id", cop);
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln + " " + lastname);
-                        i.putExtra("pass", "omg");
-                        // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
-                        startActivity(i);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
 
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } catch (JSONException ex) {
-                        // TODO Auto-generated catch block
-                        ex.printStackTrace();
+                        Intent i = new Intent(MainActivity.this, logout.class);
+                        try {
+                            i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
+                            i.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            i.putExtra("fn", fnln + " " + lastname);
+                            i.putExtra("pass", "omg");
+                            // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
+                            startActivity(i);
+
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } catch (JSONException ex) {
+                            // TODO Auto-generated catch block
+                            ex.printStackTrace();
+                        }
                     }
                     // finish();
                 } else {
