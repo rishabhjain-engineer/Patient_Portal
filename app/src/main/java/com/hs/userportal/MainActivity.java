@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import ui.QuestionireActivity;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -578,6 +579,12 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
+
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
                     } else {
@@ -591,7 +598,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         Helper.authentication_flag = false;
                         startActivity(intent);
 
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        /*overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         Intent i = new Intent(MainActivity.this, logout.class);
                         try {
                             i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
@@ -606,7 +613,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         } catch (JSONException ex) {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
-                        }
+                        }*/
                     }
                     // finish();
                 } else {
@@ -1205,6 +1212,12 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
+
                     e.commit();
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -1276,48 +1289,49 @@ MainActivity extends ActionBarActivity implements OnClickListener {
 
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(MainActivity.this);
         if (miscTasks.isNetworkAvailable()) {
-
-
             //uiHelper.onResume();
-
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             // adding by me for internal login or not if login then open logout
             // class as a landing
             // screen-----------------------------------------------------------------------------
+            String name = sharedPreferences.getString("un", "");
+            String pwd = sharedPreferences.getString("pw", "");
+            String uid = sharedPreferences.getString("ke", "");
+            String first = sharedPreferences.getString("fnln", "");
+            String tp = sharedpreferences.getString("tp", "");
+            String cd = sharedPreferences.getString("cook", "");
+            String PH = sharedPreferences.getString("PH", "");
 
-            if (sharedpreferences.contains(name) || sharedpreferences.contains("name")) {
-                if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
+            AppConstant.ID = uid;
+            AppConstant.PH = PH;
+            AppConstant.USER = name;
+            AppConstant.PASS = pwd;
+            AppConstant.FN = first;
 
-                    // new Authentication().execute();
-                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
-                        openQuestionirePage();
-                    } else {
-                        Intent i = new Intent(MainActivity.this, logout.class);
-                        String name = sharedPreferences.getString("un", "");
-                        String pwd = sharedPreferences.getString("pw", "");
-                        String uid = sharedPreferences.getString("ke", "");
-                        String first = sharedPreferences.getString("fnln", "");
-                        String tp = sharedpreferences.getString("tp", "");
-                        String cd = sharedPreferences.getString("cook", "");
-                        String PH = sharedPreferences.getString("PH", "");
-                        Services.hoja = cd;
+            if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
+                // new Authentication().execute();
+                if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    openQuestionirePage();
+                } else {
+                    Intent i = new Intent(MainActivity.this, logout.class);
 
-                        System.out.println(name);
-                        System.out.println(pwd);
-                        System.out.println(uid);
-                        System.out.println(PH);
+                    Services.hoja = cd;
 
-                        i.putExtra("user", name);
-                        i.putExtra("pass", pwd);
-                        i.putExtra("id", uid);
-                        i.putExtra("fn", first);
-                        i.putExtra("PH", PH);
-                        // i.putExtra("tpwd", tp);
-                        Helper.authentication_flag = false;
-                        startActivity(i);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        // finish();
-                    }
+                    System.out.println(name);
+                    System.out.println(pwd);
+                    System.out.println(uid);
+                    System.out.println(PH);
+
+                    i.putExtra("user", name);
+                    i.putExtra("pass", pwd);
+                    i.putExtra("id", uid);
+                    i.putExtra("fn", first);
+                    i.putExtra("PH", PH);
+                    // i.putExtra("tpwd", tp);
+                    Helper.authentication_flag = false;
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    // finish();
                 }
             }
         } else {
@@ -1977,6 +1991,12 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
+
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
                     } else {
@@ -1989,7 +2009,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         // intent.putExtra("tpwd", tpwd);
                         Helper.authentication_flag = false;
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                       /* overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         Intent i = new Intent(MainActivity.this, logout.class);
                         try {
                             Helper.authentication_flag = false;
@@ -2004,7 +2024,7 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                         } catch (JSONException ex) {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
-                        }
+                        }*/
                     }
                     //finish();
 
@@ -2024,6 +2044,13 @@ MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
                     e.commit();
+
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
+
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
                     } else {
