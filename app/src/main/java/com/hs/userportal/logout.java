@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -68,6 +69,7 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import ui.QuestionireActivity;
 import utils.AppConstant;
 
 /*import com.facebook.Request;
@@ -287,25 +289,36 @@ public class logout extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                if (subArrayList != null) {
-                    if (id != null && subArrayList.length() > 0) {
-                        Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                        intent.putExtra("id", id);
-                        update.verify = "0";
-                        intent.putExtra("family", family_object);
-                        String member = username.getText().toString();
-                        intent.putExtra("Member_Name", member);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(logout.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (subArrayList != null) {
+                        if (id != null && subArrayList.length() > 0) {
+                            Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                            intent.putExtra("id", id);
+                            update.verify = "0";
+                            intent.putExtra("family", family_object);
+                            String member = username.getText().toString();
+                            intent.putExtra("Member_Name", member);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                } }
+                }
             }
         });
+
+        RelativeLayout questionStatusContainerRl = (RelativeLayout) findViewById(R.id.question_status_container);
+        questionStatusContainerRl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent questionireIntent  = new Intent(logout.this, QuestionireActivity.class);
+                startActivity(questionireIntent);
+                finish();
+            }
+        });
+
 
         facebooklink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -822,57 +835,42 @@ public class logout extends Activity implements View.OnClickListener {
                             sendData.put("DoctorId", "");
                             sendData.put("PatientId", id);
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
-                        System.out.println(sendData);
 
                         receiveDataList = service.patientstatus(sendData);
 
                         System.out.println(receiveDataList);
 
                         try {
-                            String dataList = receiveDataList.getString("d");// {"Table":[]}
-                            JSONObject cut = new JSONObject(dataList);
-                            subArrayList = cut.getJSONArray("Table");
-                            String caseid = subArrayList.getJSONObject(0).getString("CaseId");
-                            casecode = subArrayList.getJSONObject(0).getString("CaseCode");
-                            dated = subArrayList.getJSONObject(0).getString("TimeStamp");
+                            String dataList = receiveDataList.optString("d");// {"Table":[]}
+                            if(!TextUtils.isEmpty(dataList)){
+                                JSONObject cut = new JSONObject(dataList);
+                                subArrayList = cut.getJSONArray("Table");
+                                String caseid = subArrayList.getJSONObject(0).getString("CaseId");
+                                casecode = subArrayList.getJSONObject(0).getString("CaseCode");
+                                dated = subArrayList.getJSONObject(0).getString("TimeStamp");
 
-                            sendData = new JSONObject();
-                            try {
+                                sendData = new JSONObject();
+                                try {
+                                    sendData.put("CaseId", caseid);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                receiveDataList2 = service.patientinvestigation(sendData);
 
-                                sendData.put("CaseId", caseid);
+                                String data1 = receiveDataList2.getString("d");
+                                JSONObject cut1 = new JSONObject(data1);
+                                JSONArray subArray = cut1.getJSONArray("Table");
 
-                            } catch (JSONException e) {
-
-                                e.printStackTrace();
+                                JSONArray subArray1 = subArray.getJSONArray(0);
+                                for (int i = 0; i < subArray1.length(); i++) {
+                                    testcomplete.add(subArray1.getJSONObject(i).getString("IsTestCompleted"));
+                                    ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
+                                }
                             }
-
-                            System.out.println(sendData);
-                            receiveDataList2 = service.patientinvestigation(sendData);
-                            System.out.println("All Tests: " + receiveDataList2);
-
-                            String data1 = receiveDataList2.getString("d");
-                            JSONObject cut1 = new JSONObject(data1);
-                            JSONArray subArray = cut1.getJSONArray("Table");
-
-                            JSONArray subArray1 = subArray.getJSONArray(0);
-                            System.out.println(subArray1);
-
-                            for (int i = 0; i < subArray1.length(); i++)
-
-                            {
-                                testcomplete.add(subArray1.getJSONObject(i).getString("IsTestCompleted"));
-                                ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
-
-                            }
-
-                            System.out.println(testcomplete);
-                            System.out.println(ispublished);
-
+                            
                         } catch (JSONException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
 

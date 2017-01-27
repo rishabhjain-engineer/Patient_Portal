@@ -75,7 +75,7 @@ import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class
-MainActivity extends BaseActivity implements OnClickListener {
+        MainActivity extends BaseActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 
@@ -166,9 +166,11 @@ MainActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //uiHelper = new UiLifecycleHelper(this, callback);
-        //  uiHelper.onCreate(savedInstanceState);
-        // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.activity_main);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         callbackManager = CallbackManager.Factory.create();
         mtracker = new AccessTokenTracker() {
             @Override
@@ -183,7 +185,6 @@ MainActivity extends BaseActivity implements OnClickListener {
 
         mtracker.startTracking();
         mprofileTracker.startTracking();
-        setContentView(R.layout.activity_main);
         mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
 
         userName = (EditText) findViewById(R.id.etSubject);
@@ -248,67 +249,67 @@ MainActivity extends BaseActivity implements OnClickListener {
             url1 = "https://androidquery.appspot.com/api/market?app=";
 
             getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null, new com.android.volley.Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
+                @Override
+                public void onResponse(JSONObject response) {
 
-                            System.out.println("Response: " + response);
-                            try {
-                                String marketVersion = response.getString("version");
+                    System.out.println("Response: " + response);
+                    try {
+                        String marketVersion = response.getString("version");
                             /*	double market_vervalue = Double.parseDouble(marketVersion);*/
-                                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                                String version = pInfo.versionName;
-                                //	double currentversion = Double.parseDouble(version);
+                        PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        String version = pInfo.versionName;
+                        //	double currentversion = Double.parseDouble(version);
 
-                                if (!marketVersion.equals(version)) /*if(market_vervalue>currentversion)*/ {
+                        if (!marketVersion.equals(version)) /*if(market_vervalue>currentversion)*/ {
 
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
+                            alert = new AlertDialog.Builder(MainActivity.this).create();
 
-                                    alert.setTitle("Message");
-                                    alert.setMessage(
-                                            "You are using an old version of the app. Please update to the latest version from the Playstore.");
+                            alert.setTitle("Message");
+                            alert.setMessage(
+                                    "You are using an old version of the app. Please update to the latest version from the Playstore.");
 
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
+                            alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
+                                    new DialogInterface.OnClickListener() {
 
-                                                public void onClick(DialogInterface dialog, int id) {
+                                        public void onClick(DialogInterface dialog, int id) {
 
-                                                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                                                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                                                    try {
-                                                        startActivity(goToMarket);
-                                                    } catch (ActivityNotFoundException e) {
-                                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                                Uri.parse("http://play.google.com/store/apps/details?id="
-                                                                        + getPackageName())));
-                                                    }
+                                            Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                                            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                                            try {
+                                                startActivity(goToMarket);
+                                            } catch (ActivityNotFoundException e) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW,
+                                                        Uri.parse("http://play.google.com/store/apps/details?id="
+                                                                + getPackageName())));
+                                            }
 
-                                                }
-                                            });
+                                        }
+                                    });
 
-                                    alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip",
-                                            new DialogInterface.OnClickListener() {
+                            alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip",
+                                    new DialogInterface.OnClickListener() {
 
-                                                public void onClick(DialogInterface dialog, int id) {
+                                        public void onClick(DialogInterface dialog, int id) {
 
-                                                    dialog.dismiss();
+                                            dialog.dismiss();
 
-                                                }
-                                            });
+                                        }
+                                    });
 
-                                    alert.show();
-
-                                }
-
-                            } catch (JSONException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            } catch (NameNotFoundException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+                            alert.show();
 
                         }
-                    }, new com.android.volley.Response.ErrorListener() {
+
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (NameNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
@@ -319,8 +320,6 @@ MainActivity extends BaseActivity implements OnClickListener {
 
         }
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         demoPreferences.getBoolean("Demo", false);
         if (demoPreferences.contains("Demo")) {
@@ -501,7 +500,7 @@ MainActivity extends BaseActivity implements OnClickListener {
                 password.setError("Enter Password first!");
                 return;
             }
-		/* Executing background thread */
+        /* Executing background thread */
             ConnectionDetector con = new ConnectionDetector(MainActivity.this);
             if (!con.isConnectingToInternet()) {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
@@ -858,6 +857,9 @@ MainActivity extends BaseActivity implements OnClickListener {
 
                 // System.out.println(fnln);
                 if (contactNumber != null && (!contactNumber.equals(""))) {
+                    if (sharedpreferences == null) {
+                        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    }
                     Editor editor = sharedpreferences.edit();
                     editor.putString(name, uName);
                     editor.putString(pass, uPassword);
