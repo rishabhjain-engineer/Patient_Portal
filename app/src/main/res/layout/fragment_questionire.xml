@@ -30,11 +30,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/question_tv"
+        android:background="@color/blue"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:orientation="horizontal">
 
         <TextView
+            android:paddingLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -47,6 +49,7 @@
             android:id="@+id/image_view"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:paddingRight="10dp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
             android:src="@drawable/personalvault" />

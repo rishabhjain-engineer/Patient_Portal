@@ -11,7 +11,7 @@ import com.hs.userportal.R;
 import com.hs.userportal.WalthroughFragment;
 
 /**
- * Created by android1 on 27/1/17.
+ * Created by ayaz on 27/1/17.
  */
 
 public class QuestionireFragment extends Fragment {
