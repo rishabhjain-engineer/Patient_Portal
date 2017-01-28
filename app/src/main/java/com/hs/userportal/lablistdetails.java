@@ -63,8 +63,9 @@ import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class lablistdetails extends ActionBarActivity {
+public class lablistdetails extends BaseActivity {
 
     private String id, caseid;
     private byte[] result = null;
@@ -130,11 +131,7 @@ public class lablistdetails extends ActionBarActivity {
         family.clear();
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
 
         queue = Volley.newRequestQueue(this);
       /*  slidingMenu = new SlidingMenu(this);

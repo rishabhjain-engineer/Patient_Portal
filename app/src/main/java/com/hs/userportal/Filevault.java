@@ -82,9 +82,10 @@ import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NavFolder;
 
-public class Filevault extends ActionBarActivity {
+public class Filevault extends BaseActivity {
 
     private ImageLoader mImageLoader;
     private ByteArrayOutputStream byteArrayOutputStream;
@@ -183,10 +184,7 @@ public class Filevault extends ActionBarActivity {
         pd.setCanceledOnTouchOutside(false);
         pd.show();
 
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         Intent z = getIntent();
         id = z.getStringExtra("id");
         mContext = Filevault.this;
