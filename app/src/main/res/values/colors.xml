@@ -97,4 +97,5 @@
     <color name="test_without_sample">#80B5FF</color>
     <color name="sample_collected">#CF8CE9</color>
     <color name="gray_medium">#E5E5E5</color>
+    <color name="header_color">#1da17f</color>
 </resources>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.hs.userportal.R;
@@ -41,7 +42,7 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        ImageView imageView;
+        CheckBox mCheckBox;
         TextView questionTextview;
     }
 
@@ -51,13 +52,13 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.fragmnet_questionire_view, parent, false);
             holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.report_fragmment_img_view);
+            holder.mCheckBox = (CheckBox) convertView.findViewById(R.id.report_fragmment_check_box);
             holder.questionTextview = (TextView) convertView.findViewById(R.id.report_fragmment_tv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //holder.countryCode.setText(mContryList.get(position).getCountryCode());
+        holder.questionTextview.setText(mQuestionList.get(position));
         return convertView;
     }
 

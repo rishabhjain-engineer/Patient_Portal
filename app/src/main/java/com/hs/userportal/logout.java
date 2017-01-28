@@ -345,6 +345,13 @@ public class logout extends Activity implements View.OnClickListener {
         user = AppConstant.USER;
         passw = AppConstant.PASS;
         name = AppConstant.FN;
+
+        Log.i("logout", "id: "+id);
+        Log.i("logout", "PH: "+PH);
+        Log.i("logout", "user: "+user);
+        Log.i("logout", "passw: "+passw);
+        Log.i("logout", "name: "+name);
+
         Helper.resend_name = name;
         username.setText(name);
         patient_id.setText("Your ID: " + PH);
