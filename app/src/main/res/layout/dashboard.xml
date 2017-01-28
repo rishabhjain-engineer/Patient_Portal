@@ -422,43 +422,6 @@
             android:background="#80808080"></View>
 
         <RelativeLayout
-            android:id="@+id/question_status_container"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/layout_selector"
-            android:padding="5dp">
-
-            <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/filedash" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="70dp"
-                android:padding="10dp"
-                android:text="My Questionnaire"
-                android:textColor="@color/blue"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/arrow_grey" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/my_family"
             android:layout_width="fill_parent"
             android:layout_height="50dp"

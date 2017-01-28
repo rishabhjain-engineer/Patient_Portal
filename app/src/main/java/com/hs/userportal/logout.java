@@ -309,17 +309,6 @@ public class logout extends Activity implements View.OnClickListener {
             }
         });
 
-        RelativeLayout questionStatusContainerRl = (RelativeLayout) findViewById(R.id.question_status_container);
-        questionStatusContainerRl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent questionireIntent  = new Intent(logout.this, QuestionireActivity.class);
-                startActivity(questionireIntent);
-                finish();
-            }
-        });
-
-
         facebooklink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1961,10 +1950,13 @@ public class logout extends Activity implements View.OnClickListener {
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        Log.i("GetMember", "url: "+url);
+        Log.i("GetMember", "data to Send: "+data);
         family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Log.i("GetMember", "Received Data: "+response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     family_arr = j.getJSONArray("Table");

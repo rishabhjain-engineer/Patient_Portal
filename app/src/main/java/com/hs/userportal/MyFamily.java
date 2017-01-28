@@ -47,12 +47,13 @@ import java.util.HashMap;
 import adapters.Myfamily_Adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.DataHolder;
 
 /**
  * Created by ashish on 4/19/2016.
  */
-public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.action_button_event {
+public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_button_event {
 
     private ListView family_list;
     private TextView empty_msg;
@@ -88,10 +89,7 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myfamily);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
         service = new Services(MyFamily.this);

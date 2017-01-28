@@ -46,8 +46,9 @@ import java.util.HashMap;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
+public class MyHealth extends BaseActivity {
 
     private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest, height_latest, allergies;
     private String id, show_blood, bgroup,  height,  weight;
@@ -75,12 +76,8 @@ public class MyHealth extends /*FragmentActivity*/ ActionBarActivity {
         weightLayout = (LinearLayout) findViewById(R.id.weightLayout);
         heightLayout = (LinearLayout) findViewById(R.id.heightLayout);
         allergyLayout = (LinearLayout) findViewById(R.id.allergyLayout);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-        action.setTitle("My Health");
+        setupActionBar();
+        mActionBar.setTitle("My Health");
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(MyHealth.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
