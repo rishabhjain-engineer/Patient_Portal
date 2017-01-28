@@ -283,16 +283,12 @@ public class update extends FragmentActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)
-                        && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
 
                     if (fbLinked.equals("true")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                update.this);
-
+                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library",
-                                        "Take from Camera", "Take from Facebook"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -301,27 +297,11 @@ public class update extends FragmentActivity {
                                         switch (which) {
                                             case 0:
 
-
-                                                Intent intent = new Intent(
-                                                        Intent.ACTION_PICK,
-                                                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-
-                                               /* intent.putExtra("crop", "true");
-                                                intent.putExtra("aspectX", 2);
-                                                intent.putExtra("aspectY", 1);
-                                                intent.putExtra("outputX", 250);
-                                                intent.putExtra("outputY", 250);*/
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 
                                                 try {
-
-                                                    intent.putExtra("return-data",
-                                                            true);
-                                                    startActivityForResult(
-                                                            Intent.createChooser(
-                                                                    intent,
-                                                                    "Select File"),
-                                                            PICK_FROM_GALLERY);
-
+                                                    intent.putExtra("return-data", true);
+                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                                 } catch (ActivityNotFoundException e) {
 
                                                 }
@@ -1544,8 +1524,7 @@ public class update extends FragmentActivity {
                     basic.put("ContactNo", cont.getText().toString());
                     basic.put("CountryId", country_id);
                     basic.put("DOB", subArray.getJSONObject(0).getString("DOB"));
-                    basic.put("DORegistration", subArray.getJSONObject(0)
-                            .getString("RegistrationDate"));
+                    basic.put("DORegistration", subArray.getJSONObject(0).optString("RegistrationDate"));
                     basic.put("EmailId", em.getText().toString());
                     basic.put("EmergencyContact", "");
                     basic.put("FatherName", father.getText().toString());
