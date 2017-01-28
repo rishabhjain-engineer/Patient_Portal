@@ -442,7 +442,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="70dp"
                 android:padding="10dp"
-                android:text="My Questionire"
+                android:text="My Questionnaire"
                 android:textColor="@color/blue"
                 android:textSize="16dp"
                 android:textStyle="bold" />

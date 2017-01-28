@@ -910,7 +910,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                                     marq.setText(
                                             "Reports for case " + casecode + " dated " + dated + " are now available.");
-                                    marq.setBackgroundColor(Color.parseColor("#63DC90"));
+                                    marq.setBackgroundColor(Color.parseColor("#3cbed8"));
                                     linearLayout2.setVisibility(View.VISIBLE);
 
                                 } else {
