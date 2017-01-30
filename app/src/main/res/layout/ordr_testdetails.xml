@@ -29,7 +29,7 @@
             android:clickable="false"
             android:layout_below="@+id/order_summary"
             android:orientation="vertical"
-            android:background="#FE975F">
+            android:background="@color/header_color">
         </LinearLayout>
 
         <RelativeLayout
