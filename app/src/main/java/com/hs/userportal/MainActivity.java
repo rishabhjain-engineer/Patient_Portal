@@ -74,8 +74,7 @@ import utils.AppConstant;
 import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class
-        MainActivity extends BaseActivity implements OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 
@@ -564,9 +563,9 @@ public class
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {
+                    } else {*/
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -593,7 +592,7 @@ public class
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-                    }
+                   // }
                     // finish();
                 } else {
 
@@ -866,9 +865,9 @@ public class
                         onBackPressed();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
-                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {
+                        } else {*/
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -880,7 +879,7 @@ public class
                             startActivity(intent);
 
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        }
+                        //}
                         //finish();
                     }
                 } else {
@@ -1207,9 +1206,9 @@ public class
                         Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     } else {
-                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {
+                        } else {*/
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -1221,7 +1220,7 @@ public class
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             //finish();
-                        }
+                        //}
 
                     }
                 }
@@ -1292,9 +1291,9 @@ public class
 
             if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
                 // new Authentication().execute();
-                if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                     openQuestionirePage();
-                } else {
+                } else {*/
                     Intent i = new Intent(MainActivity.this, logout.class);
 
                     Services.hoja = cd;
@@ -1314,7 +1313,7 @@ public class
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     // finish();
-                }
+                //}
             }
         } else {
             AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -1979,9 +1978,9 @@ public class
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {
+                    } else {*/
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -2007,7 +2006,7 @@ public class
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-                    }
+                   // }
                     //finish();
 
                 } else {
@@ -2033,9 +2032,9 @@ public class
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                   /* if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {
+                    } else {*/
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -2046,7 +2045,7 @@ public class
                         Helper.authentication_flag = false;
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
+                    //}
 
 
                     //finish();

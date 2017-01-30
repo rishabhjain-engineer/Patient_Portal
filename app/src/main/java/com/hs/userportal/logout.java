@@ -327,13 +327,21 @@ public class logout extends Activity implements View.OnClickListener {
         // logout.setOnClickListener(this);
         editimg.setOnClickListener(this);
         service = new Services(this);
-        Intent getIntent = getIntent();
-        id = AppConstant.ID;
+
+        Intent i = getIntent();
+        id = i.getStringExtra("id");
+        privatery_id = id;
+        PH = i.getStringExtra("PH");
+        user = i.getStringExtra("user");
+        passw = i.getStringExtra("pass");
+        name = i.getStringExtra("fn");
+
+        /*id = AppConstant.ID;
         privatery_id = id;
         PH = AppConstant.PH;
         user = AppConstant.USER;
         passw = AppConstant.PASS;
-        name = AppConstant.FN;
+        name = AppConstant.FN;*/
 
         Log.i("logout", "id: "+id);
         Log.i("logout", "PH: "+PH);
