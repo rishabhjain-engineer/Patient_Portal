@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.ButtonBarLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -51,5 +52,11 @@ public class QuestionireActivity extends BaseActivity {
         mCircleIndicator = (CirclePageIndicator) findViewById(R.id.circle_indicator);
         mCircleIndicator.setViewPager(mViewPager);
         //mViewPager.setCurrentItem(pos);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("ayaz", "QuestionireActivity onActivityResult");
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
