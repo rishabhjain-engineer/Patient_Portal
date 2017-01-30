@@ -84,7 +84,7 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:text="@string/forgot"
-                android:textColor="#00f"
+                android:textColor="@color/text_color_blue"
                 android:textSize="14sp" />
         </RelativeLayout>
 

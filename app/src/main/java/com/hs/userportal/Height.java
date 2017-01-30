@@ -55,9 +55,10 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.MyMarkerView;
 
-public class Height extends ActionBarActivity {
+public class Height extends BaseActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
@@ -83,12 +84,8 @@ public class Height extends ActionBarActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
-        //this.getActionBar().setTitle("Height");
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setTitle("Height");
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
+        mActionBar.setTitle("Height");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
         queue = Volley.newRequestQueue(this);

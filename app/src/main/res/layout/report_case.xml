@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/order_summary"
-            android:background="#FE975F"
+            android:background="@color/header_color"
             android:clickable="false"
             android:orientation="vertical"></LinearLayout>
 
