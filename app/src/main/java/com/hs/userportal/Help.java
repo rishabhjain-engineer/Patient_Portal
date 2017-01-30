@@ -33,7 +33,9 @@ import org.json.JSONObject;
 
 import java.util.Random;
 
-public class Help extends ActionBarActivity {
+import ui.BaseActivity;
+
+public class Help extends BaseActivity {
 
 	private EditText name, lab,subject, captcha, contact, message;
 	private Button send, cancel;
@@ -52,10 +54,8 @@ public class Help extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-
-		
-
 		setContentView(R.layout.mail);
+		setupActionBar();
 		Intent z = getIntent();
 		id = z.getStringExtra("id");
 		System.out.println("abc=" + id);
@@ -68,12 +68,6 @@ public class Help extends ActionBarActivity {
 		send = (Button) findViewById(R.id.bSend);
 		cancel = (Button) findViewById(R.id.bCancel);
 		service = new Services(Help.this);
-
-		ActionBar action = getSupportActionBar();
-		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setDisplayHomeAsUpEnabled(true);
-
 		contact.setText(Helper.resend_sms);
 		name.setText(Helper.resend_name);
 		subject.setText(Helper.resend_email);

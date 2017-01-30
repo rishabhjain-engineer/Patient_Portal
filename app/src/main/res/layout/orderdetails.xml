@@ -39,7 +39,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:visibility="gone"
-            android:background="#ED2727"
+            android:background="@color/header_color"
             android:text="CANCEL ORDER" />
     </LinearLayout>
 

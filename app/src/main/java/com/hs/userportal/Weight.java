@@ -84,20 +84,8 @@ public class Weight extends BaseActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
-        //this.getActionBar().setTitle("Weight");
-
-
-        /*setupActionBar();
+        setupActionBar();
         mActionBar.setTitle("Weight");
-*/
-
-
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setTitle("Weight");
-        action.setDisplayHomeAsUpEnabled(true);
-
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
         queue = Volley.newRequestQueue(this);

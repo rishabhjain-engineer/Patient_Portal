@@ -40,11 +40,12 @@ import org.json.JSONObject;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 /**
  * Created by ashish on 10/28/2015.
  */
-public class OrderDetails extends ActionBarActivity {
+public class OrderDetails extends BaseActivity {
 
     private String OrderId, OrderDate, LabName, address, TestName, OrderStatus, SamplePickupstatus, scroll_position;
     private int GrandTotal, SubTotal, Discount, YourPrice, promodiscount;
@@ -407,12 +408,6 @@ public class OrderDetails extends ActionBarActivity {
         dialog.show();
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtra_data() {
         Intent i = getIntent();

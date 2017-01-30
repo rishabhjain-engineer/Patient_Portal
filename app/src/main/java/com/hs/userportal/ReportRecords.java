@@ -46,12 +46,13 @@ import java.util.List;
 
 import adapters.ReportTestAdapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NestedListHelper;
 
 /**
  * Created by ashish on 10-Aug-16.
  */
-public class ReportRecords extends ActionBarActivity {
+public class ReportRecords extends BaseActivity {
 
     private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral, sub_total, discount, your_price, viewFiles_text, viewReports_text;
     private ListView test_list;
@@ -232,12 +233,6 @@ public class ReportRecords extends ActionBarActivity {
         });*/
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtras() {
         Intent i = getIntent();

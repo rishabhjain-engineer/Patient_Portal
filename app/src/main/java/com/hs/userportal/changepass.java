@@ -36,9 +36,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 
-public class changepass extends ActionBarActivity {
+public class changepass extends BaseActivity {
     private EditText old, pass, cpass;
     private Button mChangePassowrdBtn;
     private Services service;
@@ -55,6 +56,7 @@ public class changepass extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.changepass);
+        setupActionBar();
         service = new Services(changepass.this);
         Intent i = getIntent();
         id = i.getStringExtra("id");
@@ -62,11 +64,6 @@ public class changepass extends ActionBarActivity {
         pass = (EditText) findViewById(R.id.etContact);
         cpass = (EditText) findViewById(R.id.editText4);
         mChangePassowrdBtn = (Button) findViewById(R.id.bSend);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
         cpass.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override

@@ -79,12 +79,13 @@ import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NavFolder;
 
 /**
  * Created by ashish on 2/15/2016.
  */
-public class Filevault2 extends ActionBarActivity {
+public class Filevault2 extends BaseActivity {
 
     private ImageLoader mImageLoader;
     private ByteArrayOutputStream byteArrayOutputStream;
@@ -178,17 +179,15 @@ public class Filevault2 extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
+
         mhelper = new Helper();
         Intent i = getIntent();
         mContext = Filevault2.this;
         self = Filevault2.this;
         Folder_Clicked = i.getStringExtra("Folder_Clicked");
         refresh_folderclicked = Folder_Clicked;
-        action.setTitle(Folder_Clicked);
+        mActionBar.setTitle(Folder_Clicked);
         check_load = i.getBooleanExtra("check_load", true);
         hash_keyvalue = i.getStringExtra("hash_keyvalue");
         refresh_hash_keyvalue = hash_keyvalue;
