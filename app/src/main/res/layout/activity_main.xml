@@ -166,7 +166,8 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/facebook_button"
                 android:drawableLeft="@drawable/fb"
-                android:text="LOGIN WITH FACEBOOK" />
+                android:text="LOGIN WITH FACEBOOK"
+                android:textColor="@color/white"/>
 
         </FrameLayout>
 
