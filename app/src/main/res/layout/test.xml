@@ -14,7 +14,7 @@
         <include
             layout="@layout/package_toolbar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="60dp" />
 
         <TabHost
             android:id="@android:id/tabhost"

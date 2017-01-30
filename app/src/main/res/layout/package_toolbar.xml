@@ -4,8 +4,8 @@
     <RelativeLayout
         android:id="@+id/hide_tool"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#3cbed8">
+        android:layout_height="60dp"
+        android:background="@color/header_color">
 
         <ImageButton
             android:id="@+id/back_pic"

@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/textView6"
-        android:background="#FE975F"
+        android:background="@color/header_color"
         android:clickable="false"
         android:orientation="vertical" />
 
@@ -58,7 +58,7 @@
             android:id="@+id/send_request"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1DBBE3"
+            android:background="@color/header_color"
             android:text="UPDATE"
             android:textColor="@android:color/white"
             android:textSize="14dp" />
