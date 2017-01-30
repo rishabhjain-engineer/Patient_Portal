@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.hs.userportal.Filevault;
 import com.hs.userportal.R;
+import com.hs.userportal.UploadProfileService;
 import com.hs.userportal.UploadService;
 import com.hs.userportal.WalthroughFragment;
 import com.hs.userportal.update;
@@ -86,13 +88,215 @@ public class QuestionireFragment extends Fragment {
         uploadReportContainerLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseImage();
+                // chooseImage();
+                uploadImage();
             }
         });
         return view;
     }
 
-    private void chooseImage() {
+    private void uploadImage() {
+        final PackageManager pm = mActivity.getPackageManager();
+
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("Choose Image Source");
+            builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                    try {
+                                        intent.putExtra("return-data", true);
+                                        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                    } catch (ActivityNotFoundException e) {
+                                    }
+                                    break;
+                                case 1:
+                                    File photo = null;
+                                    Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+                                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                        photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+                                    } else {
+                                        photo = new File(mActivity.getCacheDir(), "test.jpg");
+                                    }
+                                    if (photo != null) {
+                                        intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                                        Imguri = Uri.fromFile(photo);
+                                        startActivityForResult(intent1, PICK_FROM_CAMERA);
+                                    }
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
+
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("Choose Image Source");
+            builder.setItems(new CharSequence[]{"Photo Library"},
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                    intent.putExtra("crop", "true");
+                                    intent.putExtra("aspectX", 1);
+                                    intent.putExtra("aspectY", 1);
+                                    intent.putExtra("outputX", 250);
+                                    intent.putExtra("outputY", 250);
+                                    try {
+                                        intent.putExtra("return-data", true);
+                                        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                    } catch (ActivityNotFoundException e) {
+
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
+        }
+    }
+
+    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(resultCode + ", " + requestCode);
+        try {
+           *//* UploadProfileService servi=new UploadProfileService();
+            servi.setRefresh(update.this);*//*
+            if (requestCode == PICK_FROM_GALLERY) {
+
+                Uri selectedImageUri = data.getData();
+
+                String path = getPathFromContentUri(selectedImageUri);
+                System.out.println(path);
+
+                File imageFile = new File(path);
+
+                long check = ((imageFile.length() / 1024));
+                if (check < 2500) {
+                    Intent intent = new Intent(mActivity, UploadProfileService.class);
+                    //oldimage,oldthumbimage,oldimagename,path
+                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    intent.putExtra("add_path", "");
+                    intent.putExtra("oldimage", oldimage);
+
+                    intent.putExtra("oldthumbimage", oldthumbimage);
+                    startService(intent);
+
+
+                    System.out.println("After Service");
+
+                    String tempPath = getPath(selectedImageUri, update.this);
+                    Bitmap bm;
+                    BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+                    btmapOptions.inSampleSize = 4;
+                    bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+                    // vault_adapter.notifyDataSetChanged();
+                    if (bm != null) {
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                        byteArray = byteArrayOutputStream.toByteArray();
+                        pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        picname = "b.jpg";
+                        pic = "data:image/jpeg;base64," + pic;
+                    }
+
+                } else {
+                    Toast.makeText(mActivity, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            if (requestCode == PICK_FROM_CAMERA) {
+                Uri selectedImageUri = Imguri;
+                String path = getPathFromContentUri(selectedImageUri);
+                System.out.println(path);
+                File imageFile = new File(path);
+                long check = ((imageFile.length() / 1024));
+
+                if (check < 2500) {
+                    if (check != 0) {
+                        Intent intent = new Intent(mActivity, UploadProfileService.class);
+                        intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                        intent.putExtra("add_path", "");
+                        intent.putExtra("oldimage", oldimage);
+
+                        intent.putExtra("oldthumbimage", oldthumbimage);
+                        startService(intent);
+
+                        ContentResolver cr = mActivity.getContentResolver();
+                        Bitmap bitmap;
+                        bitmap = MediaStore.Images.Media.getBitmap(cr, selectedImageUri);
+
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
+                        byteArray = byteArrayOutputStream.toByteArray();
+                        pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        pic = "data:image/jpeg;base64," + pic;
+                        picname = "camera.jpg";
+                    }
+                    // startActivity(getIntent());
+
+                } else {
+                    Toast.makeText(mActivity, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }*/
+
+    private String getPathFromContentUri(Uri uri) {
+        String path = uri.getPath();
+        if (uri.toString().startsWith("content://")) {
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            ContentResolver cr = mActivity.getContentResolver();
+            Cursor cursor = cr.query(uri, projection, null, null, null);
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        path = cursor.getString(0);
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+
+        }
+        return path;
+    }
+
+    private String getPath(Uri uri, Activity activity) {
+
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+
+    }
+
+
+
+    /* @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("ayaz", "QuestionireFragment onActivityResult");
+    }*/
+
+    /*private void chooseImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("Choose Image Source");
         builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera"},
@@ -103,7 +307,7 @@ public class QuestionireFragment extends Fragment {
                         switch (which) {
                             case 0:
                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                intent.setType("image*//**//*");
+                                intent.setType("image*//**//**//**//**//**//**//**//*");
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                 break;
                             case 1:
@@ -132,13 +336,7 @@ public class QuestionireFragment extends Fragment {
 
     }
 
-   /* @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.i("ayaz", "QuestionireFragment onActivityResult");
-    }*/
-
-    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         try {
             if (requestCode == PICK_FROM_GALLERY) {
@@ -277,7 +475,7 @@ public class QuestionireFragment extends Fragment {
             e.printStackTrace();
         }
 
-    }*/
+    }
 
     private String getPathFromContentUri(Uri uri) {
         String path = uri.getPath();
@@ -359,5 +557,5 @@ public class QuestionireFragment extends Fragment {
             return 270;
         }
         return 0;
-    }
+    }*/
 }

@@ -22,7 +22,11 @@ public class QuestionireAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return QuestionireFragment.newInstance();
+        if(position == mPageCount -1){
+            return QuestionireReportFragment.newInstance();
+        }else{
+            return QuestionireFragment.newInstance();
+        }
     }
 
     @Override
