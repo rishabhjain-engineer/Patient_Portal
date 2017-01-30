@@ -19,8 +19,10 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import ui.BaseActivity;
+
 @SuppressLint("SetJavaScriptEnabled")
-public class PdfReader extends ActionBarActivity {
+public class PdfReader extends BaseActivity {
 
 	private WebView webview_id;
 
@@ -28,12 +30,12 @@ public class PdfReader extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pdfreader);
-
-		ActionBar action = getSupportActionBar();
+		setupActionBar();
+		/*ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
-
+*/
 		// Actionbar with search option
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -42,7 +44,7 @@ public class PdfReader extends ActionBarActivity {
 		// getActionBar().setDisplayShowTitleEnabled(false);
 
 		// removing app icon from Actionbar
-		action.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+		mActionBar.setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
 		Intent in = getIntent();
 		String pdfpath = in.getStringExtra("image_url");
