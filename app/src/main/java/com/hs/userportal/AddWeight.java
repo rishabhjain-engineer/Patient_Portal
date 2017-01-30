@@ -44,7 +44,7 @@ public class AddWeight extends ActionBarActivity {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
         enter_add = (EditText) findViewById(R.id.enter_add);

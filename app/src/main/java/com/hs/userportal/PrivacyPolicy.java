@@ -16,7 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PrivacyPolicy extends ActionBarActivity {
+import ui.BaseActivity;
+
+public class PrivacyPolicy extends BaseActivity {
 
 	private WebView privacy;
 	private Button ok;
@@ -31,13 +33,13 @@ public class PrivacyPolicy extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.privacypolicy);
-
-		ActionBar action = getSupportActionBar();
+		setupActionBar();
+		/*ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
 				.parseColor("#3cbed8")));
 		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
-
+*/
 		privacy = (WebView) findViewById(R.id.webPrivacy);
 		ok = (Button) findViewById(R.id.bOK);
 		service = new Services(PrivacyPolicy.this);

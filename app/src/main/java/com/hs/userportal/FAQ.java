@@ -18,8 +18,9 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
+import ui.BaseActivity;
 
-public class FAQ extends ActionBarActivity {
+public class FAQ extends BaseActivity {
 
     private ImageButton support;
     private WebView supportView;
@@ -32,10 +33,11 @@ public class FAQ extends ActionBarActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.faq);
-        ActionBar action = getSupportActionBar();
+        setupActionBar();
+       /* ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        action.setDisplayHomeAsUpEnabled(true);*/
         supportView = (WebView) findViewById(R.id.faqWebview);
 
 
