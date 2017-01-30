@@ -168,6 +168,7 @@ public class
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        setupActionBar();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -204,25 +205,6 @@ public class
         Intent in = getIntent();
         from_Activity = in.getStringExtra("fromActivity");
         queue = Volley.newRequestQueue(this);
-
-        setupActionBar();
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        // Thread.setDefaultUncaughtExceptionHandler(new
-        // UncaughtExceptionHandler() {
-        //
-        // @Override
-        // public void uncaughtException(Thread thread, Throwable ex) {
-        // Log.e("Error", "Unhandled exception: " + ex.getMessage());
-        // Toast.makeText(getApplicationContext(),
-        // "Error connecting to the Internet.", Toast.LENGTH_LONG)
-        // .show();
-        // System.exit(1);
-        // }
-        // });
-
-
         if (getIntent().getExtras() != null) {
             if (getIntent().getStringExtra("from logout").equalsIgnoreCase("logout")) {
                 LoginManager.getInstance().logOut();
@@ -252,7 +234,7 @@ public class
                 @Override
                 public void onResponse(JSONObject response) {
 
-                    System.out.println("Response: " + response);
+                    Log.i("Response: ", "Response: "+ response);
                     try {
                         String marketVersion = response.getString("version");
                             /*	double market_vervalue = Double.parseDouble(marketVersion);*/
