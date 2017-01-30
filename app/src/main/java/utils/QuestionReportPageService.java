@@ -76,7 +76,7 @@ public class QuestionReportPageService extends IntentService {
     private NotificationManager nm;
     private final Handler handler = new Handler();
     private String fname, afterDecode, uplodfrm;
-    private String add_path, exhistimg, stringcheck;
+    private String add_path;
 
     public QuestionReportPageService() {
         super("simpl3r-example-upload");
@@ -101,30 +101,30 @@ public class QuestionReportPageService extends IntentService {
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");
-        try {
+        /*try {
             exhistimg = intent.getStringExtra("exhistimg");
             stringcheck = intent.getStringExtra("stringcheck");
         } catch (Exception e) {
             e.printStackTrace();
             exhistimg = "";
             stringcheck = "";
-        }
+        }*/
         File fileToUpload = new File(filePath);
         final String s3ObjectKey = md5(filePath);
         String s3BucketName = getString(R.string.s3_bucket);
         final String path;
-        if (add_path.equalsIgnoreCase("")) {
+        /*if (add_path.equalsIgnoreCase("")) {
             if (uplodfrm.equalsIgnoreCase("notfilevault")) {
                 path = patientId + "/" + "FileVault/Personal/Prescription/";
             } else {
                 path = patientId + "/" + "FileVault/Personal/";
             }
         } else {
-            path = patientId + "/" + "FileVault/Personal/" + add_path + "/";
-        }
-
+            path = patientId + "/" + "FileVault/Personal/" + add_path + "/";  //Path = "6fbbd98b-65e5-468e-98ee-741903caeea2/FileVault/Personal/Reports/";
+        }*/
+        path = patientId + "/FileVault/Personal/Reports/";
+        
         final String msg = "Uploading " + s3ObjectKey + "...";
-
         // create a new uploader for this file
         String splt[] = filePath.split("/");
         String imagename = splt[splt.length - 1];
@@ -133,13 +133,11 @@ public class QuestionReportPageService extends IntentService {
         if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
             fname = imagename;
         } else {
-            if (exhistimg!=null&&exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
-                fname = stringcheck.substring(0, stringcheck.length() - 4)
-                        + "_1.jpg";
-            } else {
-                fname = imagename.substring(0, imagename.length() - 4)
-                        + ".jpg";
-            }
+            /*if (exhistimg!=null&&exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
+                fname = stringcheck.substring(0, stringcheck.length() - 4) + "_1.jpg";
+            } else {*/
+            fname = imagename.substring(0, imagename.length() - 4) + ".jpg";
+            // }
         }
         uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
         // listen for progress updates and broadcast/notify them appropriately
@@ -147,7 +145,6 @@ public class QuestionReportPageService extends IntentService {
             @Override
             public void progressChanged(ProgressEvent progressEvent,
                                         long bytesUploaded, int percentUploaded) {
-
                 Notification notification = buildNotification(msg, percentUploaded);
                 nm.notify(NOTIFY_ID_UPLOAD, notification);
                 broadcastState(s3ObjectKey, percentUploaded, msg);
@@ -173,34 +170,13 @@ public class QuestionReportPageService extends IntentService {
             int len = file_name.length;
 
             if (afterDecode.endsWith(".jpg")) {
-
                 // afterDecode = afterDecode.substring(0, afterDecode.length() - 4);
-
             }
-
-            System.out.println("afterdecode " + afterDecode);
-
-
             sendData = new JSONObject();
-           /* if (LocationClass.pic != null) {
-                sendData.put("File", LocationClass.pic);
-            } else if (MapLabDetails.pic_maplab != null) {
-                sendData.put("File", MapLabDetails.pic_maplab);
-
-            } else if (Filevault.pic != null) {
-                sendData.put("File", Filevault.pic);
-            }*/
-
             sendData.put("PatientId", patientId);
             sendData.put("ImageName", file_name[len - 1]);
             sendData.put("ImageUrl", afterDecode);
             sendData.put("Path", path);
-            //sendData.put("File", Filevault.pic);
-           /* sendData.put("FileUrl", afterDecode);*/
-            /*sendData.put("FileName", fname);*/
-
-
-            System.out.println(sendData);
 
             queue1 = Volley.newRequestQueue(this);
             /*String url1 = Services.init
@@ -215,60 +191,38 @@ public class QuestionReportPageService extends IntentService {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            System.out.println(response);
                             try {
-
-
                                 if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
                                     LocationClass.pic = null;
                                     MapLabDetails.pic_maplab = null;
-                                    uploadPrescriptionMail();
-                                    Toast.makeText(getApplicationContext(),
-                                            response.getString("d"),
-                                            Toast.LENGTH_SHORT).show();
+                                    //uploadPrescriptionMail();
+                                    Toast.makeText(getApplicationContext(), response.getString("d"), Toast.LENGTH_SHORT).show();
                                 } else {
 
-                                    Toast.makeText(getApplicationContext(),
-                                            response.getString("d"),
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), response.getString("d"), Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
-
                                         Filevault.Imguri = null;
-                                           /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                            photo.delete();*/
-
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                if (!add_path.equalsIgnoreCase("")||uplodfrm.equals("filevault2")) {
+                                                if (!add_path.equalsIgnoreCase("") || uplodfrm.equals("filevault2")) {
                                                     Filevault2.refresh_filevault2();
-
                                                 } else {
-
                                                 }
-
                                             }
                                         }, 1000);
                                     } else {
-                                        Toast.makeText(getApplicationContext(),
-                                                response.getString("d"),
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), response.getString("d"), Toast.LENGTH_SHORT).show();
                                     }
-
                                 }
 
-
                             } catch (JSONException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println("error in onactivity:"
-                            + error);
 
                 }
             }) {
@@ -318,28 +272,16 @@ public class QuestionReportPageService extends IntentService {
             jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-
-                    System.out.println(response);
-
                     try {
 
                         if (response.getString("d").equalsIgnoreCase("Details sent successfully.")) {
-
-                            Toast.makeText(getApplicationContext(),
-                                    "We have received your prescription. Our representative will be in touch shortly.",
-                                    Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getApplicationContext(), "We have received your prescription. Our representative will be in touch shortly.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(),
-                                    "Error in Uploading File . Please check Internet Connection !", Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(getApplicationContext(), "Error in Uploading File . Please check Internet Connection !", Toast.LENGTH_SHORT).show();
                         }
-
                     } catch (JSONException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
                 }
 
             }, new Response.ErrorListener() {

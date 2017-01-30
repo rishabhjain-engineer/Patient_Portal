@@ -121,7 +121,7 @@ public class UploadService extends IntentService {
         if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
             fname = imagename;
         } else {
-            if (exhistimg!=null&&exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
+            if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
                 fname = stringcheck.substring(0, stringcheck.length() - 4)
                         + "_1.jpg";
             } else {
@@ -221,15 +221,15 @@ public class UploadService extends IntentService {
                                             Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
 
-                                            Filevault.refresh();
-                                            Filevault.Imguri = null;
+                                        Filevault.refresh();
+                                        Filevault.Imguri = null;
                                            /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
                                             photo.delete();*/
 
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                if (!add_path.equalsIgnoreCase("")||uplodfrm.equals("filevault2")) {
+                                                if (!add_path.equalsIgnoreCase("") || uplodfrm.equals("filevault2")) {
                                                     Filevault2.refresh_filevault2();
 
                                                 } else {

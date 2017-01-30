@@ -182,8 +182,8 @@ public class QuestionireFragment extends Fragment {
                     intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
                     intent.putExtra(QuestionReportPageService.uploadfrom, "");
-                    //intent.putExtra("exhistimg", exhistimg);
-                    //intent.putExtra("stringcheck", stringcheck);
+                    /*intent.putExtra("exhistimg", exhistimg);
+                    intent.putExtra("stringcheck", stringcheck);*/
                     mActivity.startService(intent);
                     String tempPath = getPath(selectedImageUri, mActivity);
                     Bitmap bm;
@@ -217,8 +217,8 @@ public class QuestionireFragment extends Fragment {
                         intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                         intent.putExtra("add_path", "");
                         intent.putExtra(QuestionReportPageService.uploadfrom, "");
-                        //intent.putExtra("exhistimg", exhistimg);
-                       // intent.putExtra("stringcheck", stringcheck);
+                        /*intent.putExtra("exhistimg", exhistimg);
+                        intent.putExtra("stringcheck", stringcheck);*/
                         mActivity.startService(intent);
                         ContentResolver cr = mActivity.getContentResolver();
                         Bitmap bitmap;
