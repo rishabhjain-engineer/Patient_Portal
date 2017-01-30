@@ -41,11 +41,12 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 /**
  * Created by ashish on 10/27/2015.
  */
-public class OrderHistory extends ActionBarActivity {
+public class OrderHistory extends BaseActivity {
 
     private JSONArray orderarray;
     private ConnectionDetector con;
@@ -74,10 +75,11 @@ public class OrderHistory extends ActionBarActivity {
         order_list.setAdapter(adapter);
         select_member = (EditText) findViewById(R.id.select_member);
         select_member.setInputType(InputType.TYPE_NULL);
-        ActionBar action = getSupportActionBar();
+        setupActionBar();
+        /*ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setDisplayHomeAsUpEnabled(true);
+        action.setDisplayHomeAsUpEnabled(true);*/
         Intent i = getIntent();
         scroll_position = i.getStringExtra("scroll_position");
        // family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");

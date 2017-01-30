@@ -234,8 +234,7 @@ public class ReportRecords extends ActionBarActivity {
 
     private void setupActionBar() {
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
     }

@@ -20,8 +20,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import ui.BaseActivity;
 
-public class AboutUs extends ActionBarActivity {
+
+public class AboutUs extends BaseActivity {
 
 	private TextView blog, facebook, twitter, youtube,vrsion;
 	private String from;
@@ -32,12 +34,13 @@ public class AboutUs extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(com.hs.userportal.R.layout.aboutus);
+		setupActionBar();
 
-		ActionBar action = getSupportActionBar();
+		/*ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
 				.parseColor("#3cbed8")));
 		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-		action.setDisplayHomeAsUpEnabled(true);
+		action.setDisplayHomeAsUpEnabled(true);*/
 
 		Intent get = getIntent();
 		from = get.getStringExtra("from");
