@@ -29,8 +29,10 @@ import org.json.JSONObject;
 
 import java.util.Random;
 
+import ui.BaseActivity;
 
-public class Mail extends ActionBarActivity {
+
+public class Mail extends BaseActivity {
 
 	private EditText name, lab, subject, captcha, contact, message;
 	private Button send, cancel;
@@ -57,12 +59,13 @@ public class Mail extends ActionBarActivity {
 		cancel = (Button) findViewById(R.id.bCancel);
 		service = new Services(Mail.this);
 
-		ActionBar action = getSupportActionBar();
+		setupActionBar();
+		/*ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
 				.parseColor("#3cbed8")));
 		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
-
+*/
 
 		Random r = new Random();
 		i1 = r.nextInt(100 - 10) + 10;

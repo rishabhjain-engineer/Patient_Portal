@@ -112,8 +112,7 @@ public class ReportStatus extends ActionBarActivity {
         setContentView(R.layout.reportstatus_new);
 
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setDisplayHomeAsUpEnabled(true);
 

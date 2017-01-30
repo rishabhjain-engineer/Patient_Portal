@@ -85,7 +85,7 @@ public class Height extends ActionBarActivity {
         setContentView(R.layout.weight_layout);
         //this.getActionBar().setTitle("Height");
         ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
+        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
         action.setTitle("Height");
         action.setDisplayHomeAsUpEnabled(true);
