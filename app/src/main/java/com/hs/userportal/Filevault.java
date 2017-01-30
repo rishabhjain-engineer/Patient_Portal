@@ -321,24 +321,9 @@ public class Filevault extends BaseActivity {
                                     case 0:
                                         show_dialog();
                                         break;
-
                                     case 1:
-
-                                        // Intent takePictureIntent = new
-                                        // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        // if
-                                        // (takePictureIntent.resolveActivity(getPackageManager())
-                                        // != null)
-                                        // {
-                                        //
-                                        // startActivityForResult(takePictureIntent,PICK_FROM_CAMERA);
-                                        //
-                                        // }
                                         chooseimage();
-
-
                                         break;
-
                                     default:
                                         break;
                                 }
@@ -2566,27 +2551,11 @@ public class Filevault extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-
                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                 intent.setType("image/*");
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-
                                 break;
-
                             case 1:
-
-                                // Intent takePictureIntent = new
-                                // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                // if
-                                // (takePictureIntent.resolveActivity(getPackageManager())
-                                // != null)
-                                // {
-                                //
-                                // startActivityForResult(takePictureIntent,PICK_FROM_CAMERA);
-                                //
-                                // }
-
-
                                 File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
