@@ -857,6 +857,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
 
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -2283,6 +2288,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private void openQuestionirePage() {
         Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
         startActivity(intentWalk);
-        finish();
+        //finish();
     }
 }

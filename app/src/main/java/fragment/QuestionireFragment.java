@@ -172,7 +172,6 @@ public class QuestionireFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-
                 Uri selectedImageUri = data.getData();
                 String path = getPathFromContentUri(selectedImageUri);
                 File imageFile = new File(path);
