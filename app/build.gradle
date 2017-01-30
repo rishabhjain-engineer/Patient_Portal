@@ -11,8 +11,8 @@ android {
         applicationId "com.hs.userportal"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 5
-        versionName "2.0"
+        versionCode 6
+        versionName "3.0"
         multiDexEnabled true
     }
     buildTypes {
