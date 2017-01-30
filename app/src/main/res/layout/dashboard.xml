@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentTop="true"
-        android:background="#3cbed8">
+        android:background="@color/header_color">
 
 
         <LinearLayout
@@ -66,7 +66,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header"
-        android:background="#2ecc71"
+        android:background="@color/header_color"
         android:orientation="vertical">
 
 
@@ -204,15 +204,15 @@
         <RelativeLayout
             android:id="@+id/update_profile"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/layout_selector"
             android:clickable="true"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -228,8 +228,8 @@
                 android:layout_marginLeft="70dp"
                 android:padding="10dp"
                 android:text="My Profile"
-                android:textColor="@color/blue"
-                android:textSize="16dp"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -250,15 +250,15 @@
         <RelativeLayout
             android:id="@+id/my_health"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/layout_selector"
             android:clickable="true"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -273,8 +273,8 @@
                 android:layout_marginLeft="70dp"
                 android:padding="10dp"
                 android:text="My Health"
-                android:textColor="@color/blue"
-                android:textSize="16dp"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -296,15 +296,15 @@
         <RelativeLayout
             android:id="@+id/lab_records"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/layout_selector"
             android:clickable="true"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -319,8 +319,8 @@
                 android:layout_marginLeft="70dp"
                 android:padding="10dp"
                 android:text="My Reports"
-                android:textColor="@color/blue"
-                android:textSize="16dp"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -378,15 +378,15 @@
         <RelativeLayout
             android:id="@+id/file_vault"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/layout_selector"
             android:clickable="true"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -401,8 +401,8 @@
                 android:layout_marginLeft="70dp"
                 android:padding="10dp"
                 android:text="My Repository"
-                android:textColor="@color/blue"
-                android:textSize="16dp"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -571,8 +571,8 @@
                     android:layout_marginLeft="30dp"
                     android:padding="10dp"
                     android:text="Link acount with facebook"
-                    android:textColor="#3B5998"
-                    android:textSize="16dp"
+                    android:textColor="@color/text_color_blue"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
             </FrameLayout>
@@ -595,11 +595,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#3cbed8"
         android:gravity="center"
         android:padding="8dp"
         android:text="Patient ID:"
-        android:textColor="@color/white"
-        android:textSize="14dp"
+        android:textColor="@color/header_color"
+        android:textSize="16sp"
         android:textStyle="bold" />
+
 </RelativeLayout>

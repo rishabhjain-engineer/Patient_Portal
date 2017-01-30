@@ -5,7 +5,7 @@
     android:layout_gravity="center"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
-    android:background="@color/colorPrimary"
+    android:background="@color/header_color"
     android:minWidth="300dp"
     android:orientation="vertical">
 
@@ -51,7 +51,7 @@
                 android:layout_height="30dp"
                 android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/btn_ok"
-                android:background="@color/colorPrimary"
+                android:background="@color/header_color"
                 android:text="Stay"
                 android:textColor="@color/white"
                 android:textSize="12dp" />
@@ -62,7 +62,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/header_color"
                 android:text="OK"
                 android:textColor="@color/white"
                 android:textSize="12dp" />

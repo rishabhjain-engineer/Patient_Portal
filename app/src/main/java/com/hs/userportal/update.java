@@ -17,10 +17,12 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +32,8 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -79,6 +83,7 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 @SuppressLint("NewApi")
 public class update extends FragmentActivity {
@@ -163,6 +168,16 @@ public class update extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_new);
         service = new Services(update.this);
+
+
+
+     /*   mActionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+        mActionBar.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+*/
+
+
         // nationlist = getResources().getStringArray(R.array.national_list);
         Intent i = getIntent();
         id = i.getStringExtra("id");
