@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +62,7 @@ import config.StaticHolder;
 import utils.QuestionReportPageService;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static com.hs.userportal.R.color.white;
 
 /**
  * Created by ayaz on 27/1/17.
@@ -69,9 +72,11 @@ public class QuestionireFragment extends Fragment {
     private Activity mActivity;
     private SharedPreferences sharedPreferences;
     private String patientId;
+    private ImageView mUploadImageView;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private static Uri Imguri;
+
     private String pic = "", picname = "";//, oldfile = "Nofile", oldfile1 = "Nofile";
     private static List<QuestionireParser.QuestionDetail> mQuestionDetailsList;
     private static int mPosition;
@@ -97,12 +102,15 @@ public class QuestionireFragment extends Fragment {
             questionTextView.setText("Upload your " + questionDetailsList.get(mPosition).getQuestion2() + "report");
         }
         LinearLayout uploadReportContainerLL = (LinearLayout) view.findViewById(R.id.upload_report_container);
-
+        mUploadImageView = (ImageView) view.findViewById(R.id.image_view);
         uploadReportContainerLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // chooseImage();
+
                 uploadImage();
+
+                mUploadImageView.setImageResource(R.drawable.addmorereports);
             }
         });
         return view;
@@ -178,6 +186,7 @@ public class QuestionireFragment extends Fragment {
                     });
             builder.show();
         }
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -188,7 +197,7 @@ public class QuestionireFragment extends Fragment {
                 String path = getPathFromContentUri(selectedImageUri);
                 File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
-                if (check < 2500) {
+                if (check < 10000) {
                     Intent intent = new Intent(mActivity, QuestionReportPageService.class);
                     intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
@@ -212,7 +221,7 @@ public class QuestionireFragment extends Fragment {
                         pic = "data:image/jpeg;base64," + pic;
                     }
                 } else {
-                    Toast.makeText(mActivity, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
                 }
             }
 
