@@ -3,6 +3,7 @@ package adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.hs.userportal.LabtourFragment;
@@ -15,7 +16,7 @@ import fragment.QuestionireReportFragment;
  * Created by ayaz on 26/1/17.
  */
 
-public class QuestionirePagerAdapter extends FragmentPagerAdapter {
+public class QuestionirePagerAdapter extends FragmentStatePagerAdapter {
     private int mPageCount;
 
     public QuestionirePagerAdapter(FragmentManager fm) {

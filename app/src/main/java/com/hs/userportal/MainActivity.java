@@ -2306,7 +2306,21 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
         @Override
         protected Void doInBackground(Void... params) {
-            QuestionireParser.paseData(new JSONObject());
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONObject response = service.getQuizData(sendData);
+            if (response != null) {
+                try {
+                    String data = response.getString("d");
+                    QuestionireParser.paseData(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
         }
 

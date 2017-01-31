@@ -87,59 +87,62 @@ public class QuestionireParser {
             " ]\n" +
             "}";
 
-    public static void paseData(JSONObject jsonObject) {
+    public static void paseData(String stringResponse) {
+        //jsonObject = new JSONObject(jsonString);
+        JSONArray jsonArray = null;
         try {
-            jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = jsonObject.optJSONArray("questiondetails");
-            mQuestionDetailsListStatus1.clear();
-            mQuestionDetailsListStatus0.clear();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                QuestionDetail questionDetail = new QuestionDetail();
-                JSONObject innerJsonObject = jsonArray.optJSONObject(i);
-                questionDetail.setQuestionId(innerJsonObject.optString("questionId"));
-                questionDetail.setStatus(innerJsonObject.optInt("status"));
-                questionDetail.setQuestionText(innerJsonObject.optString("question"));
-                if (questionDetail.getStatus() == 1) {
-                    mPageCount++;
-                    mQuestionDetailsListStatus1.add(questionDetail);
-                } else {
-                    mQuestionDetailsListStatus0.add(questionDetail);
-                }
-            }
+            jsonArray = new JSONArray(stringResponse);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        mQuestionDetailsListStatus1.clear();
+        mQuestionDetailsListStatus0.clear();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            QuestionDetail questionDetail = new QuestionDetail();
+            JSONObject innerJsonObject = jsonArray.optJSONObject(i);
+            questionDetail.setQuestion(innerJsonObject.optString("Question"));
+            questionDetail.setQuestion2(innerJsonObject.optString("Question2"));
+            questionDetail.setStatusValue(innerJsonObject.optString("Value"));
+            if (questionDetail.getStatusValue().equalsIgnoreCase("True")) {
+                mPageCount++;
+                mQuestionDetailsListStatus1.add(questionDetail);
+            } else {
+                mQuestionDetailsListStatus0.add(questionDetail);
+            }
+        }
+
     }
 
 
     public static class QuestionDetail {
 
-        private String questionId;
-        private int status;
-        private String questionText;
+        private String question;
+        private String Question2;
+        private String statusValue;
 
-        public String getQuestionId() {
-            return questionId;
+
+        public String getQuestion() {
+            return question;
         }
 
-        public void setQuestionId(String questionId) {
-            this.questionId = questionId;
+        public void setQuestion(String question) {
+            this.question = question;
         }
 
-        public int getStatus() {
-            return status;
+        public String getQuestion2() {
+            return Question2;
         }
 
-        public void setStatus(int status) {
-            this.status = status;
+        public void setQuestion2(String question2) {
+            Question2 = question2;
         }
 
-        public String getQuestionText() {
-            return questionText;
+        public String getStatusValue() {
+            return statusValue;
         }
 
-        public void setQuestionText(String questionText) {
-            this.questionText = questionText;
+        public void setStatusValue(String statusValue) {
+            this.statusValue = statusValue;
         }
     }
 }

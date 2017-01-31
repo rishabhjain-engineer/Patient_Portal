@@ -1292,4 +1292,13 @@ public class Services {
         return receivedJsonObj;
     }
 
+
+    public JSONObject getQuizData(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetQuizData);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
 }

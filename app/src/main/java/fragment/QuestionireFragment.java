@@ -93,7 +93,9 @@ public class QuestionireFragment extends Fragment {
 
         List<QuestionireParser.QuestionDetail> questionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
         TextView questionTextView = (TextView) view.findViewById(R.id.question_tv);
-        questionTextView.setText(questionDetailsList.get(mPosition).getQuestionText());
+        if(questionDetailsList.size() > 0){
+            questionTextView.setText("Upload your " + questionDetailsList.get(mPosition).getQuestion2() + "report");
+        }
         LinearLayout uploadReportContainerLL = (LinearLayout) view.findViewById(R.id.upload_report_container);
 
         uploadReportContainerLL.setOnClickListener(new View.OnClickListener() {
