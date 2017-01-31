@@ -96,10 +96,10 @@ public class QuestionireFragment extends Fragment {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         patientId = sharedPreferences.getString("ke", "");
 
-        List<QuestionireParser.QuestionDetail> questionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
+        mQuestionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
         TextView questionTextView = (TextView) view.findViewById(R.id.question_tv);
-        if(questionDetailsList.size() > 0){
-            questionTextView.setText("Upload your " + questionDetailsList.get(mPosition).getQuestion2() + "report");
+        if(mQuestionDetailsList.size() > 0){
+            questionTextView.setText("Upload your " + mQuestionDetailsList.get(mPosition).getQuestion2() + "report");
         }
         LinearLayout uploadReportContainerLL = (LinearLayout) view.findViewById(R.id.upload_report_container);
         mUploadImageView = (ImageView) view.findViewById(R.id.image_view);
@@ -201,6 +201,7 @@ public class QuestionireFragment extends Fragment {
                     Intent intent = new Intent(mActivity, QuestionReportPageService.class);
                     intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
+                    intent.putExtra("Question", mQuestionDetailsList.get(mPosition).getQuestion());
                     intent.putExtra(QuestionReportPageService.uploadfrom, "");
                     /*intent.putExtra("exhistimg", exhistimg);
                     intent.putExtra("stringcheck", stringcheck);*/
@@ -236,6 +237,7 @@ public class QuestionireFragment extends Fragment {
                         Intent intent = new Intent(mActivity, QuestionReportPageService.class);
                         intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                         intent.putExtra("add_path", "");
+                        intent.putExtra("Question", mQuestionDetailsList.get(mPosition).getQuestion());
                         intent.putExtra(QuestionReportPageService.uploadfrom, "");
                         /*intent.putExtra("exhistimg", exhistimg);
                         intent.putExtra("stringcheck", stringcheck);*/
