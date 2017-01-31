@@ -42,7 +42,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.hs.userportal.Filevault;
 import com.hs.userportal.R;
-import com.hs.userportal.UploadProfileService;
 import com.hs.userportal.UploadService;
 import com.hs.userportal.WalthroughFragment;
 import com.hs.userportal.update;
@@ -56,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import config.StaticHolder;
+import utils.QuestionReportPageService;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -70,6 +70,7 @@ public class QuestionireFragment extends Fragment {
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private static Uri Imguri;
+    private String pic = "", picname = "";//, oldfile = "Nofile", oldfile1 = "Nofile";
 
     public static QuestionireFragment newInstance() {
         QuestionireFragment fragment = new QuestionireFragment();
@@ -167,42 +168,30 @@ public class QuestionireFragment extends Fragment {
         }
     }
 
-    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println(resultCode + ", " + requestCode);
         try {
-           *//* UploadProfileService servi=new UploadProfileService();
-            servi.setRefresh(update.this);*//*
             if (requestCode == PICK_FROM_GALLERY) {
-
                 Uri selectedImageUri = data.getData();
-
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
-
                 File imageFile = new File(path);
-
                 long check = ((imageFile.length() / 1024));
                 if (check < 2500) {
-                    Intent intent = new Intent(mActivity, UploadProfileService.class);
-                    //oldimage,oldthumbimage,oldimagename,path
-                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    Intent intent = new Intent(mActivity, QuestionReportPageService.class);
+                    intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
-                    intent.putExtra("oldimage", oldimage);
-
-                    intent.putExtra("oldthumbimage", oldthumbimage);
-                    startService(intent);
-
-
-                    System.out.println("After Service");
-
-                    String tempPath = getPath(selectedImageUri, update.this);
+                    intent.putExtra(QuestionReportPageService.uploadfrom, "");
+                    /*intent.putExtra("exhistimg", exhistimg);
+                    intent.putExtra("stringcheck", stringcheck);*/
+                    mActivity.startService(intent);
+                    String tempPath = getPath(selectedImageUri, mActivity);
                     Bitmap bm;
                     BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
                     btmapOptions.inSampleSize = 4;
                     bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
-                    // vault_adapter.notifyDataSetChanged();
                     if (bm != null) {
+                        ByteArrayOutputStream byteArrayOutputStream;
+                        byte[] byteArray;
                         byteArrayOutputStream = new ByteArrayOutputStream();
                         bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
                         byteArray = byteArrayOutputStream.toByteArray();
@@ -210,10 +199,8 @@ public class QuestionireFragment extends Fragment {
                         picname = "b.jpg";
                         pic = "data:image/jpeg;base64," + pic;
                     }
-
                 } else {
                     Toast.makeText(mActivity, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
-
                 }
             }
 
@@ -223,21 +210,20 @@ public class QuestionireFragment extends Fragment {
                 System.out.println(path);
                 File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
-
                 if (check < 2500) {
                     if (check != 0) {
-                        Intent intent = new Intent(mActivity, UploadProfileService.class);
-                        intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                        Intent intent = new Intent(mActivity, QuestionReportPageService.class);
+                        intent.putExtra(QuestionReportPageService.ARG_FILE_PATH, path);
                         intent.putExtra("add_path", "");
-                        intent.putExtra("oldimage", oldimage);
-
-                        intent.putExtra("oldthumbimage", oldthumbimage);
-                        startService(intent);
-
+                        intent.putExtra(QuestionReportPageService.uploadfrom, "");
+                        /*intent.putExtra("exhistimg", exhistimg);
+                        intent.putExtra("stringcheck", stringcheck);*/
+                        mActivity.startService(intent);
                         ContentResolver cr = mActivity.getContentResolver();
                         Bitmap bitmap;
                         bitmap = MediaStore.Images.Media.getBitmap(cr, selectedImageUri);
-
+                        ByteArrayOutputStream byteArrayOutputStream;
+                        byte[] byteArray;
                         byteArrayOutputStream = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
                         byteArray = byteArrayOutputStream.toByteArray();
@@ -245,18 +231,14 @@ public class QuestionireFragment extends Fragment {
                         pic = "data:image/jpeg;base64," + pic;
                         picname = "camera.jpg";
                     }
-                    // startActivity(getIntent());
-
                 } else {
                     Toast.makeText(mActivity, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }*/
+    }
 
     private String getPathFromContentUri(Uri uri) {
         String path = uri.getPath();
