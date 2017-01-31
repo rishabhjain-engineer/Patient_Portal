@@ -8,9 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.hs.userportal.R;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import config.QuestionireParser;
 
 /**
  * Created by ayaz on 27/1/17.
@@ -19,11 +23,11 @@ import java.util.List;
 public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
 
     private Context mContext;
-    List<String> mQuestionList = new ArrayList<String>();
+    List<QuestionireParser.QuestionDetail> mQuestionList = new ArrayList<QuestionireParser.QuestionDetail>();
 
-    public QuesetionireReprtFragmentAdapter(Context context, List<String> countryList) {
+    public QuesetionireReprtFragmentAdapter(Context context) {
         mContext = context;
-        mQuestionList = countryList;
+        mQuestionList = QuestionireParser.getQuestionDetailListStatus0();
     }
 
     @Override
@@ -58,7 +62,7 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.questionTextview.setText(mQuestionList.get(position));
+        holder.questionTextview.setText(mQuestionList.get(position).getQuestionText());
         return convertView;
     }
 

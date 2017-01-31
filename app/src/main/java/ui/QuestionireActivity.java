@@ -4,26 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.ButtonBarLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import com.hs.userportal.FragmentAdapter;
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.logout;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
-import adapters.QuestionireAdapter;
+import adapters.QuestionirePagerAdapter;
 
 /**
  * Created by ayaz on 26/1/17.
  */
 public class QuestionireActivity extends BaseActivity {
 
-    private QuestionireAdapter mQuestionireAdapter;
+    private QuestionirePagerAdapter mQuestionireAdapter;
     private ViewPager mViewPager;
     private PageIndicator mCircleIndicator;
 
@@ -45,10 +40,8 @@ public class QuestionireActivity extends BaseActivity {
             }
         });
 
-
-        mQuestionireAdapter = new QuestionireAdapter(getSupportFragmentManager());
+        mQuestionireAdapter = new QuestionirePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mQuestionireAdapter);
-
         mCircleIndicator = (CirclePageIndicator) findViewById(R.id.circle_indicator);
         mCircleIndicator.setViewPager(mViewPager);
         //mViewPager.setCurrentItem(pos);
@@ -56,7 +49,6 @@ public class QuestionireActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("ayaz", "QuestionireActivity onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

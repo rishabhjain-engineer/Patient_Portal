@@ -53,7 +53,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
+import config.QuestionireParser;
 import config.StaticHolder;
 import utils.QuestionReportPageService;
 
@@ -71,8 +73,11 @@ public class QuestionireFragment extends Fragment {
     private static final int PICK_FROM_GALLERY = 2;
     private static Uri Imguri;
     private String pic = "", picname = "";//, oldfile = "Nofile", oldfile1 = "Nofile";
+    private static List<QuestionireParser.QuestionDetail> mQuestionDetailsList;
+    private static int mPosition;
 
-    public static QuestionireFragment newInstance() {
+    public static QuestionireFragment newInstance(int pos) {
+        mPosition = pos;
         QuestionireFragment fragment = new QuestionireFragment();
         return fragment;
     }
@@ -81,9 +86,14 @@ public class QuestionireFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questionire, container, false);
+
         mActivity = getActivity();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         patientId = sharedPreferences.getString("ke", "");
+
+        List<QuestionireParser.QuestionDetail> questionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
+        TextView questionTextView = (TextView) view.findViewById(R.id.question_tv);
+        questionTextView.setText(questionDetailsList.get(mPosition).getQuestionText());
         LinearLayout uploadReportContainerLL = (LinearLayout) view.findViewById(R.id.upload_report_container);
 
         uploadReportContainerLL.setOnClickListener(new View.OnClickListener() {
