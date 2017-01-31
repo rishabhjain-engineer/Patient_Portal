@@ -8,9 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.hs.userportal.R;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import config.QuestionireParser;
 
 /**
  * Created by ayaz on 27/1/17.
@@ -19,11 +23,11 @@ import java.util.List;
 public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
 
     private Context mContext;
-    List<String> mQuestionList = new ArrayList<String>();
+    List<QuestionireParser.QuestionDetail> mQuestionList = new ArrayList<QuestionireParser.QuestionDetail>();
 
-    public QuesetionireReprtFragmentAdapter(Context context, List<String> countryList) {
+    public QuesetionireReprtFragmentAdapter(Context context) {
         mContext = context;
-        mQuestionList = countryList;
+        mQuestionList = QuestionireParser.getQuestionDetailListStatus0();
     }
 
     @Override
@@ -42,7 +46,6 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        CheckBox mCheckBox;
         TextView questionTextview;
     }
 
@@ -52,13 +55,12 @@ public class QuesetionireReprtFragmentAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.fragmnet_questionire_view, parent, false);
             holder = new ViewHolder();
-            holder.mCheckBox = (CheckBox) convertView.findViewById(R.id.report_fragmment_check_box);
             holder.questionTextview = (TextView) convertView.findViewById(R.id.report_fragmment_tv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.questionTextview.setText(mQuestionList.get(position));
+        holder.questionTextview.setText(mQuestionList.get(position).getQuestion());
         return convertView;
     }
 

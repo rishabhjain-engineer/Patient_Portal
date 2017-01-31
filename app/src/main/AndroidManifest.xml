@@ -69,6 +69,8 @@
 
         <service android:name="com.hs.userportal.UploadService" />
 
+        <service android:name="utils.QuestionReportPageService" />
+
         <activity
             android:name="com.hs.userportal.MainActivity"
             android:configChanges="orientation|keyboardHidden"

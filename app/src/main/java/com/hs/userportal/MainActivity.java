@@ -66,6 +66,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import config.QuestionireParser;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
@@ -233,7 +234,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 @Override
                 public void onResponse(JSONObject response) {
 
-                    Log.i("Response: ", "Response: "+ response);
+                    Log.i("Response: ", "Response: " + response);
                     try {
                         String marketVersion = response.getString("version");
                             /*	double market_vervalue = Double.parseDouble(marketVersion);*/
@@ -563,9 +564,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                    /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -592,7 +593,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-                   // }
+                    }
                     // finish();
                 } else {
 
@@ -857,6 +858,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
+                    AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;
 
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -865,9 +871,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         onBackPressed();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
-                        /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {*/
+                        } else {
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -879,7 +885,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             startActivity(intent);
 
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        //}
+                        }
                         //finish();
                     }
                 } else {
@@ -1206,9 +1212,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     } else {
-                        /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {*/
+                        } else {
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -1220,7 +1226,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             //finish();
-                        //}
+                        }
 
                     }
                 }
@@ -1291,9 +1297,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
             if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
                 // new Authentication().execute();
-                /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                     openQuestionirePage();
-                } else {*/
+                } else {
                     Intent i = new Intent(MainActivity.this, logout.class);
 
                     Services.hoja = cd;
@@ -1313,7 +1319,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     // finish();
-                //}
+                }
             }
         } else {
             AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -1978,9 +1984,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                    /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -2006,7 +2012,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-                   // }
+                    }
                     //finish();
 
                 } else {
@@ -2032,9 +2038,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;
 
-                   /* if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -2045,7 +2051,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         Helper.authentication_flag = false;
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    //}
+                    }
 
 
                     //finish();
@@ -2124,7 +2130,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     }
 
     private void CheckEmailIdIsExistMobile() {
-		/*String url = Services.init + "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";*/
+        /*String url = Services.init + "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";*/
         sendData1 = new JSONObject();
         try {
             sendData1.put("Email", eMail);
@@ -2281,8 +2287,50 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     }
 
     private void openQuestionirePage() {
-        Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
-        startActivity(intentWalk);
-        finish();
+        new QuestionDetailAsyncTask().execute();
     }
+
+    private class QuestionDetailAsyncTask extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.setTitle("Loading");
+            progressDialog.setMessage("Please Wait...");
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONObject response = service.getQuizData(sendData);
+            if (response != null) {
+                try {
+                    String data = response.getString("d");
+                    QuestionireParser.paseData(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
+            startActivity(intentWalk);
+        }
+    }
+
 }

@@ -26,7 +26,7 @@ public class PreferenceHelper {
 
     public enum PreferenceKey{
 
-        IS_ALL_QUESTION_ASKED("true"),
+        IS_ALL_QUESTION_ASKED("false"),
 
         QUESTION_COUNT("10");
 

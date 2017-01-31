@@ -6,14 +6,6 @@
     android:layout_marginRight="10dp"
     android:minHeight="40dp">
 
-    <CheckBox
-        android:id="@+id/report_fragmment_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/test_info" />
 
     <TextView
         android:id="@+id/report_fragmment_tv"
@@ -21,8 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:textColor="@color/black"
-        android:layout_toRightOf="@+id/report_fragmment_check_box"
-        android:text="Hi whats going on" />
+        android:text="Hi whats going on"
+        android:textColor="@color/black" />
 
 </RelativeLayout>

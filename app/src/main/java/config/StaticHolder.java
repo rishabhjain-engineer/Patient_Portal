@@ -511,6 +511,10 @@ public class StaticHolder {
             case patientbussinessModel:
                 url = BASE_URL + "patientbussinessModel";
                 break;
+            case GetQuizData:
+                url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData";
+                break;
+
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -564,7 +568,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData
     }
 
 }

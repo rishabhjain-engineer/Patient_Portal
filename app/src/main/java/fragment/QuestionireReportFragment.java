@@ -32,12 +32,7 @@ public class QuestionireReportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questionire_report, container, false);
         ListView listView = (ListView) view.findViewById(R.id.questionire_report_list_view);
-        List<String> questionList = new ArrayList<String>();
-        questionList.add("Please Check your Cholestrol");
-        questionList.add("Please Check your Blood Sugar");
-        questionList.add("Please Check your Bp");
-        questionList.add("Please Check your Eye");
-        mQuesetionireReprtFragmentAdapter = new QuesetionireReprtFragmentAdapter(getActivity(), questionList);
+        mQuesetionireReprtFragmentAdapter = new QuesetionireReprtFragmentAdapter(getActivity());
         listView.setAdapter(mQuesetionireReprtFragmentAdapter);
         return view;
     }
