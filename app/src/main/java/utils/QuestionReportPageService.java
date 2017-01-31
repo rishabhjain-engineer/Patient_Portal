@@ -194,7 +194,8 @@ public class QuestionReportPageService extends IntentService {
             /*String url1 = Services.init
                     + "/PatientModule/PatientService.asmx/PatientFileVaultNew";*/
             // https://patient.cloudchowk.com:8081/WebServices/LabService.asmx/
-            String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+           // String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+            String url1 = "http://192.168.1.11/WebServices/Labservice.asmx/UpdateQuizPath";
            /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientFileVaultNew);
             String url = sttc_holdr.request_Url();*/
             jr1 = new JsonObjectRequest(
