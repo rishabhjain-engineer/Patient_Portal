@@ -54,4 +54,8 @@ public class QuestionireActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

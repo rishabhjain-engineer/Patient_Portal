@@ -19,9 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
+        android:text="Dummy Text"
         android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
-        android:text="Have you checked your blood pressure?"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />

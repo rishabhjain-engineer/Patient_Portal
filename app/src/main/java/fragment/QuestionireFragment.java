@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -106,6 +107,7 @@ public class QuestionireFragment extends Fragment {
     private String pic = "", picname = "";//, oldfile = "Nofile", oldfile1 = "Nofile";
     private static List<QuestionireParser.QuestionDetail> mQuestionDetailsList;
     private static int mPosition;
+    private static final String TAG = "QuestionireFragment";
 
     public static QuestionireFragment newInstance(int pos) {
         mPosition = pos;
@@ -123,12 +125,14 @@ public class QuestionireFragment extends Fragment {
         patientId = sharedPreferences.getString("ke", "");
 
         mQuestionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
+        Log.i(TAG, "mQuestionDetailsList: "+mQuestionDetailsList.size());
+
         TextView questionTextView = (TextView) view.findViewById(R.id.question_tv);
         if (mQuestionDetailsList.size() > 0) {
             try {
                 questionTextView.setText("Upload your " + mQuestionDetailsList.get(mPosition).getQuestion2() + " report");
             } catch (IndexOutOfBoundsException e) {
-                Log.i("issue", "IndexOutOfBoundsException");
+                Log.i(TAG, "IndexOutOfBoundsException");
             }
         }
         LinearLayout uploadReportContainerLL = (LinearLayout) view.findViewById(R.id.upload_report_container);

@@ -31,6 +31,7 @@ public class QuestionireParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         mQuestionDetailsListStatus1.clear();
         mQuestionDetailsListStatus0.clear();
         for (int i = 0; i < jsonArray.length(); i++) {
