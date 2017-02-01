@@ -70,6 +70,7 @@ import config.QuestionireParser;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
+import ui.QuestionReportActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -2328,10 +2329,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressDialog.dismiss();
+            Log.d("QuestionireFragment", "onPostExecute in MainActivity");
             if (QuestionireParser.getQuestionDetailListStatus1().size() > 0) {
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionireActivity");
                 Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
                 startActivity(intentWalk);
-            } else {
+            } else if(QuestionireParser.getQuestionDetailListStatus0().size() > 0){
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionReportActivity");
+                Intent intent = new Intent(MainActivity.this, QuestionReportActivity.class);
+                startActivity(intent);
+            }else{
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
                 Intent intent = new Intent(MainActivity.this, logout.class);
                 startActivity(intent);
             }

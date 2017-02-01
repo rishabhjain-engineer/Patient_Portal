@@ -125,9 +125,10 @@ public class QuestionireFragment extends Fragment {
         patientId = sharedPreferences.getString("ke", "");
 
         mQuestionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
-        Log.i(TAG, "mQuestionDetailsList: "+mQuestionDetailsList.size());
-
+        Log.i(TAG, "QuestionireFragment mQuestionDetailsList: "+mQuestionDetailsList.size());
+        Log.i(TAG, "QuestionireFragment mPosition: "+mPosition);
         TextView questionTextView = (TextView) view.findViewById(R.id.question_tv);
+
         if (mQuestionDetailsList.size() > 0) {
             try {
                 questionTextView.setText("Upload your " + mQuestionDetailsList.get(mPosition).getQuestion2() + " report");

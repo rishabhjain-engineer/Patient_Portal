@@ -1,5 +1,7 @@
 package config;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +27,7 @@ public class QuestionireParser {
     }
 
     public static void paseData(String stringResponse) {
+        Log.i("QuestionireFragment", "QuestionireParser Respons: "+stringResponse);
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(stringResponse);

@@ -1,18 +1,23 @@
 package ui;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.logout;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
 import adapters.QuestionirePagerAdapter;
+import config.QuestionireParser;
 
 /**
  * Created by ayaz on 26/1/17.
@@ -36,9 +41,16 @@ public class QuestionireActivity extends BaseActivity {
         mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentMain = new Intent(QuestionireActivity.this, QuestionReportActivity.class);
-                startActivity(intentMain);
-                finish();
+                if(QuestionireParser.getQuestionDetailListStatus0().size() > 0){
+                    Log.w("QuestionireFragment", "QuestionireActivity opening  QuestionireActivity");
+                    Intent intent = new Intent(QuestionireActivity.this, QuestionReportActivity.class);
+                    startActivity(intent);
+                }else{
+                    Log.w("QuestionireFragment", "QuestionireActivity opening  DashBoard");
+                    Intent intentMain = new Intent(QuestionireActivity.this, logout.class);
+                    startActivity(intentMain);
+                    finish();
+                }
             }
         });
 
@@ -54,8 +66,9 @@ public class QuestionireActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBackPressed() {
-        finish();
+        finishAffinity();
     }
 }

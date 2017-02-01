@@ -9,7 +9,7 @@ android {
     }
     defaultConfig {
         applicationId "com.hs.userportal"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 6
         versionName "3.0"
