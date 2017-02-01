@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import networkmngr.ConnectionDetector;
+import ui.BaseActivity;
 import ui.QuestionireActivity;
 
 public class SplashScreen extends Activity {

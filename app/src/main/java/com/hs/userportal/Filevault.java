@@ -105,7 +105,6 @@ public class Filevault extends BaseActivity {
     private ArrayList<HashMap<String, String>> alias_thumbImage_folder = new ArrayList<HashMap<String, String>>();
     private static ArrayList<String> imageName = new ArrayList<String>();
     private static ArrayList<String> imageNamewithpdf = new ArrayList<String>();
-
     private ArrayList<HashMap<String, String>> showing_Vaultlist = new ArrayList<HashMap<String, String>>();
     private Button upload;
     private static String id = null;

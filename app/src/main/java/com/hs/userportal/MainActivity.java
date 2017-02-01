@@ -70,6 +70,7 @@ import config.QuestionireParser;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
+import ui.QuestionReportActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -1017,6 +1018,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             JSONObject cut = new JSONObject(userCredential);
                             subArray = cut.getJSONArray("Table");
                             cop = subArray.getJSONObject(0).getString("UserId");
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, cop);
                             PH = subArray.getJSONObject(0).getString("UserCode");
                             if (subArray.getJSONObject(0).has("ContactNo")) {
                                 contactNumber = subArray.getJSONObject(0).getString("ContactNo");
@@ -2308,7 +2310,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected Void doInBackground(Void... params) {
             JSONObject sendData = new JSONObject();
             try {
-                sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+                sendData.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -2316,6 +2318,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (response != null) {
                 try {
                     String data = response.getString("d");
+                    Log.d("QuestionireFragment", "QuizData Response in MainActivity"+data);
                     QuestionireParser.paseData(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -2328,8 +2331,21 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressDialog.dismiss();
-            Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
-            startActivity(intentWalk);
+            Log.d("QuestionireFragment", "onPostExecute in MainActivity");
+            if (QuestionireParser.getQuestionDetailListStatus1().size() > 0) {
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionireActivity");
+                Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
+                startActivity(intentWalk);
+            } else if(QuestionireParser.getQuestionDetailListStatus0().size() > 0){
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionReportActivity");
+                Intent intent = new Intent(MainActivity.this, QuestionReportActivity.class);
+                startActivity(intent);
+            }else{
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
+                Intent intent = new Intent(MainActivity.this, logout.class);
+                startActivity(intent);
+            }
+
         }
     }
 

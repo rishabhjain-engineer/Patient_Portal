@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/recomment_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginRight="5dp"
-        android:textColor="@color/text_color_blue"
-        android:layout_marginTop="10dp"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="We recommend you get the following tests done and upload the reports in your repository." />
+        android:padding="5dp"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:text="We recommend you to get the following tests done and upload the reports in your repository."
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/seprator_view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/recomment_text"
+        android:layout_marginTop="2dp"
+        android:background="@color/header_color" />
+
 
     <ListView
         android:id="@+id/questionire_report_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/done_button"
+        android:layout_below="@+id/seprator_view"
         android:layout_marginTop="10dp"></ListView>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/done_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/header_color"
+        android:gravity="center"
+        android:text="OK"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

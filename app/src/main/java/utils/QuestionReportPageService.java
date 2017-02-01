@@ -101,6 +101,7 @@ public class QuestionReportPageService extends IntentService {
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");
+        String questionValue = intent.getStringExtra("Question");
         /*try {
             exhistimg = intent.getStringExtra("exhistimg");
             stringcheck = intent.getStringExtra("stringcheck");
@@ -172,17 +173,29 @@ public class QuestionReportPageService extends IntentService {
             if (afterDecode.endsWith(".jpg")) {
                 // afterDecode = afterDecode.substring(0, afterDecode.length() - 4);
             }
+
+            /*{
+                Question = "IMG_0022.jpg";
+                ImageUrl = "6fbbd98b-65e5-468e-98ee-741903caeea2/FileVault/Personal/Reports/IMG_0022.jpg";
+                Path = "6fbbd98b-65e5-468e-98ee-741903caeea2/FileVault/Personal/Reports/";
+                PatientId = "6fbbd98b-65e5-468e-98ee-741903caeea2";
+            }
+
+            @"FBF5A142-429A-4109-94A5-28E7801F4399",@"PatientId",
+            @"BloodPressure",@"Question",
+            @"FBF5A142-429A-4109-94A5-28E7801F4399/FileVault/Personal/Reports/",@"Path",*/
             sendData = new JSONObject();
-            sendData.put("PatientId", patientId);
-            sendData.put("ImageName", file_name[len - 1]);
-            sendData.put("ImageUrl", afterDecode);
+            sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+            //sendData.put("ImageName", file_name[len - 1]);
+            sendData.put("Question", questionValue);
             sendData.put("Path", path);
 
             queue1 = Volley.newRequestQueue(this);
             /*String url1 = Services.init
                     + "/PatientModule/PatientService.asmx/PatientFileVaultNew";*/
             // https://patient.cloudchowk.com:8081/WebServices/LabService.asmx/
-            String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+           // String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+            String url1 = "http://192.168.1.11/WebServices/Labservice.asmx/UpdateQuizPath";
            /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientFileVaultNew);
             String url = sttc_holdr.request_Url();*/
             jr1 = new JsonObjectRequest(

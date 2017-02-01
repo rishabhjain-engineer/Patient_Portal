@@ -17,44 +17,31 @@
         android:id="@+id/question_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
-        android:textStyle="bold"
-        android:text="Have you checked your blood pressure?"
+        android:text="Dummy Text"
         android:layout_marginRight="10dp"
+        android:gravity="center_horizontal"
         android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/upload_report_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/question_tv"
-        android:background="@color/header_color"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:paddingLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Upload Report"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
         <ImageView
             android:id="@+id/image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:paddingRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/personalvault" />
+            android:paddingRight="10dp"
+            android:src="@drawable/uploadreport" />
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package adapters;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,6 +12,7 @@ import com.hs.userportal.LabtourFragment;
 import config.QuestionireParser;
 import fragment.QuestionireFragment;
 import fragment.QuestionireReportFragment;
+import fragment.QuestionireZeroFragment;
 
 /**
  * Created by ayaz on 26/1/17.
@@ -21,21 +23,31 @@ public class QuestionirePagerAdapter extends FragmentStatePagerAdapter {
 
     public QuestionirePagerAdapter(FragmentManager fm) {
         super(fm);
-        mPageCount = (QuestionireParser.mPageCount + 1);
+        mPageCount = (QuestionireParser.mPageCount);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.i("Ayaz", "position: "+position);
-        if(QuestionireParser.getQuestionDetailListStatus0().size() > 0 && position == mPageCount -1){
-            return QuestionireReportFragment.newInstance();
-        }else{
+        if (position == 0) {
+            return QuestionireZeroFragment.newInstance(position);
+        } else {
             return QuestionireFragment.newInstance(position);
         }
+
     }
 
     @Override
     public int getCount() {
         return mPageCount;
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
     }
 }

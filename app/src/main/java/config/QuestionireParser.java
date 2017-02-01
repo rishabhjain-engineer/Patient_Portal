@@ -1,5 +1,7 @@
 package config;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,81 +22,19 @@ public class QuestionireParser {
     public static List<QuestionDetail> getQuestionDetailListStatus1() {
         return mQuestionDetailsListStatus1;
     }
-
     public static List<QuestionDetail> getQuestionDetailListStatus0() {
         return mQuestionDetailsListStatus0;
     }
 
-    private static String jsonString = "{\n" +
-            "  \"questiondetails\": [\n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "      \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur eye within 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "      {\n" +
-            "        \"questionId\": \"\\\"ew4356we\\\"\",\n" +
-            "        \"status\": 0,\n" +
-            "        \"question2\": \"Blood Pressure\",\n" +
-            "        \"question\": \"\\\"Have you checked your blood pressure?\\\"\"\n" +
-            "      },\n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "       \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur eye within 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "      \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur eye Hair 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "      \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur Stomach within 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "      \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur eye within 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 1,\n" +
-            "      \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur Hair within 2 year?\\\"\"\n" +
-            "    },\n" +
-            "    \n" +
-            "    \n" +
-            "    {\n" +
-            "      \"questionId\": \"\\\"2ew4y45rdfbv\\\"\",\n" +
-            "      \"status\": 0,\n" +
-            "       \"question2\": \"Blood Pressure\",\n" +
-            "      \"question\": \"\\\"Have u checked ur Ear within 2 year?\\\"\"\n" +
-            "    }\n" +
-            " ]\n" +
-            "}";
-
     public static void paseData(String stringResponse) {
-        //jsonObject = new JSONObject(jsonString);
+        Log.i("QuestionireFragment", "QuestionireParser Respons: "+stringResponse);
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(stringResponse);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         mQuestionDetailsListStatus1.clear();
         mQuestionDetailsListStatus0.clear();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -110,7 +50,6 @@ public class QuestionireParser {
                 mQuestionDetailsListStatus0.add(questionDetail);
             }
         }
-
     }
 
 

@@ -28,7 +28,9 @@ public class PreferenceHelper {
 
         IS_ALL_QUESTION_ASKED("false"),
 
-        QUESTION_COUNT("10");
+        QUESTION_COUNT("10"),
+
+        USER_ID("null");
 
         private String defaultValue;
 
