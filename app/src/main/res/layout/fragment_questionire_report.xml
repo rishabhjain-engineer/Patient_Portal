@@ -7,18 +7,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginRight="5dp"
+        android:padding="5dp"
+        android:paddingLeft="5dp"
         android:textColor="@color/text_color_blue"
-        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
         android:textSize="15sp"
+        android:background="#EFEFF4"
         android:gravity="center_horizontal"
-        android:text="We recommend you get the following tests done and upload the reports in your repository." />
+        android:text="We recommend you to get the following tests done and upload the reports in your repository." />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/header_color"/>
 
     <ListView
         android:id="@+id/questionire_report_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"></ListView>
+
+    <Button
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="DONE"
+        android:background="@color/header_color"
+        android:textColor="@color/white"/>
 
 </LinearLayout>
