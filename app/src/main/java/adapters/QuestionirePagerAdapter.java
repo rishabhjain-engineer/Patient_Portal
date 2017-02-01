@@ -21,17 +21,12 @@ public class QuestionirePagerAdapter extends FragmentStatePagerAdapter {
 
     public QuestionirePagerAdapter(FragmentManager fm) {
         super(fm);
-        mPageCount = (QuestionireParser.mPageCount + 1);
+        mPageCount = (QuestionireParser.mPageCount);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.i("Ayaz", "position: "+position);
-        if(QuestionireParser.getQuestionDetailListStatus0().size() > 0 && position == mPageCount -1){
-            return QuestionireReportFragment.newInstance();
-        }else{
-            return QuestionireFragment.newInstance(position);
-        }
+        return QuestionireFragment.newInstance(position);
     }
 
     @Override

@@ -2328,8 +2328,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressDialog.dismiss();
-            Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
-            startActivity(intentWalk);
+            if (QuestionireParser.getQuestionDetailListStatus1().size() > 0) {
+                Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
+                startActivity(intentWalk);
+            } else {
+                Intent intent = new Intent(MainActivity.this, logout.class);
+                startActivity(intent);
+            }
+
         }
     }
 

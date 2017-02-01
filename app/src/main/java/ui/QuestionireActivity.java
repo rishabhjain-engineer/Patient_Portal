@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
+
 import com.hs.userportal.R;
 import com.hs.userportal.logout;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -21,6 +22,7 @@ public class QuestionireActivity extends BaseActivity {
     private QuestionirePagerAdapter mQuestionireAdapter;
     private ViewPager mViewPager;
     private PageIndicator mCircleIndicator;
+    private Button mSkipButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,9 +31,9 @@ public class QuestionireActivity extends BaseActivity {
         setupActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(false);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        Button skipButton = (Button) findViewById(R.id.skip_button);
+        mSkipButton = (Button) findViewById(R.id.skip_button);
 
-        skipButton.setOnClickListener(new View.OnClickListener() {
+        mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentMain = new Intent(QuestionireActivity.this, logout.class);
@@ -51,4 +53,5 @@ public class QuestionireActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }
