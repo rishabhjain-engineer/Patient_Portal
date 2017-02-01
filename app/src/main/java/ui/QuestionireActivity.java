@@ -36,7 +36,7 @@ public class QuestionireActivity extends BaseActivity {
         mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentMain = new Intent(QuestionireActivity.this, logout.class);
+                Intent intentMain = new Intent(QuestionireActivity.this, QuestionReportActivity.class);
                 startActivity(intentMain);
                 finish();
             }
