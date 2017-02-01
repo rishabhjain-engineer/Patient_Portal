@@ -12,6 +12,7 @@ import com.hs.userportal.LabtourFragment;
 import config.QuestionireParser;
 import fragment.QuestionireFragment;
 import fragment.QuestionireReportFragment;
+import fragment.QuestionireZeroFragment;
 
 /**
  * Created by ayaz on 26/1/17.
@@ -27,7 +28,12 @@ public class QuestionirePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return QuestionireFragment.newInstance(position);
+        if (position == 0) {
+            return QuestionireZeroFragment.newInstance(position);
+        } else {
+            return QuestionireFragment.newInstance(position);
+        }
+
     }
 
     @Override
