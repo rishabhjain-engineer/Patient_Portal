@@ -512,7 +512,8 @@ public class StaticHolder {
                 url = BASE_URL + "patientbussinessModel";
                 break;
             case GetQuizData:
-                url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData";
+                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData";
+                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData";
                 break;
 
             default:

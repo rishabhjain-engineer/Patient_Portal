@@ -7,7 +7,7 @@
         android:id="@+id/recomment_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#EFEFF4"
+        android:background="@color/gray"
         android:gravity="center_horizontal"
         android:padding="5dp"
         android:paddingLeft="5dp"
@@ -16,19 +16,13 @@
         android:textColor="@color/text_color_blue"
         android:textSize="15sp" />
 
-    <View
-        android:id="@+id/seprator_view"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/recomment_text"
-        android:background="@color/header_color" />
 
     <ListView
         android:id="@+id/questionire_report_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/done_button"
-        android:layout_below="@+id/seprator_view"
+        android:layout_below="@+id/recomment_text"
         android:layout_marginTop="10dp"></ListView>
 
     <Button
@@ -39,7 +33,7 @@
         android:layout_gravity="bottom"
         android:background="@color/header_color"
         android:gravity="center"
-        android:text="DONE"
+        android:text="OK"
         android:textColor="@color/white" />
 
 </RelativeLayout>

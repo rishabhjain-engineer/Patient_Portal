@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
@@ -69,6 +70,7 @@ public class QuestionireActivity extends BaseActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBackPressed() {
-        finishAffinity();
+        Toast.makeText(this, "Use skip to go on Home", Toast.LENGTH_SHORT).show();
     }
+
 }

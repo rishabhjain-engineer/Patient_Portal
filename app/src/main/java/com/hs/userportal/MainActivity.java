@@ -1018,6 +1018,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             JSONObject cut = new JSONObject(userCredential);
                             subArray = cut.getJSONArray("Table");
                             cop = subArray.getJSONObject(0).getString("UserId");
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, cop);
                             PH = subArray.getJSONObject(0).getString("UserCode");
                             if (subArray.getJSONObject(0).has("ContactNo")) {
                                 contactNumber = subArray.getJSONObject(0).getString("ContactNo");
@@ -2309,7 +2310,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected Void doInBackground(Void... params) {
             JSONObject sendData = new JSONObject();
             try {
-                sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+                sendData.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

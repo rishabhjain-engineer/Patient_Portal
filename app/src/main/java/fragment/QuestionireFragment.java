@@ -85,6 +85,7 @@ import java.util.Map;
 
 import config.QuestionireParser;
 import config.StaticHolder;
+import utils.PreferenceHelper;
 import utils.QuestionReportPageService;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -108,6 +109,7 @@ public class QuestionireFragment extends Fragment {
     private static List<QuestionireParser.QuestionDetail> mQuestionDetailsList;
     private static int mPosition;
     private static final String TAG = "QuestionireFragment";
+    private PreferenceHelper mPreferenceHelper;
 
     public static QuestionireFragment newInstance(int pos) {
         mPosition = pos;
@@ -124,6 +126,7 @@ public class QuestionireFragment extends Fragment {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         patientId = sharedPreferences.getString("ke", "");
 
+        mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
         mQuestionDetailsList = QuestionireParser.getQuestionDetailListStatus1();
         Log.i(TAG, "QuestionireFragment mQuestionDetailsList: "+mQuestionDetailsList.size());
         Log.i(TAG, "QuestionireFragment mPosition: "+mPosition);
@@ -697,7 +700,7 @@ public class QuestionireFragment extends Fragment {
                     // afterDecode = afterDecode.substring(0, afterDecode.length() - 4);
                 }
                 sendData = new JSONObject();
-                sendData.put("PatientId", "FBF5A142-429A-4109-94A5-28E7801F4399");
+                sendData.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
                 //sendData.put("ImageName", file_name[len - 1]);
                 sendData.put("Question", mQuesString);
                 sendData.put("Path", path);
@@ -707,7 +710,8 @@ public class QuestionireFragment extends Fragment {
                     + "/PatientModule/PatientService.asmx/PatientFileVaultNew";*/
                 // https://patient.cloudchowk.com:8081/WebServices/LabService.asmx/
                 // String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
-                String url1 = "http://192.168.1.11/WebServices/Labservice.asmx/UpdateQuizPath";
+               // String url1 = "http://192.168.1.11/WebServices/Labservice.asmx/UpdateQuizPath";
+                String url1 = "https://api.healthscion.com/WebServices/Labservice.asmx/UpdateQuizPath";
            /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientFileVaultNew);
             String url = sttc_holdr.request_Url();*/
                 jr1 = new JsonObjectRequest(
