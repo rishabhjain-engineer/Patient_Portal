@@ -2318,6 +2318,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (response != null) {
                 try {
                     String data = response.getString("d");
+                    Log.d("QuestionireFragment", "QuizData Response in MainActivity"+data);
                     QuestionireParser.paseData(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
