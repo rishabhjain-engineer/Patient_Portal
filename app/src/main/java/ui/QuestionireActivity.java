@@ -59,6 +59,9 @@ public class QuestionireActivity extends BaseActivity {
         mViewPager.setAdapter(mQuestionireAdapter);
         mCircleIndicator = (CirclePageIndicator) findViewById(R.id.circle_indicator);
         mCircleIndicator.setViewPager(mViewPager);
+
+        Log.i("ayaz", "Position: "+mViewPager.getCurrentItem());
+
         //mViewPager.setCurrentItem(pos);
     }
 
