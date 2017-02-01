@@ -27,6 +27,7 @@ public class QuestionireParser {
     }
 
     public static void paseData(String stringResponse) {
+        mPageCount = 0;
         Log.i("QuestionireFragment", "QuestionireParser Respons: "+stringResponse);
         JSONArray jsonArray = null;
         try {
