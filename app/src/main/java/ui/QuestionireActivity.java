@@ -46,6 +46,7 @@ public class QuestionireActivity extends BaseActivity {
                     Log.w("QuestionireFragment", "QuestionireActivity opening  QuestionireActivity");
                     Intent intent = new Intent(QuestionireActivity.this, QuestionReportActivity.class);
                     startActivity(intent);
+                    finish();
                 }else{
                     Log.w("QuestionireFragment", "QuestionireActivity opening  DashBoard");
                     Intent intentMain = new Intent(QuestionireActivity.this, logout.class);
