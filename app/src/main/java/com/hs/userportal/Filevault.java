@@ -29,6 +29,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,7 +101,7 @@ public class Filevault extends BaseActivity {
     private ArrayList<HashMap<String, String>> S3Objects_folder;
     private ArrayList<HashMap<String, String>> S3Objects_details;
     // static ArrayList<String> thumbImage = new ArrayList<String>();
-    private  static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> alias_thumbImage_folder = new ArrayList<HashMap<String, String>>();
     private static ArrayList<String> imageName = new ArrayList<String>();
@@ -121,7 +122,7 @@ public class Filevault extends BaseActivity {
     private ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
     private int count;
-    private  static Menu menu_toggle;
+    private static Menu menu_toggle;
     private ArrayList<String> imageId = new ArrayList<String>();
     private String imageIdsToBeSent = "";
     private RequestQueue queue;
@@ -202,9 +203,10 @@ public class Filevault extends BaseActivity {
 
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else{
-        new Authentication(Filevault.this, "Filevault", "").execute(); }
+            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Filevault.this, "Filevault", "").execute();
+        }
 
 
        /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -310,25 +312,38 @@ public class Filevault extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(Filevault.this);
-                builder1.setTitle("Message");
-                builder1.setItems(new CharSequence[]{"Create Folder", "Upload Files"}, new DialogInterface.OnClickListener() {
+                ///////////////////////////////////////////////////////////////////////////////////
+                final Dialog dialog = new Dialog(Filevault.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.uploadfile_alertbox);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView item1 = (TextView) dialog.findViewById(R.id.item1_tv);
+                TextView item2 = (TextView) dialog.findViewById(R.id.item2_tv);
+                title.setText("Insert Folder / File");
+                item1.setText("Create Folder");
+                item2.setText("Upload Files");
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        show_dialog();
-                                        break;
-                                    case 1:
-                                        chooseimage();
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        });
-                builder1.show();
+                item1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        show_dialog();
+                    }
+                });
+
+                item2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        chooseimage();
+
+                    }
+                });
+                dialog.show();
+
             }
         });
 
@@ -1498,36 +1513,38 @@ public class Filevault extends BaseActivity {
                         //checkdialog = 0;
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
-                            dialog.setTitle("Delete");
-                            dialog.setMessage("Are you sure you want to delete the selected file(s)?");
+                            final Dialog dialog = new Dialog(this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.unsaved_alert_dialog);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            dialog.setCancelable(false);
+                            dialog.setCanceledOnTouchOutside(false);
+                            TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                            TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                            titleTv.setText("Delete");
+                            Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
+                            Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
 
-                            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                            messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
-                                public void onClick(DialogInterface dialog, int id) {
-                                    /*vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
-                                    vault_list.setAdapter(vault_adapter);
-                                    vault_list.setSelection(position_scroll);
-                                    thumbnailsselection = new boolean[thumbImage.size()];
-                                    imageAdapter = new ImageAdapter();
-                                    gridView.setAdapter(imageAdapter);*/
+                            stayButton.setText("Cancel");
+                            stayButton.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
-                                   /* toggle_move = false;
-                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
-                                    menu_toggle.findItem(R.id.save).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
-
                                 }
                             });
+
                             toggle_move = true;
-                            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                            okBTN.setVisibility(View.VISIBLE);
+                            okBTN.setText("OK");
+                            okBTN.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
+                                public void onClick(View v) {
                                     pd = new ProgressDialog(Filevault.this);
                                     pd.setMessage("Deleting .....");
                                     pd.show();
@@ -1710,9 +1727,11 @@ public class Filevault extends BaseActivity {
                                     }
                                 };*/
                                     queue2.add(jr2);
-
+                                    dialog.dismiss();
                                 }
+
                             });
+
                             dialog.show();
                         } else {
                             Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
@@ -2594,11 +2613,12 @@ public class Filevault extends BaseActivity {
         help.folder_path.clear();
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else{
-        if (Helper.authentication_flag == true) {
-            finish();
-        }}
+            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            if (Helper.authentication_flag == true) {
+                finish();
+            }
+        }
 
     }
 
@@ -3729,4 +3749,6 @@ public class Filevault extends BaseActivity {
         }
         return check;
     }
+
+
 }
