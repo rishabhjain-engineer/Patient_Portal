@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -633,33 +634,9 @@ public class update extends FragmentActivity {
                         e.printStackTrace();
                     }
 
-
                     new CheckmailAsynctask(sendData).execute();
-//                    receiveData = service.checkemail(sendData);
                     System.out.println("checkemail" + receiveData);
 
-                    /*try {
-                        emdata = receiveData.getString("d");
-                        if (emdata.equals("true")) {
-                            final Toast toast = Toast.makeText(
-                                    getApplicationContext(),
-                                    "This E-mail is already registered!",
-                                    Toast.LENGTH_SHORT);
-                            toast.show();
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    toast.cancel();
-                                }
-                            }, 2000);
-                        }
-
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-*/
                 }
 
             }
@@ -941,22 +918,10 @@ public class update extends FragmentActivity {
             try {
                 emdata = receiveData.getString("d");
                 if (emdata.equals("true")) {
-                    final Toast toast = Toast.makeText(
-                            getApplicationContext(),
-                            "This E-mail is already registered!",
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            toast.cancel();
-                        }
-                    }, 2000);
+                  emailAlreadyRegistered();
                 }
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1127,101 +1092,12 @@ public class update extends FragmentActivity {
                     }
                 }, 2000);
             } else if (emailverify.equals("already")) {
-                final Toast toast = Toast.makeText(
-                        getApplicationContext(),
-                        "This E-mail is already registered!",
-                        Toast.LENGTH_SHORT);
-                toast.show();
+                emailAlreadyRegistered();
             }
-           /* if (unverify.equals("no")) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        update.this);
-                alertDialog.setTitle("Message");
-                alertDialog.setMessage("Please set a Username");
-                final EditText input = new EditText(update.this);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-
-                lp.leftMargin = 15;
-                lp.rightMargin = 15;
-                input.setBackgroundResource(R.drawable.textfield_activated_holo_light);
-                input.setTextColor(Color.GRAY);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("Submit",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                // Write your code here to execute after dialog
-
-                                sendData = new JSONObject();
-                                try {
-                                    sendData.put("UserName", input.getText()
-                                            .toString());
-
-                                } catch (JSONException e) {
-
-                                    e.printStackTrace();
-                                }
-                                System.out.println("useralias:" + sendData);
-                                receiveData = service.IsUserNameAliasExists(sendData);
-
-                                try {
-                                    String usernamedata = receiveData
-                                            .getString("d");
-                                    if (usernamedata.equals("true")) {
-                                        final Toast toast = Toast
-                                                .makeText(
-                                                        getApplicationContext(),
-                                                        "UserName already used, Re-enter Username!",
-                                                        Toast.LENGTH_SHORT);
-                                        toast.show();
-
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                toast.cancel();
-                                            }
-                                        }, 2500);
-
-                                    } else {
-
-                                        un.setText(input.getText().toString());
-
-                                    }
-
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                // Setting Negative "NO" Button
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                // Write your code here to execute after dialog
-                                dialog.cancel();
-                            }
-                        });
-                alertDialog.show();
-            }
-*/
-            //String rd = receiveData.toString();
             if (message != null && message.equals("success")) {
-                Toast.makeText(getApplicationContext(),
-                        "Your changes have been saved!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
 
                 finish();
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "Your changes could not be saved!", Toast.LENGTH_SHORT)
-                        .show();
             }
             ghoom.dismiss();
         }
@@ -2194,4 +2070,28 @@ public class update extends FragmentActivity {
         }
         return  path;
     }
+
+    private void emailAlreadyRegistered() {
+        final Dialog dialog = new Dialog(update.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView)dialog.findViewById(R.id.message);
+        messageTv.setText("This E-mail is already registered!");
+        stayButton.setVisibility(View.GONE);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
 }
