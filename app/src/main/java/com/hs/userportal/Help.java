@@ -74,6 +74,11 @@ public class Help extends BaseActivity {
 
 	//	new BackgroundProcess().execute();
 
+		Random r = new Random();
+		i1 = r.nextInt(100 - 10) + 10;
+
+		captcha.setHint("Enter " + i1 + " in numerals");
+
 		send.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view) {
