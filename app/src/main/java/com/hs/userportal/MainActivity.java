@@ -2155,8 +2155,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                                 Toast.LENGTH_LONG).show();*/
                         GetUserCodeFromEmail();
                     } else {
-                        Toast.makeText(MainActivity.this, "User does not exits with this facebook id.",
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Please first link your account with Facebook and try again.", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
