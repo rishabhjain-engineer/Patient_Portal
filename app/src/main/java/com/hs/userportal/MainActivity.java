@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +28,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -60,6 +63,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -169,6 +174,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         setupActionBar();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -2212,22 +2218,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                                                 try {
                                                     String emdata = response.getString("d");
                                                     if (emdata.equals("Exist")) {
-                                                        Toast.makeText(getApplicationContext(),
-                                                                "An account exist with this email id. Create account with other email.",
-                                                                Toast.LENGTH_LONG).show();
+                                                        //Toast.makeText(getApplicationContext(), "An account exist with this email id. Create account with other email.", Toast.LENGTH_LONG).show();
                                                         GetUserCodeFromEmail();
-
                                                     } else {
-
                                                         CheckEmailIdIsExistMobile();
-
                                                     }
-
                                                 } catch (JSONException e) {
-                                                    // TODO Auto-generated catch block
                                                     e.printStackTrace();
                                                 }
-
                                             }
                                         }, new com.android.volley.Response.ErrorListener() {
                                     @Override
