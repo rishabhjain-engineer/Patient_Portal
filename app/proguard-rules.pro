@@ -39,3 +39,5 @@ public *;
 -dontwarn java.awt.**
 -dontwarn javax.imageio.**
 -dontwarn com.itextpdf.**
+-dontwarn android.util.**
+
