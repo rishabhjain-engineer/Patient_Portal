@@ -29,7 +29,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class AddWeight extends ActionBarActivity {
+import ui.BaseActivity;
+
+public class AddWeight extends BaseActivity {
 
     private EditText enter_add;
     private static EditText lasstCheckedDate;
@@ -37,16 +39,13 @@ public class AddWeight extends ActionBarActivity {
     private TextView weight;
     private String id, htype;
     private Services service;
-    static int cyear, month, day;
+    private static int cyear, month, day;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
         bsave = (Button) findViewById(R.id.bsave);
@@ -73,11 +72,11 @@ public class AddWeight extends ActionBarActivity {
         if (htype.equals("height")) {
             enter_add.setHint("Enter Height");
             weight.setText("Height (cm):");
-            action.setTitle("Enter Height");
+            mActionBar.setTitle("Enter Height");
         } else {
             enter_add.setHint("Enter Weight");
             weight.setText("Weight (kg):");
-            action.setTitle("Enter Weight");
+            mActionBar.setTitle("Enter Weight");
         }
         service = new Services(AddWeight.this);
         bsave.setOnClickListener(new View.OnClickListener() {

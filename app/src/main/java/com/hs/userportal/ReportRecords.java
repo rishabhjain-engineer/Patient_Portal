@@ -46,15 +46,15 @@ import java.util.List;
 
 import adapters.ReportTestAdapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NestedListHelper;
 
 /**
  * Created by ashish on 10-Aug-16.
  */
-public class ReportRecords extends ActionBarActivity {
+public class ReportRecords extends BaseActivity {
 
-    private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral,
-            sub_total, discount, your_price, viewFiles_text, viewReports_text;
+    private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral, sub_total, discount, your_price, viewFiles_text, viewReports_text;
     private ListView test_list;
     private LinearLayout invoice;
     private RelativeLayout viewReportLinear_id;
@@ -63,18 +63,19 @@ public class ReportRecords extends ActionBarActivity {
     private Services service;
     private ProgressDialog progress;
     private List<HashMap<String, String>> test_array;
-    JSONArray subArray1, pdfarray;
-    int check, subArrayLen;
+    private JSONArray subArray1, pdfarray;
+    private int check, subArrayLen;
     private JSONObject pdfobject;
-    String lab_name, adviseDate, caseCode, balance_status, referral, subTotal, dis, yourprice,
-            patient_name, id, ptname;
-    byte[] result = null;
-    ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> imageName = new ArrayList<String>();
-    ArrayList<String> imageId = new ArrayList<String>();
-    ArrayList<String> thumbImage = new ArrayList<String>();
-    public static ProgressBar progress_bar;
+    private String lab_name, adviseDate, caseCode, balance_status, referral, subTotal, dis, yourprice, patient_name, id, ptname;
+    private byte[] result = null;
+    private ArrayList<String> image = new ArrayList<String>();
+    private ArrayList<String> imageName = new ArrayList<String>();
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private ArrayList<String> thumbImage = new ArrayList<String>();
     private String mShaowDetailAction;   /* 0 - show test details, 1 - show popup message and then show test details,  2 - show popup message and then do nothing*/
+
+
+    public static ProgressBar progress_bar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -232,13 +233,6 @@ public class ReportRecords extends ActionBarActivity {
         });*/
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtras() {
         Intent i = getIntent();

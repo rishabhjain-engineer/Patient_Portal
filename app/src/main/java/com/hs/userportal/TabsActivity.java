@@ -39,16 +39,16 @@ public class TabsActivity extends TabActivity {
 	private static TabHost.TabSpec spec;
 	private static Intent intent;
 	private static LayoutInflater inflater;
-    LinearLayout footer;
-	RelativeLayout hide_tool;
-	HorizontalScrollView mHorizontalScrollView;
-	AlertDialog alert;
+	private LinearLayout footer;
+	private RelativeLayout hide_tool;
+	private HorizontalScrollView mHorizontalScrollView;
+	private AlertDialog alert;
     private ImageView cal_me,back_pic;
 	private View tab;
 	private TextView label;
 	private TextView divider,pkg_title;
-	int tabWidth;
-	int currentTab;
+	private int tabWidth;
+	private int currentTab;
 	private View previousView;
 
 	@Override
@@ -380,26 +380,6 @@ public class TabsActivity extends TabActivity {
 	}
 
 	private void showUnsavedAlertDialog() {
-		/*alert = new AlertDialog.Builder(TabsActivity.this).create();
-		alert.setTitle("Alert!");
-		alert.setMessage("Any unsaved changes will be lost. Are you sure you want to go back?");
-		alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-						TabsActivity.super.onBackPressed();
-						overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-						update.Imguri=null;
-						finish();
-					}
-				});
-		alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Stay",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-					}
-				});
-		alert.show();*/
-
 		final Dialog dialog = new Dialog(TabsActivity.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.unsaved_alert_dialog);

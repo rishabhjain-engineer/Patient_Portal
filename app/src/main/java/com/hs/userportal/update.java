@@ -17,10 +17,12 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +32,8 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -40,6 +44,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -79,89 +84,84 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 @SuppressLint("NewApi")
 public class update extends FragmentActivity {
 
-    static Uri Imguri;
 
-    public static Context mcontext;
     private TextView email_varifyid, contact_varifyid;
-    ByteArrayOutputStream byteArrayOutputStream;
+    private ByteArrayOutputStream byteArrayOutputStream;
     private Pattern pattern;
     private Matcher matcher;
-    public static Bitmap bitmap;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    String aliascheck;
-    public static String verify = "0";
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    String id, emdata;
-    private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master",
-            "Baby", "Baby Of"};
-    private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian",
-            "Jain", "Buddhist", "Other"};
-    private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+",
-            "AB-"};
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private String aliascheck;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private String id, emdata;
+    private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master", "Baby", "Baby Of"};
+    private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian", "Jain", "Buddhist", "Other"};
+    private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private String[] genderlist = {"Male", "Female"};
-    ProgressDialog progress;
+    private ProgressDialog progress;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
-    String city_id = "", country_id = "", state_id = "", area_id = "",
-            imgid = "", imgname = "", fbLinked, fbLinkedID;
-    String passw = "";
-    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality,
-            father, husband;
+    private String city_id = "", country_id = "", state_id = "", area_id = "", imgid = "", imgname = "", fbLinked, fbLinkedID;
+    private String passw = "";
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
     // AutoCompleteTextView area;
-    JSONObject sendData, receiveData, sendData1, receiveData1, basic,
-            sendbasic, residence, newdata;
-    Services service;
-    JSONArray subArray, subArray1, commonarray, areaarray, newarray, newarray1,
-            newarray2, nationarray;
-    static JSONArray arraybasic;
-    static JSONArray arrayedu;
-    static JSONArray arraywork;
-    static JSONArray arraytravel;
-    static JSONArray arrayres;
-    static JSONArray arraymed;
-    static JSONArray arrayper;
-    ArrayList<String> areaa = new ArrayList<String>();
-    ArrayList<String> countryy = new ArrayList<String>();
-    ArrayList<String> statee = new ArrayList<String>();
-    ArrayList<String> cityy = new ArrayList<String>();
-    ArrayList<String> pinn = new ArrayList<String>();
-    ArrayList<String> cityid = new ArrayList<String>();
-    ArrayList<String> countryid = new ArrayList<String>();
-    ArrayList<String> stateid = new ArrayList<String>();
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    ArrayList<String> areaid = new ArrayList<String>();
-    String[] nationlist;
-    Button finishbtn;
-    String nationid;
-    ImageButton dp, dpchange;
-    byte[] byteArray;
-    String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
+    private JSONObject sendData, receiveData, sendData1, receiveData1, basic, sendbasic, residence, newdata;
+    private Services service;
+    private JSONArray subArray, subArray1, commonarray, areaarray, newarray, newarray1, newarray2, nationarray;
+    private ArrayList<String> areaa = new ArrayList<String>();
+    private ArrayList<String> countryy = new ArrayList<String>();
+    private ArrayList<String> statee = new ArrayList<String>();
+    private ArrayList<String> cityy = new ArrayList<String>();
+    private ArrayList<String> pinn = new ArrayList<String>();
+    private ArrayList<String> cityid = new ArrayList<String>();
+    private ArrayList<String> countryid = new ArrayList<String>();
+    private ArrayList<String> stateid = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private ArrayList<String> areaid = new ArrayList<String>();
+    private String[] nationlist;
+    private Button finishbtn;
+    private String nationid;
+    private ImageButton dp, dpchange;
+    private byte[] byteArray;
+    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
+    private String email_varification, mobile_varification;
+    private String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> list = new ArrayList<String>();
+    private ProgressDialog ghoom;
+    private RadioGroup rg;
+    private String authentication = "";
+    private static int cyear;
+    private static int month;
+    private static int day;
+    private static int selection;
+    private static JSONObject receiveFbImageSave;
+    private String check_username;
+    private Dialog fbDialog;
 
-    String email_varification, mobile_varification;
 
-    String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
-    ArrayAdapter<String> adapter1;
-    ArrayList<String> list = new ArrayList<String>();
-    ProgressDialog ghoom;
-    RadioGroup rg;
-    String authentication = "";
-   static int cyear;
-    static int month;
-    static int day;
-    static int selection;
-    static private JSONObject receiveFbImageSave;
-    String check_username;
-    Dialog fbDialog;
-    Bitmap output = null;
+
+    public static JSONArray arraybasic;
+    public static JSONArray arrayedu;
+    public static JSONArray arraywork;
+    public static JSONArray arraytravel;
+    public static JSONArray arrayres;
+    public static JSONArray arraymed;
+    public static JSONArray arrayper;
+    public static String verify = "0";
+    public Bitmap output = null;
+    public static Bitmap bitmap;
+    public static Uri Imguri;
+    public static Context mcontext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -169,6 +169,16 @@ public class update extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_new);
         service = new Services(update.this);
+
+
+
+     /*   mActionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+        mActionBar.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+*/
+
+
         // nationlist = getResources().getStringArray(R.array.national_list);
         Intent i = getIntent();
         id = i.getStringExtra("id");
@@ -289,16 +299,12 @@ public class update extends FragmentActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)
-                        && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
 
                     if (fbLinked.equals("true")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                update.this);
-
+                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library",
-                                        "Take from Camera", "Take from Facebook"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -307,27 +313,11 @@ public class update extends FragmentActivity {
                                         switch (which) {
                                             case 0:
 
-
-                                                Intent intent = new Intent(
-                                                        Intent.ACTION_PICK,
-                                                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-
-                                               /* intent.putExtra("crop", "true");
-                                                intent.putExtra("aspectX", 2);
-                                                intent.putExtra("aspectY", 1);
-                                                intent.putExtra("outputX", 250);
-                                                intent.putExtra("outputY", 250);*/
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 
                                                 try {
-
-                                                    intent.putExtra("return-data",
-                                                            true);
-                                                    startActivityForResult(
-                                                            Intent.createChooser(
-                                                                    intent,
-                                                                    "Select File"),
-                                                            PICK_FROM_GALLERY);
-
+                                                    intent.putExtra("return-data", true);
+                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                                 } catch (ActivityNotFoundException e) {
 
                                                 }
@@ -644,33 +634,9 @@ public class update extends FragmentActivity {
                         e.printStackTrace();
                     }
 
-
                     new CheckmailAsynctask(sendData).execute();
-//                    receiveData = service.checkemail(sendData);
                     System.out.println("checkemail" + receiveData);
 
-                    /*try {
-                        emdata = receiveData.getString("d");
-                        if (emdata.equals("true")) {
-                            final Toast toast = Toast.makeText(
-                                    getApplicationContext(),
-                                    "This E-mail is already registered!",
-                                    Toast.LENGTH_SHORT);
-                            toast.show();
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    toast.cancel();
-                                }
-                            }, 2000);
-                        }
-
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-*/
                 }
 
             }
@@ -952,22 +918,10 @@ public class update extends FragmentActivity {
             try {
                 emdata = receiveData.getString("d");
                 if (emdata.equals("true")) {
-                    final Toast toast = Toast.makeText(
-                            getApplicationContext(),
-                            "This E-mail is already registered!",
-                            Toast.LENGTH_SHORT);
-                    toast.show();
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            toast.cancel();
-                        }
-                    }, 2000);
+                  emailAlreadyRegistered();
                 }
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1138,101 +1092,12 @@ public class update extends FragmentActivity {
                     }
                 }, 2000);
             } else if (emailverify.equals("already")) {
-                final Toast toast = Toast.makeText(
-                        getApplicationContext(),
-                        "This E-mail is already registered!",
-                        Toast.LENGTH_SHORT);
-                toast.show();
+                emailAlreadyRegistered();
             }
-           /* if (unverify.equals("no")) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        update.this);
-                alertDialog.setTitle("Message");
-                alertDialog.setMessage("Please set a Username");
-                final EditText input = new EditText(update.this);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-
-                lp.leftMargin = 15;
-                lp.rightMargin = 15;
-                input.setBackgroundResource(R.drawable.textfield_activated_holo_light);
-                input.setTextColor(Color.GRAY);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("Submit",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                // Write your code here to execute after dialog
-
-                                sendData = new JSONObject();
-                                try {
-                                    sendData.put("UserName", input.getText()
-                                            .toString());
-
-                                } catch (JSONException e) {
-
-                                    e.printStackTrace();
-                                }
-                                System.out.println("useralias:" + sendData);
-                                receiveData = service.IsUserNameAliasExists(sendData);
-
-                                try {
-                                    String usernamedata = receiveData
-                                            .getString("d");
-                                    if (usernamedata.equals("true")) {
-                                        final Toast toast = Toast
-                                                .makeText(
-                                                        getApplicationContext(),
-                                                        "UserName already used, Re-enter Username!",
-                                                        Toast.LENGTH_SHORT);
-                                        toast.show();
-
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                toast.cancel();
-                                            }
-                                        }, 2500);
-
-                                    } else {
-
-                                        un.setText(input.getText().toString());
-
-                                    }
-
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                // Setting Negative "NO" Button
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                // Write your code here to execute after dialog
-                                dialog.cancel();
-                            }
-                        });
-                alertDialog.show();
-            }
-*/
-            //String rd = receiveData.toString();
             if (message != null && message.equals("success")) {
-                Toast.makeText(getApplicationContext(),
-                        "Your changes have been saved!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
 
                 finish();
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "Your changes could not be saved!", Toast.LENGTH_SHORT)
-                        .show();
             }
             ghoom.dismiss();
         }
@@ -1550,8 +1415,7 @@ public class update extends FragmentActivity {
                     basic.put("ContactNo", cont.getText().toString());
                     basic.put("CountryId", country_id);
                     basic.put("DOB", subArray.getJSONObject(0).getString("DOB"));
-                    basic.put("DORegistration", subArray.getJSONObject(0)
-                            .getString("RegistrationDate"));
+                    basic.put("DORegistration", subArray.getJSONObject(0).optString("RegistrationDate"));
                     basic.put("EmailId", em.getText().toString());
                     basic.put("EmergencyContact", "");
                     basic.put("FatherName", father.getText().toString());
@@ -2206,4 +2070,28 @@ public class update extends FragmentActivity {
         }
         return  path;
     }
+
+    private void emailAlreadyRegistered() {
+        final Dialog dialog = new Dialog(update.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView)dialog.findViewById(R.id.message);
+        messageTv.setText("This E-mail is already registered!");
+        stayButton.setVisibility(View.GONE);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
 }

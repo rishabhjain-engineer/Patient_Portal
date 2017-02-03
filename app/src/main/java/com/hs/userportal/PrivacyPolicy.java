@@ -16,28 +16,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PrivacyPolicy extends ActionBarActivity {
+import ui.BaseActivity;
 
-	WebView privacy;
-	Button ok;
-	JSONObject sendData,receiveData;
-	JSONArray subArray;
-	Services service;
-	String disclaimer;
-	ProgressDialog progress;
+public class PrivacyPolicy extends BaseActivity {
+
+	private WebView privacy;
+	private Button ok;
+	private JSONObject sendData,receiveData;
+	private JSONArray subArray;
+	private Services service;
+	private String disclaimer;
+	private ProgressDialog progress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.privacypolicy);
-
-		ActionBar action = getSupportActionBar();
+		setupActionBar();
+		/*ActionBar action = getSupportActionBar();
 		action.setBackgroundDrawable(new ColorDrawable(Color
 				.parseColor("#3cbed8")));
 		action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
 		action.setDisplayHomeAsUpEnabled(true);
-
+*/
 		privacy = (WebView) findViewById(R.id.webPrivacy);
 		ok = (Button) findViewById(R.id.bOK);
 		service = new Services(PrivacyPolicy.this);

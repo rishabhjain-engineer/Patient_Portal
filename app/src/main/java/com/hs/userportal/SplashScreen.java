@@ -31,22 +31,23 @@ import java.util.List;
 import java.util.Locale;
 
 import networkmngr.ConnectionDetector;
+import ui.BaseActivity;
+import ui.QuestionireActivity;
 
 public class SplashScreen extends Activity {
 
 
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    ArrayList<HashMap<String, String>> packageAlllist;
-    ArrayList<HashMap<String, String>> packageHome_list;
-    SharedPreferences sharedpreferences, sharedPreferences;
-    RequestQueue queue;
-    JsonObjectRequest jr;
-    JSONObject sendData;
-
-    Double currentlat, currentlon, defaultLat, defaultLong;
-    String locationFromCoordinates;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private ArrayList<HashMap<String, String>> packageAlllist;
+    private ArrayList<HashMap<String, String>> packageHome_list;
+    private SharedPreferences sharedpreferences, sharedPreferences;
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
+    private JSONObject sendData;
+    private Double currentlat, currentlon, defaultLat, defaultLong;
+    private String locationFromCoordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,7 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
 
-                sharedpreferences = getSharedPreferences(MyPREFERENCES,
-                        Context.MODE_PRIVATE);
+                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
                         Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
@@ -77,13 +77,11 @@ public class SplashScreen extends Activity {
                         finish();
                     }
                 } else {
-                    Intent intentWalk = new Intent(getApplicationContext(),
-                            SampleCirclesDefault.class);
+                    Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
                     intentWalk.putExtra("walk", "walk");
                     intentWalk.putExtra("pos", 0);
                     startActivity(intentWalk);
-                    overridePendingTransition(R.anim.pull_up_from_bottom,
-                            R.anim.push_out_to_bottom);
+                    overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
                     finish();
                 }
             }

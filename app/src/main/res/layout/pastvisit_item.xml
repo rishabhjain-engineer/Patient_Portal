@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="LABS NAME"
-            android:textColor="#3DA8DC"
+            android:textColor="@color/text_color_blue"
             android:textSize="16dp"
             android:textStyle="bold" />
 

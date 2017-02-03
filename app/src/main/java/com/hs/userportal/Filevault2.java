@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,79 +80,80 @@ import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NavFolder;
 
 /**
  * Created by ashish on 2/15/2016.
  */
-public class Filevault2 extends ActionBarActivity {
+public class Filevault2 extends BaseActivity {
 
-    ImageLoader mImageLoader;
-    ByteArrayOutputStream byteArrayOutputStream;
-    NetworkImageView mNetworkImageView;
-    JSONObject sendData, receiveData;
-    JSONArray subArrayImage, S3Objects_arr;
-    ProgressDialog pd;
+    private ImageLoader mImageLoader;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private NetworkImageView mNetworkImageView;
+    private JSONObject sendData, receiveData;
+    private JSONArray subArrayImage, S3Objects_arr;
+    private ProgressDialog pd;
     private ArrayList<HashMap<String, String>> vault_data;
     private ArrayList<HashMap<String, String>> S3Objects;
     private ArrayList<HashMap<String, String>> S3Objects_folder;
     private ArrayList<HashMap<String, String>> S3Objects_details;
     private static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
-    static ArrayList<String> imageName = new ArrayList<String>();
-    static ArrayList<String> imageNamewithpdf = new ArrayList<String>();
-    Button upload;
-    static String id = null;
+    private ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<String> imageName = new ArrayList<String>();
+    private static ArrayList<String> imageNamewithpdf = new ArrayList<String>();
+    private Button upload;
+    private static String id = null;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
-    StringBuffer path_buffer;
-    Bitmap bitmap;
-    static String pic = null;
-    String picname = "";
-    static JsonObjectRequest jr;
-    JsonObjectRequest jr2, jr3, jr4, s3jr;
+    private StringBuffer path_buffer;
+    private Bitmap bitmap;
+    private static String pic = null;
+    private String picname = "";
+    private static JsonObjectRequest jr;
+    private JsonObjectRequest jr2, jr3, jr4, s3jr;
     private static ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
-    int count;
+    private int count;
     private Activity activity = Filevault2.this;
-   private static Menu menu_toggle;
-    ArrayList<String> imageId = new ArrayList<String>();
-    String imageIdsToBeSent = "";
-    static RequestQueue queue;
-    RequestQueue queue2;
-    RequestQueue queue3;
-    RequestQueue req;
+    private static Menu menu_toggle;
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private String imageIdsToBeSent = "";
+    private static RequestQueue queue;
+    private RequestQueue queue2;
+    private RequestQueue queue3;
+    private RequestQueue req;
     private ListView vault_list;
-    int ipos = 0;
-    Services service;
-    GridView gridView;
-    String[] rem_dup_folder;
-    boolean check_load;
-    int check = 0;
-    ProgressDialog progress;
+    private int ipos = 0;
+    private Services service;
+    private GridView gridView;
+    private String[] rem_dup_folder;
+    private boolean check_load;
+    private int check = 0;
+    private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
-    byte[] byteArray;
+    private byte[] byteArray;
     private static boolean view_list = false;
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private String list_operation, patientId, Folder_Clicked, HashKey, Folder_Clicked_folder;
     private static Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
-    ProgressBar bar;
-    String path_folder = "";
-    String first_timefolderclicked = "";
-    String hash_keyvalue;
-    static String view_show;
-    static ArrayList<String> folder_path = new ArrayList<String>();
-    NotificationHandler nHandler;
-    final static Handler handler = new Handler();
-    Menu menu;
-    int path_iterator = 0;
-    public static Activity self;
-    static String refresh_folderclicked, refresh_hash_keyvalue, refresh_first_timefolderclicked;
-    static int refresh_path_iterator;
-    static boolean refresh_view_show = false;
+    private ProgressBar bar;
+    private String path_folder = "";
+    private String first_timefolderclicked = "";
+    private String hash_keyvalue;
+    private static String view_show;
+    private static ArrayList<String> folder_path = new ArrayList<String>();
+    private NotificationHandler nHandler;
+    private final static Handler handler = new Handler();
+    private Menu menu;
+    private int path_iterator = 0;
+    private static Activity self;
+    private static String refresh_folderclicked, refresh_hash_keyvalue, refresh_first_timefolderclicked;
+    private static int refresh_path_iterator;
+    private static boolean refresh_view_show = false;
     private static Context mContext;
-    ArrayList<String> refresh_folder_path = new ArrayList<String>();
+    private ArrayList<String> refresh_folder_path = new ArrayList<String>();
     private static ArrayList<String> static_refresh_folder_path = new ArrayList<String>();
     private ArrayList<HashMap<String, String>> moveFolder_vault2 = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> moveFolder1_vault2 = new ArrayList<HashMap<String, String>>();
@@ -160,36 +162,34 @@ public class Filevault2 extends ActionBarActivity {
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
     private static ArrayList<String> folder_vault2_path = new ArrayList<String>();
     private TextView warning_msg, path_indicator;
-    static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM
-            + "/Patient Portal";
-    static Uri Imguri;
     private boolean toggle_move = false;
     private Folder_adapter folder_adapter;
-    int checkdialog = 0;
+    private int checkdialog = 0;
     private int back_clicked_move = 0;
-    int check_grid = 0;
-    Helper mhelper;
-    String[] path_back_nav = new String[thumbImage.size()];
+    private int check_grid = 0;
+    private Helper mhelper;
+    private String[] path_back_nav = new String[thumbImage.size()];
     private boolean path_cleared = false;
     private boolean start_navigate = false;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
 
+    public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
+    public static Uri Imguri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
+
         mhelper = new Helper();
         Intent i = getIntent();
         mContext = Filevault2.this;
         self = Filevault2.this;
         Folder_Clicked = i.getStringExtra("Folder_Clicked");
         refresh_folderclicked = Folder_Clicked;
-        action.setTitle(Folder_Clicked);
+        mActionBar.setTitle(Folder_Clicked);
         check_load = i.getBooleanExtra("check_load", true);
         hash_keyvalue = i.getStringExtra("hash_keyvalue");
         refresh_hash_keyvalue = hash_keyvalue;
@@ -226,53 +226,52 @@ public class Filevault2 extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(Filevault2.this);
-                builder1.setTitle("Message");
-                builder1.setItems(new CharSequence[]{"Create Folder", "Upload Files"},
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        StringBuffer buffer = new StringBuffer();
-                                        for (int k = 0; k < mhelper.folder_path.size(); k++) {
-                                            buffer.append(mhelper.folder_path.get(k) + "/");
-                                        }
-                                        Log.v("buffer", buffer.toString());
-                                        show_dialog(buffer.toString());
-                                        break;
-
-                                    case 1:
-
-                                        // Intent takePictureIntent = new
-                                        // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        // if
-                                        // (takePictureIntent.resolveActivity(getPackageManager())
-                                        // != null)
-                                        // {
-                                        //
-                                        // startActivityForResult(takePictureIntent,PICK_FROM_CAMERA);
-                                        //
-                                        // }
-                                        chooseimage();
 
 
-                                        break;
+                final Dialog dialog = new Dialog(Filevault2.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.uploadfile_alertbox);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView item1 = (TextView) dialog.findViewById(R.id.item1_tv);
+                TextView item2 = (TextView) dialog.findViewById(R.id.item2_tv);
+                title.setText("Insert Folder / File");
+                item1.setText("Create Folder");
+                item2.setText("Upload Files");
 
-                                    default:
-                                        break;
-                                }
-                            }
-                        });
-                builder1.show();
+                item1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        StringBuffer buffer = new StringBuffer();
+                        for (int k = 0; k < mhelper.folder_path.size(); k++) {
+                            buffer.append(mhelper.folder_path.get(k) + "/");
+                        }
+                        Log.v("buffer", buffer.toString());
+                        show_dialog(buffer.toString());
+
+                    }
+                });
+
+                item2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        chooseimage();
+
+                    }
+                });
+                dialog.show();
             }
         });
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault2.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(Filevault2.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
        /* if(!check_load){*/
-        new Authentication(Filevault2.this, "Filevault2", "").execute(); }
+            new Authentication(Filevault2.this, "Filevault2", "").execute();
+        }
 
 
      /*
@@ -753,7 +752,7 @@ public class Filevault2 extends ActionBarActivity {
                                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
                                     menu_toggle.findItem(R.id.action_home).setVisible(true);*/
                                     dialog.dismiss();
-                                  //  toggle_move = false;
+                                    //  toggle_move = false;
                                     check_para = 0;
 
                                 }
@@ -1068,97 +1067,67 @@ public class Filevault2 extends ActionBarActivity {
 
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault2.this).create();
-                            dialog.setTitle("Delete");
-                            dialog.setMessage("Are you sure you want to delete the selected file(s)?");
 
-                            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                            final Dialog dialog = new Dialog(this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.unsaved_alert_dialog);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            dialog.setCancelable(false);
+                            dialog.setCanceledOnTouchOutside(false);
+                            TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                            TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                            Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
+                            Button cancelButton = (Button) dialog.findViewById(R.id.stay_btn);
+                            titleTv.setText("Delete");
+                            messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                   /* StringBuffer buffer = new StringBuffer();
-                                    for (int k = 0; k < mhelper.folder_path.size(); k++) {
-                                        buffer.append(mhelper.folder_path.get(k) + "/");
-                                    }
-                                    Log.v("buffer", buffer.toString());
-                                    String path_finder = first_timefolderclicked + "/" + buffer;
-                                    String[] make_path = path_finder.toString().split("/");
-                                    StringBuffer path_buffer = new StringBuffer();
-                                    for (int i = 0; i < make_path.length; i++) {
-                                        if (i == make_path.length - 1) {
-                                            path_buffer.append(make_path[i]);
-                                        } else {
-                                            path_buffer.append(make_path[i] + "/");
-                                        }
-                                    }
-                                    Log.v("buffer_upload", path_buffer.toString());
-                                    vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, path_buffer.toString());
-                                    vault_list.setAdapter(vault_adapter);
-                                    vault_list.setSelection(position_scroll);
-                                    thumbnailsselection = new boolean[thumbImage.size()];
-                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
-                                    menu_toggle.findItem(R.id.save).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                            cancelButton.setText("Cancel");
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
-                                  //  toggle_move = false;
-
                                 }
                             });
-
-                            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-
+                            okBTN.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                public void onClick(View v) {
+                                    {
 
-                                    pd = new ProgressDialog(Filevault2.this);
-                                    pd.setMessage("Deleting .....");
-                                    pd.show();
-                                    toggle_move = false;
-                                    JSONArray array = new JSONArray();
-                                    check_para = 0;
-                                    select_times = 0;
-                                    StringBuffer buffer = new StringBuffer();
-                                    for (int k = 0; k < mhelper.folder_path.size(); k++) {
-                                        buffer.append(mhelper.folder_path.get(k) + "/");
-                                    }
-                                    Log.v("buffer", buffer.toString());
-                                    String path_finder = first_timefolderclicked + "/" + buffer;
-                                    File imageFile = new File(path);
-                                    String[] make_path = path_finder.toString().split("/");
-                                    StringBuffer path_buffer = new StringBuffer();
-                                    for (int k = 0; k < make_path.length; k++) {
-                                        if (k == make_path.length - 1) {
-                                            path_buffer.append(make_path[k]);
-                                        } else {
-                                            path_buffer.append(make_path[k] + "/");
+                                        pd = new ProgressDialog(Filevault2.this);
+                                        pd.setMessage("Deleting .....");
+                                        pd.show();
+                                        toggle_move = false;
+                                        JSONArray array = new JSONArray();
+                                        check_para = 0;
+                                        select_times = 0;
+                                        StringBuffer buffer = new StringBuffer();
+                                        for (int k = 0; k < mhelper.folder_path.size(); k++) {
+                                            buffer.append(mhelper.folder_path.get(k) + "/");
                                         }
-                                    }
-                                    Log.v("buffer_upload", path_buffer.toString());
-                                    for (int i = 0; i < thumbnailsselection.length; i++) {
-                                        JSONObject imageobject = new JSONObject();
-                                        if (thumbnailsselection[i]) {
-                                            try {
-                                                //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                        Log.v("buffer", buffer.toString());
+                                        String path_finder = first_timefolderclicked + "/" + buffer;
+                                        File imageFile = new File(path);
+                                        String[] make_path = path_finder.toString().split("/");
+                                        StringBuffer path_buffer = new StringBuffer();
+                                        for (int k = 0; k < make_path.length; k++) {
+                                            if (k == make_path.length - 1) {
+                                                path_buffer.append(make_path[k]);
+                                            } else {
+                                                path_buffer.append(make_path[k] + "/");
+                                            }
+                                        }
+                                        Log.v("buffer_upload", path_buffer.toString());
+                                        for (int i = 0; i < thumbnailsselection.length; i++) {
+                                            JSONObject imageobject = new JSONObject();
+                                            if (thumbnailsselection[i]) {
+                                                try {
+                                                    //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
 
-                                                if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
-                                                        !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
-                                                        && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
-                                                    if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                        imageobject.put("Key", thumbImage.get(i).get("Personal3"));
-                                                    } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                                                        imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                    } else {
-                                                        imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                    }
-                                                    imageobject.put("Type", "1");
-                                                    imageobject.put("ThumbFile", "");
-                                                    imageobject.put("Status", "");
-                                                } else {
-                                                    if (thumbImage.get(i).get("Personal3").contains(".png")) {
-                                                        String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                                            !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
                                                         if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
                                                             imageobject.put("Key", thumbImage.get(i).get("Personal3"));
                                                         } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
@@ -1166,126 +1135,139 @@ public class Filevault2 extends ActionBarActivity {
                                                         } else {
                                                             imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
                                                         }
-                                                        imageobject.put("Type", "0");
-                                                        if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("ThumbFile", thumbimg);
-                                                        } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
-                                                        } else {
-                                                            imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
-                                                        }
-                                                        imageobject.put("Status", "");
-                                                    } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
-                                                        String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
-                                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
-                                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        } else {
-                                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        }
-                                                        imageobject.put("Type", "0");
-                                                        if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("ThumbFile", thumbimg);
-                                                        } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
-                                                        } else {
-                                                            imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
-                                                        }
-                                                        imageobject.put("Status", "");
-                                                    } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
-                                                        String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
-                                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
-                                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        } else {
-                                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        }
-                                                        imageobject.put("Type", "0");
-                                                        if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("ThumbFile", thumbimg);
-                                                        } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
-                                                        } else {
-                                                            imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
-                                                        }
-                                                        imageobject.put("Status", "");
-                                                    } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
-                                                        String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
-                                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
-                                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        } else {
-                                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        }
-                                                        imageobject.put("Type", "0");
-                                                        if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("ThumbFile", thumbimg);
-                                                        } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
-                                                        } else {
-                                                            imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
-                                                        }
-                                                        imageobject.put("Status", "");
-                                                    } else {
-                                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
-                                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
-                                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                                                            imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        } else {
-                                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
-                                                        }
-                                                        imageobject.put("Type", "0");
+                                                        imageobject.put("Type", "1");
                                                         imageobject.put("ThumbFile", "");
                                                         imageobject.put("Status", "");
+                                                    } else {
+                                                        if (thumbImage.get(i).get("Personal3").contains(".png")) {
+                                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            } else {
+                                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            }
+                                                            imageobject.put("Type", "0");
+                                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("ThumbFile", thumbimg);
+                                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
+                                                            } else {
+                                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
+                                                            }
+                                                            imageobject.put("Status", "");
+                                                        } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
+                                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
+                                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            } else {
+                                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            }
+                                                            imageobject.put("Type", "0");
+                                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("ThumbFile", thumbimg);
+                                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
+                                                            } else {
+                                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
+                                                            }
+                                                            imageobject.put("Status", "");
+                                                        } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
+                                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
+                                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            } else {
+                                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            }
+                                                            imageobject.put("Type", "0");
+                                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("ThumbFile", thumbimg);
+                                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
+                                                            } else {
+                                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
+                                                            }
+                                                            imageobject.put("Status", "");
+                                                        } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
+                                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
+                                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            } else {
+                                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            }
+                                                            imageobject.put("Type", "0");
+                                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("ThumbFile", thumbimg);
+                                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("ThumbFile", path_buffer.toString() + "/" + thumbimg);
+                                                            } else {
+                                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbimg);
+                                                            }
+                                                            imageobject.put("Status", "");
+                                                        } else {
+                                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                                imageobject.put("Key", path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            } else {
+                                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(i).get("Personal3"));
+                                                            }
+                                                            imageobject.put("Type", "0");
+                                                            imageobject.put("ThumbFile", "");
+                                                            imageobject.put("Status", "");
+                                                        }
                                                     }
-                                                }
 
                                          /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
                                             System.out.println(i);*/
-                                            } catch (Exception e) {
-                                                // TODO Auto-generated catch block
-                                                e.printStackTrace();
+                                                } catch (Exception e) {
+                                                    // TODO Auto-generated catch block
+                                                    e.printStackTrace();
+                                                }
+                                                array.put(imageobject);
                                             }
-                                            array.put(imageobject);
+
                                         }
 
-                                    }
+                                        System.out.println(array);
 
-                                    System.out.println(array);
+                                        queue2 = Volley.newRequestQueue(Filevault2.this);
 
-                                    queue2 = Volley.newRequestQueue(Filevault2.this);
-
-                                    sendData = new JSONObject();
-                                    try {
-                                        sendData.put("ObjectList", array);
-                                        sendData.put("UserId", patientId);
-                                    } catch (JSONException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
+                                        sendData = new JSONObject();
+                                        try {
+                                            sendData.put("ObjectList", array);
+                                            sendData.put("UserId", patientId);
+                                        } catch (JSONException e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
 
 				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
-                                    StaticHolder sttc_holdr = new StaticHolder(Filevault2.this, StaticHolder.Services_static.DeleteObject);
-                                    String url = sttc_holdr.request_Url();
-                                    jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            System.out.println(response);
+                                        StaticHolder sttc_holdr = new StaticHolder(Filevault2.this, StaticHolder.Services_static.DeleteObject);
+                                        String url = sttc_holdr.request_Url();
+                                        jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                System.out.println(response);
 
-                                            try {
-                                                Toast.makeText(Filevault2.this, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
-                                                        .show();
-                                                // S3Objects.clear();
-                                                pd.dismiss();
-                                                Filevault.refresh();
+                                                try {
+                                                    Toast.makeText(Filevault2.this, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                                            .show();
+                                                    // S3Objects.clear();
+                                                    pd.dismiss();
+                                                    Filevault.refresh();
 
-                                                handler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
+                                                    handler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
                                                       /*  Intent i = new Intent(Filevault2.this, Filevault2.class);
                                                         i.putExtra("Folder_Clicked", refresh_folderclicked);
                                                         i.putExtra("hash_keyvalue", refresh_hash_keyvalue);
@@ -1299,32 +1281,36 @@ public class Filevault2 extends ActionBarActivity {
                                                         }
                                                         startActivity(i);
                                                         finish();*/
-                                                        startBackgroundprocess();
+                                                            startBackgroundprocess();
 
-                                                    }
-                                                }, 1000);
+                                                        }
+                                                    }, 1000);
 
-                                            } catch (Exception e) {
-                                                // TODO Auto-generated catch
-                                                // block
-                                                e.printStackTrace();
+                                                } catch (Exception e) {
+                                                    // TODO Auto-generated catch
+                                                    // block
+                                                    e.printStackTrace();
+                                                }
+
+                                                // queue.add(jr);
+
                                             }
-
-                                            // queue.add(jr);
-
-                                        }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            pd.dismiss();
-                                            Toast.makeText(Filevault2.this, error.toString(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    queue2.add(jr2);
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                pd.dismiss();
+                                                Toast.makeText(Filevault2.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        queue2.add(jr2);
 
 
+                                    }
+                                    dialog.dismiss();
                                 }
+
                             });
+
                             dialog.show();
                         } else {
                             Toast.makeText(Filevault2.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
@@ -1809,7 +1795,7 @@ public class Filevault2 extends ActionBarActivity {
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
-                                   // toggle_move = false;
+                                    // toggle_move = false;
 
                                 }
                             });
@@ -2670,12 +2656,12 @@ public class Filevault2 extends ActionBarActivity {
                     && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")
                     && !thumbImage.get(position).get("Personal3").contains(".txt")) {
                 holder.folder_name.setVisibility(View.VISIBLE);
-                if(thumbImage.get(position).get("Personal3").equalsIgnoreCase("Prescription")||
-                        thumbImage.get(position).get("Personal3").equalsIgnoreCase("Insurance")||
+                if (thumbImage.get(position).get("Personal3").equalsIgnoreCase("Prescription") ||
+                        thumbImage.get(position).get("Personal3").equalsIgnoreCase("Insurance") ||
                         thumbImage.get(position).get("Personal3").equalsIgnoreCase("Bills")) {
 
                     holder.folder_name.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_folder_protected, 0, 0);
-                }else{
+                } else {
                     holder.folder_name.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_folder, 0, 0);
                 }
                 holder.imageview.setVisibility(View.GONE);
@@ -2841,9 +2827,9 @@ public class Filevault2 extends ActionBarActivity {
                 }
                 Log.v("buffer_upload", path_buffer.toString());
                 long check = ((imageFile.length() / 1024));
-                String splitfo_lenthcheck []=path.split("/");
-                int filenamelength=splitfo_lenthcheck[splitfo_lenthcheck.length-1].length();
-                if (check < 10000&&filenamelength<99) {
+                String splitfo_lenthcheck[] = path.split("/");
+                int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+                if (check < 10000 && filenamelength < 99) {
 
                     String splitstr[];
                     String chosenimg = "";
@@ -2975,7 +2961,7 @@ public class Filevault2 extends ActionBarActivity {
                         preventRotation(path);
                         Intent intent = new Intent(this, UploadService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
-                        intent.putExtra("add_path",path_buffer.toString());
+                        intent.putExtra("add_path", path_buffer.toString());
                         intent.putExtra(UploadService.uploadfrom, "filevault2");
                         intent.putExtra("exhistimg", exhistimg);
                         intent.putExtra("stringcheck", stringcheck);
@@ -3096,10 +3082,10 @@ public class Filevault2 extends ActionBarActivity {
                                 File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
 
-                                    boolean b=photo.delete();
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    boolean b = photo.delete();
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
                                 } else {
                                     photo = new File(getCacheDir(), "test.jpg");
                                 }
@@ -3318,7 +3304,7 @@ public class Filevault2 extends ActionBarActivity {
                 if (folder_name_exists(folder.trim())) {
                     folder_name.setError("A folder already exists with this name.");
                 } else if (folder.trim().equalsIgnoreCase("Prescription")
-                        ||folder.trim().equalsIgnoreCase("Insurance")||
+                        || folder.trim().equalsIgnoreCase("Insurance") ||
                         folder.trim().equalsIgnoreCase("Bills")) {
                     folder_name.setError("A folder with this name can't be created.");
                 } else if (folder != "" && (!folder.equals(""))) {

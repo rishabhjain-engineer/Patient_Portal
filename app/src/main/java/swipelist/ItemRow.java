@@ -2,7 +2,7 @@ package swipelist;
 
 public class ItemRow {
 
-	String testname,priceactual,discountprice;
+	private String testname,priceactual,discountprice;
 	
 	public ItemRow(String testname, String priceactual,String discountprice) {
 		super();

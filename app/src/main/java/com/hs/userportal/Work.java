@@ -52,45 +52,44 @@ import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 
 public class Work extends FragmentActivity {
-	AlertDialog alertDialog, alert;
-    static int month2,year2,day2,month1,year1,day1;
-    Calendar c;
-	int i = 0;
 
-	EditText wo, ad, pi;
-	static EditText from, to;
+    private AlertDialog alertDialog, alert;
+    private static int month2,year2,day2,month1,year1,day1;
+    private Calendar c;
+    private int i = 0;
+    private EditText wo, ad, pi;
+    private static EditText from, to;
 	//AutoCompleteTextView ar;
 	private EditText ci, st, co;
-	String id;
-    String[] nationlist ;
-    ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
-	String countryval = "", stateval = "", cityval = "";
-	ListView lv;
-	Button add;
-	Services service;
-	ProgressDialog progress, ghoom;
-	JSONObject sendData1, receiveData1, work, sendwork, newdata, receiveData,
-			sendData;
-	JSONArray subArray, temparray, subArrayTr, newarray, newarray1, newarray2,
-			subArray1;
-	Date date1, date2,datecurrent;
-	String PatientHistoryId="",CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
-	JSONArray workarray;
-	ArrayAdapter<String> adapter1;
-	ArrayList<String> area = new ArrayList<String>();
-	ArrayList<String> country = new ArrayList<String>();
-	ArrayList<String> state = new ArrayList<String>();
-	ArrayList<String> countrylist = new ArrayList<String>();
-	ArrayList<String> countryids = new ArrayList<String>();
-	ArrayList<String> city = new ArrayList<String>();
-	ArrayList<String> pin = new ArrayList<String>();
-	CheckBox present;
+    private String id;
+    private String[] nationlist ;
+    private ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
+    private String countryval = "", stateval = "", cityval = "";
+    private ListView lv;
+    private Button add;
+    private Services service;
+    private ProgressDialog progress, ghoom;
+    private JSONObject sendData1, receiveData1, work, sendwork, newdata, receiveData, sendData;
+    private JSONArray subArray, temparray, subArrayTr, newarray, newarray1, newarray2, subArray1;
+    private Date date1, date2,datecurrent;
+    private String PatientHistoryId="",CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
+    private JSONArray workarray;
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> area = new ArrayList<String>();
+    private ArrayList<String> country = new ArrayList<String>();
+    private ArrayList<String> state = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private ArrayList<String> city = new ArrayList<String>();
+    private ArrayList<String> pin = new ArrayList<String>();
+    private CheckBox present;
     private ScrollView scroll_id;
-    Custom_profile_adapter m_adapter;
-	ArrayList<String> m_listItems = new ArrayList<String>();
-    ArrayList<String> patienthistorylist=new ArrayList<String>();
-    String checkedit="";
-    int selection;
+    private Custom_profile_adapter m_adapter;
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private ArrayList<String> patienthistorylist=new ArrayList<String>();
+    private String checkedit="";
+    private int selection;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

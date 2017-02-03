@@ -89,20 +89,24 @@
             android:orientation="horizontal" >
 
             <Button
+                android:background="@color/header_color"
                 android:id="@+id/bSend"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
-                android:text="SEND" />
+                android:text="SEND"
+                android:textColor="@color/white"/>
 
             <Button
+                android:background="@color/header_color"
                 android:id="@+id/bCancel"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:text="CANCEL" />
+                android:text="CANCEL"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </LinearLayout>
 

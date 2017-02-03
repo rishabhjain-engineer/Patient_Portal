@@ -36,16 +36,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 
-public class changepass extends ActionBarActivity {
-    EditText old, pass, cpass;
-    Button b;
-    Services service;
-    AlertDialog alertDialog;
-    String id;
-    String authentication = "";
-    String mOldPassword, mNewPassword, mConfirmPassword;
+public class changepass extends BaseActivity {
+    private EditText old, pass, cpass;
+    private Button mChangePassowrdBtn;
+    private Services service;
+    private AlertDialog alertDialog;
+    private String id;
+    private String authentication = "";
+    private String mOldPassword, mNewPassword, mConfirmPassword;
      /*     1. atleast one small character [a-z]
             2. Password length allowed [ 8-16]*/
 
@@ -55,18 +56,14 @@ public class changepass extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.changepass);
+        setupActionBar();
         service = new Services(changepass.this);
         Intent i = getIntent();
         id = i.getStringExtra("id");
         old = (EditText) findViewById(R.id.etSubject);
         pass = (EditText) findViewById(R.id.etContact);
         cpass = (EditText) findViewById(R.id.editText4);
-        b = (Button) findViewById(R.id.bSend);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        mChangePassowrdBtn = (Button) findViewById(R.id.bSend);
         cpass.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
@@ -97,10 +94,11 @@ public class changepass extends ActionBarActivity {
         });
 
 
-        b.setOnClickListener(new OnClickListener() {
+        mChangePassowrdBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
+                mChangePassowrdBtn.setClickable(false);
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     mOldPassword = old.getEditableText().toString();
                     mNewPassword = pass.getEditableText().toString();
@@ -115,6 +113,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Password and confirm password field should be same!");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -126,6 +125,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Old and new password should not be same.");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -137,6 +137,7 @@ public class changepass extends ActionBarActivity {
                         alertDialog.setMessage("Password is not satisfying mentioned condition.");
                         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mChangePassowrdBtn.setClickable(true);
                                 alertDialog.dismiss();
                             }
                         });
@@ -225,6 +226,7 @@ public class changepass extends ActionBarActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            mChangePassowrdBtn.setClickable(true);
             if (!authentication.equals("true")) {
                 AlertDialog dialog = new AlertDialog.Builder(changepass.this).create();
                 dialog.setTitle("Session timed out!");

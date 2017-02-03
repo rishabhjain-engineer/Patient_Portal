@@ -49,6 +49,7 @@ import config.StaticHolder;
  * Created by rahul2 on 11/20/2015.
  */
 public class ViewOrderReport extends ActionBarActivity {
+
     private TextView lab_nameid, order_date, order_id, biling_address, promocodeid;
     private LinearLayout promolinear;
     private ProgressDialog progressDialog;
@@ -56,16 +57,16 @@ public class ViewOrderReport extends ActionBarActivity {
     private JSONArray orderHistoryarray;
     private RequestQueue queue;
     private GridView gridView;
-    int count;
-    JSONObject sendreport_data;
+    private int count;
+    private JSONObject sendreport_data;
     private ImageAdapter imageAdapter;
-    ImageLoader mImageLoader;
+    private ImageLoader mImageLoader;
     private JSONObject sendData;
     private String testName, OrderFilesUrl, OrderFilesUrlThumb;
-    static ArrayList<String> reportthumbImage = new ArrayList<String>();
-    static ArrayList<String> report_url = new ArrayList<String>();
-    NetworkImageView mNetworkImageView;
-    ArrayList<HashMap<String, String>> viewOrderreportList = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<String> reportthumbImage = new ArrayList<String>();
+    private static ArrayList<String> report_url = new ArrayList<String>();
+    private NetworkImageView mNetworkImageView;
+    private ArrayList<HashMap<String, String>> viewOrderreportList = new ArrayList<HashMap<String, String>>();
 
     protected void onCreate(Bundle savedBundle) {
         super.onCreate(savedBundle);

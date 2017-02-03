@@ -74,10 +74,9 @@ import utils.AdapterHelper;
 public class Packages extends ActionBarActivity implements PackagesAdapter.Package_btnListener {
 
     private ListView packagelist;
-
-    ArrayList<String> centerArray, categoryName_arry;
-    Package_filterExpandableAdapter filter_adapter;
-    Dialog filterDialog;
+    private ArrayList<String> centerArray, categoryName_arry;
+    private Package_filterExpandableAdapter filter_adapter;
+    private Dialog filterDialog;
     private ArrayList<HashMap<String, String>> Homepackagelist = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> finalOrderedList = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
@@ -85,67 +84,49 @@ public class Packages extends ActionBarActivity implements PackagesAdapter.Packa
     // private SegmentedGroup segmented, segment_pckg_instant;
     //-----------------------------------------------------------------------------------------
     private ProgressBar progress_id;
-
-
     private String testString = "";
-
     //filter variables--------------------------
-    ListView category_listId, centerFilter_list, genderFilter_list;
-    ImageButton categoryimg_sign, center_img_sign, gender_img_sign;
-    LinearLayout categorylinear_id, center_linearTxt_id, genderTxtLinearId, select_category, select_gender, select_centre;
-    String[] genderArray;
-    ArrayAdapter category_adapter, diagnostick_adapter, gender_adapter;
-    String sortgenderString, sortDiagnostickString, sortCtegoryString;
-    int categryToggle = 0, centerToggle = 0, genderToggle = 0;
-    RelativeLayout apply_id;
-    Button clear;
-    TextView sort_cat_text, sort_gender_text, sort_centre_text, text_close, warning, sort_gendername_text, sort_centrename_text, sort_category_text;
-    ScrollView scroll_down;
-
-    boolean filterApplied = false;
-
-
+    private ListView category_listId, centerFilter_list, genderFilter_list;
+    private ImageButton categoryimg_sign, center_img_sign, gender_img_sign;
+    private LinearLayout categorylinear_id, center_linearTxt_id, genderTxtLinearId, select_category, select_gender, select_centre;
+    private String[] genderArray;
+    private ArrayAdapter category_adapter, diagnostick_adapter, gender_adapter;
+    private String sortgenderString, sortDiagnostickString, sortCtegoryString;
+    private int categryToggle = 0, centerToggle = 0, genderToggle = 0;
+    private RelativeLayout apply_id;
+    private Button clear;
+    private TextView sort_cat_text, sort_gender_text, sort_centre_text, text_close, warning, sort_gendername_text, sort_centrename_text, sort_category_text;
+    private ScrollView scroll_down;
+    private boolean filterApplied = false;
     private EditText etSearch;
-
-
-    boolean loadingMore = true;
-
-    String[] default_listvalues = {"LIVER FUNCTION TEST", "KIDNEY FUNCTION TEST", "THYROID PROFILE", "LIPID PROFILE",
-            "CBC", "BLOOD SUGAR FASTING"};
-    String[] popular_packages = {"Diagno Labs", "Thyrocare", "GenX Diagnostics", "Special Packages"};
-    ArrayList<String> selectedItems;
-    LinearLayout botm_defaultcheck_prc;
-    String testname, ContactNo;
+    private boolean loadingMore = true;
+    private String[] default_listvalues = {"LIVER FUNCTION TEST", "KIDNEY FUNCTION TEST", "THYROID PROFILE", "LIPID PROFILE", "CBC", "BLOOD SUGAR FASTING"};
+    private String[] popular_packages = {"Diagno Labs", "Thyrocare", "GenX Diagnostics", "Special Packages"};
+    private ArrayList<String> selectedItems;
+    private LinearLayout botm_defaultcheck_prc;
+    private String testname, ContactNo;
     private TagView tagView;
     private ArrayList<String> tagList = new ArrayList<String>();
-
-    ConnectionDetector con;
-    List<String> testnameList = new ArrayList<String>();
-
-    Menu menu1;
-    View v;
-
-    ProgressDialog progressDialog;
-    float myRating = 0;
+    private ConnectionDetector con;
+    private List<String> testnameList = new ArrayList<String>();
+    private Menu menu1;
+    private View v;
+    private ProgressDialog progressDialog;
+    private float myRating = 0;
     // Button upload_btn;
-
-    SharedPreferences sharedpreferences, sharedPreferences;
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-
-    RequestQueue queue;
-    JsonObjectRequest jr;
-    JSONObject sendData;
-    ArrayList<HashMap<String, String>> packageAlllist;
-    ProgressDialog progress;
-
+    private SharedPreferences sharedpreferences, sharedPreferences;
+    private static final String MyPREFERENCES = "MyPrefs";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
+    private JSONObject sendData;
+    private ArrayList<HashMap<String, String>> packageAlllist;
+    private ProgressDialog progress;
     private ArrayList<String> parentItems = new ArrayList<String>();
     private ArrayList<Object> childItems = new ArrayList<Object>();
-
-
     //-----------------------------------------------------------------
-    ArrayList<HashMap<String, String>> prioritybaselist;
+    private ArrayList<HashMap<String, String>> prioritybaselist;
 
     protected void onCreate(Bundle savedInstancestate) {
         super.onCreate(savedInstancestate);

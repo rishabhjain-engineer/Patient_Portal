@@ -55,40 +55,37 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.MyMarkerView;
 
-public class Weight extends ActionBarActivity {
+public class Weight extends BaseActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
     private String id;
     private TextView wt_heading;
-    JSONObject sendData;
-    String parenthistory_ID;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    MiscellaneousTasks misc;
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartValues1 = new ArrayList<String>();
-    List<String> chartDates = new ArrayList<String>();
+    private JSONObject sendData;
+    private String parenthistory_ID;
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private MiscellaneousTasks misc;
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartValues1 = new ArrayList<String>();
+    private List<String> chartDates = new ArrayList<String>();
     private Services service;
-    ProgressDialog progress;
+    private ProgressDialog progress;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    int maxYrange = 0;
+    private int maxYrange = 0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
-        //this.getActionBar().setTitle("Weight");
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setTitle("Weight");
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
+        mActionBar.setTitle("Weight");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
         queue = Volley.newRequestQueue(this);

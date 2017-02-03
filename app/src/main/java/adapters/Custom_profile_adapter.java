@@ -19,10 +19,12 @@ import java.util.HashMap;
  * Created by rahul2 on 3/31/2016.
  */
 public class Custom_profile_adapter extends BaseAdapter {
-    Activity activity;
-    ArrayList<HashMap<String, String>> list;
+
+    private Activity activity;
+    private ArrayList<HashMap<String, String>> list;
     private LayoutInflater inflater;
     private String whichactivity;
+
     public Custom_profile_adapter(Activity activity,  ArrayList<HashMap<String, String>> list,String whichactivity){
         this.activity = activity;
         this.list = list;

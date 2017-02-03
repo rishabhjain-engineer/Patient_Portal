@@ -40,31 +40,30 @@ import org.json.JSONObject;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 /**
  * Created by ashish on 10/28/2015.
  */
-public class OrderDetails extends ActionBarActivity {
+public class OrderDetails extends BaseActivity {
 
-    private String OrderId, OrderDate, LabName, address,
-            TestName, OrderStatus, SamplePickupstatus, scroll_position;
+    private String OrderId, OrderDate, LabName, address, TestName, OrderStatus, SamplePickupstatus, scroll_position;
     private int GrandTotal, SubTotal, Discount, YourPrice, promodiscount;
-    private TextView order_id, order_date, lab_name, sample_pic_add, grand_total, test_name, amount,
-            sub_total, discount, your_price, promo_amount;
+    private TextView order_id, order_date, lab_name, sample_pic_add, grand_total, test_name, amount, sub_total, discount, your_price, promo_amount;
     private RelativeLayout promo_lay;
     private LinearLayout resend_confirmation, invoice;
     private RelativeLayout viewReportLinear_id;
     private ProgressDialog progressDialog;
     private JsonObjectRequest jr;
-    JSONObject confirm_data;
+    private JSONObject confirm_data;
     private JSONArray orderHistoryarray;
     private RequestQueue queue;
     private Button cancel_btn;
     private JSONObject sendData;
-    int checknull = 0;
-    String type, msg;
-    SharedPreferences sharedPreferences;
-    String patientId, cancel_reason;
+    private int checknull = 0;
+    private String type, msg;
+    private SharedPreferences sharedPreferences;
+    private String patientId, cancel_reason;
    /* private ArrayList<HashMap<String, String>> cancellist = new ArrayList<HashMap<String, String>>();*/
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -409,12 +408,6 @@ public class OrderDetails extends ActionBarActivity {
         dialog.show();
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtra_data() {
         Intent i = getIntent();

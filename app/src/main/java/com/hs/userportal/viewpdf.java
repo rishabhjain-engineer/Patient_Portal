@@ -22,7 +22,7 @@ import config.StaticHolder;
 
 public class viewpdf extends ActionBarActivity {
 
-	WebView webview;
+	private WebView webview;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

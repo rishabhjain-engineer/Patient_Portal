@@ -16,12 +16,13 @@ import android.widget.TextView;
 public class TourFragment extends Fragment {
 
 	public static final String POSITION_KEY = "FragmentPositionKey";
+
 	private int position;
-	LinearLayout tour1, tour2, tour3, tour4, tour0, tour5, tour0_1;
-	ImageView image;
-	TextView welcome, skip_scr1, skip_scr2, skip_scr3;
-	Button tour, exit, bTour_Zureka, bTour_Continue;
-	RelativeLayout buttonbar;
+	private LinearLayout tour1, tour2, tour3, tour4, tour0, tour5, tour0_1;
+	private ImageView image;
+	private TextView welcome, skip_scr1, skip_scr2, skip_scr3;
+	private Button tour, exit, bTour_Zureka, bTour_Continue;
+	private RelativeLayout buttonbar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

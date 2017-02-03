@@ -42,24 +42,23 @@ import config.StaticHolder;
 
 public class UploadProfileService extends IntentService {
 
-    public static final String ARG_FILE_PATH = "file_path";
-    public static final String UPLOAD_STATE_CHANGED_ACTION = "com.readystatesoftware.simpl3r.example.UPLOAD_STATE_CHANGED_ACTION";
-    public static final String UPLOAD_CANCELLED_ACTION = "com.readystatesoftware.simpl3r.example.UPLOAD_CANCELLED_ACTION";
-    public static final String S3KEY_EXTRA = "s3key";
-    public static final String PERCENT_EXTRA = "percent";
-    public static final String MSG_EXTRA = "msg";
-    public static final String uploadfrom = "uploadfrom";
-    JSONObject sendData;
-    String patientId;
+    private static final String ARG_FILE_PATH = "file_path";
+    private static final String UPLOAD_STATE_CHANGED_ACTION = "com.readystatesoftware.simpl3r.example.UPLOAD_STATE_CHANGED_ACTION";
+    private static final String UPLOAD_CANCELLED_ACTION = "com.readystatesoftware.simpl3r.example.UPLOAD_CANCELLED_ACTION";
+    private static final String S3KEY_EXTRA = "s3key";
+    private static final String PERCENT_EXTRA = "percent";
+    private static final String MSG_EXTRA = "msg";
+    private static final String uploadfrom = "uploadfrom";
+    private JSONObject sendData;
+    private String patientId;
     private static final int NOTIFY_ID_UPLOAD = 1337;
-    RequestQueue queue1, queue2;
+    private RequestQueue queue1, queue2;
     private AmazonS3Client s3Client;
     private Uploader1 uploader;
-    JsonObjectRequest jr1, jr2;
+    private JsonObjectRequest jr1, jr2;
     private NotificationManager nm;
-    final Handler handler = new Handler();
-
-    String fname, afterDecode, uplodfrm,oldimage,oldthumbimage;
+    private final Handler handler = new Handler();
+    private String fname, afterDecode, uplodfrm,oldimage,oldthumbimage;
 
     public UploadProfileService() {
         super("simpl3r-example-upload");

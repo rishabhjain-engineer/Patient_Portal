@@ -11,7 +11,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="Legend"
-        android:textColor="#1998ca"
+        android:textColor="@color/text_color_blue"
         android:textSize="20sp" />
 
     <LinearLayout

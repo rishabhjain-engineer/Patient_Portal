@@ -43,18 +43,15 @@ import java.util.UUID;
 public class Uploader1 {
 
     private static final long MIN_DEFAULT_PART_SIZE = 5 * 1024 * 1024;
-
     private static final String TAG = "Simpl3r";
     private static final String PREFS_NAME = "preferences_simpl3r";
     private static final String PREFS_UPLOAD_ID = "_uploadId";
     private static final String PREFS_ETAGS = "_etags";
     private static final String PREFS_ETAG_SEP = "~~";
-
     private AmazonS3Client s3Client;
     private String s3bucketName;
     private String s3key;
     private File file;
-
     private SharedPreferences prefs;
     private long partSize = MIN_DEFAULT_PART_SIZE;
     private UploadProgressListener progressListener;

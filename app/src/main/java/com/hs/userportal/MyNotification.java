@@ -34,15 +34,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MyNotification extends ActionBarActivity {
+import ui.BaseActivity;
 
-    ListView notifications;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> noti = new ArrayList<String>();
-    String usid, user, cont, code, mailid;
-    Services service;
-    JSONObject sendData, receiveData;
-    TextView nonoti;
+public class MyNotification extends BaseActivity {
+
+    private ListView notifications;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> noti = new ArrayList<String>();
+    private String usid, user, cont, code, mailid;
+    private Services service;
+    private JSONObject sendData, receiveData;
+    private TextView nonoti;
 
 
     @Override
@@ -60,10 +62,7 @@ public class MyNotification extends ActionBarActivity {
 
         setContentView(R.layout.mynotification);
 
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
 
         service = new Services(MyNotification.this);
         nonoti = (TextView) findViewById(R.id.tvNoNoti);

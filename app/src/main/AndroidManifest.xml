@@ -69,6 +69,8 @@
 
         <service android:name="com.hs.userportal.UploadService" />
 
+        <service android:name="utils.QuestionReportPageService" />
+
         <activity
             android:name="com.hs.userportal.MainActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -396,6 +398,14 @@
 
         <activity
             android:name="com.hs.userportal.GraphDetailsNew"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.QuestionireActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.QuestionReportActivity"
             android:screenOrientation="portrait" />
 
         <activity

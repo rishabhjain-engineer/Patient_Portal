@@ -47,20 +47,19 @@ import utils.MyMarkerView;
 public class GraphDetailsNew extends ActionBarActivity {
     private LineChart linechart;
     private PieChart pi_chart;
-
-    ScrollView scroll;
-    ArrayList<String> chartvakueList;
-    List<String> chartDates = new ArrayList<String>();
-    List<String> chartValues = new ArrayList<String>();
-    List<String> casecodes = new ArrayList<String>();
-    List<String> caseIds = new ArrayList<String>();
-    List<String> chartunitList;
-    String caseindex = "";
+    private ScrollView scroll;
+    private ArrayList<String> chartvakueList;
+    private List<String> chartDates = new ArrayList<String>();
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> casecodes = new ArrayList<String>();
+    private List<String> caseIds = new ArrayList<String>();
+    private List<String> chartunitList;
+    private String caseindex = "";
     private Group_testAdapter adapter;
-    String RangeFrom = null, RangeTo = null, UnitCode = "";
-    Services service;
+    private String RangeFrom = null, RangeTo = null, UnitCode = "";
+    private Services service;
     private ListView graph_listview_id;
-    int maxYrange = 0;
+    private int maxYrange = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

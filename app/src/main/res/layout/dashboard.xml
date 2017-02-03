@@ -5,10 +5,68 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/header_color">
+
+
+        <LinearLayout
+            android:id="@+id/menu"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/menuimgbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_menu"
+                android:clickable="true" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/notification"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/bell_large"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/noti_count"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignTop="@+id/notification"
+            android:layout_marginLeft="-8dp"
+            android:layout_toEndOf="@+id/notification"
+            android:layout_toRightOf="@+id/notification"
+            android:background="@drawable/notifshape"
+            android:clickable="true"
+            android:paddingBottom="0dp"
+            android:paddingLeft="6dp"
+            android:paddingTop="1dp"
+            android:text="2"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/top_relative"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#3cbed8"
+        android:layout_below="@+id/header"
+        android:background="@color/header_color"
         android:orientation="vertical">
 
 
@@ -65,15 +123,6 @@
                 android:visibility="invisible" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/separator2"
-            android:layout_width="match_parent"
-            android:layout_height="0.8dp"
-            android:layout_below="@+id/notification"
-            android:layout_marginTop="10dp"
-            android:background="#7F7F7F"
-            android:clickable="false"
-            android:orientation="vertical" />
 
         <TextView
             android:id="@+id/username"
@@ -119,62 +168,8 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/menu"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:layout_alignBottom="@+id/separator2"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/menuimgbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_menu"
-                android:clickable="true" />
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/notification"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignLeft="@+id/username"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/username"
-            android:layout_marginTop="13dp"
-            android:background="@drawable/bell_large"
-            android:clickable="true" />
-
-        <TextView
-            android:id="@+id/noti_count"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignTop="@+id/notification"
-            android:layout_marginLeft="-8dp"
-            android:layout_toEndOf="@+id/notification"
-            android:layout_toRightOf="@+id/notification"
-            android:background="@drawable/notifshape"
-            android:clickable="true"
-            android:paddingBottom="0dp"
-            android:paddingLeft="6dp"
-            android:paddingTop="1dp"
-            android:text="2"
-            android:textColor="@android:color/white"
-            android:textSize="12dp"
-            android:textStyle="bold" />
-
     </RelativeLayout>
-    <!-- <View
-         android:layout_width="fill_parent"
-         android:background="#ffffff"
-         android:layout_below="@+id/top_relative"
-         android:id="@+id/v_id"
-         android:layout_height="2dp"></View>-->
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="fill_parent"
@@ -199,435 +194,398 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/linearLayout2"
+        android:layout_margin="10dp"
+        android:background="#ffffff"
         android:orientation="vertical">
 
-        <ScrollView
+        <RelativeLayout
+            android:id="@+id/update_profile"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/logout"
-            android:layout_below="@+id/linearLayout2"
-            android:layout_weight="1">
+            android:layout_height="60dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_margin="10dp"
-                android:background="#ffffff"
-                android:orientation="vertical">
+            <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/userdash" />
 
-                <RelativeLayout
-                    android:id="@+id/update_profile"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="70dp"
+                android:padding="10dp"
+                android:text="My Profile"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/userdash" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
+        </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:padding="10dp"
-                        android:text="My Profile"
-                        android:textColor="#2d95bf"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"></View>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/my_health"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"></View>
+            <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/healthdash" />
 
-                <RelativeLayout
-                    android:id="@+id/my_health"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="70dp"
+                android:padding="10dp"
+                android:text="My Health"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/healthdash" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:padding="10dp"
-                        android:text="My Health"
-                        android:textColor="#F0C419"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        </RelativeLayout>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"></View>
 
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/lab_records"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"></View>
+            <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/reportdash" />
 
-                <RelativeLayout
-                    android:id="@+id/lab_records"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="70dp"
+                android:padding="10dp"
+                android:text="My Reports"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/reportdash" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
+        </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:padding="10dp"
-                        android:text="My Reports"
-                        android:textColor="#f15a5a"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"></View>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/find_labs"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"></View>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:padding="10dp"
+                android:text="Find Labs"
+                android:textColor="#F5AE4C"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:id="@+id/find_labs"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:visibility="gone">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:padding="10dp"
-                        android:text="Find Labs"
-                        android:textColor="#F5AE4C"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        </RelativeLayout>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"
+            android:visibility="gone"></View>
 
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/file_vault"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"
-                    android:visibility="gone"></View>
+            <ImageButton
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/filedash" />
 
-                <RelativeLayout
-                    android:id="@+id/file_vault"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="70dp"
+                android:padding="10dp"
+                android:text="My Repository"
+                android:textColor="@color/text_color_blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/filedash" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:padding="10dp"
-                        android:text="My Repository"
-                        android:textColor="#4eba6f"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        </RelativeLayout>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"></View>
 
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/my_family"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"></View>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/familydash" />
 
-                <RelativeLayout
-                    android:id="@+id/my_family"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+            <TextView
+                android:id="@+id/family"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:padding="10dp"
+                android:text="My Family"
+                android:textColor="#D971AC"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/familydash" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
+        </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/family"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:padding="10dp"
-                        android:text="My Family"
-                        android:textColor="#D971AC"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"></View>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/order_history"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"></View>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:padding="10dp"
+                android:text="Order History"
+                android:textColor="#CB5551"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:id="@+id/order_history"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:visibility="gone">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:padding="10dp"
-                        android:text="Order History"
-                        android:textColor="#CB5551"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+        </RelativeLayout>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.25dp"
+            android:background="#80808080"
+            android:visibility="gone"></View>
 
-                </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/packages"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="#80808080"
-                    android:visibility="gone"></View>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:padding="10dp"
+                android:text="Health Packages"
+                android:textColor="#9C67AD"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:id="@+id/packages"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:padding="10dp"
-                        android:text="Health Packages"
-                        android:textColor="#9C67AD"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
-                </RelativeLayout>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
+        </RelativeLayout>
 
 
-                <RelativeLayout
-                    android:id="@+id/link"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/layout_selector"
-                    android:clickable="true"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <FrameLayout
-                        android:id="@+id/FrameLayout1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <com.facebook.login.widget.LoginButton
-                            android:id="@+id/login_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone" />
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:background="@drawable/facebookdash" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="30dp"
-                            android:padding="10dp"
-                            android:text="Link acount with facebook"
-                            android:textColor="#3B5998"
-                            android:textSize="16dp"
-                            android:textStyle="bold" />
-
-                    </FrameLayout>
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/arrow_grey" />
-                </RelativeLayout>
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/logout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#DADADA"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="22dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="22dp"
-            android:background="@drawable/logout" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/link"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:padding="10dp"
-            android:text="Logout"
-            android:textColor="#FF0700"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            android:background="@drawable/layout_selector"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <FrameLayout
+                android:id="@+id/FrameLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/facebookdash" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:padding="10dp"
+                    android:text="Link acount with facebook"
+                    android:textColor="@color/text_color_blue"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/arrow_grey" />
+        </RelativeLayout>
     </LinearLayout>
 
     <TextView
@@ -637,11 +595,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#F4F4F4"
         android:gravity="center"
         android:padding="8dp"
         android:text="Patient ID:"
-        android:textColor="#1DBBE3"
-        android:textSize="14dp"
+        android:textColor="@color/header_color"
+        android:textSize="16sp"
         android:textStyle="bold" />
+
 </RelativeLayout>

@@ -7,7 +7,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class DeviceJudge {
-    static String tag="MainActivity";
+
+	private static String tag="MainActivity";
+
 	public static boolean isTabletDevice(Context activityContext) {
 	    // Verifies if the Generalized Size of the device is XLARGE to be
 	    // considered a Tablet

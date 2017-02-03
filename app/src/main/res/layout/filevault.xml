@@ -213,6 +213,6 @@
             android:layout_alignParentRight="true"
             android:layout_margin="25dp"
             android:background="@drawable/addfile_button" />
-
     </RelativeLayout>
+
 </LinearLayout>

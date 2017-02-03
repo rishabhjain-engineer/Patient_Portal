@@ -30,30 +30,29 @@ import java.util.Calendar;
  */
 
 public class PackageTestDetails extends Activity {
+
     //WebView privacy;
-    String testname, Prerequisites,ReportingTime,pkgdescription,about_centre,prerequisites_str;
-  /*  private TextView etCentreName, etAreaHeader, etRating, test_detail_name, test_parameter,
-            test_description, dis, price_value, price;*/
+    private String testname, Prerequisites,ReportingTime,pkgdescription,about_centre,prerequisites_str;
+    /*  private TextView etCentreName, etAreaHeader, etRating, test_detail_name, test_parameter,test_description, dis, price_value, price;*/
     private int testdetail_toggle=0,packgdesc_toggle=0,faq_toggle=0,about_centre_toggle=0;
     private TextView etCentreName, etAreaHeader, etRating,about_centreName,reporting_time,testdetailHead,packagedescrHead,faqHead,test_detail_name,lab_name;
-    WebView testDetailWeb,pkg_descriptionWeb,centreWeb,faqWeb,prequi_content;
+    private WebView testDetailWeb,pkg_descriptionWeb,centreWeb,faqWeb,prequi_content;
     private ImageView lab_logo;
-    String centreid, rating, offer_dis, mrplabel, finalprice, no_param;
-    String testname_api, TestDescription_api, ReportingTime_api;
-    JSONObject sendData, receiveData;
-    JSONArray centreArray;
-    ScrollView scroll;
-
-    Services service;
-    JSONArray subArray;
-    String imagstr = null;
-    ProgressDialog progress;
-    String testdetails, lab_namestr, city, contact_details, mobile_no, landline, mail, lat, lng;
-    Boolean open_now, home_collect, online, credit, ambulance;
-    RequestQueue queue;
-    JsonObjectRequest jr;
+    private String centreid, rating, offer_dis, mrplabel, finalprice, no_param;
+    private String testname_api, TestDescription_api, ReportingTime_api;
+    private JSONObject sendData, receiveData;
+    private JSONArray centreArray;
+    private ScrollView scroll;
+    private Services service;
+    private JSONArray subArray;
+    private String imagstr = null;
+    private ProgressDialog progress;
+    private String testdetails, lab_namestr, city, contact_details, mobile_no, landline, mail, lat, lng;
+    private Boolean open_now, home_collect, online, credit, ambulance;
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
     //Typeface tf;
-    int socketTimeout = 30000;
+    private int socketTimeout = 30000;
 
 
     @Override

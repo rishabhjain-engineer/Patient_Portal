@@ -11,9 +11,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 class Authentication extends AsyncTask<Void, Void, Void> {
-	Activity context;
-	String authentication="";
-	String whichbtn,activityname;
+	private Activity context;
+	private String authentication="";
+	private String whichbtn,activityname;
 	
 	public Authentication(Activity context, String activityname , String whichbtnclick){
 		this.context=context;

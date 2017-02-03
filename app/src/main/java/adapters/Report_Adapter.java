@@ -25,9 +25,9 @@ public class Report_Adapter extends BaseAdapter {
 
     private JSONArray reportarray;
     private Activity activity;
-    ViewHolder holder = null;
+    private ViewHolder holder = null;
     private LayoutInflater inflater;
-    int flag = 0;
+    private int flag = 0;
     private ArrayList<HashMap<String, String>> test_list = new ArrayList<HashMap<String, String>>();
     private String secondary_cat;
 

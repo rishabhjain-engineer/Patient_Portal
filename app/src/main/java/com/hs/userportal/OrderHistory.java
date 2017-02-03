@@ -41,24 +41,25 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 /**
  * Created by ashish on 10/27/2015.
  */
-public class OrderHistory extends ActionBarActivity {
+public class OrderHistory extends BaseActivity {
 
-    JSONArray orderarray;
-    ConnectionDetector con;
+    private JSONArray orderarray;
+    private ConnectionDetector con;
     private ListView order_list;
-    JsonObjectRequest jr;
-    String patientID;
-    RequestQueue queue;
-    ProgressDialog progressDialog;
-    String scroll_position = null;
+    private JsonObjectRequest jr;
+    private String patientID;
+    private RequestQueue queue;
+    private ProgressDialog progressDialog;
+    private String scroll_position = null;
     private OrderlistAdapter adapter;
-    ArrayList<HashMap<String, String>> order_listarr = new ArrayList<HashMap<String, String>>();
-    JSONObject sendData;
-    List<OrderList> sortList = new ArrayList<OrderList>();
+    private ArrayList<HashMap<String, String>> order_listarr = new ArrayList<HashMap<String, String>>();
+    private JSONObject sendData;
+    private List<OrderList> sortList = new ArrayList<OrderList>();
    // ArrayList<HashMap<String, String>> family = new ArrayList<>();
     private EditText select_member;
     private int check_fill =0;
@@ -74,10 +75,11 @@ public class OrderHistory extends ActionBarActivity {
         order_list.setAdapter(adapter);
         select_member = (EditText) findViewById(R.id.select_member);
         select_member.setInputType(InputType.TYPE_NULL);
-        ActionBar action = getSupportActionBar();
+        setupActionBar();
+        /*ActionBar action = getSupportActionBar();
         action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1DBBE3")));
         action.setIcon(new ColorDrawable(Color.parseColor("#1DBBE3")));
-        action.setDisplayHomeAsUpEnabled(true);
+        action.setDisplayHomeAsUpEnabled(true);*/
         Intent i = getIntent();
         scroll_position = i.getStringExtra("scroll_position");
        // family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");

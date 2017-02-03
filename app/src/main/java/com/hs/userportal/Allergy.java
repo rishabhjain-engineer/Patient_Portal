@@ -34,20 +34,20 @@ public class Allergy extends FragmentActivity {
 
     private TextView weighttxtid,heighttxt_id,alergytxtid;
     private ListView listView;
-
     private String id;
     private Services service;
     private Button add_allergy;
-    ArrayAdapter<String> m_adapter;
+    private ArrayAdapter<String> m_adapter;
     private ImageButton back_pic;
     private TextView allergy_title;
-    String submitstatus="",onSubmitAllergiesName="";
-    ArrayList<String> selectedItems;
-    String[] splitAllergies;
-    ArrayList<String> m_listItems = new ArrayList<String>();
-    Dialog filterDialog;
+    private String submitstatus="",onSubmitAllergiesName="";
+    private ArrayList<String> selectedItems;
+    private String[] splitAllergies;
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private Dialog filterDialog;
     private ArrayList<HashMap<String,String>> weight_contentlists=new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String,String>> allergiesName_list=new ArrayList<HashMap<String, String>>();
+
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);

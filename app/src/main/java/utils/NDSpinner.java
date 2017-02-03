@@ -9,7 +9,7 @@ import android.widget.Spinner;
  */
 public class NDSpinner extends Spinner {
 
-    OnItemSelectedListener listener;
+    private OnItemSelectedListener listener;
 
     public NDSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);

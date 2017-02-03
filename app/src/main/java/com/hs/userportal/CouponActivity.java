@@ -44,26 +44,25 @@ import config.StaticHolder;
 
 public class CouponActivity extends ActionBarActivity {
 
-	JsonObjectRequest jr;
-	RequestQueue queue;
-	String centerId, patientId;
-	String closeTimeString = "";
-	JSONArray centreArray;
-	JSONObject sendData;
-	TextView tvAddress, tvTime, tvOpen, tvContact, tvLabName, tvVoucherId, tvValidTill, tvPatName, tvPatEmail,
-	tvDiscount, tvRating;
-	TextView tvMon, tvTue, tvWed, tvThu, tvFri, tvSat, tvSun, tvTerms, tvTotalPrice, tvTotalPayable;
-	String patName, patEmail, patVoucher, patDay, maxdiscount, rating,contactNumber;
-	Button bSMS, bEmail;
-	Calendar cal;
-	int checksmswt_email=0;
-	SimpleDateFormat dateFormat, timeFormat;
-	LinearLayout bottom, testPricesDynamic, layTotal;
-	ProgressDialog progressDialog;
-	JSONArray testDetails;
-	boolean isTestNull = true;
-	JSONArray priceArray;
-	LinearLayout discountlin;
+	private JsonObjectRequest jr;
+	private RequestQueue queue;
+	private String centerId, patientId;
+	private String closeTimeString = "";
+	private JSONArray centreArray;
+	private JSONObject sendData;
+	private TextView tvAddress, tvTime, tvOpen, tvContact, tvLabName, tvVoucherId, tvValidTill, tvPatName, tvPatEmail, tvDiscount, tvRating;
+	private TextView tvMon, tvTue, tvWed, tvThu, tvFri, tvSat, tvSun, tvTerms, tvTotalPrice, tvTotalPayable;
+	private String patName, patEmail, patVoucher, patDay, maxdiscount, rating,contactNumber;
+	private Button bSMS, bEmail;
+	private Calendar cal;
+	private int checksmswt_email=0;
+	private SimpleDateFormat dateFormat, timeFormat;
+	private LinearLayout bottom, testPricesDynamic, layTotal;
+	private ProgressDialog progressDialog;
+	private JSONArray testDetails;
+	private boolean isTestNull = true;
+	private JSONArray priceArray;
+	private LinearLayout discountlin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

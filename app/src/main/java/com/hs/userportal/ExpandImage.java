@@ -28,15 +28,15 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class ExpandImage extends ActionBarActivity {
-    TouchImageView image;
-    String imgname = "", imgnamereceived = "";
+    private TouchImageView image;
+    private String imgname = "", imgnamereceived = "";
     private final String path = Environment.getExternalStorageDirectory()
             .toString()
             + "/"
             + Environment.DIRECTORY_DCIM
             + "/Patient Portal";
-    ProgressBar prog;
-    Intent z;
+    private ProgressBar prog;
+    private Intent z;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
