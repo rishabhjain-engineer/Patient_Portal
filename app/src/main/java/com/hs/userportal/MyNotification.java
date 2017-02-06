@@ -63,7 +63,6 @@ public class MyNotification extends BaseActivity {
         mailid = i.getStringExtra("UserMailId");
 
         setContentView(R.layout.mynotification);
-
         setupActionBar();
 
         service = new Services(MyNotification.this);
@@ -137,8 +136,7 @@ public class MyNotification extends BaseActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                Log.i("ayaz", "Send is Clicked");
-                                new MyAsynckTask(sendData, false, true);
+                                new MyAsynckTask(sendData, false, true).execute();
                             }
                         }
                     });
@@ -154,22 +152,17 @@ public class MyNotification extends BaseActivity {
                     alertDialog.setNeutralButton("Resend",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
-                                        Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        sendData = new JSONObject();
-                                        try {
-                                            sendData.put("userid", usid);
-                                            sendData.put("userName", user);
-                                            sendData.put("userRole", "Patient");
-                                            sendData.put("UserMailId", "");
-                                            sendData.put("ContactNo", Helper.resend_sms);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Log.i("ayaz", "Resend is Clicked");
-                                        new MyAsynckTask(sendData, false, true).execute();
+                                    sendData = new JSONObject();
+                                    try {
+                                        sendData.put("userid", usid);
+                                        sendData.put("userName", user);
+                                        sendData.put("userRole", "Patient");
+                                        sendData.put("UserMailId", "");
+                                        sendData.put("ContactNo", Helper.resend_sms);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
+                                    new MyAsynckTask(sendData, false, true).execute();
                                 }
 
                             });
@@ -251,12 +244,10 @@ public class MyNotification extends BaseActivity {
             dataToSend = jsonObject;
             this.verifyEmail = verifyEmail;
             this.verifysms = verifysms;
-            Log.i("ayaz", "MyAsynckTask constructor: " + "verifyEmail : " + verifyEmail + "verifysms: " + verifysms);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.i("ayaz", "MyAsynckTask do in Background" + "verifyEmail : " + verifyEmail + "verifysms: " + verifysms);
             if (verifyEmail) {
                 service.verifyemail(dataToSend);
             } else if (verifysms) {
