@@ -711,7 +711,7 @@ public class logout extends Activity implements View.OnClickListener {
                 fbSubArray = slice.getJSONArray("Table");
                 if (fbSubArray.getJSONObject(0).getString("FacebookId").equals("")
                         || fbSubArray.getJSONObject(0).getString("FacebookId").equals("null")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO commented by spartans  ; to show fb link change visibility ;
                     fbLinked = "false";
 
                 } else {
@@ -1343,7 +1343,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
                 if (receiveDataUnLink.get("d").equals("UnLinked Successfully")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO set visible : SPARTANS
                     unlinkmenu = 0;
                     fbLinked = "false";
                 }
