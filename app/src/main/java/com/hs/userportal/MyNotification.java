@@ -132,7 +132,7 @@ public class MyNotification extends BaseActivity {
                                 sendData = new JSONObject();
                                 try {
                                     sendData.put("code", input.getText().toString());
-                                    sendData.put("patientcode", usid);
+                                    sendData.put("patientcode", code);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -153,16 +153,22 @@ public class MyNotification extends BaseActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     sendData = new JSONObject();
-                                    try {
-                                        sendData.put("userid", usid);
+                                    if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
+                                        Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        try {
+                                      /*  sendData.put("userid", usid);
                                         sendData.put("userName", user);
                                         sendData.put("userRole", "Patient");
                                         sendData.put("UserMailId", "");
-                                        sendData.put("ContactNo", Helper.resend_sms);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        sendData.put("ContactNo", Helper.resend_sms);*/
+                                            sendData.put("code", input.getText().toString());
+                                            sendData.put("patientcode", code);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        new MyAsynckTask(sendData, false, true).execute();
                                     }
-                                    new MyAsynckTask(sendData, false, true).execute();
                                 }
 
                             });
