@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:background="@color/header_color">
 
@@ -58,115 +58,6 @@
             android:textSize="12dp"
             android:textStyle="bold" />
 
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/top_relative"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:background="@color/header_color"
-        android:orientation="vertical">
-
-
-        <!--<ImageButton
-            android:id="@+id/user_pic"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@null"
-            android:gravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/dashpic_update" />-->
-
-        <RelativeLayout
-            android:id="@+id/picrel"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_below="@+id/separator2"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@null"
-            android:gravity="center"
-            android:scaleType="centerInside">
-
-            <ImageView
-                android:id="@+id/imageView14"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/pic_colored_border" />
-
-            <ImageView
-                android:id="@+id/user_pic"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="2dp"
-                android:clickable="true"
-                android:src="@drawable/dashpic_update" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:indeterminate="false"
-                android:visibility="invisible" />
-        </RelativeLayout>
-
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/picrel"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="12dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="User Name"
-            android:textColor="#ffffff"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/editimg"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@+id/username"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/ic_family"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/members"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/picrel"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="-3dp"
-            android:background="@drawable/family_number"
-            android:gravity="center"
-            android:text="00"
-            android:textColor="@android:color/white"
-            android:textSize="10dp"
-            android:textStyle="bold"
-            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -589,6 +480,61 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <HorizontalScrollView
+        android:id="@+id/horizontal_"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_above="@+id/patient_id">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="140dp"
+                android:scaleType="fitXY"
+                android:layout_height="match_parent"
+                android:src="@drawable/h1"
+                android:text="Button1" />
+
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="140dp"
+                android:scaleType="fitXY"
+                android:layout_height="match_parent"
+                android:src="@drawable/h5"
+                android:text="Button1" />
+
+            <ImageView
+                android:layout_width="140dp"
+                android:scaleType="fitXY"
+                android:layout_height="match_parent"
+                android:src="@drawable/h3"
+                android:text="Button1" />
+
+            <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="140dp"
+                android:scaleType="fitXY"
+                android:layout_height="match_parent"
+                android:src="@drawable/h4"
+                android:text="Button1" />
+
+            <ImageView
+                android:layout_width="140dp"
+                android:scaleType="fitXY"
+                android:layout_height="match_parent"
+                android:src="@drawable/h2"
+                android:text="Button1" />
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
     <TextView
         android:id="@+id/patient_id"
         android:layout_width="match_parent"
@@ -602,5 +548,116 @@
         android:textColor="@color/header_color"
         android:textSize="16sp"
         android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/top_relative"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/header"
+        android:background="@color/header_color"
+        android:orientation="vertical">
+
+
+        <!--<ImageButton
+            android:id="@+id/user_pic"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/dashpic_update" />-->
+
+        <RelativeLayout
+            android:id="@+id/picrel"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_below="@+id/separator2"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="center"
+            android:scaleType="centerInside">
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/pic_colored_border" />
+
+            <ImageView
+                android:id="@+id/user_pic"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="2dp"
+                android:clickable="true"
+                android:src="@drawable/dashpic_update" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="false"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/picrel"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="User Name"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/editimg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/username"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/ic_family"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/picrel"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="-3dp"
+            android:background="@drawable/family_number"
+            android:gravity="center"
+            android:text="00"
+            android:textColor="@android:color/white"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

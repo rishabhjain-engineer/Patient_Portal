@@ -83,6 +83,7 @@ public class Weight extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
+    JSONArray jsonArrayToSend = new JSONArray();
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -105,7 +106,13 @@ public class Weight extends BaseActivity {
         }
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(false);
-        weight_graphView.getSettings().setDisplayZoomControls(false);
+        settings.setDisplayZoomControls(false);
+
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        weight_graphView.setInitialScale(1);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        //mWebView.loadUrl("file:///android_asset/html/index.html");
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
         weight_listId = (ListView) findViewById(R.id.weight_listId);
@@ -117,7 +124,6 @@ public class Weight extends BaseActivity {
         Intent z = getIntent();
         id = z.getStringExtra("id");
 
-        //new BackgroundProcess().execute();
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,7 +171,9 @@ public class Weight extends BaseActivity {
         MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
         // set the marker to the chart
         linechart.setMarkerView(mv);
-      //  linechart.animateX(3500);
+        linechart.animateX(3500);
+
+        new BackgroundProcess().execute();
     }
 
     public void setLinechart() {
@@ -316,30 +324,9 @@ public class Weight extends BaseActivity {
             weight_listId.setAdapter(adapter);
             Utility.setListViewHeightBasedOnChildren(weight_listId);
             String db = null;
-
-
-            // chartValues.add("")
             try {
-                /*db = "<!DOCTYPE html><html><head><title></title>"
-                         + "<link href='kendo.common.min.css' rel='stylesheet'/><link href='kendo.dataviz.metro.min.css' rel='stylesheet'/>"
-                         + "<link href='kendo.metro.min.css' rel='stylesheet'/><script src='jquery-1.9.1.js'></script><script src='kendo.all.min.js'>"
-                         + "</script></head><body><div id='example' class='k-content'>"
-                         + "<div class='chart-wrapper'><div id ='compareChart'></div><br /><br /><table class='history'>"
-                         //	+ divDataBullet
-                         + "</table></div>"
-                         + "<script>function createChart(){"
-                         + "hello"
-                         + "} function createCompareChart() {"
-                         + misc.getJQueryCompare(chartValues,
-                         chartValues, chartDates)
-                         + "}"
-                         + "$(document).ready(function(){setTimeout(function(){ createCompareChart();$('#example').bind('kendo:skinChange', "
-                         + "function(e){ createCompareChart();});}, 100);});"
-                         + "</script>"
-                         + "<style scoped> .history{border-collapse: collapse;width: 100%;}.history td.chart{width: 430px;}.history .k-chart{height: 65px;width: 400px;}"
-                         + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
-                         + "</div></body></html>";*/
-                db = "<!DOCTYPE html> <html> <head>" +
+
+              /*db = "<!DOCTYPE html> <html> <head>" +
                         " <title></title>" +
                         " <link rel='stylesheet' href='kendo.common.min.css' />" +
                         " <link rel='stylesheet' href='kendo.default.min.css' />"
@@ -405,8 +392,36 @@ public class Weight extends BaseActivity {
                         "\n" +
                         "\n" +
                         "</body>\n" +
-                        "</html>";
-                setLinechart();
+                        "</html>";*/
+
+                db = "<!DOCTYPE html><html><head><title></title><link data-require=\"nvd3@1.1.14-beta\" " +
+                        "data-semver=\"1.1.14-beta\" rel=\"stylesheet\" href=\"nv.d3.css\"/>" +
+                        "<script data-require=\"d3@3.3.11\" data-semver=\"3.3.11\" src=\"d3.js\">" +
+                        "</script><script data-require=\"nvd3@1.1.14-beta\" data-semver=\"1.1.14-beta\" src=\"nv.d3.js\">" +
+                        "</script><script src=\"jquery.js\"></script></head>" +
+                        "<style>.nv-point {stroke-opacity: 1 !important;stroke-width: 5px;fill-opacity: 1 !important}.bullet" +
+                        " { font: 10px sans-serif; }.bullet .marker { stroke: #000; stroke-width: 2px; }.bullet .tick line " +
+                        "{ stroke: #666; stroke-width: .5px; }.bullet .range.s0 { fill: #eee; }.bullet .range.s1 { fill: #ddd; }" +
+                        ".bullet .range.s2 { fill: #ccc; }.bullet .measure.s0 { fill: steelblue; }.bullet .title { font-size: 14px; " +
+                        "font-weight: bold; }.bullet .subtitle { fill: #999; }</style><body><div id=\"chart\" style=\"height:254px\">" +
+                        "<svg height=\"354 \" width=\"375\"></svg></div><script>" +
+                        "var data1 = [{\"key\":\"Weight (kg)\",\"values\": " +
+                        jsonArrayToSend +
+                        "nv.addGraph(function () {var chart = nv.models.lineChart().x(function (d) {return d[0];}).y(function (d) {return d[1]})." +
+                        "color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, 45.000000])." +
+                        "tooltipContent(function (key, x, y, e) {return '<div id=\"tooltipcustom\">' + '<p>' + y+\" (kg)\" + ' on ' + " +
+                        "new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() +'-' + " +
+                        "new Date(e.point[0]).getFullYear().toString() + '</p></div>'});chart.xAxis.tickValues([]).tickFormat(function (d)" +
+                        " {return d3.time.format(\"%d-%m-%Y\")(new Date(d))});chart.yAxis.tickFormat(function (d) {return d3.format('.2f')" +
+                        "(d)});d3.select('#chart svg').datum(data1).call(chart);nv.utils.windowResize(chart.update);return chart;}, " +
+                        "function (chart) {x = chart;var x1 = chart.xScale()();var x2 = chart.xScale()();var height = chart.yAxis." +
+                        "range()[0];var y2 = chart.yScale()();var y1 = chart.yScale()();var width = chart.xAxis.range()[1];" +
+                        "d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style" +
+                        "('opacity', 0.2).attr('x', 0).attr('width', width);});</script></body></html>";
+                //setLinechart();
+                Log.i("ayaz", "data: "+db);
+                weight_graphView.loadDataWithBaseURL("file:///android_asset/", db, "text/html", "UTF-8", "");
+
                 progress.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -445,7 +460,7 @@ public class Weight extends BaseActivity {
                     hmap.put("fromdate", fromdate);
                     weight_contentlists.add(hmap);
                     chartValues.add(weight);
-                   // chartDates.add("'" + fromdate + "'");
+                    // chartDates.add("'" + fromdate + "'");
                     chartDates.add("");
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -464,9 +479,8 @@ public class Weight extends BaseActivity {
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
-                JSONArray jsonArrayToSend = new JSONArray();
                 jsonArrayToSend.put(outerJsonObject);
-                Log.i("DATATOSEND: ", "Data To send: "+jsonArrayToSend);
+                Log.i("DATATOSEND: ", "Data To send: " + jsonArrayToSend);
                 Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
@@ -607,8 +621,8 @@ public class Weight extends BaseActivity {
         queue.add(jr);
     }
 
-    public void startBackgroundprocess() {
+   /* public void startBackgroundprocess() {
         new BackgroundProcess().execute();
-    }
+    }*/
 
 }
