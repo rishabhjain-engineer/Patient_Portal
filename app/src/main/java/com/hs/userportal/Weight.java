@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,8 +48,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -408,24 +412,6 @@ public class Weight extends BaseActivity {
                 e.printStackTrace();
                 progress.dismiss();
             }
-           /* weight_graphView.setWebViewClient(new WebViewClient() {
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    if (progress.isShowing())
-                        progress.dismiss();
-                }
-            });
-
-            if (chartDates.size() > 1) {
-                weight_graphView.setVisibility(View.VISIBLE);
-                weight_graphView.loadDataWithBaseURL("file:///android_asset/", db, "text/html", "UTF-8", "");
-            } else {
-                weight_graphView.setVisibility(View.GONE);
-                progress.dismiss();
-            }*/
-            //  progress.dismiss();
         }
 
         @Override
@@ -444,6 +430,8 @@ public class Weight extends BaseActivity {
 
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
+
+                JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
@@ -460,7 +448,25 @@ public class Weight extends BaseActivity {
                    // chartDates.add("'" + fromdate + "'");
                     chartDates.add("");
 
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+                    JSONArray innerJsonArray = new JSONArray();
+                    innerJsonArray.put(weight);
+                    innerJsonArray.put(epoch);
+                    jsonArray1.put(innerJsonArray);
                 }
+                JSONObject outerJsonObject = new JSONObject();
+                outerJsonObject.put("key", "Weight(kg)");
+                outerJsonObject.put("values", jsonArray1);
+                JSONArray jsonArrayToSend = new JSONArray();
+                jsonArrayToSend.put(outerJsonObject);
+                Log.i("DATATOSEND: ", "Data To send: "+jsonArrayToSend);
                 Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
