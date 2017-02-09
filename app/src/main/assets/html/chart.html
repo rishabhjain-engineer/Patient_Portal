@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.css" />
+  <script data-require="d3@3.3.11" data-semver="3.3.11" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.js"></script>
+  <script data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+ </head>
+    <style>
+        
+        .nv-point {
+            stroke-opacity: 1 !important;
+            stroke-width: 10px;
+            fill-opacity: 1 !important;
+        }
+        .bullet { font: 10px sans-serif; }
+.bullet .marker { stroke: #000; stroke-width: 2px; }
+.bullet .tick line { stroke: #666; stroke-width: .5px; }
+.bullet .range.s0 { fill: #eee; }
+.bullet .range.s1 { fill: #ddd; }
+.bullet .range.s2 { fill: #ccc; }
+.bullet .measure.s0 { fill: steelblue; }
+.bullet .title { font-size: 14px; font-weight: bold; }
+.bullet .subtitle { fill: #999; }
+    </style>
+
+<body>
+  <div id="chart" style="height:500px">
+    <svg height="600" width="600"></svg>
+
+
+
+  </div>
+
+
+
+  <script>
+    var data1 = [
+  {
+      "key": "Blood Sugar Random",
+      "values": [
+       [1399787880000, 4900],
+       [1418291820000, 5400],
+       [1427251500000, 5200],
+       [1447046040000, 4900],
+       [1447669500000, 35300],
+       [1448085600000, 26400],
+       [1448504100000, 2800],
+       [1450418400000, 5800],
+       [1452229200000, 4800],
+       [1454559095000, 5000],
+       [1468195946000, 5400],
+       [1481531373000, 5100]
+
+      ]
+  }];
+
+  var values = JSON.parse(Interface.passDataToHtml());
+
+
+          nv.addGraph(function () {
+              var chart = nv.models.lineChart()
+                .x(function (d) {
+                    return d[0];
+                })
+                .y(function (d) {
+                    return d[1]
+                })  
+                .color(d3.scale.category10().range())
+                .transitionDuration(300)
+                .showLegend(true)
+                .showYAxis(true)
+                .forceY([50, 500])
+                .tooltipContent(
+                function (key, x, y, e) {   
+                return '<div id="tooltipcustom">' + '<p id="head">' + key + '</p>'
+                + '<p>' + y + ' at ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() +
+                    '-' + new Date(e.point[0]).getFullYear().toString() + ' ' + new Date(e.point[0]).getHours().toString() + ':' + new Date(e.point[0]).getMinutes().toString() +
+                    ':' + (new Date(e.point[0]).getSeconds().toString() == '0' ? '00' : new Date(e.point[0]).getSeconds().toString()) + '</p></div>'
+                });
+              chart.xAxis
+                .tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
+                .tickFormat(function (d) {
+                    return d3.time.format("%d-%Y %H:%M:%S")(new Date(d))
+
+                });
+              chart.yAxis
+                .tickFormat(function (d) {
+                    return d3.format('.2f')(d)
+                });
+              d3.select('#chart svg')
+                .datum(values)
+                .call(chart);
+              nv.utils.windowResize(chart.update);
+              return chart;
+          }, function (chart) {
+              x = chart;
+              var x1 = chart.xScale()(1122782400000);
+              var x2 = chart.xScale()(1251691200000);
+              var height = chart.yAxis.range()[0];
+              var y2 = chart.yScale()(10000);
+              var y1 = chart.yScale()(30000);
+              var width = chart.xAxis.range()[1];
+              d3.select('.nv-wrap')
+                .append('rect')
+                .attr('y', y1)
+                .attr('height', y2 - y1)
+                .style('fill', '#2b8811')
+                .style('opacity', 0.2)
+                .attr('x', 0)
+                .attr('width', width);
+
+          });
+  </script>
+</body>
+
+</html>
