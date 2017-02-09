@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -85,6 +86,7 @@ public class Weight extends BaseActivity {
     private int maxYrange = 0;
     JSONArray jsonArrayToSend = new JSONArray();
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
