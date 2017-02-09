@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -84,7 +85,8 @@ public class Weight extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
-    JSONArray jsonArrayToSend = new JSONArray();
+
+    public JSONArray mJsonArrayToSend = new JSONArray();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -94,29 +96,25 @@ public class Weight extends BaseActivity {
         setupActionBar();
         mActionBar.setTitle("Weight");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
+
         WebSettings settings = weight_graphView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        weight_graphView.getSettings().setLoadWithOverviewMode(true);
+        weight_graphView.getSettings().setUseWideViewPort(true);
+        weight_graphView.setInitialScale(1);
+        weight_graphView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+
+
+
         queue = Volley.newRequestQueue(this);
-        settings.setLoadWithOverviewMode(true);
         // settings.setUseWideViewPort(true);
-
         // view.setInitialScale(140);
-
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(Weight.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(Weight.this, "Weight", "").execute();
         }
-        settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(false);
-        settings.setDisplayZoomControls(false);
-
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-        weight_graphView.setInitialScale(1);
-        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-        //mWebView.loadUrl("file:///android_asset/html/index.html");
-        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
         wt_heading = (TextView) findViewById(R.id.wt_heading);
@@ -328,7 +326,7 @@ public class Weight extends BaseActivity {
             String db = null;
             try {
 
-              /*db = "<!DOCTYPE html> <html> <head>" +
+              db = "<!DOCTYPE html> <html> <head>" +
                         " <title></title>" +
                         " <link rel='stylesheet' href='kendo.common.min.css' />" +
                         " <link rel='stylesheet' href='kendo.default.min.css' />"
@@ -394,9 +392,9 @@ public class Weight extends BaseActivity {
                         "\n" +
                         "\n" +
                         "</body>\n" +
-                        "</html>";*/
+                        "</html>";
 
-                db = "<!DOCTYPE html><html><head><title></title><link data-require=\"nvd3@1.1.14-beta\" " +
+              /*  db = "<!DOCTYPE html><html><head><title></title><link data-require=\"nvd3@1.1.14-beta\" " +
                         "data-semver=\"1.1.14-beta\" rel=\"stylesheet\" href=\"nv.d3.css\"/>" +
                         "<script data-require=\"d3@3.3.11\" data-semver=\"3.3.11\" src=\"d3.js\">" +
                         "</script><script data-require=\"nvd3@1.1.14-beta\" data-semver=\"1.1.14-beta\" src=\"nv.d3.js\">" +
@@ -420,15 +418,16 @@ public class Weight extends BaseActivity {
                         "range()[0];var y2 = chart.yScale()();var y1 = chart.yScale()();var width = chart.xAxis.range()[1];" +
                         "d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style" +
                         "('opacity', 0.2).attr('x', 0).attr('width', width);});</script></body></html>";
-                //setLinechart();
-                Log.i("ayaz", "data: "+db);
-                weight_graphView.loadDataWithBaseURL("file:///android_asset/", db, "text/html", "UTF-8", "");
 
+
+*/
+                setLinechart();
                 progress.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
                 progress.dismiss();
             }
+            weight_graphView.loadUrl("file:///android_asset/html/graph.html");
         }
 
         @Override
@@ -474,15 +473,16 @@ public class Weight extends BaseActivity {
                     }
                     long epoch = date.getTime();
                     JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(weight);
                     innerJsonArray.put(epoch);
+                    innerJsonArray.put(weight);
+
                     jsonArray1.put(innerJsonArray);
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
-                jsonArrayToSend.put(outerJsonObject);
-                Log.i("DATATOSEND: ", "Data To send: " + jsonArrayToSend);
+                mJsonArrayToSend.put(outerJsonObject);
+                Log.i("DATATOSEND: ", "Data To send: " + mJsonArrayToSend);
                 Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
@@ -626,5 +626,50 @@ public class Weight extends BaseActivity {
    /* public void startBackgroundprocess() {
         new BackgroundProcess().execute();
     }*/
+
+    public class MyJavaScriptInterface {
+        @JavascriptInterface
+        public String passDataToHtml () {
+
+            Log.e("Rishabh  ", " height test data := ");
+
+/*
+            String test = " [\n" +
+                    "  {\n" +
+                    "\n" +
+                    "      \"key\": \"Blood Sugar Random\",\n" +
+                    "      \"values\": [\n" +
+                    "       [1399787880000, 4900],\n" +
+                    "       [1418291820000, 5400],\n" +
+                    "       [1427251500000, 5200],\n" +
+                    "       [1447046040000, 4900],\n" +
+                    "       [1447669500000, 35300],\n" +
+                    "       [1448085600000, 26400],\n" +
+                    "       [1448504100000, 2800],\n" +
+                    "       [1450418400000, 5800],\n" +
+                    "       [1452229200000, 4800],\n" +
+                    "       [1454559095000, 5000],\n" +
+                    "       [1468195946000, 5400],\n" +
+                    "       [1481531373000, 5100]\n" +
+                    "\n" +
+                    "\n" +
+                    "      ]\n" +
+                    "\n" +
+                    "\n" +
+                    "  }] ";
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(test);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.e("Rishabh ", "test string : "+test);*/
+
+            Log.e("Rishabh ", " data == "+mJsonArrayToSend.toString());
+            return mJsonArrayToSend.toString();
+        }
+    }
+
 
 }
