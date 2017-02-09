@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -84,6 +85,7 @@ public class Height extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
+    private double mMaxHeight = 0;
 
     public JSONArray mJsonArrayToSend;
 
@@ -448,14 +450,20 @@ public class Height extends BaseActivity {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
-                    String weight = obj.getString("height");
+                    String height = obj.getString("height");
+                    if(!TextUtils.isEmpty(height)){
+                        double weightInDouble = Double.parseDouble(height);
+                        if(mMaxHeight <= weightInDouble){
+                            mMaxHeight =  weightInDouble;
+                        }
+                    }
                     String fromdate = obj.getString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
-                    hmap.put("weight", weight);
+                    hmap.put("weight", height);
                     hmap.put("fromdate", fromdate);
                     weight_contentlists.add(hmap);
-                    chartValues.add(weight);
+                    chartValues.add(height);
                     chartDates.add("");
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -470,7 +478,7 @@ public class Height extends BaseActivity {
                     JSONArray innerJsonArray = new JSONArray();
 
                     innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
+                    innerJsonArray.put(height);
                     jsonArray1.put(innerJsonArray);
 
                 }
@@ -662,6 +670,11 @@ public class Height extends BaseActivity {
 
             Log.e("Rishabh ", " data == "+mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
+        }
+
+        @JavascriptInterface
+        public String maxHeight(){
+            return ((mMaxHeight + 20)+ "");
         }
     }
 

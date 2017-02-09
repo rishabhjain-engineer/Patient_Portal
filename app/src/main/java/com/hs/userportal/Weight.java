@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -85,6 +86,7 @@ public class Weight extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
+    private double mMaxWeight = 0;
 
     public JSONArray mJsonArrayToSend = new JSONArray();
 
@@ -454,6 +456,12 @@ public class Weight extends BaseActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
+                    if(!TextUtils.isEmpty(weight)){
+                        double weightInDouble = Double.parseDouble(weight);
+                        if(mMaxWeight <= weightInDouble){
+                            mMaxWeight =  weightInDouble;
+                        }
+                    }
                     String fromdate = obj.getString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
@@ -482,7 +490,6 @@ public class Weight extends BaseActivity {
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend.put(outerJsonObject);
-                Log.i("DATATOSEND: ", "Data To send: " + mJsonArrayToSend);
                 Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
@@ -669,6 +676,12 @@ public class Weight extends BaseActivity {
             Log.e("Rishabh ", " data == "+mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
+
+        @JavascriptInterface
+        public String maxWeight(){
+            return ((mMaxWeight + 20)+ "");
+        }
+
     }
 
 
