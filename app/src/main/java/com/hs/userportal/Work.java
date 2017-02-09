@@ -139,7 +139,7 @@ public class Work extends FragmentActivity {
                         Work.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Work.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]
@@ -174,7 +174,7 @@ public class Work extends FragmentActivity {
                     final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
                             Work.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Work.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]

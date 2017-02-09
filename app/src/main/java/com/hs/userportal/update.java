@@ -660,7 +660,7 @@ public class update extends FragmentActivity {
 
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(update.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     nationality.setText(nationlist[which]
