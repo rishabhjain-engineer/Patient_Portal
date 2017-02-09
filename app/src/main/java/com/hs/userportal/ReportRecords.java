@@ -163,21 +163,19 @@ public class ReportRecords extends BaseActivity {
 
             }
         });
-        /*test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        test_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
                 try {
                     if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
                             && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
-                        Intent intent = new Intent(getApplicationContext(),
-                                ReportStatus.class);
+                        Intent intent = new Intent(getApplicationContext(), ReportStatus.class);
                         intent.putExtra("index", position);
                         intent.putExtra("array", subArray1.toString());
                         intent.putExtra("USER_ID", id);
                         try {
-                            intent.putExtra("code", subArray1.getJSONObject(0)
-                                    .getString("PatientCode"));
+                            intent.putExtra("code", subArray1.getJSONObject(0).getString("PatientCode"));
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -230,7 +228,7 @@ public class ReportRecords extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        });*/
+        });
     }
 
 
