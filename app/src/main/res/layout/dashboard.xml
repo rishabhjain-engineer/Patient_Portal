@@ -649,11 +649,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/header_color"
         android:gravity="center"
         android:padding="8dp"
         android:text="Patient ID:"
-        android:textColor="@color/white"
+        android:textColor="@color/header_color"
         android:textSize="16sp"
         android:textStyle="bold" />
 
