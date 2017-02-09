@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -180,11 +181,7 @@ public class MyHealth extends BaseActivity {
             public void onClick(View v) {
                 String blood = bGroup.getText().toString();
                 if (blood == "" || blood.equals("")) {
-                    bGroup.setError("Please enter Blood group.");
                     Toast.makeText(MyHealth.this, "Please enter Blood group.", Toast.LENGTH_SHORT).show();
-
-
-
                 } else {
                     overlay_dialog.dismiss();
                     sendrequest(blood, id);
@@ -248,7 +245,11 @@ public class MyHealth extends BaseActivity {
                 public void onResponse(JSONObject response) {
                      /*System.out.println(response);*/
                     progress.dismiss();
-                    blood_group.setText(blood);
+                    if(TextUtils.isEmpty(blood)){
+                        blood_group.setText("-");
+                    }else{
+                        blood_group.setText(bgroup);
+                    }
                     try {
                         String data = response.getString("d");
                         if (!data.equalsIgnoreCase("Success")) {
@@ -313,7 +314,11 @@ public class MyHealth extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            blood_group.setText(bgroup);
+            if(TextUtils.isEmpty(bgroup)){
+                blood_group.setText("-");
+            }else{
+                blood_group.setText(bgroup);
+            }
             if(!height.equalsIgnoreCase("null")) {
                 height_latest.setText(height+" cm");
             }else{
@@ -375,7 +380,11 @@ public class MyHealth extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            blood_group.setText(bgroup);
+            if(TextUtils.isEmpty(bgroup)){
+                blood_group.setText("-");
+            }else{
+                blood_group.setText(bgroup);
+            }
             if(!height.equalsIgnoreCase("null")) {
                 height_latest.setText(height+" cm");
             }else{

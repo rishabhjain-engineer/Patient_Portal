@@ -69,8 +69,8 @@
 
         <RelativeLayout
             android:id="@+id/picrel"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:layout_below="@+id/separator2"
             android:layout_marginLeft="10dp"
             android:layout_alignParentLeft="true"
@@ -81,6 +81,7 @@
             android:scaleType="centerInside">
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/imageView14"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -648,6 +649,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center"
+        android:visibility="gone"
         android:padding="8dp"
         android:text="Patient ID:"
         android:textColor="@color/header_color"
