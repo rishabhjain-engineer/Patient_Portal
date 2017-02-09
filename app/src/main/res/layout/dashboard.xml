@@ -64,7 +64,6 @@
         android:id="@+id/top_relative"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/header"
         android:background="@color/header_color">
 
@@ -95,7 +94,6 @@
                 android:layout_height="fill_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="2dp"
                 android:clickable="true"
                 android:src="@drawable/dashpic_update" />
 
