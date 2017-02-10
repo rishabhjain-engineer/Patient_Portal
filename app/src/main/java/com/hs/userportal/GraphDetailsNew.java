@@ -109,6 +109,8 @@ public class GraphDetailsNew extends BaseActivity {
         settings.setBuiltInZoomControls(false);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
         mLineChartWebView.setInitialScale(1);
+        mLineChartWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+
 
 
         // finding screen width and height--------------------------------------
@@ -174,6 +176,7 @@ public class GraphDetailsNew extends BaseActivity {
                         }
                     }
                     innerJsonArray.put(chartValues.get(i));
+                    jsonArray1.put(innerJsonArray);
                 }
             }
 
@@ -186,7 +189,6 @@ public class GraphDetailsNew extends BaseActivity {
                 e.printStackTrace();
             }
 
-            Log.i("ayaz", "Data To Send:"+mJsonArrayToSend);
         }
         casecodes = getIntent().getStringArrayListExtra("case");
         caseIds = getIntent().getStringArrayListExtra("caseIds");
@@ -493,7 +495,7 @@ public class GraphDetailsNew extends BaseActivity {
 
 
         @JavascriptInterface
-        public int getRangeFrom() {;
+        public int getRangeFrom() {
             return (int)mRangeFromInDouble;
         }
     }
