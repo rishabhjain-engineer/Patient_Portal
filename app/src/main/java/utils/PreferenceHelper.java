@@ -30,7 +30,17 @@ public class PreferenceHelper {
 
         QUESTION_COUNT("10"),
 
-        USER_ID("null");
+        USER_ID("null"),
+
+        ID("null"),
+
+        USER("null"),
+
+        PH("null"),
+
+        PASS("null"),
+
+        FN("null");
 
         private String defaultValue;
 
