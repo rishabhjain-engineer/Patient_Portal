@@ -20,7 +20,15 @@
             android:layout_margin="5dp"
             android:textSize="13dp"/>
 
+        <WebView
+            android:visibility="visible"
+            android:id="@+id/linechart_webview"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></WebView>
+
         <com.github.mikephil.charting.charts.LineChart
+            android:visibility="gone"
             android:id="@+id/linechart"
             android:layout_width="match_parent"
             android:layout_height="0dp" />

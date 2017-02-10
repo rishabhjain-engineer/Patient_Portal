@@ -109,14 +109,14 @@ public class GraphDetailsNew extends BaseActivity {
             pi_chart.setVisibility(View.GONE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
             params.height = Math.round(height / 2);
-            linechart.setLayoutParams(params);
+        //    linechart.setLayoutParams(params);
             MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
-           linechart.setMarkerView(mv);
-            linechart.animateX(3500);
+         //  linechart.setMarkerView(mv);
+         //   linechart.animateX(3500);
            setLinechart();
         } else {
-            linechart.setVisibility(View.VISIBLE);
+           // linechart.setVisibility(View.VISIBLE);
             pi_chart.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
@@ -209,7 +209,7 @@ public class GraphDetailsNew extends BaseActivity {
             // create a data object with the datasets
             LineData data = new LineData(dataSets);
             // set data
-            linechart.setData(data);
+         //   linechart.setData(data);
         }
     }
 

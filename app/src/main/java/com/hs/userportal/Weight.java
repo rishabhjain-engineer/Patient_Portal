@@ -422,7 +422,7 @@ public class Weight extends BaseActivity {
                 e.printStackTrace();
                 progress.dismiss();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/graph.html");
+            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
         }
 
         @Override
