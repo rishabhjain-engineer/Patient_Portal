@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,6 +15,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -39,12 +43,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.Group_testAdapter;
+import ui.BaseActivity;
 import utils.MyMarkerView;
 
 /**
  * Created by rahul2 on 7/15/2016.
  */
-public class GraphDetailsNew extends ActionBarActivity {
+public class GraphDetailsNew extends BaseActivity {
     private LineChart linechart;
     private PieChart pi_chart;
     private ScrollView scroll;
@@ -60,18 +65,16 @@ public class GraphDetailsNew extends ActionBarActivity {
     private Services service;
     private ListView graph_listview_id;
     private int maxYrange = 0;
+    private WebView mLineChartWebView;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graphdetails_new);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         String title = getIntent().getStringExtra("chartNames");
-        action.setTitle(title);
+        mActionBar.setTitle(title);
 
         //line chart graph
         linechart = (LineChart) findViewById(R.id.linechart);
@@ -80,6 +83,20 @@ public class GraphDetailsNew extends ActionBarActivity {
         graph_listview_id = (ListView) findViewById(R.id.graph_listview_id);
         chartvakueList = new ArrayList<String>();
         chartvakueList = getIntent().getStringArrayListExtra("values");
+
+        mLineChartWebView = (WebView) findViewById(R.id.linechart_webview);
+        WebSettings settings = mLineChartWebView.getSettings();
+        settings.setLoadWithOverviewMode(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setDisplayZoomControls(false);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setBuiltInZoomControls(false);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        mLineChartWebView.setInitialScale(1);
+
+
 
         // finding screen width and height--------------------------------------
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -90,20 +107,18 @@ public class GraphDetailsNew extends ActionBarActivity {
         // Assigning height of graph dynamically----------------------------------
         if (getIntent().getStringExtra("chart_type").equals("line")) {
             pi_chart.setVisibility(View.GONE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    linechart.getLayoutParams();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
             params.height = Math.round(height / 2);
             linechart.setLayoutParams(params);
             MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
-            linechart.setMarkerView(mv);
+           linechart.setMarkerView(mv);
             linechart.animateX(3500);
-            setLinechart();
+           setLinechart();
         } else {
             linechart.setVisibility(View.VISIBLE);
             pi_chart.setVisibility(View.VISIBLE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    pi_chart.getLayoutParams();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
             pi_chart.setLayoutParams(params);
             setPiChart();
@@ -158,6 +173,13 @@ public class GraphDetailsNew extends ActionBarActivity {
         });
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLineChartWebView.loadUrl("file:///android_asset/html/graph.html");
+    }
+
     private void setData(int count, float range) {
         ArrayList<Entry> values = new ArrayList<Entry>();
         for (int i = 0; i < count; i++) {
@@ -165,8 +187,7 @@ public class GraphDetailsNew extends ActionBarActivity {
             values.add(new Entry(i, val));
         }
         LineDataSet set1;
-        if (linechart.getData() != null &&
-                linechart.getData().getDataSetCount() > 0) {
+        if (linechart.getData() != null && linechart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             linechart.getData().notifyDataChanged();
