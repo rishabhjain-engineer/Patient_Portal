@@ -419,7 +419,7 @@ public class Height extends BaseActivity {
             }*/
 
             progress.dismiss();
-            weight_graphView.loadUrl("file:///android_asset/html/graph.html");
+            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
 
         }
 
@@ -635,6 +635,7 @@ public class Height extends BaseActivity {
         @JavascriptInterface
         public int getDouble() {
             int i = (int) mMaxHeight;
+            Log.e("Rishabh", "i := " + i);
             return (i + 20);
         }
     }

@@ -58,27 +58,29 @@
 
 
 
-        var data1 = [{
-            "key": "Weight (kg)",
-            "values": [
-                [1483262347000, 20],
-                [1474004929000, 20],
-                [1467958646000, 25],
-                [1423379110000, 17],
-                [1391843130000, 7.5]
-            ]
-        }];
+        var data1 = [
+                     {
+                        "key": "BLOOD SUGAR RANDOM",
+                        "values": [
+                                    [1426648402000,
+                                     11.8
+                                    ],
 
+                                    [1441852200000,
+                                     36.82
+                                    ]
+                                  ]
 
-        var values = JSON.parse(Interface.passDataToHtml());
-        var max = Interface.getDouble();
+                     }
+                   ];
+
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart().x(function(d) {
                 return d[0];
             }).y(function(d) {
                 return d[1]
-            }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, max]).tooltipContent(function(key, x, y, e) {
+            }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, 50]).tooltipContent(function(key, x, y, e) {
                 return '<div id="tooltipcustom">' + '<p>' + y + " (kg)" + ' on ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() + '-' + new Date(e.point[0]).getFullYear().toString() + '</p></div>'
             });
             chart.xAxis.tickValues([]).tickFormat(function(d) {
@@ -87,7 +89,7 @@
             chart.yAxis.tickFormat(function(d) {
                 return d3.format('.2f')(d)
             });
-            d3.select('#chart svg').datum(values).call(chart);
+            d3.select('#chart svg').datum(data1).call(chart);
             nv.utils.windowResize(chart.update);
             return chart;
         }, function(chart) {
@@ -95,8 +97,8 @@
             var x1 = chart.xScale()();
             var x2 = chart.xScale()();
             var height = chart.yAxis.range()[0];
-            var y2 = chart.yScale()();
-            var y1 = chart.yScale()();
+            var y2 = chart.yScale()(10);
+            var y1 = chart.yScale()(35);
             var width = chart.xAxis.range()[1];
             d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style('opacity', 0.2).attr('x', 0).attr('width', width);
         });

@@ -428,10 +428,8 @@ public class ReportStatus extends BaseActivity {
                                                 GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
-                                        intent.putStringArrayListExtra("dates",
-                                                (ArrayList<String>) intentdate);
-                                        intent.putStringArrayListExtra("values",
-                                                (ArrayList<String>) chartValues);
+                                        intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
+                                        intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                                         if(chartNames.size()!=0)
                                             intent.putExtra("chartNames",
                                                     chartNames.get(0));
