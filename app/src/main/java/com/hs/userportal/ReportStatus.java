@@ -385,10 +385,8 @@ public class ReportStatus extends BaseActivity {
                                                                 .getString("ResultValue"),
                                                         tempObject
                                                                 .getString("CriticalLow"),
-                                                        tempObject
-                                                                .getString("RangeFrom"),
-                                                        tempObject
-                                                                .getString("RangeTo"),
+                                                        RangeFrom=  tempObject.getString("RangeFrom"),
+                                                        RangeTo= tempObject.getString("RangeTo"),
                                                         tempObject
                                                                 .getString("CriticalHigh"));
                                             }
