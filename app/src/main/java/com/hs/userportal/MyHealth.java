@@ -70,6 +70,12 @@ public class MyHealth extends BaseActivity {
         heighttxt_id = (TextView) findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) findViewById(R.id.allergytxtid);
         blood_group = (EditText) findViewById(R.id.blood_group);
+        blood_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showdialog();
+            }
+        });
         bloodID = (TextView) findViewById(R.id.bloodID);
         weight_latest = (TextView) findViewById(R.id.weight_latest);
         height_latest = (TextView) findViewById(R.id.height_latest);
@@ -171,8 +177,8 @@ public class MyHealth extends BaseActivity {
             bGroup.setText("Edit");
             titleTv.setText("Edit");
         }else{
-            bGroup.setText("Update");
             titleTv.setText("Update");
+            bGroup.setText(blood_group.getEditableText().toString());
         }
         /*InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(bGroup.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);

@@ -1107,9 +1107,7 @@ public class update extends FragmentActivity {
             // TODO Auto-generated method stub
 
             if (Email.equals("")) {
-
                 emailverify = "no";
-
             }/* else if (UserNameAlias.toString().equals("")) {
 
                 unverify = "no";
@@ -1135,8 +1133,6 @@ public class update extends FragmentActivity {
                     emailverify = "already";
 
                 } else {
-
-
                     basic = new JSONObject();
                     try {
                         String dg = NationId;
@@ -1155,34 +1151,21 @@ public class update extends FragmentActivity {
                         basic.put("ContactNo", ContactNo);
                         basic.put("NationId", NationId);
                         arraybasic = new JSONArray();
-
-                        // System.out.println(basic);
-
                         arraybasic.put(basic);
-
                     } catch (JSONException e) {
-
                         e.printStackTrace();
                     }
-
-
                     sendbasic = new JSONObject();
-
                     try {
                         sendbasic.put("basicdetails", arraybasic);
                         sendbasic.put("UserId", id);
                         sendbasic.put("typeselect", "basic");
-
-
                         receiveData = service.saveBasicDetail(sendbasic);
                         message = receiveData.getString("d");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    System.out.println("Register:" + receiveData);
-
                 }
             }
             return null;
