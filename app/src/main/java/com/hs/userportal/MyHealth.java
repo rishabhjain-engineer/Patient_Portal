@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,7 +58,7 @@ public class MyHealth extends BaseActivity {
     private RequestQueue send_request;
     private ProgressDialog progress;
     private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
-    private int allergy_no;
+    private int allergy_no=0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -346,8 +347,14 @@ public class MyHealth extends BaseActivity {
                     bgroup = obj.getString("BloodGroup");
                     height = obj.getString("height");
                     weight = obj.getString("weight");
-                    String[] array = obj.getString("allergiesName").split(",");
-                    allergy_no = array.length;
+                    String alergyString = obj.getString("allergiesName");
+                    if(TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")){
+                        allergy_no = 0;
+                    }else{
+                        String[] array = alergyString.split(",");
+                        allergy_no = array.length;
+                    }
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
