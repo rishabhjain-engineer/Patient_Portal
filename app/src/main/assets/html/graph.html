@@ -55,6 +55,9 @@
 
 </div>
 <script>
+
+
+
         var data1 = [{
             "key": "Weight (kg)",
             "values": [
@@ -66,13 +69,16 @@
             ]
         }];
 
+
         var values = JSON.parse(Interface.passDataToHtml());
+        var max = Interface.getDouble();
+
         nv.addGraph(function() {
             var chart = nv.models.lineChart().x(function(d) {
                 return d[0];
             }).y(function(d) {
                 return d[1]
-            }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, 45.000000]).tooltipContent(function(key, x, y, e) {
+            }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, max]).tooltipContent(function(key, x, y, e) {
                 return '<div id="tooltipcustom">' + '<p>' + y + " (kg)" + ' on ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() + '-' + new Date(e.point[0]).getFullYear().toString() + '</p></div>'
             });
             chart.xAxis.tickValues([]).tickFormat(function(d) {

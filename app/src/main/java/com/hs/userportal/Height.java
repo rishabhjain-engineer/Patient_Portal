@@ -1,16 +1,15 @@
 package com.hs.userportal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -85,36 +83,32 @@ public class Height extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
-    private double mMaxHeight = 0;
+    private double mMaxHeight = 0.0;
 
     public JSONArray mJsonArrayToSend;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
         setupActionBar();
         mActionBar.setTitle("Height");
+        queue = Volley.newRequestQueue(this);
+
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
-        queue = Volley.newRequestQueue(this);
         settings.setLoadWithOverviewMode(true);
-        // settings.setUseWideViewPort(true);
-
-        // view.setInitialScale(140);
-
         settings.setJavaScriptEnabled(true);
-
-        weight_graphView.getSettings().setLoadWithOverviewMode(true);
-        weight_graphView.getSettings().setUseWideViewPort(true);
-        weight_graphView.setInitialScale(1);
-        weight_graphView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-        weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
-
-
-        settings.setBuiltInZoomControls(false);
-        weight_graphView.getSettings().setDisplayZoomControls(false);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setDisplayZoomControls(false);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setBuiltInZoomControls(false);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        weight_graphView.setInitialScale(1);
+        weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(this), "Interface");
+
 
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
@@ -126,9 +120,10 @@ public class Height extends BaseActivity {
         id = z.getStringExtra("id");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Height.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else{
-        new Authentication(Height.this, "Height", "").execute();}
+            Toast.makeText(Height.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Height.this, "Height", "").execute();
+        }
 
         // new BackgroundProcess().execute();
         bsave.setOnClickListener(new View.OnClickListener() {
@@ -451,10 +446,10 @@ public class Height extends BaseActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String height = obj.getString("height");
-                    if(!TextUtils.isEmpty(height)){
-                        double weightInDouble = Double.parseDouble(height);
-                        if(mMaxHeight <= weightInDouble){
-                            mMaxHeight =  weightInDouble;
+                    if (!TextUtils.isEmpty(height)) {
+                        double heightInDouble = Double.parseDouble(height);
+                        if (mMaxHeight <= heightInDouble) {
+                            mMaxHeight = heightInDouble;
                         }
                     }
                     String fromdate = obj.getString("fromdate");
@@ -485,18 +480,14 @@ public class Height extends BaseActivity {
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Height(cm)");
                 outerJsonObject.put("values", jsonArray1);
-                mJsonArrayToSend= new JSONArray();
+                mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
-                Log.i("DATATOSEND: ", "Data To send: "+mJsonArrayToSend);
-
+                Log.i("DATATOSEND: ", "Data To send: " + mJsonArrayToSend);
                 Collections.reverse(chartValues);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
             System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 
@@ -630,52 +621,21 @@ public class Height extends BaseActivity {
     }
 
     public class MyJavaScriptInterface {
+        private Context context;
+
+        MyJavaScriptInterface(Context context) {
+            this.context = context;
+        }
+
         @JavascriptInterface
-        public String passDataToHtml () {
-
-            Log.e("Rishabh  ", " height test data := ");
-
-/*
-            String test = " [\n" +
-                    "  {\n" +
-                    "\n" +
-                    "      \"key\": \"Blood Sugar Random\",\n" +
-                    "      \"values\": [\n" +
-                    "       [1399787880000, 4900],\n" +
-                    "       [1418291820000, 5400],\n" +
-                    "       [1427251500000, 5200],\n" +
-                    "       [1447046040000, 4900],\n" +
-                    "       [1447669500000, 35300],\n" +
-                    "       [1448085600000, 26400],\n" +
-                    "       [1448504100000, 2800],\n" +
-                    "       [1450418400000, 5800],\n" +
-                    "       [1452229200000, 4800],\n" +
-                    "       [1454559095000, 5000],\n" +
-                    "       [1468195946000, 5400],\n" +
-                    "       [1481531373000, 5100]\n" +
-                    "\n" +
-                    "\n" +
-                    "      ]\n" +
-                    "\n" +
-                    "\n" +
-                    "  }] ";
-            JSONArray jsonArray = null;
-            try {
-                jsonArray = new JSONArray(test);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            Log.e("Rishabh ", "test string : "+test);*/
-
-            Log.e("Rishabh ", " data == "+mJsonArrayToSend.toString());
+        public String passDataToHtml() {
             return mJsonArrayToSend.toString();
         }
 
         @JavascriptInterface
-        public String maxHeight(){
-            return ((mMaxHeight + 20)+ "");
+        public int getDouble() {
+            int i = (int) mMaxHeight;
+            return (i + 20);
         }
     }
-
 }
