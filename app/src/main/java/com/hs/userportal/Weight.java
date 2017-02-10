@@ -7,14 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +18,6 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -97,17 +92,15 @@ public class Weight extends BaseActivity {
         setContentView(R.layout.weight_layout);
         setupActionBar();
         mActionBar.setTitle("Weight");
-        weight_graphView = (WebView) findViewById(R.id.weight_graphView);
 
+        weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
         settings.setJavaScriptEnabled(true);
-        weight_graphView.getSettings().setLoadWithOverviewMode(true);
-        weight_graphView.getSettings().setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
         weight_graphView.setInitialScale(1);
-        weight_graphView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
         weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
-
-
 
         queue = Volley.newRequestQueue(this);
         // settings.setUseWideViewPort(true);
@@ -328,7 +321,7 @@ public class Weight extends BaseActivity {
             String db = null;
             try {
 
-              db = "<!DOCTYPE html> <html> <head>" +
+                db = "<!DOCTYPE html> <html> <head>" +
                         " <title></title>" +
                         " <link rel='stylesheet' href='kendo.common.min.css' />" +
                         " <link rel='stylesheet' href='kendo.default.min.css' />"
@@ -456,10 +449,10 @@ public class Weight extends BaseActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
-                    if(!TextUtils.isEmpty(weight)){
+                    if (!TextUtils.isEmpty(weight)) {
                         double weightInDouble = Double.parseDouble(weight);
-                        if(mMaxWeight <= weightInDouble){
-                            mMaxWeight =  weightInDouble;
+                        if (mMaxWeight <= weightInDouble) {
+                            mMaxWeight = weightInDouble;
                         }
                     }
                     String fromdate = obj.getString("fromdate");
@@ -636,53 +629,14 @@ public class Weight extends BaseActivity {
 
     public class MyJavaScriptInterface {
         @JavascriptInterface
-        public String passDataToHtml () {
-
-            Log.e("Rishabh  ", " height test data := ");
-
-/*
-            String test = " [\n" +
-                    "  {\n" +
-                    "\n" +
-                    "      \"key\": \"Blood Sugar Random\",\n" +
-                    "      \"values\": [\n" +
-                    "       [1399787880000, 4900],\n" +
-                    "       [1418291820000, 5400],\n" +
-                    "       [1427251500000, 5200],\n" +
-                    "       [1447046040000, 4900],\n" +
-                    "       [1447669500000, 35300],\n" +
-                    "       [1448085600000, 26400],\n" +
-                    "       [1448504100000, 2800],\n" +
-                    "       [1450418400000, 5800],\n" +
-                    "       [1452229200000, 4800],\n" +
-                    "       [1454559095000, 5000],\n" +
-                    "       [1468195946000, 5400],\n" +
-                    "       [1481531373000, 5100]\n" +
-                    "\n" +
-                    "\n" +
-                    "      ]\n" +
-                    "\n" +
-                    "\n" +
-                    "  }] ";
-            JSONArray jsonArray = null;
-            try {
-                jsonArray = new JSONArray(test);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            Log.e("Rishabh ", "test string : "+test);*/
-
-            Log.e("Rishabh ", " data == "+mJsonArrayToSend.toString());
+        public String passDataToHtml() {
             return mJsonArrayToSend.toString();
         }
 
         @JavascriptInterface
-        public String maxWeight(){
-            return ((mMaxWeight + 20)+ "");
+        public int getDouble() {
+            int i = (int) mMaxWeight;
+            return (i + 20);
         }
-
     }
-
-
 }
