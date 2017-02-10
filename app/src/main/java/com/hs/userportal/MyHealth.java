@@ -51,7 +51,8 @@ import ui.BaseActivity;
 
 public class MyHealth extends BaseActivity {
 
-    private TextView weighttxtid, heighttxt_id, alergytxtid, blood_group, bloodID, weight_latest, height_latest, allergies;
+    private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies;
+    private EditText blood_group;
     private String id, show_blood, bgroup,  height,  weight;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
     private Services service;
@@ -68,7 +69,7 @@ public class MyHealth extends BaseActivity {
         weighttxtid = (TextView) findViewById(R.id.weighttxtid);
         heighttxt_id = (TextView) findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) findViewById(R.id.allergytxtid);
-        blood_group = (TextView) findViewById(R.id.blood_group);
+        blood_group = (EditText) findViewById(R.id.blood_group);
         bloodID = (TextView) findViewById(R.id.bloodID);
         weight_latest = (TextView) findViewById(R.id.weight_latest);
         height_latest = (TextView) findViewById(R.id.height_latest);
@@ -165,6 +166,14 @@ public class MyHealth extends BaseActivity {
         Button send_request = (Button) overlay_dialog.findViewById(R.id.send_request);
         final ImageView cancel_dialog = (ImageView) overlay_dialog.findViewById(R.id.cancel_dialog);
         final EditText bGroup = (EditText) overlay_dialog.findViewById(R.id.bGroup);
+        TextView titleTv = (TextView) overlay_dialog.findViewById(R.id.textView6);
+        if(TextUtils.isEmpty(blood_group.getEditableText().toString())){
+            bGroup.setText("Edit");
+            titleTv.setText("Edit");
+        }else{
+            bGroup.setText("Update");
+            titleTv.setText("Update");
+        }
         /*InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(bGroup.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
         bGroup.requestFocus();*/

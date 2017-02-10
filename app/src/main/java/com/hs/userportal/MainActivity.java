@@ -565,11 +565,19 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
@@ -865,11 +873,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
 
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -1207,11 +1221,16 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
-                    AppConstant.ID = cop;
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     e.commit();
                     from_Activity = Helper.fromactivity;
@@ -1297,11 +1316,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             String cd = sharedPreferences.getString("cook", "");
             String PH = sharedPreferences.getString("PH", "");
 
-            AppConstant.ID = uid;
+            /*AppConstant.ID = uid;
             AppConstant.PH = PH;
             AppConstant.USER = name;
             AppConstant.PASS = pwd;
-            AppConstant.FN = first;
+            AppConstant.FN = first;*/
+
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, uid);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, name);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, pwd);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, first);
 
             if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
                 // new Authentication().execute();
@@ -1986,11 +2011,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                   /* AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
@@ -2040,11 +2071,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();

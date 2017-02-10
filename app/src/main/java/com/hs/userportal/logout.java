@@ -71,6 +71,7 @@ import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import ui.QuestionireActivity;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /*import com.facebook.Request;
 import com.facebook.Session;
@@ -127,6 +128,7 @@ public class logout extends Activity implements View.OnClickListener {
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
+    private PreferenceHelper mPreferenceHelper = PreferenceHelper.getInstance();
 
 
     public static String image_parse;
@@ -336,12 +338,19 @@ public class logout extends Activity implements View.OnClickListener {
         passw = i.getStringExtra("pass");
         name = i.getStringExtra("fn");*/
 
-        id = AppConstant.ID;
+        /*id = AppConstant.ID;
         privatery_id = id;
         PH = AppConstant.PH;
         user = AppConstant.USER;
         passw = AppConstant.PASS;
-        name = AppConstant.FN;
+        name = AppConstant.FN;*/
+
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        privatery_id = id;
+        PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
+        user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
 
         Log.i("logout", "id: "+id);
         Log.i("logout", "PH: "+PH);
