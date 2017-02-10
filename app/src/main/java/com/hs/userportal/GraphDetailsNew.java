@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,12 +41,22 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import adapters.Group_testAdapter;
 import ui.BaseActivity;
 import utils.MyMarkerView;
+
+import static com.hs.userportal.R.id.member_name;
+import static com.hs.userportal.R.id.weight;
 
 /**
  * Created by rahul2 on 7/15/2016.
@@ -66,6 +78,8 @@ public class GraphDetailsNew extends BaseActivity {
     private ListView graph_listview_id;
     private int maxYrange = 0;
     private WebView mLineChartWebView;
+    private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
+    private JSONArray mJsonArrayToSend = new JSONArray();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -97,7 +111,6 @@ public class GraphDetailsNew extends BaseActivity {
         mLineChartWebView.setInitialScale(1);
 
 
-
         // finding screen width and height--------------------------------------
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -109,14 +122,14 @@ public class GraphDetailsNew extends BaseActivity {
             pi_chart.setVisibility(View.GONE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
             params.height = Math.round(height / 2);
-        //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it. 
+            //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it.
             MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
-         //  linechart.setMarkerView(mv);    //TODO for displaying line chart; un comment it.
-         //   linechart.animateX(3500);    //TODO for displaying line chart; un comment it.
-           setLinechart();
+            //  linechart.setMarkerView(mv);    //TODO for displaying line chart; un comment it.
+            //   linechart.animateX(3500);    //TODO for displaying line chart; un comment it.
+            setLinechart();
         } else {
-           // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
+            // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
             pi_chart.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
@@ -128,12 +141,53 @@ public class GraphDetailsNew extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         try {
             RangeFrom = extras.getString("RangeFrom");
+            if (!TextUtils.isEmpty(RangeFrom)) {
+                mRangeFromInDouble = Double.parseDouble(RangeFrom);
+            }
             RangeTo = extras.getString("RangeTo");
+            if (!TextUtils.isEmpty(RangeTo)) {
+                mRangeToInDouble = Double.parseDouble(RangeTo);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         chartDates = getIntent().getStringArrayListExtra("dates");
         chartValues = getIntent().getStringArrayListExtra("values");
+        if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            JSONArray jsonArray1 = new JSONArray();
+            for (int i=0 ; i < chartValues.size(); i++) {
+                JSONArray innerJsonArray = new JSONArray();
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(chartDates.get(i));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                long epoch = date.getTime();
+                if(!TextUtils.isEmpty(chartValues.get(i))){
+                    innerJsonArray.put(epoch);
+                    if(!TextUtils.isEmpty(chartValues.get(i))){
+                        double value = Double.parseDouble(chartValues.get(i));
+                        if(mMaxValue <= value){
+                            mMaxValue = value;
+                        }
+                    }
+                    innerJsonArray.put(chartValues.get(i));
+                }
+            }
+
+            JSONObject outerJsonObject = new JSONObject();
+            try {
+                outerJsonObject.put("key", "Weight(kg)");
+                outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend.put(outerJsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("ayaz", "Data To Send:"+mJsonArrayToSend);
+        }
         casecodes = getIntent().getStringArrayListExtra("case");
         caseIds = getIntent().getStringArrayListExtra("caseIds");
         chartunitList = getIntent().getStringArrayListExtra("unitList");
@@ -209,7 +263,7 @@ public class GraphDetailsNew extends BaseActivity {
             // create a data object with the datasets
             LineData data = new LineData(dataSets);
             // set data
-         //   linechart.setData(data); // TODO for displaying line chart; un comment it.
+            //   linechart.setData(data); // TODO for displaying line chart; un comment it.
         }
     }
 
@@ -324,7 +378,7 @@ public class GraphDetailsNew extends BaseActivity {
         l.setForm(Legend.LegendForm.SQUARE);
         // don't forget to refresh the
         //drawing
-         linechart.invalidate();
+        linechart.invalidate();
     }
 
     public void setPiChart() {
@@ -398,6 +452,7 @@ public class GraphDetailsNew extends BaseActivity {
 
         return d;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -417,5 +472,30 @@ public class GraphDetailsNew extends BaseActivity {
         }
     }
 
+    public class MyJavaScriptInterface {
+        @JavascriptInterface
+        public String passDataToHtml() {
+            return mJsonArrayToSend.toString();
+        }
+
+        @JavascriptInterface
+        public int getMaxData() {
+            if(mMaxValue < mRangeToInDouble){
+                mMaxValue = mRangeToInDouble;
+            }
+            return (int)(mMaxValue + 20);
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {;
+            return (int)mRangeFromInDouble;
+        }
+    }
 
 }

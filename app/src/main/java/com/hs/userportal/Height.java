@@ -85,7 +85,7 @@ public class Height extends BaseActivity {
     private int maxYrange = 0;
     private double mMaxHeight = 0.0;
 
-    public JSONArray mJsonArrayToSend;
+    private JSONArray mJsonArrayToSend;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override

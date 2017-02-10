@@ -83,7 +83,7 @@ public class Weight extends BaseActivity {
     private int maxYrange = 0;
     private double mMaxWeight = 0;
 
-    public JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = new JSONArray();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
