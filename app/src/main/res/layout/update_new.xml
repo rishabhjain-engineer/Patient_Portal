@@ -146,31 +146,7 @@
                     android:hint="Your login alias" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/Form2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="35"
-                    android:text="E-mail"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/editText7"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="65"
-                    android:ems="10"
-                    android:hint="Your e-mail address"
-                    android:inputType="textEmailAddress"
-                    android:nextFocusDown="@+id/father"
-                    android:singleLine="true"></EditText>
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/email_varifyid"
@@ -358,13 +334,42 @@
                 android:singleLine="true" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/Form2"
+            android:layout_below="@+id/Form4"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="35"
+                android:text="E-mail"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="65"
+                android:ems="10"
+                android:hint="Your e-mail address"
+                android:inputType="textEmailAddress"
+                android:nextFocusDown="@+id/father"
+                android:singleLine="true"></EditText>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/contact_varifyid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/Form4"
-            android:layout_alignRight="@+id/Form4"
-            android:layout_below="@+id/Form4"
+            android:layout_alignEnd="@+id/Form2"
+            android:layout_alignRight="@+id/Form2"
+            android:layout_below="@+id/Form2"
             android:layout_gravity="right"
             android:gravity="right"
             android:textColor="#FF0000"
