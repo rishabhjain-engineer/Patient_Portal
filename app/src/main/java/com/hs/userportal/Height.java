@@ -69,7 +69,7 @@ public class Height extends BaseActivity {
     private Button bsave;
     private ProgressDialog progress;
     private JSONObject sendData;
-    private String id;
+    private String mId;
     private TextView wt_heading;
     private MiscellaneousTasks misc;
     private JsonObjectRequest jr;
@@ -117,7 +117,7 @@ public class Height extends BaseActivity {
         service = new Services(Height.this);
         misc = new MiscellaneousTasks(Height.this);
         Intent z = getIntent();
-        id = z.getStringExtra("id");
+        mId = z.getStringExtra("id");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(Height.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -299,6 +299,7 @@ public class Height extends BaseActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable;
 
         @Override
         protected void onPreExecute() {
@@ -308,118 +309,10 @@ public class Height extends BaseActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
+            isDataAvailable = false;
 
             progress.show();
 
-
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(Height.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Utility.setListViewHeightBasedOnChildren(weight_listId);
-            String db = null;
-
-
-            // chartValues.add("")
-            try {
-                db = "<!DOCTYPE html> <html> <head>" +
-                        " <title></title>" +
-                        " <link rel='stylesheet' href='kendo.common.min.css' />" +
-                        " <link rel='stylesheet' href='kendo.default.min.css' />"
-
-                        + "  <script src='jquery.min.js'></script>"
-                        + "  <script src='kendo.all.min.js'></script>"
-                        + " </head>"
-                        + " <body>"
-                        + " <div id='example'>"
-                        + "  <div class='demo-section k-content wide'>"
-                        + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
-                        + " </div> \n" +
-                        "    <script>\n" +
-                        "        function createChart() {\n" +
-                        "            $(\"#chart\").kendoChart({\n" +
-                        "                title: {\n" +
-                        "                    text: \"Height in cm\"\n" +
-                        "                },\n" +
-                        "                legend: {\n" +
-                        "                    position: \"bottom\"\n" +
-                        ", margin:20" +
-                        "                },\n" +
-                        "                chartArea: {\n" +
-                        "                    background: \"\"\n" +
-                        "                },\n" +
-                        "                seriesDefaults: {\n" +
-                        "                    type: \"line\",\n" +
-                        "                    style: \"smooth\"\n" +
-                        "                },\n" +
-                        "                series: [{\n" +
-                        "                    name: \"Height\",\n" +
-                        "                    data: " + chartValues + "\n" +
-                        "                }  ],\n" +
-                        "                valueAxis: {\n" +
-                        "                    labels: {\n" +
-                        "                        format: \"{0}\"\n" +
-                        "                    },\n" +
-                        "                    line: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    axisCrossingValue: -10\n" +
-                        "                },\n" +
-                        "                categoryAxis: {\n" +
-                        "                    categories: " + chartDates + ",\n" +
-                        "                    majorGridLines: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    labels: {\n" +
-                        "                        rotation: \"auto\"\n" +
-                        "                    }\n" +
-                        "                },\n" +
-                        "                tooltip: {\n" +
-                        "                    visible: true,\n" +
-                        "                    format: \"{0}%\",\n" +
-                        "                    template: \"#= series.name #: #= value #\"\n" +
-                        "                }\n" +
-                        "            });\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        $(document).ready(createChart);\n" +
-                        "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
-                        "    </script>\n" +
-                        "</div>\n" +
-                        "\n" +
-                        "\n" +
-                        "</body>\n" +
-                        "</html>";
-                setLinechart();
-            } catch (Exception e) {
-                e.printStackTrace();
-                progress.dismiss();
-            }
-           /* weight_graphView.setWebViewClient(new WebViewClient() {
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    if (progress.isShowing())
-                        progress.dismiss();
-                }
-            });
-
-
-            if (chartDates.size() > 1) {
-                weight_graphView.setVisibility(View.VISIBLE);
-                weight_graphView.loadDataWithBaseURL("file:///android_asset/", db, "text/html", "UTF-8", "");
-            } else {
-                weight_graphView.setVisibility(View.GONE);
-                progress.dismiss();
-            }*/
-
-            progress.dismiss();
-            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
 
         }
 
@@ -428,7 +321,7 @@ public class Height extends BaseActivity {
             JSONObject sendData1 = new JSONObject();
             try {
 
-                sendData1.put("UserId", id);
+                sendData1.put("UserId", mId);
                 sendData1.put("profileParameter", "health");
                 sendData1.put("htype", "height");
                 receiveData1 = service.patienBasicDetails(sendData1);
@@ -441,6 +334,7 @@ public class Height extends BaseActivity {
                 weight_contentlists.clear();
                 JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String PatientHistoryId = obj.getString("PatientHistoryId");
@@ -491,6 +385,120 @@ public class Height extends BaseActivity {
             return null;
         }
 
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if(isDataAvailable){
+                adapter = new MyHealthsAdapter(Height.this, weight_contentlists);
+                weight_listId.setAdapter(adapter);
+                Utility.setListViewHeightBasedOnChildren(weight_listId);
+                String db = null;
+
+
+                // chartValues.add("")
+                try {
+                    db = "<!DOCTYPE html> <html> <head>" +
+                            " <title></title>" +
+                            " <link rel='stylesheet' href='kendo.common.min.css' />" +
+                            " <link rel='stylesheet' href='kendo.default.min.css' />"
+
+                            + "  <script src='jquery.min.js'></script>"
+                            + "  <script src='kendo.all.min.js'></script>"
+                            + " </head>"
+                            + " <body>"
+                            + " <div id='example'>"
+                            + "  <div class='demo-section k-content wide'>"
+                            + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
+                            + " </div> \n" +
+                            "    <script>\n" +
+                            "        function createChart() {\n" +
+                            "            $(\"#chart\").kendoChart({\n" +
+                            "                title: {\n" +
+                            "                    text: \"Height in cm\"\n" +
+                            "                },\n" +
+                            "                legend: {\n" +
+                            "                    position: \"bottom\"\n" +
+                            ", margin:20" +
+                            "                },\n" +
+                            "                chartArea: {\n" +
+                            "                    background: \"\"\n" +
+                            "                },\n" +
+                            "                seriesDefaults: {\n" +
+                            "                    type: \"line\",\n" +
+                            "                    style: \"smooth\"\n" +
+                            "                },\n" +
+                            "                series: [{\n" +
+                            "                    name: \"Height\",\n" +
+                            "                    data: " + chartValues + "\n" +
+                            "                }  ],\n" +
+                            "                valueAxis: {\n" +
+                            "                    labels: {\n" +
+                            "                        format: \"{0}\"\n" +
+                            "                    },\n" +
+                            "                    line: {\n" +
+                            "                        visible: false\n" +
+                            "                    },\n" +
+                            "                    axisCrossingValue: -10\n" +
+                            "                },\n" +
+                            "                categoryAxis: {\n" +
+                            "                    categories: " + chartDates + ",\n" +
+                            "                    majorGridLines: {\n" +
+                            "                        visible: false\n" +
+                            "                    },\n" +
+                            "                    labels: {\n" +
+                            "                        rotation: \"auto\"\n" +
+                            "                    }\n" +
+                            "                },\n" +
+                            "                tooltip: {\n" +
+                            "                    visible: true,\n" +
+                            "                    format: \"{0}%\",\n" +
+                            "                    template: \"#= series.name #: #= value #\"\n" +
+                            "                }\n" +
+                            "            });\n" +
+                            "        }\n" +
+                            "\n" +
+                            "        $(document).ready(createChart);\n" +
+                            "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
+                            "    </script>\n" +
+                            "</div>\n" +
+                            "\n" +
+                            "\n" +
+                            "</body>\n" +
+                            "</html>";
+                    setLinechart();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    progress.dismiss();
+                }
+           /* weight_graphView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    if (progress.isShowing())
+                        progress.dismiss();
+                }
+            });
+
+
+            if (chartDates.size() > 1) {
+                weight_graphView.setVisibility(View.VISIBLE);
+                weight_graphView.loadDataWithBaseURL("file:///android_asset/", db, "text/html", "UTF-8", "");
+            } else {
+                weight_graphView.setVisibility(View.GONE);
+                progress.dismiss();
+            }*/
+
+                progress.dismiss();
+                weight_graphView.loadUrl("file:///android_asset/html/chart.html");
+            }else {
+                Intent i = new Intent(Height.this, AddWeight.class);
+                i.putExtra("id", mId);
+                i.putExtra("htype", "height");
+                startActivity(i);
+                finish();
+            }
+        }
+
     }
 
     @Override
@@ -519,7 +527,7 @@ public class Height extends BaseActivity {
             case R.id.add:
 
                 Intent i = new Intent(Height.this, AddWeight.class);
-                i.putExtra("id", id);
+                i.putExtra("id", mId);
                 i.putExtra("htype", "height");
                 startActivity(i);
                 finish();
