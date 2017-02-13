@@ -589,6 +589,7 @@
                     android:id="@+id/horizontal_"
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
+                    android:visibility="gone"
                     android:layout_above="@+id/patient_id">
 
                     <LinearLayout

@@ -1576,55 +1576,36 @@ public class update extends FragmentActivity {
         }
     }
 
-    class imagesync extends AsyncTask<Void, Void, Void>
-
-    {
-
+    class imagesync extends AsyncTask<Void, Void, Void> {
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(update.this);
             progress.setCancelable(true);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            update.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    //  progress.show();
-                }
-            });
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (progress != null)
                 progress.dismiss();
-
-            // new BackgroundProcess().execute();
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             sendData = new JSONObject();
             try {
                 sendData.put("PatientId", id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println(sendData);
             receiveData = service.verify(sendData);
-            System.out.println("ImageSync " + receiveData);
-
             String data;
             try {
                 data = receiveData.getString("d");
                 JSONObject cut = new JSONObject(data);
                 subArray = cut.getJSONArray("Table");
-
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1659,18 +1640,14 @@ public class update extends FragmentActivity {
                 });
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
             }
-
             return null;
         }
 
