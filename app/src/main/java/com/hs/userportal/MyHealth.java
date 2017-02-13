@@ -5,13 +5,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -19,9 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,10 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.HashMap;
-
-import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
@@ -53,13 +41,13 @@ public class MyHealth extends BaseActivity {
 
     private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies;
     private EditText blood_group;
-    private String id, show_blood, bgroup,  height,  weight;
+    private String id, show_blood, bgroup, height, weight;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
     private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
-    private int allergy_no=0;
+    private int allergy_no = 0;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -89,7 +77,8 @@ public class MyHealth extends BaseActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(MyHealth.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-        new Authentication(MyHealth.this, "MyHealth", "").execute();}
+            new Authentication(MyHealth.this, "MyHealth", "").execute();
+        }
         Intent z = getIntent();
         id = z.getStringExtra("id");
         show_blood = z.getStringExtra("show_blood");
@@ -173,10 +162,10 @@ public class MyHealth extends BaseActivity {
         final ImageView cancel_dialog = (ImageView) overlay_dialog.findViewById(R.id.cancel_dialog);
         final EditText bGroup = (EditText) overlay_dialog.findViewById(R.id.bGroup);
         TextView titleTv = (TextView) overlay_dialog.findViewById(R.id.textView6);
-        if(TextUtils.isEmpty(blood_group.getEditableText().toString())){
+        if (TextUtils.isEmpty(blood_group.getEditableText().toString())) {
             bGroup.setText("Edit");
             titleTv.setText("Edit");
-        }else{
+        } else {
             titleTv.setText("Update");
             bGroup.setText(blood_group.getEditableText().toString());
         }
@@ -260,9 +249,9 @@ public class MyHealth extends BaseActivity {
                 public void onResponse(JSONObject response) {
                      /*System.out.println(response);*/
                     progress.dismiss();
-                    if(TextUtils.isEmpty(blood)){
+                    if (TextUtils.isEmpty(blood)) {
                         blood_group.setText("-");
-                    }else{
+                    } else {
                         blood_group.setText(bgroup);
                     }
                     try {
@@ -286,7 +275,6 @@ public class MyHealth extends BaseActivity {
             send_request.add(jr);
         }
     }
-
 
 
     public void startBackgroundProcess() {
@@ -329,23 +317,24 @@ public class MyHealth extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(TextUtils.isEmpty(bgroup)){
+            if (TextUtils.isEmpty(bgroup)) {
                 blood_group.setText("-");
-            }else{
+            } else {
                 blood_group.setText(bgroup);
             }
-            if(!height.equalsIgnoreCase("null")) {
-                height_latest.setText(height+" cm");
-            }else{
+            if (!height.equalsIgnoreCase("null")) {
+                height_latest.setText(height + " cm");
+            } else {
                 height_latest.setText("-");
             }
-            if(!weight.equalsIgnoreCase("null")){
-                weight_latest.setText(weight+" Kg");
-            }else{
+            if (!weight.equalsIgnoreCase("null")) {
+                weight_latest.setText(weight + " Kg");
+            } else {
                 weight_latest.setText("-");
-            }if(allergy_no!=0){
+            }
+            if (allergy_no != 0) {
                 allergies.setText(String.valueOf(allergy_no));
-            }else{
+            } else {
                 allergies.setText("-");
             }
             progress.dismiss();
@@ -367,9 +356,9 @@ public class MyHealth extends BaseActivity {
                     height = obj.getString("height");
                     weight = obj.getString("weight");
                     String alergyString = obj.getString("allergiesName");
-                    if(TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")){
+                    if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
                         allergy_no = 0;
-                    }else{
+                    } else {
                         String[] array = alergyString.split(",");
                         allergy_no = array.length;
                     }
@@ -401,23 +390,24 @@ public class MyHealth extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(TextUtils.isEmpty(bgroup)){
+            if (TextUtils.isEmpty(bgroup)) {
                 blood_group.setText("-");
-            }else{
+            } else {
                 blood_group.setText(bgroup);
             }
-            if(!height.equalsIgnoreCase("null")) {
-                height_latest.setText(height+" cm");
-            }else{
+            if (!height.equalsIgnoreCase("null")) {
+                height_latest.setText(height + " cm");
+            } else {
                 height_latest.setText("-");
             }
-            if(!weight.equalsIgnoreCase("null")){
-                weight_latest.setText(weight+" Kg");
-            }else{
+            if (!weight.equalsIgnoreCase("null")) {
+                weight_latest.setText(weight + " Kg");
+            } else {
                 weight_latest.setText("-");
-            }if(allergy_no!=0){
+            }
+            if (allergy_no != 0) {
                 allergies.setText(String.valueOf(allergy_no));
-            }else{
+            } else {
                 allergies.setText("-");
             }
         }
@@ -437,8 +427,15 @@ public class MyHealth extends BaseActivity {
                     bgroup = obj.getString("BloodGroup");
                     height = obj.getString("height");
                     weight = obj.getString("weight");
-                    String[] array = obj.getString("allergiesName").split(",");
-                    allergy_no = array.length;
+                    String alergyString = obj.getString("allergiesName");
+                    if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
+                        allergy_no = 0;
+                    } else {
+                        String[] array = alergyString.split(",");
+                        allergy_no = array.length;
+                    }
+
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
