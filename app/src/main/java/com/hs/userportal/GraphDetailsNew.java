@@ -104,9 +104,9 @@ public class GraphDetailsNew extends BaseActivity {
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
-        settings.setDisplayZoomControls(false);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(true);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        settings.setBuiltInZoomControls(false);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
         mLineChartWebView.setInitialScale(1);
         mLineChartWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
@@ -485,7 +485,8 @@ public class GraphDetailsNew extends BaseActivity {
             if(mMaxValue < mRangeToInDouble){
                 mMaxValue = mRangeToInDouble;
             }
-            return (int)(mMaxValue + 20);
+            double valueToadd = mMaxValue * .1;
+            return (int)(mMaxValue + valueToadd);
         }
 
         @JavascriptInterface

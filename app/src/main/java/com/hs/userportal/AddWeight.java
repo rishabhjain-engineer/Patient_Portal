@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import ui.BaseActivity;
 
@@ -51,7 +53,7 @@ public class AddWeight extends BaseActivity {
         bsave = (Button) findViewById(R.id.bsave);
         weight = (TextView) findViewById(R.id.weight);
 
-        final Calendar c = Calendar.getInstance();
+        /*final Calendar c = Calendar.getInstance();
         cyear = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         int month1 = c.get(Calendar.MONTH) + 1;
@@ -63,8 +65,17 @@ public class AddWeight extends BaseActivity {
         String dateInString = "01";
         if(day < 10){
             dateInString = "0"+day;
-        }
-        lasstCheckedDate.setText(dateInString + "/" + monthInString + "/" + String.valueOf(cyear));
+        }*/
+
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(new Date(currentTimeMillis));
+        String[] stringArray = dateString.split("/");
+        day = Integer.parseInt(stringArray[0]);
+        month = Integer.parseInt(stringArray[1]);
+        cyear = Integer.parseInt(stringArray[2]);
+
+        lasstCheckedDate.setText(dateString);
 
         Intent z = getIntent();
         id = z.getStringExtra("id");
@@ -78,11 +89,11 @@ public class AddWeight extends BaseActivity {
             weight.setText("Weight (kg):");
             mActionBar.setTitle("Enter Weight");
         }
+
         service = new Services(AddWeight.this);
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (enter_add.getText().toString().equals("") || lasstCheckedDate.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "No Field can be blank", Toast.LENGTH_LONG).show();
                 } else {
@@ -90,28 +101,23 @@ public class AddWeight extends BaseActivity {
                 }
             }
         });
+
         lasstCheckedDate.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 DialogFragment newFragment = new DatePickerFragment();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
-
             }
         });
+
         lasstCheckedDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
-                // TODO Auto-generated method stub
-
                 if (hasfocus) {
                     DialogFragment newFragment = new DatePickerFragment();
                     newFragment.show(getSupportFragmentManager(), "datePicker");
-
                 }
-
             }
         });
     }
@@ -239,7 +245,6 @@ public class AddWeight extends BaseActivity {
                         && (dayOfMonth > (cal.get(Calendar.DAY_OF_MONTH))) && (monthOfYear > (cal
                         .get(Calendar.MONTH)))) {
                     Toast.makeText(getActivity(), "Date Of Birth is inavlid ! ", Toast.LENGTH_SHORT).show();
-
                     lasstCheckedDate.setText("");
                 } else if ((year == (cal.get(Calendar.YEAR))) && (monthOfYear == (cal.get(Calendar.MONTH)))
                         && (dayOfMonth > (cal.get(Calendar.DAY_OF_MONTH)))) {
@@ -248,12 +253,9 @@ public class AddWeight extends BaseActivity {
                     lasstCheckedDate.setText("");
                 } else if ((year > (cal.get(Calendar.YEAR)))) {
                     Toast.makeText(getActivity(), "Date Of Birth is inavlid ! ", Toast.LENGTH_SHORT).show();
-
                     lasstCheckedDate.setText("");
                 } else {
                     lasstCheckedDate.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
-
-
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();

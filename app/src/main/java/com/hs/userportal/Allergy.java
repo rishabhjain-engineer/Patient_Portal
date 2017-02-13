@@ -57,6 +57,7 @@ public class Allergy extends FragmentActivity {
         add_allergy = (Button)findViewById(R.id.add_allergy);
         back_pic=(ImageButton)findViewById(R.id.back_pic);
         allergy_title=(TextView)findViewById(R.id.allergy_title);
+        allergy_title.setTextColor(getResources().getColor(R.color.white));
         Intent z = getIntent();
         id = z.getStringExtra("id");
 
