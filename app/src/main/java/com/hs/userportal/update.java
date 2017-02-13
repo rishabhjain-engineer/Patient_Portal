@@ -757,6 +757,8 @@ public class update extends FragmentActivity {
                 emdata = receiveData.getString("d");
                 if (emdata.equals("true")) {
                     emailAlreadyRegistered();
+                }else{
+                    Toast.makeText(update.this, "Email is verified successfully", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (JSONException e) {
@@ -1020,6 +1022,71 @@ public class update extends FragmentActivity {
         }
 
         @Override
+        protected Void doInBackground(Void... params) {
+            sendData = new JSONObject();
+            try {
+                JSONObject receiveData1 = service.nationalityList(sendData);
+                System.out.println(receiveData1);
+                countryids.clear();
+                countrylist.clear();
+                String qw = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(qw);
+                newarray = cut.getJSONArray("Table");
+                for (int j = 0; j < newarray.length(); j++) {
+                    countryids.add(newarray.getJSONObject(j).getString("NationID"));
+                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
+                }
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+
+            sendData = new JSONObject();
+            try {
+                sendData.put("UserId", id);
+                sendData.put("profileParameter", "basic");
+                sendData.put("htype", "");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            receiveData = service.patienBasicDetails(sendData);
+            String data2;
+            try {
+                data2 = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data2);
+                commonarray = cut.getJSONArray("Table");
+                for (int m = 0; m < commonarray.length(); m++) {
+                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
+                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
+                    LastName = commonarray.getJSONObject(m).getString("LastName");
+                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
+                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
+                    Sex = commonarray.getJSONObject(m).getString("Sex");
+                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
+                    DOB = commonarray.getJSONObject(m).getString("DOB");
+                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
+                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
+                    Email = commonarray.getJSONObject(m).getString("Email");
+                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
+                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
+                    age = commonarray.getJSONObject(m).getString("age");
+                    nation_id = commonarray.getJSONObject(m).getString("NationId");
+                    oldimage = commonarray.getJSONObject(m).getString("Image");
+                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
+                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
+                    path = commonarray.getJSONObject(m).getString("Path");
+                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
+                    email_varification = commonarray.getJSONObject(m).getString("Validate");
+                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
+                }
+
+
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             String data;
@@ -1163,96 +1230,6 @@ public class update extends FragmentActivity {
             }
 
             progress.dismiss();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-            sendData = new JSONObject();
-
-
-            try {
-                JSONObject receiveData1 = service.nationalityList(sendData);
-                System.out.println(receiveData1);
-                countryids.clear();
-                countrylist.clear();
-                String qw = receiveData1.getString("d");
-                JSONObject cut = new JSONObject(qw);
-                newarray = cut.getJSONArray("Table");
-                for (int j = 0; j < newarray.length(); j++)
-
-                {
-                    countryids.add(newarray.getJSONObject(j).getString(
-                            "NationID"));
-                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
-
-                }
-
-
-            } catch (JSONException e1) {
-
-                e1.printStackTrace();
-
-            }
-
-            sendData = new JSONObject();
-            try {
-
-                sendData.put("UserId", id);
-                sendData.put("profileParameter", "basic");
-                sendData.put("htype", "");
-            } catch (JSONException e) {
-
-                e.printStackTrace();
-            }
-            System.out.println("Patient History empty:" + sendData);
-            receiveData = service.patienBasicDetails(sendData);
-            System.out.println("Patient History empty:" + receiveData);
-
-            String data2;
-            try {
-                data2 = receiveData.getString("d");
-                JSONObject cut = new JSONObject(data2);
-                commonarray = cut.getJSONArray("Table");
-
-                //    {"d":"{\"Table\":[{\"Salutation\":\"Mr.\",\"FirstName\":\"Dheeraj\",\"MiddleName\":\"khokar\",\"LastName\":\"\",\"fullName\":\"Mr. Dheeraj khokar\",\"UserNameAlias\":\"newlab123\",\"Sex\":\"Male\",\"BloodGroup\":\"Sel\",\"DOB\":\"01-01-2015\",\"HusbandName\":\"\",\"FatherName\":\"\",\"Email\":\"Priya@cloudchowk.com\",\"ContactNo\":\"9654639068\",\"PatientId\":\"1b7a9845-b7a3-465a-815a-5de6a933b009\",\"Nationality\":\"Indian\",\"age\":\"1 Years\"}]}"}
-                for (int m = 0; m < commonarray.length(); m++) {
-                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
-                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
-                    LastName = commonarray.getJSONObject(m).getString("LastName");
-                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
-                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
-                    Sex = commonarray.getJSONObject(m).getString("Sex");
-                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
-                    DOB = commonarray.getJSONObject(m).getString("DOB");
-                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
-                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
-                    Email = commonarray.getJSONObject(m).getString("Email");
-                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
-                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
-                    age = commonarray.getJSONObject(m).getString("age");
-                    nation_id = commonarray.getJSONObject(m).getString("NationId");
-                    oldimage = commonarray.getJSONObject(m).getString("Image");
-                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
-                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
-                    path = commonarray.getJSONObject(m).getString("Path");
-                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
-                    email_varification = commonarray.getJSONObject(m).getString("Validate");
-                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
-
-                    //oldimage,oldthumbimage,oldimagename,path
-
-                }
-
-
-            } catch (JSONException e1) {
-
-                e1.printStackTrace();
-
-            }
-
-
-            return null;
         }
 
     }
