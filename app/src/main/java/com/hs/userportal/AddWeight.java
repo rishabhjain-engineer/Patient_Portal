@@ -16,8 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +44,18 @@ public class AddWeight extends BaseActivity {
     private String id, htype;
     private Services service;
     private static int cyear, month, day;
+    private Switch mSwitchWeight;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
         setupActionBar();
-        enter_add = (EditText) findViewById(R.id.enter_add);
+       enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
         bsave = (Button) findViewById(R.id.bsave);
         weight = (TextView) findViewById(R.id.weight);
+        mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
 
         /*final Calendar c = Calendar.getInstance();
         cyear = c.get(Calendar.YEAR);
@@ -91,6 +95,20 @@ public class AddWeight extends BaseActivity {
         }
 
         service = new Services(AddWeight.this);
+
+
+        mSwitchWeight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mSwitchWeight.setText("ON");
+                }
+                else {
+                    mSwitchWeight.setText("OFFF");
+                }
+            }
+        });
+
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
