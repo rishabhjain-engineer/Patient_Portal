@@ -108,8 +108,7 @@ public class update extends FragmentActivity {
     private static final int PICK_FROM_GALLERY = 2;
     private String city_id = "", country_id = "", state_id = "", area_id = "", imgid = "", imgname = "", fbLinked, fbLinkedID;
     private String passw = "";
-    private EditText sal, fn, mn, mLastName, un, em, sex, cont, /*blood,*/
-            religion, nationality, father, husband;
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
     // AutoCompleteTextView area;
@@ -149,6 +148,7 @@ public class update extends FragmentActivity {
     private Dialog fbDialog;
 
 
+
     public static JSONArray arraybasic;
     public static JSONArray arrayedu;
     public static JSONArray arraywork;
@@ -183,7 +183,7 @@ public class update extends FragmentActivity {
         etDOB = (EditText) findViewById(R.id.etDOB);
         fn = (EditText) findViewById(R.id.etContact);
         mn = (EditText) findViewById(R.id.editText4);
-        mLastName = (EditText) findViewById(R.id.editText5);
+        ln = (EditText) findViewById(R.id.editText5);
         un = (EditText) findViewById(R.id.editText6);
         em = (EditText) findViewById(R.id.editText7);
         email_varifyid = (TextView) findViewById(R.id.email_varifyid);
@@ -195,20 +195,6 @@ public class update extends FragmentActivity {
         cont = (EditText) findViewById(R.id.etName);
         religion = (EditText) findViewById(R.id.editText9);
         finishbtn = (Button) findViewById(R.id.bSend);
-        Button saveEmailButton = (Button) findViewById(R.id.save_email_btn);
-        saveEmailButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pattern = Pattern.compile(EMAIL_PATTERN);
-                matcher = pattern.matcher(em.getText().toString().trim());
-                if (!matcher.matches()) {
-                    em.setError(Html.fromHtml("Enter correct Email address"));
-                    Toast.makeText(getBaseContext(), Html.fromHtml("Enter correct Email address"), Toast.LENGTH_SHORT).show();
-                } else {
-                    new EmailIdAsync().execute();
-                }
-            }
-        });
 
         dp = (ImageButton) findViewById(R.id.dp);
         dpchange = (ImageButton) findViewById(R.id.dpChange);
@@ -265,8 +251,7 @@ public class update extends FragmentActivity {
             Toast.makeText(update.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             // new Authentication().execute();
-            new Authentication(update.this, "update", "").execute();
-        }
+            new Authentication(update.this, "update", "").execute(); }
         //new BackgroundProcess().execute();
 
         if (pic.matches((".*[a-kA-Zo-t]+.*"))) {
@@ -468,9 +453,11 @@ public class update extends FragmentActivity {
                     e.printStackTrace();
                 }
 
+                pattern = Pattern.compile(EMAIL_PATTERN);
+                matcher = pattern.matcher(em.getText().toString().trim());
                 if (fn.getText().toString().equals("") || fn.getText().toString() == "") {
                     Toast.makeText(getBaseContext(), Html.fromHtml("Enter your first name"), Toast.LENGTH_SHORT).show();
-                } else if (mLastName.getText().toString().equals("") || mLastName.getText().toString() == "") {
+                } else if (ln.getText().toString().equals("") || ln.getText().toString() == "") {
                     Toast.makeText(getBaseContext(), Html.fromHtml("Enter your last name"), Toast.LENGTH_SHORT).show();
                 } else if (un.getText().toString() == "" || un.getText().toString().equals("")) {
                     un.setError("Username should not be empty!");
@@ -479,13 +466,17 @@ public class update extends FragmentActivity {
                 } else if (aliascheck != null && aliascheck.equals("already exists")) {
                     un.requestFocus();
                     un.setError(un.getText().toString() + " already exists.");
+                } else if (!matcher.matches()) {
+                    em.setError(Html.fromHtml("Enter correct Email address"));
+                    Toast.makeText(getBaseContext(), Html.fromHtml("Enter correct Email address"), Toast.LENGTH_SHORT).show();
+
                 } else if (date1 != null && datecurrent != null && date1.compareTo(datecurrent) > 0) {
                     etDOB.setError(Html.fromHtml("DOB should  be less than or equal to current date"));
                     Toast.makeText(getBaseContext(), Html.fromHtml("DOB should  be less than or equal to current date"), Toast.LENGTH_SHORT).show();
                 } else if (cont.getText().toString().length() != 10) {
                     cont.setError(Html.fromHtml("Please fill valid Mobile Number"));
                 } else {
-                    new SaveProfileDetailAsyncTask().execute();
+                    new submitchange().execute();
                 }
 
             }
@@ -584,7 +575,8 @@ public class update extends FragmentActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                {
                     new AlertDialog.Builder(update.this)
                             .setTitle("Select Gender")
                             .setAdapter(genderadapter,
@@ -735,10 +727,9 @@ public class update extends FragmentActivity {
     }
 
 
-    class CheckmailAsynctask extends AsyncTask<Void, Void, Void> {
+    class CheckmailAsynctask extends AsyncTask<Void, Void, Void>{
 
         JSONObject dataToSend;
-
         public CheckmailAsynctask(JSONObject sendData) {
             dataToSend = sendData;
         }
@@ -757,8 +748,6 @@ public class update extends FragmentActivity {
                 emdata = receiveData.getString("d");
                 if (emdata.equals("true")) {
                     emailAlreadyRegistered();
-                }else{
-                    Toast.makeText(update.this, "Email is verified successfully", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (JSONException e) {
@@ -767,7 +756,6 @@ public class update extends FragmentActivity {
 
         }
     }
-
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Config.ARGB_8888);
@@ -871,59 +859,12 @@ public class update extends FragmentActivity {
         }
     }
 
-    class EmailIdAsync extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            ghoom = new ProgressDialog(update.this);
-            ghoom.setCancelable(false);
-            ghoom.setTitle("Updating...");
-            ghoom.setMessage("Please wait...");
-            ghoom.setIndeterminate(true);
-            ghoom.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            if (Email.equals("")) {
-                emailverify = "no";
-            } else {
-                sendData = new JSONObject();
-                try {
-                    sendData.put("Email", em.getText().toString());
-                    sendData.put("Usercode", "");
-                    receiveData = service.checkemail(sendData);
-                    emdata = receiveData.getString("d");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (emdata.equals("true")) {
-                    emailverify = "already";
-                } else {
-
-                }
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            if (emailverify.equals("no")) {
-                Toast.makeText(getApplicationContext(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-            } else if (emailverify.equals("already")) {
-                emailAlreadyRegistered();
-            }
-            if (emdata != null && emdata.equals("success")) {
-                Toast.makeText(getApplicationContext(), "Email is saved successfully!", Toast.LENGTH_SHORT).show();
-            }
-            ghoom.dismiss();
-        }
-    }
-
-    private class SaveProfileDetailAsyncTask extends AsyncTask<Void, Void, Void> {
+    class submitchange extends AsyncTask<Void, Void, Void> {
         String Salutation, FirstName, MiddleName, LastName, UserNameAlias, Sex, BloodGroup,
                 DOB, HusbandName, FatherName, Email, ContactNo, NationId, message;
 
+        //sal, fn, mn, ln, un, em, sex, cont, blood, religion, nationality,
+        //    father, husband,etDOB;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -937,7 +878,7 @@ public class update extends FragmentActivity {
             Salutation = sal.getText().toString().trim();
             FirstName = fn.getText().toString().trim();
             MiddleName = mn.getText().toString().trim();
-            LastName = mLastName.getText().toString().trim();
+            LastName = ln.getText().toString().trim();
             UserNameAlias = un.getText().toString().trim();
             Sex = sex.getText().toString().trim();
             BloodGroup =/* blood.getText().toString().trim();*/"";
@@ -955,51 +896,93 @@ public class update extends FragmentActivity {
             ghoom.show();
         }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            basic = new JSONObject();
-            try {
-                String dg = NationId;
-                //  basic.put("Address", house.getText().toString());
-                basic.put("Salutation", Salutation);
-                basic.put("FirstName", FirstName);
-                basic.put("MiddleName", MiddleName);
-                basic.put("LastName", LastName);
-                basic.put("UserNameAlias", UserNameAlias);
-                basic.put("Sex", Sex);
-                       /* basic.put("BloodGroup", BloodGroup);*/
-                basic.put("DOB", DOB);
-                basic.put("HusbandName", HusbandName);
-                basic.put("FatherName", FatherName);
-                basic.put("Email", Email);
-                basic.put("ContactNo", ContactNo);
-                basic.put("NationId", NationId);
-                arraybasic = new JSONArray();
-                arraybasic.put(basic);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            sendbasic = new JSONObject();
-            try {
-                sendbasic.put("basicdetails", arraybasic);
-                sendbasic.put("UserId", id);
-                sendbasic.put("typeselect", "basic");
-                receiveData = service.saveBasicDetail(sendbasic);
-                message = receiveData.getString("d");
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (emailverify.equals("no")) {
+                final Toast toast = Toast.makeText(getApplicationContext(),
+                        "Email cannot be blank", Toast.LENGTH_SHORT);
+                toast.show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 2000);
+            } else if (emailverify.equals("already")) {
+                emailAlreadyRegistered();
             }
-            return null;
+            if (message != null && message.equals("success")) {
+                Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
+
+                finish();
+            }
+            ghoom.dismiss();
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (message != null && message.equals("success")) {
-                Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            if (Email.equals("")) {
+                emailverify = "no";
+            }/* else if (UserNameAlias.toString().equals("")) {
+
+                unverify = "no";
+
+            }*/ else {
+                sendData = new JSONObject();
+                try {
+
+                    sendData.put("Email", em.getText().toString());
+                    sendData.put("Usercode", "");
+                    receiveData = service.checkemail(sendData);
+                    emdata = receiveData.getString("d");
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
+
+                if (emdata.equals("true")) {
+                    emailverify = "already";
+                } else {
+                    basic = new JSONObject();
+                    try {
+                        String dg = NationId;
+                        //  basic.put("Address", house.getText().toString());
+                        basic.put("Salutation", Salutation);
+                        basic.put("FirstName", FirstName);
+                        basic.put("MiddleName", MiddleName);
+                        basic.put("LastName", LastName);
+                        basic.put("UserNameAlias", UserNameAlias);
+                        basic.put("Sex", Sex);
+                       /* basic.put("BloodGroup", BloodGroup);*/
+                        basic.put("DOB", DOB);
+                        basic.put("HusbandName", HusbandName);
+                        basic.put("FatherName", FatherName);
+                        basic.put("Email", Email);
+                        basic.put("ContactNo", ContactNo);
+                        basic.put("NationId", NationId);
+                        arraybasic = new JSONArray();
+                        arraybasic.put(basic);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    sendbasic = new JSONObject();
+                    try {
+                        sendbasic.put("basicdetails", arraybasic);
+                        sendbasic.put("UserId", id);
+                        sendbasic.put("typeselect", "basic");
+                        receiveData = service.saveBasicDetail(sendbasic);
+                        message = receiveData.getString("d");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            ghoom.dismiss();
+            return null;
         }
     }
 
@@ -1007,6 +990,7 @@ public class update extends FragmentActivity {
 
         @Override
         protected void onPreExecute() {
+            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(update.this);
             progress.setCancelable(false);
@@ -1022,89 +1006,44 @@ public class update extends FragmentActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            sendData = new JSONObject();
-            try {
-                JSONObject receiveData1 = service.nationalityList(sendData);
-                System.out.println(receiveData1);
-                countryids.clear();
-                countrylist.clear();
-                String qw = receiveData1.getString("d");
-                JSONObject cut = new JSONObject(qw);
-                newarray = cut.getJSONArray("Table");
-                for (int j = 0; j < newarray.length(); j++) {
-                    countryids.add(newarray.getJSONObject(j).getString("NationID"));
-                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
-                }
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-
-            sendData = new JSONObject();
-            try {
-                sendData.put("UserId", id);
-                sendData.put("profileParameter", "basic");
-                sendData.put("htype", "");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            receiveData = service.patienBasicDetails(sendData);
-            String data2;
-            try {
-                data2 = receiveData.getString("d");
-                JSONObject cut = new JSONObject(data2);
-                commonarray = cut.getJSONArray("Table");
-                for (int m = 0; m < commonarray.length(); m++) {
-                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
-                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
-                    LastName = commonarray.getJSONObject(m).getString("LastName");
-                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
-                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
-                    Sex = commonarray.getJSONObject(m).getString("Sex");
-                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
-                    DOB = commonarray.getJSONObject(m).getString("DOB");
-                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
-                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
-                    Email = commonarray.getJSONObject(m).getString("Email");
-                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
-                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
-                    age = commonarray.getJSONObject(m).getString("age");
-                    nation_id = commonarray.getJSONObject(m).getString("NationId");
-                    oldimage = commonarray.getJSONObject(m).getString("Image");
-                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
-                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
-                    path = commonarray.getJSONObject(m).getString("Path");
-                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
-                    email_varification = commonarray.getJSONObject(m).getString("Validate");
-                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
-                }
-
-
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+
+
             String data;
+
             try {
+
                 data = receiveData.getString("d");
                 JSONObject cut = new JSONObject(data);
                 subArray = cut.getJSONArray("Table");
+
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
+
                 fn.setText(FirstName);
-                mLastName.setText(LastName);
+
+                ln.setText(LastName);
+
                 mn.setText(MiddleName);
+
                 em.setText(Email);
+
                 father.setText(FatherName);
+
                 husband.setText(HusbandName);
+
+
+                //  un.setText(UserNameAlias);
+
                 if (UserNameAlias.matches((".*[a-kA-Zo-t]+.*"))) {
+
                     un.setText(UserNameAlias);
                     un.setFocusable(true);
+                   /* un.setEnabled(false);
+                    un.setFocusable(false);
+                    un.setFocusableInTouchMode(false);
+                    un.setTextColor(Color.parseColor("#939393"));*/
                 }
                 check_username = un.getText().toString();
                 if (email_varification != null && email_varification.equals("0")) {
@@ -1113,36 +1052,51 @@ public class update extends FragmentActivity {
                 } else {
                     email_varifyid.setVisibility(View.GONE);
                 }
-                if (mobile_varification != null && mobile_varification.equals("0")) {
+                if (mobile_varification != null&& mobile_varification.equals("0")) {
                     contact_varifyid.setText("Contact number is not verified");
                     contact_varifyid.setVisibility(View.VISIBLE);
                 } else {
                     contact_varifyid.setVisibility(View.GONE);
                 }
+
                 sex.setText(Sex);
+
                 cont.setText(ContactNo);
+
+
+                /*blood.setText(BloodGroup);*/
+
                 nationality.setText(Nationality);
+
+
                 etDOB.setText(DOB);
+
                 String splitdate[] = DOB.split("/");
                 day = Integer.parseInt(splitdate[0]);
                 month = Integer.parseInt(splitdate[1]) - 1;
                 cyear = Integer.parseInt(splitdate[2]);
+
                 path = subArray.getJSONObject(0).getString("Path");
+
                 if (subArray.getJSONObject(0).getString("ThumbImage")
                         .matches((".*[a-kA-Zo-t]+.*"))) {
                     oldfile1 = path
                             + subArray.getJSONObject(0).getString("ThumbImage");
                     System.out.println("oldfile:" + oldfile1);
                 }
+
                 try {
+
                     if (subArray.getJSONObject(0).getString("ThumbImage")
                             .matches((".*[a-kA-Zo-t]+.*")))
+                    // if
+                    // (subArray.getJSONObject(0).getString("ThumbImage").contains("Don't Show Images"))
 
                     {
-                        String image_show = path
+                        String image_show =  path
                                 + subArray.getJSONObject(0).getString("Image");
 
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
+                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ","%20")).toString()).getContent());
 
                         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                                 bitmap.getHeight(), Config.ARGB_8888);
@@ -1192,7 +1146,7 @@ public class update extends FragmentActivity {
                     basic.put("FatherName", father.getText().toString());
                     basic.put("FirstName", fn.getText().toString());
                     basic.put("HusbandName", husband.getText().toString());
-                    basic.put("LastName", mLastName.getText().toString());
+                    basic.put("LastName", ln.getText().toString());
                     basic.put("LoginAlias", un.getText().toString());
                     basic.put("MiddleName", mn.getText().toString());
                     basic.put("NationId", nationid);
@@ -1230,6 +1184,96 @@ public class update extends FragmentActivity {
             }
 
             progress.dismiss();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            sendData = new JSONObject();
+
+
+            try {
+                JSONObject receiveData1 = service.nationalityList(sendData);
+                System.out.println(receiveData1);
+                countryids.clear();
+                countrylist.clear();
+                String qw = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(qw);
+                newarray = cut.getJSONArray("Table");
+                for (int j = 0; j < newarray.length(); j++)
+
+                {
+                    countryids.add(newarray.getJSONObject(j).getString(
+                            "NationID"));
+                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
+
+                }
+
+
+            } catch (JSONException e1) {
+
+                e1.printStackTrace();
+
+            }
+
+            sendData = new JSONObject();
+            try {
+
+                sendData.put("UserId", id);
+                sendData.put("profileParameter", "basic");
+                sendData.put("htype", "");
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+            }
+            System.out.println("Patient History empty:" + sendData);
+            receiveData = service.patienBasicDetails(sendData);
+            System.out.println("Patient History empty:" + receiveData);
+
+            String data2;
+            try {
+                data2 = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data2);
+                commonarray = cut.getJSONArray("Table");
+
+                //    {"d":"{\"Table\":[{\"Salutation\":\"Mr.\",\"FirstName\":\"Dheeraj\",\"MiddleName\":\"khokar\",\"LastName\":\"\",\"fullName\":\"Mr. Dheeraj khokar\",\"UserNameAlias\":\"newlab123\",\"Sex\":\"Male\",\"BloodGroup\":\"Sel\",\"DOB\":\"01-01-2015\",\"HusbandName\":\"\",\"FatherName\":\"\",\"Email\":\"Priya@cloudchowk.com\",\"ContactNo\":\"9654639068\",\"PatientId\":\"1b7a9845-b7a3-465a-815a-5de6a933b009\",\"Nationality\":\"Indian\",\"age\":\"1 Years\"}]}"}
+                for (int m = 0; m < commonarray.length(); m++) {
+                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
+                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
+                    LastName = commonarray.getJSONObject(m).getString("LastName");
+                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
+                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
+                    Sex = commonarray.getJSONObject(m).getString("Sex");
+                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
+                    DOB = commonarray.getJSONObject(m).getString("DOB");
+                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
+                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
+                    Email = commonarray.getJSONObject(m).getString("Email");
+                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
+                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
+                    age = commonarray.getJSONObject(m).getString("age");
+                    nation_id = commonarray.getJSONObject(m).getString("NationId");
+                    oldimage = commonarray.getJSONObject(m).getString("Image");
+                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
+                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
+                    path = commonarray.getJSONObject(m).getString("Path");
+                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
+                    email_varification = commonarray.getJSONObject(m).getString("Validate");
+                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
+
+                    //oldimage,oldthumbimage,oldimagename,path
+
+                }
+
+
+            } catch (JSONException e1) {
+
+                e1.printStackTrace();
+
+            }
+
+
+            return null;
         }
 
     }
@@ -1576,36 +1620,55 @@ public class update extends FragmentActivity {
         }
     }
 
-    class imagesync extends AsyncTask<Void, Void, Void> {
+    class imagesync extends AsyncTask<Void, Void, Void>
+
+    {
+
         protected void onPreExecute() {
+            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(update.this);
             progress.setCancelable(true);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
+            update.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    //  progress.show();
+                }
+            });
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (progress != null)
+            if(progress!=null)
                 progress.dismiss();
+
+            // new BackgroundProcess().execute();
+
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
             sendData = new JSONObject();
             try {
                 sendData.put("PatientId", id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            System.out.println(sendData);
             receiveData = service.verify(sendData);
+            System.out.println("ImageSync " + receiveData);
+
             String data;
             try {
                 data = receiveData.getString("d");
                 JSONObject cut = new JSONObject(data);
                 subArray = cut.getJSONArray("Table");
+
             } catch (JSONException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1640,14 +1703,18 @@ public class update extends FragmentActivity {
                 });
 
             } catch (JSONException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
             }
+
             return null;
         }
 
@@ -1662,8 +1729,8 @@ public class update extends FragmentActivity {
         Random generator = new Random();
 
         String fname = "Imagefb.jpg";
-        File file = new File(myDir, fname);
-        if (file.exists()) file.delete();
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
         try {
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
@@ -1673,7 +1740,7 @@ public class update extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return path;
+        return  path;
     }
 
     private void emailAlreadyRegistered() {
@@ -1683,9 +1750,9 @@ public class update extends FragmentActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
-        TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView)dialog.findViewById(R.id.message);
         messageTv.setText("This E-mail is already registered!");
         stayButton.setVisibility(View.GONE);
 

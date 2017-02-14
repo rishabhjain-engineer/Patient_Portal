@@ -146,6 +146,43 @@
                     android:hint="Your login alias" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/Form2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="35"
+                    android:text="E-mail"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editText7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="65"
+                    android:ems="10"
+                    android:hint="Your e-mail address"
+                    android:inputType="textEmailAddress"
+                    android:nextFocusDown="@+id/father"
+                    android:singleLine="true"></EditText>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/email_varifyid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:text="dfhjksafh"
+                android:textColor="#FF0000"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -238,40 +275,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/Form4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/L5_0"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="35"
-                android:text="Contact"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="65"
-                android:ems="10"
-                android:hint="Contact"
-                android:inputType="number"
-                android:maxLength="10"
-                android:nextFocusDown="@+id/editText9"
-                android:singleLine="true" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/L3_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Form4"
+            android:layout_below="@+id/L5_0"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
@@ -321,9 +328,8 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-
-        <RelativeLayout
-            android:id="@+id/Form2"
+        <LinearLayout
+            android:id="@+id/Form4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L3_3"
@@ -331,53 +337,39 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp">
 
-            <EditText
-                android:id="@+id/editText7"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/save_email_btn"
-                android:hint="Your e-mail address"
-                android:inputType="textEmailAddress"
-                android:nextFocusDown="@+id/father"
-                android:singleLine="true"></EditText>
-
-            <Button
-                android:id="@+id/save_email_btn"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_marginLeft="5dp"
-                android:background="@color/header_color"
-                android:text="Submit"
+                android:layout_weight="35"
+                android:text="Contact"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/email_varifyid"
-                android:layout_below="@+id/save_email_btn"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginTop="2dp"
-                android:text="dfhjksafh"
-                android:textColor="#FF0000"
-                android:textSize="10dp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-        </RelativeLayout>
+                android:layout_weight="65"
+                android:ems="10"
+                android:hint="Contact"
+                android:inputType="number"
+                android:maxLength="10"
+                android:nextFocusDown="@+id/editText9"
+                android:singleLine="true" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/contact_varifyid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/Form2"
-            android:layout_alignRight="@+id/Form2"
-            android:layout_below="@+id/Form2"
+            android:layout_alignEnd="@+id/Form4"
+            android:layout_alignRight="@+id/Form4"
+            android:layout_below="@+id/Form4"
             android:layout_gravity="right"
             android:gravity="right"
-            android:text=""
             android:textColor="#FF0000"
             android:textSize="10dp"
+            android:text=""
             android:textStyle="bold"
             android:visibility="gone" />
 
@@ -391,11 +383,11 @@
             android:orientation="horizontal">
 
             <Button
+                android:background="@color/header_color"
                 android:id="@+id/bSend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/header_color"
                 android:text="SAVE" />
         </LinearLayout>
     </RelativeLayout>
