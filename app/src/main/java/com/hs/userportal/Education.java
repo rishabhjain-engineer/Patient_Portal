@@ -468,7 +468,7 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                     alertDialog.setTitle("Message");
 
                     // Setting Dialog Message
-                    alertDialog.setMessage("No field can be left Blank");
+                    alertDialog.setMessage("Mandatory fields can be left Blank");
 
                     // Setting OK Button
                     alertDialog.setButton("OK",
@@ -481,8 +481,7 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if (date2 != null && (date1.compareTo(date2) > 0
-                        || date1.compareTo(date2) == 0)) {
+                } else if (date2 != null && (date1.compareTo(date2) > 0 || date1.compareTo(date2) == 0)) {
 
                     alertDialog = new AlertDialog.Builder(Education.this).create();
 
@@ -570,19 +569,6 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                     alertDialog.show();
                 }else{
                     String education = educationspinner.getText().toString();
-                   /* lv.setAdapter(m_adapter);
-                    String cop= co.getText().toString();
-                    HashMap<String, String> hmap = new HashMap<String, String>();
-                    String education = educationspinner.getText().toString();
-                    hmap.put("name", education);
-                    hmap.put("address", ad.getText().toString());
-                    hmap.put("city", ci.getText().toString());
-                    hmap.put("state", st.getText().toString());
-                    hmap.put("country", co.getText().toString());
-                    hmap.put("postaladdress", pi.getText().toString());
-                    hmap.put("from", from.getText().toString());
-                    hmap.put("to", to.getText().toString());
-                    toeditFieldlist.add(hmap);*/
                     String input;
                     String xj=to.getText().toString();
                     if (!to.getText().toString().equals("")){
@@ -632,14 +618,11 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
 
                                     }
                                 } catch (Exception e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
 
                             }
                             if (value == 0) {
-                               /* m_listItems.add(input);
-                                m_adapter.notifyDataSetChanged();*/
                                 new submitchange().execute();
                             }else{
                                 Toast.makeText(getApplicationContext(),"Duplicate entries not allowed!",Toast.LENGTH_SHORT).show();

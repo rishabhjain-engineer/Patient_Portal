@@ -445,7 +445,7 @@ public class StaticHolder {
                 //   url = "https://d141702.cloudchowk.com/";//demo   /rahul2  androidios
                 break;*/
             case saveOtherDetail:
-                url = BASE_URL + "saveOtherDetail";
+                url = BASE_URL + "saveOtherDetailMod";
                 break;
 
             case CreateFolder:
