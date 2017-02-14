@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Institution Name &amp; Address:"
+            android:text="Institution Name &amp; Address*:"
             android:layout_marginTop="5dp"
             android:textColor="@android:color/black"
             android:id="@+id/adtxt" />
@@ -59,7 +59,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="City*:"
+                android:text="City:"
                 android:textColor="@android:color/black"
 
                 />
@@ -71,7 +71,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="State*:"
+                android:text="State:"
 
                 android:textColor="@android:color/black" />
         </LinearLayout>
@@ -123,7 +123,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:textColor="@android:color/black"
-                android:text="Country*:"
+                android:text="Country:"
 
                 />
 
@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:text="To Date:"
+                android:text="To Date*:"
                 android:textColor="@android:color/black"
                 />
             <CheckBox

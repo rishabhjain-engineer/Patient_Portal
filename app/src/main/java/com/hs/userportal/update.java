@@ -492,7 +492,7 @@ public class update extends FragmentActivity {
         });
 
 
-        em.setOnFocusChangeListener(new OnFocusChangeListener() {
+       /* em.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
@@ -515,7 +515,8 @@ public class update extends FragmentActivity {
                 }
 
             }
-        });
+        });*/
+
         nationality.setInputType(InputType.TYPE_NULL);
 
         nationality.setOnTouchListener(new OnTouchListener() {
@@ -561,11 +562,8 @@ public class update extends FragmentActivity {
                             .setAdapter(saluadapter,
                                     new DialogInterface.OnClickListener() {
 
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            sal.setText(salulist[which]
-                                                    .toString());
+                                        public void onClick(DialogInterface dialog, int position) {
+                                            sal.setText(salulist[position].toString());
                                             dialog.dismiss();
                                         }
                                     }).create().show();
@@ -736,7 +734,7 @@ public class update extends FragmentActivity {
     }
 
 
-    class CheckmailAsynctask extends AsyncTask<Void, Void, Void>{
+    private class CheckmailAsynctask extends AsyncTask<Void, Void, Void>{
 
         JSONObject dataToSend;
         public CheckmailAsynctask(JSONObject sendData) {
@@ -966,20 +964,12 @@ public class update extends FragmentActivity {
             progress.setTitle("Loading");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            update.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-
-                }
-            });
+            progress.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
             sendData = new JSONObject();
-
-
             try {
                 JSONObject receiveData1 = service.nationalityList(sendData);
                 System.out.println(receiveData1);
@@ -988,30 +978,19 @@ public class update extends FragmentActivity {
                 String qw = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(qw);
                 newarray = cut.getJSONArray("Table");
-                for (int j = 0; j < newarray.length(); j++)
-
-                {
-                    countryids.add(newarray.getJSONObject(j).getString(
-                            "NationID"));
+                for (int j = 0; j < newarray.length(); j++) {
+                    countryids.add(newarray.getJSONObject(j).getString("NationID"));
                     countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
-
                 }
-
-
             } catch (JSONException e1) {
-
                 e1.printStackTrace();
-
             }
-
             sendData = new JSONObject();
             try {
-
                 sendData.put("UserId", id);
                 sendData.put("profileParameter", "basic");
                 sendData.put("htype", "");
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             System.out.println("Patient History empty:" + sendData);
