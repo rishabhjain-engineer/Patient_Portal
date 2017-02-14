@@ -111,8 +111,7 @@ public class residence extends FragmentActivity {
         year1 = c.get(Calendar.YEAR);
         month1 = c.get(Calendar.MONTH);
         day1 = c.get(Calendar.DAY_OF_MONTH);
-        adapter = new ArrayAdapter<String>(residence.this,
-                android.R.layout.simple_list_item_1, list);
+        adapter = new ArrayAdapter<String>(residence.this, android.R.layout.simple_list_item_1, list);
         Intent z = getIntent();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         patientId = sharedPreferences.getString("ke", "");

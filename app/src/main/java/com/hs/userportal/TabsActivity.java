@@ -139,8 +139,7 @@ public class TabsActivity extends TabActivity {
 		label = (TextView) tab.findViewById(R.id.tabLabel);
 		label.setText("Residence");
 		intent = new Intent(this, residence.class);
-		spec = tabHost.newTabSpec("residence").setIndicator(tab)
-				.setContent(intent);
+		spec = tabHost.newTabSpec("residence").setIndicator(tab).setContent(intent);
 		intent.putExtra("id", id);
 		tabHost.addTab(spec);
 

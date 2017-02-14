@@ -462,12 +462,8 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                 } catch (Exception e) {
                 }
 
-
-                if (from.getText().toString().equals("")
-                        || educationspinner.getText().toString().equals("") || ci.getText().toString().equals("") || st.getText().toString().equals("") || co.getText().toString().equals("")
-                      || ad.getText().toString().equals("")) {
+                if (from.getText().toString().equals("") || educationspinner.getText().toString().equals("") || to.getText().toString().equals("") || ad.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Education.this).create();
-
                     // Setting Dialog Title
                     alertDialog.setTitle("Message");
 
