@@ -37,6 +37,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.MotionEvent;
@@ -476,7 +477,15 @@ public class update extends FragmentActivity {
                 } else if (cont.getText().toString().length() != 10) {
                     cont.setError(Html.fromHtml("Please fill valid Mobile Number"));
                 } else {
-                    new submitchange().execute();
+                    if (!Email.equalsIgnoreCase(em.getText().toString())) {
+                        if (TextUtils.isEmpty(em.getText().toString())) {
+                            Toast.makeText(getApplicationContext(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
+                        } else {
+                            new VerifyEmail().execute();
+                        }
+                    } else {
+                        new submitchange().execute();
+                    }
                 }
 
             }
@@ -898,24 +907,8 @@ public class update extends FragmentActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-            if (emailverify.equals("no")) {
-                final Toast toast = Toast.makeText(getApplicationContext(),
-                        "Email cannot be blank", Toast.LENGTH_SHORT);
-                toast.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        toast.cancel();
-                    }
-                }, 2000);
-            } else if (emailverify.equals("already")) {
-                emailAlreadyRegistered();
-            }
             if (message != null && message.equals("success")) {
                 Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
-
                 finish();
             }
             ghoom.dismiss();
@@ -923,30 +916,7 @@ public class update extends FragmentActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
 
-            if (Email.equals("")) {
-                emailverify = "no";
-            }/* else if (UserNameAlias.toString().equals("")) {
-
-                unverify = "no";
-
-            }*/ else {
-                sendData = new JSONObject();
-                try {
-
-                    sendData.put("Email", em.getText().toString());
-                    sendData.put("Usercode", "");
-                    receiveData = service.checkemail(sendData);
-                    emdata = receiveData.getString("d");
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
-
-                if (emdata.equals("true")) {
-                    emailverify = "already";
-                } else {
                     basic = new JSONObject();
                     try {
                         String dg = NationId;
@@ -980,8 +950,7 @@ public class update extends FragmentActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-            }
+
             return null;
         }
     }
@@ -1003,6 +972,96 @@ public class update extends FragmentActivity {
 
                 }
             });
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            sendData = new JSONObject();
+
+
+            try {
+                JSONObject receiveData1 = service.nationalityList(sendData);
+                System.out.println(receiveData1);
+                countryids.clear();
+                countrylist.clear();
+                String qw = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(qw);
+                newarray = cut.getJSONArray("Table");
+                for (int j = 0; j < newarray.length(); j++)
+
+                {
+                    countryids.add(newarray.getJSONObject(j).getString(
+                            "NationID"));
+                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
+
+                }
+
+
+            } catch (JSONException e1) {
+
+                e1.printStackTrace();
+
+            }
+
+            sendData = new JSONObject();
+            try {
+
+                sendData.put("UserId", id);
+                sendData.put("profileParameter", "basic");
+                sendData.put("htype", "");
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+            }
+            System.out.println("Patient History empty:" + sendData);
+            receiveData = service.patienBasicDetails(sendData);
+            System.out.println("Patient History empty:" + receiveData);
+
+            String data2;
+            try {
+                data2 = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data2);
+                commonarray = cut.getJSONArray("Table");
+
+                //    {"d":"{\"Table\":[{\"Salutation\":\"Mr.\",\"FirstName\":\"Dheeraj\",\"MiddleName\":\"khokar\",\"LastName\":\"\",\"fullName\":\"Mr. Dheeraj khokar\",\"UserNameAlias\":\"newlab123\",\"Sex\":\"Male\",\"BloodGroup\":\"Sel\",\"DOB\":\"01-01-2015\",\"HusbandName\":\"\",\"FatherName\":\"\",\"Email\":\"Priya@cloudchowk.com\",\"ContactNo\":\"9654639068\",\"PatientId\":\"1b7a9845-b7a3-465a-815a-5de6a933b009\",\"Nationality\":\"Indian\",\"age\":\"1 Years\"}]}"}
+                for (int m = 0; m < commonarray.length(); m++) {
+                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
+                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
+                    LastName = commonarray.getJSONObject(m).getString("LastName");
+                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
+                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
+                    Sex = commonarray.getJSONObject(m).getString("Sex");
+                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
+                    DOB = commonarray.getJSONObject(m).getString("DOB");
+                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
+                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
+                    Email = commonarray.getJSONObject(m).getString("Email");
+                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
+                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
+                    age = commonarray.getJSONObject(m).getString("age");
+                    nation_id = commonarray.getJSONObject(m).getString("NationId");
+                    oldimage = commonarray.getJSONObject(m).getString("Image");
+                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
+                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
+                    path = commonarray.getJSONObject(m).getString("Path");
+                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
+                    email_varification = commonarray.getJSONObject(m).getString("Validate");
+                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
+
+                    //oldimage,oldthumbimage,oldimagename,path
+
+                }
+
+
+            } catch (JSONException e1) {
+
+                e1.printStackTrace();
+
+            }
+
+
+            return null;
         }
 
         @Override
@@ -1184,96 +1243,6 @@ public class update extends FragmentActivity {
             }
 
             progress.dismiss();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-            sendData = new JSONObject();
-
-
-            try {
-                JSONObject receiveData1 = service.nationalityList(sendData);
-                System.out.println(receiveData1);
-                countryids.clear();
-                countrylist.clear();
-                String qw = receiveData1.getString("d");
-                JSONObject cut = new JSONObject(qw);
-                newarray = cut.getJSONArray("Table");
-                for (int j = 0; j < newarray.length(); j++)
-
-                {
-                    countryids.add(newarray.getJSONObject(j).getString(
-                            "NationID"));
-                    countrylist.add(newarray.getJSONObject(j).getString("Nationality"));
-
-                }
-
-
-            } catch (JSONException e1) {
-
-                e1.printStackTrace();
-
-            }
-
-            sendData = new JSONObject();
-            try {
-
-                sendData.put("UserId", id);
-                sendData.put("profileParameter", "basic");
-                sendData.put("htype", "");
-            } catch (JSONException e) {
-
-                e.printStackTrace();
-            }
-            System.out.println("Patient History empty:" + sendData);
-            receiveData = service.patienBasicDetails(sendData);
-            System.out.println("Patient History empty:" + receiveData);
-
-            String data2;
-            try {
-                data2 = receiveData.getString("d");
-                JSONObject cut = new JSONObject(data2);
-                commonarray = cut.getJSONArray("Table");
-
-                //    {"d":"{\"Table\":[{\"Salutation\":\"Mr.\",\"FirstName\":\"Dheeraj\",\"MiddleName\":\"khokar\",\"LastName\":\"\",\"fullName\":\"Mr. Dheeraj khokar\",\"UserNameAlias\":\"newlab123\",\"Sex\":\"Male\",\"BloodGroup\":\"Sel\",\"DOB\":\"01-01-2015\",\"HusbandName\":\"\",\"FatherName\":\"\",\"Email\":\"Priya@cloudchowk.com\",\"ContactNo\":\"9654639068\",\"PatientId\":\"1b7a9845-b7a3-465a-815a-5de6a933b009\",\"Nationality\":\"Indian\",\"age\":\"1 Years\"}]}"}
-                for (int m = 0; m < commonarray.length(); m++) {
-                    FirstName = commonarray.getJSONObject(m).getString("FirstName");
-                    MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
-                    LastName = commonarray.getJSONObject(m).getString("LastName");
-                    Salutation = commonarray.getJSONObject(m).getString("Salutation");
-                    UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
-                    Sex = commonarray.getJSONObject(m).getString("Sex");
-                    BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
-                    DOB = commonarray.getJSONObject(m).getString("DOB");
-                    HusbandName = commonarray.getJSONObject(m).getString("HusbandName");
-                    FatherName = commonarray.getJSONObject(m).getString("FatherName");
-                    Email = commonarray.getJSONObject(m).getString("Email");
-                    ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
-                    Nationality = commonarray.getJSONObject(m).getString("Nationality");
-                    age = commonarray.getJSONObject(m).getString("age");
-                    nation_id = commonarray.getJSONObject(m).getString("NationId");
-                    oldimage = commonarray.getJSONObject(m).getString("Image");
-                    oldthumbimage = commonarray.getJSONObject(m).getString("ThumbImage");
-                    oldimagename = commonarray.getJSONObject(m).getString("ImageName");
-                    path = commonarray.getJSONObject(m).getString("Path");
-                    String ImageId = commonarray.getJSONObject(m).getString("ImageId");
-                    email_varification = commonarray.getJSONObject(m).getString("Validate");
-                    mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
-
-                    //oldimage,oldthumbimage,oldimagename,path
-
-                }
-
-
-            } catch (JSONException e1) {
-
-                e1.printStackTrace();
-
-            }
-
-
-            return null;
         }
 
     }
@@ -1718,6 +1687,50 @@ public class update extends FragmentActivity {
             return null;
         }
 
+    }
+
+    private class VerifyEmail extends AsyncTask<Void, Void, Void> {
+
+        private boolean isEmailAlreadyVerified;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isEmailAlreadyVerified = false;
+            ghoom = new ProgressDialog(update.this);
+            ghoom.setCancelable(false);
+            ghoom.setTitle("Updating...");
+            ghoom.setMessage("Please wait...");
+            ghoom.setIndeterminate(true);
+            ghoom.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            sendData = new JSONObject();
+            try {
+                sendData.put("Email", em.getText().toString());
+                sendData.put("Usercode", "");
+                receiveData = service.checkemail(sendData);
+                emdata = receiveData.getString("d");
+                if(emdata.equalsIgnoreCase("true")){
+                    isEmailAlreadyVerified = true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ghoom.dismiss();
+            if (isEmailAlreadyVerified) {
+                emailAlreadyRegistered();
+            }else{
+                new submitchange().execute();
+            }
+        }
     }
 
     private String SaveImage(Bitmap finalBitmap) {
