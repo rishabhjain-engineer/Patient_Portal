@@ -299,7 +299,7 @@ public class Height extends BaseActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
-        boolean isDataAvailable;
+        boolean isDataAvailable = true;
 
         @Override
         protected void onPreExecute() {
@@ -309,7 +309,7 @@ public class Height extends BaseActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            isDataAvailable = false;
+            isDataAvailable = true;
 
             progress.show();
 
