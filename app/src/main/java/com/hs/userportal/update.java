@@ -867,7 +867,6 @@ public class update extends FragmentActivity {
         //    father, husband,etDOB;
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             unverify = "";
             emailverify = "";
@@ -894,16 +893,7 @@ public class update extends FragmentActivity {
                     break;
                 }
             }
-            //  NationId=nationality.getText().toString().trim();
-
-           /* countryids.add(newarray.getJSONObject(j).getString(
-                    "NationID"));
-            countrylist.add(newarray.getJSONObject(j).getString("Nationality"));*/
-            update.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    ghoom.show();
-                }
-            });
+            ghoom.show();
         }
 
         protected void onPostExecute(Void result) {
@@ -954,13 +944,8 @@ public class update extends FragmentActivity {
                     e.printStackTrace();
                 }
 
-
-                System.out.println("checkemail" + receiveData);
-
-
                 if (emdata.equals("true")) {
                     emailverify = "already";
-
                 } else {
                     basic = new JSONObject();
                     try {

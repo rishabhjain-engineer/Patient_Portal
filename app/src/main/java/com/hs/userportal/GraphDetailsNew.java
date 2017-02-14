@@ -182,7 +182,7 @@ public class GraphDetailsNew extends BaseActivity {
 
             JSONObject outerJsonObject = new JSONObject();
             try {
-                outerJsonObject.put("key", "Weight(kg)");
+                outerJsonObject.put("key", title);
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend.put(outerJsonObject);
             } catch (JSONException e) {
