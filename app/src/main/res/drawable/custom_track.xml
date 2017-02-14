@@ -5,11 +5,12 @@
     android:useLevel="false"
     android:visible="true" >
 
+    <corners android:radius="5dp"/>
     <gradient
-        android:endColor="@color/switch_back_ground"
-        android:startColor="@color/switch_back_ground" />
+        android:endColor="@color/header_color"
+        android:startColor="@color/white" />
     <size
-        android:height="10dp"
-        android:width="30dp" />
+        android:height="20dp"
+        android:width="70dp" />
 
 </shape>

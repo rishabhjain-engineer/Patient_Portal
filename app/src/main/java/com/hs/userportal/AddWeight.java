@@ -12,13 +12,20 @@ import android.support.annotation.IntegerRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,25 +45,47 @@ import ui.BaseActivity;
 
 public class AddWeight extends BaseActivity {
 
-    private EditText enter_add;
+    private EditText enter_add,  mHeightCmEditText;
     private static EditText lasstCheckedDate;
     private Button bsave;
-    private TextView weight;
-    private String id, htype;
+    private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
+    private String id, htype , mHeightFtValue, mHeightInValue;
     private Services service;
     private static int cyear, month, day;
-    private Switch mSwitchWeight;
+    private Switch mSwitchWeight, mSwitchHeight;
+    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer;
+    private Boolean isFtInchValue = true, isHeight, isPound = true;
+    private String [] mfeetValues = {"0","1", "2", "3", "4", "5", "6","7"} ;
+    private String [] mInchValues = {"0","1", "2", "3", "4", "5", "6","7", "8", "9", "10", "11"} ;
+
+    private Spinner mHeightFtSpinner , mHeightInchSpinner;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
         setupActionBar();
-       enter_add = (EditText) findViewById(R.id.enter_add);
+
+
+        mHeightContainer = (LinearLayout) findViewById(R.id.height_container_layout);
+        mSwitchHeight = (Switch) findViewById(R.id.switch_height);
+        mHeightUnitFtTextView = (TextView) findViewById(R.id.height_unit_ft);
+        mHeightUnitInchTextView = (TextView) findViewById(R.id.height_unit_inch);
+        mHeightFtSpinner = (Spinner) findViewById(R.id.enter_ft);
+        mHeightInchSpinner = (Spinner) findViewById(R.id.enter_inch);
+        mHeightInchContainer = (LinearLayout) findViewById(R.id.height_inch_container);
+        mHeightFtContainer = (LinearLayout) findViewById(R.id.height_ft_container);
+        mHeightCmEditText = (EditText) findViewById(R.id.enter_cm);
+
+        mWeightContainer = (LinearLayout) findViewById(R.id.weight_container_layout);
+        mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
+        mWeightUnitTextView = (TextView) findViewById(R.id.switch_weight_unit);
+
+
+        enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
         bsave = (Button) findViewById(R.id.bsave);
         weight = (TextView) findViewById(R.id.weight);
-        mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
 
         /*final Calendar c = Calendar.getInstance();
         cyear = c.get(Calendar.YEAR);
@@ -85,26 +115,94 @@ public class AddWeight extends BaseActivity {
         id = z.getStringExtra("id");
         htype = z.getStringExtra("htype");
         if (htype.equals("height")) {
+            isHeight = true;
             enter_add.setHint("Enter Height");
-            weight.setText("Height (cm):");
+            weight.setText("Height :");
             mActionBar.setTitle("Enter Height");
+            mHeightContainer.setVisibility(View.VISIBLE);
+            mWeightContainer.setVisibility(View.GONE);
+
         } else {
+            isHeight = false;
             enter_add.setHint("Enter Weight");
-            weight.setText("Weight (kg):");
+            weight.setText("Weight :");
             mActionBar.setTitle("Enter Weight");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.VISIBLE);
         }
 
         service = new Services(AddWeight.this);
 
 
+        ArrayAdapter ftSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mfeetValues );
+        ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mHeightFtSpinner.setAdapter(ftSpinner);
+
+
+        ArrayAdapter inSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mInchValues );
+        ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mHeightInchSpinner.setAdapter(inSpinner);
+
+        mHeightInchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mHeightInValue = mInchValues[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        mHeightFtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mHeightFtValue = mfeetValues[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         mSwitchWeight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    mSwitchWeight.setText("ON");
+                if (isChecked) {
+
+                    mWeightUnitTextView.setText("Kg");
+                    isPound = false;
+
+                } else {
+                    mWeightUnitTextView.setText("lbs");
+                    isPound = true;
                 }
-                else {
-                    mSwitchWeight.setText("OFFF");
+            }
+        });
+
+        mSwitchHeight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+                if (isChecked) {
+
+                    mHeightUnitFtTextView.setText("cms");
+                    mHeightInchContainer.setVisibility(View.GONE);
+                    mHeightCmEditText.setHint("cms");
+                    isFtInchValue = true;
+
+
+                } else {
+
+                    mHeightCmEditText.setVisibility(View.GONE);
+                    mHeightInchContainer.setVisibility(View.VISIBLE);
+                    mHeightUnitFtTextView.setText("ft");
+                    mHeightUnitInchTextView.setText("inch");
+                    isFtInchValue = false;
                 }
             }
         });
@@ -112,10 +210,25 @@ public class AddWeight extends BaseActivity {
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (enter_add.getText().toString().equals("") || lasstCheckedDate.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "No Field can be blank", Toast.LENGTH_LONG).show();
-                } else {
+
+                // user is in Weight class
+                if (isHeight == false) {
+                    if (enter_add.getText().toString().trim().equals("") || lasstCheckedDate.getText().toString().trim().equals("")) {
+                        Toast.makeText(getApplicationContext(), "No Field can be blank", Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.e("Rishabh", "in weight class ");
+
+                        new submitchange().execute();
+                    }
+                } else {   // user is Height class
                     new submitchange().execute();
+                    /*if (mHeightFtValue.equals("") || mHeightInValue.equals("") || lasstCheckedDate.getText().toString().trim().equals("")) {
+                        Toast.makeText(getApplicationContext(), "No Field can be blank", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        Log.e("Rishabh", "in Height class ");
+
+                    }*/
                 }
             }
         });
@@ -142,7 +255,7 @@ public class AddWeight extends BaseActivity {
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String weight, height, fromdate, message;
+        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound;
         ProgressDialog ghoom;
 
         @Override
@@ -158,10 +271,30 @@ public class AddWeight extends BaseActivity {
             ghoom.show();
 
             if (htype.equals("height")) {
+                if (isFtInchValue) {
+
+                    double tempHeightIndoubleFt = Double.parseDouble(mHeightFtValue);
+                    double tempHeightIndoubleInch = Double.parseDouble(mHeightInValue);
+                    height = (tempHeightIndoubleFt * 12 * 2.54) + (tempHeightIndoubleInch * 2.54) + "";
+                } else {
+                    height = mHeightCmEditText.getText().toString();
+                }
+                Log.e("Rishabh ", "Height value := " + height);
                 weight = "";
-                height = enter_add.getText().toString();
+                // height = enter_add.getText().toString();
             } else {
-                weight = enter_add.getText().toString();
+
+                if (isPound == true) {
+                    tempPound = enter_add.getText().toString();
+                    double poundInDouble = Double.parseDouble(tempPound);
+                    poundInDouble = poundInDouble * 0.454;
+                    weight = String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(poundInDouble)));
+                    Log.e("Rishabh", "Weight Value in converted in kg := " + weight);
+
+                } else {
+                    weight = enter_add.getText().toString();
+
+                }
                 height = "";
             }
             fromdate = lasstCheckedDate.getText().toString();
