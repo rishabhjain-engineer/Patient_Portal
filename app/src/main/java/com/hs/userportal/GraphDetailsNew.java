@@ -99,6 +99,8 @@ public class GraphDetailsNew extends BaseActivity {
         chartvakueList = getIntent().getStringArrayListExtra("values");
 
         mLineChartWebView = (WebView) findViewById(R.id.linechart_webview);
+        mLineChartWebView.setFocusable(true);
+        mLineChartWebView.setFocusableInTouchMode(true);
         WebSettings settings = mLineChartWebView.getSettings();
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
@@ -106,6 +108,7 @@ public class GraphDetailsNew extends BaseActivity {
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(true);
+        settings.setSupportZoom(true);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
         mLineChartWebView.setInitialScale(1);
