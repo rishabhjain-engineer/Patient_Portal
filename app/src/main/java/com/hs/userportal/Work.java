@@ -834,12 +834,9 @@ public class Work extends FragmentActivity {
             ghoom.dismiss();
             checkedit = "";
         }
-    }
-		else	if (message.equals("success")) {
-				ghoom.dismiss();
-				Toast.makeText(getApplicationContext(),
-						"Your changes have been saved!", Toast.LENGTH_SHORT)
-						.show();
+    } else if (message.equals("success")) {
+        ghoom.dismiss();
+        Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
         wo.setText("");
         ad.setText("");
         ci.setText("");
@@ -859,12 +856,9 @@ public class Work extends FragmentActivity {
         day1 = c.get(Calendar.DAY_OF_MONTH);
         new BackgroundProcess().execute();
 			}
-
 			else {
 				ghoom.dismiss();
-				Toast.makeText(getApplicationContext(),
-						"Your changes could not be saved!", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(getApplicationContext(), "Your changes could not be saved!", Toast.LENGTH_SHORT).show();
         checkedit="";
 			}
 
