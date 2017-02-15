@@ -409,6 +409,14 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="ui.BpActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.BmiActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.hs.userportal.MyHealth"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
