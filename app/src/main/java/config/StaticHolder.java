@@ -432,8 +432,8 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;*/
             case BASE_URL:
-                //  url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
-                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live
+                //  url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local ///TODO ayaz
+                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live //TODO ayaz
                 // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
 
                 break;
@@ -512,8 +512,8 @@ public class StaticHolder {
                 url = BASE_URL + "patientbussinessModel";
                 break;
             case GetQuizData:
-                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData";
-                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData";
+                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData"; ///TODO ayaz for local
+                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData"; //TODO ayaz for live
                 break;
 
             default:
