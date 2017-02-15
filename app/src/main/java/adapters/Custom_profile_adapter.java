@@ -59,6 +59,8 @@ public class Custom_profile_adapter extends BaseAdapter {
         TextView top3 = (TextView)convertView.findViewById(R.id.top3);
         TextView top4 = (TextView)convertView.findViewById(R.id.top4);
         TextView top5 = (TextView)convertView.findViewById(R.id.top5);
+        TextView role = (TextView)convertView.findViewById(R.id.role_tv);
+        TextView designation = (TextView)convertView.findViewById(R.id.designation_tv);
 
      //   TextView defaults=(TextView)convertView.findViewById(R.id.defaults);
         if(whichactivity.equalsIgnoreCase("Education")||whichactivity.equalsIgnoreCase("Work")) {
@@ -72,6 +74,8 @@ public class Custom_profile_adapter extends BaseAdapter {
                 top4.setText(list.get(position).get("country"));
             }
             top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            role.setText(list.get(position).get("role"));
+            designation.setText(list.get(position).get("designation"));
 
         }else  if(whichactivity.equalsIgnoreCase("Residence")){
 
