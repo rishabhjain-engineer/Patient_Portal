@@ -59,6 +59,8 @@ public class MyHealth extends BaseActivity {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.myhealth);
         service = new Services(MyHealth.this);
+        mBpTvValue = (TextView) findViewById(R.id.bp_tv);
+        mBmiTvValue = (TextView) findViewById(R.id.bmi_tv_2);
         weighttxtid = (TextView) findViewById(R.id.weighttxtid);
         heighttxt_id = (TextView) findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) findViewById(R.id.allergytxtid);
