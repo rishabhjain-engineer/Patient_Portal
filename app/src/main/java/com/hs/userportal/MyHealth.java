@@ -36,13 +36,15 @@ import org.json.JSONObject;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.BmiActivity;
+import ui.BpActivity;
 
 public class MyHealth extends BaseActivity {
 
     private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies;
     private EditText blood_group;
     private String id, show_blood, bgroup, height, weight;
-    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout;
+    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
@@ -72,6 +74,8 @@ public class MyHealth extends BaseActivity {
         weightLayout = (LinearLayout) findViewById(R.id.weightLayout);
         heightLayout = (LinearLayout) findViewById(R.id.heightLayout);
         allergyLayout = (LinearLayout) findViewById(R.id.allergyLayout);
+        mBmiContainer = (LinearLayout) findViewById(R.id.bmi_container);
+        mBpContainer = (LinearLayout) findViewById(R.id.bp_container);
         setupActionBar();
         mActionBar.setTitle("My Health");
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -142,6 +146,27 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent(MyHealth.this, Allergy.class);
+                in.putExtra("id", id);
+                startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+        mBmiContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MyHealth.this, BmiActivity.class);
+                in.putExtra("id", id);
+                startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+
+        mBpContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(MyHealth.this, BpActivity.class);
                 in.putExtra("id", id);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
