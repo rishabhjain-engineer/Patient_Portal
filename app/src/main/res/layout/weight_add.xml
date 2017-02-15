@@ -64,11 +64,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_gravity="center"
         android:id="@+id/height_container_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:visibility="visible">
@@ -89,7 +90,7 @@
             style="@android:style/Animation"
             android:layout_width="70dp"
             android:layout_height="20dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="5dp"
             android:showText="true"
             android:switchMinWidth="30dp"
             android:textOff="Ft"
@@ -137,7 +138,7 @@
                 android:hint="ft"
                 android:inputType="numberDecimal|numberSigned"
                 android:maxLines="1"
-                android:padding="0dp"
+                android:padding="5dp"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:textSize="14dp" />

@@ -181,18 +181,22 @@ public class AddWeight extends BaseActivity {
                 if (isChecked) {
 
                     mHeightUnitFtTextView.setText("cms");
+                    mHeightCmEditText.setVisibility(View.VISIBLE);
                     mHeightInchContainer.setVisibility(View.GONE);
+                    mHeightFtSpinner.setVisibility(View.GONE);
                     mHeightCmEditText.setHint("cms");
-                    mIsFtInchValue = true;
+                    mIsFtInchValue = false;
 
 
                 } else {
 
                     mHeightCmEditText.setVisibility(View.GONE);
                     mHeightInchContainer.setVisibility(View.VISIBLE);
+                    mHeightFtContainer.setVisibility(View.VISIBLE);
+                    mHeightFtSpinner.setVisibility(View.VISIBLE);
                     mHeightUnitFtTextView.setText("ft");
                     mHeightUnitInchTextView.setText("inch");
-                    mIsFtInchValue = false;
+                    mIsFtInchValue = true;
                 }
             }
         });
@@ -248,7 +252,7 @@ public class AddWeight extends BaseActivity {
             ghoom.show();
 
             if (htype.equals("height")) {
-                if (mIsFtInchValue) {
+                if (mIsFtInchValue == true) {
 
                     double tempHeightIndoubleFt = Double.parseDouble(mHeightFtValue);
                     double tempHeightIndoubleInch = Double.parseDouble(mHeightInValue);
@@ -257,7 +261,6 @@ public class AddWeight extends BaseActivity {
                     height = mHeightCmEditText.getText().toString();
                 }
                 weight = "";
-                // height = enter_add.getText().toString();
             } else {
 
                 if (mIsPound == true) {
