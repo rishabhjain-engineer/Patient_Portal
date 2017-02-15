@@ -59,7 +59,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="City:"
+                android:text="City*:"
                 android:textColor="@android:color/black"
 
                 />
@@ -71,7 +71,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="State:"
+                android:text="State*:"
 
                 android:textColor="@android:color/black" />
         </LinearLayout>
@@ -116,14 +116,14 @@
             android:layout_marginTop="5dp" >
 
             <TextView
-
+                android:id="@+id/edu_country_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:ems="10"
                 android:textColor="@android:color/black"
-                android:text="Country:"
+                android:text="Country*:"
 
                 />
 
@@ -141,10 +141,7 @@
         <LinearLayout
             android:id="@+id/L2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/editText7"

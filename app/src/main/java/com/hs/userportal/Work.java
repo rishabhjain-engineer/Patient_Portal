@@ -404,7 +404,7 @@ public class Work extends FragmentActivity {
 
 
                 if (from.getText().toString().equals("")
-                        ||ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("")) {
+                        ||ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("") ||to.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
 
                     // Setting Dialog Title
