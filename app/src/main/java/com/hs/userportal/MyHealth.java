@@ -5,8 +5,11 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -41,9 +44,9 @@ import ui.BpActivity;
 
 public class MyHealth extends BaseActivity {
 
-    private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies;
+    private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
     private EditText blood_group;
-    private String id, show_blood, bgroup, height, weight;
+    private String id, show_blood, bgroup, height, weight, mBp;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer;
     private Services service;
     private RequestQueue send_request;
@@ -340,6 +343,7 @@ public class MyHealth extends BaseActivity {
 
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (TextUtils.isEmpty(bgroup)) {
@@ -362,6 +366,27 @@ public class MyHealth extends BaseActivity {
             } else {
                 allergies.setText("-");
             }
+            if (!TextUtils.isEmpty(mBp) && !mBp.equalsIgnoreCase("null")) {
+                mBpTvValue.setText(mBp);
+            } else {
+                mBpTvValue.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(mBp) && !mBp.equalsIgnoreCase("null")) {
+                mBpTvValue.setText(mBp);
+            } else {
+                mBpTvValue.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && TextUtils.isEmpty(weight) && weight.equalsIgnoreCase("null")) {
+                double weightInDouble = Double.parseDouble(weight);
+                double heightInDouble = Double.parseDouble(height);
+                double bmi = weightInDouble / (heightInDouble * heightInDouble);
+                DecimalFormat df = new DecimalFormat("#.##");
+                bmi = Double.valueOf(df.format(bmi));
+                mBmiTvValue.setText(bmi+"");
+            }
+
             progress.dismiss();
         }
 
@@ -380,6 +405,8 @@ public class MyHealth extends BaseActivity {
                     bgroup = obj.getString("BloodGroup");
                     height = obj.getString("height");
                     weight = obj.getString("weight");
+                    mBp = obj.getString("BP");
+
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
                         allergy_no = 0;
@@ -413,6 +440,7 @@ public class MyHealth extends BaseActivity {
             super.onPreExecute();
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (TextUtils.isEmpty(bgroup)) {
@@ -434,6 +462,27 @@ public class MyHealth extends BaseActivity {
                 allergies.setText(String.valueOf(allergy_no));
             } else {
                 allergies.setText("-");
+            }
+
+            if (allergy_no != 0) {
+                allergies.setText(String.valueOf(allergy_no));
+            } else {
+                allergies.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(mBp) && !mBp.equalsIgnoreCase("null")) {
+                mBpTvValue.setText(mBp);
+            } else {
+                mBpTvValue.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && TextUtils.isEmpty(weight) && weight.equalsIgnoreCase("null")) {
+                double weightInDouble = Double.parseDouble(weight);
+                double heightInDouble = Double.parseDouble(height);
+                double bmi = weightInDouble / (heightInDouble * heightInDouble);
+                DecimalFormat df = new DecimalFormat("#.##");
+                bmi = Double.valueOf(df.format(bmi));
+                mBmiTvValue.setText(bmi+"");
             }
         }
 
