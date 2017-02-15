@@ -497,37 +497,27 @@ public class logout extends Activity implements View.OnClickListener {
 
 
     class Authentication extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-
         }
-
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             try {
                 sendData = new JSONObject();
                 receiveData = service.IsUserAuthenticated(sendData);
                 System.out.println("IsUserAuthenticated: " + receiveData);
                 authentication = receiveData.getString("d");
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             return null;
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             try {
-
                 if (authentication.equals("false")) {
-
                     AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
                     dialog.setTitle("Session timed out!");
                     dialog.setMessage("Session expired. Please login again.");
@@ -536,8 +526,6 @@ public class logout extends Activity implements View.OnClickListener {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // TODO Auto-generated method stub
-
                             SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.clear();
@@ -545,20 +533,15 @@ public class logout extends Activity implements View.OnClickListener {
                             dialog.dismiss();
                             finish();
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                         }
                     });
                     dialog.show();
-
                 } else {
                     new BackgroundProcess().execute();
-
                 }
 
             } catch (Exception e) {
-                // TODO: handle exception
             }
-
         }
     }
 
