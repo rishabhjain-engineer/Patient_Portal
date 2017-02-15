@@ -409,8 +409,7 @@ public class Travel extends FragmentActivity {
 
 
                 if (from.getText().toString().equals("")
-                        || description.getText().toString().equals("") || co.getText().toString().equals("")
-                        ) {
+                        || description.getText().toString().equals("") || co.getText().toString().equals("") || ci.getText().toString().equals("") || st.getText().toString().equals("") || to.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Travel.this).create();
 
                     // Setting Dialog Title
