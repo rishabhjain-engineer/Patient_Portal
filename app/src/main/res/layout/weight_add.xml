@@ -32,7 +32,7 @@
             android:showText="true"
             android:switchMinWidth="30dp"
             android:textOff="lbs"
-            android:textOn="lbs"
+            android:textOn="Kg"
             android:thumb="@drawable/customswitchselector"
             android:track="@drawable/custom_track" />
 
