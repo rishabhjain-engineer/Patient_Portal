@@ -95,6 +95,8 @@ public class Weight extends BaseActivity {
 
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
+
+
         weight_graphView.setFocusable(true);
         weight_graphView.setFocusableInTouchMode(true);
         settings.setLoadWithOverviewMode(true);

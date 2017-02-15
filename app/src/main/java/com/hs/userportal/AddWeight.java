@@ -33,10 +33,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ui.BaseActivity;
+import ui.BpActivity;
 
 public class AddWeight extends BaseActivity {
 
-    private EditText enter_add, mHeightCmEditText;
+    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText;
     private static EditText lasstCheckedDate;
     private Button bsave;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
@@ -44,7 +45,7 @@ public class AddWeight extends BaseActivity {
     private Services service;
     private static int cyear, month, day;
     private Switch mSwitchWeight, mSwitchHeight;
-    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer;
+    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
     private boolean mIsFtInchValue = true, mIsHeight, mIsPound = true;
     private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
@@ -70,6 +71,10 @@ public class AddWeight extends BaseActivity {
         mWeightContainer = (LinearLayout) findViewById(R.id.weight_container_layout);
         mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
         mWeightUnitTextView = (TextView) findViewById(R.id.switch_weight_unit);
+
+        mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
+        mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
+        mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
 
 
         enter_add = (EditText) findViewById(R.id.enter_add);
@@ -104,21 +109,32 @@ public class AddWeight extends BaseActivity {
         Intent z = getIntent();
         id = z.getStringExtra("id");
         htype = z.getStringExtra("htype");
+
         if (htype.equals("height")) {
-            mIsHeight = true;
-            enter_add.setHint("Enter Height");
+          /*  mIsHeight = true;*/
             weight.setText("Height :");
             mActionBar.setTitle("Enter Height");
             mHeightContainer.setVisibility(View.VISIBLE);
             mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.GONE);
 
-        } else {
-            mIsHeight = false;
+
+        } else if (htype.equals("weight")){
+          /*  mIsHeight = false;*/
             enter_add.setHint("Enter Weight");
             weight.setText("Weight :");
             mActionBar.setTitle("Enter Weight");
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.VISIBLE);
+            mBpContainerLl.setVisibility(View.GONE);
+
+
+        }   else  {
+          /*  mIsHeight = false;*/
+            mActionBar.setTitle("Enter Blood Pressure");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.VISIBLE);
         }
 
         service = new Services(AddWeight.this);
@@ -205,12 +221,20 @@ public class AddWeight extends BaseActivity {
             @Override
             public void onClick(View v) {
 
+
+                if(enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "")
+                {
+                    Toast.makeText(AddWeight.this, "Fill all the fields" ,Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    new submitchange().execute();
+                }
                 // user is in Weight class
-                if (mIsHeight == false) {
+                /*if (mIsHeight == false) {
                     new submitchange().execute();
                 } else {   // user is Height class
                     new submitchange().execute();
-                }
+                }*/
             }
         });
 
@@ -236,7 +260,7 @@ public class AddWeight extends BaseActivity {
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound;
+        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend;
         ProgressDialog ghoom;
 
         @Override
@@ -261,7 +285,10 @@ public class AddWeight extends BaseActivity {
                     height = mHeightCmEditText.getText().toString();
                 }
                 weight = "";
-            } else {
+                /////////////////////////////////////////
+                //todo put bloodpressure = " "
+                ////////////////////////////////////////
+            } else if(htype.equalsIgnoreCase("weight")){
 
                 if (mIsPound == true) {
                     tempPound = enter_add.getText().toString();
@@ -274,6 +301,13 @@ public class AddWeight extends BaseActivity {
 
                 }
                 height = "";
+                /////////////////////////////////////////////////////
+                //todo put bloodpressure = " "
+                /////////////////////////////////////////////////////
+            } else {
+               upperBp = mBpTopNumberEditText.getEditableText().toString();
+                lowerBp = mBpBottomNumberEditText.getEditableText().toString();
+                bpTosend = lowerBp + ","+upperBp;
             }
             fromdate = lasstCheckedDate.getText().toString();
 
@@ -291,11 +325,14 @@ public class AddWeight extends BaseActivity {
                     Intent in = new Intent(AddWeight.this, Height.class);
                     in.putExtra("id", id);
                     startActivity(in);
-                } else {
+                } else if(htype.equalsIgnoreCase("weight")){
                     Intent in = new Intent(AddWeight.this, Weight.class);
                     in.putExtra("id", id);
                     startActivity(in);
-
+                } else {
+                    Intent in = new Intent(AddWeight.this, BpActivity.class);
+                    in.putExtra("id", id);
+                    startActivity(in);
                 }
                 finish();
             } else {
@@ -319,6 +356,7 @@ public class AddWeight extends BaseActivity {
             try {
                 sendwork.put("weight", weight);
                 sendwork.put("height", height);
+                sendwork.put("bp", bpTosend);
                 sendwork.put("allergy", "");
                 sendwork.put("fromdate", fromdate + " " + time);
                 sendwork.put("todate", "");
@@ -420,8 +458,14 @@ public class AddWeight extends BaseActivity {
             Intent in = new Intent(AddWeight.this, Height.class);
             in.putExtra("id", id);
             startActivity(in);
-        } else {
+        } else if(htype.equalsIgnoreCase("weight")){
             Intent in = new Intent(AddWeight.this, Weight.class);
+            in.putExtra("id", id);
+            startActivity(in);
+        }
+
+        else {
+            Intent in = new Intent(AddWeight.this, BpActivity.class);
             in.putExtra("id", id);
             startActivity(in);
         }
