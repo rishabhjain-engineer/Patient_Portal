@@ -25,7 +25,8 @@
             android:id="@+id/linechart_webview"
             android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></WebView>
+            android:layout_height="wrap_content"
+            android:padding="0dp"></WebView>
 
         <com.github.mikephil.charting.charts.LineChart
             android:visibility="gone"
@@ -39,11 +40,20 @@
             android:layout_height="wrap_content"
             android:visibility="gone"></com.github.mikephil.charting.charts.PieChart>
 
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/header_color"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
+
         <ListView
+            android:clickable="false"
             android:id="@+id/graph_listview_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:dividerHeight="1.2dp"
             android:scrollbars="none"></ListView>
     </LinearLayout>
