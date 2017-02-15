@@ -269,7 +269,8 @@ public class update extends FragmentActivity {
                     if (fbLinked.equals("true")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
+                        //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
