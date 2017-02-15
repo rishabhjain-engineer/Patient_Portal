@@ -471,7 +471,7 @@ public class StaticHolder {
                 break;
 
             case saveHealthDetail:
-                url = BASE_URL + "saveHealthDetail";
+                url = BASE_URL + "saveHealthDetailMod";
                 break;
 
             case getAllergies:
