@@ -187,12 +187,15 @@ public class AddWeight extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
 
+                    mWeightUnitTextView.setText("lbs");
+                    mIsPound = true;
+
+                } else {
+
                     mWeightUnitTextView.setText("Kg");
                     mIsPound = false;
 
-                } else {
-                    mWeightUnitTextView.setText("lbs");
-                    mIsPound = true;
+
                 }
             }
         });
