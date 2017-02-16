@@ -46,6 +46,7 @@
             android:singleLine="true" />
 
 
+
         <TextView
             android:id="@+id/role_tv"
             android:layout_width="wrap_content"
@@ -216,6 +217,81 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/h3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/L2"
+            android:visibility="gone"
+            android:layout_marginTop="5dp">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+
+                android:text="From Date*:"
+
+                android:textColor="@android:color/black" />
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:text="To Date*:"
+                android:textColor="@android:color/black" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:text="Present"
+
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/L3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/L2"
+            android:visibility="gone"
+
+            >
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="date"
+                android:nextFocusDown="@+id/editText9" />
+
+            <EditText
+                android:id="@+id/editText9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="date" />
+
+            <CheckBox
+                android:id="@+id/cbPresentWork"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/editText9"
+                android:text="Present"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        /////////////////////////////////////
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
@@ -259,7 +335,7 @@
 
             <LinearLayout
                 android:layout_alignParentRight="true"
-                android:id="@+id/h3"
+                android:id="@+id/h3333"
                 android:layout_marginLeft="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -272,7 +348,7 @@
                     android:layout_marginBottom="3dp"
                     android:textColor="@android:color/black" />
                 <LinearLayout
-                    android:id="@+id/L3"
+                    android:id="@+id/L3333333"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/L2"
@@ -301,7 +377,7 @@
                     </LinearLayout>
 
                     <CheckBox
-                        android:id="@+id/cbPresentWork"
+                        android:id="@+id/cbPresentWork111"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignRight="@+id/editText9"
@@ -310,14 +386,15 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        /////////////////////////////////////
 
         <Button
             android:id="@+id/bAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="10dp"
             android:background="@color/header_color"
+            android:layout_marginTop="10dp"
             android:text="ADD" />
 
         <ListView
