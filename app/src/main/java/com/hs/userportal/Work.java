@@ -57,7 +57,7 @@ public class Work extends FragmentActivity {
     private static int month2,year2,day2,month1,year1,day1;
     private Calendar c;
     private int i = 0;
-    private EditText wo, ad, pi;
+    private EditText wo, ad, pi, mDesignationEt, mRoleEt;
     private static EditText from, to;
 	//AutoCompleteTextView ar;
 	private EditText ci, st, co;
@@ -115,6 +115,8 @@ public class Work extends FragmentActivity {
 		pi = (EditText) findViewById(R.id.editText8);
 		from = (EditText) findViewById(R.id.etName);
 		to = (EditText) findViewById(R.id.editText9);
+        mDesignationEt = (EditText) findViewById(R.id.designation_et);
+        mRoleEt = (EditText) findViewById(R.id.role_et);
 		lv = (ListView) findViewById(R.id.list);
 		add = (Button) findViewById(R.id.bAdd);
 		//finish = (Button) findViewById(R.id.bFin);
@@ -139,7 +141,7 @@ public class Work extends FragmentActivity {
                         Work.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Work.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]
@@ -174,7 +176,7 @@ public class Work extends FragmentActivity {
                     final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
                             Work.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Work.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]
@@ -404,7 +406,7 @@ public class Work extends FragmentActivity {
 
 
                 if (from.getText().toString().equals("")
-                        ||ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("")) {
+                        ||ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("") ||to.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
 
                     // Setting Dialog Title
@@ -687,7 +689,7 @@ public class Work extends FragmentActivity {
 	}
 
 	class submitchange extends AsyncTask<Void, Void, Void> {
-        String Name,address1,cityName,stateName,CountryName,Pincode,fromdate,todate,message;
+        String Name,address1,cityName,stateName,CountryName,Pincode,fromdate,todate,message, roleValue, designationValue;
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -705,6 +707,9 @@ public class Work extends FragmentActivity {
             fromdate=from.getText().toString();
             todate=to.getText().toString();
 
+            roleValue = mRoleEt.getEditableText().toString();
+            designationValue = mDesignationEt.getEditableText().toString();
+
 			ghoom.show();
 			/*Work.this.runOnUiThread(new Runnable() {
 				public void run() {
@@ -718,9 +723,7 @@ public class Work extends FragmentActivity {
     if(checkedit.equals("edit")) {
         if (message.equals("success")) {
             ghoom.dismiss();
-            Toast.makeText(getApplicationContext(),
-                    "Your changes have been saved!", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
             wo.setText("");
             ad.setText("");
             ci.setText("");
@@ -773,9 +776,10 @@ public class Work extends FragmentActivity {
                     hmap.put("country",workarray.getJSONObject(i).getString("CountryName"));
                     hmap.put("PatientHistoryId",workarray.getJSONObject(i).getString("PatientHistoryId"));
                     hmap.put("postaladdress", postal_null);
-                    hmap.put("from", workarray.getJSONObject(i).getString(
-                            "fromdate"));
+                    hmap.put("from", workarray.getJSONObject(i).getString("fromdate"));
                     hmap.put("to", todatenull);
+                    hmap.put("role", workarray.getJSONObject(i).optString("Work1").trim());
+                    hmap.put("designation", workarray.getJSONObject(i).optString("Work2").trim());
                     toeditFieldlist.add(hmap);
                 }
                 new Helper().sortHashListByDate(toeditFieldlist);
@@ -830,12 +834,9 @@ public class Work extends FragmentActivity {
             ghoom.dismiss();
             checkedit = "";
         }
-    }
-		else	if (message.equals("success")) {
-				ghoom.dismiss();
-				Toast.makeText(getApplicationContext(),
-						"Your changes have been saved!", Toast.LENGTH_SHORT)
-						.show();
+    } else if (message.equals("success")) {
+        ghoom.dismiss();
+        Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
         wo.setText("");
         ad.setText("");
         ci.setText("");
@@ -855,12 +856,9 @@ public class Work extends FragmentActivity {
         day1 = c.get(Calendar.DAY_OF_MONTH);
         new BackgroundProcess().execute();
 			}
-
 			else {
 				ghoom.dismiss();
-				Toast.makeText(getApplicationContext(),
-						"Your changes could not be saved!", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(getApplicationContext(), "Your changes could not be saved!", Toast.LENGTH_SHORT).show();
         checkedit="";
 			}
 
@@ -906,6 +904,9 @@ public class Work extends FragmentActivity {
                     senddata.put("UserId",id);
                     senddata.put("typeselect","work");
                     senddata.put("statusType","edit");
+
+                    sendwork.put("Work1", roleValue);
+                    sendwork.put("Work2", designationValue);
                 }else{
                     sendwork.put("Name", Name);
                     sendwork.put("Address", address1);
@@ -917,6 +918,10 @@ public class Work extends FragmentActivity {
                     sendwork.put("todate", todate);
                     sendwork.put("profileParameter","work");
                     sendwork.put("PatientHistoryId","");
+                    //////////////////////////////
+                    sendwork.put("Work1", roleValue);
+                    sendwork.put("Work2", designationValue);
+                    ///////////////////
                     JSONArray jarray=new JSONArray();
                     jarray.put(sendwork);
 
@@ -995,9 +1000,10 @@ public class Work extends FragmentActivity {
                         hmap.put("country",workarray.getJSONObject(i).getString("CountryName").trim());
                         hmap.put("PatientHistoryId",workarray.getJSONObject(i).getString("PatientHistoryId").trim());
                         hmap.put("postaladdress",postal_null);
-                        hmap.put("from", workarray.getJSONObject(i).getString(
-                                "fromdate").trim());
+                        hmap.put("from", workarray.getJSONObject(i).getString("fromdate").trim());
                         hmap.put("to", todatenull);
+                        hmap.put("role", workarray.getJSONObject(i).optString("Work1").trim());
+                        hmap.put("designation", workarray.getJSONObject(i).optString("Work2").trim());
                         toeditFieldlist.add(hmap);
                     }
                     new Helper().sortHashListByDate(toeditFieldlist);

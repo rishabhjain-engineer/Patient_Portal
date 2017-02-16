@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="School Name &amp; Address:"
+            android:text="Institution Name &amp; Address*:"
             android:layout_marginTop="5dp"
             android:textColor="@android:color/black"
             android:id="@+id/adtxt" />
@@ -116,7 +116,7 @@
             android:layout_marginTop="5dp" >
 
             <TextView
-
+                android:id="@+id/edu_country_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
@@ -141,10 +141,7 @@
         <LinearLayout
             android:id="@+id/L2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/editText7"
@@ -197,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:text="To Date:"
+                android:text="To Date*:"
                 android:textColor="@android:color/black"
                 />
             <CheckBox

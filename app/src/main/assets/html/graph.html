@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.css" />
+    <script data-require="d3@3.3.11" data-semver="3.3.11" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.js"></script>
+    <script data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<style>
+    .nv-point {
+        stroke-opacity: 1 !important;
+        stroke-width: 5px;
+        fill-opacity: 1 !important
+    }
+
+    .bullet {
+        font: 10px sans-serif;
+    }
+
+    .bullet .marker {
+        stroke: #000;
+        stroke-width: 2px;
+    }
+
+    .bullet .tick line {
+        stroke: #666;
+        stroke-width: .5px;
+    }
+
+    .bullet .range.s0 {
+        fill: #eee;
+    }
+
+    .bullet .range.s1 {
+        fill: #ddd;
+    }
+
+    .bullet .range.s2 {
+        fill: #ccc;
+    }
+
+    .bullet .measure.s0 {
+        fill: steelblue;
+    }
+
+    .bullet .title {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .bullet .subtitle {
+        fill: #999;
+    }
+</style>
+
+<body>
+<div id="chart" style="height:270px">
+    <svg height="280 " width="375"></svg>
+</div>
+<script>
+        var data1 = [{
+            "key": "EOSINOPHIL",
+            "values": [
+                [1399787880000, 3.50],
+                [1399802220000, 3.30],
+                [1427251500000, 12],
+                [1447046040000, 4],
+                [1447669500000, 1],
+                [1448085600000, 3],
+                [1448504100000, 03],
+                [1450418400000, 03],
+                [1452229200000, 03],
+                [1454559095000, 02],
+                [1468195946000, 04]
+            ]
+        }];
+        var values = JSON.parse(Interface.passDataToHtml());
+        var max = Interface.getMaxData();
+        var rangeto = Interface.getRangeTo();
+        var rangefrom = Interface.getRangeFrom();
+
+        nv.addGraph(function() {
+            var chart = nv.models.lineChart().x(function(d) {
+                return d[0];
+            }).y(function(d) {
+                return d[1]
+            }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, max]).tooltipContent(function(key, x, y, e) {
+                return '<div id="tooltipcustom">' + '<p>' + y + "" + ' on ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() + '-' + new Date(e.point[0]).getFullYear().toString() + '</p></div>'
+            });
+            chart.xAxis.tickValues([]).tickFormat(function(d) {
+                return d3.time.format("%d-%m-%Y")(new Date(d))
+            });
+            chart.yAxis.tickFormat(function(d) {
+                return d3.format('.2f')(d)
+            });
+            d3.select('#chart svg').datum(values).call(chart);
+            nv.utils.windowResize(chart.update);
+            return chart;
+        }, function(chart) {
+            x = chart;
+            var x1 = chart.xScale()();
+            var x2 = chart.xScale()();
+            var height = chart.yAxis.range()[0];
+            var y2 = chart.yScale()(rangefrom);
+            var y1 = chart.yScale()(rangeto);
+            var width = chart.xAxis.range()[1];
+            d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style('opacity', 0.2).attr('x', 0).attr('width', width);
+        });
+    </script>
+</body>
+
+</html>

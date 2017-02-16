@@ -32,8 +32,9 @@ import java.util.List;
 import java.util.Set;
 
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class grouptest extends ActionBarActivity {
+public class grouptest extends BaseActivity {
 
     private ListView l;
     private ArrayAdapter<String> adapter;
@@ -58,15 +59,8 @@ public class grouptest extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.labdetails);
-
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-
+        setupActionBar();
         Intent z = getIntent();
         String jarr = z.getStringExtra("group");
         Bundle extras = getIntent().getExtras();
@@ -344,15 +338,11 @@ public class grouptest extends ActionBarActivity {
                                 + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                 + "</div></body></html>";
 
-                        Intent intent = new Intent(
-                                grouptest.this,
-                                GraphDetailsNew.class);
+                        Intent intent = new Intent(grouptest.this, GraphDetailsNew.class);
                         intent.putExtra("data", db);
                         intent.putExtra("chart_type", "line");
-                        intent.putStringArrayListExtra("dates",
-                                (ArrayList<String>) intentdate);
-                        intent.putStringArrayListExtra("values",
-                                (ArrayList<String>) chartValues);
+                        intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
+                        intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                         if (chartNames.size() != 0)
                             intent.putExtra("chartNames",
                                     chartNames.get(0));

@@ -10,7 +10,10 @@ import android.widget.TextView;
 
 import com.hs.userportal.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -59,10 +62,26 @@ public class MyHealthsAdapter extends BaseAdapter {
         TextView fromdate_id = (TextView) convertView.findViewById(R.id.fromdate_id);
         wt_heading.setText(OrderReportList.get(position).get("weight"));
         String date[] = OrderReportList.get(position).get("fromdate").split("T");
-        fromdate_id.setText(/*OrderReportList.get(position).get("fromdate")*/date[0]);
+        fromdate_id.setText(parseDateToddMMyyyy(date[0]));
 
         return convertView;
     }
 
+    private String parseDateToddMMyyyy(String time) {
+        String inputPattern = "yyyy-MM-dd";
+        String outputPattern = "dd-MM-yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
 
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
 }

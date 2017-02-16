@@ -15,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,7 +63,6 @@ public class MyNotification extends BaseActivity {
         mailid = i.getStringExtra("UserMailId");
 
         setContentView(R.layout.mynotification);
-
         setupActionBar();
 
         service = new Services(MyNotification.this);
@@ -111,16 +112,11 @@ public class MyNotification extends BaseActivity {
 
                 if (selectedFromList.equals("Resend Verification code to registered phone")) {
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                            MyNotification.this);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyNotification.this);
                     alertDialog.setTitle("Phone Number Verification");
-                    alertDialog
-                            .setMessage("Please enter the verification code sent to you on your registered mobile number.");
+                    alertDialog.setMessage("Please enter the verification code sent to you on your registered mobile number.");
                     final EditText input = new EditText(MyNotification.this);
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.MATCH_PARENT);
-
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.leftMargin = 15;
                     lp.rightMargin = 15;
                     input.setBackgroundResource(R.drawable.textfield_activated_holo_light);
@@ -128,69 +124,57 @@ public class MyNotification extends BaseActivity {
                     input.setLayoutParams(lp);
                     alertDialog.setView(input);
                     // alertDialog.setIcon(R.drawable.key);
-                    alertDialog.setPositiveButton("Send",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Write your code here to execute after
-                                    // dialog
-
-                                    if (input.getText().toString()
-                                            .equals("")) {
-                                        Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        sendData = new JSONObject();
-                                        try {
-                                            sendData.put("code", input.getText().toString());
-                                            sendData.put("patientcode", usid);
-
-                                        } catch (JSONException e) {
-
-                                            e.printStackTrace();
-                                        }
-                                        new MyAsynckTask(sendData, false, true);
-
-                                    }
-
+                    alertDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
+                                Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                sendData = new JSONObject();
+                                try {
+                                    sendData.put("code", input.getText().toString());
+                                    sendData.put("patientcode", code);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            });
+                                new MyAsynckTask(sendData, false, true).execute();
+                            }
+                        }
+                    });
                     // Setting Negative "NO" Button
                     alertDialog.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // Write your code here to execute after
-                                    // dialog
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.i("ayaz", "Cancel is Clicked");
                                     dialog.cancel();
                                 }
                             });
 
                     alertDialog.setNeutralButton("Resend",
                             new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
+                                public void onClick(DialogInterface dialog, int which) {
                                     sendData = new JSONObject();
-                                    try {
-                                        sendData.put("userid", usid);
+                                    if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
+                                        Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        try {
+                                      /*  sendData.put("userid", usid);
                                         sendData.put("userName", user);
                                         sendData.put("userRole", "Patient");
                                         sendData.put("UserMailId", "");
-                                        sendData.put("ContactNo", Helper.resend_sms);
-                                    } catch (JSONException e) {
-
-                                        e.printStackTrace();
+                                        sendData.put("ContactNo", Helper.resend_sms);*/
+                                            sendData.put("code", input.getText().toString());
+                                            sendData.put("patientcode", code);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        new MyAsynckTask(sendData, false, true).execute();
                                     }
-                                    new MyAsynckTask(sendData, true, false).execute();
-
                                 }
 
                             });
 
                     alertDialog.show();
-
-
                 }
-
             }
 
         });
@@ -199,7 +183,6 @@ public class MyNotification extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
@@ -210,21 +193,13 @@ public class MyNotification extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-//			Intent backNav = new Intent(getApplicationContext(), logout.class);
-//			backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//			startActivity(backNav);
-
                 finish();
-
                 return true;
-
             case R.id.action_home:
-
                 Intent intent = new Intent(getApplicationContext(), logout.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -232,10 +207,6 @@ public class MyNotification extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-//		Intent backNav = new Intent(getApplicationContext(), logout.class);
-//		backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//
-//		startActivity(backNav);
         finish();
     }
 
@@ -266,11 +237,7 @@ public class MyNotification extends BaseActivity {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-
-                //showAppMsg();
                 Toast.makeText(MyNotification.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);*/
             }
         }
     };

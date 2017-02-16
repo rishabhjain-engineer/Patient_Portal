@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,12 +9,17 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -35,16 +41,27 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import adapters.Group_testAdapter;
+import ui.BaseActivity;
 import utils.MyMarkerView;
+
+import static com.hs.userportal.R.id.member_name;
+import static com.hs.userportal.R.id.weight;
 
 /**
  * Created by rahul2 on 7/15/2016.
  */
-public class GraphDetailsNew extends ActionBarActivity {
+public class GraphDetailsNew extends BaseActivity {
     private LineChart linechart;
     private PieChart pi_chart;
     private ScrollView scroll;
@@ -60,18 +77,18 @@ public class GraphDetailsNew extends ActionBarActivity {
     private Services service;
     private ListView graph_listview_id;
     private int maxYrange = 0;
+    private WebView mLineChartWebView;
+    private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
+    private JSONArray mJsonArrayToSend = new JSONArray();
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graphdetails_new);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         String title = getIntent().getStringExtra("chartNames");
-        action.setTitle(title);
+        mActionBar.setTitle(title);
 
         //line chart graph
         linechart = (LineChart) findViewById(R.id.linechart);
@@ -80,6 +97,24 @@ public class GraphDetailsNew extends ActionBarActivity {
         graph_listview_id = (ListView) findViewById(R.id.graph_listview_id);
         chartvakueList = new ArrayList<String>();
         chartvakueList = getIntent().getStringArrayListExtra("values");
+
+        mLineChartWebView = (WebView) findViewById(R.id.linechart_webview);
+        mLineChartWebView.setFocusable(true);
+        mLineChartWebView.setFocusableInTouchMode(true);
+        WebSettings settings = mLineChartWebView.getSettings();
+        settings.setLoadWithOverviewMode(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(true);
+        settings.setSupportZoom(true);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        mLineChartWebView.setInitialScale(1);
+        mLineChartWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+
+
 
         // finding screen width and height--------------------------------------
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -90,20 +125,18 @@ public class GraphDetailsNew extends ActionBarActivity {
         // Assigning height of graph dynamically----------------------------------
         if (getIntent().getStringExtra("chart_type").equals("line")) {
             pi_chart.setVisibility(View.GONE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    linechart.getLayoutParams();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
             params.height = Math.round(height / 2);
-            linechart.setLayoutParams(params);
+            //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it.
             MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
-            linechart.setMarkerView(mv);
-            linechart.animateX(3500);
+            //  linechart.setMarkerView(mv);    //TODO for displaying line chart; un comment it.
+            //   linechart.animateX(3500);    //TODO for displaying line chart; un comment it.
             setLinechart();
         } else {
-            linechart.setVisibility(View.VISIBLE);
+            // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
             pi_chart.setVisibility(View.VISIBLE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    pi_chart.getLayoutParams();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
             pi_chart.setLayoutParams(params);
             setPiChart();
@@ -113,12 +146,53 @@ public class GraphDetailsNew extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
         try {
             RangeFrom = extras.getString("RangeFrom");
+            if (!TextUtils.isEmpty(RangeFrom)) {
+                mRangeFromInDouble = Double.parseDouble(RangeFrom);
+            }
             RangeTo = extras.getString("RangeTo");
+            if (!TextUtils.isEmpty(RangeTo)) {
+                mRangeToInDouble = Double.parseDouble(RangeTo);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         chartDates = getIntent().getStringArrayListExtra("dates");
         chartValues = getIntent().getStringArrayListExtra("values");
+        if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            JSONArray jsonArray1 = new JSONArray();
+            for (int i=0 ; i < chartValues.size(); i++) {
+                JSONArray innerJsonArray = new JSONArray();
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(chartDates.get(i));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                long epoch = date.getTime();
+                if(!TextUtils.isEmpty(chartValues.get(i))){
+                    innerJsonArray.put(epoch);
+                    if(!TextUtils.isEmpty(chartValues.get(i))){
+                        double value = Double.parseDouble(chartValues.get(i));
+                        if(mMaxValue <= value){
+                            mMaxValue = value;
+                        }
+                    }
+                    innerJsonArray.put(chartValues.get(i));
+                    jsonArray1.put(innerJsonArray);
+                }
+            }
+
+            JSONObject outerJsonObject = new JSONObject();
+            try {
+                outerJsonObject.put("key", title);
+                outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend.put(outerJsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
         casecodes = getIntent().getStringArrayListExtra("case");
         caseIds = getIntent().getStringArrayListExtra("caseIds");
         chartunitList = getIntent().getStringArrayListExtra("unitList");
@@ -158,6 +232,13 @@ public class GraphDetailsNew extends ActionBarActivity {
         });
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLineChartWebView.loadUrl("file:///android_asset/html/graph.html");
+    }
+
     private void setData(int count, float range) {
         ArrayList<Entry> values = new ArrayList<Entry>();
         for (int i = 0; i < count; i++) {
@@ -165,8 +246,7 @@ public class GraphDetailsNew extends ActionBarActivity {
             values.add(new Entry(i, val));
         }
         LineDataSet set1;
-        if (linechart.getData() != null &&
-                linechart.getData().getDataSetCount() > 0) {
+        if (linechart.getData() != null && linechart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             linechart.getData().notifyDataChanged();
@@ -188,7 +268,7 @@ public class GraphDetailsNew extends ActionBarActivity {
             // create a data object with the datasets
             LineData data = new LineData(dataSets);
             // set data
-            linechart.setData(data);
+            //   linechart.setData(data); // TODO for displaying line chart; un comment it.
         }
     }
 
@@ -303,7 +383,7 @@ public class GraphDetailsNew extends ActionBarActivity {
         l.setForm(Legend.LegendForm.SQUARE);
         // don't forget to refresh the
         //drawing
-         linechart.invalidate();
+        linechart.invalidate();
     }
 
     public void setPiChart() {
@@ -377,6 +457,7 @@ public class GraphDetailsNew extends ActionBarActivity {
 
         return d;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -396,5 +477,31 @@ public class GraphDetailsNew extends ActionBarActivity {
         }
     }
 
+    public class MyJavaScriptInterface {
+        @JavascriptInterface
+        public String passDataToHtml() {
+            return mJsonArrayToSend.toString();
+        }
+
+        @JavascriptInterface
+        public int getMaxData() {
+            if(mMaxValue < mRangeToInDouble){
+                mMaxValue = mRangeToInDouble;
+            }
+            double valueToadd = mMaxValue * .1;
+            return (int)(mMaxValue + valueToadd);
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
+        }
+    }
 
 }

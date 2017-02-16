@@ -111,8 +111,7 @@ public class residence extends FragmentActivity {
         year1 = c.get(Calendar.YEAR);
         month1 = c.get(Calendar.MONTH);
         day1 = c.get(Calendar.DAY_OF_MONTH);
-        adapter = new ArrayAdapter<String>(residence.this,
-                android.R.layout.simple_list_item_1, list);
+        adapter = new ArrayAdapter<String>(residence.this, android.R.layout.simple_list_item_1, list);
         Intent z = getIntent();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         patientId = sharedPreferences.getString("ke", "");
@@ -163,7 +162,7 @@ public class residence extends FragmentActivity {
                         residence.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(residence.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     country.setText(nationlist[which]
@@ -200,7 +199,7 @@ public class residence extends FragmentActivity {
                     final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
                             residence.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(residence.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     country.setText(nationlist[which]
@@ -418,7 +417,7 @@ public class residence extends FragmentActivity {
 //city, country, state,add, pincode, house,from,to
                 if (from.getText().toString().equals("")
                         ||city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")||add.getText().toString().equals("")
-                        ||house.getText().toString().equals("")) {
+                        ||house.getText().toString().equals("")  ||to.getText().toString().equals("")  ) {
                     alertDialog = new AlertDialog.Builder(residence.this).create();
 
                     // Setting Dialog Title

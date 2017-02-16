@@ -139,34 +139,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     public static final String MyPREFERENCES = "MyPrefs";
     private PreferenceHelper mPreferenceHelper;
 
-    @Override
-    public void onBackPressed() {
-
-        // -------------------------------------------------------------------
-        from_Activity = Helper.fromactivity;
-        if (from_Activity != null && from_Activity != "" && from_Activity.equalsIgnoreCase("signinMaplab")) {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else if (from_Activity != null && from_Activity.equalsIgnoreCase("packages")) {
-            /*super.onBackPressed();*/
-            /*Intent i = new Intent(MainActivity.this, Packages.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(i);
-			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-			finish();*/
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else {
-            Intent startMain = new Intent(Intent.ACTION_MAIN);
-            startMain.addCategory(Intent.CATEGORY_HOME);
-            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startMain);
-            /*super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
-
-        }
-    }
-
     @SuppressWarnings({"deprecation", "deprecation"})
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -174,7 +146,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         setupActionBar();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -194,7 +165,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         mtracker.startTracking();
         mprofileTracker.startTracking();
         mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
-
         userName = (EditText) findViewById(R.id.etSubject);
         password = (EditText) findViewById(R.id.etContact);
         //	locationName = (TextView) findViewById(R.id.tvLocationIcon);
@@ -249,51 +219,35 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         String version = pInfo.versionName;
                         //	double currentversion = Double.parseDouble(version);
 
-                        if (!marketVersion.equals(version)) /*if(market_vervalue>currentversion)*/ {
+                        if (!marketVersion.equals(version)){
 
                             alert = new AlertDialog.Builder(MainActivity.this).create();
-
                             alert.setTitle("Message");
-                            alert.setMessage(
-                                    "You are using an old version of the app. Please update to the latest version from the Playstore.");
-
-                            alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                    new DialogInterface.OnClickListener() {
-
+                            alert.setMessage("You are using an old version of the app. Please update to the latest version from the Playstore.");
+                            alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-
                                             Uri uri = Uri.parse("market://details?id=" + getPackageName());
                                             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                                             try {
                                                 startActivity(goToMarket);
                                             } catch (ActivityNotFoundException e) {
-                                                startActivity(new Intent(Intent.ACTION_VIEW,
-                                                        Uri.parse("http://play.google.com/store/apps/details?id="
-                                                                + getPackageName())));
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
                                             }
-
                                         }
                                     });
 
-                            alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip",
-                                    new DialogInterface.OnClickListener() {
-
+                            alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-
                                             dialog.dismiss();
-
                                         }
                                     });
-
                             alert.show();
 
                         }
 
                     } catch (JSONException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (NameNotFoundException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 
@@ -304,9 +258,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
                 }
             });
-
             queue.add(getRequest);
-
         }
 
 
@@ -318,16 +270,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             demo = "false";
             Services demoService = new Services(getApplicationContext());
         }
-
         buildNo = Build.VERSION.RELEASE;
-        // Toast.makeText(getApplicationContext(), buildNo,
-        // Toast.LENGTH_SHORT).show();
-
         register.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Intent intent = new Intent(getApplicationContext(), Register.class);
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
@@ -341,16 +288,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 Editor editor = sharedpreferences.edit();
                 editor.putBoolean("openLocation", false);
                 editor.commit();
-
                 Intent intent = new Intent(MainActivity.this, LocationClass.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
             }
         });
 
@@ -565,11 +508,19 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
@@ -865,11 +816,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
 
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -1207,11 +1164,16 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
-                    AppConstant.ID = cop;
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     e.commit();
                     from_Activity = Helper.fromactivity;
@@ -1297,11 +1259,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             String cd = sharedPreferences.getString("cook", "");
             String PH = sharedPreferences.getString("PH", "");
 
-            AppConstant.ID = uid;
+            /*AppConstant.ID = uid;
             AppConstant.PH = PH;
             AppConstant.USER = name;
             AppConstant.PASS = pwd;
-            AppConstant.FN = first;
+            AppConstant.FN = first;*/
+
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, uid);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, name);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, pwd);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, first);
 
             if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
                 // new Authentication().execute();
@@ -1986,11 +1954,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                   /* AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
@@ -2040,11 +2014,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    AppConstant.ID = cop;
+                    /*AppConstant.ID = cop;
                     AppConstant.PH = PH;
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
@@ -2342,6 +2322,34 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 Intent intent = new Intent(MainActivity.this, logout.class);
                 startActivity(intent);
             }
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // -------------------------------------------------------------------
+        from_Activity = Helper.fromactivity;
+        if (from_Activity != null && from_Activity != "" && from_Activity.equalsIgnoreCase("signinMaplab")) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else if (from_Activity != null && from_Activity.equalsIgnoreCase("packages")) {
+            /*super.onBackPressed();*/
+            /*Intent i = new Intent(MainActivity.this, Packages.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+			finish();*/
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else {
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+            /*super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
 
         }
     }

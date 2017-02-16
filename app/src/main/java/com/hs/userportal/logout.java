@@ -71,6 +71,7 @@ import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import ui.QuestionireActivity;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /*import com.facebook.Request;
 import com.facebook.Session;
@@ -127,6 +128,7 @@ public class logout extends Activity implements View.OnClickListener {
     private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
+    private PreferenceHelper mPreferenceHelper = PreferenceHelper.getInstance();
 
 
     public static String image_parse;
@@ -336,12 +338,19 @@ public class logout extends Activity implements View.OnClickListener {
         passw = i.getStringExtra("pass");
         name = i.getStringExtra("fn");*/
 
-        id = AppConstant.ID;
+        /*id = AppConstant.ID;
         privatery_id = id;
         PH = AppConstant.PH;
         user = AppConstant.USER;
         passw = AppConstant.PASS;
-        name = AppConstant.FN;
+        name = AppConstant.FN;*/
+
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        privatery_id = id;
+        PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
+        user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
 
         Log.i("logout", "id: "+id);
         Log.i("logout", "PH: "+PH);
@@ -488,37 +497,27 @@ public class logout extends Activity implements View.OnClickListener {
 
 
     class Authentication extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-
         }
-
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             try {
                 sendData = new JSONObject();
                 receiveData = service.IsUserAuthenticated(sendData);
                 System.out.println("IsUserAuthenticated: " + receiveData);
                 authentication = receiveData.getString("d");
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             return null;
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             try {
-
                 if (authentication.equals("false")) {
-
                     AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
                     dialog.setTitle("Session timed out!");
                     dialog.setMessage("Session expired. Please login again.");
@@ -527,8 +526,6 @@ public class logout extends Activity implements View.OnClickListener {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // TODO Auto-generated method stub
-
                             SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.clear();
@@ -536,20 +533,15 @@ public class logout extends Activity implements View.OnClickListener {
                             dialog.dismiss();
                             finish();
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                         }
                     });
                     dialog.show();
-
                 } else {
                     new BackgroundProcess().execute();
-
                 }
 
             } catch (Exception e) {
-                // TODO: handle exception
             }
-
         }
     }
 
@@ -711,7 +703,7 @@ public class logout extends Activity implements View.OnClickListener {
                 fbSubArray = slice.getJSONArray("Table");
                 if (fbSubArray.getJSONObject(0).getString("FacebookId").equals("")
                         || fbSubArray.getJSONObject(0).getString("FacebookId").equals("null")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO commented by spartans  ; to show fb link change visibility ;
                     fbLinked = "false";
 
                 } else {
@@ -1343,7 +1335,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
                 if (receiveDataUnLink.get("d").equals("UnLinked Successfully")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO set visible : SPARTANS
                     unlinkmenu = 0;
                     fbLinked = "false";
                 }

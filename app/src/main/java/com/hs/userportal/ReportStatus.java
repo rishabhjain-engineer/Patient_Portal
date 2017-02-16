@@ -61,12 +61,13 @@ import java.util.Set;
 
 import adapters.Report_Adapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NestedListHelper;
 import utils.NestedListHelper1;
 
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class ReportStatus extends ActionBarActivity {
+public class ReportStatus extends BaseActivity {
 
     private BufferedReader reader;
     private TextView advice, /*refer,*/dob, sample, profname, history_text, pdf_text;
@@ -110,14 +111,8 @@ public class ReportStatus extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.reportstatus_new);
-
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
+        setupActionBar();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         service = new Services(ReportStatus.this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -390,10 +385,8 @@ public class ReportStatus extends ActionBarActivity {
                                                                 .getString("ResultValue"),
                                                         tempObject
                                                                 .getString("CriticalLow"),
-                                                        tempObject
-                                                                .getString("RangeFrom"),
-                                                        tempObject
-                                                                .getString("RangeTo"),
+                                                        RangeFrom=  tempObject.getString("RangeFrom"),
+                                                        RangeTo= tempObject.getString("RangeTo"),
                                                         tempObject
                                                                 .getString("CriticalHigh"));
                                             }
@@ -433,10 +426,8 @@ public class ReportStatus extends ActionBarActivity {
                                                 GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
-                                        intent.putStringArrayListExtra("dates",
-                                                (ArrayList<String>) intentdate);
-                                        intent.putStringArrayListExtra("values",
-                                                (ArrayList<String>) chartValues);
+                                        intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
+                                        intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                                         if(chartNames.size()!=0)
                                             intent.putExtra("chartNames",
                                                     chartNames.get(0));
@@ -554,8 +545,7 @@ public class ReportStatus extends ActionBarActivity {
 
                                     startActivity(intent);
                                     finish();*/
-                                    Intent intent = new Intent(ReportStatus.this,
-                                            GraphDetailsNew.class);
+                                    Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                     intent.putExtra("chart_type", "Pie");
                                     intent.putExtra("data", db);
                                     intent.putStringArrayListExtra("dates",

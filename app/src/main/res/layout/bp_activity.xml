@@ -36,7 +36,7 @@
                 android:id="@+id/wt_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weight (Kg)"
+                android:text="Bp (mmHg)"
                 android:textColor="@android:color/black" />
 
             <TextView

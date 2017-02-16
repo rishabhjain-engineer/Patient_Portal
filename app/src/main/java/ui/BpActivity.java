@@ -1,16 +1,13 @@
-package com.hs.userportal;
+package ui;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,14 +30,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.hs.userportal.AddWeight;
+import com.hs.userportal.Authentication;
+import com.hs.userportal.MiscellaneousTasks;
+import com.hs.userportal.R;
+import com.hs.userportal.Services;
+import com.hs.userportal.Weight;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,10 +52,12 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
-import ui.BaseActivity;
-import utils.MyMarkerView;
 
-public class Weight extends BaseActivity {
+/**
+ * Created by Rishabh on 15/2/17.
+ */
+
+public class BpActivity extends BaseActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
@@ -82,21 +79,17 @@ public class Weight extends BaseActivity {
     private LineChart linechart;
     private int maxYrange = 0;
     private double mMaxWeight = 0;
-
     private JSONArray mJsonArrayToSend = new JSONArray();
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @Override
-    protected void onCreate(Bundle avedInstanceState) {
-        super.onCreate(avedInstanceState);
-        setContentView(R.layout.weight_layout);
-        setupActionBar();
-        mActionBar.setTitle("Weight");
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.bp_activity);
+        setupActionBar();
+        mActionBar.setTitle("Blood Pressure");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = weight_graphView.getSettings();
-
-
         weight_graphView.setFocusable(true);
         weight_graphView.setFocusableInTouchMode(true);
         settings.setLoadWithOverviewMode(true);
@@ -111,19 +104,19 @@ public class Weight extends BaseActivity {
         weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
 
         queue = Volley.newRequestQueue(this);
-        // settings.setUseWideViewPort(true);
-        // view.setInitialScale(140);
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Weight.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BpActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(Weight.this, "Weight", "").execute();
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            new Authentication(BpActivity.this, "bp", "").execute();
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
         wt_heading = (TextView) findViewById(R.id.wt_heading);
-        wt_heading.setText("Weight (Kg)");
-        service = new Services(Weight.this);
-        misc = new MiscellaneousTasks(Weight.this);
+        service = new Services(BpActivity.this);
+        misc = new MiscellaneousTasks(BpActivity.this);
         Intent z = getIntent();
         id = z.getStringExtra("id");
 
@@ -139,7 +132,7 @@ public class Weight extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
-                AlertDialog dialog = new AlertDialog.Builder(Weight.this).create();
+                AlertDialog dialog = new AlertDialog.Builder(BpActivity.this).create();
                 dialog.setTitle("Delete Weight");
                 dialog.setMessage("Are you sure you want to delete the Weight?");
 
@@ -163,143 +156,10 @@ public class Weight extends BaseActivity {
             }
 
         });
-        linechart = (LineChart) findViewById(R.id.lineChart);
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int height = displaymetrics.heightPixels;
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                linechart.getLayoutParams();
-        params.height = Math.round(height / 2);
-        linechart.setLayoutParams(params);
-        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
-        // set the marker to the chart
-        linechart.setMarkerView(mv);
-        linechart.animateX(3500);
 
         new BackgroundProcess().execute();
     }
 
-    public void setLinechart() {
-        linechart.setDrawGridBackground(false);
-        for (int i = 0; i < chartValues.size(); i++) {
-            if (maxYrange < Math.round(Float.parseFloat(chartValues.get(i)))) {
-                maxYrange = Math.round(Float.parseFloat(chartValues.get(i)));
-            }
-        }
-        linechart.setDescription("");
-        linechart.setNoDataTextDescription("You need to provide data for the chart.");
-        // enable touch gestures
-        linechart.setTouchEnabled(true);
-        // enable scaling and dragging
-        linechart.setDragEnabled(true);
-        linechart.setScaleEnabled(true);
-        linechart.setPinchZoom(true);
-        // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
-        llXAxis.setEnabled(false);
-        XAxis xAxis = linechart.getXAxis();
-        //xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setXOffset(0f);
-        xAxis.setEnabled(false);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-        xAxis.setAxisMinValue(0f);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setGranularity(1.0f);
-        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
-        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
-        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setEnabled(false);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
-        ll1.setTypeface(tf);
-
-        LimitLine ll2 = new LimitLine(0f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-        ll2.setTypeface(tf);
-        ll2.setEnabled(false);
-
-        YAxis leftAxis = linechart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        /*leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);*/
-        leftAxis.setAxisMaxValue(maxYrange + maxYrange / 4);
-        leftAxis.setAxisMinValue(0f);
-        leftAxis.setYOffset(0f);
-        leftAxis.enableGridDashedLine(0f, 0f, 0f);
-        leftAxis.setDrawZeroLine(false);
-        // leftAxis.setEnabled(false);
-        // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
-        linechart.getAxisRight().setEnabled(false);
-
-        //linechart.getViewPortHandler().setMaximumScaleY(2f);
-        //linechart.getViewPortHandler().setMaximumScaleX(2f);
-
-        // add data
-        setData(chartValues.size(), 100);
-
-//        linechart.setVisibleXRange(20);
-//        linechart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        linechart.centerViewTo(20, 50, AxisDependency.LEFT);
-
-        linechart.animateX(2500);
-        //linechart.invalidate();
-        // get the legend (only possible after setting data)
-        Legend l = linechart.getLegend();
-        // modify the legend ...
-        // l.setPosition(LegendPosition.LEFT_OF_CHART);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setEnabled(false);
-        // don't forget to refresh the
-        //drawing
-        linechart.invalidate();
-    }
-
-    private void setData(int count, float range) {
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        for (int i = 0; i < count; i++) {
-            float val = Float.parseFloat(chartValues.get(i));
-            values.add(new Entry(i, val));
-        }
-        LineDataSet set1;
-        if (linechart.getData() != null &&
-                linechart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            linechart.getData().notifyDataChanged();
-            linechart.notifyDataSetChanged();
-        } else {
-            // create a data set and give it a type
-            set1 = new LineDataSet(values, getIntent().getStringExtra("chartNames"));
-            set1.disableDashedLine();
-            set1.setColor(Color.parseColor("#FF8409"));
-            set1.setCircleColor(Color.parseColor("#FF8409"));
-            set1.setLineWidth(1.5f);
-            set1.setCircleRadius(3.5f);
-            set1.setDrawCircleHole(true);
-            set1.setCircleHoleRadius(7f);
-            set1.setDrawFilled(false);
-            set1.setDrawValues(false);
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
-            // create a data object with the datasets
-            LineData data = new LineData(dataSets);
-            // set data
-            linechart.setData(data);
-        }
-    }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
@@ -309,7 +169,7 @@ public class Weight extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(Weight.this);
+            progress = new ProgressDialog(BpActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
@@ -323,9 +183,9 @@ public class Weight extends BaseActivity {
             super.onPostExecute(result);
 
 
-            adapter = new MyHealthsAdapter(Weight.this, weight_contentlists);
+            adapter = new MyHealthsAdapter(BpActivity.this, weight_contentlists);
             weight_listId.setAdapter(adapter);
-            Utility.setListViewHeightBasedOnChildren(weight_listId);
+            Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
             String db = null;
             try {
 
@@ -424,13 +284,12 @@ public class Weight extends BaseActivity {
 
 
 */
-                setLinechart();
                 progress.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
                 progress.dismiss();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
+            weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
         }
 
         @Override
@@ -519,6 +378,7 @@ public class Weight extends BaseActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -531,14 +391,13 @@ public class Weight extends BaseActivity {
 
             case R.id.add:
 
-                Intent i = new Intent(Weight.this, AddWeight.class);
+                Intent i = new Intent(BpActivity.this, AddWeight.class);
                 i.putExtra("id", id);
-                i.putExtra("htype", "weight");
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                i.putExtra("htype", "bp");
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 startActivity(i);
                 finish();
-
-                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                 return true;
 
             default:
@@ -583,7 +442,7 @@ public class Weight extends BaseActivity {
     }
 
     private void deleteWeight() {
-        progress = new ProgressDialog(Weight.this);
+        progress = new ProgressDialog(BpActivity.this);
         progress.setMessage("Deleting .....");
         progress.show();
         sendData = new JSONObject();
@@ -592,7 +451,7 @@ public class Weight extends BaseActivity {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        StaticHolder sttc_holdr = new StaticHolder(Weight.this, StaticHolder.Services_static.deleteSingularDetails);
+        StaticHolder sttc_holdr = new StaticHolder(BpActivity.this, StaticHolder.Services_static.deleteSingularDetails);
         String url = sttc_holdr.request_Url();
         jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
@@ -603,11 +462,11 @@ public class Weight extends BaseActivity {
                 try {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
-                        Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         finish();
                         startActivity(getIntent());
                     } else {
-                        Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
@@ -631,10 +490,6 @@ public class Weight extends BaseActivity {
         queue.add(jr);
     }
 
-   /* public void startBackgroundprocess() {
-        new BackgroundProcess().execute();
-    }*/
-
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
@@ -647,4 +502,5 @@ public class Weight extends BaseActivity {
             return (i + 20);
         }
     }
+
 }

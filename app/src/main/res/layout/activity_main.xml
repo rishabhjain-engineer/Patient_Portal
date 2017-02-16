@@ -118,6 +118,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -149,7 +150,8 @@
         <FrameLayout
             android:id="@+id/FrameLayout1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"

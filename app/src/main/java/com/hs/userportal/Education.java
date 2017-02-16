@@ -203,7 +203,7 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                         Education.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Education.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]
@@ -253,7 +253,7 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                     final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
                             Education.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(Education.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     co.setText(nationlist[which]
@@ -462,17 +462,14 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                 } catch (Exception e) {
                 }
 
-
-                if (from.getText().toString().equals("")
-                        || educationspinner.getText().toString().equals("") || ci.getText().toString().equals("") || st.getText().toString().equals("") || co.getText().toString().equals("")
-                      || ad.getText().toString().equals("")) {
+                if (from.getText().toString().equals("") || educationspinner.getText().toString().equals("") ||
+                        ad.getText().toString().equals("") || co.getText().toString().equals("") || ci.getText().toString().equals("") || st.getText().toString().equals("") || to.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Education.this).create();
-
                     // Setting Dialog Title
                     alertDialog.setTitle("Message");
 
                     // Setting Dialog Message
-                    alertDialog.setMessage("No field can be left Blank");
+                    alertDialog.setMessage("Mandatory fields cannot be left Blank");
 
                     // Setting OK Button
                     alertDialog.setButton("OK",
@@ -485,8 +482,7 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if (date2 != null && (date1.compareTo(date2) > 0
-                        || date1.compareTo(date2) == 0)) {
+                } else if (date2 != null && (date1.compareTo(date2) > 0 || date1.compareTo(date2) == 0)) {
 
                     alertDialog = new AlertDialog.Builder(Education.this).create();
 
@@ -574,19 +570,6 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
                     alertDialog.show();
                 }else{
                     String education = educationspinner.getText().toString();
-                   /* lv.setAdapter(m_adapter);
-                    String cop= co.getText().toString();
-                    HashMap<String, String> hmap = new HashMap<String, String>();
-                    String education = educationspinner.getText().toString();
-                    hmap.put("name", education);
-                    hmap.put("address", ad.getText().toString());
-                    hmap.put("city", ci.getText().toString());
-                    hmap.put("state", st.getText().toString());
-                    hmap.put("country", co.getText().toString());
-                    hmap.put("postaladdress", pi.getText().toString());
-                    hmap.put("from", from.getText().toString());
-                    hmap.put("to", to.getText().toString());
-                    toeditFieldlist.add(hmap);*/
                     String input;
                     String xj=to.getText().toString();
                     if (!to.getText().toString().equals("")){
@@ -636,14 +619,11 @@ public class Education extends FragmentActivity implements AdapterView.OnItemSel
 
                                     }
                                 } catch (Exception e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
 
                             }
                             if (value == 0) {
-                               /* m_listItems.add(input);
-                                m_adapter.notifyDataSetChanged();*/
                                 new submitchange().execute();
                             }else{
                                 Toast.makeText(getApplicationContext(),"Duplicate entries not allowed!",Toast.LENGTH_SHORT).show();
