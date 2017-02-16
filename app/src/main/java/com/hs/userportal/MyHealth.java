@@ -183,6 +183,11 @@ public class MyHealth extends BaseActivity {
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
 
     public void showdialog() {
         final Dialog overlay_dialog = new Dialog(MyHealth.this);

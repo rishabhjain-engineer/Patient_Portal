@@ -120,6 +120,7 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.VISIBLE);
             mWeightContainer.setVisibility(View.GONE);
             mBpContainerLl.setVisibility(View.GONE);
+            lasstCheckedDate.setFocusable(false);
 
 
         } else if (htype.equals("weight")) {
@@ -492,15 +493,16 @@ public class AddWeight extends BaseActivity {
                 sendData1.put("profileParameter", "health");
                 sendData1.put("htype", "height");
                 receiveData1 = service.patienBasicDetails(sendData1);
-                String data = receiveData1.getString("d");
+                String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
-                JSONArray jsonArray = cut.getJSONArray("Table");
+                JSONArray jsonArray = cut.optJSONArray("Table");
                 mHeightList.clear();
-                JSONArray jsonArray1 = new JSONArray();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject obj = jsonArray.getJSONObject(i);
-                    String height = obj.getString("height");
-                    mHeightList.add(height);
+                if(jsonArray != null){
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        String height = obj.optString("height");
+                        mHeightList.add(height);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
