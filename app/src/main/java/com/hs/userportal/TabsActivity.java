@@ -153,7 +153,7 @@ public class TabsActivity extends TabActivity {
 		tabHost.addTab(spec);
 
 
-		// Tab 4
+		/*// Tab 4
 		tab = inflater.inflate(R.layout.tab, getTabWidget(), false);
 		label = (TextView) tab.findViewById(R.id.tabLabel);
 		label.setText("Education");
@@ -171,7 +171,7 @@ public class TabsActivity extends TabActivity {
 		spec = tabHost.newTabSpec("travel").setIndicator(tab)
 				.setContent(intent);
 		intent.putExtra("id", id);
-		tabHost.addTab(spec);
+		tabHost.addTab(spec);*/
 
 		// Tab 6
         //-------------------hide it -----------------
@@ -215,8 +215,8 @@ public class TabsActivity extends TabActivity {
 		tabHost.getTabWidget().getChildAt(0).getLayoutParams().width = width;
 		tabHost.getTabWidget().getChildAt(1).getLayoutParams().width = width;
 		tabHost.getTabWidget().getChildAt(2).getLayoutParams().width = width;
-		tabHost.getTabWidget().getChildAt(3).getLayoutParams().width = width;
-		tabHost.getTabWidget().getChildAt(4).getLayoutParams().width = width;
+		//tabHost.getTabWidget().getChildAt(3).getLayoutParams().width = width;
+		//tabHost.getTabWidget().getChildAt(4).getLayoutParams().width = width;
 		//tabHost.getTabWidget().getChildAt(5).getLayoutParams().width = width;
 		//tabHost.getTabWidget().getChildAt(6).getLayoutParams().width = width;
 

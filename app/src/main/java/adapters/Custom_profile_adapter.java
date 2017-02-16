@@ -75,10 +75,12 @@ public class Custom_profile_adapter extends BaseAdapter {
                 top4.setText(list.get(position).get("country"));
             }
             top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
-            if(!TextUtils.isEmpty(list.get(position).get("role"))){
+            if(!TextUtils.isEmpty(list.get(position).get("role")) && !"null".equalsIgnoreCase(list.get(position).get("role"))){
+                role.setVisibility(View.VISIBLE);
                 role.setText(list.get(position).get("role"));
             }
-            if(!TextUtils.isEmpty(list.get(position).get("designation"))){
+            if(!TextUtils.isEmpty(list.get(position).get("designation")) && !"null".equalsIgnoreCase(list.get(position).get("designation"))){
+                role.setVisibility(View.VISIBLE);
                 designation.setText(list.get(position).get("designation"));
             }
 
