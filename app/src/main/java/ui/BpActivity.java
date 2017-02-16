@@ -341,12 +341,12 @@ public class BpActivity extends BaseActivity {
                     jsonArrayTopBp.put(innerJsonArrayTopBP);
                 }
                 JSONObject outerJsonObjectUpperBp = new JSONObject();
-                outerJsonObjectUpperBp.put("key", "BP top");
+                outerJsonObjectUpperBp.put("key", "systolic");
                 outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
                 mJsonArrayToSend.put(outerJsonObjectUpperBp);
 
                 JSONObject outerJsonObjectLowerBp = new JSONObject();
-                outerJsonObjectLowerBp.put("key", "BP bottom");
+                outerJsonObjectLowerBp.put("key", "daistolic");
                 outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
                 mJsonArrayToSend.put(outerJsonObjectLowerBp);
 
