@@ -35,6 +35,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +90,7 @@ public class Work extends FragmentActivity {
     private ArrayList<String> patienthistorylist=new ArrayList<String>();
     private String checkedit="";
     private int selection;
+    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,34 @@ public class Work extends FragmentActivity {
 		st = (EditText) findViewById(R.id.editText6);
 		co = (EditText) findViewById(R.id.editText7);
 		pi = (EditText) findViewById(R.id.editText8);
+
+        Spinner fromMonthSpinner = (Spinner)findViewById(R.id.from_month);
+        Spinner fromYearSpinner = (Spinner)findViewById(R.id.from_year);
+        ArrayAdapter monthArrayAdapter = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
+        monthArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromMonthSpinner.setAdapter(monthArrayAdapter);
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        fromYearSpinner.setAdapter(adapter);
+
+        Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
+        Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
+
+        ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
+        monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        toMonthSpinner.setAdapter(monthArrayAdapter1);
+        ArrayList<String> years1 = new ArrayList<String>();
+        int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear1; i++) {
+            years1.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        toYesrSpinner.setAdapter(adapter1);
+
 		from = (EditText) findViewById(R.id.etName);
 		to = (EditText) findViewById(R.id.editText9);
         mDesignationEt = (EditText) findViewById(R.id.designation_et);
