@@ -42,6 +42,8 @@ import ui.BaseActivity;
 import ui.BmiActivity;
 import ui.BpActivity;
 
+import static java.lang.Math.round;
+
 public class MyHealth extends BaseActivity {
 
     private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
@@ -380,13 +382,14 @@ public class MyHealth extends BaseActivity {
                 mBpTvValue.setText("-");
             }
 
-            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && TextUtils.isEmpty(weight) && weight.equalsIgnoreCase("null")) {
+            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = weightInDouble / (heightInDouble * heightInDouble);
+                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
                 DecimalFormat df = new DecimalFormat("#.##");
-                bmi = Double.valueOf(df.format(bmi));
-                mBmiTvValue.setText(bmi+"");
+               // double time = Double.valueOf(df.format(bmi));
+                String value = df.format(bmi);
+                mBmiTvValue.setText(value);
             }
 
             progress.dismiss();
@@ -478,13 +481,14 @@ public class MyHealth extends BaseActivity {
                 mBpTvValue.setText("-");
             }
 
-            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && TextUtils.isEmpty(weight) && weight.equalsIgnoreCase("null")) {
+            if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = weightInDouble / (heightInDouble * heightInDouble);
+                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
                 DecimalFormat df = new DecimalFormat("#.##");
-                bmi = Double.valueOf(df.format(bmi));
-                mBmiTvValue.setText(bmi+"");
+               // double time = Double.valueOf(df.format(bmi));
+                String value = df.format(bmi);
+                mBmiTvValue.setText(value);
             }
         }
 
