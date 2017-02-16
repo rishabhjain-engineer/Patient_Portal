@@ -315,7 +315,7 @@ public class BpActivity extends BaseActivity {
                     String fromdate = obj.optString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
-                    hmap.put("bp", bp);
+                    hmap.put("weight", bp);
                     hmap.put("fromdate", fromdate);
 
                     weight_contentlists.add(hmap);
