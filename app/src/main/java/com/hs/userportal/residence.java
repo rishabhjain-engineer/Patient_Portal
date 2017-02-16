@@ -94,7 +94,7 @@ public class residence extends FragmentActivity {
     private static int stno,month2,year2,day2,month1,year1,day1;
     private Calendar c;
     private int selection;
-    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue;
+    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue, mFinalFromDate, mFinalToDate;
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
     private ArrayList<String> years = new ArrayList<String>();
     ArrayList<String> years1 = new ArrayList<String>() ;
@@ -526,7 +526,7 @@ public class residence extends FragmentActivity {
 
             public void onClick(View v) {
 
-                try {
+               /* try {
 
                     final Calendar c = Calendar.getInstance();
                     int year = c.get(Calendar.YEAR);
@@ -555,12 +555,11 @@ public class residence extends FragmentActivity {
                     }
 
                 } catch (Exception e) {
-                }
+                }*/
 
 //city, country, state,add, pincode, house,from,to
-                if (from.getText().toString().equals("")
-                        ||city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")||add.getText().toString().equals("")
-                        ||house.getText().toString().equals("")  ||to.getText().toString().equals("")  ) {
+                if (city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")
+                        ||house.getText().toString().equals("")  ) {
                     alertDialog = new AlertDialog.Builder(residence.this).create();
 
                     // Setting Dialog Title
@@ -580,7 +579,7 @@ public class residence extends FragmentActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if (date2 != null && (date1.compareTo(date2) > 0
+                }/* else if (date2 != null && (date1.compareTo(date2) > 0
                         || date1.compareTo(date2) == 0)) {
 
                     alertDialog = new AlertDialog.Builder(residence.this).create();
@@ -646,7 +645,7 @@ public class residence extends FragmentActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if(!pincode.getText().toString().equals("")&&pincode.getText().toString().length()<4) {
+                }*/ else if(!pincode.getText().toString().equals("")&&pincode.getText().toString().length()<4) {
                     alertDialog = new AlertDialog.Builder(residence.this).create();
 
                     // Setting Dialog Title
@@ -669,6 +668,11 @@ public class residence extends FragmentActivity {
                     alertDialog.show();
                 }
                 else {
+
+
+                    mFinalFromDate = 01+"/"+mFromMonthValue+"/"+mFromYearValue;
+                    mFinalToDate = 02+"/"+mToMonthValue+"/"+mToYearValue;
+
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
 //city, country, state,add, pincode, house,from,to
@@ -683,7 +687,7 @@ public class residence extends FragmentActivity {
                     hmap.put("to", to.getText().toString());
                     toeditFieldlist.add(hmap);*/
                     String input;
-                    if(to.getText().toString().equals("")) {
+                    //if(to.getText().toString().equals("")) {
                         input = house.getText().toString() + "\n"
                                 + add.getText().toString() + "\n"
                                 + city.getText().toString() + ","
@@ -691,8 +695,8 @@ public class residence extends FragmentActivity {
                                 "\n"+country.getText().toString()
                                 + "-"
                                 + pincode.getText().toString() + "\n"
-                                + from.getText().toString();
-                    }else{
+                                + 01+"/"+mFromMonthValue+"/"+mFromYearValue;
+                   /* }else{
                         input = house.getText().toString() + "\n"
                                 + add.getText().toString() + "\n"
                                 + city.getText().toString() + ","
@@ -701,7 +705,7 @@ public class residence extends FragmentActivity {
                                 + pincode.getText().toString() + "\n"
                                 + from.getText().toString() + "-"
                                 + to.getText().toString();
-                    }
+                    }*/
                     if (null != input && input.length() > 0) {
 
                         if (m_listItems.size() == 0) {
@@ -859,8 +863,12 @@ public class residence extends FragmentActivity {
             stateName=state.getText().toString();
             CountryName=country.getText().toString();
             Pincode=pincode.getText().toString();
-            fromdate=from.getText().toString();
-            todate=to.getText().toString();
+            fromdate=01+"/"+mFromMonthValue+"/"+mFromYearValue;
+            todate=02+"/"+mToMonthValue+"/"+mToYearValue;
+            //todate=to.getText().toString();
+
+
+
 //city, country, state,add, pincode, house,from,to
             ghoom.show();
 			/*Work.this.runOnUiThread(new Runnable() {
