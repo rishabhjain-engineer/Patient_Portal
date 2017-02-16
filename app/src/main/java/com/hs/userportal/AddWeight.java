@@ -309,10 +309,6 @@ public class AddWeight extends BaseActivity {
                     weight = enter_add.getText().toString();
 
                 }
-                height = "";
-                /////////////////////////////////////////////////////
-                //todo put bloodpressure = " "
-                /////////////////////////////////////////////////////
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
@@ -521,23 +517,16 @@ public class AddWeight extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgressDialog.dismiss();
-
             ArrayAdapter hSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mHeightList);
             hSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mWeightLinkHeightSpinner.setAdapter(hSpinner);
-
-
-
-
             mWeightLinkHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     mHeightInValue = mHeightList.get(position);
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    //mWeightLinkHeightSpinner.setSelection(0);
                 }
             });
         }
