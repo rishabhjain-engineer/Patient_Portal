@@ -82,7 +82,7 @@ public class BmiActivity extends BaseActivity {
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
     private int maxYrange = 0;
-    private double mMaxWeight = 0;
+    private double mMaxBMI = 0;
     private JSONArray mJsonArrayToSend = new JSONArray();
     private Menu mBMIMenu;
 
@@ -321,35 +321,32 @@ public class BmiActivity extends BaseActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
+                    int heightInInt = obj.optInt("height");
                     String height = obj.getString("height");
-                    if (!TextUtils.isEmpty(weight)) {
-                        double weightInDouble = Double.parseDouble(weight);
-                        if (mMaxWeight <= weightInDouble) {
-                            mMaxWeight = weightInDouble;
-                        }
-                    }
                     String bmiValue = null;
-                    if(!TextUtils.isEmpty(height) && height.equalsIgnoreCase("0") && !TextUtils.isEmpty(weight)){
+                    if (!TextUtils.isEmpty(height) && heightInInt != 0 && !TextUtils.isEmpty(weight)) {
                         double weightInDouble = Double.parseDouble(weight);
                         double heightInDouble = Double.parseDouble(height);
-                        double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
+                        double bmi = ((weightInDouble) / (heightInDouble * heightInDouble) * 10000);
                         DecimalFormat df = new DecimalFormat("#.##");
                         // double time = Double.valueOf(df.format(bmi));
                         bmiValue = df.format(bmi);
-                    }
 
                     String fromdate = obj.getString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("fromdate", fromdate);
-                    if(bmiValue != null){
+                    if (bmiValue != null) {
+                        double bmiIndouble = Double.parseDouble(bmiValue);
+                        if (mMaxBMI <= bmiIndouble) {
+                            mMaxBMI = bmiIndouble;
+                        }
                         hmap.put("weight", bmiValue);
                         weight_contentlists.add(hmap);
                     }
                     chartValues.add(weight);
                     // chartDates.add("'" + fromdate + "'");
                     chartDates.add("");
-
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     Date date = null;
                     try {
@@ -360,30 +357,18 @@ public class BmiActivity extends BaseActivity {
                     long epoch = date.getTime();
                     JSONArray innerJsonArray = new JSONArray();
                     innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
-
+                    innerJsonArray.put(bmiValue);
                     jsonArray1.put(innerJsonArray);
                 }
+               }
                 JSONObject outerJsonObject = new JSONObject();
-                outerJsonObject.put("key", "Weight(kg)");
+                outerJsonObject.put("key", "BMI");
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend.put(outerJsonObject);
                 Collections.reverse(chartValues);
-
-             /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
-                for(int i=0;i<weight_contentlists.size();i++){
-                    chartValues.add(weight_contentlists.get(i).get("weight"));
-                    chartDates.add(String.valueOf(i+1));
-                }
-                Collections.reverse(chartValues);*/
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 
@@ -485,7 +470,7 @@ public class BmiActivity extends BaseActivity {
 
         @JavascriptInterface
         public int getDouble() {
-            int i = (int) mMaxWeight;
+            int i = (int) mMaxBMI;
             return (i + 20);
         }
     }
