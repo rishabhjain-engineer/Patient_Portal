@@ -5,9 +5,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -293,6 +296,7 @@ public class BmiActivity extends BaseActivity {
             weight_graphView.loadUrl("file:///android_asset/html/chart.html");
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
@@ -317,18 +321,31 @@ public class BmiActivity extends BaseActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
+                    String height = obj.getString("height");
                     if (!TextUtils.isEmpty(weight)) {
                         double weightInDouble = Double.parseDouble(weight);
                         if (mMaxWeight <= weightInDouble) {
                             mMaxWeight = weightInDouble;
                         }
                     }
+                    String bmiValue = null;
+                    if(!TextUtils.isEmpty(height) && height.equalsIgnoreCase("0") && !TextUtils.isEmpty(weight)){
+                        double weightInDouble = Double.parseDouble(weight);
+                        double heightInDouble = Double.parseDouble(height);
+                        double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        // double time = Double.valueOf(df.format(bmi));
+                        bmiValue = df.format(bmi);
+                    }
+
                     String fromdate = obj.getString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
-                    hmap.put("weight", weight);
                     hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
+                    if(bmiValue != null){
+                        hmap.put("weight", bmiValue);
+                        weight_contentlists.add(hmap);
+                    }
                     chartValues.add(weight);
                     // chartDates.add("'" + fromdate + "'");
                     chartDates.add("");
