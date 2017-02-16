@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -91,6 +92,7 @@ public class Work extends FragmentActivity {
     private String checkedit="";
     private int selection;
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
+    private String mFromMonth, mFromYear, mToMonth, mToYear, mFinalFromDate, mFinalToDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,7 @@ public class Work extends FragmentActivity {
         ArrayAdapter monthArrayAdapter = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
         monthArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fromMonthSpinner.setAdapter(monthArrayAdapter);
-        ArrayList<String> years = new ArrayList<String>();
+        final ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear; i++) {
             years.add(Integer.toString(i));
@@ -129,9 +131,34 @@ public class Work extends FragmentActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         fromYearSpinner.setAdapter(adapter);
 
+        fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromMonth = monthArray[position];
+                Log.i("ayaz", "mFromMonth: "+mFromMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        fromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromYear = years.get(position);
+                Log.i("ayaz", "mFromYear: "+mFromYear);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        ///////////////////////////////////////
         Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
         Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
-
         ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
         monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         toMonthSpinner.setAdapter(monthArrayAdapter1);
@@ -142,6 +169,31 @@ public class Work extends FragmentActivity {
         }
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         toYesrSpinner.setAdapter(adapter1);
+        toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToMonth = monthArray[position];
+                Log.i("ayaz", "mToMonth: "+mToMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        toYesrSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToYear = years.get(position);
+                Log.i("ayaz", "mToYear: "+mToYear);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 		from = (EditText) findViewById(R.id.etName);
 		to = (EditText) findViewById(R.id.editText9);
@@ -404,7 +456,7 @@ public class Work extends FragmentActivity {
 
             public void onClick(View v) {
 
-                try {
+               /* try {
                     final Calendar c = Calendar.getInstance();
                     int year = c.get(Calendar.YEAR);
                     int month = c.get(Calendar.MONTH);
@@ -433,10 +485,9 @@ public class Work extends FragmentActivity {
 
                 } catch (Exception e) {
                 }
+*/
 
-
-                if (from.getText().toString().equals("")
-                        ||ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("") ||to.getText().toString().equals("") ) {
+                if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
 
                     // Setting Dialog Title
@@ -456,7 +507,7 @@ public class Work extends FragmentActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if (date2 != null && (date1.compareTo(date2) > 0
+                } /*else if (date2 != null && (date1.compareTo(date2) > 0
                         || date1.compareTo(date2) == 0)) {
 
                     alertDialog = new AlertDialog.Builder(Work.this).create();
@@ -522,7 +573,7 @@ public class Work extends FragmentActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                } else if(!pi.getText().toString().equals("")&&pi.getText().toString().length()<4) {
+                }*/ else if(!pi.getText().toString().equals("")&&pi.getText().toString().length()<4) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
                     // Setting Dialog Title
                     alertDialog.setTitle("Message");
@@ -544,6 +595,8 @@ public class Work extends FragmentActivity {
                     alertDialog.show();
                 }
                 else {
+                    mFinalFromDate = 01+"/"+mFromMonth+"/"+mFromYear;
+                    mFinalToDate = 02+"/"+mToMonth+"/"+mToYear;
 
                    /* lv.setAdapter(m_adapter);
                     HashMap hmap=new HashMap<String, String>();
@@ -557,24 +610,24 @@ public class Work extends FragmentActivity {
                     hmap.put("to", to.getText().toString());
                     toeditFieldlist.add(hmap);*/
                     String input;
-                    if(!to.getText().toString().equals("")) {
+                    //if(!to.getText().toString().equals("")) {
                         input = wo.getText().toString() + "\n"
                                 + ad.getText().toString() + "\n"
                                 + ci.getText().toString() + ","
                                 + st.getText().toString() +  "\n"
                                 +co.getText().toString() + "-"
                                 + pi.getText().toString() + "\n"
-                                + from.getText().toString() + "-"
-                                + to.getText().toString();
-                    }else{
+                                + mFinalFromDate + "-"
+                                + mFinalToDate;
+                   /* }else{
                         input = wo.getText().toString() + "\n"
                                 + ad.getText().toString() + "\n"
                                 + ci.getText().toString() + ","
                                 + st.getText().toString() +  "\n"+
                                 co.getText().toString() + "-"
                                 + pi.getText().toString() + "\n"
-                                + from.getText().toString();
-                    }
+                                +  mFinalFromDate;
+                    }*/
                     if (null != input && input.length() > 0) {
 
                         if (m_listItems.size() == 0) {
@@ -734,8 +787,11 @@ public class Work extends FragmentActivity {
             stateName=st.getText().toString();
             CountryName=co.getText().toString();
             Pincode=pi.getText().toString();
-            fromdate=from.getText().toString();
-            todate=to.getText().toString();
+            //fromdate=from.getText().toString();
+            //todate=to.getText().toString();
+
+            fromdate= 01+"/"+mFromMonth+"/"+mFromYear;
+            todate=02+"/"+mToMonth+"/"+mToYear;
 
             roleValue = mRoleEt.getEditableText().toString();
             designationValue = mDesignationEt.getEditableText().toString();
