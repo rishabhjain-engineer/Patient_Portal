@@ -38,6 +38,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,8 +94,12 @@ public class residence extends FragmentActivity {
     private static int stno,month2,year2,day2,month1,year1,day1;
     private Calendar c;
     private int selection;
+    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue;
+    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
+    private ArrayList<String> years = new ArrayList<String>();
+    ArrayList<String> years1 = new ArrayList<String>() ;
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -148,6 +153,144 @@ public class residence extends FragmentActivity {
             new Authentication(residence.this, "residence", "").execute();
             // new BackgroundProcess().execute();
         }
+
+
+        Spinner fromMonthSpinner = (Spinner)findViewById(R.id.from_month);
+        Spinner fromYearSpinner = (Spinner)findViewById(R.id.from_year);
+
+
+        Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
+        Spinner toYearSpinner = (Spinner)findViewById(R.id.to_year);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         // FROM MONTH
+
+
+        int thisYear = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        fromYearSpinner.setAdapter(adapter);
+
+
+
+        ArrayAdapter monthAdapter = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromMonthSpinner.setAdapter(monthAdapter);
+
+        fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromMonthValue = monthArray[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        fromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromYearValue = years.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // To Month
+
+
+
+        int thisYear1 = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.YEAR);
+        for (int i = 1900; i <= thisYear1; i++) {
+            years1.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years1);
+        toYearSpinner.setAdapter(adapter1);
+
+
+
+        ArrayAdapter monthAdapter1 = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        monthAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        toMonthSpinner.setAdapter(monthAdapter1);
+
+        toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToMonthValue = monthArray[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        toYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToYearValue = years1.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+       /* ArrayAdapter yearArrayAdapter = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        yearArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromMonthSpinner.setAdapter(yearArrayAdapter);
+
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        fromYearSpinner.setAdapter(adapter);
+
+
+
+
+        Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
+        Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
+
+        ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        toMonthSpinner.setAdapter(monthArrayAdapter1);
+        ArrayList<String> years1 = new ArrayList<String>();
+        int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear1; i++) {
+            years1.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        toYesrSpinner.setAdapter(adapter1);
+*/
+
+
+
+
+
+
+
+
+
+
         country.setInputType(InputType.TYPE_NULL);
         country.setOnTouchListener(new View.OnTouchListener() {
 

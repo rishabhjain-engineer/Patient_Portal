@@ -178,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L2"
-
+            android:visibility="gone"
             android:layout_marginTop="5dp">
 
             <TextView
@@ -214,8 +214,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L2"
-
-            >
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/editText8"
@@ -278,7 +277,7 @@
                     <Spinner
                         android:id="@+id/from_year"
                         style="@style/SpinnerTheme"
-                        android:layout_width="60dp"
+                        android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="5dp"
                         android:spinnerMode="dropdown"
@@ -322,7 +321,7 @@
                         <Spinner
                             android:id="@+id/to_year"
                             style="@style/SpinnerTheme"
-                            android:layout_width="60dp"
+                            android:layout_width="80dp"
                             android:layout_height="30dp"
                             android:layout_marginLeft="5dp"
                             android:spinnerMode="dropdown"
@@ -331,6 +330,7 @@
                     </LinearLayout>
 
                     <CheckBox
+                        android:visibility="gone"
                         android:id="@+id/cbPresentWork"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
