@@ -52,6 +52,7 @@
     <TextView
         android:id="@+id/designation_tv"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:text="New Text" />
@@ -62,5 +63,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="7dp"
         android:layout_marginLeft="2dp"
+        android:visibility="gone"
         android:text="New Text" />
 </LinearLayout>
