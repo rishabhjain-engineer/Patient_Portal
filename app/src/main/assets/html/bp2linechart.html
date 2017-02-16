@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.css" />
+  
+  <script data-require="d3@3.3.11" data-semver="3.3.11" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.js"></script>
+  <script data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+   
+ </head>
+<style>
+
+.nv-point {stroke-opacity: 1 !important;stroke-width: 10px;fill-opacity: 1 !important;}
+.bullet { font: 10px sans-serif; }
+.bullet .marker { stroke: #000; stroke-width: 2px; }
+.bullet .tick line { stroke: #666; stroke-width: .5px; }
+.bullet .range.s0 { fill: #eee; }
+.bullet .range.s1 { fill: #ddd; }
+.bullet .range.s2 { fill: #ccc; }
+.bullet .measure.s0 { fill: steelblue; }
+.bullet .title { font-size: 14px; font-weight: bold; }
+.bullet .subtitle { fill: #999;}
+
+.nvd3.nv-wrap.nv-lineChart {
+    float: left;
+    width: 76% !important;
+}
+
+</style>
+   
+<body>
+  <div id="chart" style="height:500px">
+    <svg></svg>
+  </div>    
+  <script>   
+      var data1 = [
+  {
+
+      "key": "BP Top",
+      "values": [
+       [1399787880000, 120],
+       [1418291820000, 150],
+       [1427251500000, 105],
+       [1447046040000, 115],
+       [1447669500000, 111],
+       [1448085600000, 112],
+       [1448504100000, 113],
+       [1450418400000, 114],
+       [1452229200000, 118],
+       [1454559095000, 120],
+       [1468195946000, 120],
+       [1481531373000, 121]
+      ]
+  },
+  {
+
+      "key": "BP Bottom",
+      "values": [
+       [1399787880000, 80],
+       [1418291820000, 90],
+       [1427251500000, 75],
+       [1447046040000, 60],
+       [1447669500000, 95],
+       [1448085600000, 80],
+       [1448504100000, 80],
+       [1450418400000, 78],
+       [1452229200000, 82],
+       [1454559095000, 92],
+       [1468195946000, 82],
+       [1481531373000, 85]
+      ]
+  }];
+          
+    		nv.addGraph(function () {
+              var chart = nv.models.lineChart()//.interpolate('monotone')              
+              //var chart = nv.models.cumulativeLineChart()
+                //.margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                .x(function (d) { return d[0] })
+                .y(function (d) { return d[1] })  
+                .color(d3.scale.category10().range())
+                //.transitionDuration(300)
+                .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+                .showLegend(true)
+                .showYAxis(true)
+                //.forceY([50, 500])
+                //.forceY([0, 100])                
+                /*.tooltipContent(
+                function (key, x, y, e) {
+                var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                return '<div id="tooltipcustom">' + '<p id="head">' 
+                + days[new Date(e.point[0]).getDay()] + ', ' + new Date(e.point[0]).getDate() + ' ' + months[new Date(e.point[0]).getMonth()] + ' ' + new Date(e.point[0]).getFullYear() 
+                + '</p>' + '<p> <strong>' 
+                + y 
+            	//+ ' ' + new Date(e.point[0]).getHours().toString() + ':' + new Date(e.point[0]).getMinutes().toString() + ':' + (new Date(e.point[0]).getSeconds().toString() == '0' ? '00' : new Date(e.point[0]).getSeconds().toString())
+                + '</strong> </p></div>'
+                })*/;                
+
+              chart.xAxis
+                //.tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
+                .tickFormat(function (d) { 
+                    return d3.time.format("%d %b %Y")(new Date(d))
+                });
+				// To plot all X values
+                //.tickFormat(d3.format(',r'));
+
+              chart.yAxis
+             // .tickFormat(d3.format('.2f'))
+                .tickFormat(function (d) {
+                    return d3.format('')(d)
+                });
+        
+              d3.select('#chart svg')
+                .datum(data1)
+                .call(chart);
+                 
+              nv.utils.windowResize(chart.update);
+
+              return chart;
+
+          }/*,
+          
+          function (chart) {
+              x = chart;
+              var x1 = chart.xScale()(1122782400000);
+              var x2 = chart.xScale()(1251691200000);
+              var height = chart.yAxis.range()[0];
+              var y2 = chart.yScale()(80);
+              var y1 = chart.yScale()(120);
+              var width = chart.xAxis.range()[1];
+              d3.select('.nv-wrap')
+                .append('rect')
+                .attr('y', y1)
+                .attr('height', y2 - y1)
+                .style('fill', '#2b8811')
+                .style('opacity', 0.2)
+                .attr('x', 0)
+                .attr('width', width);
+          }*/
+        );   
+
+	$(document).ready(function () {
+         var child1 = $(document.getElementsByTagName('svg')).children().children()[0]
+         var child2 = $(document.getElementsByTagName('svg')).children().children()[1]
+         $(document.getElementsByTagName('svg')).children().children().remove()
+         $(document.getElementsByTagName('svg')).children().append(child2)
+         $(document.getElementsByTagName('svg')).children().append(child1)
+     })
+		  
+  </script>
+</body>
+</html>
