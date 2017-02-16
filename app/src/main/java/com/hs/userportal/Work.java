@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -91,6 +92,7 @@ public class Work extends FragmentActivity {
     private String checkedit="";
     private int selection;
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
+    private String mFromMonth, mFromYear, mToMonth, mToYear, mFinalFromDate, mFinalToDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,7 @@ public class Work extends FragmentActivity {
         ArrayAdapter monthArrayAdapter = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
         monthArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fromMonthSpinner.setAdapter(monthArrayAdapter);
-        ArrayList<String> years = new ArrayList<String>();
+        final ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear; i++) {
             years.add(Integer.toString(i));
@@ -129,9 +131,34 @@ public class Work extends FragmentActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         fromYearSpinner.setAdapter(adapter);
 
+        fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromMonth = monthArray[position];
+                Log.i("ayaz", "mFromMonth: "+mFromMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        fromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromYear = years.get(position);
+                Log.i("ayaz", "mFromYear: "+mFromYear);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        ///////////////////////////////////////
         Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
         Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
-
         ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
         monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         toMonthSpinner.setAdapter(monthArrayAdapter1);
@@ -142,6 +169,31 @@ public class Work extends FragmentActivity {
         }
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         toYesrSpinner.setAdapter(adapter1);
+        toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToMonth = monthArray[position];
+                Log.i("ayaz", "mToMonth: "+mToMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        toYesrSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToYear = years.get(position);
+                Log.i("ayaz", "mToYear: "+mToYear);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 		from = (EditText) findViewById(R.id.etName);
 		to = (EditText) findViewById(R.id.editText9);
