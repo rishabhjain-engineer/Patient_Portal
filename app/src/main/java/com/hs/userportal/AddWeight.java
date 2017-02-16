@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +29,14 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import ui.BaseActivity;
 import ui.BpActivity;
@@ -49,6 +55,7 @@ public class AddWeight extends BaseActivity {
     private boolean mIsFtInchValue = true, mIsHeight, mIsPound = true;
     private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
+    private List<String> mHeightList = new ArrayList<>();
     private Spinner mHeightFtSpinner, mHeightInchSpinner;
 
     @Override
@@ -119,7 +126,7 @@ public class AddWeight extends BaseActivity {
             mBpContainerLl.setVisibility(View.GONE);
 
 
-        } else if (htype.equals("weight")){
+        } else if (htype.equals("weight")) {
           /*  mIsHeight = false;*/
             enter_add.setHint("Enter Weight");
             weight.setText("Weight :");
@@ -127,9 +134,9 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.VISIBLE);
             mBpContainerLl.setVisibility(View.GONE);
+            new GetHeightAsyncTask().execute();
 
-
-        }   else  {
+        } else {
           /*  mIsHeight = false;*/
             mActionBar.setTitle("Enter Blood Pressure");
             mHeightContainer.setVisibility(View.GONE);
@@ -222,11 +229,9 @@ public class AddWeight extends BaseActivity {
             public void onClick(View v) {
 
 
-                if(enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "")
-                {
-                    Toast.makeText(AddWeight.this, "Fill all the fields" ,Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "") {
+                    Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
+                } else {
                     new submitchange().execute();
                 }
                 // user is in Weight class
@@ -288,7 +293,7 @@ public class AddWeight extends BaseActivity {
                 /////////////////////////////////////////
                 //todo put bloodpressure = " "
                 ////////////////////////////////////////
-            } else if(htype.equalsIgnoreCase("weight")){
+            } else if (htype.equalsIgnoreCase("weight")) {
 
                 if (mIsPound == true) {
                     tempPound = enter_add.getText().toString();
@@ -305,9 +310,9 @@ public class AddWeight extends BaseActivity {
                 //todo put bloodpressure = " "
                 /////////////////////////////////////////////////////
             } else {
-               upperBp = mBpTopNumberEditText.getEditableText().toString();
+                upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
-                bpTosend = lowerBp + ","+upperBp;
+                bpTosend = lowerBp + "," + upperBp;
             }
             fromdate = lasstCheckedDate.getText().toString();
 
@@ -325,7 +330,7 @@ public class AddWeight extends BaseActivity {
                     Intent in = new Intent(AddWeight.this, Height.class);
                     in.putExtra("id", id);
                     startActivity(in);
-                } else if(htype.equalsIgnoreCase("weight")){
+                } else if (htype.equalsIgnoreCase("weight")) {
                     Intent in = new Intent(AddWeight.this, Weight.class);
                     in.putExtra("id", id);
                     startActivity(in);
@@ -458,17 +463,63 @@ public class AddWeight extends BaseActivity {
             Intent in = new Intent(AddWeight.this, Height.class);
             in.putExtra("id", id);
             startActivity(in);
-        } else if(htype.equalsIgnoreCase("weight")){
+        } else if (htype.equalsIgnoreCase("weight")) {
             Intent in = new Intent(AddWeight.this, Weight.class);
             in.putExtra("id", id);
             startActivity(in);
-        }
-
-        else {
+        } else {
             Intent in = new Intent(AddWeight.this, BpActivity.class);
             in.putExtra("id", id);
             startActivity(in);
         }
         finish();
+    }
+
+
+    private class GetHeightAsyncTask extends AsyncTask<Void, Void, Void> {
+        private JSONObject receiveData1;
+        private ProgressDialog mProgressDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(AddWeight.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+                sendData1.put("UserId", id);
+                sendData1.put("profileParameter", "health");
+                sendData1.put("htype", "weight");
+                receiveData1 = service.patienBasicDetails(sendData1);
+                String data = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.getJSONArray("Table");
+                mHeightList.clear();
+                JSONArray jsonArray1 = new JSONArray();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    String height = obj.getString("height");
+                    mHeightList.add(height);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mProgressDialog.dismiss();
+            ArrayAdapter inSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mInchValues);
+            ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mHeightInchSpinner.setAdapter(inSpinner);
+        }
     }
 }
