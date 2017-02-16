@@ -333,16 +333,16 @@ public class BpActivity extends BaseActivity {
                     JSONArray innerJsonArrayLowerBp = new JSONArray();
                     JSONArray innerJsonArrayTopBP = new JSONArray();
                     innerJsonArrayLowerBp.put(epoch);
-                    innerJsonArrayLowerBp.put(bpArray[1]);
-                    jsonArrayTopBp.put(innerJsonArrayLowerBp);
+                    innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                    jsonArrayLowerBp.put(innerJsonArrayLowerBp);
 
                     innerJsonArrayTopBP.put(epoch);
-                    innerJsonArrayTopBP.put(bpArray[0]);
-                    jsonArrayLowerBp.put(innerJsonArrayTopBP);
+                    innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                    jsonArrayTopBp.put(innerJsonArrayTopBP);
                 }
                 JSONObject outerJsonObjectUpperBp = new JSONObject();
                 outerJsonObjectUpperBp.put("key", "BP top");
-                outerJsonObjectUpperBp.put("values", jsonArrayLowerBp);
+                outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
                 mJsonArrayToSend.put(outerJsonObjectUpperBp);
 
                 JSONObject outerJsonObjectLowerBp = new JSONObject();
