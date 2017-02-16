@@ -11,57 +11,94 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:orientation="vertical"
+        android:visibility="visible">
 
-        <TextView
-            android:id="@+id/weight"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/enter_weight_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Weight :"
-            android:textColor="@android:color/black"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
 
-        <Switch
-            android:id="@+id/switch_weight"
-            style="@android:style/Animation"
-            android:layout_width="70dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="15dp"
-            android:showText="true"
-            android:switchMinWidth="30dp"
-            android:textOff="lbs"
-            android:textOn="Kg"
-            android:thumb="@drawable/customswitchselector"
-            android:track="@drawable/custom_track" />
+            <TextView
+                android:id="@+id/weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight :"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/enter_add"
-            android:layout_width="wrap_content"
+            <Switch
+                android:id="@+id/switch_weight"
+                style="@android:style/Animation"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="15dp"
+                android:showText="true"
+                android:switchMinWidth="30dp"
+                android:textOff="lbs"
+                android:textOn="Kg"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track" />
+
+            <EditText
+                android:id="@+id/enter_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/edittext_corner"
+                android:drawablePadding="15dp"
+                android:ellipsize="start"
+                android:hint="Enter Weight "
+                android:inputType="numberDecimal|numberSigned"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/switch_weight_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="lbs"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:id="@+id/link_height_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="2dp"
-            android:background="@drawable/edittext_corner"
-            android:drawablePadding="15dp"
-            android:ellipsize="start"
-            android:hint="Enter Weight "
-            android:inputType="numberDecimal|numberSigned"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/switch_weight_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="lbs"
-            android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/link_height_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="Link weight with height"
+                android:layout_gravity="center"/>
+
+            <EditText
+                android:id="@+id/link_height_edittext"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:hint="enter height"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_gravity="center"
@@ -203,7 +240,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/bp_container"
