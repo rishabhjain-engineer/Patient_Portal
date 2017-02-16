@@ -289,7 +289,7 @@ public class BpActivity extends BaseActivity {
                 e.printStackTrace();
                 progress.dismiss();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
+            weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
         }
 
         @Override
