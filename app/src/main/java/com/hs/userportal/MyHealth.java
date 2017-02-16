@@ -385,7 +385,7 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
+                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);
@@ -484,7 +484,7 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
+                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);
