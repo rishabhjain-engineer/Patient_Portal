@@ -23,7 +23,9 @@
         -->
         <item name="android:textSize">5sp</item>
     </style>
-
+    <style name="SpinnerTheme" parent="android:Widget.Spinner">
+        <item name="android:background">@drawable/bg_spinner</item>
+    </style>
     <style name="Theme.MyAppTheme" parent="AppBaseTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>

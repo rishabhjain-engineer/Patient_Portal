@@ -56,7 +56,7 @@ public class AddWeight extends BaseActivity {
     private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
     private List<String> mHeightList = new ArrayList<>();
-    private Spinner mHeightFtSpinner, mHeightInchSpinner;
+    private Spinner mHeightFtSpinner, mHeightInchSpinner, mWeightLinkHeightSpinner;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -64,6 +64,7 @@ public class AddWeight extends BaseActivity {
         setContentView(R.layout.weight_add);
         setupActionBar();
 
+        mWeightLinkHeightSpinner = (Spinner) findViewById(R.id.link_height_spinner);
 
         mHeightContainer = (LinearLayout) findViewById(R.id.height_container_layout);
         mSwitchHeight = (Switch) findViewById(R.id.switch_height);
@@ -186,12 +187,15 @@ public class AddWeight extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
 
+                    mWeightUnitTextView.setText("lbs");
+                    mIsPound = true;
+
+                } else {
+
                     mWeightUnitTextView.setText("Kg");
                     mIsPound = false;
 
-                } else {
-                    mWeightUnitTextView.setText("lbs");
-                    mIsPound = true;
+
                 }
             }
         });
@@ -495,7 +499,7 @@ public class AddWeight extends BaseActivity {
             try {
                 sendData1.put("UserId", id);
                 sendData1.put("profileParameter", "health");
-                sendData1.put("htype", "weight");
+                sendData1.put("htype", "height");
                 receiveData1 = service.patienBasicDetails(sendData1);
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
@@ -517,9 +521,25 @@ public class AddWeight extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgressDialog.dismiss();
-            ArrayAdapter inSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mInchValues);
-            ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mHeightInchSpinner.setAdapter(inSpinner);
+
+            ArrayAdapter hSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mHeightList);
+            hSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mWeightLinkHeightSpinner.setAdapter(hSpinner);
+
+
+
+
+            mWeightLinkHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    mHeightInValue = mHeightList.get(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    //mWeightLinkHeightSpinner.setSelection(0);
+                }
+            });
         }
     }
 }
