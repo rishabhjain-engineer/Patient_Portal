@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,13 +28,10 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import ui.BaseActivity;
@@ -47,12 +43,12 @@ public class AddWeight extends BaseActivity {
     private static EditText lasstCheckedDate;
     private Button bsave;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
-    private String id, htype, mHeightFtValue, mHeightInValue;
+    private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue;
     private Services service;
     private static int cyear, month, day;
     private Switch mSwitchWeight, mSwitchHeight;
     private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
-    private boolean mIsFtInchValue = true, mIsHeight, mIsPound = true;
+    private boolean mIsFtInchValue = true, mIsHeight, mIsPound = false;
     private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
     private List<String> mHeightList = new ArrayList<>();
@@ -65,7 +61,6 @@ public class AddWeight extends BaseActivity {
         setupActionBar();
 
         mWeightLinkHeightSpinner = (Spinner) findViewById(R.id.link_height_spinner);
-
         mHeightContainer = (LinearLayout) findViewById(R.id.height_container_layout);
         mSwitchHeight = (Switch) findViewById(R.id.switch_height);
         mHeightUnitFtTextView = (TextView) findViewById(R.id.height_unit_ft);
@@ -284,6 +279,7 @@ public class AddWeight extends BaseActivity {
 
             ghoom.show();
 
+
             if (htype.equals("height")) {
                 if (mIsFtInchValue == true) {
 
@@ -293,11 +289,9 @@ public class AddWeight extends BaseActivity {
                 } else {
                     height = mHeightCmEditText.getText().toString();
                 }
-                weight = "";
-                /////////////////////////////////////////
-                //todo put bloodpressure = " "
-                ////////////////////////////////////////
+
             } else if (htype.equalsIgnoreCase("weight")) {
+
 
                 if (mIsPound == true) {
                     tempPound = enter_add.getText().toString();
@@ -307,7 +301,7 @@ public class AddWeight extends BaseActivity {
 
                 } else {
                     weight = enter_add.getText().toString();
-
+                    height = mHeightLinkedValue;
                 }
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
@@ -479,6 +473,7 @@ public class AddWeight extends BaseActivity {
     private class GetHeightAsyncTask extends AsyncTask<Void, Void, Void> {
         private JSONObject receiveData1;
         private ProgressDialog mProgressDialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -523,8 +518,9 @@ public class AddWeight extends BaseActivity {
             mWeightLinkHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    mHeightInValue = mHeightList.get(position);
+                    mHeightLinkedValue = mHeightList.get(position);
                 }
+
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
