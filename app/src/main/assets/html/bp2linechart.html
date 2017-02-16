@@ -72,6 +72,8 @@
        [1481531373000, 85]
       ]
   }];
+
+  var values = JSON.parse(Interface.passDataToHtml());
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -113,7 +115,7 @@
                 });
         
               d3.select('#chart svg')
-                .datum(data1)
+                .datum(values)
                 .call(chart);
                  
               nv.utils.windowResize(chart.update);
