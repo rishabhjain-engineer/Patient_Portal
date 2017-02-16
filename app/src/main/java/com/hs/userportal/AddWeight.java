@@ -58,6 +58,7 @@ public class AddWeight extends BaseActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
+        service = new Services(AddWeight.this);
         setupActionBar();
 
         mWeightLinkHeightSpinner = (Spinner) findViewById(R.id.link_height_spinner);
@@ -141,7 +142,7 @@ public class AddWeight extends BaseActivity {
             mBpContainerLl.setVisibility(View.VISIBLE);
         }
 
-        service = new Services(AddWeight.this);
+
 
 
         ArrayAdapter ftSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mfeetValues);
