@@ -3,6 +3,7 @@ package adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,13 @@ public class Custom_profile_adapter extends BaseAdapter {
                 top4.setText(list.get(position).get("country"));
             }
             top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
-            role.setText(list.get(position).get("role"));
-            designation.setText(list.get(position).get("designation"));
+            if(!TextUtils.isEmpty(list.get(position).get("role"))){
+                role.setText(list.get(position).get("role"));
+            }
+            if(!TextUtils.isEmpty(list.get(position).get("designation"))){
+                designation.setText(list.get(position).get("designation"));
+            }
+
 
         }else  if(whichactivity.equalsIgnoreCase("Residence")){
 

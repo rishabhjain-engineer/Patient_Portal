@@ -107,10 +107,7 @@ public class BpActivity extends BaseActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(BpActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             new Authentication(BpActivity.this, "bp", "").execute();
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
@@ -167,16 +164,12 @@ public class BpActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(BpActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-
             progress.show();
-
-
         }
 
         protected void onPostExecute(Void result) {
@@ -299,37 +292,34 @@ public class BpActivity extends BaseActivity {
 
                 sendData1.put("UserId", id);
                 sendData1.put("profileParameter", "health");
-                sendData1.put("htype", "weight");
+                sendData1.put("htype", "bp");
                 receiveData1 = service.patienBasicDetails(sendData1);
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
 
-
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
 
-                JSONArray jsonArray1 = new JSONArray();
+
+                JSONArray jsonArrayLowerBp = new JSONArray();
+                JSONArray jsonArrayTopBp = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
-                    String PatientHistoryId = obj.getString("PatientHistoryId");
-                    String ID = obj.getString("ID");
-                    String weight = obj.getString("weight");
-                    if (!TextUtils.isEmpty(weight)) {
-                        double weightInDouble = Double.parseDouble(weight);
-                        if (mMaxWeight <= weightInDouble) {
-                            mMaxWeight = weightInDouble;
-                        }
-                    }
-                    String fromdate = obj.getString("fromdate");
+                    String PatientHistoryId = obj.optString("PatientHistoryId");
+                    String ID = obj.optString("ID");
+                    String bp = obj.optString("bp");
+
+                    String bpArray[] = bp.split(",");
+                    String fromdate = obj.optString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
-                    hmap.put("weight", weight);
+                    hmap.put("bp", bp);
                     hmap.put("fromdate", fromdate);
+
                     weight_contentlists.add(hmap);
-                    chartValues.add(weight);
-                    // chartDates.add("'" + fromdate + "'");
+                    chartValues.add(bp);
                     chartDates.add("");
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -340,16 +330,26 @@ public class BpActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
+                    JSONArray innerJsonArrayLowerBp = new JSONArray();
+                    JSONArray innerJsonArrayTopBP = new JSONArray();
+                    innerJsonArrayLowerBp.put(epoch);
+                    innerJsonArrayLowerBp.put(bpArray[1]);
+                    jsonArrayTopBp.put(innerJsonArrayLowerBp);
 
-                    jsonArray1.put(innerJsonArray);
+                    innerJsonArrayTopBP.put(epoch);
+                    innerJsonArrayTopBP.put(bpArray[0]);
+                    jsonArrayLowerBp.put(innerJsonArrayTopBP);
                 }
-                JSONObject outerJsonObject = new JSONObject();
-                outerJsonObject.put("key", "Weight(kg)");
-                outerJsonObject.put("values", jsonArray1);
-                mJsonArrayToSend.put(outerJsonObject);
+                JSONObject outerJsonObjectUpperBp = new JSONObject();
+                outerJsonObjectUpperBp.put("key", "BP top");
+                outerJsonObjectUpperBp.put("values", jsonArrayLowerBp);
+                mJsonArrayToSend.put(outerJsonObjectUpperBp);
+
+                JSONObject outerJsonObjectLowerBp = new JSONObject();
+                outerJsonObjectLowerBp.put("key", "BP bottom");
+                outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
+                mJsonArrayToSend.put(outerJsonObjectLowerBp);
+
                 Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
@@ -359,13 +359,8 @@ public class BpActivity extends BaseActivity {
                 }
                 Collections.reverse(chartValues);*/
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 
