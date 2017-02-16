@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class Authentication extends AsyncTask<Void, Void, Void> {
+public class Authentication extends AsyncTask<Void, Void, Void> {
 	private Activity context;
 	private String authentication="";
 	private String whichbtn,activityname;
