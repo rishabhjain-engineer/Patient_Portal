@@ -93,7 +93,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 
 @SuppressLint("NewApi")
-public class update extends AppCompatActivity {
+public class update extends BaseActivity {
 
 
     private TextView email_varifyid, contact_varifyid;
@@ -1742,6 +1742,23 @@ public class update extends AppCompatActivity {
         dialog.show();
     }
 
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
+
+
     /**
      * Method to check permission
      */
@@ -1775,24 +1792,10 @@ public class update extends AppCompatActivity {
                 takePhoto();
             } else {
                 //Permission not granted
-                Toast.makeText(update.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void takePhoto() {
-        File photo = null;
-        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-        } else {
-            photo = new File(getCacheDir(), "test.jpg");
-        }
-        if (photo != null) {
-            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-            Imguri = Uri.fromFile(photo);
-            startActivityForResult(intent1, PICK_FROM_CAMERA);
-        }
-    }
 
 }

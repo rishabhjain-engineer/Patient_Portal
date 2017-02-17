@@ -103,7 +103,9 @@
 
             android:windowSoftInputMode="stateHidden" />
 
-        <activity android:name="com.hs.userportal.update" />
+        <activity
+            android:name="com.hs.userportal.update"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
 
        <!-- <activity
             android:name=".ViewOrderFiles"
