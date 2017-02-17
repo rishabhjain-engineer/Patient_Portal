@@ -51,7 +51,7 @@
             android:id="@+id/role_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Role:"
+            android:text="Technology"
             android:textColor="@android:color/black" />
 
         <EditText
