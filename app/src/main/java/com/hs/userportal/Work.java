@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,11 +17,14 @@ import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -47,13 +51,16 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
+import ui.ProfileContainerActivity;
 
-public class Work extends FragmentActivity {
+public class Work extends BaseActivity {
 
     private AlertDialog alertDialog, alert;
     private static int month2,year2,day2,month1,year1,day1;
@@ -99,6 +106,8 @@ public class Work extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.worknew);
+        setupActionBar();
+        mActionBar.setTitle("Work");
 
          c = Calendar.getInstance();
         year2 = c.get(Calendar.YEAR);
@@ -128,6 +137,7 @@ public class Work extends FragmentActivity {
         for (int i = 1900; i <= thisYear; i++) {
             years.add(Integer.toString(i));
         }
+        Collections.reverse(years);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         fromYearSpinner.setAdapter(adapter);
 
@@ -167,6 +177,7 @@ public class Work extends FragmentActivity {
         for (int i = 1900; i <= thisYear1; i++) {
             years1.add(Integer.toString(i));
         }
+        Collections.reverse(years1);
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         toYesrSpinner.setAdapter(adapter1);
         toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1257,12 +1268,69 @@ public class Work extends FragmentActivity {
 		}
 	}
 
-	@Override
-	public void onBackPressed() {
-		this.getParent().onBackPressed();
-	}
-
     public void startBackgroundprocess(){
         new BackgroundProcess().execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(backNav);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+
+            case R.id.action_home:
+                showUnsavedAlertDialog();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showUnsavedAlertDialog();
+    }
+
+    private void showUnsavedAlertDialog() {
+        final Dialog dialog = new Dialog(Work.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                update.Imguri=null;
+                finish();
+            }
+        });
+        stayButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

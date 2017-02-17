@@ -45,6 +45,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -91,6 +93,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.ProfileContainerActivity;
 
 @SuppressLint("NewApi")
 public class update extends BaseActivity {
@@ -172,6 +175,8 @@ public class update extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupActionBar();
+        mActionBar.setTitle("Basic");
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();
@@ -1447,11 +1452,6 @@ public class update extends BaseActivity {
         return path;
     }
 
-    @Override
-    public void onBackPressed() {
-        this.getParent().onBackPressed();
-    }
-
     public void startBackgroundprocess() {
         new BackgroundProcess().execute();
     }
@@ -1795,6 +1795,68 @@ public class update extends BaseActivity {
                 Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(backNav);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+
+            case R.id.action_home:
+                showUnsavedAlertDialog();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showUnsavedAlertDialog();
+    }
+
+    private void showUnsavedAlertDialog() {
+        final Dialog dialog = new Dialog(update.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                update.Imguri=null;
+                finish();
+            }
+        });
+        stayButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 
