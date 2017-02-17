@@ -73,6 +73,7 @@ public class SplashScreen extends Activity {
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
                         Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
+                        intentMain.putExtra("isComingFromSplash", true);
                         startActivity(intentMain);
                         finish();
                     }
