@@ -51,7 +51,7 @@
             android:id="@+id/role_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Role:"
+            android:text="Industry"
             android:textColor="@android:color/black" />
 
         <EditText
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Software Development"
+            android:hint="Technology"
             android:inputType="textCapWords"
             android:nextFocusDown="@+id/etSubject"
             android:singleLine="true" />
