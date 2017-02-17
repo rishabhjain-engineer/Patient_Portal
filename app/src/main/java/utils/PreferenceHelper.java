@@ -28,6 +28,10 @@ public class PreferenceHelper {
 
         IS_ALL_QUESTION_ASKED("false"),
 
+        USERNAME("null"),
+
+        PASSWORD("null"),
+
         QUESTION_COUNT("10"),
 
         USER_ID("null"),
