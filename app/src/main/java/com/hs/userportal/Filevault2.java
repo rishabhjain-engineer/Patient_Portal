@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +28,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -173,6 +177,7 @@ public class Filevault2 extends BaseActivity {
     private boolean start_navigate = false;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
+    private static final int REQUEST_CAMERA = 0;
 
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
@@ -3067,8 +3072,8 @@ public class Filevault2 extends BaseActivity {
                                 break;
 
                             case 1:
-
-                                // Intent takePictureIntent = new
+                                checkCameraPermission();
+                               /* // Intent takePictureIntent = new
                                 // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // if
                                 // (takePictureIntent.resolveActivity(getPackageManager())
@@ -3093,7 +3098,7 @@ public class Filevault2 extends BaseActivity {
                                     intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
                                     Imguri = Uri.fromFile(photo);
                                     startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                }
+                                }*/
 
                                 break;
 
@@ -4541,5 +4546,59 @@ public class Filevault2 extends BaseActivity {
             }
         }
         return check;
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(Filevault2.this.getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
+
+
+    /**
+     * Method to check permission
+     */
+    void checkCameraPermission() {
+        boolean isGranted;
+        if (ActivityCompat.checkSelfPermission(Filevault2.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Camera permission has not been granted.
+            requestCameraPermission();
+        } else {
+            takePhoto();
+        }
+    }
+
+    /**
+     * Method to request permission for camera
+     */
+    private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(Filevault2.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                takePhoto();
+            } else {
+                //Permission not granted
+                Toast.makeText(Filevault2.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

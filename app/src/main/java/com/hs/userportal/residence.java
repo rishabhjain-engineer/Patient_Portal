@@ -558,8 +558,7 @@ public class residence extends FragmentActivity {
                 }*/
 
 //city, country, state,add, pincode, house,from,to
-                if (city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")
-                        ||house.getText().toString().equals("")  ) {
+                if (city.getText().toString().equals("")||country.getText().toString().equals("")||house.getText().toString().equals("")  ) {
                     alertDialog = new AlertDialog.Builder(residence.this).create();
 
                     // Setting Dialog Title

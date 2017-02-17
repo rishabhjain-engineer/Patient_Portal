@@ -112,7 +112,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="State*:"
+                android:text="State:"
 
                 android:textColor="@android:color/black" />
         </LinearLayout>
