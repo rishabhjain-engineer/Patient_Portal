@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,16 +31,20 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,7 +93,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 
 @SuppressLint("NewApi")
-public class update extends FragmentActivity {
+public class update extends AppCompatActivity {
 
 
     private TextView email_varifyid, contact_varifyid;
@@ -147,6 +152,7 @@ public class update extends FragmentActivity {
     private static JSONObject receiveFbImageSave;
     private String check_username;
     private Dialog fbDialog;
+    private static final int REQUEST_CAMERA = 0;
 
 
 
@@ -270,7 +276,7 @@ public class update extends FragmentActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
                         //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
-                        builder.setItems(new CharSequence[]{"Photo Library"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -287,19 +293,8 @@ public class update extends FragmentActivity {
                                                 break;
 
                                             case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
+                                              //takePhoto();
+                                                checkCameraPermission();
                                                 break;
                                             case 2:
                                                 new fbImagePull().execute();
@@ -330,20 +325,8 @@ public class update extends FragmentActivity {
                                                 }
                                                 break;
                                             case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-
+                                                //takePhoto();
+                                                checkCameraPermission();
                                                 break;
                                             default:
                                                 break;
@@ -1757,6 +1740,59 @@ public class update extends FragmentActivity {
             }
         });
         dialog.show();
+    }
+
+    /**
+     * Method to check permission
+     */
+    void checkCameraPermission() {
+        boolean isGranted;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Camera permission has not been granted.
+            requestCameraPermission();
+        } else {
+            takePhoto();
+        }
+    }
+
+    /**
+     * Method to request permission for camera
+     */
+    private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            Log.i("camera", "Received response for Camera permission request.");
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                takePhoto();
+            } else {
+                //Permission not granted
+                Toast.makeText(update.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
     }
 
 }
