@@ -288,7 +288,7 @@
 
             <LinearLayout
                 android:layout_alignParentRight="true"
-                android:id="@+id/h3"
+                android:id="@+id/h34"
                 android:layout_marginLeft="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -301,7 +301,7 @@
                     android:layout_marginBottom="3dp"
                     android:textColor="@android:color/black" />
                 <LinearLayout
-                    android:id="@+id/L3"
+                    android:id="@+id/L34"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/L2"
@@ -331,7 +331,7 @@
 
                     <CheckBox
                         android:visibility="gone"
-                        android:id="@+id/cbPresentWork"
+                        android:id="@+id/cbPresentWork34"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignRight="@+id/editText9"

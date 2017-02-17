@@ -588,7 +588,7 @@
                 <HorizontalScrollView
                     android:id="@+id/horizontal_"
                     android:layout_width="wrap_content"
-                    android:layout_height="100dp"
+                    android:layout_height="120dp"
                     android:visibility="visible"
                     android:layout_above="@+id/patient_id">
 
