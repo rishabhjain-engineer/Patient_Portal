@@ -53,6 +53,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -178,6 +179,7 @@ public class residence extends BaseActivity {
         for (int i = 1900; i <= thisYear; i++) {
             years.add(Integer.toString(i));
         }
+        Collections.reverse(years);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
         fromYearSpinner.setAdapter(adapter);
 
@@ -220,6 +222,7 @@ public class residence extends BaseActivity {
         for (int i = 1900; i <= thisYear1; i++) {
             years1.add(Integer.toString(i));
         }
+        Collections.reverse(years1);
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years1);
         toYearSpinner.setAdapter(adapter1);
 
