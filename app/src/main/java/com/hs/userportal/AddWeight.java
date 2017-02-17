@@ -308,7 +308,7 @@ public class AddWeight extends BaseActivity {
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
-                bpTosend = lowerBp + "," + upperBp;
+                bpTosend = upperBp + "," + lowerBp;
             }
             fromdate = lasstCheckedDate.getText().toString();
 
