@@ -111,10 +111,8 @@ public class TabsActivity extends TabActivity {
 		// Just some data for the tab content activity to use (just for
 		// demonstrating changing content)
 		// Finalize the tabs specification
-		spec = tabHost.newTabSpec("update").setIndicator(tab)
-				.setContent(intent);
+		spec = tabHost.newTabSpec("update").setIndicator(tab).setContent(intent);
 		// Tab Content
-
 		Intent i = getIntent();
 		String id = i.getStringExtra("id");
 		String pass = i.getStringExtra("pass");
@@ -122,7 +120,6 @@ public class TabsActivity extends TabActivity {
 		String picname = i.getStringExtra("picname");
 		String fbLinked = i.getStringExtra("fbLinked");
 		String fbLinkedID = i.getStringExtra("fbLinkedID");
-		String hide_footer = i.getStringExtra("hide_footer");
 
 		
 		intent.putExtra("id", id);
@@ -406,50 +403,5 @@ public class TabsActivity extends TabActivity {
 		});
 		dialog.show();
 	}
-
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		
-		this.unregisterReceiver(this.mConnReceiver);
-		
-		super.onPause();
-	}
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-        if(Helper.authentication_flag==true){
-            finish();
-        }
-		this.registerReceiver(this.mConnReceiver, new IntentFilter(
-				ConnectivityManager.CONNECTIVITY_ACTION));
-		
-		super.onResume();
-	}
-
-	private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-		public void onReceive(Context context, Intent intent) {
-			boolean noConnectivity = intent.getBooleanExtra(
-					ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-			String reason = intent
-					.getStringExtra(ConnectivityManager.EXTRA_REASON);
-			boolean isFailover = intent.getBooleanExtra(
-					ConnectivityManager.EXTRA_IS_FAILOVER, false);
-
-			NetworkInfo currentNetworkInfo = (NetworkInfo) intent
-					.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-			NetworkInfo otherNetworkInfo = (NetworkInfo) intent
-					.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-
-			if (!currentNetworkInfo.isConnected()) {
-
-				//showAppMsg();
-				Toast.makeText(TabsActivity.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);*/
-			}
-		}
-	};
 
 }

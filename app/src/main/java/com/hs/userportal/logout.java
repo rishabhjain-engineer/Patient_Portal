@@ -69,6 +69,7 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import ui.ProfileContainerActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -412,7 +413,7 @@ public class logout extends Activity implements View.OnClickListener {
             // getId() returns this view's identifier.
             if (v.getId() == R.id.update_profile) {
                 // setText() sets the string value of the TextView
-                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ProfileContainerActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("pass", passw);
                 intent.putExtra("pic", pic);

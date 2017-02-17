@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hs.userportal.R;
-import com.hs.userportal.TabsActivity;
 import com.hs.userportal.update;
 
 /**

@@ -172,6 +172,8 @@ public class update extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupActionBar();
+        mActionBar.setTitle("Basic");
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();

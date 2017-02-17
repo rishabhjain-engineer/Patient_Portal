@@ -54,8 +54,9 @@ import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class residence extends FragmentActivity {
+public class residence extends BaseActivity {
 
     private String checkedit="";
     private ArrayList<String> patienthistorylist=new ArrayList<String>();
@@ -105,6 +106,8 @@ public class residence extends FragmentActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.residencenew);
+        setupActionBar();
+        mActionBar.setTitle("Basic");
        // nationlist = getResources().getStringArray(R.array.national_list);
       /*  for(int i=0;i<nationlist.length;i++){
            // countrylist.add(nationlist[i]);

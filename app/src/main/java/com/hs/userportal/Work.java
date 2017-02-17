@@ -52,8 +52,9 @@ import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class Work extends FragmentActivity {
+public class Work extends BaseActivity {
 
     private AlertDialog alertDialog, alert;
     private static int month2,year2,day2,month1,year1,day1;
@@ -99,6 +100,8 @@ public class Work extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.worknew);
+        setupActionBar();
+        mActionBar.setTitle("Work");
 
          c = Calendar.getInstance();
         year2 = c.get(Calendar.YEAR);
