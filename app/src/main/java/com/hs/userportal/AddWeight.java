@@ -308,7 +308,7 @@ public class AddWeight extends BaseActivity {
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
-                bpTosend = lowerBp + "," + upperBp;
+                bpTosend = upperBp + "," + lowerBp;
             }
             fromdate = lasstCheckedDate.getText().toString();
 
@@ -384,7 +384,7 @@ public class AddWeight extends BaseActivity {
             // Use the current date as the default date in the picker
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, cyear, month, day);
+            return new DatePickerDialog(getActivity(), this, cyear, month-1, day);
         }
 
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -394,7 +394,7 @@ public class AddWeight extends BaseActivity {
             day = dayOfMonth;
             cyear = year;
 
-            int month = monthOfYear + 1;
+            int month = monthOfYear +1;
 
             String formattedMonth = "" + month;
             String formattedDayOfMonth = "" + dayOfMonth;
