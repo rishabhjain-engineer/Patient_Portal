@@ -487,7 +487,7 @@ public class Work extends FragmentActivity {
                 }
 */
 
-                if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||st.getText().toString().equals("")||co.getText().toString().equals("") ) {
+                if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") ) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
 
                     // Setting Dialog Title
