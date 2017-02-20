@@ -148,7 +148,11 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
                 holder.amount_header.setVisibility(View.VISIBLE);
                 Double amount_req = 0.0;
                 if (family_arr_list.get(position).containsKey("TotalActualAmount")) {
-                    amount_req = Double.valueOf(family_arr_list.get(position).get("TotalActualAmount"));
+                    String test = family_arr_list.get(position).get("TotalActualAmount") ;
+                    if(test != null && !"null".equalsIgnoreCase(test)) {
+                        amount_req = Double.valueOf(test);
+                    }
+
                 }
                 if(amount_req ==0.0){
                     holder.amount_header.setVisibility(View.GONE);
