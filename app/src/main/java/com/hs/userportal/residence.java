@@ -1384,10 +1384,11 @@ public class residence extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                /*Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
                 backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(backNav);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
+                finish();
                 return true;
 
             case R.id.action_home:
