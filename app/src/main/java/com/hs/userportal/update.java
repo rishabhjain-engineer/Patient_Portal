@@ -1021,7 +1021,7 @@ public class update extends BaseActivity {
                     MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
                     LastName = commonarray.getJSONObject(m).getString("LastName");
                     Salutation = commonarray.getJSONObject(m).getString("Salutation");
-                    mOccupation = commonarray.getJSONObject(m).getString("Occupation");
+                    mOccupation = commonarray.getJSONObject(m).optString("Occupation");
                     UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
                     Sex = commonarray.getJSONObject(m).getString("Sex");
                     BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
@@ -1837,10 +1837,11 @@ public class update extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+               /* Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
                 backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(backNav);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
+                finish();
                 return true;
 
             case R.id.action_home:
