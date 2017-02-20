@@ -53,6 +53,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -86,6 +87,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,13 +113,14 @@ public class update extends BaseActivity {
     private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master", "Baby", "Baby Of"};
     private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian", "Jain", "Buddhist", "Other"};
     private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
+    private String[] mOccupationList = {"Business", "Professional", "Salaried", "Retired", "Homemaker", "Student"};
     private String[] genderlist = {"Male", "Female"};
     private ProgressDialog progress;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private String city_id = "", country_id = "", state_id = "", area_id = "", imgid = "", imgname = "", fbLinked, fbLinkedID;
     private String passw = "";
-    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband;
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband, mOccupationEditText;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
     // AutoCompleteTextView area;
@@ -156,6 +159,7 @@ public class update extends BaseActivity {
     private String check_username;
     private Dialog fbDialog;
     private static final int REQUEST_CAMERA = 0;
+    private String mOccupation;
 
 
 
@@ -204,6 +208,25 @@ public class update extends BaseActivity {
         em.setFocusable(true);
         sex = (EditText) findViewById(R.id.editText10);
         nationality = (EditText) findViewById(R.id.Nationality);
+
+        mOccupationEditText  = (EditText) findViewById(R.id.occupation_edit_text);
+        final ArrayAdapter<String> occupationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, mOccupationList);
+        mOccupationEditText.setInputType(InputType.TYPE_NULL);
+        mOccupationEditText.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    new AlertDialog.Builder(update.this).setTitle("Select Occupation").setAdapter(occupationAdapter, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int position) {
+                                    mOccupationEditText.setText(mOccupationList[position].toString());
+                                    dialog.dismiss();
+                                }
+                            }).create().show();
+                }
+                return false;
+            }
+        });
+
         cont = (EditText) findViewById(R.id.etName);
         religion = (EditText) findViewById(R.id.editText9);
         finishbtn = (Button) findViewById(R.id.bSend);
@@ -516,8 +539,7 @@ public class update extends BaseActivity {
                 for (int i = 0; i < countrylist.size(); i++) {
                     nationlist[i] = countrylist.get(i);
                 }
-                final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
-                        update.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
+                final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(update.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
 
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(update.this).setTitle("Select Country").setAdapter(nationadapter, new DialogInterface.OnClickListener() {
@@ -535,8 +557,7 @@ public class update extends BaseActivity {
                 return false;
             }
         });
-        final ArrayAdapter<String> saluadapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, salulist);
+        final ArrayAdapter<String> saluadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, salulist);
 
         sal.setInputType(InputType.TYPE_NULL);
         sal.setOnTouchListener(new OnTouchListener() {
@@ -872,6 +893,7 @@ public class update extends BaseActivity {
             ghoom.setMessage("Please wait...");
             ghoom.setIndeterminate(true);
             Salutation = sal.getText().toString().trim();
+            mOccupation = mOccupationEditText.getEditableText().toString().trim();
             FirstName = fn.getText().toString().trim();
             MiddleName = mn.getText().toString().trim();
             LastName = ln.getText().toString().trim();
@@ -909,6 +931,7 @@ public class update extends BaseActivity {
                         String dg = NationId;
                         //  basic.put("Address", house.getText().toString());
                         basic.put("Salutation", Salutation);
+                        basic.put("Occupation", mOccupation);
                         basic.put("FirstName", FirstName);
                         basic.put("MiddleName", MiddleName);
                         basic.put("LastName", LastName);
@@ -998,6 +1021,7 @@ public class update extends BaseActivity {
                     MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
                     LastName = commonarray.getJSONObject(m).getString("LastName");
                     Salutation = commonarray.getJSONObject(m).getString("Salutation");
+                    mOccupation = commonarray.getJSONObject(m).getString("Occupation");
                     UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
                     Sex = commonarray.getJSONObject(m).getString("Sex");
                     BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
@@ -1047,6 +1071,7 @@ public class update extends BaseActivity {
 
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
+                mOccupationEditText.setText(mOccupation);
 
                 fn.setText(FirstName);
 
@@ -1185,6 +1210,8 @@ public class update extends BaseActivity {
 
                     basic.put("Religion", religion.getText().toString());
                     basic.put("Salutation", sal.getText().toString());
+                    basic.put("Occupation", mOccupationEditText.getText().toString());
+
                     basic.put("Sex", sex.getText().toString());
                     basic.put("StateId", state_id);
                     basic.put("UID1", "");
