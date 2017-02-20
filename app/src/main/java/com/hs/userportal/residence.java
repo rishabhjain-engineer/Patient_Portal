@@ -1391,7 +1391,8 @@ public class residence extends BaseActivity {
                 return true;
 
             case R.id.action_home:
-                showUnsavedAlertDialog();
+                finish();
+                //showUnsavedAlertDialog();
                 return true;
 
             default:

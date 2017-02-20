@@ -235,7 +235,7 @@ public class logout extends Activity implements View.OnClickListener {
         user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ProfileContainerActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("pass", passw);
                 intent.putExtra("pic", pic);
