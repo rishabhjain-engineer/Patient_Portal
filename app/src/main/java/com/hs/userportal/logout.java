@@ -18,6 +18,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -1383,16 +1384,19 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
-
-        alert = new AlertDialog.Builder(logout.this).create();
-
-        alert.setTitle("Message");
-        alert.setMessage("Are you sure you want to Logout?");
-
-        alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText("Are you sure you want to Logout?");
+        okBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 ConnectionDetector isInternetOn = new ConnectionDetector(logout.this);
                 if (isInternetOn.isConnectingToInternet())
                     new BackGroundProcessTab().execute();
@@ -1402,18 +1406,13 @@ public class logout extends Activity implements View.OnClickListener {
 
             }
         });
-
-        alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-
+        stayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 dialog.dismiss();
-
             }
         });
-
-        alert.show();
-
+        dialog.show();
     }
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {

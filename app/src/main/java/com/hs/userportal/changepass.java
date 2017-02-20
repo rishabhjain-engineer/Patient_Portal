@@ -267,28 +267,4 @@ public class changepass extends BaseActivity {
         return matcher.matches();
     }
 
-    protected void showAlertMessage(String message) {
-        final Dialog dialog = new Dialog(changepass.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.unsaved_alert_dialog);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
-        stayButton.setVisibility(View.GONE);
-
-        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
-        messageTextView.setText(message);
-
-        okBTN.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-    }
-}
+ }
