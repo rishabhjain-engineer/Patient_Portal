@@ -3,12 +3,12 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="jquery.js"></script>
-    <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="nvd3.css" />
-    <script src="d3.js"></script>
-    <script src="nv.js"></script>
-
-</head>
+ <script src="jquery.js"></script>
+  <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="nvd3.css" />
+  <script src="d3.js"></script>
+  <script src="nv.js"></script>
+   
+ </head>
 <style>
 
 .nv-point {stroke-opacity: 1 !important;stroke-width: 10px;fill-opacity: 1 !important;}
@@ -28,12 +28,12 @@
 }
 
 </style>
-
+   
 <body>
-<div id="chart" style="height:500px">
+  <div id="chart" style="height:500px">
     <svg></svg>
-</div>
-<script>
+  </div>    
+  <script>   
       var data1 = [
   {
 
@@ -55,19 +55,17 @@
       ]
   }];
 
-    var values = JSON.parse(Interface.passDataToHtml());
-    var max = Interface.getMaxData();
-    var rangeto = Interface.getRangeTo();
-    var rangefrom = Interface.getRangeFrom();
-
+  var values = JSON.parse(Interface.passDataToHtml());
+  var max = Interface.getDouble();
+          
     		nv.addGraph(function () {
-              var chart = nv.models.lineChart()//.interpolate('monotone')
+              var chart = nv.models.lineChart()//.interpolate('monotone')              
                 .x(function (d) {
                     return d[0];
                 })
                 .y(function (d) {
                     return d[1]
-                })
+                })  
                 .color(d3.scale.category10().range())
                 //.transitionDuration(300)
                 //.useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
@@ -79,13 +77,13 @@
                 function (key, x, y, e) {
                 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                return '<div id="tooltipcustom">' + '<p id="head">'
-                + days[new Date(e.point[0]).getDay()] + ', ' + new Date(e.point[0]).getDate() + ' ' + months[new Date(e.point[0]).getMonth()] + ' ' + new Date(e.point[0]).getFullYear()
-                + '</p>' + '<p> <strong>'
-                + y
+                return '<div id="tooltipcustom">' + '<p id="head">' 
+                + days[new Date(e.point[0]).getDay()] + ', ' + new Date(e.point[0]).getDate() + ' ' + months[new Date(e.point[0]).getMonth()] + ' ' + new Date(e.point[0]).getFullYear() 
+                + '</p>' + '<p> <strong>' 
+                + y 
             	//+ ' ' + new Date(e.point[0]).getHours().toString() + ':' + new Date(e.point[0]).getMinutes().toString() + ':' + (new Date(e.point[0]).getSeconds().toString() == '0' ? '00' : new Date(e.point[0]).getSeconds().toString())
                 + '</strong> </p></div>'
-                });
+                });                
 
               chart.xAxis
                 //.tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
@@ -98,25 +96,25 @@
                 .tickFormat(function (d) {
                     return d3.format('.2f')(d)
                 });
-
+        
               d3.select('#chart svg')
                 .datum(values)
                 .call(chart);
-
+                 
               nv.utils.windowResize(chart.update);
 
               return chart;
 
           },
-
+          
           function (chart) {
 
               x = chart;
               var x1 = chart.xScale()(1122782400000);
               var x2 = chart.xScale()(1251691200000);
               var height = chart.yAxis.range()[0];
-              var y2 = chart.yScale()(rangefrom);
-              var y1 = chart.yScale()(rangeto);
+              var y2 = chart.yScale()(10000);
+              var y1 = chart.yScale()(30000);
               var width = chart.xAxis.range()[1];
               d3.select('.nv-wrap')
                 .append('rect')
@@ -127,7 +125,7 @@
                 .attr('x', 0)
                 .attr('width', width);
           }
-        );
+        );   
 
 	$(document).ready(function () {
          var child1 = $(document.getElementsByTagName('svg')).children().children()[0]
@@ -136,7 +134,7 @@
          $(document.getElementsByTagName('svg')).children().append(child2)
          $(document.getElementsByTagName('svg')).children().append(child1)
      })
-
+		  
   </script>
 </body>
 </html>
