@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -86,4 +87,20 @@ public class ProfileContainerActivity extends BaseActivity {
             }
         }
     };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
