@@ -191,19 +191,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(MainActivity.this);
         if (!miscTasks.isNetworkAvailable()) {
-            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-            dialog.setTitle("Internet Connectivity");
-            dialog.setMessage("Internet connection is required to run this application.");
-            dialog.setCancelable(false);
-            dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            showAlertMessage("Internet connection is required to run this application.");
         } else {
 
             url1 = "https://androidquery.appspot.com/api/market?app=";
@@ -789,32 +777,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (chkDisclaimer == 1) {
                 // Agree disclaimer automatically
                 new Agree().execute();
-
             } else if (mChkError == 1) {
                 String receivedMsg = receiveData.optString("d");
-                alert = new AlertDialog.Builder(MainActivity.this).create();
-                alert.setTitle("Alert!");
-
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
                     if ("1".equalsIgnoreCase(msgArray[1])) {
-                        alert.setMessage(msgArray[0]);
+                        showAlertMessage(msgArray[0]);
                     } else if ("2".equalsIgnoreCase(msgArray[1])) {
-                        alert.setMessage(msgArray[0]);
+                        showAlertMessage(msgArray[0]);
                     }
                 } else {
-                    alert.setMessage(receivedMsg);
+                    showAlertMessage(receivedMsg);
                 }
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        dialog.dismiss();
-
-                    }
-                });
-                alert.show();
-
             } else if (chklogin == 1) {
 
                 // System.out.println(fnln);
@@ -1050,39 +1024,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         if (data.indexOf("Authentication failed.") != -1) {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
-
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
-                                    alert.setTitle("Message");
-                                    alert.setMessage("Unexpected error. Please try again after sometime.");
-
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
-
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-
-                                                }
-                                            });
-
-                                    alert.show();
-
+                                    showAlertMessage("Unexpected error. Please try again after sometime.");
                                 }
                             });
                             return null;
                         } else {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
-                                    alert.setTitle("Message");
-                                    alert.setMessage("Unexpected error. Please try again after sometime.");
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-
-                                    alert.show();
+                                    showAlertMessage("Unexpected error. Please try again after sometime.");
                                 }
                             });
                             return null;
@@ -1320,19 +1269,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 }
             }
         } else {
-            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-            dialog.setTitle("Internet Connectivity");
-            dialog.setMessage("Internet connection is required to run this application.");
-            dialog.setCancelable(false);
-            dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            showAlertMessage("Internet connection is required to run this application.");
         }
 
         if (sharedPreferences.contains("FirstName")) {
@@ -1799,7 +1736,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     alert.setView(sv);
 
                 } else {
-                    alert.setMessage(receiveForgetData.getString("d").toString());
+                    showAlertMessage(receiveForgetData.getString("d").toString());
+                 /*   alert.setMessage(receiveForgetData.getString("d").toString());*/
 
                     // LinearLayout.LayoutParams lp = new
                     // LinearLayout.LayoutParams(
@@ -1844,17 +1782,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // });
 
                 }
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        alert.dismiss();
-
-                    }
-                });
-
-                alert.show();
-
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1883,20 +1810,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.setTitle("Internet Connectivity");
-                dialog.setMessage("Internet connection is required to run this application.");
-                dialog.setCancelable(false);
-                dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        dialog.dismiss();
-
-                    }
-                });
-                dialog.show();
+                showAlertMessage("Internet connection is required to run this application.");
             }
         }
     };
