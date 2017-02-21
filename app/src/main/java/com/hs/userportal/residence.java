@@ -176,7 +176,7 @@ public class residence extends BaseActivity {
          // FROM MONTH
 
 
-        int thisYear = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.YEAR);
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear; i++) {
             years.add(Integer.toString(i));
         }
@@ -219,7 +219,7 @@ public class residence extends BaseActivity {
 
 
 
-        int thisYear1 = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.YEAR);
+        int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear1; i++) {
             years1.add(Integer.toString(i));
         }
