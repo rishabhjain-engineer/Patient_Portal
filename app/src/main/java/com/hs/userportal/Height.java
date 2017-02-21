@@ -379,7 +379,8 @@ public class Height extends BaseActivity {
                 mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
                 Log.i("DATATOSEND: ", "Data To send: " + mJsonArrayToSend);
-                Collections.reverse(chartValues);
+                Helper.sortHealthListByDate(weight_contentlists);
+                //Collections.reverse(chartValues);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
