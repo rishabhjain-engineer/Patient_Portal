@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -498,14 +499,14 @@ public class Work extends BaseActivity {
                 }
 */
 
-                if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") ) {
+                if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") || TextUtils.isEmpty(ad.getEditableText().toString())) {
                     alertDialog = new AlertDialog.Builder(Work.this).create();
 
                     // Setting Dialog Title
                     alertDialog.setTitle("Message");
 
                     // Setting Dialog Message
-                    alertDialog.setMessage("No field can be left Blank");
+                    alertDialog.setMessage("Mandatory fields can be left Blank");
 
                     // Setting OK Button
                     alertDialog.setButton("OK",
