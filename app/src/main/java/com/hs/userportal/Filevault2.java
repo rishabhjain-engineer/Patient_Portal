@@ -3227,8 +3227,8 @@ public class Filevault2 extends BaseActivity {
             vault_list.setVisibility(View.GONE);
             gridView.setVisibility(View.GONE);
             warning_msg.setVisibility(View.VISIBLE);
-            menu_toggle.findItem(R.id.action_listview).setVisible(false);
-            menu_toggle.findItem(R.id.select_all).setVisible(false);
+            menu_toggle.findItem(R.id.action_listview).setVisible(true);
+            menu_toggle.findItem(R.id.select_all).setVisible(true);
             menu_toggle.findItem(R.id.action_move).setVisible(false);
             menu_toggle.findItem(R.id.action_delete).setVisible(false);
             menu_toggle.findItem(R.id.save).setVisible(false);
