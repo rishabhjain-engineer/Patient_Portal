@@ -130,8 +130,9 @@ public class Work extends BaseActivity {
 
         Spinner fromMonthSpinner = (Spinner)findViewById(R.id.from_month);
         Spinner fromYearSpinner = (Spinner)findViewById(R.id.from_year);
-        ArrayAdapter monthArrayAdapter = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
-        monthArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter monthArrayAdapter = new ArrayAdapter(Work.this, R.layout.spinner_appearence, monthArray);
+        monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
+        //monthArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fromMonthSpinner.setAdapter(monthArrayAdapter);
         final ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -139,7 +140,8 @@ public class Work extends BaseActivity {
             years.add(Integer.toString(i));
         }
         Collections.reverse(years);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
+        adapter.setDropDownViewResource(R.layout.spinner_appearence);
         fromYearSpinner.setAdapter(adapter);
 
         fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -170,8 +172,8 @@ public class Work extends BaseActivity {
         ///////////////////////////////////////
         Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
         Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
-        ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(Work.this, android.R.layout.simple_spinner_item, monthArray);
-        monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(Work.this, R.layout.spinner_appearence, monthArray);
+        monthArrayAdapter1.setDropDownViewResource(R.layout.spinner_appearence);
         toMonthSpinner.setAdapter(monthArrayAdapter1);
         ArrayList<String> years1 = new ArrayList<String>();
         int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
@@ -179,7 +181,8 @@ public class Work extends BaseActivity {
             years1.add(Integer.toString(i));
         }
         Collections.reverse(years1);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
+        adapter1.setDropDownViewResource(R.layout.spinner_appearence);
         toYesrSpinner.setAdapter(adapter1);
         toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

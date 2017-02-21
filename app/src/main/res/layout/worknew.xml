@@ -314,7 +314,6 @@
 
                     <Spinner
                         android:id="@+id/from_month"
-                        style="@style/SpinnerTheme"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:spinnerMode="dropdown"
@@ -323,7 +322,6 @@
 
                     <Spinner
                         android:id="@+id/from_year"
-                        style="@style/SpinnerTheme"
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="5dp"
@@ -359,7 +357,6 @@
                         android:orientation="horizontal">
                         <Spinner
                             android:id="@+id/to_month"
-                            style="@style/SpinnerTheme"
                             android:layout_width="60dp"
                             android:layout_height="30dp"
                             android:spinnerMode="dropdown"
@@ -367,7 +364,6 @@
                             android:textSize="14dp" />
                         <Spinner
                             android:id="@+id/to_year"
-                            style="@style/SpinnerTheme"
                             android:layout_width="80dp"
                             android:layout_height="30dp"
                             android:layout_marginLeft="5dp"
