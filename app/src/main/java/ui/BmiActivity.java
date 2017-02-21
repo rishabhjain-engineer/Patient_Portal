@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.text.DecimalFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -109,6 +109,7 @@ public class BmiActivity extends BaseActivity {
         weight_graphView.setInitialScale(1);
         weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
 
+
         queue = Volley.newRequestQueue(this);
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(BmiActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -160,6 +161,7 @@ public class BmiActivity extends BaseActivity {
 */
 
         new BmiActivity.BackgroundProcess().execute();
+
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
@@ -189,7 +191,7 @@ public class BmiActivity extends BaseActivity {
                 e.printStackTrace();
                 progress.dismiss();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
+            weight_graphView.loadUrl("file:///android_asset/html/index.html");
 
             if (mIsBmiEmpty == true) {
                 Toast.makeText(BmiActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
