@@ -156,9 +156,11 @@
             android:noHistory="true" />
         <activity
             android:name="com.hs.userportal.residence"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.hs.userportal.Work"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.hs.userportal.Travel"
