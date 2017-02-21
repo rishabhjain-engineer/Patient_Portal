@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
@@ -248,9 +249,11 @@ public class BpActivity extends BaseActivity {
                 outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
                 mJsonArrayToSend.put(outerJsonObjectLowerBp);
 
-                Collections.reverse(chartValues);
+                Helper.sortHealthListByDate(weight_contentlists);
 
-             /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
+                /*Collections.reverse(chartValues);
+
+                new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
                 for(int i=0;i<weight_contentlists.size();i++){
                     chartValues.add(weight_contentlists.get(i).get("weight"));
                     chartDates.add(String.valueOf(i+1));

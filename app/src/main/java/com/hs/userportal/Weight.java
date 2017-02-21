@@ -387,7 +387,8 @@ public class Weight extends BaseActivity {
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend.put(outerJsonObject);
-                Collections.reverse(chartValues);
+                Helper.sortHealthListByDate(weight_contentlists);
+                //Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
                 for(int i=0;i<weight_contentlists.size();i++){

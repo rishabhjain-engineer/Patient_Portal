@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
@@ -263,7 +264,8 @@ public class BmiActivity extends BaseActivity {
                 outerJsonObject.put("key", "BMI");
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend.put(outerJsonObject);
-                Collections.reverse(chartValues);
+                Helper.sortHealthListByDate(weight_contentlists);
+                //Collections.reverse(chartValues);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
