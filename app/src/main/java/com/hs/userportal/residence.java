@@ -181,13 +181,14 @@ public class residence extends BaseActivity {
             years.add(Integer.toString(i));
         }
         Collections.reverse(years);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
+        adapter.setDropDownViewResource(R.layout.spinner_appearence);
         fromYearSpinner.setAdapter(adapter);
 
 
 
-        ArrayAdapter monthAdapter = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
-        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter monthAdapter = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
+        monthAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         fromMonthSpinner.setAdapter(monthAdapter);
 
         fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -224,13 +225,14 @@ public class residence extends BaseActivity {
             years1.add(Integer.toString(i));
         }
         Collections.reverse(years1);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years1);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years1);
+        adapter1.setDropDownViewResource(R.layout.spinner_appearence);
         toYearSpinner.setAdapter(adapter1);
 
 
 
-        ArrayAdapter monthAdapter1 = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
-        monthAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter monthAdapter1 = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
+        monthAdapter1.setDropDownViewResource(R.layout.spinner_appearence);
         toMonthSpinner.setAdapter(monthAdapter1);
 
         toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
