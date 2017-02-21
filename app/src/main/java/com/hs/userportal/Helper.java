@@ -18,35 +18,36 @@ public class Helper {
     public static List<String> list = new ArrayList<String>();
     public static boolean authentication_flag = false;
     public static String fromactivity;
-    public static int check_contact_number =0;
+    public static int check_contact_number = 0;
     public static ArrayList<String> folder_path = new ArrayList<String>();
     public static ArrayList<HashMap<String, String>> main_S3Objects = new ArrayList<HashMap<String, String>>();
-    public ArrayList<HashMap<String,String>> sortHashList(ArrayList<HashMap<String,String>> list,String key){
+
+    public ArrayList<HashMap<String, String>> sortHashList(ArrayList<HashMap<String, String>> list, String key) {
 
         //  ArrayList<HashMap<String,String>> returnlist=new ArrayList<HashMap<String, String>>();
-        for(int i=0;i<list.size()-1;i++){
+        for (int i = 0; i < list.size() - 1; i++) {
 
 
-            for(int j=i;j<list.size();j++){
-                String first=list.get(i).get(key);
-                String second=list.get(j).get(key);
-                if(first.contains("/")){
-                    String splitfirst []=first.split("/");
-                    first=splitfirst[splitfirst.length-1];
+            for (int j = i; j < list.size(); j++) {
+                String first = list.get(i).get(key);
+                String second = list.get(j).get(key);
+                if (first.contains("/")) {
+                    String splitfirst[] = first.split("/");
+                    first = splitfirst[splitfirst.length - 1];
                 }
-                if(second.contains("/")){
-                    String splitsecond []=second.split("/");
-                    second=splitsecond[splitsecond.length-1];
+                if (second.contains("/")) {
+                    String splitsecond[] = second.split("/");
+                    second = splitsecond[splitsecond.length - 1];
                 }
 
-                if(first.compareToIgnoreCase(second)>0){//it means first is greater than second
-                    HashMap<String,String> firstitem=list.get(i);
-                    HashMap<String,String> seconditem=list.get(j);
+                if (first.compareToIgnoreCase(second) > 0) {//it means first is greater than second
+                    HashMap<String, String> firstitem = list.get(i);
+                    HashMap<String, String> seconditem = list.get(j);
                     //swap position first with second
-                    list.add(i,seconditem);
-                    list.add(j,firstitem);
-                    list.remove(i+1);
-                    list.remove(j+1);
+                    list.add(i, seconditem);
+                    list.add(j, firstitem);
+                    list.remove(i + 1);
+                    list.remove(j + 1);
 
 
                 }
@@ -56,29 +57,29 @@ public class Helper {
         return list;
     }
 
-    public ArrayList<HashMap<String,String>> sortHashListByDate(ArrayList<HashMap<String,String>> list){
+    public ArrayList<HashMap<String, String>> sortHashListByDate(ArrayList<HashMap<String, String>> list) {
 
         //  ArrayList<HashMap<String,String>> returnlist=new ArrayList<HashMap<String, String>>();
-        for(int i=0;i<list.size()-1;i++){
+        for (int i = 0; i < list.size() - 1; i++) {
 
 
-            for(int j=i;j<list.size();j++){
+            for (int j = i; j < list.size(); j++) {
                 try {
-                    String first=list.get(i).get("from");
-                    String second=list.get(j).get("from");
+                    String first = list.get(i).get("from");
+                    String second = list.get(j).get("from");
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Date date1 = sdf.parse(first);
                     Date date2 = sdf.parse(second);
 
-                    if(date1.compareTo(date2)<0){//it means first is greater than second
-                        HashMap<String,String> firstitem=list.get(i);
-                        HashMap<String,String> seconditem=list.get(j);
+                    if (date1.compareTo(date2) < 0) {//it means first is greater than second
+                        HashMap<String, String> firstitem = list.get(i);
+                        HashMap<String, String> seconditem = list.get(j);
                         //swap position first with second
 
-                        list.add(i,seconditem);
-                        list.add(j,firstitem);
-                        list.remove(i+1);
-                        list.remove(j+1);
+                        list.add(i, seconditem);
+                        list.add(j, firstitem);
+                        list.remove(i + 1);
+                        list.remove(j + 1);
 
 
                     }
@@ -88,6 +89,35 @@ public class Helper {
             }
         }
 
+        return list;
+    }
+
+
+    public static ArrayList<HashMap<String, String>> sortHealthListByDate(ArrayList<HashMap<String, String>> list) {
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i; j < list.size(); j++) {
+                try {
+                    String first = list.get(i).get("fromdate");
+                    String second = list.get(j).get("fromdate");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date date1 = simpleDateFormat.parse(first);
+                    Date date2 = simpleDateFormat.parse(second);
+
+                    if (date1.compareTo(date2) < 0) {//it means first is greater than second
+                        HashMap<String, String> firstitem = list.get(i);
+                        HashMap<String, String> seconditem = list.get(j);
+                        //swap position first with second
+                        list.add(i, seconditem);
+                        list.add(j, firstitem);
+                        list.remove(i + 1);
+                        list.remove(j + 1);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return list;
     }
 }
