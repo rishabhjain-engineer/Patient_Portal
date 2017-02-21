@@ -23,7 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:focusable="false"
             android:inputType="textCapWords"
             android:nextFocusDown="@+id/etSubject"
             android:singleLine="true" />
@@ -42,7 +41,6 @@
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:ems="10"
-            android:focusable="false"
             android:gravity="top"
             android:inputType="textMultiLine|textCapWords"
             android:maxLines="4" />
@@ -90,7 +88,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
-                android:focusable="false"
                 android:ems="10"
                 android:inputType="textCapWords"
                 android:nextFocusDown="@+id/editText5"
@@ -100,7 +97,6 @@
             <EditText
                 android:id="@+id/editText5"
                 android:layout_width="0dp"
-                android:focusable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
@@ -156,7 +152,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
-                android:focusable="false"
+
                 android:layout_weight="1"
                 android:drawableRight="@drawable/down_arrow"
                 android:ems="10"
@@ -169,7 +165,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:focusable="false"
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number"
@@ -229,7 +224,6 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:focusable="false"
                 android:inputType="date" />
 
             <EditText
@@ -237,7 +231,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:focusable="false"
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="date" />
