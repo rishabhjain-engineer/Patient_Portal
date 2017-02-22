@@ -37,6 +37,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -102,6 +103,11 @@ public class Work extends BaseActivity {
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
     private String mFromMonth, mFromYear, mToMonth, mToYear, mFinalFromDate, mFinalToDate;
 
+    private static String mFromCompValue = null, mToCompValue = null;
+    private TextView mNotRemembered;
+    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL ;
+    private boolean mIsNotRemembered = false ;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -109,7 +115,12 @@ public class Work extends BaseActivity {
 		setContentView(R.layout.worknew);
         setupActionBar();
         mActionBar.setTitle("Work");
-
+        from = (EditText) findViewById(R.id.etName);
+        to = (EditText) findViewById(R.id.editText9);
+        mDesignationEt = (EditText) findViewById(R.id.designation_et);
+        mRoleEt = (EditText) findViewById(R.id.role_et);
+        lv = (ListView) findViewById(R.id.list);
+        add = (Button) findViewById(R.id.bAdd);
          c = Calendar.getInstance();
         year2 = c.get(Calendar.YEAR);
         month2 = c.get(Calendar.MONTH);
@@ -127,6 +138,37 @@ public class Work extends BaseActivity {
 		st = (EditText) findViewById(R.id.editText6);
 		co = (EditText) findViewById(R.id.editText7);
 		pi = (EditText) findViewById(R.id.editText8);
+
+        mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
+        mDateEditTextContainerLL = (LinearLayout) findViewById(R.id.L3);
+        mSpinnerContainerLL = (LinearLayout) findViewById(R.id.spinner_container);
+
+        mNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIsNotRemembered){
+                    mIsNotRemembered = false;
+                    mNotRemembered.setText(R.string.not_remembered);
+                    mDateEditTextContainerLL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerLL.setVisibility(View.GONE);
+
+
+                }else{
+                    mNotRemembered.setText(R.string.remembered);
+                    mIsNotRemembered = true ;
+                    mDateEditTextContainerLL.setVisibility(View.GONE);
+                    mSpinnerContainerLL.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(new Date(currentTimeMillis));
+        to.setText(dateString);
+        mToCompValue = dateString ;
+
 
         Spinner fromMonthSpinner = (Spinner)findViewById(R.id.from_month);
         Spinner fromYearSpinner = (Spinner)findViewById(R.id.from_year);
@@ -210,12 +252,7 @@ public class Work extends BaseActivity {
             }
         });
 
-		from = (EditText) findViewById(R.id.etName);
-		to = (EditText) findViewById(R.id.editText9);
-        mDesignationEt = (EditText) findViewById(R.id.designation_et);
-        mRoleEt = (EditText) findViewById(R.id.role_et);
-		lv = (ListView) findViewById(R.id.list);
-		add = (Button) findViewById(R.id.bAdd);
+
 		//finish = (Button) findViewById(R.id.bFin);
 		//back = (Button) findViewById(R.id.bBack);
 		//next = (Button) findViewById(R.id.bNext);
@@ -744,8 +781,8 @@ public class Work extends BaseActivity {
 
 				formattedDayOfMonth = "0" + dayOfMonth;
 			}
-			from.setText(formattedDayOfMonth + "/" + formattedMonth + "/"
-                    + year);
+			from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+            mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
          //   to.requestFocus();
 
@@ -771,8 +808,18 @@ public class Work extends BaseActivity {
             //fromdate=from.getText().toString();
             //todate=to.getText().toString();
 
+            if(mIsNotRemembered == false) {
+                fromdate = mFromCompValue ;
+                todate = mToCompValue ;
+            } else if(mIsNotRemembered == true){
+                fromdate = 01 + "/" + mFromMonth + "/" + mFromYear;
+                todate = 02 + "/" + mToMonth + "/" + mToYear;
+            }
+
+
+/*
             fromdate= 01+"/"+mFromMonth+"/"+mFromYear;
-            todate=02+"/"+mToMonth+"/"+mToYear;
+            todate=02+"/"+mToMonth+"/"+mToYear;*/
 
             roleValue = mRoleEt.getEditableText().toString();
             designationValue = mDesignationEt.getEditableText().toString();
@@ -1234,6 +1281,7 @@ public class Work extends BaseActivity {
 				formattedDayOfMonth = "0" + dayOfMonth;
 			}
 			to.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+            mToCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
 		}
 	}
