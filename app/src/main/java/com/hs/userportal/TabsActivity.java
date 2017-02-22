@@ -382,8 +382,8 @@ public class TabsActivity extends TabActivity {
 		dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 		dialog.setCancelable(false);
 		dialog.setCanceledOnTouchOutside(false);
-		Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
-		Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+		TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+		TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
 
 		okBTN.setOnClickListener(new View.OnClickListener() {
 
