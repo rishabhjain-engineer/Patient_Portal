@@ -210,7 +210,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L2"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:layout_marginTop="5dp">
 
             <EditText
                 android:id="@+id/editText8"
@@ -240,15 +241,7 @@
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/not_remember_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Not Remembered Exactly !"
-            android:textColor="@color/text_color_blue"
-            android:textStyle="bold"
-            android:textSize="14dp"
-            android:layout_margin="5dp"/>
+
 
         <LinearLayout
             android:id="@+id/spinner_container"
@@ -256,7 +249,9 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:weightSum="2"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_marginTop="7dp"
+            android:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -334,6 +329,15 @@
             </LinearLayout>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/not_remember_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_remembered"
+            android:textColor="@color/text_color_blue"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            android:layout_margin="5dp"/>
 
         <Button
             android:id="@+id/bSend"

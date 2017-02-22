@@ -3,6 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="forgot"><u>Forgot Password?</u></string>
+    <string name="not_remembered"><u>Not Remembered Exactly !</u></string>
+    <string name="remembered"><u> "Fill Exact Date !"</u></string>
     <string name="help">FAQ\'s</string>
     <string name="register"><u>New here? Sign Up</u></string>
     <string name="about"><u>About Us</u></string>

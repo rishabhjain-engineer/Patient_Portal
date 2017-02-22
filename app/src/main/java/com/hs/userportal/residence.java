@@ -166,13 +166,13 @@ public class residence extends BaseActivity {
             public void onClick(View v) {
                 if(mIsNotRemembered){
                     mIsNotRemembered = false;
-                    mNotRemembered.setText("Not Remembered Exactly !");
+                    mNotRemembered.setText(R.string.not_remembered);
                     mDateEditTextContainerLL.setVisibility(View.VISIBLE);
                     mSpinnerContainerLL.setVisibility(View.GONE);
 
 
                 }else{
-                    mNotRemembered.setText("Fill Exact Date !");
+                    mNotRemembered.setText(R.string.remembered);
                     mIsNotRemembered = true ;
                     mDateEditTextContainerLL.setVisibility(View.GONE);
                     mSpinnerContainerLL.setVisibility(View.VISIBLE);
