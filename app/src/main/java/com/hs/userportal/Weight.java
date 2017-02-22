@@ -188,6 +188,12 @@ public class Weight extends BaseActivity {
         new BackgroundProcess().execute();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
+
     public void setLinechart() {
         linechart.setDrawGridBackground(false);
         for (int i = 0; i < chartValues.size(); i++) {
@@ -319,7 +325,7 @@ public class Weight extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            isDataAvailable = true;
+            isDataAvailable = false;
             progress = new ProgressDialog(Weight.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
@@ -402,10 +408,6 @@ public class Weight extends BaseActivity {
 
                 e.printStackTrace();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 

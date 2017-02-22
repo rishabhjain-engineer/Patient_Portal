@@ -309,6 +309,12 @@ public class Height extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
+
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
@@ -423,7 +429,6 @@ public class Height extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.weightmenu, menu);
-
         return true;
     }
 
