@@ -74,7 +74,12 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = fromDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
+
             if(!TextUtils.isEmpty(list.get(position).get("role")) && !"null".equalsIgnoreCase(list.get(position).get("role"))){
                 role.setVisibility(View.VISIBLE);
                 role.setText(list.get(position).get("role"));
@@ -96,7 +101,11 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = fromDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
 
         }else if(whichactivity.equalsIgnoreCase("Travel")){
               top1.setTypeface(null, Typeface.NORMAL);
@@ -117,7 +126,11 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = fromDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
         }
 
 

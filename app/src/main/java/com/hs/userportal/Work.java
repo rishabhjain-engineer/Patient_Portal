@@ -618,8 +618,8 @@ public class Work extends BaseActivity {
 
                 }
                 else {
-                    mFinalFromDate = 01+"/"+mFromMonth+"/"+mFromYear;
-                    mFinalToDate = 02+"/"+mToMonth+"/"+mToYear;
+                    mFinalFromDate = 00+"/"+mFromMonth+"/"+mFromYear;
+                    mFinalToDate = 00+"/"+mToMonth+"/"+mToYear;
 
                    /* lv.setAdapter(m_adapter);
                     HashMap hmap=new HashMap<String, String>();
@@ -817,8 +817,8 @@ public class Work extends BaseActivity {
                 fromdate = mFromCompValue ;
                 todate = mToCompValue ;
             } else if(mIsNotRemembered == true){
-                fromdate = 01 + "/" + mFromMonth + "/" + mFromYear;
-                todate = 02 + "/" + mToMonth + "/" + mToYear;
+                fromdate = 00 + "/" + mFromMonth + "/" + mFromYear;
+                todate = 00 + "/" + mToMonth + "/" + mToYear;
             }
 
 

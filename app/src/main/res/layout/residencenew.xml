@@ -247,7 +247,7 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:weightSum="2"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_marginTop="7dp"
             android:layout_gravity="center">
 

@@ -664,8 +664,8 @@ public class residence extends BaseActivity {
                 } else {
 
 
-                    mFinalFromDate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
-                    mFinalToDate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
+                    mFinalFromDate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                    mFinalToDate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
 
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
@@ -689,7 +689,7 @@ public class residence extends BaseActivity {
                             "\n" + country.getText().toString()
                             + "-"
                             + pincode.getText().toString() + "\n"
-                            + 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                            + 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                    /* }else{
                         input = house.getText().toString() + "\n"
                                 + add.getText().toString() + "\n"
@@ -865,8 +865,8 @@ public class residence extends BaseActivity {
                 fromdate = mFromCompValue ;
                 todate = mToCompValue ;
             } else if(mIsNotRemembered == true){
-                fromdate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
-                todate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
             }
 
             //todate=to.getText().toString();
