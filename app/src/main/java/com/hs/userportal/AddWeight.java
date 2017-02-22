@@ -322,7 +322,7 @@ public class AddWeight extends BaseActivity {
                 Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_LONG).show();
                /* Intent in=new Intent(AddWeight.this,Weight.class);
                 in.putExtra("id",id);*/
-                if (htype.equals("height")) {
+              /*  if (htype.equals("height")) {
                     Intent in = new Intent(AddWeight.this, Height.class);
                     in.putExtra("id", id);
                     startActivity(in);
@@ -334,7 +334,7 @@ public class AddWeight extends BaseActivity {
                     Intent in = new Intent(AddWeight.this, BpActivity.class);
                     in.putExtra("id", id);
                     startActivity(in);
-                }
+                }*/
                 finish();
             } else {
                 ghoom.dismiss();
