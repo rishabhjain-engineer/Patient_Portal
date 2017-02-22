@@ -1,6 +1,5 @@
 package com.hs.userportal;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -17,7 +16,6 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -51,7 +49,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -61,19 +58,18 @@ import java.util.HashMap;
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
-import ui.ProfileContainerActivity;
 
 public class residence extends BaseActivity {
 
-    private String checkedit="";
-    private ArrayList<String> patienthistorylist=new ArrayList<String>();
+    private String checkedit = "";
+    private ArrayList<String> patienthistorylist = new ArrayList<String>();
     private ArrayList<String> m_listItems = new ArrayList<String>();
-    private ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
     private CheckBox present;
     private Custom_profile_adapter m_adapter;
     private int i = 0;
-    private EditText city, country, state,add, pincode, house;
-    private static EditText from,to;
+    private EditText city, country, state, add, pincode, house;
+    private static EditText from, to;
     private ListView l;
     private AlertDialog alertDialog;
     private AlertDialog alert;
@@ -83,7 +79,7 @@ public class residence extends BaseActivity {
     private ScrollView scroll_id;
     private Services service;
     private JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
-    private String[] nationlist ;
+    private String[] nationlist;
     private JSONArray residearray;
     private ArrayAdapter<String> adapter1;
     private ArrayList<String> areaa = new ArrayList<String>();
@@ -97,15 +93,15 @@ public class residence extends BaseActivity {
     private SharedPreferences sharedPreferences;
     private String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
     private ArrayAdapter<String> adapter;
-    private Date date1, date2,datecurrent;
-    private String PatientHistoryId="", Address, cityName, stateName, CountryName, Pincode, dates, Name;
-    private static int stno,month2,year2,day2,month1,year1,day1;
+    private Date date1, date2, datecurrent;
+    private String PatientHistoryId = "", Address, cityName, stateName, CountryName, Pincode, dates, Name;
+    private static int stno, month2, year2, day2, month1, year1, day1;
     private Calendar c;
     private int selection;
     private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue, mFinalFromDate, mFinalToDate;
-    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12"};
+    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private ArrayList<String> years = new ArrayList<String>();
-    ArrayList<String> years1 = new ArrayList<String>() ;
+    ArrayList<String> years1 = new ArrayList<String>();
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -115,14 +111,14 @@ public class residence extends BaseActivity {
         setContentView(R.layout.residencenew);
         setupActionBar();
         mActionBar.setTitle("Residence");
-       // nationlist = getResources().getStringArray(R.array.national_list);
+        // nationlist = getResources().getStringArray(R.array.national_list);
       /*  for(int i=0;i<nationlist.length;i++){
            // countrylist.add(nationlist[i]);
         }*/
-         c = Calendar.getInstance();
-         year2 = c.get(Calendar.YEAR);
-         month2 = c.get(Calendar.MONTH);
-         day2 = c.get(Calendar.DAY_OF_MONTH);
+        c = Calendar.getInstance();
+        year2 = c.get(Calendar.YEAR);
+        month2 = c.get(Calendar.MONTH);
+        day2 = c.get(Calendar.DAY_OF_MONTH);
         year1 = c.get(Calendar.YEAR);
         month1 = c.get(Calendar.MONTH);
         day1 = c.get(Calendar.DAY_OF_MONTH);
@@ -135,10 +131,10 @@ public class residence extends BaseActivity {
         StrictMode.setThreadPolicy(policy);
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
-        scroll_id=(ScrollView)findViewById(R.id.scroll_id);
-      //  back = (Button) findViewById(R.id.bBack);
-      //  next = (Button) findViewById(R.id.bNext);
-       // b1 = (Button) findViewById(R.id.bFin);
+        scroll_id = (ScrollView) findViewById(R.id.scroll_id);
+        //  back = (Button) findViewById(R.id.bBack);
+        //  next = (Button) findViewById(R.id.bNext);
+        // b1 = (Button) findViewById(R.id.bFin);
         house = (EditText) findViewById(R.id.etHouseNo);
         add = (EditText) findViewById(R.id.etSubject);
         //area = (AutoCompleteTextView) findViewById(R.id.etContact);
@@ -155,7 +151,7 @@ public class residence extends BaseActivity {
 
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
-        m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Residence");
+        m_adapter = new Custom_profile_adapter(this, toeditFieldlist, "Residence");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(residence.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -165,15 +161,15 @@ public class residence extends BaseActivity {
         }
 
 
-        Spinner fromMonthSpinner = (Spinner)findViewById(R.id.from_month);
-        Spinner fromYearSpinner = (Spinner)findViewById(R.id.from_year);
+        Spinner fromMonthSpinner = (Spinner) findViewById(R.id.from_month);
+        Spinner fromYearSpinner = (Spinner) findViewById(R.id.from_year);
 
 
-        Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
-        Spinner toYearSpinner = (Spinner)findViewById(R.id.to_year);
+        Spinner toMonthSpinner = (Spinner) findViewById(R.id.to_month);
+        Spinner toYearSpinner = (Spinner) findViewById(R.id.to_year);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-         // FROM MONTH
+        // FROM MONTH
 
 
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -184,7 +180,6 @@ public class residence extends BaseActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
         adapter.setDropDownViewResource(R.layout.spinner_appearence);
         fromYearSpinner.setAdapter(adapter);
-
 
 
         ArrayAdapter monthAdapter = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
@@ -219,7 +214,6 @@ public class residence extends BaseActivity {
         // To Month
 
 
-
         int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear1; i++) {
             years1.add(Integer.toString(i));
@@ -228,7 +222,6 @@ public class residence extends BaseActivity {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years1);
         adapter1.setDropDownViewResource(R.layout.spinner_appearence);
         toYearSpinner.setAdapter(adapter1);
-
 
 
         ArrayAdapter monthAdapter1 = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
@@ -297,14 +290,6 @@ public class residence extends BaseActivity {
 */
 
 
-
-
-
-
-
-
-
-
         country.setInputType(InputType.TYPE_NULL);
         country.setOnTouchListener(new View.OnTouchListener() {
 
@@ -328,7 +313,7 @@ public class residence extends BaseActivity {
                                     dialog.dismiss();
                                     /*InputMethodManager imm = (InputMethodManager) residence.this.getSystemService(Service.INPUT_METHOD_SERVICE);
                                     imm.showSoftInput(pincode, 0);*/
-                                    InputMethodManager inputMethodManager =  (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                     inputMethodManager.toggleSoftInputFromWindow(pincode.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
 
                                     pincode.requestFocus();
@@ -394,17 +379,17 @@ public class residence extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO Auto-generated method stub
                 if (present.isChecked()) {
-                   // to.setTextColor(Color.parseColor("#D3D3D3"));
+                    // to.setTextColor(Color.parseColor("#D3D3D3"));
 
                     to.setText("");
                     to.setVisibility(View.INVISIBLE);
                     year2 = c.get(Calendar.YEAR);
-                    month2 = c.get(Calendar.MONTH)-1;
+                    month2 = c.get(Calendar.MONTH) - 1;
                     day2 = c.get(Calendar.DAY_OF_MONTH);
                 } else {
                     to.setVisibility(View.VISIBLE);
-                   to.setText("");
-                   // to.setTextColor(Color.parseColor("#000000"));
+                    to.setText("");
+                    // to.setTextColor(Color.parseColor("#000000"));
                 }
             }
         });
@@ -414,122 +399,111 @@ public class residence extends BaseActivity {
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     final int arg2, long arg3) {
                 // TODO Auto-generated method stub
+                final Dialog dialog = new Dialog(residence.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.alertdialog_allbutton);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
+                Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
+                Button editButton = (Button) dialog.findViewById(R.id.edit_btn);
 
-                alert = new AlertDialog.Builder(residence.this).create();
+                dialog.setTitle("Alert");
 
+                stayButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
 
-                alert.setTitle("Alert");
-                alert.setMessage("Please select an Option.");
-
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-
-                                PatientHistoryId = patienthistorylist.get(arg2);
-                                patienthistorylist.remove(arg2);
-                                toeditFieldlist.remove(arg2);
-                                m_listItems.remove(arg2);
-                                Utility.setListViewHeightBasedOnChildren(l);
-                                m_adapter.notifyDataSetChanged();
-                                m_adapter.notifyDataSetInvalidated();
-                                checkedit = "delete";
-                                new BackgroundProcess().execute();
-
-                            }
-                        });
-
-                alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                dialog.dismiss();
-
-                            }
-                        });
-
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "Edit",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-                                PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
-                                String ad = toeditFieldlist.get(arg2).get("address");
-                                house.setText(toeditFieldlist.get(arg2).get("name"));
+                okBTN.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        PatientHistoryId = patienthistorylist.get(arg2);
+                        patienthistorylist.remove(arg2);
+                        toeditFieldlist.remove(arg2);
+                        m_listItems.remove(arg2);
+                        Utility.setListViewHeightBasedOnChildren(l);
+                        m_adapter.notifyDataSetChanged();
+                        m_adapter.notifyDataSetInvalidated();
+                        checkedit = "delete";
+                        new BackgroundProcess().execute();
+                    }
+                });
 
 
-                                String add1=toeditFieldlist.get(arg2).get("address");
+                editButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        {
+                            dialog.dismiss();
+                            PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
+                            String ad = toeditFieldlist.get(arg2).get("address");
+                            house.setText(toeditFieldlist.get(arg2).get("name"));
+
+
+                            String add1 = toeditFieldlist.get(arg2).get("address");
                                /* add1=add1.replace("-", "");*/
-                                add1=add1.replace("\n", "");
-
-                                add.setText(add1.trim());
-
-                                String city1=toeditFieldlist.get(arg2).get("city");
-                                city1=city1.replace("-","");
-                                city1=city1.replace(",","");
-                                city1=city1.replace("\n", "");
-
-                                city.setText(city1.trim());
-
-
-                                String state1=toeditFieldlist.get(arg2).get("state");
-                                state1=state1.replace("-","");
-                                state1=state1.replace(",","");
-                                state1=state1.replace("\n", "");
-
-                                state.setText(state1.trim());
-
-
-
-
-                                String pin=toeditFieldlist.get(arg2).get("postaladdress");
-                                pin=pin.replace("-","");
-                                pin=pin.replace(",","");
-                                pin=pin.replace("\n","");
-                                pin=pin.replace(" ","");
-                                pincode.setText(pin);
-
-
-                                if(toeditFieldlist.get(arg2).get("to").contains("PRESENT")){
-                                    to.setText("");
-                                }else {
-                                    to.setText(toeditFieldlist.get(arg2).get("to"));
-                                }
-                                from.setText(toeditFieldlist.get(arg2).get("from"));
-                                String cont=toeditFieldlist.get(arg2).get("country");
-                                cont=cont.replace("-", "");
-                                cont=cont.replace(",","");
-                                cont=cont.replace("\n", "");
-
-                                country.setText(cont.trim());
-                                checkedit = "edit";
-                                addbtn.setText("UPDATE");
-                                try {
-                                    String [] fromdialog=toeditFieldlist.get(arg2).get("from").split("/");
-                                    year1=Integer.parseInt(fromdialog[2]);
-                                    month1=Integer.parseInt(fromdialog[1])-1;
-                                    day1=Integer.parseInt(fromdialog[0]);
-
-                                    String [] fromdialog1=toeditFieldlist.get(arg2).get("to").split("/");
-                                    year2=Integer.parseInt(fromdialog1[2]);
-                                    month2=Integer.parseInt(fromdialog1[1])-1;
-                                    day2=Integer.parseInt(fromdialog1[0]);
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }catch (ArrayIndexOutOfBoundsException ex){
-                                    ex.printStackTrace();
-                                }
-                                scroll_id.post(new Runnable() {
-                                    public void run() {
-                                        // scroll_id.scrollTo(0, scroll_id.getBottom());
-                                        scroll_id.fullScroll(ScrollView.FOCUS_UP);
-                                    }
-                                });
+                            add1 = add1.replace("\n", "");
+                            add.setText(add1.trim());
+                            String city1 = toeditFieldlist.get(arg2).get("city");
+                            city1 = city1.replace("-", "");
+                            city1 = city1.replace(",", "");
+                            city1 = city1.replace("\n", "");
+                            city.setText(city1.trim());
+                            String state1 = toeditFieldlist.get(arg2).get("state");
+                            state1 = state1.replace("-", "");
+                            state1 = state1.replace(",", "");
+                            state1 = state1.replace("\n", "");
+                            state.setText(state1.trim());
+                            String pin = toeditFieldlist.get(arg2).get("postaladdress");
+                            pin = pin.replace("-", "");
+                            pin = pin.replace(",", "");
+                            pin = pin.replace("\n", "");
+                            pin = pin.replace(" ", "");
+                            pincode.setText(pin);
+                            if (toeditFieldlist.get(arg2).get("to").contains("PRESENT")) {
+                                to.setText("");
+                            } else {
+                                to.setText(toeditFieldlist.get(arg2).get("to"));
                             }
-                        });
+                            from.setText(toeditFieldlist.get(arg2).get("from"));
+                            String cont = toeditFieldlist.get(arg2).get("country");
+                            cont = cont.replace("-", "");
+                            cont = cont.replace(",", "");
+                            cont = cont.replace("\n", "");
 
-                alert.show();
+                            country.setText(cont.trim());
+                            checkedit = "edit";
+                            addbtn.setText("UPDATE");
+                            try {
+                                String[] fromdialog = toeditFieldlist.get(arg2).get("from").split("/");
+                                year1 = Integer.parseInt(fromdialog[2]);
+                                month1 = Integer.parseInt(fromdialog[1]) - 1;
+                                day1 = Integer.parseInt(fromdialog[0]);
+
+                                String[] fromdialog1 = toeditFieldlist.get(arg2).get("to").split("/");
+                                year2 = Integer.parseInt(fromdialog1[2]);
+                                month2 = Integer.parseInt(fromdialog1[1]) - 1;
+                                day2 = Integer.parseInt(fromdialog1[0]);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                ex.printStackTrace();
+                            }
+                            scroll_id.post(new Runnable() {
+                                public void run() {
+                                    // scroll_id.scrollTo(0, scroll_id.getBottom());
+                                    scroll_id.fullScroll(ScrollView.FOCUS_UP);
+                                }
+                            });
+                        }
+                    }
+                });
+                dialog.show();
 
             }
 
@@ -572,26 +546,8 @@ public class residence extends BaseActivity {
                 }*/
 
 //city, country, state,add, pincode, house,from,to
-                if (city.getText().toString().equals("")||country.getText().toString().equals("")||house.getText().toString().equals("") || TextUtils.isEmpty(add.getEditableText().toString())) {
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog.setMessage("Mandatory fields can be left Blank");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
+                if (city.getText().toString().equals("") || country.getText().toString().equals("") || house.getText().toString().equals("") || TextUtils.isEmpty(add.getEditableText().toString())) {
+                    showAlertMessage("Mandatory fields can not be left Blank !");
                 }/* else if (date2 != null && (date1.compareTo(date2) > 0
                         || date1.compareTo(date2) == 0)) {
 
@@ -658,33 +614,13 @@ public class residence extends BaseActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                }*/ else if(!pincode.getText().toString().equals("")&&pincode.getText().toString().length()<4) {
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("Postal code should be greater than three digits.");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                }
-                else {
+                }*/ else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
+                    showAlertMessage("Postal code should be greater than three digits");
+                } else {
 
 
-                    mFinalFromDate = 01+"/"+mFromMonthValue+"/"+mFromYearValue;
-                    mFinalToDate = 02+"/"+mToMonthValue+"/"+mToYearValue;
+                    mFinalFromDate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                    mFinalToDate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
 
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
@@ -701,14 +637,14 @@ public class residence extends BaseActivity {
                     toeditFieldlist.add(hmap);*/
                     String input;
                     //if(to.getText().toString().equals("")) {
-                        input = house.getText().toString() + "\n"
-                                + add.getText().toString() + "\n"
-                                + city.getText().toString() + ","
-                                + state.getText().toString() +
-                                "\n"+country.getText().toString()
-                                + "-"
-                                + pincode.getText().toString() + "\n"
-                                + 01+"/"+mFromMonthValue+"/"+mFromYearValue;
+                    input = house.getText().toString() + "\n"
+                            + add.getText().toString() + "\n"
+                            + city.getText().toString() + ","
+                            + state.getText().toString() +
+                            "\n" + country.getText().toString()
+                            + "-"
+                            + pincode.getText().toString() + "\n"
+                            + 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
                    /* }else{
                         input = house.getText().toString() + "\n"
                                 + add.getText().toString() + "\n"
@@ -729,16 +665,16 @@ public class residence extends BaseActivity {
                         } else {
                             int value = 0;
                             for (i = 0; i < m_listItems.size(); i++) {
-                                String item=m_listItems.get(i).trim().replace(" ","");
-                                String input1=input.trim().replace(" ","");
-                                item=item.replace("-","");
-                                input1=input1.replace("-","");
-                                item=item.replace("PRESENT","");
-                                input1=input1.replace("PRESENT","");
-                                item=item.replace(",","");
-                                input1=input1.replace(",","");
-                                item=item.replace("\n","");
-                                input1=input1.replace("\n","");
+                                String item = m_listItems.get(i).trim().replace(" ", "");
+                                String input1 = input.trim().replace(" ", "");
+                                item = item.replace("-", "");
+                                input1 = input1.replace("-", "");
+                                item = item.replace("PRESENT", "");
+                                input1 = input1.replace("PRESENT", "");
+                                item = item.replace(",", "");
+                                input1 = input1.replace(",", "");
+                                item = item.replace("\n", "");
+                                input1 = input1.replace("\n", "");
                                 try {
                                     if (input1.equalsIgnoreCase(item)
                                             ) {
@@ -754,8 +690,8 @@ public class residence extends BaseActivity {
                             if (value == 0) {
 
                                 new submitchange().execute();
-                            }else{
-                                Toast.makeText(getApplicationContext(),"Duplicate entries not allowed!",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Duplicate entries not allowed!", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -764,8 +700,6 @@ public class residence extends BaseActivity {
                 Utility.setListViewHeightBasedOnChildren(l);
             }
         });
-
-
 
 
         from.setOnClickListener(new OnClickListener() {
@@ -822,7 +756,7 @@ public class residence extends BaseActivity {
 
     }
 
-    public  static class DatePickerFragment extends DialogFragment implements
+    public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -855,13 +789,14 @@ public class residence extends BaseActivity {
             from.setText(formattedDayOfMonth + "/" + formattedMonth + "/"
                     + year);
 
-           // to.requestFocus();
+            // to.requestFocus();
         }
     }
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String Name,address1,cityName,stateName,CountryName,Pincode,fromdate,todate,message;
+        String Name, address1, cityName, stateName, CountryName, Pincode, fromdate, todate, message;
+
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -870,22 +805,21 @@ public class residence extends BaseActivity {
             ghoom.setCancelable(false);
             ghoom.setMessage("Loading...");
             ghoom.setIndeterminate(true);
-            Name=house.getText().toString();
-            address1=add.getText().toString();
-            cityName=city.getText().toString();
-            stateName=state.getText().toString();
-            CountryName=country.getText().toString();
-            Pincode=pincode.getText().toString();
-            fromdate=01+"/"+mFromMonthValue+"/"+mFromYearValue;
-            todate=02+"/"+mToMonthValue+"/"+mToYearValue;
+            Name = house.getText().toString();
+            address1 = add.getText().toString();
+            cityName = city.getText().toString();
+            stateName = state.getText().toString();
+            CountryName = country.getText().toString();
+            Pincode = pincode.getText().toString();
+            fromdate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
+            todate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
             //todate=to.getText().toString();
-
 
 
 //city, country, state,add, pincode, house,from,to
             ghoom.show();
-			/*Work.this.runOnUiThread(new Runnable() {
-				public void run() {
+            /*Work.this.runOnUiThread(new Runnable() {
+                public void run() {
 
 				}
 			});*/
@@ -893,7 +827,7 @@ public class residence extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(checkedit.equals("edit")) {
+            if (checkedit.equals("edit")) {
                 if (message.equals("success")) {
                     ghoom.dismiss();
                     Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
@@ -908,7 +842,7 @@ public class residence extends BaseActivity {
                     to.setText("");
 
                     checkedit = "";
-                    PatientHistoryId="";
+                    PatientHistoryId = "";
                     addbtn.setText("ADD");
                     year2 = c.get(Calendar.YEAR);
                     month2 = c.get(Calendar.MONTH);
@@ -924,29 +858,29 @@ public class residence extends BaseActivity {
 
                         data = receiveData1.getString("d");
                         JSONObject cut = new JSONObject(data);
-                        JSONArray	workarray = cut.getJSONArray("Table");
+                        JSONArray workarray = cut.getJSONArray("Table");
                         if (workarray.length() > 0) {
                             patienthistorylist.clear();
                             toeditFieldlist.clear();
                         }
-                        HashMap<String,String> hmap;
+                        HashMap<String, String> hmap;
                         for (i = 0; i < workarray.length(); i++)
 
                         {
                             //PatientHistoryId,CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
-                          //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
+                            //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
                             String todatenull = workarray.getJSONObject(i).getString("todate");
                             if (todatenull.equals("null")) {
                                 todatenull = "";
                             }
-                            hmap=new HashMap<String, String>();
-                            hmap.put("name",workarray.getJSONObject(i).getString("Name"));
+                            hmap = new HashMap<String, String>();
+                            hmap.put("name", workarray.getJSONObject(i).getString("Name"));
                             hmap.put("address", workarray.getJSONObject(i).getString(
                                     "Address"));
-                            hmap.put("city",workarray.getJSONObject(i).getString("cityName"));
-                            hmap.put("state",workarray.getJSONObject(i).getString("stateName"));
-                            hmap.put("country",workarray.getJSONObject(i).getString("CountryName"));
-                            hmap.put("postaladdress",workarray.getJSONObject(i).getString(
+                            hmap.put("city", workarray.getJSONObject(i).getString("cityName"));
+                            hmap.put("state", workarray.getJSONObject(i).getString("stateName"));
+                            hmap.put("country", workarray.getJSONObject(i).getString("CountryName"));
+                            hmap.put("postaladdress", workarray.getJSONObject(i).getString(
                                     "Pincode"));
                             hmap.put("PatientHistoryId", workarray.getJSONObject(i).getString("PatientHistoryId"));
                             hmap.put("from", workarray.getJSONObject(i).getString(
@@ -959,7 +893,7 @@ public class residence extends BaseActivity {
 
                         {
                             patienthistorylist.add(toeditFieldlist.get(i).get("PatientHistoryId"));
-                            String todatenull=toeditFieldlist.get(i).get("to");
+                            String todatenull = toeditFieldlist.get(i).get("to");
                             if (todatenull != "") {
                                 m_listItems.add(toeditFieldlist.get(i).get("name")
                                         + "\n"
@@ -968,13 +902,13 @@ public class residence extends BaseActivity {
 
                                         + toeditFieldlist.get(i).get("city")
                                         + ", "
-                                        +  toeditFieldlist.get(i).get("state")
+                                        + toeditFieldlist.get(i).get("state")
 
-                                        +"\n"+toeditFieldlist.get(i).get("country")
-                                        +", "
+                                        + "\n" + toeditFieldlist.get(i).get("country")
+                                        + ", "
                                         + toeditFieldlist.get(i).get("postaladdress")
                                         + "\n"
-                                        +toeditFieldlist.get(i).get("from")
+                                        + toeditFieldlist.get(i).get("from")
                                         + "-"
                                         + todatenull);
                             }
@@ -1007,14 +941,13 @@ public class residence extends BaseActivity {
                     ghoom.dismiss();
                     checkedit = "";
                 }
-            }
-            else	if (message.equals("success")) {
+            } else if (message.equals("success")) {
                 ghoom.dismiss();
                 Toast.makeText(getApplicationContext(),
                         "Your changes have been saved!", Toast.LENGTH_SHORT)
                         .show();
-                checkedit="";
-                PatientHistoryId="";
+                checkedit = "";
+                PatientHistoryId = "";
                 house.setText("");
                 add.setText("");
                 city.setText("");
@@ -1031,14 +964,12 @@ public class residence extends BaseActivity {
                 day1 = c.get(Calendar.DAY_OF_MONTH);
                 new BackgroundProcess().execute();
                 //finish();
-            }
-
-            else {
+            } else {
                 ghoom.dismiss();
                 Toast.makeText(getApplicationContext(),
                         "Your changes could not be saved!", Toast.LENGTH_SHORT)
                         .show();
-                checkedit="";
+                checkedit = "";
             }
 
 
@@ -1050,11 +981,11 @@ public class residence extends BaseActivity {
             /*countryids.clear();
             countrylist.clear();*/
             JSONObject sendwork = new JSONObject();
-            JSONObject senddata=new JSONObject();
-            String country_id="";
-            for(int i=0;i<countrylist.size();i++){
-                if(CountryName.equals(countrylist.get(i))) {
-                    country_id=countryids.get(i);
+            JSONObject senddata = new JSONObject();
+            String country_id = "";
+            for (int i = 0; i < countrylist.size(); i++) {
+                if (CountryName.equals(countrylist.get(i))) {
+                    country_id = countryids.get(i);
                 }
             }
 
@@ -1063,9 +994,9 @@ public class residence extends BaseActivity {
                     sendwork.put("Name", Name);
                     sendwork.put("Address", address1);
                     sendwork.put("cityName", cityName);
-                    sendwork.put("stateName",  stateName);
+                    sendwork.put("stateName", stateName);
 
-                    sendwork.put("CountryId",country_id);
+                    sendwork.put("CountryId", country_id);
                     sendwork.put("Pincode", Pincode);
                     sendwork.put("fromdate", fromdate);
                     /*if(todate.equals("")){
@@ -1074,37 +1005,37 @@ public class residence extends BaseActivity {
                     sendwork.put("todate", todate);
                     // }
 
-                    sendwork.put("profileParameter","residence");
-                    sendwork.put("PatientHistoryId",PatientHistoryId);
-                    JSONArray jarray=new JSONArray();
+                    sendwork.put("profileParameter", "residence");
+                    sendwork.put("PatientHistoryId", PatientHistoryId);
+                    JSONArray jarray = new JSONArray();
                     jarray.put(sendwork);
 
-                    senddata.put("otherDetails",jarray);
-                    senddata.put("UserId",id);
-                    senddata.put("typeselect","residence");
-                    senddata.put("statusType","edit");
-                }else{
+                    senddata.put("otherDetails", jarray);
+                    senddata.put("UserId", id);
+                    senddata.put("typeselect", "residence");
+                    senddata.put("statusType", "edit");
+                } else {
                     sendwork.put("Name", Name);
                     sendwork.put("Address", address1);
                     sendwork.put("cityName", cityName);
-                    sendwork.put("stateName",  stateName);
-                    sendwork.put("CountryId",country_id);
+                    sendwork.put("stateName", stateName);
+                    sendwork.put("CountryId", country_id);
                     sendwork.put("Pincode", Pincode);
                     sendwork.put("fromdate", fromdate);
                     sendwork.put("todate", todate);
-                    sendwork.put("profileParameter","residence");
-                    sendwork.put("PatientHistoryId","");
-                    JSONArray jarray=new JSONArray();
+                    sendwork.put("profileParameter", "residence");
+                    sendwork.put("PatientHistoryId", "");
+                    JSONArray jarray = new JSONArray();
                     jarray.put(sendwork);
 
-                    senddata.put("otherDetails",jarray);
-                    senddata.put("UserId",id);
-                    senddata.put("typeselect","residence");
-                    senddata.put("statusType","");
+                    senddata.put("otherDetails", jarray);
+                    senddata.put("UserId", id);
+                    senddata.put("typeselect", "residence");
+                    senddata.put("statusType", "");
                 }
                 receiveData1 = service.saveOtherDetail(senddata);
                 message = receiveData1.getString("d");
-            }  catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -1149,30 +1080,30 @@ public class residence extends BaseActivity {
                         toeditFieldlist.clear();
                         m_listItems.clear();
                     }
-                    HashMap<String,String> hmap;
+                    HashMap<String, String> hmap;
 
                     for (i = 0; i < workarray.length(); i++)
 
                     {
                         //PatientHistoryId,CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
-                      //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
+                        //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
                         String todatenull = workarray.getJSONObject(i).getString("todate").trim();
                         if (todatenull.equals("null")) {
                             todatenull = "PRESENT";
                         }
-                        String postal_null= workarray.getJSONObject(i).getString("Pincode").trim();
-                        if(postal_null.equalsIgnoreCase("null")){
-                            postal_null="";
+                        String postal_null = workarray.getJSONObject(i).getString("Pincode").trim();
+                        if (postal_null.equalsIgnoreCase("null")) {
+                            postal_null = "";
                         }
-                        hmap=new HashMap<String, String>();
-                        hmap.put("name",workarray.getJSONObject(i).getString("Name").trim());
+                        hmap = new HashMap<String, String>();
+                        hmap.put("name", workarray.getJSONObject(i).getString("Name").trim());
                         hmap.put("address", workarray.getJSONObject(i).getString(
                                 "Address").trim());
-                        hmap.put("city",workarray.getJSONObject(i).getString("cityName").trim());
-                        hmap.put("state",workarray.getJSONObject(i).getString("stateName").trim());
-                        hmap.put("country",workarray.getJSONObject(i).getString("CountryName").trim());
-                        hmap.put("PatientHistoryId",workarray.getJSONObject(i).getString("PatientHistoryId").trim());
-                        hmap.put("postaladdress",postal_null);
+                        hmap.put("city", workarray.getJSONObject(i).getString("cityName").trim());
+                        hmap.put("state", workarray.getJSONObject(i).getString("stateName").trim());
+                        hmap.put("country", workarray.getJSONObject(i).getString("CountryName").trim());
+                        hmap.put("PatientHistoryId", workarray.getJSONObject(i).getString("PatientHistoryId").trim());
+                        hmap.put("postaladdress", postal_null);
                         hmap.put("from", workarray.getJSONObject(i).getString(
                                 "fromdate"));
                         hmap.put("to", todatenull);
@@ -1183,7 +1114,7 @@ public class residence extends BaseActivity {
 
                     {
                         patienthistorylist.add(toeditFieldlist.get(i).get("PatientHistoryId"));
-                        String todatenull=toeditFieldlist.get(i).get("to");
+                        String todatenull = toeditFieldlist.get(i).get("to");
                         if (todatenull != "") {
                             m_listItems.add(toeditFieldlist.get(i).get("name")
                                     + "\n"
@@ -1192,13 +1123,13 @@ public class residence extends BaseActivity {
 
                                     + toeditFieldlist.get(i).get("city")
                                     + ", "
-                                    +  toeditFieldlist.get(i).get("state")
+                                    + toeditFieldlist.get(i).get("state")
 
-                                    +"\n"+toeditFieldlist.get(i).get("country")
-                                    +", "
+                                    + "\n" + toeditFieldlist.get(i).get("country")
+                                    + ", "
                                     + toeditFieldlist.get(i).get("postaladdress")
                                     + "\n"
-                                    +toeditFieldlist.get(i).get("from")
+                                    + toeditFieldlist.get(i).get("from")
                                     + "-"
                                     + todatenull);
                         }/*else{
@@ -1227,7 +1158,7 @@ public class residence extends BaseActivity {
                     m_adapter.notifyDataSetChanged();
 
                 }
-            }catch(JSONException e1){
+            } catch (JSONException e1) {
 
                 e1.printStackTrace();
 
@@ -1241,7 +1172,7 @@ public class residence extends BaseActivity {
             if (checkedit.equals("delete")) {
                 sendData = new JSONObject();
                 try {
-                    sendData.put("patientHistoryId",PatientHistoryId);
+                    sendData.put("patientHistoryId", PatientHistoryId);
                     receiveData1 = service.deleteSingularDetails(sendData);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1326,7 +1257,7 @@ public class residence extends BaseActivity {
         }
     }
 
-    public static  class DatePickerFragment1 extends DialogFragment implements
+    public static class DatePickerFragment1 extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -1362,7 +1293,7 @@ public class residence extends BaseActivity {
         }
     }
 
-    public void startBackgroundprocess(){
+    public void startBackgroundprocess() {
         new BackgroundProcess().execute();
     }
     /*@Override
@@ -1406,35 +1337,7 @@ public class residence extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        showUnsavedAlertDialog();
+        finish();
     }
 
-    private void showUnsavedAlertDialog() {
-        final Dialog dialog = new Dialog(residence.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.unsaved_alert_dialog);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
-
-        okBTN.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                update.Imguri=null;
-                finish();
-            }
-        });
-        stayButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 }

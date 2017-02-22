@@ -341,105 +341,114 @@ public class Work extends BaseActivity {
                                     final int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 final String itemstring = m_listItems.get(arg2);
-                alert = new AlertDialog.Builder(Work.this).create();
+
+                final Dialog dialog = new Dialog(Work.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.alertdialog_allbutton);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
+                Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+                Button editButton = (Button)dialog.findViewById(R.id.edit_btn);
+                dialog.setTitle("Alert");
 
 
-                alert.setTitle("Alert");
-                alert.setMessage("Please select an option.");
+                stayButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
 
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-
-                                try {
-                                    PatientHistoryId = patienthistorylist.get(arg2);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                patienthistorylist.remove(arg2);
-                                toeditFieldlist.remove(arg2);
-                                m_listItems.remove(arg2);
-                                Utility.setListViewHeightBasedOnChildren(lv);
-                                m_adapter.notifyDataSetChanged();
-                                m_adapter.notifyDataSetInvalidated();
-                                checkedit = "delete";
-                                new BackgroundProcess().execute();
+                okBTN.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        PatientHistoryId = patienthistorylist.get(arg2);
+                        patienthistorylist.remove(arg2);
+                        toeditFieldlist.remove(arg2);
+                        m_listItems.remove(arg2);
+                        Utility.setListViewHeightBasedOnChildren(lv);
+                        m_adapter.notifyDataSetChanged();
+                        m_adapter.notifyDataSetInvalidated();
+                        checkedit = "delete";
+                        new BackgroundProcess().execute();
+                    }
+                });
 
 
-                            }
-                        });
 
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "Edit",
-                        new DialogInterface.OnClickListener() {
+                editButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        {
+                            dialog.dismiss();
+                            PatientHistoryId = patienthistorylist.get(arg2);
+                            wo.setText(toeditFieldlist.get(arg2).get("name"));
 
-                            public void onClick(DialogInterface dialog, int id) {
-                                PatientHistoryId = patienthistorylist.get(arg2);
-                                wo.setText(toeditFieldlist.get(arg2).get("name"));
-
-                                String add1=toeditFieldlist.get(arg2).get("address");
+                            String add1=toeditFieldlist.get(arg2).get("address");
                               /*  add1=add1.replace("-", "");*/
-                                add1=add1.replace("\n", "");
+                            add1=add1.replace("\n", "");
 
-                                ad.setText(add1.trim());
+                            ad.setText(add1.trim());
 
-                                String city=toeditFieldlist.get(arg2).get("city");
-                                city=city.replace("-","");
-                                city=city.replace(",","");
-                                city=city.replace("\n", "");
+                            String city=toeditFieldlist.get(arg2).get("city");
+                            city=city.replace("-","");
+                            city=city.replace(",","");
+                            city=city.replace("\n", "");
 
-                                ci.setText(city.trim());
-
-
-                                String state=toeditFieldlist.get(arg2).get("state");
-                                state=state.replace("-","");
-                                state=state.replace(",","");
-                                state=state.replace("\n", "");
-
-                                st.setText(state.trim());
+                            ci.setText(city.trim());
 
 
-                                String pin=toeditFieldlist.get(arg2).get("postaladdress");
-                                pin=pin.replace("-","");
-                                pin=pin.replace("\n","");
-                                pin=pin.replace(",","");
-                                pin=pin.replace(" ","");
-                                pi.setText(pin);
-                                if(toeditFieldlist.get(arg2).get("to").contains("PRESENT")){
-                                    to.setText("");
-                                }else {
-                                    to.setText(toeditFieldlist.get(arg2).get("to"));
+                            String state=toeditFieldlist.get(arg2).get("state");
+                            state=state.replace("-","");
+                            state=state.replace(",","");
+                            state=state.replace("\n", "");
+
+                            st.setText(state.trim());
+
+
+                            String pin=toeditFieldlist.get(arg2).get("postaladdress");
+                            pin=pin.replace("-","");
+                            pin=pin.replace("\n","");
+                            pin=pin.replace(",","");
+                            pin=pin.replace(" ","");
+                            pi.setText(pin);
+                            if(toeditFieldlist.get(arg2).get("to").contains("PRESENT")){
+                                to.setText("");
+                            }else {
+                                to.setText(toeditFieldlist.get(arg2).get("to"));
+                            }
+                            from.setText(toeditFieldlist.get(arg2).get("from"));
+                            String cont=toeditFieldlist.get(arg2).get("country");
+                            cont=cont.replace("-","");
+                            cont=cont.replace(",","");
+                            cont=cont.replace("\n", "");
+                            co.setText(cont.trim());
+                            checkedit = "edit";
+                            add.setText("UPDATE");
+                            try {
+                                String [] fromdialog=toeditFieldlist.get(arg2).get("from").split("/");
+                                year1=Integer.parseInt(fromdialog[2]);
+                                month1=Integer.parseInt(fromdialog[1])-1;
+                                day1=Integer.parseInt(fromdialog[0]);
+
+                                String [] fromdialog1=toeditFieldlist.get(arg2).get("to").split("/");
+                                year2=Integer.parseInt(fromdialog1[2]);
+                                month2=Integer.parseInt(fromdialog1[1])-1;
+                                day2=Integer.parseInt(fromdialog1[0]);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }catch (ArrayIndexOutOfBoundsException ex){
+                                ex.printStackTrace();
+                            }
+                            scroll_id.post(new Runnable() {
+                                public void run() {
+                                    // scroll_id.scrollTo(0, scroll_id.getBottom());
+                                    scroll_id.fullScroll(ScrollView.FOCUS_UP);
                                 }
-                                from.setText(toeditFieldlist.get(arg2).get("from"));
-                                String cont=toeditFieldlist.get(arg2).get("country");
-                                cont=cont.replace("-","");
-                                cont=cont.replace(",","");
-                                cont=cont.replace("\n", "");
-                                co.setText(cont.trim());
-                                checkedit = "edit";
-                                add.setText("UPDATE");
-                                try {
-                                    String [] fromdialog=toeditFieldlist.get(arg2).get("from").split("/");
-                                    year1=Integer.parseInt(fromdialog[2]);
-                                    month1=Integer.parseInt(fromdialog[1])-1;
-                                    day1=Integer.parseInt(fromdialog[0]);
-
-                                    String [] fromdialog1=toeditFieldlist.get(arg2).get("to").split("/");
-                                    year2=Integer.parseInt(fromdialog1[2]);
-                                    month2=Integer.parseInt(fromdialog1[1])-1;
-                                    day2=Integer.parseInt(fromdialog1[0]);
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }catch (ArrayIndexOutOfBoundsException ex){
-                                    ex.printStackTrace();
-                                }
-                                scroll_id.post(new Runnable() {
-                                    public void run() {
-                                        // scroll_id.scrollTo(0, scroll_id.getBottom());
-                                        scroll_id.fullScroll(ScrollView.FOCUS_UP);
-                                    }
-                                });
+                            });
                                /* m_listItems.remove(arg2);
                                 patienthistorylist.remove(arg2);
                                 toeditFieldlist.remove(arg2);
@@ -449,20 +458,10 @@ public class Work extends BaseActivity {
 
 
 
-                            }
-                        });
-
-                alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                dialog.dismiss();
-
-                            }
-                        });
-
-                alert.show();
+                        }
+                    }
+                });
+                dialog.show();
 
             }
 
@@ -503,25 +502,9 @@ public class Work extends BaseActivity {
 */
 
                 if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") || TextUtils.isEmpty(ad.getEditableText().toString())) {
-                    alertDialog = new AlertDialog.Builder(Work.this).create();
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
+                    showAlertMessage("Mandatory fields can not be left Blank !");
 
-                    // Setting Dialog Message
-                    alertDialog.setMessage("Mandatory fields can be left Blank");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
                 } /*else if (date2 != null && (date1.compareTo(date2) > 0
                         || date1.compareTo(date2) == 0)) {
 
@@ -589,25 +572,8 @@ public class Work extends BaseActivity {
                     // Showing Alert Message
                     alertDialog.show();
                 }*/ else if(!pi.getText().toString().equals("")&&pi.getText().toString().length()<4) {
-                    alertDialog = new AlertDialog.Builder(Work.this).create();
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
+                    showAlertMessage("Postal code should be greater than three digits");
 
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("Postal code should be greater than three digits");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
                 }
                 else {
                     mFinalFromDate = 01+"/"+mFromMonth+"/"+mFromYear;
@@ -1293,7 +1259,7 @@ public class Work extends BaseActivity {
                 return true;
             case R.id.action_home:
                 finish();
-                //showUnsavedAlertDialog();
+
                 return true;
 
             default:
@@ -1303,35 +1269,7 @@ public class Work extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        showUnsavedAlertDialog();
+        finish();
     }
 
-    private void showUnsavedAlertDialog() {
-        final Dialog dialog = new Dialog(Work.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.unsaved_alert_dialog);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
-
-        okBTN.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                update.Imguri=null;
-                finish();
-            }
-        });
-        stayButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-}
+  }
