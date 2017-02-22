@@ -1,9 +1,11 @@
 package ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -130,24 +133,32 @@ public class BpActivity extends BaseActivity {
         weight_listId.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
-                AlertDialog dialog = new AlertDialog.Builder(BpActivity.this).create();
-                dialog.setTitle("Delete Weight");
-                dialog.setMessage("Are you sure you want to delete the Weight?");
 
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
+                final Dialog dialog = new Dialog(BpActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.unsaved_alert_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                titleTv.setText("Delete Bp Value");
+                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+                messageTv.setText("Are you sure you want to delete the selected file(s)?");
+                stayButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         dialog.dismiss();
-
                     }
                 });
 
-                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-
+                okBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
+                        dialog.dismiss();
                         deleteWeight();
                     }
                 });
