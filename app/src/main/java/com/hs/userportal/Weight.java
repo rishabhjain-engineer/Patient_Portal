@@ -165,6 +165,7 @@ public class Weight extends BaseActivity {
                 okBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
                         deleteWeight();
                     }
                 });

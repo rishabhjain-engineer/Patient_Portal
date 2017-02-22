@@ -166,6 +166,7 @@ public class Height extends BaseActivity {
                 okBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
                         deleteheight();
                     }
                 });
