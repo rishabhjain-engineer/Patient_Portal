@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Height;
 import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
@@ -162,10 +163,12 @@ public class BpActivity extends BaseActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable = false;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            isDataAvailable = false;
             progress = new ProgressDialog(BpActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
@@ -175,13 +178,25 @@ public class BpActivity extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(BpActivity.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
-            progress.dismiss();
-            weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+            if(isDataAvailable){
+                if(adapter == null){
+                    adapter = new MyHealthsAdapter(BpActivity.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                }else{
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
+                Height.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                progress.dismiss();
+                weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+            }else {
+                Intent i = new Intent(BpActivity.this, AddWeight.class);
+                i.putExtra("id", id);
+                i.putExtra("htype", "bp");
+                startActivity(i);
+                finish();
+            }
         }
 
         @Override
@@ -204,6 +219,7 @@ public class BpActivity extends BaseActivity {
                 JSONArray jsonArrayLowerBp = new JSONArray();
                 JSONArray jsonArrayTopBp = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String PatientHistoryId = obj.optString("PatientHistoryId");
@@ -293,7 +309,7 @@ public class BpActivity extends BaseActivity {
                 i.putExtra("htype", "bp");
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 startActivity(i);
-                finish();
+                //finish();
                 return true;
 
             default:
@@ -359,8 +375,8 @@ public class BpActivity extends BaseActivity {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
+                        //finish();
+                       //startActivity(getIntent());
                     } else {
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
