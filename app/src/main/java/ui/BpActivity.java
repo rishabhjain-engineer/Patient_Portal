@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Height;
 import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
@@ -177,13 +178,25 @@ public class BpActivity extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(BpActivity.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
-            progress.dismiss();
-            weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+            if(isDataAvailable){
+                if(adapter == null){
+                    adapter = new MyHealthsAdapter(BpActivity.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                }else{
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
+                Height.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                progress.dismiss();
+                weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+            }else {
+                Intent i = new Intent(BpActivity.this, AddWeight.class);
+                i.putExtra("id", id);
+                i.putExtra("htype", "bp");
+                startActivity(i);
+                finish();
+            }
         }
 
         @Override
