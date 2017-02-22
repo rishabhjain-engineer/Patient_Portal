@@ -151,8 +151,8 @@ public class Weight extends BaseActivity {
                 TextView messageTv = (TextView) dialog.findViewById(R.id.message);
                 TextView titleTv = (TextView) dialog.findViewById(R.id.title);
                 titleTv.setText("Delete Weight");
-                Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
-                Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
+                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
                 messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
                 stayButton.setOnClickListener(new View.OnClickListener() {

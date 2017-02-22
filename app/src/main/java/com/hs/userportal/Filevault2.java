@@ -1081,8 +1081,8 @@ public class Filevault2 extends BaseActivity {
                             dialog.setCanceledOnTouchOutside(false);
                             TextView messageTv = (TextView) dialog.findViewById(R.id.message);
                             TextView titleTv = (TextView) dialog.findViewById(R.id.title);
-                            Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
-                            Button cancelButton = (Button) dialog.findViewById(R.id.stay_btn);
+                            TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                            TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
                             titleTv.setText("Delete");
                             messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
