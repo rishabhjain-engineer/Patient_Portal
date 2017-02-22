@@ -172,7 +172,7 @@ public class Height extends BaseActivity {
                 dialog.show();
             }
         });
-        
+
         linechart = (LineChart) findViewById(R.id.lineChart);
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -448,6 +448,7 @@ public class Height extends BaseActivity {
                 i.putExtra("id", mId);
                 i.putExtra("htype", "height");
                 startActivity(i);
+                //finish();
                 // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 

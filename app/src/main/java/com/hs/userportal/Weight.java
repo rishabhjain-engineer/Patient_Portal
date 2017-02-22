@@ -93,6 +93,7 @@ public class Weight extends BaseActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
+        service = new Services(Weight.this);
         setupActionBar();
         mActionBar.setTitle("Weight");
 
@@ -124,7 +125,6 @@ public class Weight extends BaseActivity {
         bsave = (Button) findViewById(R.id.bsave);
         wt_heading = (TextView) findViewById(R.id.wt_heading);
         wt_heading.setText("Weight (Kg)");
-        service = new Services(Weight.this);
         misc = new MiscellaneousTasks(Weight.this);
         Intent z = getIntent();
         id = z.getStringExtra("id");
@@ -313,11 +313,13 @@ public class Weight extends BaseActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable = false;
 
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+            isDataAvailable = true;
             progress = new ProgressDialog(Weight.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
@@ -326,17 +328,6 @@ public class Weight extends BaseActivity {
             progress.show();
 
 
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(Weight.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Utility.setListViewHeightBasedOnChildren(weight_listId);
-            progress.dismiss();
-            weight_graphView.loadUrl("file:///android_asset/html/index.html");
         }
 
         @Override
@@ -358,6 +349,7 @@ public class Weight extends BaseActivity {
 
                 JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String PatientHistoryId = obj.getString("PatientHistoryId");
@@ -417,6 +409,28 @@ public class Weight extends BaseActivity {
             return null;
         }
 
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if(isDataAvailable){
+                if(adapter == null){
+                    adapter = new MyHealthsAdapter(Weight.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                }else{
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
+                Utility.setListViewHeightBasedOnChildren(weight_listId);
+                progress.dismiss();
+                weight_graphView.loadUrl("file:///android_asset/html/index.html");
+            }else {
+                Intent i = new Intent(Weight.this, AddWeight.class);
+                i.putExtra("id", id);
+                i.putExtra("htype", "weight");
+                startActivity(i);
+                finish();
+            }
+        }
     }
 
     @Override
@@ -442,8 +456,7 @@ public class Weight extends BaseActivity {
                 i.putExtra("id", id);
                 i.putExtra("htype", "weight");
                 startActivity(i);
-                finish();
-
+                //finish();
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 return true;
@@ -511,8 +524,9 @@ public class Weight extends BaseActivity {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
+                        //finish();
+                        //startActivity(getIntent());
+                        new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -538,9 +552,9 @@ public class Weight extends BaseActivity {
         queue.add(jr);
     }
 
-   /* public void startBackgroundprocess() {
-        new BackgroundProcess().execute();
-    }*/
+    public void startBackgroundprocess() {
+        //new BackgroundProcess().execute();
+    }
 
     public class MyJavaScriptInterface {
         @JavascriptInterface
