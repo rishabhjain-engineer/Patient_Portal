@@ -538,6 +538,11 @@ public class Work extends BaseActivity {
                 }
 */
 
+                if(mIsNotRemembered == false &&  ( from.getText().toString().equals("") || to.getText().toString().equals("") ) ) {
+
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+
                 if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") || TextUtils.isEmpty(ad.getEditableText().toString())) {
 
                     showAlertMessage("Mandatory fields can not be left Blank !");
@@ -845,7 +850,6 @@ public class Work extends BaseActivity {
             co.setText("");
             pi.setText("");
             from.setText("");
-            to.setText("");
             add.setText("ADD");
             checkedit = "";
             PatientHistoryId="";

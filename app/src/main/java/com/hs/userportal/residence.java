@@ -553,6 +553,12 @@ public class residence extends BaseActivity {
 
             public void onClick(View v) {
 
+
+                if(mIsNotRemembered == false &&  ( from.getText().toString().equals("") || to.getText().toString().equals("") ) ) {
+
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+
                /* try {
 
                     final Calendar c = Calendar.getInstance();
@@ -890,8 +896,6 @@ public class residence extends BaseActivity {
                     country.setText("");
                     pincode.setText("");
                     from.setText("");
-                    to.setText("");
-
                     checkedit = "";
                     PatientHistoryId = "";
                     addbtn.setText("ADD");
