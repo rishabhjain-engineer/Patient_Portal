@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -49,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -98,10 +101,14 @@ public class residence extends BaseActivity {
     private static int stno, month2, year2, day2, month1, year1, day1;
     private Calendar c;
     private int selection;
-    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue, mFinalFromDate, mFinalToDate;
+    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue, mFinalFromDate = null, mFinalToDate = null;
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private ArrayList<String> years = new ArrayList<String>();
     ArrayList<String> years1 = new ArrayList<String>();
+    private static String mFromCompValue = null, mToCompValue = null;
+    private TextView mNotRemembered;
+    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL ;
+    private boolean mIsNotRemembered = false ;
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -131,6 +138,7 @@ public class residence extends BaseActivity {
         StrictMode.setThreadPolicy(policy);
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
+        mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
         scroll_id = (ScrollView) findViewById(R.id.scroll_id);
         //  back = (Button) findViewById(R.id.bBack);
         //  next = (Button) findViewById(R.id.bNext);
@@ -148,6 +156,37 @@ public class residence extends BaseActivity {
         present = (CheckBox) findViewById(R.id.cbPresentWork);
         service = new Services(residence.this);
         update.arrayres = new JSONArray();
+
+        mDateEditTextContainerLL = (LinearLayout) findViewById(R.id.L3);
+        mSpinnerContainerLL = (LinearLayout) findViewById(R.id.spinner_container);
+
+
+        mNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIsNotRemembered){
+                    mIsNotRemembered = false;
+                    mNotRemembered.setText("Not Remembered Exactly !");
+                    mDateEditTextContainerLL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerLL.setVisibility(View.GONE);
+
+
+                }else{
+                    mNotRemembered.setText("Fill Exact Date !");
+                    mIsNotRemembered = true ;
+                    mDateEditTextContainerLL.setVisibility(View.GONE);
+                    mSpinnerContainerLL.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(new Date(currentTimeMillis));
+        to.setText(dateString);
+        mToCompValue = dateString ;
+
 
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
@@ -786,8 +825,10 @@ public class residence extends BaseActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
-            from.setText(formattedDayOfMonth + "/" + formattedMonth + "/"
-                    + year);
+
+         from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+
+            mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
             // to.requestFocus();
         }
@@ -811,8 +852,17 @@ public class residence extends BaseActivity {
             stateName = state.getText().toString();
             CountryName = country.getText().toString();
             Pincode = pincode.getText().toString();
-            fromdate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
-            todate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
+
+
+
+            if(mIsNotRemembered == false) {
+                fromdate = mFromCompValue ;
+                todate = mToCompValue ;
+            } else if(mIsNotRemembered == true){
+                fromdate = 01 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = 02 + "/" + mToMonthValue + "/" + mToYearValue;
+            }
+
             //todate=to.getText().toString();
 
 
@@ -826,6 +876,7 @@ public class residence extends BaseActivity {
         }
 
         protected void onPostExecute(Void result) {
+
             super.onPostExecute(result);
             if (checkedit.equals("edit")) {
                 if (message.equals("success")) {
@@ -851,6 +902,8 @@ public class residence extends BaseActivity {
                     month1 = c.get(Calendar.MONTH);
                     day1 = c.get(Calendar.DAY_OF_MONTH);
                     present.setChecked(false);
+
+
                     new BackgroundProcess().execute();
                 } else {
                     String data;
@@ -1289,6 +1342,7 @@ public class residence extends BaseActivity {
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
             to.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+            mToCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
         }
     }

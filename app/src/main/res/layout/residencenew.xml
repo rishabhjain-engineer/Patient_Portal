@@ -142,10 +142,7 @@
         <LinearLayout
             android:id="@+id/L2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/editText6"
@@ -179,11 +176,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L2"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginTop="5dp">
 
             <TextView
-
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="2dp"
@@ -206,8 +202,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:text="Present"
-
-                android:visibility="invisible" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -215,7 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L2"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <EditText
                 android:id="@+id/editText8"
@@ -236,6 +231,7 @@
                 android:inputType="date" />
 
             <CheckBox
+                android:visibility="gone"
                 android:id="@+id/cbPresentWork"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -244,60 +240,66 @@
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/not_remember_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Remembered Exactly !"
+            android:textColor="@color/text_color_blue"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            android:layout_margin="5dp"/>
+
         <LinearLayout
+            android:id="@+id/spinner_container"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:visibility="gone">
+
             <LinearLayout
-                android:layout_alignParentLeft="true"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:orientation="vertical"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
-                    android:text="From Date*:"
-                    android:layout_marginBottom="3dp"
-                    android:textColor="@android:color/black" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <Spinner
                         android:id="@+id/from_month"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:spinnerMode="dropdown"
                         android:textColor="@color/black"
-                        android:textSize="14dp" />
+                        android:textSize="14dp"
+                        android:layout_weight="1"/>
 
                     <Spinner
                         android:id="@+id/from_year"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:spinnerMode="dropdown"
                         android:textColor="@color/black"
-                        android:textSize="14dp" />
+                        android:textSize="14dp"
+                        android:layout_weight="1"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_alignParentRight="true"
                 android:id="@+id/h34"
                 android:layout_marginLeft="15dp"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:text="To Date*:"
-                    android:layout_marginBottom="3dp"
-                    android:textColor="@android:color/black" />
+                android:orientation="vertical"
+                android:layout_weight="1">
+
                 <LinearLayout
                     android:id="@+id/L34"
                     android:layout_width="match_parent"
@@ -307,34 +309,30 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:weightSum="2">
                         <Spinner
                             android:id="@+id/to_month"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:spinnerMode="dropdown"
                             android:textColor="@color/black"
-                            android:textSize="14dp" />
+                            android:textSize="14dp"
+                            android:layout_weight="1"/>
                         <Spinner
                             android:id="@+id/to_year"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:spinnerMode="dropdown"
                             android:textColor="@color/black"
-                            android:textSize="14dp" />
+                            android:textSize="14dp"
+                            android:layout_weight="1"/>
                     </LinearLayout>
-
-                    <CheckBox
-                        android:visibility="gone"
-                        android:id="@+id/cbPresentWork34"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignRight="@+id/editText9"
-                        android:text="Present"
-                        android:textColor="@android:color/black" />
                 </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
 
         <Button
