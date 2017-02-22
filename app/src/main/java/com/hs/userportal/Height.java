@@ -92,6 +92,7 @@ public class Height extends BaseActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
+        service = new Services(Height.this);
         setupActionBar();
         mActionBar.setTitle("Height");
         queue = Volley.newRequestQueue(this);
@@ -116,7 +117,6 @@ public class Height extends BaseActivity {
         bsave = (Button) findViewById(R.id.bsave);
         wt_heading = (TextView) findViewById(R.id.wt_heading);
         wt_heading.setText("Height (cm)");
-        service = new Services(Height.this);
         misc = new MiscellaneousTasks(Height.this);
         Intent z = getIntent();
         mId = z.getStringExtra("id");
@@ -147,12 +147,10 @@ public class Height extends BaseActivity {
                 dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
-
                         dialog.dismiss();
 
                     }
                 });
-
                 dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -171,9 +169,10 @@ public class Height extends BaseActivity {
                 linechart.getLayoutParams();
         params.height = Math.round(height / 2);
         linechart.setLayoutParams(params);
-        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+      //  MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
         // set the marker to the chart
-        linechart.setMarkerView(mv);
+       // linechart.setMarkerView(mv);
+        new BackgroundProcess().execute();
     }
 
     public void setLinechart() {
@@ -301,21 +300,17 @@ public class Height extends BaseActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
-        boolean isDataAvailable = true;
+        boolean isDataAvailable = false;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(Height.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            isDataAvailable = true;
-
+            isDataAvailable = false;
             progress.show();
-
-
         }
 
         @Override
@@ -391,8 +386,14 @@ public class Height extends BaseActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if(isDataAvailable){
-                adapter = new MyHealthsAdapter(Height.this, weight_contentlists);
-                weight_listId.setAdapter(adapter);
+                if(adapter == null){
+                    adapter = new MyHealthsAdapter(Height.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                }else{
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
                 Utility.setListViewHeightBasedOnChildren(weight_listId);
                 progress.dismiss();
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
@@ -431,12 +432,10 @@ public class Height extends BaseActivity {
                 return true;
 
             case R.id.add:
-
                 Intent i = new Intent(Height.this, AddWeight.class);
                 i.putExtra("id", mId);
                 i.putExtra("htype", "height");
                 startActivity(i);
-                finish();
                 // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
@@ -496,21 +495,16 @@ public class Height extends BaseActivity {
         jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                System.out.println(response);
-
                 try {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(Height.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
+                        new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(Height.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -519,7 +513,6 @@ public class Height extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
                 Toast.makeText(getApplicationContext(), "Error while deleting data, Try Later", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
                 finish();
@@ -531,7 +524,7 @@ public class Height extends BaseActivity {
     }
 
     public void startBackgroundprocess() {
-        new BackgroundProcess().execute();
+        //new BackgroundProcess().execute();
     }
 
     public class MyJavaScriptInterface {

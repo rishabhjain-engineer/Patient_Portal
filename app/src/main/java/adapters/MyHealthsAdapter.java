@@ -28,12 +28,17 @@ public class MyHealthsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> OrderReportList;
 
-
     public MyHealthsAdapter(Activity activity, ArrayList<HashMap<String, String>> SortList) {
         this.activity = activity;
-        this.OrderReportList = SortList;
+        OrderReportList = SortList;
+    }
 
+    public MyHealthsAdapter(Activity activity) {
+        this.activity = activity;
+    }
 
+    public void setListData(ArrayList<HashMap<String, String>> SortList) {
+        OrderReportList = SortList;
     }
 
     @Override
