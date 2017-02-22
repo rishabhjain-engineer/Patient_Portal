@@ -84,7 +84,7 @@ public class BpActivity extends BaseActivity {
     private LineChart linechart;
     private int maxYrange = 0;
     private double mMaxWeight = 0;
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = null;
 
 
     @Override
@@ -170,6 +170,11 @@ public class BpActivity extends BaseActivity {
         new BackgroundProcess().execute();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
@@ -266,6 +271,7 @@ public class BpActivity extends BaseActivity {
                     innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
                     jsonArrayTopBp.put(innerJsonArrayTopBP);
                 }
+                mJsonArrayToSend = new JSONArray();
                 JSONObject outerJsonObjectUpperBp = new JSONObject();
                 outerJsonObjectUpperBp.put("key", "systolic");
                 outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
@@ -388,6 +394,7 @@ public class BpActivity extends BaseActivity {
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
                        //startActivity(getIntent());
+                        new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }

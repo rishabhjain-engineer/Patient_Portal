@@ -86,7 +86,7 @@ public class Weight extends BaseActivity {
     private int maxYrange = 0;
     private double mMaxWeight = 0;
 
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -395,6 +395,7 @@ public class Weight extends BaseActivity {
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
                 Helper.sortHealthListByDate(weight_contentlists);
                 //Collections.reverse(chartValues);
