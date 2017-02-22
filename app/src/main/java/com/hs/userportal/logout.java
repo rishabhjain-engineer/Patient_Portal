@@ -1390,8 +1390,8 @@ public class logout extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
         messageTextView.setText("Are you sure you want to Logout?");
         okBTN.setOnClickListener(new View.OnClickListener() {
