@@ -49,7 +49,7 @@ public class AddWeight extends BaseActivity {
     private Switch mSwitchWeight, mSwitchHeight;
     private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
     private boolean mIsFtInchValue = true, mIsHeight, mIsPound = false;
-    private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
+    private String[] mfeetValues = {"1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
     private List<String> mHeightList = new ArrayList<>();
     private Spinner mHeightFtSpinner, mHeightInchSpinner, mWeightLinkHeightSpinner;
@@ -455,7 +455,7 @@ public class AddWeight extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (htype.equals("height")) {
+        /*if (htype.equals("height")) {
             Intent in = new Intent(AddWeight.this, Height.class);
             in.putExtra("id", id);
             startActivity(in);
@@ -467,7 +467,7 @@ public class AddWeight extends BaseActivity {
             Intent in = new Intent(AddWeight.this, BpActivity.class);
             in.putExtra("id", id);
             startActivity(in);
-        }
+        }*/
         finish();
     }
 
