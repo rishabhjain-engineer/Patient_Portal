@@ -77,7 +77,7 @@ public class Custom_profile_adapter extends BaseAdapter {
             String fromDate = list.get(position).get("from");
             String toDate = list.get(position).get("to");
             fromDate = fromDate.replace("00/","");
-            toDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
             top5.setText(fromDate + " - " + toDate);
 
             if(!TextUtils.isEmpty(list.get(position).get("role")) && !"null".equalsIgnoreCase(list.get(position).get("role"))){
@@ -104,7 +104,7 @@ public class Custom_profile_adapter extends BaseAdapter {
             String fromDate = list.get(position).get("from");
             String toDate = list.get(position).get("to");
             fromDate = fromDate.replace("00/","");
-            toDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
             top5.setText(fromDate + " - " + toDate);
 
         }else if(whichactivity.equalsIgnoreCase("Travel")){
@@ -129,7 +129,7 @@ public class Custom_profile_adapter extends BaseAdapter {
             String fromDate = list.get(position).get("from");
             String toDate = list.get(position).get("to");
             fromDate = fromDate.replace("00/","");
-            toDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
             top5.setText(fromDate + " - " + toDate);
         }
 

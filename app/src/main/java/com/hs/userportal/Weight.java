@@ -340,6 +340,7 @@ public class Weight extends BaseActivity {
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
 
                 sendData1.put("UserId", id);
@@ -349,12 +350,9 @@ public class Weight extends BaseActivity {
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
-
-
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
 
-                JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     isDataAvailable = true;
                     hmap = new HashMap<String, String>();
@@ -378,9 +376,18 @@ public class Weight extends BaseActivity {
                     // chartDates.add("'" + fromdate + "'");
                     chartDates.add("");
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+                }
+
+                Helper.sortHealthListByDate(weight_contentlists);
+
+                JSONArray jsonArray1 = new JSONArray();
+                for(int i=0; i< weight_contentlists.size() ; i++){
+
                     Date date = null;
+                    HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
+                        String fromdate = mapValue.get("fromdate");
                         date = simpleDateFormat.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -388,16 +395,16 @@ public class Weight extends BaseActivity {
                     long epoch = date.getTime();
                     JSONArray innerJsonArray = new JSONArray();
                     innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
+                    innerJsonArray.put(mapValue.get("weight"));
 
                     jsonArray1.put(innerJsonArray);
+
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
-                Helper.sortHealthListByDate(weight_contentlists);
                 //Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");

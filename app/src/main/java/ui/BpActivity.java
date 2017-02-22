@@ -217,6 +217,7 @@ public class BpActivity extends BaseActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             JSONObject sendData1 = new JSONObject();
             try {
 
@@ -242,7 +243,7 @@ public class BpActivity extends BaseActivity {
                     String ID = obj.optString("ID");
                     String bp = obj.optString("bp");
 
-                    String bpArray[] = bp.split(",");
+
                     String fromdate = obj.optString("fromdate");
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
@@ -253,14 +254,29 @@ public class BpActivity extends BaseActivity {
                     chartValues.add(bp);
                     chartDates.add("");
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+                }
+
+
+                Helper.sortHealthListByDate(weight_contentlists);
+
+                for(int i=0; i< weight_contentlists.size() ; i++){
+
                     Date date = null;
+                    HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
+                        String fromdate = mapValue.get("fromdate");
                         date = simpleDateFormat.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
+                    JSONArray innerJsonArray = new JSONArray();
+                    String bp = mapValue.get("weight");
+                    String bpArray[] = bp.split(",");
+                    innerJsonArray.put(epoch);
+                    innerJsonArray.put(mapValue.get("weight"));
+
                     JSONArray innerJsonArrayLowerBp = new JSONArray();
                     JSONArray innerJsonArrayTopBP = new JSONArray();
                     innerJsonArrayLowerBp.put(epoch);
@@ -270,7 +286,10 @@ public class BpActivity extends BaseActivity {
                     innerJsonArrayTopBP.put(epoch);
                     innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
                     jsonArrayTopBp.put(innerJsonArrayTopBP);
+
+
                 }
+                
                 mJsonArrayToSend = new JSONArray();
                 JSONObject outerJsonObjectUpperBp = new JSONObject();
                 outerJsonObjectUpperBp.put("key", "systolic");
@@ -281,8 +300,6 @@ public class BpActivity extends BaseActivity {
                 outerJsonObjectLowerBp.put("key", "daistolic");
                 outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
                 mJsonArrayToSend.put(outerJsonObjectLowerBp);
-
-                Helper.sortHealthListByDate(weight_contentlists);
 
                 /*Collections.reverse(chartValues);
 

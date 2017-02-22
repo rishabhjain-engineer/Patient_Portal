@@ -202,6 +202,7 @@ public class BmiActivity extends BaseActivity {
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
 
                 sendData1.put("UserId", id);
@@ -214,7 +215,6 @@ public class BmiActivity extends BaseActivity {
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
 
-                JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
@@ -248,25 +248,35 @@ public class BmiActivity extends BaseActivity {
                         chartValues.add(weight);
                         // chartDates.add("'" + fromdate + "'");
                         chartDates.add("");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                        Date date = null;
-                        try {
-                            date = simpleDateFormat.parse(fromdate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        long epoch = date.getTime();
-                        JSONArray innerJsonArray = new JSONArray();
-                        innerJsonArray.put(epoch);
-                        innerJsonArray.put(bmiValue);
-                        jsonArray1.put(innerJsonArray);
                     }
+                }
+
+                Helper.sortHealthListByDate(weight_contentlists);
+
+                JSONArray jsonArray1 = new JSONArray();
+                for(int i=0; i< weight_contentlists.size() ; i++){
+
+                    Date date = null;
+                    HashMap<String, String> mapValue = weight_contentlists.get(i);
+                    try {
+                        String fromdate = mapValue.get("fromdate");
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+                    JSONArray innerJsonArray = new JSONArray();
+                    innerJsonArray.put(epoch);
+                    innerJsonArray.put(mapValue.get("weight"));
+
+                    jsonArray1.put(innerJsonArray);
+
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "BMI");
                 outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
-                Helper.sortHealthListByDate(weight_contentlists);
                 //Collections.reverse(chartValues);
             } catch (JSONException e) {
                 e.printStackTrace();
