@@ -61,6 +61,7 @@ import java.util.HashMap;
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import utils.Utils;
 
 public class residence extends BaseActivity {
 
@@ -107,8 +108,8 @@ public class residence extends BaseActivity {
     ArrayList<String> years1 = new ArrayList<String>();
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mNotRemembered;
-    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL, mEditBoxContainer;
-    private boolean mIsNotRemembered = false ;
+    private boolean mIsNotRemembered = false, mIsDateValid = false;
+    private LinearLayout mDateEditTextContainerLL, mSpinnerContainerLL, mEditBoxContainer;
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -166,16 +167,16 @@ public class residence extends BaseActivity {
         mNotRemembered.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mIsNotRemembered){
+                if (mIsNotRemembered) {
                     mIsNotRemembered = false;
                     mNotRemembered.setText(R.string.not_remembered);
                     mDateEditTextContainerLL.setVisibility(View.VISIBLE);
                     mSpinnerContainerLL.setVisibility(View.GONE);
 
 
-                }else{
+                } else {
                     mNotRemembered.setText(R.string.remembered);
-                    mIsNotRemembered = true ;
+                    mIsNotRemembered = true;
                     mDateEditTextContainerLL.setVisibility(View.GONE);
                     mSpinnerContainerLL.setVisibility(View.VISIBLE);
                 }
@@ -187,7 +188,7 @@ public class residence extends BaseActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(new Date(currentTimeMillis));
         to.setText(dateString);
-        mToCompValue = dateString ;
+        mToCompValue = dateString;
 
 
        /* m_adapter = new ArrayAdapter<String>(this,
@@ -231,6 +232,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFromMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := " + mFromMonthValue);
             }
 
             @Override
@@ -243,6 +245,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFromYearValue = years.get(position);
+                Log.e("rishabh", "mfinal fromdate := " + mFromYearValue);
             }
 
             @Override
@@ -273,6 +276,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mToMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := " + mToMonthValue);
             }
 
             @Override
@@ -285,6 +289,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mToYearValue = years1.get(position);
+                Log.e("rishabh", "mfinal fromdate := " + mToYearValue);
             }
 
             @Override
@@ -292,13 +297,6 @@ public class residence extends BaseActivity {
 
             }
         });
-
-
-
-
-
-
-
 
        /* ArrayAdapter yearArrayAdapter = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
         yearArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -555,11 +553,23 @@ public class residence extends BaseActivity {
 
             public void onClick(View v) {
 
+                mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
+                mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
-                if(mIsNotRemembered == false &&  ( from.getText().toString().equals("") || to.getText().toString().equals("") ) ) {
-
-                    showAlertMessage("Mandatory fields can not be left Blank !");
+                boolean isValid = false;
+                if (mIsNotRemembered == false) {
+                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
+                    if (isValid == true) {
+                        mIsDateValid = true;
+                    }
+                } else {
+                    mIsDateValid = false;
+                    isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
+                    if (isValid == true) {
+                        mIsDateValid = true;
+                    }
                 }
+
 
                /* try {
 
@@ -661,14 +671,16 @@ public class residence extends BaseActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                }*/ else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
+                }*/ else if (mIsNotRemembered == false && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
+
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                } else if (mIsDateValid == false) {
+                    showAlertMessage("Start date must be smaller than End date.");
+                } else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
                     showAlertMessage("Postal code should be greater than three digits");
                 } else {
-
-
                     mFinalFromDate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                     mFinalToDate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
-
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
 //city, country, state,add, pincode, house,from,to
@@ -834,7 +846,7 @@ public class residence extends BaseActivity {
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
 
-         from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+            from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
             mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
@@ -862,11 +874,10 @@ public class residence extends BaseActivity {
             Pincode = pincode.getText().toString();
 
 
-
-            if(mIsNotRemembered == false) {
-                fromdate = mFromCompValue ;
-                todate = mToCompValue ;
-            } else if(mIsNotRemembered == true){
+            if (mIsNotRemembered == false) {
+                fromdate = mFromCompValue;
+                todate = mToCompValue;
+            } else if (mIsNotRemembered == true) {
                 fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                 todate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
             }
@@ -908,6 +919,7 @@ public class residence extends BaseActivity {
                     month1 = c.get(Calendar.MONTH);
                     day1 = c.get(Calendar.DAY_OF_MONTH);
                     present.setChecked(false);
+                    mIsDateValid = false;
 
 
                     new BackgroundProcess().execute();
@@ -985,7 +997,6 @@ public class residence extends BaseActivity {
                         country.setText("");
                         pincode.setText("");
                         from.setText("");
-                        to.setText("");
                         year2 = c.get(Calendar.YEAR);
                         month2 = c.get(Calendar.MONTH);
                         day2 = c.get(Calendar.DAY_OF_MONTH);
@@ -1014,7 +1025,8 @@ public class residence extends BaseActivity {
                 country.setText("");
                 pincode.setText("");
                 from.setText("");
-                to.setText("");
+
+                mIsDateValid = false;
                 year2 = c.get(Calendar.YEAR);
                 month2 = c.get(Calendar.MONTH);
                 day2 = c.get(Calendar.DAY_OF_MONTH);
@@ -1114,8 +1126,8 @@ public class residence extends BaseActivity {
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
             progress.show();
-			/*Work.this.runOnUiThread(new Runnable() {
-				public void run() {
+            /*Work.this.runOnUiThread(new Runnable() {
+                public void run() {
 
 				}
 			});*/
@@ -1395,9 +1407,9 @@ public class residence extends BaseActivity {
 
                 //finish();
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                if(mEditBoxContainer.getVisibility() == View.VISIBLE){
+                if (mEditBoxContainer.getVisibility() == View.VISIBLE) {
                     mEditBoxContainer.setVisibility(View.GONE);
-                }else{
+                } else {
                     mEditBoxContainer.setVisibility(View.VISIBLE);
                 }
                 return true;

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/datefromcontainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/datefrom_textview"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Date From :"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginLeft="25dp"
+            android:layout_centerVertical="true"
+            />
+
+        <EditText
+            android:id="@+id/datefrom_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="9dp"
+            android:background="@drawable/edittext_corner"
+            android:hint="Date"
+            android:ems="10"
+            android:inputType="date"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            android:layout_toRightOf="@+id/datefrom_textview" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/datetocontainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/datefromcontainer">
+
+        <TextView
+            android:id="@+id/dateto_textview"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Date To :"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginLeft="25dp"
+            android:layout_centerVertical="true"/>
+
+        <EditText
+            android:id="@+id/dateto_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="9dp"
+            android:background="@drawable/edittext_corner"
+            android:hint="Date"
+            android:inputType="text"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="14dp"
+            android:layout_toRightOf="@+id/dateto_textview"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/durationcontainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/datetocontainer">
+
+        <TextView
+            android:id="@+id/duration_textview"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Duration :"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginLeft="25dp"
+            android:layout_centerVertical="true"/>
+
+        <Spinner
+            android:id="@+id/duration_spinner"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="9dp"
+            android:layout_toRightOf="@+id/duration_textview"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/addbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADD"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:background="@color/header_color"/>
+
+
+</RelativeLayout>

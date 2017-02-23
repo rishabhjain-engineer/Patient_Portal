@@ -446,7 +446,7 @@ public class Weight extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        getMenuInflater().inflate(R.menu.graphheader, menu);
 
         return true;
     }
@@ -471,6 +471,11 @@ public class Weight extends BaseActivity {
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 return true;
+
+            case R.id.option:
+
+                i = new Intent(Weight.this , AddGraphDetails.class);
+                startActivity(i);
 
             default:
                 return super.onOptionsItemSelected(item);
