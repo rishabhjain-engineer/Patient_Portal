@@ -107,7 +107,7 @@ public class residence extends BaseActivity {
     ArrayList<String> years1 = new ArrayList<String>();
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mNotRemembered;
-    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL ;
+    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL, mEditBoxContainer;
     private boolean mIsNotRemembered = false ;
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
@@ -139,6 +139,8 @@ public class residence extends BaseActivity {
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
         mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
+        mEditBoxContainer = (LinearLayout) findViewById(R.id.edit_box_container);
+
         scroll_id = (ScrollView) findViewById(R.id.scroll_id);
         //  back = (Button) findViewById(R.id.bBack);
         //  next = (Button) findViewById(R.id.bNext);
@@ -1367,8 +1369,10 @@ public class residence extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1386,6 +1390,16 @@ public class residence extends BaseActivity {
             case R.id.action_home:
                 finish();
                 //showUnsavedAlertDialog();
+                return true;
+            case R.id.add:
+
+                //finish();
+                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(mEditBoxContainer.getVisibility() == View.VISIBLE){
+                    mEditBoxContainer.setVisibility(View.GONE);
+                }else{
+                    mEditBoxContainer.setVisibility(View.VISIBLE);
+                }
                 return true;
 
             default:
