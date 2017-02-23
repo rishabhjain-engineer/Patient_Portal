@@ -393,6 +393,9 @@
             android:name="com.hs.userportal.Weight"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.hs.userportal.AddGraphDetails"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.hs.userportal.Allergy"
             android:label="Allergies"
             android:screenOrientation="portrait" />
