@@ -20,6 +20,9 @@ import com.hs.userportal.R;
 import com.hs.userportal.changepass;
 import com.hs.userportal.update;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by android1 on 19/1/17.
  */
@@ -96,6 +99,13 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    protected String getDayofWeek(String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        Date d = new Date();
+        String dayOfTheWeek = sdf.format(d);
+        return dayOfTheWeek;
     }
 
 }
