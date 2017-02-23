@@ -93,6 +93,45 @@ public class GraphHandlerActivity extends BaseActivity {
         return jsonArray;
     }
 
+    private JSONArray getJsonForYearly(String date1, String date2) {
+
+        String dateArray[] = date1.split("/");
+        String yearInString = dateArray[2];
+        int yearInInt = Integer.parseInt(yearInString);
+        yearInInt = yearInInt + 1;
+        date1 = "01/01/" + yearInInt;
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+
+        try {
+            beginCalendar.setTime(formater.parse(date1));
+            finishCalendar.setTime(formater.parse(date2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        while (beginCalendar.before(finishCalendar)) {
+            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            JSONArray innerJsonArray = new JSONArray();
+            innerJsonArray.put(epoch);
+            jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.YEAR, 1);
+        }
+        return jsonArray;
+
+    }
+
   /*  protected JSONArray getInitialJsonForMonthly(String date1, String date2) {
 
         if(date1.contains("T")){
