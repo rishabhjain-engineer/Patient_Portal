@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ui.BaseActivity;
+import utils.Utils;
 
 /**
  * Created by rishabh on 23/2/17.
@@ -127,7 +128,7 @@ public class AddGraphDetails extends BaseActivity {
                 mFromDate = mDateFromEt.getText().toString();
                 mToDate = mDateToEt.getText().toString();
 
-                mIsValidDate = isDateValid(mFromDate, mToDate) ;
+                mIsValidDate = Utils.isDateValid(mFromDate, mToDate , "dd/MM/yyyy") ;
 
                 if(mIsValidDate == false){
                     showAlertMessage("Start date must be less than End date.");
@@ -207,24 +208,6 @@ public class AddGraphDetails extends BaseActivity {
 
 
         }
-    }
-
-    private boolean isDateValid(String startingDate, String endingDate) {
-        boolean isDateValid = false;
-        try
-        {
-            String myFormatString = "dd/MM/yyyy" ;
-            SimpleDateFormat df = new SimpleDateFormat(myFormatString);
-            Date endDate = df.parse(endingDate);                     // End Date ; Rishabh
-            Date startDate = df.parse(startingDate);               // Start Date ; Rishabh
-
-            if (endDate.after(startDate)){            // end date is grater than starting date
-                isDateValid =  true;
-            }
-        }catch (Exception e){
-        }
-        Log.e("Rishabh", " Function value := "+isDateValid);
-        return isDateValid;
     }
 
     @Override

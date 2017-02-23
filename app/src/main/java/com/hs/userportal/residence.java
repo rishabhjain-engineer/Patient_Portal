@@ -61,6 +61,7 @@ import java.util.HashMap;
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import utils.Utils;
 
 public class residence extends BaseActivity {
 
@@ -557,13 +558,13 @@ public class residence extends BaseActivity {
 
                 boolean isValid = false;
                 if (mIsNotRemembered == false) {
-                    isValid = isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
+                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
                     if (isValid == true) {
                         mIsDateValid = true;
                     }
                 } else {
                     mIsDateValid = false;
-                    isValid = isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
+                    isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
                     if (isValid == true) {
                         mIsDateValid = true;
                     }
@@ -812,24 +813,6 @@ public class residence extends BaseActivity {
             }
         });
 
-    }
-
-    private boolean isDateValid(String startingDate, String endingDate, String myFormatString) {
-        boolean isDateValid = false;
-        try {
-
-            SimpleDateFormat df = new SimpleDateFormat(myFormatString);
-            Date endDate = df.parse(endingDate);                     // End Date ; Rishabh
-            Date startDate = df.parse(startingDate);               // Start Date ; Rishabh
-
-            if (endDate.after(startDate)) {            // end date is grater than starting date
-                isDateValid = true;
-            }
-        } catch (Exception e) {
-        }
-
-        Log.e("Rishabh", " Function value := " + isDateValid);
-        return isDateValid;
     }
 
     public static class DatePickerFragment extends DialogFragment implements
