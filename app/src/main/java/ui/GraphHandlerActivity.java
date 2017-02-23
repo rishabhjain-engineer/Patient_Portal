@@ -58,14 +58,11 @@ public class GraphHandlerActivity extends BaseActivity {
     //[1399787880000, 1447669500000, 1448928000000, 1451606400000, 1454284800000, 1456790400000, 1459468800000, 1468195946000];
 
     protected JSONArray getJsonForMonthly(String date1, String date2) {
-        if (!date1.startsWith("01")) {
-            String dateArray[] = date1.split("/");
-            String month = dateArray[1];
-            int mont = Integer.parseInt(month);
-            mont = mont + 1;
-            date1 = "01/" + mont + "/" + dateArray[2];
-        }
-
+        String dateArray[] = date1.split("/");
+        String month = dateArray[1];
+        int mont = Integer.parseInt(month);
+        mont = mont + 1;
+        date1 = "01/" + mont + "/" + dateArray[2];
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
         Calendar beginCalendar = Calendar.getInstance();
         Calendar finishCalendar = Calendar.getInstance();
@@ -95,4 +92,50 @@ public class GraphHandlerActivity extends BaseActivity {
 
         return jsonArray;
     }
+
+  /*  protected JSONArray getInitialJsonForMonthly(String date1, String date2) {
+
+        if(date1.contains("T")){
+            date1 = date1.replaceAll("-", "/");
+            date2 = date1.replaceAll("-", "/");
+
+            int  indexOfT = date1.indexOf("T");
+            date1 = date1.substring(0, indexOfT);
+            date2 = date2.substring(0,indexOfT);
+        }
+        String dateArray[] = date1.split("/");
+        String month = dateArray[1];
+        int mont = Integer.parseInt(month);
+        mont = mont + 1;
+        //date1 = "01/" + mont + "/" + dateArray[0];
+        date1 = dateArray[0] + "/" + mont + "/01";
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+        try {
+            beginCalendar.setTime(formater.parse(date1));
+            finishCalendar.setTime(formater.parse(date2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        while (beginCalendar.before(finishCalendar)) {
+            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Log.i("ayaz", "Date: " + date);
+            long epoch = date.getTime();
+            JSONArray innerJsonArray = new JSONArray();
+            innerJsonArray.put(epoch);
+            jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.MONTH, 1);
+        }
+
+        return jsonArray;
+    }*/
 }
