@@ -2,6 +2,7 @@ package com.hs.userportal;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -19,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ui.BaseActivity;
+import utils.AppConstant;
 import utils.Utils;
 
 /**
@@ -29,11 +31,11 @@ public class AddGraphDetails extends BaseActivity {
     private static EditText mDateFromEt, mDateToEt;
     private static int month2, year2, day2, month1, year1, day1;
     private Calendar mCalender;
-    private Button mAddButton ;
-    private boolean mIsValidDate = false ;
-    private String mFromDate , mToDate , mDurationValue;
-    private String [] mDurationArray = {"Day" , "Month" , "Quarterly", "Semi-Annually", "Annually"} ;
-    private Spinner mDurationSpinner ;
+    private Button mAddButton;
+    private boolean mIsValidDate = false;
+    private String mFromDate, mToDate, mDurationValue;
+
+    private Spinner mDurationSpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,14 +62,14 @@ public class AddGraphDetails extends BaseActivity {
         String dateString = formatter.format(new Date(currentTimeMillis));
         mDateToEt.setText(dateString);
 
-        ArrayAdapter durationAdapter = new ArrayAdapter(AddGraphDetails.this, R.layout.spinner_appearence, mDurationArray);
+        ArrayAdapter durationAdapter = new ArrayAdapter(AddGraphDetails.this, R.layout.spinner_appearence, AppConstant.mDurationModeArray);
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mDurationSpinner.setAdapter(durationAdapter);
 
         mDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mDurationValue = mDurationArray[position];
+                mDurationValue = AppConstant.mDurationModeArray[position];
             }
 
             @Override
@@ -75,7 +77,6 @@ public class AddGraphDetails extends BaseActivity {
 
             }
         });
-
 
         mDateFromEt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,14 +89,10 @@ public class AddGraphDetails extends BaseActivity {
 
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
-                // TODO Auto-generated method stub
-
                 if (hasfocus) {
                     DialogFragment newFragment = new DatePickerFragment();
                     newFragment.show(getSupportFragmentManager(), "datePicker");
-
                 }
-
             }
         });
         mDateToEt.setOnClickListener(new View.OnClickListener() {
@@ -109,14 +106,10 @@ public class AddGraphDetails extends BaseActivity {
 
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
-                // TODO Auto-generated method stub
-
                 if (hasfocus) {
                     DialogFragment newFragment = new DatePickerFragment1();
                     newFragment.show(getSupportFragmentManager(), "datePicker");
-
                 }
-
             }
         });
 
@@ -124,14 +117,18 @@ public class AddGraphDetails extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-
                 mFromDate = mDateFromEt.getText().toString();
                 mToDate = mDateToEt.getText().toString();
-
-                mIsValidDate = Utils.isDateValid(mFromDate, mToDate , "dd/MM/yyyy") ;
-
-                if(mIsValidDate == false){
+                mIsValidDate = Utils.isDateValid(mFromDate, mToDate, "dd/MM/yyyy");
+                if (!mIsValidDate) {
                     showAlertMessage("Start date must be less than End date.");
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra("fromDate", mFromDate);
+                    intent.putExtra("toDate", mToDate);
+                    intent.putExtra("intervalMode", mDurationValue);
+                    setResult(RESULT_OK, intent);
+                    finish();//finishing activity
                 }
             }
         });
@@ -205,8 +202,6 @@ public class AddGraphDetails extends BaseActivity {
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
             mDateToEt.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
-
-
         }
     }
 

@@ -61,14 +61,16 @@ import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.GraphHandlerActivity;
+import utils.AppConstant;
 import utils.MyMarkerView;
 
-public class Weight extends BaseActivity {
+public class Weight extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id;
+    private String id, mDateFormat, mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -83,10 +85,10 @@ public class Weight extends BaseActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0;
+    private int maxYrange = 0, mRotationAngle = 45;
     private double mMaxWeight = 0;
 
-    private JSONArray mJsonArrayToSend = null;
+    private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -195,128 +197,6 @@ public class Weight extends BaseActivity {
         new BackgroundProcess().execute();
     }
 
-    public void setLinechart() {
-        linechart.setDrawGridBackground(false);
-        for (int i = 0; i < chartValues.size(); i++) {
-            if (maxYrange < Math.round(Float.parseFloat(chartValues.get(i)))) {
-                maxYrange = Math.round(Float.parseFloat(chartValues.get(i)));
-            }
-        }
-        linechart.setDescription("");
-        linechart.setNoDataTextDescription("You need to provide data for the chart.");
-        // enable touch gestures
-        linechart.setTouchEnabled(true);
-        // enable scaling and dragging
-        linechart.setDragEnabled(true);
-        linechart.setScaleEnabled(true);
-        linechart.setPinchZoom(true);
-        // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
-        llXAxis.setEnabled(false);
-        XAxis xAxis = linechart.getXAxis();
-        //xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setXOffset(0f);
-        xAxis.setEnabled(false);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-        xAxis.setAxisMinValue(0f);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setGranularity(1.0f);
-        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
-        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
-        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setEnabled(false);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
-        ll1.setTypeface(tf);
-
-        LimitLine ll2 = new LimitLine(0f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-        ll2.setTypeface(tf);
-        ll2.setEnabled(false);
-
-        YAxis leftAxis = linechart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        /*leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);*/
-        leftAxis.setAxisMaxValue(maxYrange + maxYrange / 4);
-        leftAxis.setAxisMinValue(0f);
-        leftAxis.setYOffset(0f);
-        leftAxis.enableGridDashedLine(0f, 0f, 0f);
-        leftAxis.setDrawZeroLine(false);
-        // leftAxis.setEnabled(false);
-        // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
-        linechart.getAxisRight().setEnabled(false);
-
-        //linechart.getViewPortHandler().setMaximumScaleY(2f);
-        //linechart.getViewPortHandler().setMaximumScaleX(2f);
-
-        // add data
-        setData(chartValues.size(), 100);
-
-//        linechart.setVisibleXRange(20);
-//        linechart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        linechart.centerViewTo(20, 50, AxisDependency.LEFT);
-
-        linechart.animateX(2500);
-        //linechart.invalidate();
-        // get the legend (only possible after setting data)
-        Legend l = linechart.getLegend();
-        // modify the legend ...
-        // l.setPosition(LegendPosition.LEFT_OF_CHART);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setEnabled(false);
-        // don't forget to refresh the
-        //drawing
-        linechart.invalidate();
-    }
-
-    private void setData(int count, float range) {
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        for (int i = 0; i < count; i++) {
-            float val = Float.parseFloat(chartValues.get(i));
-            values.add(new Entry(i, val));
-        }
-        LineDataSet set1;
-        if (linechart.getData() != null &&
-                linechart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            linechart.getData().notifyDataChanged();
-            linechart.notifyDataSetChanged();
-        } else {
-            // create a data set and give it a type
-            set1 = new LineDataSet(values, getIntent().getStringExtra("chartNames"));
-            set1.disableDashedLine();
-            set1.setColor(Color.parseColor("#FF8409"));
-            set1.setCircleColor(Color.parseColor("#FF8409"));
-            set1.setLineWidth(1.5f);
-            set1.setCircleRadius(3.5f);
-            set1.setDrawCircleHole(true);
-            set1.setCircleHoleRadius(7f);
-            set1.setDrawFilled(false);
-            set1.setDrawValues(false);
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
-            // create a data object with the datasets
-            LineData data = new LineData(dataSets);
-            // set data
-            linechart.setData(data);
-        }
-    }
-
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
@@ -382,7 +262,7 @@ public class Weight extends BaseActivity {
                 Helper.sortHealthListByDate(weight_contentlists);
 
                 JSONArray jsonArray1 = new JSONArray();
-                for(int i=0; i< weight_contentlists.size() ; i++){
+                for (int i = 0; i < weight_contentlists.size(); i++) {
 
                     Date date = null;
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
@@ -422,19 +302,19 @@ public class Weight extends BaseActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(isDataAvailable){
-                if(adapter == null){
+            if (isDataAvailable) {
+                if (adapter == null) {
                     adapter = new MyHealthsAdapter(Weight.this);
                     adapter.setListData(weight_contentlists);
                     weight_listId.setAdapter(adapter);
-                }else{
+                } else {
                     adapter.setListData(weight_contentlists);
                     adapter.notifyDataSetChanged();
                 }
                 Utility.setListViewHeightBasedOnChildren(weight_listId);
                 progress.dismiss();
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
-            }else {
+            } else {
                 Intent i = new Intent(Weight.this, AddWeight.class);
                 i.putExtra("id", id);
                 i.putExtra("htype", "weight");
@@ -447,7 +327,6 @@ public class Weight extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.graphheader, menu);
-
         return true;
     }
 
@@ -460,23 +339,18 @@ public class Weight extends BaseActivity {
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
-
             case R.id.add:
-
                 Intent i = new Intent(Weight.this, AddWeight.class);
                 i.putExtra("id", id);
                 i.putExtra("htype", "weight");
                 startActivity(i);
                 //finish();
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                 return true;
 
             case R.id.option:
-
-                i = new Intent(Weight.this , AddGraphDetails.class);
-                startActivity(i);
-
+                Intent addGraphDetailsIntent = new Intent(Weight.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -572,6 +446,40 @@ public class Weight extends BaseActivity {
         //new BackgroundProcess().execute();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.WEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 45;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mDateFormat = "'%y";
+                mRotationAngle = 0;
+            }
+        }
+    }
+
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
@@ -582,6 +490,21 @@ public class Weight extends BaseActivity {
         public int getDouble() {
             int i = (int) mMaxWeight;
             return (i + 20);
+        }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            return null;
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            return mDateFormat;
         }
     }
 }
