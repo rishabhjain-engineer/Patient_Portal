@@ -105,7 +105,7 @@ public class Work extends BaseActivity {
 
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mNotRemembered;
-    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL ;
+    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL,  mEditBoxContainer;
     private boolean mIsNotRemembered = false ;
 
 	@Override
@@ -142,6 +142,7 @@ public class Work extends BaseActivity {
         mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
         mDateEditTextContainerLL = (LinearLayout) findViewById(R.id.L3);
         mSpinnerContainerLL = (LinearLayout) findViewById(R.id.spinner_container);
+        mEditBoxContainer = (LinearLayout) findViewById(R.id.layout_container);
 
         mNotRemembered.setOnClickListener(new OnClickListener() {
             @Override
@@ -1298,6 +1299,7 @@ public class Work extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
         return true;
     }
 
@@ -1313,6 +1315,19 @@ public class Work extends BaseActivity {
                 finish();
 
                 return true;
+
+            case R.id.add:
+                if(mEditBoxContainer.getVisibility() == View.VISIBLE){
+                    mEditBoxContainer.setVisibility(View.GONE);
+                }else{
+                    mEditBoxContainer.setVisibility(View.VISIBLE);
+                }
+
+                //finish();
+                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);

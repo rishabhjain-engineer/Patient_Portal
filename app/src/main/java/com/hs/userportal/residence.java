@@ -107,8 +107,8 @@ public class residence extends BaseActivity {
     ArrayList<String> years1 = new ArrayList<String>();
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mNotRemembered;
-    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL ;
     private boolean mIsNotRemembered = false , mIsDateValid = false;
+    private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL, mEditBoxContainer;
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -139,6 +139,8 @@ public class residence extends BaseActivity {
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
         mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
+        mEditBoxContainer = (LinearLayout) findViewById(R.id.edit_box_container);
+
         scroll_id = (ScrollView) findViewById(R.id.scroll_id);
         //  back = (Button) findViewById(R.id.bBack);
         //  next = (Button) findViewById(R.id.bNext);
@@ -229,6 +231,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFromMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := "+mFromMonthValue);
             }
 
             @Override
@@ -241,6 +244,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mFromYearValue = years.get(position);
+                Log.e("rishabh", "mfinal fromdate := "+mFromYearValue);
             }
 
             @Override
@@ -271,6 +275,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mToMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := "+mToMonthValue);
             }
 
             @Override
@@ -283,6 +288,7 @@ public class residence extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mToYearValue = years1.get(position);
+                Log.e("rishabh", "mfinal fromdate := "+mToYearValue);
             }
 
             @Override
@@ -292,9 +298,6 @@ public class residence extends BaseActivity {
         });
 
 
-
-        mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
-        mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
 
 
@@ -555,6 +558,11 @@ public class residence extends BaseActivity {
 
             public void onClick(View v) {
 
+
+                mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
+                mFinalToDate = mToMonthValue + "/" + mToYearValue;
+
+                Log.e("Rishabh" ,"m finaldate   := "+mFinalFromDate) ;
 
                 boolean isValid = false ;
                 if( mIsNotRemembered == false){
@@ -854,16 +862,16 @@ public class residence extends BaseActivity {
 
     }
 
-    private boolean isDateValid(String mFromCompValue, String mToCompValue, String myFormatString) {
+    private boolean isDateValid(String startingDate, String endingDate, String myFormatString) {
         boolean isDateValid = false;
         try
         {
 
             SimpleDateFormat df = new SimpleDateFormat(myFormatString);
-            Date endDate = df.parse(mToCompValue);                     // End Date ; Rishabh
-            Date startingDate = df.parse(mFromCompValue);               // Start Date ; Rishabh
+            Date endDate = df.parse(endingDate);                     // End Date ; Rishabh
+            Date startDate = df.parse(startingDate);               // Start Date ; Rishabh
 
-            if (endDate.after(startingDate)){            // end date is grater than starting date
+            if (endDate.after(startDate)){            // end date is grater than starting date
                 isDateValid =  true;
             }
         }catch (Exception e){
@@ -1440,8 +1448,10 @@ public class residence extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1459,6 +1469,16 @@ public class residence extends BaseActivity {
             case R.id.action_home:
                 finish();
                 //showUnsavedAlertDialog();
+                return true;
+            case R.id.add:
+
+                //finish();
+                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(mEditBoxContainer.getVisibility() == View.VISIBLE){
+                    mEditBoxContainer.setVisibility(View.GONE);
+                }else{
+                    mEditBoxContainer.setVisibility(View.VISIBLE);
+                }
                 return true;
 
             default:

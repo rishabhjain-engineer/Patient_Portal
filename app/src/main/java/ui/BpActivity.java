@@ -289,7 +289,7 @@ public class BpActivity extends BaseActivity {
 
 
                 }
-                
+
                 mJsonArrayToSend = new JSONArray();
                 JSONObject outerJsonObjectUpperBp = new JSONObject();
                 outerJsonObjectUpperBp.put("key", "systolic");
