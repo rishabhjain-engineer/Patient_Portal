@@ -61,6 +61,7 @@ import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.ProfileContainerActivity;
+import utils.Utils;
 
 public class Work extends BaseActivity {
 
@@ -106,7 +107,7 @@ public class Work extends BaseActivity {
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mNotRemembered;
     private LinearLayout mDateEditTextContainerLL , mSpinnerContainerLL,  mEditBoxContainer;
-    private boolean mIsNotRemembered = false ;
+    private boolean mIsNotRemembered = false , mIsDateValid = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -508,6 +509,23 @@ public class Work extends BaseActivity {
 
             public void onClick(View v) {
 
+
+                fromdate = mFromMonth + "/" + mFromYear;
+                todate = mToMonth + "/" + mToYear;
+
+                boolean isValid = false;
+                if (mIsNotRemembered == false) {
+                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
+                    if (isValid) {
+                        mIsDateValid = true;
+                    }
+                } else {
+                    mIsDateValid = false;
+                    isValid = Utils.isDateValid(fromdate, todate, "MM/yyyy");
+                    if (isValid) {
+                        mIsDateValid = true;
+                    }
+                }
                /* try {
                     final Calendar c = Calendar.getInstance();
                     int year = c.get(Calendar.YEAR);
@@ -539,10 +557,6 @@ public class Work extends BaseActivity {
                 }
 */
 
-                if(mIsNotRemembered == false &&  ( from.getText().toString().equals("") || to.getText().toString().equals("") ) ) {
-
-                    showAlertMessage("Mandatory fields can not be left Blank !");
-                }
 
                 if (ad.getText().toString().equals("")||ci.getText().toString().equals("")||co.getText().toString().equals("") || TextUtils.isEmpty(ad.getEditableText().toString())) {
 
@@ -614,7 +628,13 @@ public class Work extends BaseActivity {
                             });
                     // Showing Alert Message
                     alertDialog.show();
-                }*/ else if(!pi.getText().toString().equals("")&&pi.getText().toString().length()<4) {
+                }*/
+                else if (mIsNotRemembered == false && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                } else if (mIsDateValid == false) {
+                    showAlertMessage("Start date must be smaller than End date.");
+                }
+                else if(!pi.getText().toString().equals("")&&pi.getText().toString().length()<4) {
                     showAlertMessage("Postal code should be greater than three digits");
 
                 }
