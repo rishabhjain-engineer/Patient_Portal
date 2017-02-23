@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/option"
-        android:icon="@drawable/action_search"
+        android:icon="@drawable/add_info"
         android:title="add"
         hs:showAsAction="always" />
 

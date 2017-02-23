@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,7 +71,7 @@ public class Weight extends GraphHandlerActivity {
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id, mDateFormat, mFormDate, mToDate, mIntervalMode;
+    private String id, mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -262,16 +263,25 @@ public class Weight extends GraphHandlerActivity {
                 Helper.sortHealthListByDate(weight_contentlists);
 
                 JSONArray jsonArray1 = new JSONArray();
+                String initialDate = null, lastDate = null;
                 for (int i = 0; i < weight_contentlists.size(); i++) {
-
                     Date date = null;
+                    String fromdate = null;
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
-                        String fromdate = mapValue.get("fromdate");
+                        fromdate = mapValue.get("fromdate");
                         date = simpleDateFormat.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+
+                  /*  if(i == 0){
+                        initialDate = fromdate;
+                    }
+                    if(i == (weight_contentlists.size() - 1)){
+                        lastDate = fromdate;
+                    }*/
+                    
                     long epoch = date.getTime();
                     JSONArray innerJsonArray = new JSONArray();
                     innerJsonArray.put(epoch);
@@ -285,6 +295,8 @@ public class Weight extends GraphHandlerActivity {
                 outerJsonObject.put("values", jsonArray1);
                 mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
+
+        /*        mTckValuesJsonArray = getInitialJsonForMonthly(initialDate, lastDate);*/
                 //Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
@@ -494,16 +506,24 @@ public class Weight extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRotationAngle() {
+
+            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
         @JavascriptInterface
         public String getTickValues() {
-            return null;
+            if(mTckValuesJsonArray == null){
+                return "[ ]";
+            }else{
+                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
+            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }
