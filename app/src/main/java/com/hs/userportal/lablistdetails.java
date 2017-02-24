@@ -864,9 +864,17 @@ public class lablistdetails extends BaseActivity {
             /*PastVisitAdapter past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
          *//*   Parcelable state = past_visits.onSaveInstanceState();*//*
             past_visits.setAdapter(past_adapt);*/
-            past_adapt = new PastVisitAdapter(lablistdetails.this, pastVisitArray);
+
+            if(past_adapt == null){
+                past_adapt = new PastVisitAdapter(lablistdetails.this);
+                past_adapt.setData(pastVisitArray);
+                past_visits.setAdapter(past_adapt);
+            }else{
+                past_adapt.setData(pastVisitArray);
+                past_adapt.notifyDataSetChanged();
+            }
          /*   Parcelable state = past_visits.onSaveInstanceState();*/
-            past_visits.setAdapter(past_adapt);
+
            /* past_visits.onRestoreInstanceState(state);*/
           /*  past_adapt.notifyDataSetChanged();*/
 
