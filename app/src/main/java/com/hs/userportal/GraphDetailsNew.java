@@ -466,7 +466,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.graphheader, menu);
-        menu.getItem(R.id.add).setEnabled(false);
+        menu.findItem(R.id.add).setEnabled(false);
         return true;
     }
 
