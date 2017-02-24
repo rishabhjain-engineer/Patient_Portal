@@ -387,9 +387,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.hs.userportal.Height" />
+            android:name="com.hs.userportal.Height"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name="com.hs.userportal.Weight" />
+            android:name="com.hs.userportal.Weight"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.hs.userportal.AddGraphDetails"
             android:screenOrientation="portrait"
@@ -403,7 +405,8 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.hs.userportal.GraphDetailsNew" />
+            android:name="com.hs.userportal.GraphDetailsNew"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="ui.QuestionireActivity"
@@ -414,10 +417,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="ui.BpActivity" />
+            android:name="ui.BpActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
-            android:name="ui.BmiActivity" />
+            android:name="ui.BmiActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="ui.ProfileContainerActivity"

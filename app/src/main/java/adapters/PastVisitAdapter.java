@@ -24,10 +24,14 @@ public class PastVisitAdapter extends BaseAdapter {
     private Activity act;
     private LayoutInflater inflater;
     private ViewHolder holder = null;
+    private int mSize =0 ;
 
-    public PastVisitAdapter(Activity act, List<HashMap<String, String>> array) {
-        this.array = array;
+    public PastVisitAdapter(Activity act) {
         this.act = act;
+    }
+
+    public void setData(List<HashMap<String, String>> array){
+        this.array = array;
     }
 
     @Override

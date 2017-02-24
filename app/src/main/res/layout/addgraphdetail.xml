@@ -62,6 +62,7 @@
             android:layout_centerVertical="true"/>
 
         <EditText
+            android:focusable="false"
             android:id="@+id/dateto_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +70,7 @@
             android:layout_marginRight="9dp"
             android:background="@drawable/edittext_corner"
             android:hint="Select Date"
-            android:inputType="text"
+            android:inputType="date"
             android:gravity="center"
             android:padding="10dp"
             android:textColor="@android:color/black"
