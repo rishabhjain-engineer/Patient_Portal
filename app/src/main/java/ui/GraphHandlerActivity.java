@@ -48,9 +48,9 @@ public class GraphHandlerActivity extends BaseActivity {
             Date dateToConvert = calendar.getTime();
             Log.i("Daily", "Date: " + dateToConvert);
             long epoch = dateToConvert.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+           // JSONArray innerJsonArray = new JSONArray();
+            jsonArray.put(epoch);
+            //jsonArray.put(innerJsonArray);
 
             calendar.add(Calendar.DATE, 1);
         }
@@ -100,9 +100,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+           // JSONArray innerJsonArray = new JSONArray();
+            jsonArray.put(epoch);
+          //  jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 6);
         }
         return jsonArray;
@@ -145,9 +145,10 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+            //JSONArray innerJsonArray = new JSONArray();
+            //innerJsonArray.put(epoch);
+            //jsonArray.put(innerJsonArray);
+            jsonArray.put(epoch);
             beginCalendar.add(Calendar.MONTH, 1);
         }
 
@@ -197,9 +198,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+           // JSONArray innerJsonArray = new JSONArray();
+            jsonArray.put(epoch);
+           // jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 6);
         }
         return jsonArray;
@@ -245,9 +246,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+       //     JSONArray innerJsonArray = new JSONArray();
+            jsonArray.put(epoch);
+         //   jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 6);
         }
         return jsonArray;
@@ -285,9 +286,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
+         //   JSONArray innerJsonArray = new JSONArray();
+            jsonArray.put(epoch);
+           // jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.YEAR, 1);
         }
         return jsonArray;
