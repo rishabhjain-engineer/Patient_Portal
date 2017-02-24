@@ -63,16 +63,18 @@ import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.GraphHandlerActivity;
+import utils.AppConstant;
 import utils.MyMarkerView;
 
-public class Height extends BaseActivity {
+public class Height extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
     private ProgressDialog progress;
     private JSONObject sendData;
-    private String mId;
+    private String mId , mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private MiscellaneousTasks misc;
     private JsonObjectRequest jr;
@@ -84,11 +86,11 @@ public class Height extends BaseActivity {
     private String parenthistory_ID;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
-    private LineChart linechart;
-    private int maxYrange = 0;
+    private LineChart linechart     ;
+    private int maxYrange = 0 , mRotationAngle = 45;
     private double mMaxHeight = 0.0;
 
-    private JSONArray mJsonArrayToSend;
+    private JSONArray mJsonArrayToSend,  mTckValuesJsonArray = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -432,7 +434,7 @@ public class Height extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        getMenuInflater().inflate(R.menu.graphheader, menu);
         return true;
     }
 
@@ -460,6 +462,10 @@ public class Height extends BaseActivity {
                 //finish();
                 // overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
+
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(Height.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.HEIGHT_REQUEST_CODE);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -549,6 +555,40 @@ public class Height extends BaseActivity {
         //new BackgroundProcess().execute();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.HEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 45;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mDateFormat = "'%y";
+                mRotationAngle = 0;
+            }
+        }
+    }
+
     public class MyJavaScriptInterface {
         private Context context;
 
@@ -566,6 +606,29 @@ public class Height extends BaseActivity {
             int i = (int) mMaxHeight;
             Log.e("Rishabh", "i := " + i);
             return (i + 20);
+        }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+
+            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if(mTckValuesJsonArray == null){
+                return "[ ]";
+            }else{
+                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
+            return mDateFormat;
         }
     }
 }

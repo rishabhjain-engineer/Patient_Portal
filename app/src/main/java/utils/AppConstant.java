@@ -19,5 +19,11 @@ public class AppConstant {
     public static String FN = "";
 
     public static int WEIGHT_REQUEST_CODE = 1001;
+    public static int HEIGHT_REQUEST_CODE = 1002;
+    public static int BMI_REQUEST_CODE = 1003;
+    public static int BP_REQUEST_CODE = 1004;
+    public static int CASECODE_REQUEST_CODE = 1005;
+
+
 
 }

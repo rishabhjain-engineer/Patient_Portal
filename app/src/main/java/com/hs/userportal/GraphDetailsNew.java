@@ -53,6 +53,9 @@ import java.util.List;
 
 import adapters.Group_testAdapter;
 import ui.BaseActivity;
+import ui.BmiActivity;
+import ui.GraphHandlerActivity;
+import utils.AppConstant;
 import utils.MyMarkerView;
 
 import static com.hs.userportal.R.id.member_name;
@@ -61,7 +64,8 @@ import static com.hs.userportal.R.id.weight;
 /**
  * Created by rahul2 on 7/15/2016.
  */
-public class GraphDetailsNew extends BaseActivity {
+public class GraphDetailsNew extends GraphHandlerActivity {
+
     private LineChart linechart;
     private PieChart pi_chart;
     private ScrollView scroll;
@@ -73,13 +77,13 @@ public class GraphDetailsNew extends BaseActivity {
     private List<String> chartunitList;
     private String caseindex = "";
     private Group_testAdapter adapter;
-    private String RangeFrom = null, RangeTo = null, UnitCode = "";
+    private String RangeFrom = null, RangeTo = null, UnitCode = "" ,  mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private Services service;
     private ListView graph_listview_id;
-    private int maxYrange = 0;
+    private int maxYrange = 0 , mRotationAngle = 45;
     private WebView mLineChartWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = new JSONArray() , mTckValuesJsonArray = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -461,6 +465,8 @@ public class GraphDetailsNew extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.graphheader, menu);
+        menu.getItem(R.id.add).setEnabled(false);
         return true;
     }
 
@@ -472,8 +478,46 @@ public class GraphDetailsNew extends BaseActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(GraphDetailsNew.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.CASECODE_REQUEST_CODE);
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.CASECODE_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 45;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mDateFormat = "'%y";
+                mRotationAngle = 0;
+            }
         }
     }
 
@@ -501,6 +545,29 @@ public class GraphDetailsNew extends BaseActivity {
         @JavascriptInterface
         public int getRangeFrom() {
             return (int)mRangeFromInDouble;
+        }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+
+            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if(mTckValuesJsonArray == null){
+                return "[ ]";
+            }else{
+                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
+            return mDateFormat;
         }
     }
 
