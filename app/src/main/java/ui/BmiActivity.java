@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +35,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
+import com.hs.userportal.AddGraphDetails;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Height;
 import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
@@ -57,17 +61,18 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 
 /**
  * Created by Rishabh on 15/2/17.
  */
 
-public class BmiActivity extends BaseActivity {
+public class BmiActivity extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id;
+    private String id , mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -82,9 +87,9 @@ public class BmiActivity extends BaseActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0;
+    private int maxYrange = 0,  mRotationAngle = 45;
     private double mMaxBMI = 0;
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = new JSONArray() , mTckValuesJsonArray = null;
     private Menu mBMIMenu;
     private boolean mIsBmiEmpty = true;
 
@@ -299,6 +304,68 @@ public class BmiActivity extends BaseActivity {
         new BmiActivity.BackgroundProcess().execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.graphheader, menu);
+        menu.findItem(R.id.add).setEnabled(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                super.onBackPressed();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+
+
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(BmiActivity.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.BMI_REQUEST_CODE);
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.BMI_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 45;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mDateFormat = "'%y";
+                mRotationAngle = 0;
+            }
+        }
+    }
+
+
     public static class Utility {
         public static void setListViewHeightBasedOnChildren(ListView listView) {
             ListAdapter listAdapter = listView.getAdapter();
@@ -329,54 +396,7 @@ public class BmiActivity extends BaseActivity {
         }
     }
 
-    private void deleteWeight() {
-        progress = new ProgressDialog(BmiActivity.this);
-        progress.setMessage("Deleting .....");
-        progress.show();
-        sendData = new JSONObject();
-        try {
-            sendData.put("patientHistoryId", parenthistory_ID);
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
-        StaticHolder sttc_holdr = new StaticHolder(BmiActivity.this, StaticHolder.Services_static.deleteSingularDetails);
-        String url = sttc_holdr.request_Url();
-        jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
 
-                System.out.println(response);
-
-                try {
-                    if (response.getString("d").equalsIgnoreCase("success")) {
-                        progress.dismiss();
-                        Toast.makeText(BmiActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
-                    } else {
-                        Toast.makeText(BmiActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Toast.makeText(getApplicationContext(), "Error while deleting data, Try Later", Toast.LENGTH_SHORT).show();
-                progress.dismiss();
-                finish();
-            }
-        }) {
-
-        };
-        queue.add(jr);
-    }
 
     public class MyJavaScriptInterface {
         @JavascriptInterface
@@ -388,6 +408,28 @@ public class BmiActivity extends BaseActivity {
         public int getDouble() {
             int i = (int) mMaxBMI;
             return (i + 20);
+        }
+        @JavascriptInterface
+        public int getRotationAngle() {
+
+            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if(mTckValuesJsonArray == null){
+                return "[ ]";
+            }else{
+                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
+            return mDateFormat;
         }
     }
 }

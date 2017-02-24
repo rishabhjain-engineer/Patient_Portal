@@ -465,7 +465,7 @@ public class Height extends GraphHandlerActivity {
 
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(Height.this, AddGraphDetails.class);
-                startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.HEIGHT_REQUEST_CODE);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -558,7 +558,7 @@ public class Height extends GraphHandlerActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstant.WEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == AppConstant.HEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
             mFormDate = data.getStringExtra("fromDate");
             mToDate = data.getStringExtra("toDate");
             mIntervalMode = data.getStringExtra("intervalMode");
