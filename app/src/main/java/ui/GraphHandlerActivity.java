@@ -26,8 +26,8 @@ public class GraphHandlerActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+    //[1399787880000, 1447669500000, 1448928000000, 1451606400000, 1454284800000, 1456790400000, 1459468800000, 1468195946000];
 
     protected JSONArray getJsonForDaily(String dateString1, String dateString2) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -55,7 +55,57 @@ public class GraphHandlerActivity extends BaseActivity {
         }
         return jsonArray;
     }
-    //[1399787880000, 1447669500000, 1448928000000, 1451606400000, 1454284800000, 1456790400000, 1459468800000, 1468195946000];
+
+    protected JSONArray getJsonForWeekly(String date1, String date2) {
+
+        String dateArray[] = date1.split("/");
+        String monthInString = dateArray[1];
+        String yearInString = dateArray[2];
+        int monthInInt = Integer.parseInt(monthInString);
+        int yearInInt = Integer.parseInt(yearInString);
+        if (monthInInt <= 3) {
+            monthInInt = 4;
+        } else if (monthInInt <= 6) {
+            monthInInt = 7;
+        } else if (monthInInt <= 9) {
+            monthInInt = 10;
+        } else if (monthInInt <= 12) {
+            monthInInt = 1;
+            yearInInt = yearInInt + 1;
+        }
+
+        date1 = "01/" + monthInInt + "/" + yearInInt;
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+
+        try {
+            beginCalendar.setTime(formater.parse(date1));
+            finishCalendar.setTime(formater.parse(date2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        while (beginCalendar.before(finishCalendar)) {
+            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            JSONArray innerJsonArray = new JSONArray();
+            innerJsonArray.put(epoch);
+            jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.MONTH, 6);
+        }
+        return jsonArray;
+
+    }
 
     protected JSONArray getJsonForMonthly(String date1, String date2) {
         String dateArray[] = date1.split("/");
@@ -93,7 +143,105 @@ public class GraphHandlerActivity extends BaseActivity {
         return jsonArray;
     }
 
-    private JSONArray getJsonForYearly(String date1, String date2) {
+    protected JSONArray getJsonForQuaterly(String date1, String date2) {
+
+        String dateArray[] = date1.split("/");
+        String monthInString = dateArray[1];
+        String yearInString = dateArray[2];
+        int monthInInt = Integer.parseInt(monthInString);
+        int yearInInt = Integer.parseInt(yearInString);
+        if (monthInInt <= 3) {
+            monthInInt = 4;
+        } else if (monthInInt <= 6) {
+            monthInInt = 7;
+        } else if (monthInInt <= 9) {
+            monthInInt = 10;
+        } else if (monthInInt <= 12) {
+            monthInInt = 1;
+            yearInInt = yearInInt + 1;
+        }
+
+        date1 = "01/" + monthInInt + "/" + yearInInt;
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+
+        try {
+            beginCalendar.setTime(formater.parse(date1));
+            finishCalendar.setTime(formater.parse(date2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        while (beginCalendar.before(finishCalendar)) {
+            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            JSONArray innerJsonArray = new JSONArray();
+            innerJsonArray.put(epoch);
+            jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.MONTH, 6);
+        }
+        return jsonArray;
+
+    }
+
+    protected JSONArray getJsonForSemiAnnually(String date1, String date2) {
+
+        String dateArray[] = date1.split("/");
+        String monthInString = dateArray[1];
+        String yearInString = dateArray[2];
+        int monthInInt = Integer.parseInt(monthInString);
+        int yearInInt = Integer.parseInt(yearInString);
+        if (monthInInt <= 6) {
+            monthInInt = 7;
+        } else {
+            monthInInt = 1;
+            yearInInt = yearInInt + 1;
+        }
+
+        date1 = "01/" + monthInInt + "/" + yearInInt;
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar beginCalendar = Calendar.getInstance();
+        Calendar finishCalendar = Calendar.getInstance();
+
+        try {
+            beginCalendar.setTime(formater.parse(date1));
+            finishCalendar.setTime(formater.parse(date2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        while (beginCalendar.before(finishCalendar)) {
+            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            JSONArray innerJsonArray = new JSONArray();
+            innerJsonArray.put(epoch);
+            jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.MONTH, 6);
+        }
+        return jsonArray;
+
+    }
+
+    protected JSONArray getJsonForYearly(String date1, String date2) {
 
         String dateArray[] = date1.split("/");
         String yearInString = dateArray[2];
