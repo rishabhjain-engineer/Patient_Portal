@@ -427,8 +427,10 @@ public class Height extends GraphHandlerActivity {
                     adapter.notifyDataSetChanged();
                 }
                 Utility.setListViewHeightBasedOnChildren(weight_listId);
-                progress.dismiss();
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                if(progress != null && progress.isShowing()){
+                    progress.dismiss();
+                }
             }else {
                 Intent i = new Intent(Height.this, AddWeight.class);
                 i.putExtra("id", mId);
@@ -616,14 +618,11 @@ public class Height extends GraphHandlerActivity {
         @JavascriptInterface
         public int getDouble() {
             int i = (int) mMaxHeight;
-            Log.e("Rishabh", "i := " + i);
             return (i + 20);
         }
 
         @JavascriptInterface
         public int getRotationAngle() {
-
-            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
@@ -632,14 +631,12 @@ public class Height extends GraphHandlerActivity {
             if(mTckValuesJsonArray == null){
                 return "[ ]";
             }else{
-                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
-            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }
