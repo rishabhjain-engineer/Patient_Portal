@@ -394,7 +394,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.hs.userportal.AddGraphDetails"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.hs.userportal.Allergy"
             android:label="Allergies"

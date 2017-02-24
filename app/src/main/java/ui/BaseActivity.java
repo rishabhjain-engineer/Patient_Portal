@@ -23,6 +23,8 @@ import com.hs.userportal.update;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import utils.PreferenceHelper;
+
 /**
  * Created by android1 on 19/1/17.
  */
@@ -30,10 +32,12 @@ import java.util.Date;
 public class BaseActivity extends AppCompatActivity {
 
     protected ActionBar mActionBar;
+    protected PreferenceHelper mPreferenceHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPreferenceHelper = PreferenceHelper.getInstance();
     }
 
     protected void setupActionBar() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,9 +19,11 @@ import android.widget.Spinner;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.prefs.PreferenceChangeEvent;
 
 import ui.BaseActivity;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 import utils.Utils;
 
 /**
@@ -33,8 +36,7 @@ public class AddGraphDetails extends BaseActivity {
     private Calendar mCalender;
     private Button mAddButton;
     private boolean mIsValidDate = false;
-    private String mFromDate, mToDate, mDurationValue;
-
+    private String mFromDate, mToDate, mDurationValue ;
     private Spinner mDurationSpinner;
 
     @Override
@@ -57,11 +59,15 @@ public class AddGraphDetails extends BaseActivity {
         month1 = mCalender.get(Calendar.MONTH);
         day1 = mCalender.get(Calendar.DAY_OF_MONTH);
 
-        long currentTimeMillis = System.currentTimeMillis();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String dateString = formatter.format(new Date(currentTimeMillis));
-        mDateToEt.setText(dateString);
-
+        mDateFromEt.setSelected(false);
+        String fromDate = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FROM_DATE);
+        String toDate = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.TO_DATE);
+        if(!TextUtils.isEmpty(fromDate)){
+            mDateFromEt.setText(fromDate);
+        }
+        if(!TextUtils.isEmpty(toDate)){
+            mDateToEt.setText(toDate);
+        }
         ArrayAdapter durationAdapter = new ArrayAdapter(AddGraphDetails.this, R.layout.spinner_appearence, AppConstant.mDurationModeArray);
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mDurationSpinner.setAdapter(durationAdapter);
@@ -123,6 +129,8 @@ public class AddGraphDetails extends BaseActivity {
                 if (!mIsValidDate) {
                     showAlertMessage("Start date must be less than End date.");
                 } else {
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, mFromDate);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, mToDate);
                     Intent intent = new Intent();
                     intent.putExtra("fromDate", mFromDate);
                     intent.putExtra("toDate", mToDate);

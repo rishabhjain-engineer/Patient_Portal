@@ -62,6 +62,7 @@ import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -305,9 +306,17 @@ public class BmiActivity extends GraphHandlerActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.graphheader, menu);
-        menu.findItem(R.id.add).setEnabled(false);
+        MenuItem addItem = menu.findItem(R.id.add);
+        addItem.setVisible(false) ;
         return true;
     }
 
