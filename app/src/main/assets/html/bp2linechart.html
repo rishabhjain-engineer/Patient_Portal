@@ -72,6 +72,9 @@
   }];
 
   var values = JSON.parse(Interface.passDataToHtml());
+  var angle = Interface.getRotationAngle();
+  var dateformat = Interface.getDateFormat();
+  var ticket = JSON.parse(Interface.getTickValues());
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -105,7 +108,7 @@
                 });
 				// To plot all X values
                 //.tickFormat(d3.format(',r'));
-
+              chart.xAxis.rotateLabels(angle);
               chart.yAxis
              // .tickFormat(d3.format('.2f'))
                 .tickFormat(function (d) {

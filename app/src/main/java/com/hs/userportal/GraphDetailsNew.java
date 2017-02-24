@@ -81,7 +81,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private String RangeFrom = null, RangeTo = null, UnitCode = "" ,  mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private Services service;
     private ListView graph_listview_id;
-    private int maxYrange = 0 , mRotationAngle = 45;
+    private int maxYrange = 0 , mRotationAngle = 0;
     private WebView mLineChartWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
     private JSONArray mJsonArrayToSend = new JSONArray() , mTckValuesJsonArray = null;

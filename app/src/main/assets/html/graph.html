@@ -58,6 +58,9 @@
     var max = Interface.getMaxData();
     var rangeto = Interface.getRangeTo();
     var rangefrom = Interface.getRangeFrom();
+    var angle = Interface.getRotationAngle();
+    var dateformat = Interface.getDateFormat();
+    var ticket = JSON.parse(Interface.getTickValues());
 
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')
@@ -91,7 +94,7 @@
                 .tickFormat(function (d) { return d3.time.format("%b %Y")(new Date(d)) });
 				// To plot all X values
                 //.tickFormat(d3.format(',r'));
-
+               chart.xAxis.rotateLabels(angle);
               chart.yAxis
              // .tickFormat(d3.format('.2f'))
                 .tickFormat(function (d) {

@@ -85,7 +85,7 @@ public class BpActivity extends GraphHandlerActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0, mRotationAngle = 45;
+    private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
 
