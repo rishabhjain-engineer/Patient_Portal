@@ -206,7 +206,7 @@ public class GraphHandlerActivity extends BaseActivity {
             // JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
             // jsonArray.put(innerJsonArray);
-            beginCalendar.add(Calendar.MONTH, 6);
+            beginCalendar.add(Calendar.MONTH, 3);
         }
         return jsonArray;
 
