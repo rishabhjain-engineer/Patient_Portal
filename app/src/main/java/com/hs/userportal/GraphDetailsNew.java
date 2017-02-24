@@ -57,6 +57,7 @@ import ui.BmiActivity;
 import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
+import utils.PreferenceHelper;
 
 import static com.hs.userportal.R.id.member_name;
 import static com.hs.userportal.R.id.weight;
@@ -466,7 +467,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.graphheader, menu);
-        menu.findItem(R.id.add).setEnabled(false);
+        MenuItem addItem = menu.findItem(R.id.add);
+        addItem.setVisible(false);
         return true;
     }
 
@@ -485,6 +487,13 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
     }
 
     @Override

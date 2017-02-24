@@ -66,6 +66,7 @@ import ui.BaseActivity;
 import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
+import utils.PreferenceHelper;
 
 public class Height extends GraphHandlerActivity {
 
@@ -316,6 +317,13 @@ public class Height extends GraphHandlerActivity {
     protected void onRestart() {
         super.onRestart();
         new BackgroundProcess().execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {

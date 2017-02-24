@@ -59,6 +59,7 @@ import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -87,7 +88,6 @@ public class BpActivity extends GraphHandlerActivity {
     private int maxYrange = 0, mRotationAngle = 45;
     private double mMaxWeight = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -357,6 +357,13 @@ public class BpActivity extends GraphHandlerActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
     }
 
     public static class Utility {

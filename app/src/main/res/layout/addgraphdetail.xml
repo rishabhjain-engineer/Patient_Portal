@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="40dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/datefrom_textview"
@@ -29,13 +31,14 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="9dp"
             android:background="@drawable/edittext_corner"
-            android:hint="Date"
+            android:hint="Select Date"
             android:ems="10"
             android:inputType="date"
             android:gravity="center"
             android:padding="10dp"
             android:textColor="@android:color/black"
             android:textSize="14dp"
+            android:focusable="false"
             android:layout_toRightOf="@+id/datefrom_textview" />
 
     </RelativeLayout>
@@ -65,7 +68,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="9dp"
             android:background="@drawable/edittext_corner"
-            android:hint="Date"
+            android:hint="Select Date"
             android:inputType="text"
             android:gravity="center"
             android:padding="10dp"

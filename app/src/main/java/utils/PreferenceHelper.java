@@ -44,7 +44,11 @@ public class PreferenceHelper {
 
         PASS("null"),
 
-        FN("null");
+        FN("null"),
+
+        FROM_DATE("null"),
+
+        TO_DATE("null");
 
         private String defaultValue;
 
