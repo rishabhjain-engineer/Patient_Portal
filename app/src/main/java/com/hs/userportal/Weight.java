@@ -65,13 +65,15 @@ import ui.BaseActivity;
 import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
+import utils.PreferenceHelper;
 
 public class Weight extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id, mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
+    private String id, mDateFormat = "%b '%y", mIntervalMode;
+    private long mFormEpocDate = 0, mEpocToDate = 0;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -86,8 +88,10 @@ public class Weight extends GraphHandlerActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0, mRotationAngle = 45;
+    private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
 
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
 
@@ -195,6 +199,7 @@ public class Weight extends GraphHandlerActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        Log.i("ayaz", "onRestart");
         new BackgroundProcess().execute();
     }
 
@@ -281,14 +286,23 @@ public class Weight extends GraphHandlerActivity {
                     if(i == (weight_contentlists.size() - 1)){
                         lastDate = fromdate;
                     }*/
-                    
+
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(mapValue.get("weight"));
-
-                    jsonArray1.put(innerJsonArray);
-
+                    mEpocList.add(epoch);
+                    mValueList.add(mapValue.get("weight"));
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+                            jsonArray1.put(innerJsonArray);
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+                        jsonArray1.put(innerJsonArray);
+                    }
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
@@ -462,34 +476,48 @@ public class Weight extends GraphHandlerActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstant.WEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
-            mFormDate = data.getStringExtra("fromDate");
-            mToDate = data.getStringExtra("toDate");
+            String fromDate = data.getStringExtra("fromDate");
+            String toDate = data.getStringExtra("toDate");
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+            String fromdate = null;
+            try {
+                date1 = simpleDateFormat.parse(fromdate);
+                date2 = simpleDateFormat.parse(toDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
+
             mIntervalMode = data.getStringExtra("intervalMode");
             mRotationAngle = 45;
+            Log.i("ayaz", "onActivityResult");
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily
                 mDateFormat = "%d %b '%y";
-                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForDaily(fromDate, toDate);
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
                 //Weekly
-                mTckValuesJsonArray = getJsonForWeekly(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForWeekly(fromDate, toDate);
                 mDateFormat = "%d %b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
                 //Monthly
-                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForMonthly(fromDate, toDate);
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
                 //Quarterly
-                mTckValuesJsonArray = getJsonForQuaterly(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForQuaterly(fromDate, toDate);
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
                 //Semi-Annually
-                mTckValuesJsonArray = getJsonForSemiAnnually(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForSemiAnnually(fromDate, toDate);
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
-                mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
+                mTckValuesJsonArray = getJsonForYearly(fromDate, toDate);
                 mDateFormat = "'%y";
                 mRotationAngle = 0;
             }
@@ -510,25 +538,29 @@ public class Weight extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRotationAngle() {
-
-            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
         @JavascriptInterface
         public String getTickValues() {
-            if(mTckValuesJsonArray == null){
+            if (mTckValuesJsonArray == null) {
                 return "[ ]";
-            }else{
-                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+            } else {
                 return mTckValuesJsonArray.toString();
             }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
-            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, "");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, "");
+    }
+
 }
