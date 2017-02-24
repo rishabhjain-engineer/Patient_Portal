@@ -89,7 +89,7 @@
 
               chart.xAxis
                 //.tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
-               // .tickValues(ticket)
+                  .tickValues(ticket)
                 .tickFormat(function (d) { return d3.time.format(dateformat)(new Date(d)) });
 				// To plot all X values
                 //.tickFormat(d3.format(',r'));
