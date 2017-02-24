@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import utils.AppConstant;
+
 import static com.hs.userportal.R.id.date;
 
 /**
@@ -27,6 +29,7 @@ public class GraphHandlerActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     //[1399787880000, 1447669500000, 1448928000000, 1451606400000, 1454284800000, 1456790400000, 1459468800000, 1468195946000];
 
     protected JSONArray getJsonForDaily(String dateString1, String dateString2) {
@@ -44,11 +47,13 @@ public class GraphHandlerActivity extends BaseActivity {
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
         JSONArray jsonArray = new JSONArray();
+        long epoch = 0;
+        boolean isToAddFirsValue = true;
         while (!calendar.after(cal2)) {
             Date dateToConvert = calendar.getTime();
             Log.i("Daily", "Date: " + dateToConvert);
-            long epoch = dateToConvert.getTime();
-           // JSONArray innerJsonArray = new JSONArray();
+            epoch = dateToConvert.getTime();
+            // JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
             //jsonArray.put(innerJsonArray);
 
@@ -100,9 +105,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-           // JSONArray innerJsonArray = new JSONArray();
+            // JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
-          //  jsonArray.put(innerJsonArray);
+            //  jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 6);
         }
         return jsonArray;
@@ -116,10 +121,10 @@ public class GraphHandlerActivity extends BaseActivity {
         int monthInInt = Integer.parseInt(monthInString);
         int yearInInt = Integer.parseInt(yearInString);
         //int mont = Integer.parseInt(month);
-        if(monthInInt == 12){
-            monthInInt =  1;
+        if (monthInInt == 12) {
+            monthInInt = 1;
             yearInInt = yearInInt + 1;
-        }else{
+        } else {
             monthInInt = monthInInt + 1;
         }
         date1 = "01/" + monthInInt + "/" + yearInInt;
@@ -198,10 +203,10 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-           // JSONArray innerJsonArray = new JSONArray();
+            // JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
-           // jsonArray.put(innerJsonArray);
-            beginCalendar.add(Calendar.MONTH, 6);
+            // jsonArray.put(innerJsonArray);
+            beginCalendar.add(Calendar.MONTH, 3);
         }
         return jsonArray;
 
@@ -246,9 +251,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-       //     JSONArray innerJsonArray = new JSONArray();
+            //     JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
-         //   jsonArray.put(innerJsonArray);
+            //   jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 6);
         }
         return jsonArray;
@@ -286,9 +291,9 @@ public class GraphHandlerActivity extends BaseActivity {
                 e.printStackTrace();
             }
             long epoch = date.getTime();
-         //   JSONArray innerJsonArray = new JSONArray();
+            //   JSONArray innerJsonArray = new JSONArray();
             jsonArray.put(epoch);
-           // jsonArray.put(innerJsonArray);
+            // jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.YEAR, 1);
         }
         return jsonArray;
