@@ -59,6 +59,8 @@
   var angle = Interface.getRotationAngle();
   var dateformat = Interface.getDateFormat();
   var ticket = JSON.parse(Interface.getTickValues());
+  var startdate = Interface.minDateValue();
+   var enddate = Interface.maxDateValue();
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -75,6 +77,7 @@
                 .showYAxis(true)
                 //.forceY([50, 500])
                 .forceY([0, max])
+                .forceX([startdate,enddate])
                 .tooltipContent(
                 function (key, x, y, e) {
                 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

@@ -45,7 +45,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ObjectPool;
 
+import org.codehaus.jackson.annotate.JsonValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,9 +82,6 @@ public class Weight extends GraphHandlerActivity {
     private JsonObjectRequest jr;
     private RequestQueue queue;
     private MiscellaneousTasks misc;
-    private List<String> chartValues = new ArrayList<String>();
-    private List<String> chartValues1 = new ArrayList<String>();
-    private List<String> chartDates = new ArrayList<String>();
     private Services service;
     private ProgressDialog progress;
     private MyHealthsAdapter adapter;
@@ -94,6 +93,8 @@ public class Weight extends GraphHandlerActivity {
     private List<String> mValueList = new ArrayList<String>();
 
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
+    private long mDateMaxValue, mDateMinValue;
+    private boolean mIsToAddMaxMinValue = true;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -256,12 +257,22 @@ public class Weight extends GraphHandlerActivity {
                     hmap.put("ID", ID);
                     hmap.put("weight", weight);
                     hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
-                    chartValues.add(weight);
-                    // chartDates.add("'" + fromdate + "'");
-                    chartDates.add("");
 
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
 
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            weight_contentlists.add(hmap);
+                        }
+                    } else {
+                        weight_contentlists.add(hmap);
+                    }
                 }
 
                 Helper.sortHealthListByDate(weight_contentlists);
@@ -278,17 +289,15 @@ public class Weight extends GraphHandlerActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
-                  /*  if(i == 0){
-                        initialDate = fromdate;
-                    }
-                    if(i == (weight_contentlists.size() - 1)){
-                        lastDate = fromdate;
-                    }*/
-
                     long epoch = date.getTime();
                     mEpocList.add(epoch);
                     mValueList.add(mapValue.get("weight"));
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
                     if (mFormEpocDate > 0) {
                         if (epoch < mEpocToDate && epoch > mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
@@ -338,7 +347,7 @@ public class Weight extends GraphHandlerActivity {
                 }
                 Utility.setListViewHeightBasedOnChildren(weight_listId);
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
-                if(progress != null && progress.isShowing()){
+                if (progress != null && progress.isShowing()) {
                     progress.dismiss();
                 }
             } else {
@@ -477,8 +486,11 @@ public class Weight extends GraphHandlerActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstant.WEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
+
             String fromDate = data.getStringExtra("fromDate");
             String toDate = data.getStringExtra("toDate");
+
+            mIsToAddMaxMinValue = false;
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date date1 = null, date2 = null;
@@ -522,12 +534,37 @@ public class Weight extends GraphHandlerActivity {
                 mDateFormat = "'%y";
                 mRotationAngle = 0;
             }
+
+
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
+            Log.e("ayaz", "mJsonArrayToSend: "+mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
 
@@ -547,6 +584,7 @@ public class Weight extends GraphHandlerActivity {
             if (mTckValuesJsonArray == null) {
                 return "[ ]";
             } else {
+                Log.e("ayaz", "mTckValuesJsonArray: "+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
@@ -554,6 +592,18 @@ public class Weight extends GraphHandlerActivity {
         @JavascriptInterface
         public String getDateFormat() {
             return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min: "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max: "+mDateMaxValue);
+            return mDateMaxValue;
         }
     }
 
