@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,17 +58,18 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 
 /**
  * Created by Rishabh on 15/2/17.
  */
 
-public class BpActivity extends BaseActivity {
+public class BpActivity extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id;
+    private String id, mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -82,9 +84,9 @@ public class BpActivity extends BaseActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0;
+    private int maxYrange = 0, mRotationAngle = 45;
     private double mMaxWeight = 0;
-    private JSONArray mJsonArrayToSend = null;
+    private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
 
 
     @Override
@@ -437,6 +439,44 @@ public class BpActivity extends BaseActivity {
         queue.add(jr);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.BMI_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 45;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mTckValuesJsonArray = getJsonForWeekly(mFormDate, mToDate);
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mTckValuesJsonArray = getJsonForQuaterly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mTckValuesJsonArray = getJsonForSemiAnnually(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
+                mDateFormat = "'%y";
+                mRotationAngle = 0;
+            }
+        }
+    }
+
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
@@ -447,6 +487,29 @@ public class BpActivity extends BaseActivity {
         public int getDouble() {
             int i = (int) mMaxWeight;
             return (i + 20);
+        }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+
+            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if(mTckValuesJsonArray == null){
+                return "[ ]";
+            }else{
+                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
+            return mDateFormat;
         }
     }
 

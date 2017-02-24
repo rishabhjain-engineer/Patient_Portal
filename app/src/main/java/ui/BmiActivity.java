@@ -346,6 +346,7 @@ public class BmiActivity extends GraphHandlerActivity {
                 mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
                 //Weekly
+                mTckValuesJsonArray = getJsonForWeekly(mFormDate, mToDate);
                 mDateFormat = "%d %b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
                 //Monthly
@@ -353,12 +354,15 @@ public class BmiActivity extends GraphHandlerActivity {
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
                 //Quarterly
+                mTckValuesJsonArray = getJsonForQuaterly(mFormDate, mToDate);
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
                 //Semi-Annually
+                mTckValuesJsonArray = getJsonForSemiAnnually(mFormDate, mToDate);
                 mDateFormat = "%b '%y";
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
+                mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
                 mDateFormat = "'%y";
                 mRotationAngle = 0;
             }
