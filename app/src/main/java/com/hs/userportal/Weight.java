@@ -210,7 +210,6 @@ public class Weight extends GraphHandlerActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             isDataAvailable = false;
             progress = new ProgressDialog(Weight.this);
@@ -338,8 +337,10 @@ public class Weight extends GraphHandlerActivity {
                     adapter.notifyDataSetChanged();
                 }
                 Utility.setListViewHeightBasedOnChildren(weight_listId);
-                progress.dismiss();
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                if(progress != null && progress.isShowing()){
+                    progress.dismiss();
+                }
             } else {
                 Intent i = new Intent(Weight.this, AddWeight.class);
                 i.putExtra("id", id);
@@ -481,9 +482,9 @@ public class Weight extends GraphHandlerActivity {
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date date1 = null, date2 = null;
-            String fromdate = null;
+
             try {
-                date1 = simpleDateFormat.parse(fromdate);
+                date1 = simpleDateFormat.parse(fromDate);
                 date2 = simpleDateFormat.parse(toDate);
             } catch (ParseException e) {
                 e.printStackTrace();

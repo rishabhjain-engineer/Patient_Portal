@@ -562,8 +562,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRotationAngle() {
-
-            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
@@ -572,14 +570,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             if(mTckValuesJsonArray == null){
                 return "[ ]";
             }else{
-                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
-            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }

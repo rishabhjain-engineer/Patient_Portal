@@ -206,8 +206,10 @@ public class BpActivity extends GraphHandlerActivity {
                     adapter.notifyDataSetChanged();
                 }
                 Height.Utility.setListViewHeightBasedOnChildren(weight_listId);
-                progress.dismiss();
                 weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+                if(progress != null && progress.isShowing()){
+                    progress.dismiss();
+                }
             }else {
                 Intent i = new Intent(BpActivity.this, AddWeight.class);
                 i.putExtra("id", id);
@@ -498,8 +500,6 @@ public class BpActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRotationAngle() {
-
-            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
@@ -508,14 +508,12 @@ public class BpActivity extends GraphHandlerActivity {
             if(mTckValuesJsonArray == null){
                 return "[ ]";
             }else{
-                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
-            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }

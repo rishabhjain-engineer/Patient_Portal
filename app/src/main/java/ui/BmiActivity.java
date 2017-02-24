@@ -190,14 +190,11 @@ public class BmiActivity extends GraphHandlerActivity {
             adapter = new MyHealthsAdapter(BmiActivity.this, weight_contentlists);
             weight_listId.setAdapter(adapter);
             Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
-            String db = null;
-            try {
-                progress.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            weight_graphView.loadUrl("file:///android_asset/html/index.html");
+            if(progress != null && progress.isShowing()){
                 progress.dismiss();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/index.html");
 
             if (mIsBmiEmpty == true) {
                 Toast.makeText(BmiActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
@@ -424,8 +421,6 @@ public class BmiActivity extends GraphHandlerActivity {
         }
         @JavascriptInterface
         public int getRotationAngle() {
-
-            Log.e("Rishabh", "mRotationAngle :="+mRotationAngle);
             return mRotationAngle;
         }
 
@@ -434,14 +429,12 @@ public class BmiActivity extends GraphHandlerActivity {
             if(mTckValuesJsonArray == null){
                 return "[ ]";
             }else{
-                Log.e("Rishabh", "asdasdsadasdasdsadsadsadsad :="+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
 
         @JavascriptInterface
         public String getDateFormat() {
-            Log.e("Rishabh", "mDateFormat :="+mDateFormat);
             return mDateFormat;
         }
     }
