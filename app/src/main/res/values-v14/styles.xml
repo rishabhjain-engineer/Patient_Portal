@@ -15,7 +15,7 @@
 
         <item name="android:background">@drawable/button_selector</item>
         <item name="android:padding">10dip</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/green_header_login</item>
     </style>
 
     <style name="EditTextStyle" parent="android:style/Widget.EditText">
@@ -31,7 +31,7 @@
     <style name="CustomWindowTitleBackground" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">#1998ca</item>
         <item name="android:icon">@android:color/transparent</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/green_header_login</item>
     </style>
 
     <style name="ApplicationStyle" parent="Theme.AppCompat.Light.DarkActionBar">

@@ -113,7 +113,7 @@
     <style name="CustomWindowTitleBackground">
         <item name="android:background">#1DBBE3</item>
         <item name="android:icon">@android:color/transparent</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/green_header_login</item>
     </style>
 
     <style name="ApplicationStyle" parent="Theme.AppCompat.Light.DarkActionBar">
