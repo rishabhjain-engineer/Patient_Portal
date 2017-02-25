@@ -307,7 +307,7 @@ public class GraphDetails extends ActionBarActivity {
                 e.printStackTrace();
             }
         }*/
-        adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo);
+        adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, false);
         adapter.setChartValues(chartValues);
         graph_listview_id.setAdapter(adapter);
         //  AdapterHelper.getListViewSize(graph_listview_id);

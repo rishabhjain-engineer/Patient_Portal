@@ -50,6 +50,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import adapters.Group_testAdapter;
@@ -92,7 +93,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private String title;
-    private List<String> mFilterChartValueList = new ArrayList<String>();
+    private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -208,62 +209,98 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         setData();
     }
-
+    List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
     private void setData(){
+         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            JSONArray jsonArray1 = new JSONArray();
+
             for (int i=0 ; i < chartValues.size(); i++) {
+
+                String dateInString = chartDates.get(i);
+                String chartValueInString = chartValues.get(i);
+                String caseCode = chartValues.get(i);
+
+                GraphDetailValueAndDate graphDetailValueAndDate = new GraphDetailValueAndDate();
+                graphDetailValueAndDate.setDate(dateInString);
+                graphDetailValueAndDate.setValue(chartValueInString);
+                graphDetailValueAndDate.setCaseCode(caseCode);
+
+                graphDetailValueAndDateList.add(graphDetailValueAndDate);
+
+            }
+
+            if (mFormEpocDate > 0) {
+                for(GraphDetailValueAndDate graphDetailValueAndDate : graphDetailValueAndDateList){
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(graphDetailValueAndDate.getDate());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            mFilteredGraphDetailValueAndDateList.add(graphDetailValueAndDate);
+                        }
+                    }
+                }
+            }else{
+                mFilteredGraphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>(graphDetailValueAndDateList);
+            }
+        }
+
+        JSONArray jsonArray1 = new JSONArray();
+        for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
+            GraphDetailValueAndDate graphDetailValueAndDateObj = mFilteredGraphDetailValueAndDateList.get(i);
+
+            String chartValueInString = graphDetailValueAndDateObj.getValue();
+            String dateInString = graphDetailValueAndDateObj.getDate();
+
+            if(!TextUtils.isEmpty(chartValueInString)){
+                double value = 0;
+                try {
+                    value = Double.parseDouble(chartValueInString);
+                }catch (NumberFormatException exc){
+                    Log.e("Rishabh", "GraphDetailNew Numberformat exception "+exc);
+                }
+                if(mMaxValue <= value){
+                    mMaxValue = value;
+                }
+
                 Date date = null;
                 try {
-                    date = simpleDateFormat.parse(chartDates.get(i));
+                    date = simpleDateFormat.parse(dateInString);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 long epoch = date.getTime();
-                String chartValueInString = chartValues.get(i);
+                if(mIsToAddMaxMinValue && i == 0){
+                    mDateMinValue = epoch;
+                }
+                if(mIsToAddMaxMinValue && i == (mFilteredGraphDetailValueAndDateList.size() -1)){
+                    mDateMaxValue = epoch;
+                }
 
-                if(!TextUtils.isEmpty(chartValueInString)){
-                        double value = 0;
-                        try {
-                            value = Double.parseDouble(chartValueInString);
-                        }catch (NumberFormatException exc){
-                            Log.e("Rishabh", "GraphDetailNew Numberformat exception "+exc);
-                        }
-                        if(mMaxValue <= value){
-                            mMaxValue = value;
-                        }
 
-                    mEpocList.add(epoch);
-                    mValueList.add(chartValueInString);
-
-                    if(mIsToAddMaxMinValue && i == 0){
-                        mDateMinValue = epoch;
-                    }
-                    if(mIsToAddMaxMinValue && i == (chartValues.size() -1)){
-                        mDateMaxValue = epoch;
-                    }
-
-                    ///////////////////////
-                    JSONArray innerJsonArray = null;
-                    if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
-                            innerJsonArray = new JSONArray();
-                            innerJsonArray.put(epoch);
-                            innerJsonArray.put(chartValueInString);
-                            jsonArray1.put(innerJsonArray);
-                        }
-                    } else {
+                JSONArray innerJsonArray = null;
+                if (mFormEpocDate > 0) {
+                    if (epoch < mEpocToDate && epoch > mFormEpocDate) {
                         innerJsonArray = new JSONArray();
                         innerJsonArray.put(epoch);
                         innerJsonArray.put(chartValueInString);
                         jsonArray1.put(innerJsonArray);
-                        mFilterChartValueList.add(chartValueInString);
                     }
+                } else {
+                    innerJsonArray = new JSONArray();
+                    innerJsonArray.put(epoch);
+                    innerJsonArray.put(chartValueInString);
                     jsonArray1.put(innerJsonArray);
                 }
+
+                jsonArray1.put(innerJsonArray);
             }
+
 
             JSONObject outerJsonObject = new JSONObject();
             try {
@@ -274,16 +311,15 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
 
         if(adapter == null){
-            adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo);
-            adapter.setChartValues(chartValues);
+            adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
+            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList);
             graph_listview_id.setAdapter(adapter);
         }else{
 
-            adapter.setChartValues(mFilterChartValueList);
+            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList);
             adapter.notifyDataSetChanged();
         }
 
