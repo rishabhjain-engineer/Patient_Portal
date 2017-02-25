@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,11 +96,13 @@ public class BpActivity extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private boolean mIsToAddMaxMinValue = true;
     private long mDateMaxValue, mDateMinValue;
+    private RelativeLayout mListViewHeaderRl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bp_activity);
+        mListViewHeaderRl = (RelativeLayout)findViewById(R.id.header);
         setupActionBar();
         mActionBar.setTitle("Blood Pressure");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
@@ -176,6 +180,20 @@ public class BpActivity extends GraphHandlerActivity {
         });
 
         new BackgroundProcess().execute();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            weight_listId.setVisibility(View.GONE);
+            mListViewHeaderRl.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            weight_listId.setVisibility(View.VISIBLE);
+            mListViewHeaderRl.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,12 +99,14 @@ public class Height extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
 
     private JSONArray mJsonArrayToSend,  mTckValuesJsonArray = null;
+    private RelativeLayout mListViewHeaderRl;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
+        mListViewHeaderRl = (RelativeLayout)findViewById(R.id.header);
         service = new Services(Height.this);
         setupActionBar();
         mActionBar.setTitle("Height");
@@ -194,6 +198,20 @@ public class Height extends GraphHandlerActivity {
         // set the marker to the chart
        // linechart.setMarkerView(mv);
         new BackgroundProcess().execute();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            weight_listId.setVisibility(View.GONE);
+            mListViewHeaderRl.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            weight_listId.setVisibility(View.VISIBLE);
+            mListViewHeaderRl.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
     }
 
     public void setLinechart() {
