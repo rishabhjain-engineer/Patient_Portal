@@ -44,8 +44,9 @@ public class Group_testAdapter extends BaseAdapter {
         this.chartValues = chartValues;
     }
 
-    public void setChartValuesList(List<GraphDetailValueAndDate> list) {
+    public void setChartValuesList(List<GraphDetailValueAndDate> list, boolean isFromGraph) {
         graphDetailValueAndDateList = list;
+        mIsGraphDetailNew = isFromGraph;
     }
 
     @Override
