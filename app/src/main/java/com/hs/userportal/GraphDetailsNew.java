@@ -213,6 +213,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private void setData(){
          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+        graphDetailValueAndDateList.clear();
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
 
             for (int i=0 ; i < chartValues.size(); i++) {
@@ -229,6 +230,9 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 graphDetailValueAndDateList.add(graphDetailValueAndDate);
 
             }
+
+            mFilteredGraphDetailValueAndDateList.clear();
+            Log.i("ayaz", "size: "+mFilteredGraphDetailValueAndDateList.size());
 
             if (mFormEpocDate > 0) {
                 for(GraphDetailValueAndDate graphDetailValueAndDate : graphDetailValueAndDateList){
@@ -251,6 +255,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
 
         JSONArray jsonArray1 = new JSONArray();
+        Log.i("ayaz", "size11111: "+mFilteredGraphDetailValueAndDateList.size());
         for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
             GraphDetailValueAndDate graphDetailValueAndDateObj = mFilteredGraphDetailValueAndDateList.get(i);
 
@@ -283,22 +288,20 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 }
 
 
-                JSONArray innerJsonArray = null;
                 if (mFormEpocDate > 0) {
                     if (epoch < mEpocToDate && epoch > mFormEpocDate) {
-                        innerJsonArray = new JSONArray();
+                        JSONArray innerJsonArray = new JSONArray();
                         innerJsonArray.put(epoch);
                         innerJsonArray.put(chartValueInString);
                         jsonArray1.put(innerJsonArray);
                     }
                 } else {
-                    innerJsonArray = new JSONArray();
+                    JSONArray innerJsonArray = new JSONArray();
                     innerJsonArray.put(epoch);
                     innerJsonArray.put(chartValueInString);
                     jsonArray1.put(innerJsonArray);
                 }
 
-                jsonArray1.put(innerJsonArray);
             }
 
 
@@ -315,11 +318,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         if(adapter == null){
             adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList);
+            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
             graph_listview_id.setAdapter(adapter);
         }else{
 
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList);
+            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
             adapter.notifyDataSetChanged();
         }
 
