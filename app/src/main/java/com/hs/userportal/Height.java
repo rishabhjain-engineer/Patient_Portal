@@ -416,13 +416,14 @@ public class Height extends GraphHandlerActivity {
                     }
                     long epoch = date.getTime();
                     mEpocList.add(epoch);
-                    mValueList.add(mapValue.get("weight"));;
+                    mValueList.add(mapValue.get("weight"));
                     if(mIsToAddMaxMinValue && i == 0){
                         mDateMinValue = epoch;
                     }
                     if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
                         mDateMaxValue = epoch;
                     }
+
                     if (mFormEpocDate > 0) {
                         if (epoch < mEpocToDate && epoch > mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
@@ -619,7 +620,7 @@ public class Height extends GraphHandlerActivity {
             mFormEpocDate = date1.getTime();
             mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily

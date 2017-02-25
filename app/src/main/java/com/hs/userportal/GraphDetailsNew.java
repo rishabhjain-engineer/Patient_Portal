@@ -85,6 +85,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private WebView mLineChartWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
     private JSONArray mJsonArrayToSend = new JSONArray() , mTckValuesJsonArray = null;
+    private long mDateMaxValue, mDateMinValue;
+    private boolean mIsToAddMaxMinValue = true;
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
+    private long mFormEpocDate = 0, mEpocToDate = 0;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -167,7 +172,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             JSONArray jsonArray1 = new JSONArray();
             for (int i=0 ; i < chartValues.size(); i++) {
-                JSONArray innerJsonArray = new JSONArray();
                 Date date = null;
                 try {
                     date = simpleDateFormat.parse(chartDates.get(i));
@@ -175,15 +179,41 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                     e.printStackTrace();
                 }
                 long epoch = date.getTime();
+
                 if(!TextUtils.isEmpty(chartValues.get(i))){
-                    innerJsonArray.put(epoch);
                     if(!TextUtils.isEmpty(chartValues.get(i))){
                         double value = Double.parseDouble(chartValues.get(i));
                         if(mMaxValue <= value){
                             mMaxValue = value;
                         }
                     }
-                    innerJsonArray.put(chartValues.get(i));
+                    mEpocList.add(epoch);
+                    mValueList.add(chartValues.get(i));
+
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (chartValues.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
+
+                    ///////////////////////
+                    JSONArray innerJsonArray = null;
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            innerJsonArray = new JSONArray();
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(chartValues.get(i));
+                            jsonArray1.put(innerJsonArray);
+                        }
+                    } else {
+                        innerJsonArray = new JSONArray();
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(chartValues.get(i));
+                        jsonArray1.put(innerJsonArray);
+                    }
+                    ///////////////////
+
                     jsonArray1.put(innerJsonArray);
                 }
             }
@@ -502,8 +532,21 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         if (requestCode == AppConstant.CASECODE_REQUEST_CODE && resultCode == RESULT_OK) {
             mFormDate = data.getStringExtra("fromDate");
             mToDate = data.getStringExtra("toDate");
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(mFormDate);
+                date2 = simpleDateFormat.parse(mToDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily
@@ -530,6 +573,28 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
                 mDateFormat = "'%y";
                 mRotationAngle = 0;
+            }
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -577,6 +642,18 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         @JavascriptInterface
         public String getDateFormat() {
             return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min: graphdetail "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max: graphdetail "+mDateMaxValue);
+            return mDateMaxValue;
         }
     }
 

@@ -75,6 +75,8 @@
   var angle = Interface.getRotationAngle();
   var dateformat = Interface.getDateFormat();
   var ticket = JSON.parse(Interface.getTickValues());
+   var startdate = Interface.minDateValue();
+  var enddate = Interface.maxDateValue();
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -88,7 +90,8 @@
                 .showLegend(true)
                 .showYAxis(true)
                 //.forceY([50, 500])
-                //.forceY([0, 100])                
+                //.forceY([0, 100])
+                 .forceX([startdate,enddate])
                 /*.tooltipContent(
                 function (key, x, y, e) {
                 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -103,6 +106,7 @@
 
               chart.xAxis
                 //.tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
+                .tickValues(ticket)
                 .tickFormat(function (d) { 
                     return d3.time.format("%d %b %Y")(new Date(d))
                 });

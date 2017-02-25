@@ -393,7 +393,7 @@ public class BmiActivity extends GraphHandlerActivity {
             mFormEpocDate = date1.getTime();
             mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily
