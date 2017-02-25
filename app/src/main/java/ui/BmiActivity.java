@@ -93,6 +93,12 @@ public class BmiActivity extends GraphHandlerActivity {
     private JSONArray mJsonArrayToSend = new JSONArray() , mTckValuesJsonArray = null;
     private Menu mBMIMenu;
     private boolean mIsBmiEmpty = true;
+    private long mDateMaxValue, mDateMinValue;
+    private boolean mIsToAddMaxMinValue = true;
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
+    private long mFormEpocDate = 0, mEpocToDate = 0;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -246,12 +252,27 @@ public class BmiActivity extends GraphHandlerActivity {
                                 mMaxBMI = bmiIndouble;
                             }
                             hmap.put("weight", bmiValue);
-                            weight_contentlists.add(hmap);
+                            Date date = null;
+                            try {
+                                date = simpleDateFormat.parse(fromdate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            long epoch = date.getTime();
+
+                            if (mFormEpocDate > 0) {
+                                if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                                    weight_contentlists.add(hmap);
+                                }
+                            } else {
+                                weight_contentlists.add(hmap);
+                            }
+
                         }
-                        chartValues.add(weight);
-                        // chartDates.add("'" + fromdate + "'");
-                        chartDates.add("");
+
                     }
+
+
                 }
 
                 Helper.sortHealthListByDate(weight_contentlists);
@@ -268,12 +289,27 @@ public class BmiActivity extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(mapValue.get("weight"));
-
-                    jsonArray1.put(innerJsonArray);
-
+                    mEpocList.add(epoch);
+                    mValueList.add(mapValue.get("weight"));
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+                            jsonArray1.put(innerJsonArray);
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+                        jsonArray1.put(innerJsonArray);
+                    }
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "BMI");
@@ -343,6 +379,19 @@ public class BmiActivity extends GraphHandlerActivity {
         if (requestCode == AppConstant.BMI_REQUEST_CODE && resultCode == RESULT_OK) {
             mFormDate = data.getStringExtra("fromDate");
             mToDate = data.getStringExtra("toDate");
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(mFormDate);
+                date2 = simpleDateFormat.parse(mToDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
             mRotationAngle = 45;
 
@@ -369,8 +418,30 @@ public class BmiActivity extends GraphHandlerActivity {
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
                 mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
-                mDateFormat = "'%y";
+                mDateFormat = "%Y";
                 mRotationAngle = 0;
+            }
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -436,6 +507,18 @@ public class BmiActivity extends GraphHandlerActivity {
         @JavascriptInterface
         public String getDateFormat() {
             return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "BMI  min: "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "BMI  max: "+mDateMaxValue);
+            return mDateMaxValue;
         }
     }
 }
