@@ -107,11 +107,11 @@
             android:name="com.hs.userportal.update"
             android:screenOrientation="portrait" />
 
-       <!-- <activity
-            android:name=".ViewOrderFiles"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />-->
+        <!-- <activity
+             android:name=".ViewOrderFiles"
+             android:launchMode="singleInstance"
+             android:screenOrientation="portrait"
+             android:windowSoftInputMode="stateHidden" />-->
 
         <activity
             android:name="com.hs.userportal.changepass"
@@ -156,12 +156,12 @@
             android:noHistory="true" />
         <activity
             android:name="com.hs.userportal.residence"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.hs.userportal.Work"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.hs.userportal.Travel"
             android:noHistory="true" />
@@ -253,8 +253,8 @@
         <activity
             android:name=".MyFamily"
             android:label="My Family"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name="com.hs.userportal.Profile"
@@ -388,14 +388,14 @@
 
         <activity
             android:name="com.hs.userportal.Height"
-            android:screenOrientation="portrait"/>
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name="com.hs.userportal.Weight"
-            android:screenOrientation="portrait"/>
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name="com.hs.userportal.AddGraphDetails"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.hs.userportal.Allergy"
             android:label="Allergies"
@@ -406,7 +406,7 @@
 
         <activity
             android:name="com.hs.userportal.GraphDetailsNew"
-            android:screenOrientation="portrait"/>
+            android:configChanges="orientation|screenSize" />
 
         <activity
             android:name="ui.QuestionireActivity"
@@ -418,11 +418,11 @@
 
         <activity
             android:name="ui.BpActivity"
-            android:screenOrientation="portrait"/>
+            android:configChanges="orientation|screenSize" />
 
         <activity
             android:name="ui.BmiActivity"
-            android:screenOrientation="portrait"/>
+            android:configChanges="orientation|screenSize" />
 
         <activity
             android:name="ui.ProfileContainerActivity"
@@ -452,18 +452,18 @@
         <!-- AIzaSyBeKiVCcMy9tvlZ4-wOEgAphDmIJsFseVI-->
         <!--AIzaSyDPEeIalPb11XO0RLOX5B0XkwklHBwUGws-->
 
-       <!-- <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />-->
-<!--
-        <activity android:name="com.facebook.LoginActivity" />-->
+        <!-- <meta-data
+             android:name="com.google.android.gms.version"
+             android:value="@integer/google_play_services_version" />-->
+        <!--
+                <activity android:name="com.facebook.LoginActivity" />-->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <receiver android:name="networkmngr.NetworkChangeListener" >
+        <receiver android:name="networkmngr.NetworkChangeListener">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />

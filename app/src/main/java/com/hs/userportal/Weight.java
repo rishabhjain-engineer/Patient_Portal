@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +97,7 @@ public class Weight extends GraphHandlerActivity {
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
     private boolean mIsToAddMaxMinValue = true;
+    private RelativeLayout mListViewHeaderRl;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -102,6 +105,7 @@ public class Weight extends GraphHandlerActivity {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
         service = new Services(Weight.this);
+        mListViewHeaderRl = (RelativeLayout)findViewById(R.id.header);
         setupActionBar();
         mActionBar.setTitle("Weight");
 
@@ -195,6 +199,20 @@ public class Weight extends GraphHandlerActivity {
         linechart.animateX(3500);
 
         new BackgroundProcess().execute();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            weight_listId.setVisibility(View.GONE);
+            mListViewHeaderRl.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            weight_listId.setVisibility(View.VISIBLE);
+            mListViewHeaderRl.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
     }
 
     @Override
@@ -505,7 +523,7 @@ public class Weight extends GraphHandlerActivity {
             mEpocToDate = date2.getTime();
 
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
             Log.i("ayaz", "onActivityResult");
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
