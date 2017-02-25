@@ -2,6 +2,7 @@ package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -90,6 +91,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<Long> mEpocList = new ArrayList<Long>();
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
+    private String title;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -97,7 +99,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graphdetails_new);
         setupActionBar();
-        String title = getIntent().getStringExtra("chartNames");
+        title = getIntent().getStringExtra("chartNames");
         mActionBar.setTitle(title);
 
         //line chart graph
@@ -168,6 +170,46 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
         chartDates = getIntent().getStringArrayListExtra("dates");
         chartValues = getIntent().getStringArrayListExtra("values");
+        casecodes = getIntent().getStringArrayListExtra("case");
+        caseIds = getIntent().getStringArrayListExtra("caseIds");
+        chartunitList = getIntent().getStringArrayListExtra("unitList");
+        if (chartunitList == null) {
+            chartunitList = new ArrayList<>();
+            for (int i = 0; i < casecodes.size(); i++) {
+                chartunitList.add(getIntent().getExtras().getString("UnitCode"));
+            }
+        }
+
+        graph_listview_id.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    return true;
+                }
+                return false;
+            }
+
+        });
+        graph_listview_id.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                caseindex = casecodes.get(position);
+                System.out.println(caseindex);
+                Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
+                in.putExtra("id", logout.id);
+                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                in.putExtra("caseId", caseIds.get(position));
+                startActivity(in);
+                finish();
+            }
+        });
+
+
+        setData();
+    }
+
+    private void setData(){
+
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             JSONArray jsonArray1 = new JSONArray();
@@ -182,7 +224,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
                 if(!TextUtils.isEmpty(chartValues.get(i))){
                     if(!TextUtils.isEmpty(chartValues.get(i))){
-                        double value = Double.parseDouble(chartValues.get(i));
+                        double value = 0;
+                        try {
+                            value = Double.parseDouble(chartValues.get(i));
+                        }catch (NumberFormatException exc){
+                            Log.e("Rishabh", "GraphDetailNew Numberformat exception "+exc);
+                        }
                         if(mMaxValue <= value){
                             mMaxValue = value;
                         }
@@ -228,50 +275,44 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             }
 
         }
-        casecodes = getIntent().getStringArrayListExtra("case");
-        caseIds = getIntent().getStringArrayListExtra("caseIds");
-        chartunitList = getIntent().getStringArrayListExtra("unitList");
-        if (chartunitList == null) {
-            chartunitList = new ArrayList<>();
-            for (int i = 0; i < casecodes.size(); i++) {
-                chartunitList.add(extras.getString("UnitCode"));
-            }
-        }
+
 
         adapter = new Group_testAdapter(this, chartDates, chartValues, casecodes, chartunitList, RangeFrom, RangeTo);
         graph_listview_id.setAdapter(adapter);
         Utility.setListViewHeightBasedOnChildren(graph_listview_id);
         adapter.notifyDataSetChanged();
-        graph_listview_id.setOnTouchListener(new ListView.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    return true;
-                }
-                return false;
-            }
 
-        });
-        graph_listview_id.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                caseindex = casecodes.get(position);
-                System.out.println(caseindex);
-                Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
-                in.putExtra("id", logout.id);
-                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                in.putExtra("caseId", caseIds.get(position));
-                startActivity(in);
-                finish();
-            }
-        });
+        mLineChartWebView.loadUrl("file:///android_asset/html/graph.html");
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+           // weight_listId.setVisibility(View.GONE);
+            graph_listview_id.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+           // weight_listId.setVisibility(View.VISIBLE);
+            graph_listview_id.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
+    }
+
+
+
+   /* @Override
     protected void onResume() {
         super.onResume();
         mLineChartWebView.loadUrl("file:///android_asset/html/graph.html");
+    }
+    */
+
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setData();
     }
 
     private void setData(int count, float range) {
@@ -506,11 +547,9 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 finish();
                 return true;
-
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(GraphDetailsNew.this, AddGraphDetails.class);
                 startActivityForResult(addGraphDetailsIntent, AppConstant.CASECODE_REQUEST_CODE);
@@ -571,7 +610,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
                 mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
-                mDateFormat = "'%y";
+                mDateFormat = "'%Y";
                 mRotationAngle = 0;
             }
             for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
