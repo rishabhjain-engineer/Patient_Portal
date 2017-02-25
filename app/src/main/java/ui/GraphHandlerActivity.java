@@ -90,6 +90,21 @@ public class GraphHandlerActivity extends BaseActivity {
             }
             calendar.add(Calendar.DATE, 1);
         }
+
+        while(calendar.after(cal2)){
+            boolean isToQuit = false;
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                Date dateToConver = calendar.getTime();
+                long epoch = dateToConver.getTime();
+                Log.i("Weekly", "Date: " + dateToConver);
+                jsonArray.put(epoch);
+                isToQuit = true;
+            }
+            if(isToQuit){
+                break;
+            }
+            calendar.add(Calendar.DATE, 1);
+        }
         Log.i("ayaz", "json: " + jsonArray);
         return jsonArray;
     }
