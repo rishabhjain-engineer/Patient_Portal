@@ -90,6 +90,11 @@ public class Height extends GraphHandlerActivity {
     private LineChart linechart     ;
     private int maxYrange = 0 , mRotationAngle = 0;
     private double mMaxHeight = 0.0;
+    private long mDateMaxValue, mDateMinValue;
+    private boolean mIsToAddMaxMinValue = true;
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
+    private long mFormEpocDate = 0, mEpocToDate = 0;
 
     private JSONArray mJsonArrayToSend,  mTckValuesJsonArray = null;
 
@@ -346,6 +351,7 @@ public class Height extends GraphHandlerActivity {
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
             try {
 
                 sendData1.put("UserId", mId);
@@ -355,10 +361,9 @@ public class Height extends GraphHandlerActivity {
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
-
-
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     isDataAvailable = true;
                     hmap = new HashMap<String, String>();
@@ -377,9 +382,23 @@ public class Height extends GraphHandlerActivity {
                     hmap.put("ID", ID);
                     hmap.put("weight", height);
                     hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
-                    chartValues.add(height);
-                    chartDates.add("");
+
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            weight_contentlists.add(hmap);
+                        }
+                    } else {
+                        weight_contentlists.add(hmap);
+                    }
+
 
                 }
                 Helper.sortHealthListByDate(weight_contentlists);
@@ -396,12 +415,28 @@ public class Height extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(mapValue.get("weight"));
+                    mEpocList.add(epoch);
+                    mValueList.add(mapValue.get("weight"));
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
 
-                    jsonArray1.put(innerJsonArray);
-
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+                            jsonArray1.put(innerJsonArray);
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+                        jsonArray1.put(innerJsonArray);
+                    }
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Height(cm)");
@@ -571,8 +606,21 @@ public class Height extends GraphHandlerActivity {
         if (requestCode == AppConstant.HEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
             mFormDate = data.getStringExtra("fromDate");
             mToDate = data.getStringExtra("toDate");
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(mFormDate);
+                date2 = simpleDateFormat.parse(mToDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily
@@ -597,8 +645,31 @@ public class Height extends GraphHandlerActivity {
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
                 mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
-                mDateFormat = "'%y";
+                mDateFormat = "%Y";
                 mRotationAngle = 0;
+            }
+
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -638,6 +709,18 @@ public class Height extends GraphHandlerActivity {
         @JavascriptInterface
         public String getDateFormat() {
             return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min: "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max: "+mDateMaxValue);
+            return mDateMaxValue;
         }
     }
 }
