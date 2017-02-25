@@ -531,7 +531,7 @@ public class Weight extends GraphHandlerActivity {
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
                 mTckValuesJsonArray = getJsonForYearly(fromDate, toDate);
-                mDateFormat = "'%y";
+                mDateFormat = "%Y";
                 mRotationAngle = 0;
             }
 
