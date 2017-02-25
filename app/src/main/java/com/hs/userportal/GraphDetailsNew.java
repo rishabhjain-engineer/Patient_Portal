@@ -2,6 +2,7 @@ package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -266,6 +267,21 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             }
         });
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+           // weight_listId.setVisibility(View.GONE);
+            graph_listview_id.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+           // weight_listId.setVisibility(View.VISIBLE);
+            graph_listview_id.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
+    }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
