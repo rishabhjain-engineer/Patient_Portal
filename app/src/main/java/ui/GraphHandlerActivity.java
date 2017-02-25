@@ -62,56 +62,36 @@ public class GraphHandlerActivity extends BaseActivity {
         return jsonArray;
     }
 
-    protected JSONArray getJsonForWeekly(String date1, String date2) {
+    protected JSONArray getJsonForWeekly(String startDate, String endDate) {
 
-        String dateArray[] = date1.split("/");
-        String monthInString = dateArray[1];
-        String yearInString = dateArray[2];
-        int monthInInt = Integer.parseInt(monthInString);
-        int yearInInt = Integer.parseInt(yearInString);
-        if (monthInInt <= 3) {
-            monthInInt = 4;
-        } else if (monthInInt <= 6) {
-            monthInInt = 7;
-        } else if (monthInInt <= 9) {
-            monthInInt = 10;
-        } else if (monthInInt <= 12) {
-            monthInInt = 1;
-            yearInInt = yearInInt + 1;
-        }
-
-        date1 = "01/" + monthInInt + "/" + yearInInt;
-
-        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-
-        Calendar beginCalendar = Calendar.getInstance();
-        Calendar finishCalendar = Calendar.getInstance();
-
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date1 = null;
+        Date date2 = null;
         try {
-            beginCalendar.setTime(formater.parse(date1));
-            finishCalendar.setTime(formater.parse(date2));
+            date1 = dateFormat.parse(startDate);
+            date2 = dateFormat.parse(endDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        JSONArray jsonArray = new JSONArray();
-        while (beginCalendar.before(finishCalendar)) {
-            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("Weekly", "Weekly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            // JSONArray innerJsonArray = new JSONArray();
-            jsonArray.put(epoch);
-            //  jsonArray.put(innerJsonArray);
-            beginCalendar.add(Calendar.MONTH, 6);
-        }
-        return jsonArray;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date1);
 
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        JSONArray jsonArray = new JSONArray();
+        while (!calendar.after(cal2)) {
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                Date dateToConver = calendar.getTime();
+                long epoch = dateToConver.getTime();
+                Log.i("Weekly", "Date: " + dateToConver);
+                jsonArray.put(epoch);
+            }
+            calendar.add(Calendar.DATE, 1);
+        }
+        Log.i("ayaz", "json: " + jsonArray);
+        return jsonArray;
     }
 
     protected JSONArray getJsonForMonthly(String date1, String date2) {
