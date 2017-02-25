@@ -24,16 +24,19 @@ public class Group_testAdapter extends BaseAdapter {
     private String RangeTo,RangeFrom;
     private String whichactivity;
 
-    public Group_testAdapter(Activity activity,  List<String> chartDates,List<String> chartValues,List<String> casecodeslist,List<String> chartunitlist,String RangeFrom,String RangeTo){
+    public Group_testAdapter(Activity activity,  List<String> chartDates,List<String> casecodeslist,List<String> chartunitlist,String RangeFrom,String RangeTo){
         this.activity = activity;
         this.chartDates = chartDates;
-        this.chartValues = chartValues;
         this.chartunitlist = chartunitlist;
         this.whichactivity=whichactivity;
         this.casecodeslist=casecodeslist;
       /*  this.check_result_color=check_result_color;*/
         this.RangeFrom=RangeFrom;
         this.RangeTo=RangeTo;
+    }
+
+    public void setChartValues( List<String> chartValues){
+        this.chartValues = chartValues;
     }
 
     @Override
