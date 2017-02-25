@@ -34,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
+import com.hs.userportal.AddGraphDetails;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
 import com.hs.userportal.Height;
@@ -88,6 +89,11 @@ public class BpActivity extends GraphHandlerActivity {
     private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
+    private long mFormEpocDate = 0, mEpocToDate = 0;
+    private boolean mIsToAddMaxMinValue = true;
+    private long mDateMaxValue, mDateMinValue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -254,9 +260,21 @@ public class BpActivity extends GraphHandlerActivity {
                     hmap.put("weight", bp);
                     hmap.put("fromdate", fromdate);
 
-                    weight_contentlists.add(hmap);
-                    chartValues.add(bp);
-                    chartDates.add("");
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            weight_contentlists.add(hmap);
+                        }
+                    } else {
+                        weight_contentlists.add(hmap);
+                    }
 
 
                 }
@@ -275,23 +293,51 @@ public class BpActivity extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    String bp = mapValue.get("weight");
-                    String bpArray[] = bp.split(",");
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(mapValue.get("weight"));
+                    mEpocList.add(epoch);
+                    mValueList.add(mapValue.get("weight"));
 
-                    JSONArray innerJsonArrayLowerBp = new JSONArray();
-                    JSONArray innerJsonArrayTopBP = new JSONArray();
-                    innerJsonArrayLowerBp.put(epoch);
-                    innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
-                    jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
 
-                    innerJsonArrayTopBP.put(epoch);
-                    innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
-                    jsonArrayTopBp.put(innerJsonArrayTopBP);
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            String bp = mapValue.get("weight");
+                            String bpArray[] = bp.split(",");
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
 
+                            JSONArray innerJsonArrayLowerBp = new JSONArray();
+                            JSONArray innerJsonArrayTopBP = new JSONArray();
+                            innerJsonArrayLowerBp.put(epoch);
+                            innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                            jsonArrayLowerBp.put(innerJsonArrayLowerBp);
 
+                            innerJsonArrayTopBP.put(epoch);
+                            innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                            jsonArrayTopBp.put(innerJsonArrayTopBP);
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        String bp = mapValue.get("weight");
+                        String bpArray[] = bp.split(",");
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+
+                        JSONArray innerJsonArrayLowerBp = new JSONArray();
+                        JSONArray innerJsonArrayTopBP = new JSONArray();
+                        innerJsonArrayLowerBp.put(epoch);
+                        innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                        jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+
+                        innerJsonArrayTopBP.put(epoch);
+                        innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                        jsonArrayTopBp.put(innerJsonArrayTopBP);
+                    }
                 }
 
                 mJsonArrayToSend = new JSONArray();
@@ -323,7 +369,7 @@ public class BpActivity extends GraphHandlerActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        getMenuInflater().inflate(R.menu.graphheader, menu);
 
         return true;
     }
@@ -350,6 +396,9 @@ public class BpActivity extends GraphHandlerActivity {
                 //finish();
                 return true;
 
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(BpActivity.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.BMI_REQUEST_CODE);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -454,8 +503,21 @@ public class BpActivity extends GraphHandlerActivity {
         if (requestCode == AppConstant.BMI_REQUEST_CODE && resultCode == RESULT_OK) {
             mFormDate = data.getStringExtra("fromDate");
             mToDate = data.getStringExtra("toDate");
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(mFormDate);
+                date2 = simpleDateFormat.parse(mToDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
             mIntervalMode = data.getStringExtra("intervalMode");
-            mRotationAngle = 45;
+            mRotationAngle = 90;
 
             if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
                 //Daily
@@ -480,8 +542,30 @@ public class BpActivity extends GraphHandlerActivity {
             } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
                 //Annually
                 mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
-                mDateFormat = "'%y";
+                mDateFormat = "%Y";
                 mRotationAngle = 0;
+            }
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -489,6 +573,7 @@ public class BpActivity extends GraphHandlerActivity {
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
+            Log.e("ayaz", "Jsonarraytosend  bp "+mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
 
@@ -508,6 +593,7 @@ public class BpActivity extends GraphHandlerActivity {
             if(mTckValuesJsonArray == null){
                 return "[ ]";
             }else{
+                Log.e("ayaz", "Tick Values  ( bp )  "+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
@@ -515,6 +601,18 @@ public class BpActivity extends GraphHandlerActivity {
         @JavascriptInterface
         public String getDateFormat() {
             return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min bp: "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max bp: "+mDateMaxValue);
+            return mDateMaxValue;
         }
     }
 
