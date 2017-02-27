@@ -144,8 +144,6 @@ public class AddWeight extends BaseActivity {
         }
 
 
-
-
         ArrayAdapter ftSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mfeetValues);
         ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mHeightFtSpinner.setAdapter(ftSpinner);
@@ -231,16 +229,24 @@ public class AddWeight extends BaseActivity {
             public void onClick(View v) {
 
 
-                if (enter_add.getText().toString() == "" || TextUtils.isEmpty(mBpTopNumberEditText.getText().toString()) || TextUtils.isEmpty(mBpBottomNumberEditText.getText().toString())) {
+                if (enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "") {
                     Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
                 } else {
                     if (htype.equalsIgnoreCase("bp")) {
-                        int lowerBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
-                        int upperBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
-                        if (lowerBp > upperBp) {
-                            Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
+                        if (TextUtils.isEmpty(mBpTopNumberEditText.getText().toString()) || TextUtils.isEmpty(mBpBottomNumberEditText.getText().toString())) {
+                            Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
                         } else {
-                            new submitchange().execute();
+                            try {
+                                int lowerBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
+                                int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
+                                if (lowerBp > upperBp) {
+                                    Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    new submitchange().execute();
+                                }
+                            } catch (NumberFormatException ex) {
+                                Toast.makeText(AddWeight.this, "Fill values correctly", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
                         new submitchange().execute();
@@ -395,7 +401,7 @@ public class AddWeight extends BaseActivity {
             // Use the current date as the default date in the picker
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, cyear, month-1, day);
+            return new DatePickerDialog(getActivity(), this, cyear, month - 1, day);
         }
 
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -405,7 +411,7 @@ public class AddWeight extends BaseActivity {
             day = dayOfMonth;
             cyear = year;
 
-            int month = monthOfYear +1;
+            int month = monthOfYear + 1;
 
             String formattedMonth = "" + month;
             String formattedDayOfMonth = "" + dayOfMonth;
@@ -509,7 +515,7 @@ public class AddWeight extends BaseActivity {
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.optJSONArray("Table");
                 mHeightList.clear();
-                if(jsonArray != null){
+                if (jsonArray != null) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
                         String height = obj.optString("height");
