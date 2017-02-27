@@ -556,7 +556,7 @@ public class residence extends BaseActivity {
                 mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
                 mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
-                boolean isValid = false;
+                boolean isValid = false ;
                 if (mIsNotRemembered == false) {
                     isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
                     if (isValid == true) {
@@ -570,6 +570,19 @@ public class residence extends BaseActivity {
                     }
                 }
 
+                boolean isPresentDateCheck = false;
+                if (mIsNotRemembered == false) {
+                    isPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
+                    if (isPresentDateCheck == false) {
+                        showAlertMessage("From Date cannot be greater than Present Date");
+                    }
+                } else if(mIsNotRemembered == true){
+                    mIsDateValid = false;
+                    isPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  "MM/yyyy");
+                    if (isPresentDateCheck == false) {
+                        showAlertMessage("From Date cannot be greater than Present Date");
+                    }
+                }
 
                /* try {
 
