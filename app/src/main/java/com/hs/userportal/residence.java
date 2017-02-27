@@ -477,69 +477,72 @@ public class residence extends BaseActivity {
                 editButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        {
-                            dialog.dismiss();
-                            PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
-                            String ad = toeditFieldlist.get(arg2).get("address");
-                            house.setText(toeditFieldlist.get(arg2).get("name"));
 
-
-                            String add1 = toeditFieldlist.get(arg2).get("address");
-                               /* add1=add1.replace("-", "");*/
-                            add1 = add1.replace("\n", "");
-                            add.setText(add1.trim());
-                            String city1 = toeditFieldlist.get(arg2).get("city");
-                            city1 = city1.replace("-", "");
-                            city1 = city1.replace(",", "");
-                            city1 = city1.replace("\n", "");
-                            city.setText(city1.trim());
-                            String state1 = toeditFieldlist.get(arg2).get("state");
-                            state1 = state1.replace("-", "");
-                            state1 = state1.replace(",", "");
-                            state1 = state1.replace("\n", "");
-                            state.setText(state1.trim());
-                            String pin = toeditFieldlist.get(arg2).get("postaladdress");
-                            pin = pin.replace("-", "");
-                            pin = pin.replace(",", "");
-                            pin = pin.replace("\n", "");
-                            pin = pin.replace(" ", "");
-                            pincode.setText(pin);
-                            if (toeditFieldlist.get(arg2).get("to").contains("PRESENT")) {
-                                to.setText("");
-                            } else {
-                                to.setText(toeditFieldlist.get(arg2).get("to"));
-                            }
-                            from.setText(toeditFieldlist.get(arg2).get("from"));
-                            String cont = toeditFieldlist.get(arg2).get("country");
-                            cont = cont.replace("-", "");
-                            cont = cont.replace(",", "");
-                            cont = cont.replace("\n", "");
-
-                            country.setText(cont.trim());
-                            checkedit = "edit";
-                            addbtn.setText("UPDATE");
-                            try {
-                                String[] fromdialog = toeditFieldlist.get(arg2).get("from").split("/");
-                                year1 = Integer.parseInt(fromdialog[2]);
-                                month1 = Integer.parseInt(fromdialog[1]) - 1;
-                                day1 = Integer.parseInt(fromdialog[0]);
-
-                                String[] fromdialog1 = toeditFieldlist.get(arg2).get("to").split("/");
-                                year2 = Integer.parseInt(fromdialog1[2]);
-                                month2 = Integer.parseInt(fromdialog1[1]) - 1;
-                                day2 = Integer.parseInt(fromdialog1[0]);
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                            } catch (ArrayIndexOutOfBoundsException ex) {
-                                ex.printStackTrace();
-                            }
-                            scroll_id.post(new Runnable() {
-                                public void run() {
-                                    // scroll_id.scrollTo(0, scroll_id.getBottom());
-                                    scroll_id.fullScroll(ScrollView.FOCUS_UP);
-                                }
-                            });
+                        if (mEditBoxContainer.getVisibility() == View.GONE) {
+                            mEditBoxContainer.setVisibility(View.VISIBLE);
                         }
+                        dialog.dismiss();
+                        PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
+                        String ad = toeditFieldlist.get(arg2).get("address");
+                        house.setText(toeditFieldlist.get(arg2).get("name"));
+
+
+                        String add1 = toeditFieldlist.get(arg2).get("address");
+                               /* add1=add1.replace("-", "");*/
+                        add1 = add1.replace("\n", "");
+                        add.setText(add1.trim());
+                        String city1 = toeditFieldlist.get(arg2).get("city");
+                        city1 = city1.replace("-", "");
+                        city1 = city1.replace(",", "");
+                        city1 = city1.replace("\n", "");
+                        city.setText(city1.trim());
+                        String state1 = toeditFieldlist.get(arg2).get("state");
+                        state1 = state1.replace("-", "");
+                        state1 = state1.replace(",", "");
+                        state1 = state1.replace("\n", "");
+                        state.setText(state1.trim());
+                        String pin = toeditFieldlist.get(arg2).get("postaladdress");
+                        pin = pin.replace("-", "");
+                        pin = pin.replace(",", "");
+                        pin = pin.replace("\n", "");
+                        pin = pin.replace(" ", "");
+                        pincode.setText(pin);
+                        if (toeditFieldlist.get(arg2).get("to").contains("PRESENT")) {
+                            to.setText("");
+                        } else {
+                            to.setText(toeditFieldlist.get(arg2).get("to"));
+                        }
+                        from.setText(toeditFieldlist.get(arg2).get("from"));
+                        String cont = toeditFieldlist.get(arg2).get("country");
+                        cont = cont.replace("-", "");
+                        cont = cont.replace(",", "");
+                        cont = cont.replace("\n", "");
+
+                        country.setText(cont.trim());
+                        checkedit = "edit";
+                        addbtn.setText("UPDATE");
+                        try {
+                            String[] fromdialog = toeditFieldlist.get(arg2).get("from").split("/");
+                            year1 = Integer.parseInt(fromdialog[2]);
+                            month1 = Integer.parseInt(fromdialog[1]) - 1;
+                            day1 = Integer.parseInt(fromdialog[0]);
+
+                            String[] fromdialog1 = toeditFieldlist.get(arg2).get("to").split("/");
+                            year2 = Integer.parseInt(fromdialog1[2]);
+                            month2 = Integer.parseInt(fromdialog1[1]) - 1;
+                            day2 = Integer.parseInt(fromdialog1[0]);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        } catch (ArrayIndexOutOfBoundsException ex) {
+                            ex.printStackTrace();
+                        }
+                        scroll_id.post(new Runnable() {
+                            public void run() {
+                                // scroll_id.scrollTo(0, scroll_id.getBottom());
+                                scroll_id.fullScroll(ScrollView.FOCUS_UP);
+                            }
+                        });
+
                     }
                 });
                 dialog.show();

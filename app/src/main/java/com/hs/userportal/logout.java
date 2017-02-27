@@ -233,7 +233,7 @@ public class logout extends Activity implements View.OnClickListener {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }}
         });
-        user_pic.setOnClickListener(new View.OnClickListener() {
+       /* user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ProfileContainerActivity.class);
@@ -246,7 +246,7 @@ public class logout extends Activity implements View.OnClickListener {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        });
+        });*/
         notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -296,6 +296,8 @@ public class MyHealth extends BaseActivity {
                         String data = response.getString("d");
                         if (!data.equalsIgnoreCase("Success")) {
                             Toast.makeText(MyHealth.this, data, Toast.LENGTH_SHORT).show();
+                        }else{
+                            new BackgroundProcess().execute();
                         }
                     } catch (JSONException je) {
                         je.printStackTrace();

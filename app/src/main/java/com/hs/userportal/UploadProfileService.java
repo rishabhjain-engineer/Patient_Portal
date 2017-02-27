@@ -84,10 +84,10 @@ public class UploadProfileService extends IntentService {
         uplodfrm = intent.getStringExtra(uploadfrom);
         oldimage=intent.getStringExtra("oldimage");
         oldthumbimage=intent.getStringExtra("oldthumbimage");
-        if(oldimage.equals("null")||oldimage==null){
+        if(oldimage==null || oldimage.equals("null")){
             oldimage="";
         }
-        if(oldthumbimage.equals("null")||oldthumbimage==null){
+        if(oldthumbimage==null || oldthumbimage.equals("null")){
             oldthumbimage="";
         }
         String add_path = intent.getStringExtra("add_path");
