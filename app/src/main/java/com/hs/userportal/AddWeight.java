@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -230,10 +231,20 @@ public class AddWeight extends BaseActivity {
             public void onClick(View v) {
 
 
-                if (enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "") {
+                if (enter_add.getText().toString() == "" || TextUtils.isEmpty(mBpTopNumberEditText.getText().toString()) || TextUtils.isEmpty(mBpBottomNumberEditText.getText().toString())) {
                     Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    new submitchange().execute();
+                    if (htype.equalsIgnoreCase("bp")) {
+                        int lowerBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
+                        int upperBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
+                        if (lowerBp > upperBp) {
+                            Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
+                        } else {
+                            new submitchange().execute();
+                        }
+                    } else {
+                        new submitchange().execute();
+                    }
                 }
                 // user is in Weight class
                 /*if (mIsHeight == false) {

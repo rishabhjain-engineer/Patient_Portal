@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -976,7 +977,9 @@ public class update extends BaseActivity {
             progress.setTitle("Loading");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            progress.show();
+            if(progress != null){
+                progress.show();
+            }
         }
 
         @Override
@@ -1237,7 +1240,9 @@ public class update extends BaseActivity {
                 e.printStackTrace();
             }
 
-            progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
         }
 
     }
@@ -1339,7 +1344,7 @@ public class update extends BaseActivity {
                 File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
-                if (check < 2500) {
+                if (check < 4500) {
                     if (check != 0) {
                         Intent intent = new Intent(this, UploadProfileService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
@@ -1790,12 +1795,30 @@ public class update extends BaseActivity {
      * Method to check permission
      */
     void checkCameraPermission() {
-        boolean isGranted;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // Camera permission has not been granted.
             requestCameraPermission();
         } else {
             takePhoto();
+        }
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("ayaz","Permission is granted");
+                return true;
+            } else {
+
+                Log.v("ayaz","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("ayaz","Permission is granted");
+            return true;
         }
     }
 
@@ -1821,6 +1844,9 @@ public class update extends BaseActivity {
                 //Permission not granted
                 Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
             }
+        }else if (grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            Log.v("ayaz","Permission: "+permissions[0]+ "was "+grantResults[0]);
+            //resume tasks needing this permission
         }
     }
 

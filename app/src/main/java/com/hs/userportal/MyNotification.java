@@ -183,7 +183,7 @@ public class MyNotification extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home, menu);
+       // getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
