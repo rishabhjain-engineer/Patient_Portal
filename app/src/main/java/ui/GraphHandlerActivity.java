@@ -64,6 +64,9 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForWeekly(String startDate, String endDate) {
 
+        //Old: Start from next Monday after first date till Monday before last date (if last date isn’t a Monday)
+        //New: Start from Monday before first date till Monday right after last date
+
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date1 = null;
         Date date2 = null;
@@ -91,7 +94,7 @@ public class GraphHandlerActivity extends BaseActivity {
             calendar.add(Calendar.DATE, 1);
         }
 
-        while(calendar.after(cal2)){
+        while (calendar.after(cal2)) {
             boolean isToQuit = false;
             if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                 Date dateToConver = calendar.getTime();
@@ -100,7 +103,7 @@ public class GraphHandlerActivity extends BaseActivity {
                 jsonArray.put(epoch);
                 isToQuit = true;
             }
-            if(isToQuit){
+            if (isToQuit) {
                 break;
             }
             calendar.add(Calendar.DATE, 1);
@@ -110,19 +113,41 @@ public class GraphHandlerActivity extends BaseActivity {
     }
 
     protected JSONArray getJsonForMonthly(String date1, String date2) {
+
+        // from first-1 to last+1
         String dateArray[] = date1.split("/");
         String monthInString = dateArray[1];
         String yearInString = dateArray[2];
         int monthInInt = Integer.parseInt(monthInString);
         int yearInInt = Integer.parseInt(yearInString);
         //int mont = Integer.parseInt(month);
-        if (monthInInt == 12) {
-            monthInInt = 1;
-            yearInInt = yearInInt + 1;
-        } else {
-            monthInInt = monthInInt + 1;
+        if (monthInInt == 1) {
+            monthInInt = 12;
+            yearInInt = yearInInt - 1;
+        }else{
+            monthInInt =   monthInInt -1;;
         }
         date1 = "01/" + monthInInt + "/" + yearInInt;
+
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+        //int mont = Integer.parseInt(month);
+        if (monthInInt2 == 12) {
+            monthInInt2 = 2;
+            yearInInt2 = yearInInt2 + 1;
+        } else if (monthInInt2 == 11) {
+            monthInInt2 = 1;
+            yearInInt2 = yearInInt2 + 1;
+        } else {
+            monthInInt2 = monthInInt2 + 2;
+        }
+
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;
+
+
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
         Calendar beginCalendar = Calendar.getInstance();
         Calendar finishCalendar = Calendar.getInstance();
@@ -156,24 +181,45 @@ public class GraphHandlerActivity extends BaseActivity {
     }
 
     protected JSONArray getJsonForQuaterly(String date1, String date2) {
-
-        String dateArray[] = date1.split("/");
-        String monthInString = dateArray[1];
-        String yearInString = dateArray[2];
-        int monthInInt = Integer.parseInt(monthInString);
-        int yearInInt = Integer.parseInt(yearInString);
-        if (monthInInt <= 3) {
-            monthInInt = 4;
-        } else if (monthInInt <= 6) {
-            monthInInt = 7;
-        } else if (monthInInt <= 9) {
-            monthInInt = 10;
-        } else if (monthInInt <= 12) {
-            monthInInt = 1;
-            yearInInt = yearInInt + 1;
+        String dateArray1[] = date1.split("/");
+        String monthInString1 = dateArray1[1];
+        String yearInString1 = dateArray1[2];
+        int monthInInt1 = Integer.parseInt(monthInString1);
+        int yearInInt1 = Integer.parseInt(yearInString1);
+        if (monthInInt1 <= 3) {
+            monthInInt1 = 10;
+            yearInInt1 = yearInInt1 - 1;
+        } else if (monthInInt1 <= 6) {
+            monthInInt1 = 1;
+        } else if (monthInInt1 <= 9) {
+            monthInInt1 = 4;
+        } else if (monthInInt1 <= 12) {
+            monthInInt1 = 7;
         }
+        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
+        ///////////////////////////////////////////////////////////////////////
 
-        date1 = "01/" + monthInInt + "/" + yearInInt;
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+
+        if (monthInInt2 <= 3) {
+            monthInInt2 = 07;
+        } else if (monthInInt2 <= 6) {
+            monthInInt2 = 10;
+        } else if (monthInInt2 <= 9) {
+            monthInInt2 = 1;
+            yearInInt2 = yearInInt2 + 1;
+        } else if (monthInInt2 <= 12) {
+            monthInInt2 = 4;
+            yearInInt2 = yearInInt2 + 1;
+        }
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;
+
+
+
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -209,19 +255,34 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForSemiAnnually(String date1, String date2) {
 
-        String dateArray[] = date1.split("/");
-        String monthInString = dateArray[1];
-        String yearInString = dateArray[2];
-        int monthInInt = Integer.parseInt(monthInString);
-        int yearInInt = Integer.parseInt(yearInString);
-        if (monthInInt <= 6) {
-            monthInInt = 7;
+        String dateArray1[] = date1.split("/");
+        String monthInString1 = dateArray1[1];
+        String yearInString1 = dateArray1[2];
+        int monthInInt1 = Integer.parseInt(monthInString1);
+        int yearInInt1 = Integer.parseInt(yearInString1);
+        if (monthInInt1 <= 6) {
+            monthInInt1 = 7;
+            yearInInt1 = yearInInt1 - 1;
         } else {
-            monthInInt = 1;
-            yearInInt = yearInInt + 1;
+            monthInInt1 = 1;
         }
+        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
 
-        date1 = "01/" + monthInInt + "/" + yearInInt;
+        //increasing 2 , due to before in while loop
+
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+        if (monthInInt2 <= 6) {
+            monthInInt2 = 1;
+            yearInInt2 = yearInInt2 + 1;
+        } else {
+            monthInInt2 = 7;
+            yearInInt2 = yearInInt2 + 1;
+        }
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -257,14 +318,19 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForYearly(String date1, String date2) {
 
-        String dateArray[] = date1.split("/");
-        String yearInString = dateArray[2];
-        int yearInInt = Integer.parseInt(yearInString);
-        yearInInt = yearInInt + 1;
-        date1 = "01/01/" + yearInInt;
+        String dateArray1[] = date1.split("/");
+        String yearInString1 = dateArray1[2];
+        int yearInInt1 = Integer.parseInt(yearInString1);
+        yearInInt1 = yearInInt1 - 1;
+        date1 = "01/01/" + yearInInt1;
+
+        String dateArray2[] = date2.split("/");
+        String yearInString2 = dateArray2[2];
+        int yearInInt2 = Integer.parseInt(yearInString2);
+        yearInInt2 = yearInInt2 + 2;
+        date2 = "01/01/" + yearInInt2;
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-
         Calendar beginCalendar = Calendar.getInstance();
         Calendar finishCalendar = Calendar.getInstance();
 
@@ -294,6 +360,7 @@ public class GraphHandlerActivity extends BaseActivity {
         return jsonArray;
 
     }
+
 
   /*  protected JSONArray getInitialJsonForMonthly(String date1, String date2) {
 
