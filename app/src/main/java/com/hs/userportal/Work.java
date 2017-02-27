@@ -523,6 +523,20 @@ public class Work extends BaseActivity {
                         mIsDateValid = true;
                     }
                 }
+
+                boolean isPresentDateCheck = false;
+                if (mIsNotRemembered == false) {
+                    isPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
+                    if (isPresentDateCheck == false) {
+                        showAlertMessage("From Date cannot be greater than Present Date");
+                    }
+                } else if(mIsNotRemembered == true){
+                    mIsDateValid = false;
+                    isPresentDateCheck = Utils.isFromDateValid(fromdate,  "MM/yyyy");
+                    if (isPresentDateCheck == false) {
+                        showAlertMessage("From Date cannot be greater than Present Date");
+                    }
+                }
                /* try {
                     final Calendar c = Calendar.getInstance();
                     int year = c.get(Calendar.YEAR);
