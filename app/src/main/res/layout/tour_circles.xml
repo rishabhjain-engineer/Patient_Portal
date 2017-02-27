@@ -52,6 +52,7 @@
                 android:background="@drawable/sample_button"
                 android:padding="13dp"
                 android:text="SIGN IN"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:visibility="gone" />
 

@@ -97,7 +97,7 @@ public class Height extends GraphHandlerActivity {
     private List<Long> mEpocList = new ArrayList<Long>();
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
-
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
     private JSONArray mJsonArrayToSend,  mTckValuesJsonArray = null;
     private RelativeLayout mListViewHeaderRl;
 
@@ -705,7 +705,7 @@ public class Height extends GraphHandlerActivity {
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxHeight;
             return (i + 20);
         }
@@ -718,7 +718,7 @@ public class Height extends GraphHandlerActivity {
         @JavascriptInterface
         public String getTickValues() {
             if(mTckValuesJsonArray == null){
-                return "[ ]";
+                return "null";
             }else{
                 return mTckValuesJsonArray.toString();
             }
@@ -733,6 +733,17 @@ public class Height extends GraphHandlerActivity {
         public long minDateValue() {
             Log.e("ayaz", "min: "+mDateMinValue);
             return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
         }
 
         @JavascriptInterface

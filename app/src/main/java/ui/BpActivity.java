@@ -609,7 +609,7 @@ public class BpActivity extends GraphHandlerActivity {
         @JavascriptInterface
         public String getTickValues() {
             if(mTckValuesJsonArray == null){
-                return "[ ]";
+                return "null";
             }else{
                 Log.e("ayaz", "Tick Values  ( bp )  "+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
