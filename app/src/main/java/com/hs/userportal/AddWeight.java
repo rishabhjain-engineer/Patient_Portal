@@ -235,8 +235,8 @@ public class AddWeight extends BaseActivity {
                     Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
                 } else {
                     if (htype.equalsIgnoreCase("bp")) {
-                        int lowerBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
-                        int upperBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
+                        int lowerBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
+                        int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
                         if (lowerBp > upperBp) {
                             Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
                         } else {
