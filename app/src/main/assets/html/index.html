@@ -55,12 +55,14 @@
   }];
 
   var values = JSON.parse(Interface.passDataToHtml());
-  var max = Interface.getDouble();
+  var max = Interface.getMaxData();
   var angle = Interface.getRotationAngle();
   var dateformat = Interface.getDateFormat();
   var ticket = JSON.parse(Interface.getTickValues());
   var startdate = Interface.minDateValue();
   var enddate = Interface.maxDateValue();
+  var rangeto = Interface.getRangeTo();
+  var rangefrom = Interface.getRangeFrom();
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -119,8 +121,8 @@
               var x1 = chart.xScale()(1122782400000);
               var x2 = chart.xScale()(1251691200000);
               var height = chart.yAxis.range()[0];
-              var y2 = chart.yScale()(10000);
-              var y1 = chart.yScale()(30000);
+              var y2 = chart.yScale()(rangefrom);
+              var y1 = chart.yScale()(rangeto);
               var width = chart.xAxis.range()[1];
               d3.select('.nv-wrap')
                 .append('rect')

@@ -93,7 +93,7 @@ public class Weight extends GraphHandlerActivity {
     private double mMaxWeight = 0;
     private List<Long> mEpocList = new ArrayList<Long>();
     private List<String> mValueList = new ArrayList<String>();
-
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
     private boolean mIsToAddMaxMinValue = true;
@@ -587,7 +587,7 @@ public class Weight extends GraphHandlerActivity {
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxWeight;
             return (i + 20);
         }
@@ -600,7 +600,7 @@ public class Weight extends GraphHandlerActivity {
         @JavascriptInterface
         public String getTickValues() {
             if (mTckValuesJsonArray == null) {
-                return "[ ]";
+                return "null";
             } else {
                 Log.e("ayaz", "mTckValuesJsonArray: "+mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
@@ -622,6 +622,17 @@ public class Weight extends GraphHandlerActivity {
         public long maxDateValue() {
             Log.e("ayaz", "max: "+mDateMaxValue);
             return mDateMaxValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
         }
     }
 

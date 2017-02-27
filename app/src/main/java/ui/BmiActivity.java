@@ -101,6 +101,7 @@ public class BmiActivity extends GraphHandlerActivity {
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private RelativeLayout mListViewHeaderRl;
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
 
 
     @Override
@@ -504,7 +505,7 @@ public class BmiActivity extends GraphHandlerActivity {
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxBMI;
             return (i + 20);
         }
@@ -516,7 +517,7 @@ public class BmiActivity extends GraphHandlerActivity {
         @JavascriptInterface
         public String getTickValues() {
             if(mTckValuesJsonArray == null){
-                return "[ ]";
+                return "null";
             }else{
                 return mTckValuesJsonArray.toString();
             }
@@ -531,6 +532,17 @@ public class BmiActivity extends GraphHandlerActivity {
         public long minDateValue() {
             Log.e("ayaz", "BMI  min: "+mDateMinValue);
             return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
         }
 
         @JavascriptInterface

@@ -58,6 +58,6 @@
         android:layout_height="wrap_content"
         android:text="Add Allergy"
         android:id="@+id/add_allergy"
-
+        android:textColor="@color/white"
         android:layout_gravity="bottom" />
 </LinearLayout>

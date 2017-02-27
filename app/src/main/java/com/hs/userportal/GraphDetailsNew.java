@@ -327,7 +327,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
 
         Utility.setListViewHeightBasedOnChildren(graph_listview_id);
-        mLineChartWebView.loadUrl("file:///android_asset/html/graph.html");
+        mLineChartWebView.loadUrl("file:///android_asset/html/index.html");
     }
 
     @Override
@@ -719,7 +719,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         @JavascriptInterface
         public String getTickValues() {
             if(mTckValuesJsonArray == null){
-                return "[ ]";
+                return "null";
             }else{
                 return mTckValuesJsonArray.toString();
             }

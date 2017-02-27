@@ -342,7 +342,7 @@
                 android:id="@+id/bSend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:textColor="@color/white"
                 android:background="@color/header_color"
                 android:layout_marginTop="10dp"
                 android:text="ADD" />
