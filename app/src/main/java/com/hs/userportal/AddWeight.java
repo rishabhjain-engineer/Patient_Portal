@@ -227,37 +227,36 @@ public class AddWeight extends BaseActivity {
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                if (enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "") {
-                    Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (htype.equalsIgnoreCase("bp")) {
-                        if (TextUtils.isEmpty(mBpTopNumberEditText.getText().toString()) || TextUtils.isEmpty(mBpBottomNumberEditText.getText().toString())) {
-                            Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
-                        } else {
-                            try {
-                                int lowerBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
-                                int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
-                                if (lowerBp > upperBp) {
-                                    Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    new submitchange().execute();
-                                }
-                            } catch (NumberFormatException ex) {
-                                Toast.makeText(AddWeight.this, "Fill values correctly", Toast.LENGTH_SHORT).show();
+                if (htype.equalsIgnoreCase("bp")) {
+                    if (TextUtils.isEmpty(mBpTopNumberEditText.getText().toString()) || TextUtils.isEmpty(mBpBottomNumberEditText.getText().toString())) {
+                        Toast.makeText(AddWeight.this, "Fill all the fields", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            int lowerBp = Integer.parseInt(mBpBottomNumberEditText.getEditableText().toString());
+                            int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
+                            if (lowerBp > upperBp) {
+                                Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
+                            } else {
+                                new submitchange().execute();
                             }
+                        } catch (NumberFormatException ex) {
+                            Toast.makeText(AddWeight.this, "Fill values correctly", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                } else if (htype.equalsIgnoreCase("height")) {
+                    if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString())) {
+                        Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
                         new submitchange().execute();
                     }
+                } else {
+                    if (TextUtils.isEmpty(enter_add.getEditableText().toString())) {
+                        Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
+                    } else {
+                        new submitchange().execute();
+                    }
+
                 }
-                // user is in Weight class
-                /*if (mIsHeight == false) {
-                    new submitchange().execute();
-                } else {   // user is Height class
-                    new submitchange().execute();
-                }*/
             }
         });
 
