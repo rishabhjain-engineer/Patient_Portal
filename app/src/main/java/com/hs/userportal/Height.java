@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -347,6 +348,10 @@ public class Height extends GraphHandlerActivity {
         super.onDestroy();
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
+
+        SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
+        mEditor.putInt("userChoiceSpinner", 0);
+        mEditor.commit();
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {

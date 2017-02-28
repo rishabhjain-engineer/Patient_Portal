@@ -53,7 +53,7 @@
                 android:drawablePadding="15dp"
                 android:ellipsize="start"
                 android:hint="Enter Weight "
-                android:inputType="numberDecimal|numberSigned"
+                android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:padding="10dp"
                 android:singleLine="true"
@@ -121,7 +121,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="30dp"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:layout_gravity="center"
@@ -177,9 +177,10 @@
                 android:drawablePadding="15dp"
                 android:ellipsize="start"
                 android:hint="ft"
-                android:inputType="numberDecimal|numberSigned"
+                android:inputType="number"
                 android:maxLines="1"
                 android:padding="5dp"
+                android:digits="0123456789"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:textSize="14dp" />
@@ -270,10 +271,11 @@
                     android:background="@drawable/edittext_corner"
                     android:drawablePadding="15dp"
                     android:ellipsize="start"
-                    android:inputType="numberDecimal|numberSigned"
+                    android:inputType="number"
                     android:maxLines="1"
                     android:padding="10dp"
                     android:singleLine="true"
+                    android:digits="0123456789"
                     android:textColor="@android:color/black"
                     android:textSize="14dp" />
 
@@ -307,10 +309,11 @@
                     android:background="@drawable/edittext_corner"
                     android:drawablePadding="15dp"
                     android:ellipsize="start"
-                    android:inputType="numberDecimal|numberSigned"
+                    android:inputType="number"
                     android:maxLines="1"
                     android:padding="10dp"
                     android:singleLine="true"
+                    android:digits="0123456789"
                     android:textColor="@android:color/black"
                     android:textSize="14dp" />
 
