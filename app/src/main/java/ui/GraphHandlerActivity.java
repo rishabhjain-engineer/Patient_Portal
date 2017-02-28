@@ -17,6 +17,7 @@ import java.util.List;
 
 import utils.AppConstant;
 
+import static com.hs.userportal.R.drawable.calendar;
 import static com.hs.userportal.R.id.date;
 
 /**
@@ -76,14 +77,51 @@ public class GraphHandlerActivity extends BaseActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+        Calendar beforePresentDate = Calendar.getInstance();
+        beforePresentDate.setTime(date1);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date1);
-
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-
+        beforePresentDate.add(Calendar.DATE, -1);
+        Log.e("Rishabh ", "Previous date := " + dateFormat.format(beforePresentDate.getTime()));
         JSONArray jsonArray = new JSONArray();
+        if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            Log.e("Rishabh ", "TOday is monday ");
+            while (beforePresentDate.before(calendar)) {
+                boolean isToQuit = false;
+                if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                    Date dateToConver = beforePresentDate.getTime();
+                    long epoch = dateToConver.getTime();
+                    Log.i("Weekly", "Date: " + dateToConver);
+                    jsonArray.put(epoch);
+                    isToQuit = true;
+                }
+                if (isToQuit) {
+                    break;
+                }
+                beforePresentDate.add(Calendar.DATE, -1);
+            }
+
+        } else {
+            while (beforePresentDate.before(calendar)) {
+                boolean isToQuit = false;
+                if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                    Date dateToConver = beforePresentDate.getTime();
+                    long epoch = dateToConver.getTime();
+                    Log.i("Weekly", "Date: " + dateToConver);
+                    jsonArray.put(epoch);
+                    isToQuit = true;
+                }
+                if (isToQuit) {
+                    break;
+                }
+                beforePresentDate.add(Calendar.DATE, -1);
+            }
+        }
+
+        Log.e("Rishabh ", "JSon Array size till current date := " + jsonArray.toString());
+
         while (!calendar.after(cal2)) {
             if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                 Date dateToConver = calendar.getTime();
@@ -124,8 +162,9 @@ public class GraphHandlerActivity extends BaseActivity {
         if (monthInInt == 1) {
             monthInInt = 12;
             yearInInt = yearInInt - 1;
-        }else{
-            monthInInt =   monthInInt -1;;
+        } else {
+            monthInInt = monthInInt - 1;
+            ;
         }
         date1 = "01/" + monthInInt + "/" + yearInInt;
 
@@ -217,8 +256,6 @@ public class GraphHandlerActivity extends BaseActivity {
             yearInInt2 = yearInInt2 + 1;
         }
         date2 = "01/" + monthInInt2 + "/" + yearInInt2;
-
-
 
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
