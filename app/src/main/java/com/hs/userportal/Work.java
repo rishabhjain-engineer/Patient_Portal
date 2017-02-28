@@ -790,7 +790,9 @@ public class Work extends BaseActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
 
-
+            if(day1 == 0) {
+                day1 = day1 + 1 ;
+            }
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year1, month1, day1);
         }

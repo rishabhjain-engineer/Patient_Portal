@@ -838,8 +838,9 @@ public class residence extends BaseActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
 
-
-            // Create a new instance of DatePickerDialog and return it
+            if(day1 == 0) {
+                day1 = day1 + 1 ;
+            }
             return new DatePickerDialog(getActivity(), this, year1, month1, day1);
         }
 
