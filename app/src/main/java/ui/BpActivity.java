@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -433,6 +434,10 @@ public class BpActivity extends GraphHandlerActivity {
         super.onDestroy();
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
+
+        SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
+        mEditor.putInt("userChoiceSpinner", 0);
+        mEditor.commit();
     }
 
     public static class Utility {

@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -33,11 +34,16 @@ public class BaseActivity extends AppCompatActivity {
 
     protected ActionBar mActionBar;
     protected PreferenceHelper mPreferenceHelper;
+    protected static final String PREFERENCE_FILE_NAME = "patient_pref_file";
+    protected SharedPreferences mAddGraphDetailSharedPreferences = null;
+    protected SharedPreferences.Editor mEditor =null ;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPreferenceHelper = PreferenceHelper.getInstance();
+        mAddGraphDetailSharedPreferences = getSharedPreferences(PREFERENCE_FILE_NAME,0);
     }
 
     protected void setupActionBar() {

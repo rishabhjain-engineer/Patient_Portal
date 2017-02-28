@@ -40,9 +40,8 @@ public class AddGraphDetails extends BaseActivity {
     private String mFromDate, mToDate, mDurationValue ;
     private int mDurationSpinnerPosition =0 ;
     private Spinner mDurationSpinner;
-    private static final String PREFERENCE_FILE_NAME = "patient_pref_file";
-    private SharedPreferences mSharedPreferences = null;
-    private SharedPreferences.Editor mEditor =null ;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class AddGraphDetails extends BaseActivity {
         setContentView(R.layout.addgraphdetail);
         setupActionBar();
         mActionBar.setTitle("Graph Details");
-        mSharedPreferences = getSharedPreferences(PREFERENCE_FILE_NAME,0);
         mDateFromEt = (EditText) findViewById(R.id.datefrom_edittext);
         mDateToEt = (EditText) findViewById(R.id.dateto_edittext);
         mDurationSpinner = (Spinner) findViewById(R.id.duration_spinner);
@@ -78,7 +76,7 @@ public class AddGraphDetails extends BaseActivity {
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mDurationSpinner.setAdapter(durationAdapter);
 
-        int spinnerValue = mSharedPreferences.getInt("userChoiceSpinner",-1);
+        int spinnerValue = mAddGraphDetailSharedPreferences.getInt("userChoiceSpinner",-1);
         if(spinnerValue != -1) { mDurationSpinner.setSelection(spinnerValue);}
 
         mDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -139,7 +137,7 @@ public class AddGraphDetails extends BaseActivity {
                 } else {
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, mFromDate);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, mToDate);
-                    SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+                    SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
                     mEditor.putInt("userChoiceSpinner",mDurationSpinnerPosition);
                     mEditor.commit();
 
