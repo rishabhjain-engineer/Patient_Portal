@@ -179,25 +179,12 @@ public class UploadProfileService extends IntentService {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-
-                            System.out.println(response);
                             try {
-
-
-
-                                    Toast.makeText(getApplicationContext(),
-                                           "Successfully uploaded",
-                                            Toast.LENGTH_SHORT).show();
-
-                               ((update)update.mcontext).refresh();
-
-
-
+                                Toast.makeText(getApplicationContext(), "Successfully uploaded", Toast.LENGTH_SHORT).show();
+                                ((update) update.mcontext).refresh();
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                 @Override
