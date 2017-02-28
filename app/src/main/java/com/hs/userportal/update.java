@@ -163,6 +163,7 @@ public class update extends BaseActivity {
     private static final int REQUEST_CAMERA = 0;
     private String mOccupation;
     private String unverify, emailverify;
+    private boolean mIsToShowProgressbar = true;
 
 
     public static JSONArray arraybasic;
@@ -1115,35 +1116,6 @@ public class update extends BaseActivity {
 
     }
 
-    private Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getHeight() / 2, paint);
-        } else {
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getWidth() / 2, paint);
-        }
-
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        // return _bmp;
-        return output;
-    }
-
     private void takePhoto() {
         File photo = null;
         Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -1347,8 +1319,6 @@ public class update extends BaseActivity {
         File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
         photo.delete();
         new BackgroundProcess().execute();
-
-
     }
 
     private String getPathFromContentUri(Uri uri) {
@@ -1889,6 +1859,35 @@ public class update extends BaseActivity {
             }
             progress.dismiss();
         }
+    }
+
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getHeight() / 2, paint);
+        } else {
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getWidth() / 2, paint);
+        }
+
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        // return _bmp;
+        return output;
     }
 
 
