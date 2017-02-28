@@ -1,24 +1,25 @@
 package com.hs.userportal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -47,59 +48,69 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.MyMarkerView;
 
-public class Height extends ActionBarActivity {
+public class Height extends BaseActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    ProgressDialog progress;
-    JSONObject sendData;
-    private String id;
+    private ProgressDialog progress;
+    private JSONObject sendData;
+    private String mId;
     private TextView wt_heading;
-    MiscellaneousTasks misc;
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartValues1 = new ArrayList<String>();
-    List<String> chartDates = new ArrayList<String>();
+    private MiscellaneousTasks misc;
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartValues1 = new ArrayList<String>();
+    private List<String> chartDates = new ArrayList<String>();
     private Services service;
-    String parenthistory_ID;
+    private String parenthistory_ID;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    int maxYrange = 0;
+    private int maxYrange = 0;
+    private double mMaxHeight = 0.0;
 
+    private JSONArray mJsonArrayToSend;
+
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
-        //this.getActionBar().setTitle("Height");
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setTitle("Height");
-        action.setDisplayHomeAsUpEnabled(true);
-        weight_graphView = (WebView) findViewById(R.id.weight_graphView);
-        WebSettings settings = weight_graphView.getSettings();
+        setupActionBar();
+        mActionBar.setTitle("Height");
         queue = Volley.newRequestQueue(this);
+
+        weight_graphView = (WebView) findViewById(R.id.weight_graphView);
+        weight_graphView.setFocusable(true);
+        weight_graphView.setFocusableInTouchMode(true);
+        WebSettings settings = weight_graphView.getSettings();
         settings.setLoadWithOverviewMode(true);
-        // settings.setUseWideViewPort(true);
-
-        // view.setInitialScale(140);
-
         settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(false);
-        weight_graphView.getSettings().setDisplayZoomControls(false);
-        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(true);
+        settings.setSupportZoom(true);
+        settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
+        weight_graphView.setInitialScale(1);
+        weight_graphView.addJavascriptInterface(new MyJavaScriptInterface(this), "Interface");
+
 
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
@@ -108,8 +119,13 @@ public class Height extends ActionBarActivity {
         service = new Services(Height.this);
         misc = new MiscellaneousTasks(Height.this);
         Intent z = getIntent();
-        id = z.getStringExtra("id");
-        new Authentication(Height.this, "Height", "").execute();
+        mId = z.getStringExtra("id");
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Height.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Height.this, "Height", "").execute();
+        }
 
         // new BackgroundProcess().execute();
         bsave.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +301,7 @@ public class Height extends ActionBarActivity {
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable = true;
 
         @Override
         protected void onPreExecute() {
@@ -294,97 +311,166 @@ public class Height extends ActionBarActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
+            isDataAvailable = true;
 
             progress.show();
 
 
         }
 
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+
+                sendData1.put("UserId", mId);
+                sendData1.put("profileParameter", "health");
+                sendData1.put("htype", "height");
+                receiveData1 = service.patienBasicDetails(sendData1);
+                String data = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.getJSONArray("Table");
+
+
+                HashMap<String, String> hmap;
+                weight_contentlists.clear();
+                JSONArray jsonArray1 = new JSONArray();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
+                    hmap = new HashMap<String, String>();
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    String PatientHistoryId = obj.getString("PatientHistoryId");
+                    String ID = obj.getString("ID");
+                    String height = obj.getString("height");
+                    if (!TextUtils.isEmpty(height)) {
+                        double heightInDouble = Double.parseDouble(height);
+                        if (mMaxHeight <= heightInDouble) {
+                            mMaxHeight = heightInDouble;
+                        }
+                    }
+                    String fromdate = obj.getString("fromdate");
+                    hmap.put("PatientHistoryId", PatientHistoryId);
+                    hmap.put("ID", ID);
+                    hmap.put("weight", height);
+                    hmap.put("fromdate", fromdate);
+                    weight_contentlists.add(hmap);
+                    chartValues.add(height);
+                    chartDates.add("");
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date date = null;
+                    try {
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+
+                    JSONArray innerJsonArray = new JSONArray();
+
+                    innerJsonArray.put(epoch);
+                    innerJsonArray.put(height);
+                    jsonArray1.put(innerJsonArray);
+
+                }
+                JSONObject outerJsonObject = new JSONObject();
+                outerJsonObject.put("key", "Height(cm)");
+                outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend = new JSONArray();
+                mJsonArrayToSend.put(outerJsonObject);
+                Log.i("DATATOSEND: ", "Data To send: " + mJsonArrayToSend);
+                Collections.reverse(chartValues);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println(receiveData1);// TODO Auto-generated method stub
+            return null;
+        }
+
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            if(isDataAvailable){
+                adapter = new MyHealthsAdapter(Height.this, weight_contentlists);
+                weight_listId.setAdapter(adapter);
+                Utility.setListViewHeightBasedOnChildren(weight_listId);
+                String db = null;
 
 
-            adapter = new MyHealthsAdapter(Height.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Utility.setListViewHeightBasedOnChildren(weight_listId);
-            String db = null;
+                // chartValues.add("")
+                try {
+                    db = "<!DOCTYPE html> <html> <head>" +
+                            " <title></title>" +
+                            " <link rel='stylesheet' href='kendo.common.min.css' />" +
+                            " <link rel='stylesheet' href='kendo.default.min.css' />"
 
-
-            // chartValues.add("")
-            try {
-                db = "<!DOCTYPE html> <html> <head>" +
-                        " <title></title>" +
-                        " <link rel='stylesheet' href='kendo.common.min.css' />" +
-                        " <link rel='stylesheet' href='kendo.default.min.css' />"
-
-                        + "  <script src='jquery.min.js'></script>"
-                        + "  <script src='kendo.all.min.js'></script>"
-                        + " </head>"
-                        + " <body>"
-                        + " <div id='example'>"
-                        + "  <div class='demo-section k-content wide'>"
-                        + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
-                        + " </div> \n" +
-                        "    <script>\n" +
-                        "        function createChart() {\n" +
-                        "            $(\"#chart\").kendoChart({\n" +
-                        "                title: {\n" +
-                        "                    text: \"Height in cm\"\n" +
-                        "                },\n" +
-                        "                legend: {\n" +
-                        "                    position: \"bottom\"\n" +
-                        ", margin:20" +
-                        "                },\n" +
-                        "                chartArea: {\n" +
-                        "                    background: \"\"\n" +
-                        "                },\n" +
-                        "                seriesDefaults: {\n" +
-                        "                    type: \"line\",\n" +
-                        "                    style: \"smooth\"\n" +
-                        "                },\n" +
-                        "                series: [{\n" +
-                        "                    name: \"Height\",\n" +
-                        "                    data: " + chartValues + "\n" +
-                        "                }  ],\n" +
-                        "                valueAxis: {\n" +
-                        "                    labels: {\n" +
-                        "                        format: \"{0}\"\n" +
-                        "                    },\n" +
-                        "                    line: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    axisCrossingValue: -10\n" +
-                        "                },\n" +
-                        "                categoryAxis: {\n" +
-                        "                    categories: " + chartDates + ",\n" +
-                        "                    majorGridLines: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    labels: {\n" +
-                        "                        rotation: \"auto\"\n" +
-                        "                    }\n" +
-                        "                },\n" +
-                        "                tooltip: {\n" +
-                        "                    visible: true,\n" +
-                        "                    format: \"{0}%\",\n" +
-                        "                    template: \"#= series.name #: #= value #\"\n" +
-                        "                }\n" +
-                        "            });\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        $(document).ready(createChart);\n" +
-                        "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
-                        "    </script>\n" +
-                        "</div>\n" +
-                        "\n" +
-                        "\n" +
-                        "</body>\n" +
-                        "</html>";
-                setLinechart();
-            } catch (Exception e) {
-                e.printStackTrace();
-                progress.dismiss();
-            }
+                            + "  <script src='jquery.min.js'></script>"
+                            + "  <script src='kendo.all.min.js'></script>"
+                            + " </head>"
+                            + " <body>"
+                            + " <div id='example'>"
+                            + "  <div class='demo-section k-content wide'>"
+                            + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
+                            + " </div> \n" +
+                            "    <script>\n" +
+                            "        function createChart() {\n" +
+                            "            $(\"#chart\").kendoChart({\n" +
+                            "                title: {\n" +
+                            "                    text: \"Height in cm\"\n" +
+                            "                },\n" +
+                            "                legend: {\n" +
+                            "                    position: \"bottom\"\n" +
+                            ", margin:20" +
+                            "                },\n" +
+                            "                chartArea: {\n" +
+                            "                    background: \"\"\n" +
+                            "                },\n" +
+                            "                seriesDefaults: {\n" +
+                            "                    type: \"line\",\n" +
+                            "                    style: \"smooth\"\n" +
+                            "                },\n" +
+                            "                series: [{\n" +
+                            "                    name: \"Height\",\n" +
+                            "                    data: " + chartValues + "\n" +
+                            "                }  ],\n" +
+                            "                valueAxis: {\n" +
+                            "                    labels: {\n" +
+                            "                        format: \"{0}\"\n" +
+                            "                    },\n" +
+                            "                    line: {\n" +
+                            "                        visible: false\n" +
+                            "                    },\n" +
+                            "                    axisCrossingValue: -10\n" +
+                            "                },\n" +
+                            "                categoryAxis: {\n" +
+                            "                    categories: " + chartDates + ",\n" +
+                            "                    majorGridLines: {\n" +
+                            "                        visible: false\n" +
+                            "                    },\n" +
+                            "                    labels: {\n" +
+                            "                        rotation: \"auto\"\n" +
+                            "                    }\n" +
+                            "                },\n" +
+                            "                tooltip: {\n" +
+                            "                    visible: true,\n" +
+                            "                    format: \"{0}%\",\n" +
+                            "                    template: \"#= series.name #: #= value #\"\n" +
+                            "                }\n" +
+                            "            });\n" +
+                            "        }\n" +
+                            "\n" +
+                            "        $(document).ready(createChart);\n" +
+                            "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
+                            "    </script>\n" +
+                            "</div>\n" +
+                            "\n" +
+                            "\n" +
+                            "</body>\n" +
+                            "</html>";
+                    setLinechart();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    progress.dismiss();
+                }
            /* weight_graphView.setWebViewClient(new WebViewClient() {
 
                 @Override
@@ -403,50 +489,16 @@ public class Height extends ActionBarActivity {
                 weight_graphView.setVisibility(View.GONE);
                 progress.dismiss();
             }*/
-            progress.dismiss();
-        }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            JSONObject sendData1 = new JSONObject();
-            try {
-
-                sendData1.put("UserId", id);
-                sendData1.put("profileParameter", "health");
-                sendData1.put("htype", "height");
-                receiveData1 = service.patienBasicDetails(sendData1);
-                String data = receiveData1.getString("d");
-                JSONObject cut = new JSONObject(data);
-                JSONArray jsonArray = cut.getJSONArray("Table");
-
-
-                HashMap<String, String> hmap;
-                weight_contentlists.clear();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    hmap = new HashMap<String, String>();
-                    JSONObject obj = jsonArray.getJSONObject(i);
-                    String PatientHistoryId = obj.getString("PatientHistoryId");
-                    String ID = obj.getString("ID");
-                    String weight = obj.getString("height");
-                    String fromdate = obj.getString("fromdate");
-                    hmap.put("PatientHistoryId", PatientHistoryId);
-                    hmap.put("ID", ID);
-                    hmap.put("weight", weight);
-                    hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
-                    chartValues.add(weight);
-                    chartDates.add("");
-
-                }
-                Collections.reverse(chartValues);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                progress.dismiss();
+                weight_graphView.loadUrl("file:///android_asset/html/chart.html");
+            }else {
+                Intent i = new Intent(Height.this, AddWeight.class);
+                i.putExtra("id", mId);
+                i.putExtra("htype", "height");
+                startActivity(i);
+                finish();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
-            return null;
         }
 
     }
@@ -477,7 +529,7 @@ public class Height extends ActionBarActivity {
             case R.id.add:
 
                 Intent i = new Intent(Height.this, AddWeight.class);
-                i.putExtra("id", id);
+                i.putExtra("id", mId);
                 i.putExtra("htype", "height");
                 startActivity(i);
                 finish();
@@ -578,4 +630,23 @@ public class Height extends ActionBarActivity {
         new BackgroundProcess().execute();
     }
 
+    public class MyJavaScriptInterface {
+        private Context context;
+
+        MyJavaScriptInterface(Context context) {
+            this.context = context;
+        }
+
+        @JavascriptInterface
+        public String passDataToHtml() {
+            return mJsonArrayToSend.toString();
+        }
+
+        @JavascriptInterface
+        public int getDouble() {
+            int i = (int) mMaxHeight;
+            Log.e("Rishabh", "i := " + i);
+            return (i + 20);
+        }
+    }
 }

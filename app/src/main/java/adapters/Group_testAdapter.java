@@ -17,11 +17,13 @@ import java.util.List;
  * Created by rahul2 on 4/5/2016.
  */
 public class Group_testAdapter extends BaseAdapter {
-    Activity activity;
-   private List<String> chartDates,chartValues,chartunitlist,casecodeslist;
+
+    private Activity activity;
+    private List<String> chartDates,chartValues,chartunitlist,casecodeslist;
     private LayoutInflater inflater;
     private String RangeTo,RangeFrom;
     private String whichactivity;
+
     public Group_testAdapter(Activity activity,  List<String> chartDates,List<String> chartValues,List<String> casecodeslist,List<String> chartunitlist,String RangeFrom,String RangeTo){
         this.activity = activity;
         this.chartDates = chartDates;

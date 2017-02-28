@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,32 +45,36 @@ import java.util.HashMap;
 import java.util.List;
 
 import adapters.ReportTestAdapter;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NestedListHelper;
 
 /**
  * Created by ashish on 10-Aug-16.
  */
-public class ReportRecords extends ActionBarActivity {
+public class ReportRecords extends BaseActivity {
 
-    private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral,
-            sub_total, discount, your_price, viewFiles_text, viewReports_text;
+    private TextView tvpatient, tvname, tvblood, tvbalance, tvreferral, sub_total, discount, your_price, viewFiles_text, viewReports_text;
     private ListView test_list;
-    private LinearLayout invoice, viewReportLinear_id;
+    private LinearLayout invoice;
+    private RelativeLayout viewReportLinear_id;
     private TextView spinner_action;
     private String case_id = "";
     private Services service;
     private ProgressDialog progress;
     private List<HashMap<String, String>> test_array;
-    JSONArray subArray1, pdfarray;
-    int check, subArrayLen;
+    private JSONArray subArray1, pdfarray;
+    private int check, subArrayLen;
     private JSONObject pdfobject;
-    String lab_name, adviseDate, caseCode, balance_status, referral, subTotal, dis, yourprice,
-            patient_name, id, ptname;
-    byte[] result = null;
-    ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> imageName = new ArrayList<String>();
-    ArrayList<String> imageId = new ArrayList<String>();
-    ArrayList<String> thumbImage = new ArrayList<String>();
+    private String lab_name, adviseDate, caseCode, balance_status, referral, subTotal, dis, yourprice, patient_name, id, ptname;
+    private byte[] result = null;
+    private ArrayList<String> image = new ArrayList<String>();
+    private ArrayList<String> imageName = new ArrayList<String>();
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private ArrayList<String> thumbImage = new ArrayList<String>();
+    private String mShaowDetailAction;   /* 0 - show test details, 1 - show popup message and then show test details,  2 - show popup message and then do nothing*/
+
+
     public static ProgressBar progress_bar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +83,12 @@ public class ReportRecords extends ActionBarActivity {
         initUI();
         setupActionBar();
         getExtras();
-        new Authentication(ReportRecords.this, "ReportRecords", "").execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(ReportRecords.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(ReportRecords.this, "ReportRecords", "").execute();
+        }
         //  new BackgroundProcess().execute();
     }
 
@@ -102,7 +111,7 @@ public class ReportRecords extends ActionBarActivity {
         invoice = (LinearLayout) findViewById(R.id.invoice);
         viewFiles_text = (TextView) findViewById(R.id.viewFiles_text);
         viewReports_text = (TextView) findViewById(R.id.viewReports_text);
-        viewReportLinear_id = (LinearLayout) findViewById(R.id.viewReportLinear_id);
+        viewReportLinear_id = (RelativeLayout) findViewById(R.id.viewReportLinear_id);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
         spinner_action = (TextView) findViewById(R.id.spinner_action);
         progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -127,10 +136,8 @@ public class ReportRecords extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
+                viewReportLinear_id.setClickable(false);
                 new pdfprocess().execute();
-
             }
         });
         spinner_action.setOnClickListener(new View.OnClickListener() {
@@ -163,14 +170,12 @@ public class ReportRecords extends ActionBarActivity {
                     if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
                             && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
-                        Intent intent = new Intent(getApplicationContext(),
-                                ReportStatus.class);
+                        Intent intent = new Intent(getApplicationContext(), ReportStatus.class);
                         intent.putExtra("index", position);
                         intent.putExtra("array", subArray1.toString());
                         intent.putExtra("USER_ID", id);
                         try {
-                            intent.putExtra("code", subArray1.getJSONObject(0)
-                                    .getString("PatientCode"));
+                            intent.putExtra("code", subArray1.getJSONObject(0).getString("PatientCode"));
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -226,13 +231,6 @@ public class ReportRecords extends ActionBarActivity {
         });
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtras() {
         Intent i = getIntent();
@@ -285,15 +283,16 @@ public class ReportRecords extends ActionBarActivity {
             if (check == subArrayLen) {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
-                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
+
+               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+                //viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
                 viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
                 viewReportLinear_id.setClickable(true);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
-                viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
+                //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+               // viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
                 viewReports_text.setTextColor(Color.parseColor("#565656"));
             }
@@ -317,11 +316,11 @@ public class ReportRecords extends ActionBarActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+               //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
-                viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
             }
             progress.dismiss();
@@ -452,17 +451,7 @@ public class ReportRecords extends ActionBarActivity {
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-           // progress = new ProgressDialog(ReportRecords.this);
-           // progress.setCancelable(false);
-           // progress.setMessage("Loading...");
-           // progress.setIndeterminate(true);
-            ReportRecords.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    //progress.show();
-                }
-            });
             progress_bar.setVisibility(View.VISIBLE);
             progress_bar.setProgress(0);
         }
@@ -540,37 +529,38 @@ public class ReportRecords extends ActionBarActivity {
             });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData,"ReportRecords");
-            int lenghtOfFile = result.length;
-            String temp = null;
-            try {
-                temp = new String(result, "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-            Log.v("View & result==null", reportFile.getAbsolutePath());
-            Log.v("Content of PDF", temp);
-            OutputStream out;
-            try {
-                InputStream input = new ByteArrayInputStream(result);
-                out = new FileOutputStream(reportFile);
-
-                byte data[] = new byte[1024];
-
-                long total = 14;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-                    out.write(result);
+            if(result != null){
+                int lenghtOfFile = result.length;
+                String temp = null;
+                try {
+                    temp = new String(result, "UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
                 }
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                Log.v("View & result==null", reportFile.getAbsolutePath());
+                Log.v("Content of PDF", temp);
+                OutputStream out;
+                try {
+                    InputStream input = new ByteArrayInputStream(result);
+                    out = new FileOutputStream(reportFile);
 
+                    byte data[] = new byte[1024];
+
+                    long total = 14;
+
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                        out.write(result);
+                    }
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             // System.out.println(sendData);
             //
             // receiveData = service.pdfreport(sendData);
@@ -582,7 +572,7 @@ public class ReportRecords extends ActionBarActivity {
         protected void onPostExecute(Void result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-
+            viewReportLinear_id.setClickable(true);
             try {
               //  progress.dismiss();
                 progress_bar.setVisibility(View.GONE);
@@ -667,6 +657,24 @@ public class ReportRecords extends ActionBarActivity {
         super.onResume();
         if (Helper.authentication_flag == true) {
             finish();
+        }
+    }
+
+    private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 }

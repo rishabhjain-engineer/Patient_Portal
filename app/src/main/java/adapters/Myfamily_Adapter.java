@@ -34,13 +34,13 @@ public class Myfamily_Adapter extends ArrayAdapter<DataHolder> {
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> family_arr_list;
     //  private ArrayList<HashMap<String, String>> sorted_list;
-    ViewHolder holder = null;
+    private ViewHolder holder = null;
     private ImageLoader mImageLoader;
     private ArrayList<String> revoke;
     private ArrayList<String> resend;
     private int spinnerPosition, check = 0;
     private ArrayAdapter adapter1, adapter;
-    DataHolder[] spinnerlist_adapter;
+    private DataHolder[] spinnerlist_adapter;
     private String patientID;
     // private int k;
 

@@ -52,49 +52,47 @@ import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
+import networkmngr.NetworkChangeListener;
 
 public class residence extends FragmentActivity {
-    String checkedit="";
-    ArrayList<String> patienthistorylist=new ArrayList<String>();
-    ArrayList<String> m_listItems = new ArrayList<String>();
-    ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
-    CheckBox present;
-    Custom_profile_adapter m_adapter;
-    int i = 0;
 
-
+    private String checkedit="";
+    private ArrayList<String> patienthistorylist=new ArrayList<String>();
+    private ArrayList<String> m_listItems = new ArrayList<String>();
+    private ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
+    private CheckBox present;
+    private Custom_profile_adapter m_adapter;
+    private int i = 0;
     private EditText city, country, state,add, pincode, house;
     private static EditText from,to;
-    ListView l;
-    AlertDialog alertDialog;
-    AlertDialog alert;
-    ProgressDialog progress, ghoom;
-
-    Button addbtn;
-    JSONObject sendData, receiveData, sendData1, receiveData1;
+    private ListView l;
+    private AlertDialog alertDialog;
+    private AlertDialog alert;
+    private ProgressDialog progress, ghoom;
+    private Button addbtn;
+    private JSONObject sendData, receiveData, sendData1, receiveData1;
     private ScrollView scroll_id;
-    Services service;
-    JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
-    String[] nationlist ;
-
-    JSONArray residearray;
-    ArrayAdapter<String> adapter1;
-    ArrayList<String> areaa = new ArrayList<String>();
-    ArrayList<String> countryy = new ArrayList<String>();
-    ArrayList<String> statee = new ArrayList<String>();
-    ArrayList<String> cityy = new ArrayList<String>();
-    ArrayList<String> pinn = new ArrayList<String>();
-    ArrayList<String> list = new ArrayList<String>();
-    ArrayList<String> countrylist = new ArrayList<String>();
-    ArrayList<String> countryids = new ArrayList<String>();
-    SharedPreferences sharedPreferences;
-    String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
-    ArrayAdapter<String> adapter;
-    Date date1, date2,datecurrent;
+    private Services service;
+    private JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
+    private String[] nationlist ;
+    private JSONArray residearray;
+    private ArrayAdapter<String> adapter1;
+    private ArrayList<String> areaa = new ArrayList<String>();
+    private ArrayList<String> countryy = new ArrayList<String>();
+    private ArrayList<String> statee = new ArrayList<String>();
+    private ArrayList<String> cityy = new ArrayList<String>();
+    private ArrayList<String> pinn = new ArrayList<String>();
+    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> countrylist = new ArrayList<String>();
+    private ArrayList<String> countryids = new ArrayList<String>();
+    private SharedPreferences sharedPreferences;
+    private String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
+    private ArrayAdapter<String> adapter;
+    private Date date1, date2,datecurrent;
     private String PatientHistoryId="", Address, cityName, stateName, CountryName, Pincode, dates, Name;
-    static int stno,month2,year2,day2,month1,year1,day1;
-    Calendar c;
-    int selection;
+    private static int stno,month2,year2,day2,month1,year1,day1;
+    private Calendar c;
+    private int selection;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -113,8 +111,7 @@ public class residence extends FragmentActivity {
         year1 = c.get(Calendar.YEAR);
         month1 = c.get(Calendar.MONTH);
         day1 = c.get(Calendar.DAY_OF_MONTH);
-        adapter = new ArrayAdapter<String>(residence.this,
-                android.R.layout.simple_list_item_1, list);
+        adapter = new ArrayAdapter<String>(residence.this, android.R.layout.simple_list_item_1, list);
         Intent z = getIntent();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         patientId = sharedPreferences.getString("ke", "");
@@ -144,9 +141,13 @@ public class residence extends FragmentActivity {
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
         m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Residence");
-        new Authentication(residence.this,"residence","").execute();
-       // new BackgroundProcess().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(residence.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(residence.this, "residence", "").execute();
+            // new BackgroundProcess().execute();
+        }
         country.setInputType(InputType.TYPE_NULL);
         country.setOnTouchListener(new View.OnTouchListener() {
 
@@ -161,7 +162,7 @@ public class residence extends FragmentActivity {
                         residence.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(residence.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     country.setText(nationlist[which]
@@ -198,7 +199,7 @@ public class residence extends FragmentActivity {
                     final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
                             residence.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(residence.this)
-                            .setTitle("Select Nationality")
+                            .setTitle("Select Country")
                             .setAdapter(nationadapter, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     country.setText(nationlist[which]
@@ -416,7 +417,7 @@ public class residence extends FragmentActivity {
 //city, country, state,add, pincode, house,from,to
                 if (from.getText().toString().equals("")
                         ||city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")||add.getText().toString().equals("")
-                        ||house.getText().toString().equals("")) {
+                        ||house.getText().toString().equals("")  ||to.getText().toString().equals("")  ) {
                     alertDialog = new AlertDialog.Builder(residence.this).create();
 
                     // Setting Dialog Title

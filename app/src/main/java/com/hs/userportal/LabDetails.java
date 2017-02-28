@@ -58,42 +58,44 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class LabDetails extends ActionBarActivity {
-    String id, caseid;
-    byte[] result = null;
-    Services service;
-    ListView lv;
-    int check;
-    Button all, images;
-    TextView pat, nam, dob, blg, gen, bal;
-    JSONObject sendData, receiveData, pdfobject, receiveImageData;
-    ArrayAdapter<String> adapter;
-    String ptname = "";
-    ImageButton info;
-    ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> imageName = new ArrayList<String>();
-    ArrayList<String> imageId = new ArrayList<String>();
-    ArrayList<String> thumbImage = new ArrayList<String>();
-    JSONArray subArrayImage;
-    String authentication = "";
-    ProgressDialog progress;
-    static ArrayList<String> description = new ArrayList<String>();
-    static ArrayList<String> sample = new ArrayList<String>();
-    static ArrayList<String> labnumber = new ArrayList<String>();
-    static ArrayList<String> testcomplete = new ArrayList<String>();
-    static ArrayList<String> ispublished = new ArrayList<String>();
-    ImageView imageView;
-    JSONArray subArray, subArray1, pdfarray;
-    float paid = 0;
+import networkmngr.NetworkChangeListener;
 
+public class LabDetails extends ActionBarActivity {
+
+    private String id, caseid;
+    private byte[] result = null;
+    private Services service;
+    private ListView lv;
+    private int check;
+    private Button all, images;
+    private TextView pat, nam, dob, blg, gen, bal;
+    private JSONObject sendData, receiveData, pdfobject, receiveImageData;
+    private ArrayAdapter<String> adapter;
+    private String ptname = "";
+    private ImageButton info;
+    private ArrayList<String> image = new ArrayList<String>();
+    private ArrayList<String> imageName = new ArrayList<String>();
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private ArrayList<String> thumbImage = new ArrayList<String>();
+    private JSONArray subArrayImage;
+    private String authentication = "";
+    private ProgressDialog progress;
+    private static ArrayList<String> description = new ArrayList<String>();
+    private static ArrayList<String> sample = new ArrayList<String>();
+    private static ArrayList<String> labnumber = new ArrayList<String>();
+    private static ArrayList<String> testcomplete = new ArrayList<String>();
+    private static ArrayList<String> ispublished = new ArrayList<String>();
+    private ImageView imageView;
+    private JSONArray subArray, subArray1, pdfarray;
+    private float paid = 0;
     private SlidingMenu slidingMenu;
-    ArrayList<String> casecode = new ArrayList<String>();
-    ListView lvcode;
-    JSONObject sendDataList, receiveDataList;
-    List<HashMap<String, String>> fillMaps;
-    ArrayList<String> dated = new ArrayList<String>();
-    ArrayList<String> caseidList = new ArrayList<String>();
-    JSONArray subArrayList;
+    private ArrayList<String> casecode = new ArrayList<String>();
+    private ListView lvcode;
+    private JSONObject sendDataList, receiveDataList;
+    private List<HashMap<String, String>> fillMaps;
+    private ArrayList<String> dated = new ArrayList<String>();
+    private ArrayList<String> caseidList = new ArrayList<String>();
+    private JSONArray subArrayList;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -147,8 +149,12 @@ public class LabDetails extends ActionBarActivity {
         service = new Services(LabDetails.this);
         lvcode = (ListView) findViewById(R.id.lvcode);
 
-        new Authentication().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(LabDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
         lvcode.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -411,8 +417,9 @@ public class LabDetails extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(LabDetails.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };

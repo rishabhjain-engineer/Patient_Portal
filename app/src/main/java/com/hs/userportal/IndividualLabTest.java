@@ -69,6 +69,7 @@ import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
+import networkmngr.NetworkChangeListener;
 import swipelist.ItemAdapter;
 import swipelist.ItemRow;
 
@@ -78,49 +79,50 @@ import swipelist.ItemRow;*/
 public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.DeleteListener {
 
     private AutoCompleteTextView etSearchTests;
-    String testname;
-    JSONArray testArray, priceArray, testDetailBookingArray;
-    String[] parts;
-    public static SwipeListView swipelistview;
-    ItemAdapter adapter;
-    JSONObject receiveData;
-    ConnectionDetector con;
-    List<ItemRow> itemData;
-    SharedPreferences sharedpreferences;
-    SharedPreferences sharedPreferences;
-    List<String> testnameList = new ArrayList<String>();
-    JsonObjectRequest jr;
-    RequestQueue queue;
-    JSONObject sendData, sendDataBookinginfo, sendCouponData;
+    private String testname;
+    private JSONArray testArray, priceArray, testDetailBookingArray;
+    private String[] parts;
+    private ItemAdapter adapter;
+    private JSONObject receiveData;
+    private ConnectionDetector con;
+    private List<ItemRow> itemData;
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences sharedPreferences;
+    private List<String> testnameList = new ArrayList<String>();
+    private JsonObjectRequest jr;
+    private RequestQueue queue;
+    private JSONObject sendData, sendDataBookinginfo, sendCouponData;
     private String url, CentreId, CentreName, patientId, area, rating;
-    public String testString;
-    TagView tagView;
-    Float parse_dis;
-    ArrayAdapter<String> testListAdapter;
+    private String testString;
+    private TagView tagView;
+    private Float parse_dis;
+    private ArrayAdapter<String> testListAdapter;
     private ArrayList<String> tagList = new ArrayList<String>();
-    LinearLayout prceline_heding, layTotal;//parentLayout
-    Button bPlaceOrder;
-    String closeTimeString = "";
-    JSONArray centreArray;
-    TextView tvAddress, tvLabName, tvRating, discount_id, tvTotalPrice, tvTotalDiscount, tvTotalPayable;
-    ProgressDialog progressDialog;
-    Float maxDiscount;
-    Services service;
-    String userNameDialog = "";
-    String passDialog = "";
-    int chkError = 0;
-    Dialog dialog, dialog1;
-    String fromwhichbutton;
-    JSONArray allCenterArray, subArray;
-    static String from_widget;
-    String fnln, id;
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    static String sample_or_detailbtn_check = null;
-    static String cook;
-    JsonObjectRequest getRequest;
-    String ContactNo;
-    public static Activity fa;
+    private LinearLayout prceline_heding, layTotal;//parentLayout
+    private Button bPlaceOrder;
+    private String closeTimeString = "";
+    private JSONArray centreArray;
+    private TextView tvAddress, tvLabName, tvRating, discount_id, tvTotalPrice, tvTotalDiscount, tvTotalPayable;
+    private ProgressDialog progressDialog;
+    private Float maxDiscount;
+    private Services service;
+    private String userNameDialog = "";
+    private String passDialog = "";
+    private int chkError = 0;
+    private Dialog dialog, dialog1;
+    private String fromwhichbutton;
+    private JSONArray allCenterArray, subArray;
+    private static String from_widget;
+    private String fnln, id;
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private static String sample_or_detailbtn_check = null;
+    private static String cook;
+    private JsonObjectRequest getRequest;
+    private String ContactNo;
+    private static Activity fa;
+
+    public static SwipeListView swipelistview;
 
     @SuppressLint("NewApi")
     @Override
@@ -1346,16 +1348,24 @@ public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.
 
             @Override
             public void onClick(View v) {
-                if (sharedpreferences.getBoolean("openLocation", false)) {
-                    new Authentication(IndividualLabTest.this, "IndividualLabTest", "getdetailmenu").execute();
-                    sample_or_detailbtn_check = "getdetail";
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(IndividualLabTest.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
                 } else {
+
+                if (sharedpreferences.getBoolean("openLocation", false)) {
+
+
+                        new Authentication(IndividualLabTest.this, "IndividualLabTest", "getdetailmenu").execute();
+                        sample_or_detailbtn_check = "getdetail";
+                    }
+                 else {
                     showSignInSignUp("from_getDetail_button");
                     sample_or_detailbtn_check = "getdetail";
                 }
                 // detail_andsampleTask("getdetail")
                 //
-            }
+            } }
         });
 
         if (itemuser != null) {

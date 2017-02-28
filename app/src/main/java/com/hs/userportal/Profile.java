@@ -25,12 +25,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Profile extends ActionBarActivity {
-	JSONObject sendData, receiveData;
-	TextView name, age, blood, code, mail;
-	JSONArray subArray;
-	Services service;
-	ProgressDialog progress;
-	String id;
+
+	private JSONObject sendData, receiveData;
+	private TextView name, age, blood, code, mail;
+	private JSONArray subArray;
+	private Services service;
+	private ProgressDialog progress;
+	private String id;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -148,8 +149,9 @@ public class Profile extends ActionBarActivity {
 
 			if (!currentNetworkInfo.isConnected()) {
 				//showAppMsg();
-				Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-				startActivity(i);
+				Toast.makeText(Profile.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+				/*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+				startActivity(i);*/
 			}
 		}
 	};

@@ -45,23 +45,23 @@ import dev.dworks.libs.astickyheader.SimpleSectionedGridAdapter.Section;
 
 public class Filevaultcase extends ActionBarActivity {
 
-	ImageLoader mImageLoader;
+	private ImageLoader mImageLoader;
 	private GridView grid;
 	private ImageAdapter mAdapter;
 	private ArrayList<Section> sections = new ArrayList<Section>();
-	NetworkImageView mNetworkImageView;
-	JsonObjectRequest jr;
-	JSONArray subArrayImage;
-	ArrayList<String> thumbImage = new ArrayList<String>();
-	ArrayList<String> imageName = new ArrayList<String>();
-	ArrayList<String> imageNametobesent = new ArrayList<String>();
-	ArrayList<String> uniquecaseid = new ArrayList<String>();
-	ArrayList<Integer> numberincaseid = new ArrayList<Integer>();
-	ArrayList<Integer> pos = new ArrayList<Integer>();
-	RequestQueue queue;
-	String id = "";
-	JSONObject sendData;
-	ProgressDialog progress;
+	private NetworkImageView mNetworkImageView;
+	private JsonObjectRequest jr;
+	private JSONArray subArrayImage;
+	private ArrayList<String> thumbImage = new ArrayList<String>();
+	private ArrayList<String> imageName = new ArrayList<String>();
+	private ArrayList<String> imageNametobesent = new ArrayList<String>();
+	private ArrayList<String> uniquecaseid = new ArrayList<String>();
+	private ArrayList<Integer> numberincaseid = new ArrayList<Integer>();
+	private ArrayList<Integer> pos = new ArrayList<Integer>();
+	private RequestQueue queue;
+	private String id = "";
+	private JSONObject sendData;
+	private ProgressDialog progress;
 
 	
 	@Override
@@ -173,7 +173,7 @@ public class Filevaultcase extends ActionBarActivity {
 //				Intent i = new Intent(Filevaultcase.this, ExpandImage.class);
 //				i.putExtra(
 //						"image",
-//						"https://files.cloudchowk.com/"+ imageName.get(position));
+//						"https://files.healthscion.com/"+ imageName.get(position));
 //				startActivity(i);
 //
 //			}
@@ -276,7 +276,7 @@ public class Filevaultcase extends ActionBarActivity {
 			mNetworkImageView.setDefaultImageResId(R.drawable.box);
 			mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
 			mNetworkImageView.setAdjustViewBounds(true);
-			mNetworkImageView.setImageUrl("https://files.cloudchowk.com/"
+			mNetworkImageView.setImageUrl("https://files.healthscion.com/"
 					+ thumbImage.get(position), mImageLoader);
 			
 			
@@ -295,7 +295,7 @@ public class Filevaultcase extends ActionBarActivity {
 					}
 					
 					Intent i = new Intent(Filevaultcase.this, ExpandImage.class);
-					i.putExtra("image","https://files.cloudchowk.com/"+ imageName.get(position));
+					i.putExtra("image","https://files.healthscion.com/"+ imageName.get(position));
 					i.putExtra("imagename",imageNametobesent.get(position));
 					
 					startActivity(i);

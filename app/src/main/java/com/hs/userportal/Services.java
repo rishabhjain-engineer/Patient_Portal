@@ -30,19 +30,19 @@ import config.StaticHolder;
 public class Services {
     /* Variables declaration */
 
-    HttpClient client;
-    HttpPost request;
-    HttpResponse response;
-    JSONObject receiveData, temp, titleJSON;
-    JSONArray values;
-    String url, line;
-    static Header[] cookies;
-    BufferedReader reader;
-    StringBuilder sb;
-    Context context;
-    public static String hoja = "";
-    static String checknet = "no";
+    private HttpClient client;
+    private HttpPost request;
+    private HttpResponse response;
+    private JSONObject receiveData, temp, titleJSON;
+    private JSONArray values;
+    private String url, line;
+    private static Header[] cookies;
+    private BufferedReader reader;
+    private StringBuilder sb;
+    private Context context;
+    private static String checknet = "no";
 
+    public static String hoja = "";
 	/*static String init = "https://l141702.cloudchowk.com";*/
 
 	/*static String init ="https://l141702.cloudchowk.com/";*///"http://192.168.1.202:81";//"https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";////;
@@ -562,6 +562,7 @@ public class Services {
     public JSONObject patientstatus(JSONObject sendData) {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
+
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
         String url = sttc_holdr.request_Url();
         request = new HttpPost(url);
@@ -1174,8 +1175,10 @@ public class Services {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NumberFormatException ex) {
-            Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
-            ReportStatus.progress.dismiss();
+           // Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
+            if(ReportStatus.progress != null){
+                ReportStatus.progress.dismiss();
+            }
             ReportStatus.progress = null;
         }
         if(actName.equalsIgnoreCase("Report Status")) {
@@ -1280,6 +1283,22 @@ public class Services {
         String url = sttc_holdr.request_Url();
         JSONObject jsonobj = common(sendData, url);
         return jsonobj;
+    }
+
+    public JSONObject patientbussinessModel(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.patientbussinessModel);
+        String url = sttc_holdr.request_Url();
+        JSONObject receivedJsonObj = common(sendData, url);
+        return receivedJsonObj;
+    }
+
+
+    public JSONObject getQuizData(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetQuizData);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
     }
 
 }

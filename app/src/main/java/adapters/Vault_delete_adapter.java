@@ -27,6 +27,7 @@ import java.util.HashMap;
  * Created by ashish on 2/5/2016.
  */
 public class Vault_delete_adapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> data_list;
@@ -148,7 +149,7 @@ public class Vault_delete_adapter extends BaseAdapter {
         try {
 
             if (data_list.size() != 0) {
-                //   holder.image_vault.setImageUrl("https://files.cloudchowk.com/" + data_list.get(position).get("FileVault2"), mImageLoader);
+                //   holder.image_vault.setImageUrl("https://files.healthscion.com/" + data_list.get(position).get("FileVault2"), mImageLoader);
             }
             // String pdf_name = data_list.get(position).get("FileVault2").replace(patientId + "/FileVault/", "");
             String[] pdf_name = data_list.get(position).get("Personal3").split("/");
@@ -202,12 +203,12 @@ public class Vault_delete_adapter extends BaseAdapter {
                         holder.image_vault.setDefaultImageResId(R.drawable.box);
                         holder.image_vault.setErrorImageResId(R.drawable.ic_error);
                         holder.image_vault.setAdjustViewBounds(true);
-                        holder.image_vault.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        holder.image_vault.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
                         holder.image_vault.setDefaultImageResId(R.drawable.box);
                         holder.image_vault.setErrorImageResId(R.drawable.ic_error);
                         holder.image_vault.setAdjustViewBounds(true);
-                        holder.image_vault.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        holder.image_vault.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                 } else {
 
@@ -215,12 +216,12 @@ public class Vault_delete_adapter extends BaseAdapter {
                         holder.image_vault.setDefaultImageResId(R.drawable.box);
                         holder.image_vault.setErrorImageResId(R.drawable.ic_error);
                         holder.image_vault.setAdjustViewBounds(true);
-                        holder.image_vault.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + path_buffer + "/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        holder.image_vault.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + path_buffer + "/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
                         holder.image_vault.setDefaultImageResId(R.drawable.box);
                         holder.image_vault.setErrorImageResId(R.drawable.ic_error);
                         holder.image_vault.setAdjustViewBounds(true);
-                        holder.image_vault.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        holder.image_vault.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                 }
                 holder.img_size.setText(readableFileSize(Long.valueOf(data_list.get(position).get("Size"))));

@@ -27,6 +27,43 @@
             android:nextFocusDown="@+id/etSubject"
             android:singleLine="true" />
 
+
+        <TextView
+            android:id="@+id/designation_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Designation:"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/designation_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Team Lead"
+            android:inputType="textCapWords"
+            android:nextFocusDown="@+id/etSubject"
+            android:singleLine="true" />
+
+
+
+        <TextView
+            android:id="@+id/role_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Role:"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/role_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Software Development"
+            android:inputType="textCapWords"
+            android:nextFocusDown="@+id/etSubject"
+            android:singleLine="true" />
+
         <TextView
             android:id="@+id/adtxt"
             android:layout_width="wrap_content"
@@ -204,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:text="To Date:"
+                android:text="To Date*:"
                 android:textColor="@android:color/black" />
 
             <CheckBox
@@ -256,7 +293,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-
+            android:background="@color/header_color"
             android:layout_marginTop="10dp"
             android:text="ADD" />
 

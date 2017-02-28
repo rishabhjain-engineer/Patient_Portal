@@ -383,6 +383,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:background="@color/header_color"
                 android:id="@+id/bSend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

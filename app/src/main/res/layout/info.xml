@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF" >
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -11,35 +11,35 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="Legend"
-        android:textColor="#1998ca"
+        android:textColor="@color/text_color_blue"
         android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/infoLay"
-        android:background="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         android:orientation="vertical"
-        android:padding="10dp" >
-        
-                <LinearLayout
+        android:padding="10dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center_horizontal|center_vertical"
-            android:weightSum="100" >
+            android:weightSum="100">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="#63dc90" />
+                android:background="#80b5ff" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="80"
-                android:text="Report available"
+                android:text="Sample not collected"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center_horizontal|center_vertical"
-            android:weightSum="100" >
+            android:weightSum="100">
 
             <ImageView
                 android:layout_width="25dp"
@@ -69,22 +69,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="5dp"
             android:gravity="center_horizontal|center_vertical"
-            android:weightSum="100" >
+            android:weightSum="100">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="#80b5ff" />
+                android:background="#63dc90" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="80"
-                android:text="Sample not collected"
+                android:text="Report available"
                 android:textSize="18sp" />
 
         </LinearLayout>

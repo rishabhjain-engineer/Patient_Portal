@@ -15,5 +15,29 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn com.**
--dontwarn org.**
+-keep class com.hs.userportal.UploadService {
+public *;
+}
+-keep public class org.apache.commons.** { *; }
+# Class names are needed in reflection
+-keepnames class com.amazonaws.**
+# Request handlers defined in request.handlers
+-keep class com.amazonaws.services.**.*Handler
+# The following are referenced but aren't required to run
+-dontwarn com.fasterxml.jackson.**
+-dontwarn org.apache.commons.logging.**
+# Android 6.0 release removes support for the Apache HTTP client
+-dontwarn org.apache.http.**
+# The SDK has several references of Apache HTTP client
+-dontwarn com.amazonaws.http.**
+-dontwarn com.amazonaws.metrics.**
+-dontwarn org.joda.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.apache.**
+-dontwarn org.w3c.**
+-dontwarn javax.xml.**
+-dontwarn java.awt.**
+-dontwarn javax.imageio.**
+-dontwarn com.itextpdf.**
+-dontwarn android.util.**
+

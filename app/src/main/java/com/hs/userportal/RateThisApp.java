@@ -16,12 +16,10 @@ import java.util.Date;
 public class RateThisApp {
 
 	private static final String TAG = RateThisApp.class.getSimpleName();
-
 	private static final String PREF_NAME = "RateThisApp";
 	private static final String KEY_INSTALL_DATE = "rta_install_date";
 	private static final String KEY_LAUNCH_TIMES = "rta_launch_times";
 	private static final String KEY_OPT_OUT = "rta_opt_out";
-
 	private static Date mInstallDate = new Date();
 	private static int mLaunchTimes = 0;
 	private static boolean mOptOut = false;

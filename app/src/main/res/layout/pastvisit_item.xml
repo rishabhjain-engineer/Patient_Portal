@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="LABS NAME"
-            android:textColor="#3DA8DC"
+            android:textColor="@color/text_color_blue"
             android:textSize="16dp"
             android:textStyle="bold" />
 
@@ -88,6 +88,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -109,6 +110,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -142,6 +144,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
+        android:visibility="gone"
         android:layout_marginRight="10dp"
         android:orientation="horizontal">
 

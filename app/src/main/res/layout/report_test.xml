@@ -17,7 +17,7 @@
             android:layout_margin="20dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Test Details"
+            android:text="Report Status"
             android:textColor="#565656"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -32,7 +32,7 @@
             android:layout_marginRight="15dp"
             android:clickable="true"
             android:text="@string/info"
-            android:textColor="#1DBBE3"
+            android:textColor="@color/text_color_blue"
             android:textSize="22dp" />
 
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/order_summary"
-            android:background="#FE975F"
+            android:background="@color/header_color"
             android:clickable="false"
             android:orientation="vertical"></LinearLayout>
 

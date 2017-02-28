@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -67,6 +68,10 @@ import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
+import ui.QuestionireActivity;
+import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /*import com.facebook.Request;
 import com.facebook.Session;
@@ -78,63 +83,64 @@ import com.facebook.model.GraphUser;*/
  * Created by rahul2 on 10/29/2015.
  */
 public class logout extends Activity implements View.OnClickListener {
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages,
-            facebooklink, my_family, my_health;
+
+    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
     private LinearLayout linearLayout2, menu;
     private ImageButton editimg, menuimgbtn;
     private ImageView user_pic;
-
-    TextView marq, username, noti_count, patient_id;
-    ProgressBar imageProgress;
-    String PH;
-    ProgressDialog progress;
-    Services service;
-    public static String id, privatery_id;
-    String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
-    String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
-    final int PIC_CROP = 3;
-    TextView emv, smsv, fbName, members;
-    Bitmap output = null;
-    public static int noti = 0;
-    JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink,
-            receiveDataUnLink, receiveDataList, receiveDataList2;
-    JSONArray subArray, fbSubArray, subArrayList;
-    public static int unlinkmenu;
-    int checkpublish = 0;
-    int checkcomplete = 0;
-    int pos;
-    String casecode;
-    String userID, fbP;
-    String dated;
-    ByteArrayOutputStream byteArrayOutputStream;
-    List<String> marqueeStringSet = new ArrayList<String>();
+    private TextView marq, username, noti_count, patient_id;
+    private ProgressBar imageProgress;
+    private String PH;
+    private ProgressDialog progress;
+    private Services service;
+    private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
+    private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
+    private final int PIC_CROP = 3;
+    private TextView emv, smsv, fbName, members;
+    private Bitmap output = null;
+    private static int noti = 0;
+    private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
+    private JSONArray subArray, fbSubArray, subArrayList;
+    private static int unlinkmenu;
+    private int checkpublish = 0;
+    private int checkcomplete = 0;
+    private int pos;
+    private String casecode;
+    private String userID, fbP;
+    private String dated;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private List<String> marqueeStringSet = new ArrayList<String>();
     /* private UiLifecycleHelper uiHelper;*/
-    static ArrayList<String> testcomplete = new ArrayList<String>();
-    static ArrayList<String> ispublished = new ArrayList<String>();
-    static String notiem = "no", notisms = "no";
-    public static final int MENU_LINK = Menu.FIRST;
-    AlertDialog alert, alertFB;
-    ImageButton notification;
-    Dialog fbDialog;
+    private static ArrayList<String> testcomplete = new ArrayList<String>();
+    private static ArrayList<String> ispublished = new ArrayList<String>();
+    public static String notiem = "no", notisms = "no";
+    private static final int MENU_LINK = Menu.FIRST;
+    private AlertDialog alert, alertFB;
+    private ImageButton notification;
+    private Dialog fbDialog;
     private JsonObjectRequest family;
     private JSONArray family_arr;
     private ArrayList<HashMap<String, String>> family_object;
-    public static String image_parse;
     private static RequestQueue request;
-    static String emailid;
     private ImageLoader mImageLoader;
     private LoginButton login_button;
-    private CallbackManager callbackManager = null;
-    private AccessTokenTracker mtracker = null;
+    private CallbackManager mCallbackManager = null;
+    private AccessTokenTracker mAccessTokenTracker = null;
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
+    private PreferenceHelper mPreferenceHelper = PreferenceHelper.getInstance();
+
+
+    public static String image_parse;
+    public static String emailid;
+    public static String id, privatery_id;
 
     protected void onCreate(Bundle savedInBundle) {
         super.onCreate(savedInBundle);
        /* uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInBundle);*/
-        callbackManager = CallbackManager.Factory.create();
-        mtracker = new AccessTokenTracker() {
+        mCallbackManager = CallbackManager.Factory.create();
+        mAccessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
             }
@@ -146,7 +152,7 @@ public class logout extends Activity implements View.OnClickListener {
             }
         };
 
-        mtracker.startTracking();
+        mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
         setContentView(R.layout.dashboard);
         mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
@@ -175,7 +181,7 @@ public class logout extends Activity implements View.OnClickListener {
         imageProgress = (ProgressBar) findViewById(R.id.progressBar);
         facebooklink = (RelativeLayout) findViewById(R.id.link);
         login_button = (LoginButton) findViewById(R.id.login_button);
-        login_button.registerCallback(callbackManager, callback);
+        login_button.registerCallback(mCallbackManager, facebookCallback);
         notification = (ImageButton) findViewById(R.id.notification);
         menuimgbtn = (ImageButton) findViewById(R.id.menuimgbtn);
         menu = (LinearLayout) findViewById(R.id.menu);
@@ -213,12 +219,17 @@ public class logout extends Activity implements View.OnClickListener {
         my_health.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                }
+                else {
                 Intent intent = new Intent(getApplicationContext(), MyHealth.class);
                 intent.putExtra("id", id);
                 intent.putExtra("show_blood", "yes");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+            }}
         });
         user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,18 +290,22 @@ public class logout extends Activity implements View.OnClickListener {
         linearLayout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (subArrayList != null) {
-                    if (id != null && subArrayList.length() > 0) {
-                        Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                        intent.putExtra("id", id);
-                        update.verify = "0";
-                        intent.putExtra("family", family_object);
-                        String member = username.getText().toString();
-                        intent.putExtra("Member_Name", member);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(logout.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (subArrayList != null) {
+                        if (id != null && subArrayList.length() > 0) {
+                            Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                            intent.putExtra("id", id);
+                            update.verify = "0";
+                            intent.putExtra("family", family_object);
+                            String member = username.getText().toString();
+                            intent.putExtra("Member_Name", member);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -314,13 +329,35 @@ public class logout extends Activity implements View.OnClickListener {
         // logout.setOnClickListener(this);
         editimg.setOnClickListener(this);
         service = new Services(this);
-        Intent i = getIntent();
+
+        /*Intent i = getIntent();
         id = i.getStringExtra("id");
         privatery_id = id;
         PH = i.getStringExtra("PH");
         user = i.getStringExtra("user");
         passw = i.getStringExtra("pass");
-        name = i.getStringExtra("fn");
+        name = i.getStringExtra("fn");*/
+
+        /*id = AppConstant.ID;
+        privatery_id = id;
+        PH = AppConstant.PH;
+        user = AppConstant.USER;
+        passw = AppConstant.PASS;
+        name = AppConstant.FN;*/
+
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        privatery_id = id;
+        PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
+        user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
+
+        Log.i("logout", "id: "+id);
+        Log.i("logout", "PH: "+PH);
+        Log.i("logout", "user: "+user);
+        Log.i("logout", "passw: "+passw);
+        Log.i("logout", "name: "+name);
+
         Helper.resend_name = name;
         username.setText(name);
         patient_id.setText("Your ID: " + PH);
@@ -356,130 +393,131 @@ public class logout extends Activity implements View.OnClickListener {
             ex.printStackTrace();
         }
 
-        new Authentication().execute();
-
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
     }
 
     @Override
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
 
-        // getId() returns this view's identifier.
-        if (v.getId() == R.id.update_profile) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
-            intent.putExtra("id", id);
-            intent.putExtra("pass", passw);
-            intent.putExtra("pic", pic);
-            intent.putExtra("picname", picname);
-            intent.putExtra("fbLinked", fbLinked);
-            intent.putExtra("fbLinkedID", fbLinkedID);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.lab_records) {
-            // setText() sets the string value of the TextView
-            if (subArrayList != null) {
-                if (id != null && subArrayList.length() > 0) {
-                    Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                    intent.putExtra("id", id);
-                    update.verify = "0";
-                    intent.putExtra("family", family_object);
-                    String member = username.getText().toString();
-                    intent.putExtra("Member_Name", member);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } else {
-                    Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else if (v.getId() == R.id.find_labs) {
-            // setText() sets the string value of the TextView
-            SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
-                    Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean("openLocation", true);
-            editor.commit();
-            Intent intent = new Intent(logout.this, LocationClass.class);
-            intent.putExtra("PatientId", id);
-            update.verify = "0";
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+        }
+        else {
 
-        } else if (v.getId() == R.id.file_vault) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, Filevault.class);
-            intent.putExtra("id", id);
-            update.verify = "0";
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.order_history) {
-            // setText() sets the string value of the TextView
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, OrderHistory.class);
-            update.verify = "0";
-            intent.putExtra("family", family_object);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.packages) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(logout.this, Packages.class);
-            update.verify = "0";
+
+            // getId() returns this view's identifier.
+            if (v.getId() == R.id.update_profile) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(getApplicationContext(), TabsActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("pass", passw);
+                intent.putExtra("pic", pic);
+                intent.putExtra("picname", picname);
+                intent.putExtra("fbLinked", fbLinked);
+                intent.putExtra("fbLinkedID", fbLinkedID);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.lab_records) {
+                // setText() sets the string value of the TextView
+                if (subArrayList != null) {
+                    if (id != null && subArrayList.length() > 0) {
+                        Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                        intent.putExtra("id", id);
+                        update.verify = "0";
+                        intent.putExtra("family", family_object);
+                        String member = username.getText().toString();
+                        intent.putExtra("Member_Name", member);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else if (v.getId() == R.id.find_labs) {
+                // setText() sets the string value of the TextView
+                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("openLocation", true);
+                editor.commit();
+                Intent intent = new Intent(logout.this, LocationClass.class);
+                intent.putExtra("PatientId", id);
+                update.verify = "0";
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            } else if (v.getId() == R.id.file_vault) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, Filevault.class);
+                intent.putExtra("id", id);
+                update.verify = "0";
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.order_history) {
+                // setText() sets the string value of the TextView
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, OrderHistory.class);
+                update.verify = "0";
+                intent.putExtra("family", family_object);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.packages) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(logout.this, Packages.class);
+                update.verify = "0";
               /*  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.logout) {
-            // setText() sets the string value of the TextView
-            logout();
-        } else if (v.getId() == R.id.editimg) {
-            // setText() sets the string value of the TextView
-            Intent intent = new Intent(getApplicationContext(), MyFamily.class);
-            intent.putExtra("id", id);
-            intent.putExtra("family", family_object);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.logout) {
+                // setText() sets the string value of the TextView
+                logout();
+            } else if (v.getId() == R.id.editimg) {
+                // setText() sets the string value of the TextView
+                Intent intent = new Intent(getApplicationContext(), MyFamily.class);
+                intent.putExtra("id", id);
+                intent.putExtra("family", family_object);
            /* intent.putExtra("pass", passw);
             intent.putExtra("pic", pic);
             intent.putExtra("picname", picname);
             intent.putExtra("fbLinked", fbLinked);
             intent.putExtra("fbLinkedID", fbLinkedID);*/
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (v.getId() == R.id.link) {
-            // setText() sets the string value of the TextView
-            onClickLink();
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (v.getId() == R.id.link) {
+                // setText() sets the string value of the TextView
+                onClickLink();
+            }
+
         }
     }
 
 
     class Authentication extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-
         }
-
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             try {
                 sendData = new JSONObject();
                 receiveData = service.IsUserAuthenticated(sendData);
                 System.out.println("IsUserAuthenticated: " + receiveData);
                 authentication = receiveData.getString("d");
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             return null;
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             try {
-
                 if (authentication.equals("false")) {
-
                     AlertDialog dialog = new AlertDialog.Builder(logout.this).create();
                     dialog.setTitle("Session timed out!");
                     dialog.setMessage("Session expired. Please login again.");
@@ -488,8 +526,6 @@ public class logout extends Activity implements View.OnClickListener {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // TODO Auto-generated method stub
-
                             SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.clear();
@@ -497,20 +533,15 @@ public class logout extends Activity implements View.OnClickListener {
                             dialog.dismiss();
                             finish();
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                         }
                     });
                     dialog.show();
-
                 } else {
                     new BackgroundProcess().execute();
-
                 }
 
             } catch (Exception e) {
-                // TODO: handle exception
             }
-
         }
     }
 
@@ -587,7 +618,9 @@ public class logout extends Activity implements View.OnClickListener {
                     editor1.commit();
                 }
 */
-                family_object.clear();
+                if (family_object != null) {
+                    family_object.clear();
+                }
                 image_parse = "";
                 progress.dismiss();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -670,7 +703,7 @@ public class logout extends Activity implements View.OnClickListener {
                 fbSubArray = slice.getJSONArray("Table");
                 if (fbSubArray.getJSONObject(0).getString("FacebookId").equals("")
                         || fbSubArray.getJSONObject(0).getString("FacebookId").equals("null")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO commented by spartans  ; to show fb link change visibility ;
                     fbLinked = "false";
 
                 } else {
@@ -680,7 +713,7 @@ public class logout extends Activity implements View.OnClickListener {
                     fbLinked = "true";
                     fbLinkedID = fbSubArray.getJSONObject(0).getString("FacebookId");
                 }
-                find_family();
+                findFamily();
             } catch (JSONException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -798,57 +831,42 @@ public class logout extends Activity implements View.OnClickListener {
                             sendData.put("DoctorId", "");
                             sendData.put("PatientId", id);
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
-                        System.out.println(sendData);
 
                         receiveDataList = service.patientstatus(sendData);
 
                         System.out.println(receiveDataList);
 
                         try {
-                            String dataList = receiveDataList.getString("d");// {"Table":[]}
-                            JSONObject cut = new JSONObject(dataList);
-                            subArrayList = cut.getJSONArray("Table");
-                            String caseid = subArrayList.getJSONObject(0).getString("CaseId");
-                            casecode = subArrayList.getJSONObject(0).getString("CaseCode");
-                            dated = subArrayList.getJSONObject(0).getString("TimeStamp");
+                            String dataList = receiveDataList.optString("d");// {"Table":[]}
+                            if(!TextUtils.isEmpty(dataList)){
+                                JSONObject cut = new JSONObject(dataList);
+                                subArrayList = cut.getJSONArray("Table");
+                                String caseid = subArrayList.getJSONObject(0).getString("CaseId");
+                                casecode = subArrayList.getJSONObject(0).getString("CaseCode");
+                                dated = subArrayList.getJSONObject(0).getString("TimeStamp");
 
-                            sendData = new JSONObject();
-                            try {
+                                sendData = new JSONObject();
+                                try {
+                                    sendData.put("CaseId", caseid);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                receiveDataList2 = service.patientinvestigation(sendData);
 
-                                sendData.put("CaseId", caseid);
+                                String data1 = receiveDataList2.getString("d");
+                                JSONObject cut1 = new JSONObject(data1);
+                                JSONArray subArray = cut1.getJSONArray("Table");
 
-                            } catch (JSONException e) {
-
-                                e.printStackTrace();
+                                JSONArray subArray1 = subArray.getJSONArray(0);
+                                for (int i = 0; i < subArray1.length(); i++) {
+                                    testcomplete.add(subArray1.getJSONObject(i).getString("IsTestCompleted"));
+                                    ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
+                                }
                             }
-
-                            System.out.println(sendData);
-                            receiveDataList2 = service.patientinvestigation(sendData);
-                            System.out.println("All Tests: " + receiveDataList2);
-
-                            String data1 = receiveDataList2.getString("d");
-                            JSONObject cut1 = new JSONObject(data1);
-                            JSONArray subArray = cut1.getJSONArray("Table");
-
-                            JSONArray subArray1 = subArray.getJSONArray(0);
-                            System.out.println(subArray1);
-
-                            for (int i = 0; i < subArray1.length(); i++)
-
-                            {
-                                testcomplete.add(subArray1.getJSONObject(i).getString("IsTestCompleted"));
-                                ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
-
-                            }
-
-                            System.out.println(testcomplete);
-                            System.out.println(ispublished);
-
+                            
                         } catch (JSONException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
 
@@ -888,7 +906,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                                     marq.setText(
                                             "Reports for case " + casecode + " dated " + dated + " are now available.");
-                                    marq.setBackgroundColor(Color.parseColor("#63DC90"));
+                                    marq.setBackgroundColor(Color.parseColor("#4180AB"));
                                     linearLayout2.setVisibility(View.VISIBLE);
 
                                 } else {
@@ -912,7 +930,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                                 }
 
-                                if (subArrayList.length() == 0) {
+                                if (subArrayList != null && subArrayList.length() == 0) {
                                     marq.setVisibility(View.GONE);
                                     linearLayout2.setVisibility(View.GONE);
                                 }
@@ -1219,7 +1237,7 @@ public class logout extends Activity implements View.OnClickListener {
 		 */
 
             case MENU_LINK:
-                new fbUnlinkAsync().execute();
+                new FbUnlinkAsync().execute();
                 return true;
 
            /* case R.id.action_profile:
@@ -1262,6 +1280,13 @@ public class logout extends Activity implements View.OnClickListener {
                 startActivity(change);
                 return true;
 
+            case R.id.terms_and_condition:
+
+                Intent termsAndCondition = new Intent(logout.this, PrivacyPolicy.class);
+                startActivity(termsAndCondition);
+                return true;
+
+
             case R.id.action_logout:
                 logout();
                 return true;
@@ -1271,7 +1296,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    class fbUnlinkAsync extends AsyncTask<Void, Void, Void> {
+    private class FbUnlinkAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1310,7 +1335,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
                 if (receiveDataUnLink.get("d").equals("UnLinked Successfully")) {
-                    facebooklink.setVisibility(View.VISIBLE);
+                    facebooklink.setVisibility(View.GONE); //TODO set visible : SPARTANS
                     unlinkmenu = 0;
                     fbLinked = "false";
                 }
@@ -1402,16 +1427,15 @@ public class logout extends Activity implements View.OnClickListener {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(logout.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
                 // showAppMsg();
             }
         }
     };
 
-    class imagesync extends AsyncTask<Void, Void, Void>
-
-    {
+    private class Imagesync extends AsyncTask<Void, Void, Void> {
 
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1429,16 +1453,17 @@ public class logout extends Activity implements View.OnClickListener {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (progress != null)
+            if (progress != null) {
                 progress.dismiss();
-
+            }
+            user_pic.setImageBitmap(output);
+            // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
+            imageProgress.setVisibility(View.INVISIBLE);
             // new BackgroundProcess().execute();
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
 
             sendData = new JSONObject();
             try {
@@ -1457,7 +1482,6 @@ public class logout extends Activity implements View.OnClickListener {
                 subArray = cut.getJSONArray("Table");
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -1484,28 +1508,11 @@ public class logout extends Activity implements View.OnClickListener {
                 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 canvas.drawBitmap(bitmap, rect, rect, paint);
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                      /*  Glide.with(logout.this)
-                                .load(pic.replaceAll(" ", "%20"))
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .override(500,Target.SIZE_ORIGINAL)
-                                .fitCenter()
-                                .into(user_pic);*/
-                        user_pic.setImageBitmap(output);
-                        // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
-                        imageProgress.setVisibility(View.INVISIBLE);
-                    }
-                });
-
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -1518,7 +1525,6 @@ public class logout extends Activity implements View.OnClickListener {
 
     @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         this.unregisterReceiver(this.mConnReceiver);
         //  uiHelper.onPause();
@@ -1533,7 +1539,7 @@ public class logout extends Activity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         // uiHelper.onDestroy();
-        logout.this.finish();
+       finish();
         output = null;
         update.verify = "0";
     }
@@ -1549,7 +1555,7 @@ public class logout extends Activity implements View.OnClickListener {
         // TODO Auto-generated method stub
         super.onResume();
         id = privatery_id;
-        find_family();
+        findFamily();
         if (Helper.authentication_flag == true) {
             finish();
         }
@@ -1558,8 +1564,11 @@ public class logout extends Activity implements View.OnClickListener {
 			   }*/
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
         //uiHelper.onResume();
-        new Authenticationfromresume().execute();
+        new AuthenticationfromresumeAsyncTask().execute();}
 
         if (update.verify.equals("1")) {
             try {
@@ -1591,7 +1600,7 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-    class Authenticationfromresume extends AsyncTask<Void, Void, Void> {
+    private class AuthenticationfromresumeAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1659,7 +1668,7 @@ public class logout extends Activity implements View.OnClickListener {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
       /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
 
@@ -1688,40 +1697,30 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-
     /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-         if (state.isOpened()) {
-             Log.i("", "Logged in...");
+             if (state.isOpened()) {
+                 Log.i("", "Logged in...");
 
-         } else if (state.isClosed()) {
-             Log.i("", "Logged out...");
-             // authButton.setText(" Link account with Facebook");
-             // unlinkmenu = 0;
-             // authButton.setVisibility(View.VISIBLE);
+             } else if (state.isClosed()) {
+                 Log.i("", "Logged out...");
+                 // authButton.setText(" Link account with Facebook");
+                 // unlinkmenu = 0;
+                 // authButton.setVisibility(View.VISIBLE);
+             }
          }
-     }
 
-     private Session.StatusCallback callback = new Session.StatusCallback() {
-         @Override
-         public void call(Session session, SessionState state, Exception exception) {
-             onSessionStateChange(session, state, exception);
-         }
-     };
- */
+         private Session.StatusCallback callback = new Session.StatusCallback() {
+             @Override
+             public void call(Session session, SessionState state, Exception exception) {
+                 onSessionStateChange(session, state, exception);
+             }
+         };
+     */
     private void onClickLink() {
         login_button.performClick();
-       /* Session session = Session.getActiveSession();
-        if (!session.isOpened() && !session.isClosed()) {
-            session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("public_profile"))
-                    .setCallback(callback));
-        } else if (session.isClosed()) {
-            // start Facebook Login
-            Session.openActiveSession(this, true, callback);
-
-        }*/
     }
 
-    class fbLinkAsync extends AsyncTask<Void, Void, Void> {
+    private class FbLinkAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
@@ -1806,7 +1805,7 @@ public class logout extends Activity implements View.OnClickListener {
                         @Override
                         public void onClick(View v) {
 
-                            new fbImagePull().execute();
+                            new FbImagePull().execute();
                             progress.dismiss();
                         }
                     });
@@ -1855,7 +1854,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    class fbImagePull extends AsyncTask<Void, Void, Void> {
+    private class FbImagePull extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1901,7 +1900,7 @@ public class logout extends Activity implements View.OnClickListener {
                 progress.dismiss();
                 if (receiveFbImageSave.getString("d").equals("\"Patient Image updated Successfully\"")) {
 
-                    new imagesync().execute();
+                    new Imagesync().execute();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Profile picture couldn't be updated. Please try again!",
@@ -1915,7 +1914,7 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
@@ -1941,7 +1940,7 @@ public class logout extends Activity implements View.OnClickListener {
         return output;
     }
 
-    public void find_family() {
+    private void findFamily() {
         request = Volley.newRequestQueue(this);
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetMember);
         String url = static_holder.request_Url();
@@ -1951,10 +1950,13 @@ public class logout extends Activity implements View.OnClickListener {
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        Log.i("GetMember", "url: "+url);
+        Log.i("GetMember", "data to Send: "+data);
         family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Log.i("GetMember", "Received Data: "+response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     family_arr = j.getJSONArray("Table");
@@ -2022,18 +2024,17 @@ public class logout extends Activity implements View.OnClickListener {
         });
         request.add(family);
     }
-    FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+
+    private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            GraphRequest request = GraphRequest.newMeRequest(
-                    loginResult.getAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
+            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             // JSON of FB ID as response.
                             try {
                                 userID = object.getString("id");
-                                new fbLinkAsync().execute();
+                                new FbLinkAsync().execute();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }

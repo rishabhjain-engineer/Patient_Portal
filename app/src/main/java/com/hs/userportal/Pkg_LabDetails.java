@@ -66,43 +66,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 
 public class Pkg_LabDetails extends Activity {
-    JSONArray centreArray, ImageArray, getDoctorArray;
-    JSONObject sendData;
+
+    private JSONArray centreArray, ImageArray, getDoctorArray;
+    private JSONObject sendData;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
-    RequestQueue queue;
-    ByteArrayOutputStream byteArrayOutputStream;
-    byte[] byteArray;
-    Bitmap bitmap;
-    int socketTimeout = 30000;
-    static String pic_maplab = null;
-    String picname = "";
-    JsonObjectRequest jr,jr1,jr2;
-    SharedPreferences sharedPreferences;
-    static String from_widget;
-    Intent z;
-    String CentreId = "", testAvailability = "" , fromwhichbutton;
-    static String patientId=null,sample_or_detailbtn_check=null;
-    ProgressDialog progress, progressDialog;
-    LinearLayout linearLayoutImage;
+    private RequestQueue queue;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private byte[] byteArray;
+    private Bitmap bitmap;
+    private int socketTimeout = 30000;
+    private static String pic_maplab = null;
+    private String picname = "";
+    private JsonObjectRequest jr,jr1,jr2;
+    private SharedPreferences sharedPreferences;
+    private static String from_widget;
+    private Intent z;
+    private String CentreId = "", testAvailability = "" , fromwhichbutton;
+    private static String patientId=null,sample_or_detailbtn_check=null;
+    private ProgressDialog progress, progressDialog;
+    private LinearLayout linearLayoutImage;
    // GoogleMap googleMap;
-    TextView tvLabName, tvEmail, tvContact, tvAddress, tvRadio, tvPath, tvOwner, tvLandline, tvWebsite, tvEstYear,
+    private TextView tvLabName, tvEmail, tvContact, tvAddress, tvRadio, tvPath, tvOwner, tvLandline, tvWebsite, tvEstYear,
             tvXray, tvCT, tvMRI, tvDigital, tvHomeColl, tvHomeCharge, tvOnlineReport, tvNabl, tvOtherAcc, tvPayment,
             tvPaymentText, tvAmbulance, tvAmbContact, tvParking, tvLabCat, tvDrinking, tvWashroom, tvSeating, tvAmbCall,
             tvCallLandline, tvCallMobile, tvRating;
-    TextView monday, tuesday, wednesday, thursday, friday, saturday, sunday, tvAreaName;
-    LinearLayout linear, layoutHours, layoutOpen, layoutAcc, layoutImage;
-    ScrollView scroll;
+    private TextView monday, tuesday, wednesday, thursday, friday, saturday, sunday, tvAreaName;
+    private LinearLayout linear, layoutHours, layoutOpen, layoutAcc, layoutImage;
+    private ScrollView scroll;
     private String formatTime = "";
-    String lat, lng;
+    private String lat, lng;
     //RelativeLayout relDiscount;
  //   RelativeLayout bRequestHome;
-    SharedPreferences sharedpreferences;
-    String getTvfunctionality = "cp";
-    Typeface tf;
-    Uri Imguri;
+    private SharedPreferences sharedpreferences;
+    private String getTvfunctionality = "cp";
+    private Typeface tf;
+    private Uri Imguri;
   //  private UiLifecycleHelper uiHelper;
 
     @Override
@@ -951,6 +953,11 @@ public class Pkg_LabDetails extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(Pkg_LabDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+
                 // TODO Auto-generated method stub
                 if (sharedpreferences.getBoolean("openLocation", false)) {
                     new Authentication(Pkg_LabDetails.this, "MapLabDetails", "getdetailmenu").execute();
@@ -960,7 +967,7 @@ public class Pkg_LabDetails extends Activity {
                     sample_or_detailbtn_check = "getdetail";
                 }
 
-            }
+            }}
         });
 
         if(itemuser!=null){

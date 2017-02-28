@@ -11,9 +11,10 @@ import android.widget.RelativeLayout;
 public class WalthroughFragment extends Fragment {
 
 	public static final String POSITION_KEY = "FragmentPositionKey";
+
 	private int position;
-	LinearLayout walk1, walk2, walk3, walk4;
-	RelativeLayout walk0;
+	private LinearLayout walk1, walk2, walk3, walk4;
+	private RelativeLayout walk0;
 	
 
 	@Override
@@ -59,32 +60,33 @@ public class WalthroughFragment extends Fragment {
             walk4.setVisibility(View.GONE);
 		}else if (position == 1) {
 			// view = inflater.inflate(R.layout.walk, container, false);
-			walk1.setVisibility(View.VISIBLE);
-			walk0.setVisibility(View.GONE);
-			walk2.setVisibility(View.GONE);
-			walk3.setVisibility(View.GONE);
-            walk4.setVisibility(View.GONE);
-		} else if (position == 2) {
-			// view = inflater.inflate(R.layout.walk, container, false);
 			walk2.setVisibility(View.VISIBLE);
 			walk0.setVisibility(View.GONE);
 			walk1.setVisibility(View.GONE);
 			walk3.setVisibility(View.GONE);
             walk4.setVisibility(View.GONE);
-		} else if (position == 3) {
+		} else if (position == 2) {
 			// view = inflater.inflate(R.layout.walk, container, false);
 			walk4.setVisibility(View.GONE);
 			walk1.setVisibility(View.GONE);
 			walk2.setVisibility(View.GONE);
 			walk3.setVisibility(View.VISIBLE);
 			walk0.setVisibility(View.GONE);
-		}else if(position == 4){
+		}else if(position == 3){
             walk4.setVisibility(View.VISIBLE);
             walk1.setVisibility(View.GONE);
             walk2.setVisibility(View.GONE);
             walk3.setVisibility(View.GONE);
             walk0.setVisibility(View.GONE);
-        }
+        }else if (position == 4) {
+			// view = inflater.inflate(R.layout.walk, container, false);
+			//This will never open as we are opening only 4 page
+			walk1.setVisibility(View.VISIBLE);
+			walk0.setVisibility(View.GONE);
+			walk2.setVisibility(View.GONE);
+			walk3.setVisibility(View.GONE);
+			walk4.setVisibility(View.GONE);
+		}
 		return view;
 
 	}

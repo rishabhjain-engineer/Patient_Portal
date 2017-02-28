@@ -38,15 +38,15 @@ import java.util.ArrayList;
 public class ImagePagerActivity extends ActionBarActivity {
 
 	private static final String STATE_POSITION = "STATE_POSITION";
-	protected ImageLoader imageLoader;
-	DisplayImageOptions options;
-	ViewPager pager;
-	int pagerPosition;
-	public String saveImages, newImageName;
-	public String[] saveImageName;
-	ArrayList<String> imageName = new ArrayList<String>();
-	public static int currentPage;
-	TextView tvImageName;
+	private ImageLoader imageLoader;
+	private DisplayImageOptions options;
+	private ViewPager pager;
+	private int pagerPosition;
+	private String saveImages, newImageName;
+	private String[] saveImageName;
+	private ArrayList<String> imageName = new ArrayList<String>();
+	private static int currentPage;
+	private TextView tvImageName;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

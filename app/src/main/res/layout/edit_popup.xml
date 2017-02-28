@@ -13,7 +13,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
-        android:text="Update Blood group"
+        android:text="Update Blood Group"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="16dp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/textView6"
-        android:background="#FE975F"
+        android:background="@color/header_color"
         android:clickable="false"
         android:orientation="vertical" />
 
@@ -58,8 +58,8 @@
             android:id="@+id/send_request"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1DBBE3"
-            android:text="UPDATE"
+            android:background="@color/header_color"
+            android:text="Save"
             android:textColor="@android:color/white"
             android:textSize="14dp" />
 

@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,40 +31,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class grouptest extends ActionBarActivity {
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-    ListView l;
-    ArrayAdapter<String> adapter;
-    JSONArray jarray;
-    String divDataBullet = "", jqueryDataBullet = "", db;
-    MiscellaneousTasks misc;
-    String RangeFrom = null, RangeTo = null, UnitCode = "", ResultValue, CriticalHigh, CriticalLow;
-    List<String> chartDates = new ArrayList<String>();
-    List<String> chartNames = new ArrayList<String>();
-    List<String> intentdate = new ArrayList<String>();
-    List<String> resulttype = new ArrayList<String>();
-    List<String> intentcase = new ArrayList<String>();
-    List<String> intentcaseId = new ArrayList<String>();
-    List<String> chartValues = new ArrayList<String>();
-    List<String> chartunitList = new ArrayList<String>();
-    List<String> piechartvalue = new ArrayList<String>();
-    ArrayList<String> desc = new ArrayList<String>();
-    ArrayList<HashMap<String, String>> jarr_info = new ArrayList<HashMap<String, String>>();
+public class grouptest extends BaseActivity {
+
+    private ListView l;
+    private ArrayAdapter<String> adapter;
+    private JSONArray jarray;
+    private String divDataBullet = "", jqueryDataBullet = "", db;
+    private MiscellaneousTasks misc;
+    private String RangeFrom = null, RangeTo = null, UnitCode = "", ResultValue, CriticalHigh, CriticalLow;
+    private List<String> chartDates = new ArrayList<String>();
+    private List<String> chartNames = new ArrayList<String>();
+    private List<String> intentdate = new ArrayList<String>();
+    private List<String> resulttype = new ArrayList<String>();
+    private List<String> intentcase = new ArrayList<String>();
+    private List<String> intentcaseId = new ArrayList<String>();
+    private List<String> chartValues = new ArrayList<String>();
+    private List<String> chartunitList = new ArrayList<String>();
+    private List<String> piechartvalue = new ArrayList<String>();
+    private ArrayList<String> desc = new ArrayList<String>();
+    private ArrayList<HashMap<String, String>> jarr_info = new ArrayList<HashMap<String, String>>();
     private int singlechartposition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.labdetails);
-
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-
+        setupActionBar();
         Intent z = getIntent();
         String jarr = z.getStringExtra("group");
         Bundle extras = getIntent().getExtras();
@@ -341,15 +338,11 @@ public class grouptest extends ActionBarActivity {
                                 + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                 + "</div></body></html>";
 
-                        Intent intent = new Intent(
-                                grouptest.this,
-                                GraphDetailsNew.class);
+                        Intent intent = new Intent(grouptest.this, GraphDetailsNew.class);
                         intent.putExtra("data", db);
                         intent.putExtra("chart_type", "line");
-                        intent.putStringArrayListExtra("dates",
-                                (ArrayList<String>) intentdate);
-                        intent.putStringArrayListExtra("values",
-                                (ArrayList<String>) chartValues);
+                        intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
+                        intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                         if (chartNames.size() != 0)
                             intent.putExtra("chartNames",
                                     chartNames.get(0));
@@ -552,9 +545,13 @@ public class grouptest extends ActionBarActivity {
                 ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onResume();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(grouptest.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else{
         if (Helper.authentication_flag == true) {
             finish();
-        }
+        }}
     }
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
@@ -574,8 +571,10 @@ public class grouptest extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 //showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+
+                Toast.makeText(grouptest.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+               /* Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };

@@ -30,8 +30,8 @@ import java.util.List;
 public class SinglelabMap extends ActionBarActivity {
 
     //GoogleMap googleMap;
-    String lat, lng, devicelat, devicelong;
-    String CentreName = "", CentreArea = "";
+    private String lat, lng, devicelat, devicelong;
+    private String CentreName = "", CentreArea = "";
    // PolylineOptions polylineOptions;
    // ArrayList<LatLng> mMarkerPoints;
 

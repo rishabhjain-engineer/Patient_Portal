@@ -69,6 +69,8 @@
 
         <service android:name="com.hs.userportal.UploadService" />
 
+        <service android:name="utils.QuestionReportPageService" />
+
         <activity
             android:name="com.hs.userportal.MainActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -308,7 +310,7 @@
         <activity
             android:name="com.hs.userportal.Filevault"
             android:configChanges="keyboardHidden|orientation|screenLayout"
-            android:label="Vault"
+            android:label="Repository"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -399,6 +401,22 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="ui.QuestionireActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.QuestionReportActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.BpActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.BmiActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.hs.userportal.MyHealth"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
@@ -431,6 +449,13 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver android:name="networkmngr.NetworkChangeListener" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

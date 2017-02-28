@@ -52,18 +52,19 @@ public class UploadService extends IntentService {
     public static final String PERCENT_EXTRA = "percent";
     public static final String MSG_EXTRA = "msg";
     public static final String uploadfrom = "uploadfrom";
-    JSONObject sendData;
-    String patientId;
+
+
+    private JSONObject sendData;
+    private String patientId;
     private static final int NOTIFY_ID_UPLOAD = 1337;
-    RequestQueue queue1, queue2;
+    private RequestQueue queue1, queue2;
     private AmazonS3Client s3Client;
     private Uploader uploader;
-    JsonObjectRequest jr1, jr2;
+    private JsonObjectRequest jr1, jr2;
     private NotificationManager nm;
-    final Handler handler = new Handler();
-
-    String fname, afterDecode, uplodfrm;
-    String add_path, exhistimg, stringcheck;
+    private final Handler handler = new Handler();
+    private String fname, afterDecode, uplodfrm;
+    private String add_path, exhistimg, stringcheck;
 
     public UploadService() {
         super("simpl3r-example-upload");
@@ -120,7 +121,7 @@ public class UploadService extends IntentService {
         if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
             fname = imagename;
         } else {
-            if (exhistimg!=null&&exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
+            if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
                 fname = stringcheck.substring(0, stringcheck.length() - 4)
                         + "_1.jpg";
             } else {
@@ -220,15 +221,15 @@ public class UploadService extends IntentService {
                                             Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
 
-                                            Filevault.refresh();
-                                            Filevault.Imguri = null;
+                                        Filevault.refresh();
+                                        Filevault.Imguri = null;
                                            /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
                                             photo.delete();*/
 
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-                                                if (!add_path.equalsIgnoreCase("")||uplodfrm.equals("filevault2")) {
+                                                if (!add_path.equalsIgnoreCase("") || uplodfrm.equals("filevault2")) {
                                                     Filevault2.refresh_filevault2();
 
                                                 } else {

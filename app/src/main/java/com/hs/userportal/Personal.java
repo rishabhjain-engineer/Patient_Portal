@@ -35,21 +35,23 @@ import java.util.Calendar;
 
 public class Personal extends FragmentActivity {
 
-	int i = 0;
-	EditText weight, height;
-	static EditText checkdate;
-	ListView lv;
-	ProgressDialog progress,ghoom;
-	Button add, finish, back, next;
-	Services service;
-	AlertDialog alertDialog, alert;
-	JSONObject sendData1, receiveData1, personal, sendpersonal;
+	private int i = 0;
+	private EditText weight, height;
+	private static EditText checkdate;
+	private ListView lv;
+	private ProgressDialog progress,ghoom;
+	private Button add, finish, back, next;
+	private Services service;
+	private AlertDialog alertDialog, alert;
+	private JSONObject sendData1, receiveData1, personal, sendpersonal;
 	// static JSONArray arrayper;
 	// JSONArray arraymed;
-	JSONArray personalarray, temparray;
-	ArrayAdapter<String> m_adapter;
-	ArrayList<String> m_listItems = new ArrayList<String>();
-	String id;
+	private JSONArray personalarray, temparray;
+	private ArrayAdapter<String> m_adapter;
+	private ArrayList<String> m_listItems = new ArrayList<String>();
+	private String id;
+
+
 	@Override
 	protected void onCreate(Bundle avedInstanceState) {
 		// TODO Auto-generated method stub

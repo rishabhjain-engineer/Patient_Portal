@@ -46,7 +46,7 @@ public class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAd
 
         try {
             if (SampleCirclesDefault.walk.equals("walk")) {
-                mCount = 5;
+                mCount = 3;
             } else if (SampleCirclesDefault.walk.equals("tour")) {
                 mCount = 3;
             } else if (SampleCirclesDefault.walk.equalsIgnoreCase("Labtour")) {
@@ -66,10 +66,4 @@ public class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAd
         return ICONS[index % ICONS.length];
     }
 
-    public void setCount(int count) {
-        if (count > 0 && count <= 10) {
-            mCount = count;
-            notifyDataSetChanged();
-        }
-    }
 }

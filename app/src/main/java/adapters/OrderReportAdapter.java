@@ -22,10 +22,11 @@ import java.util.HashMap;
 
 
 public class OrderReportAdapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String,String>> OrderReportList;
-    String [] testnameArray;
+    private String [] testnameArray;
 
 
     public OrderReportAdapter(Activity activity, ArrayList<HashMap<String,String>> SortList,String testname) {

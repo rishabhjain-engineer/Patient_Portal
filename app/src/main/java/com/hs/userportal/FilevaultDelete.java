@@ -41,19 +41,19 @@ import config.StaticHolder;
 
 public class FilevaultDelete extends ActionBarActivity {
 
-	JSONArray jarray;
-	NetworkImageView mNetworkImageView;
+	private JSONArray jarray;
+	private NetworkImageView mNetworkImageView;
 	private ImageAdapter imageAdapter;
 	private boolean[] thumbnailsselection;
-	int count;
-	JsonObjectRequest jr;
-	ImageLoader mImageLoader;
-	ArrayList<String> thumbImage = new ArrayList<String>();
-	ArrayList<String> imageId = new ArrayList<String>();
-	String imageIdsToBeSent = "";
-	RequestQueue queue;
-	JSONObject sendData;
-	int pos;
+	private int count;
+	private JsonObjectRequest jr;
+	private ImageLoader mImageLoader;
+	private ArrayList<String> thumbImage = new ArrayList<String>();
+	private ArrayList<String> imageId = new ArrayList<String>();
+	private String imageIdsToBeSent = "";
+	private RequestQueue queue;
+	private JSONObject sendData;
+	private int pos;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -282,7 +282,7 @@ public class FilevaultDelete extends ActionBarActivity {
 			mNetworkImageView.setDefaultImageResId(R.drawable.ic_empty);
 			mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
 			mNetworkImageView.setAdjustViewBounds(true);
-			mNetworkImageView.setImageUrl("https://files.cloudchowk.com/"
+			mNetworkImageView.setImageUrl("https://files.healthscion.com/"
 					+ thumbImage.get(position), mImageLoader);
 
 			holder.checkbox.setChecked(thumbnailsselection[position]);

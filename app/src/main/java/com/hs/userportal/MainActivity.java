@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -26,10 +28,12 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -59,112 +63,93 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import config.QuestionireParser;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import ui.BaseActivity;
+import ui.QuestionReportActivity;
+import ui.QuestionireActivity;
+import utils.AppConstant;
+import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class MainActivity extends ActionBarActivity implements OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener {
 
 	/* ******** Variables Declaration ********* */
 
-    CheckBox cb;
-    EditText userName, password;
-    public TextView forgot;
-    Button labsNear;
-    Button logIn, register;
-    JSONObject receive;
-    String uName, uPassword, contactNumber;
-    String UserCodeFromEmail = null;
-    JSONArray fbarray, subArray, disclaimerArray;
-    JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData,
-            receivePatientData;
-    JSONObject sendData1;
-    Services service;
-    Animation animFadein;
-    String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion,
-            disclaimerDateTime, disclaimer;
-
-    int chkDisclaimer = 0, chklogin = 0, chkerror = 0;
-    int fbLogin = 0, fbDisc = 0, fberror = 0;
-    AlertDialog alert;
-    Dialog dialog1;
-    String abc, id, cop, fnln, tpwd, lastname, PH;
+    private CheckBox cb;
+    private EditText userName, password;
+    private TextView forgot;
+    private Button labsNear;
+    private Button logIn, register;
+    private JSONObject receive;
+    private String uName, uPassword, contactNumber;
+    private String UserCodeFromEmail = null;
+    private JSONArray fbarray, subArray, disclaimerArray;
+    private JSONObject sendData, receiveData, mainObject, disclaimerData, receiveForgetData, receivePatientData;
+    private JSONObject sendData1;
+    private Services service;
+    private Animation animFadein;
+    private String rem = "false", disclaimerInformation, disclaimerUserId, disclaimerVersion, disclaimerDateTime, disclaimer;
+    private int chkDisclaimer = 0, chklogin = 0, mChkError = 0;
+    private int fbLogin = 0, fbDisc = 0, fberror = 0;
+    private AlertDialog alert;
+    private Dialog dialog1;
+    private String abc, id, cop, fnln, tpwd, lastname, PH;
     private SharedPreferences sharedPreferences;
-    public static final String MyPREFERENCES = "MyPrefs";
-    public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
-    public static final String key = "key";
-    static String cook = "";
-    SharedPreferences sharedpreferences;
-    SharedPreferences demoPreferences;
-    static String demo = "false";
+    private static final String name = "nameKey";
+    private static final String pass = "passwordKey";
+    private static final String key = "key";
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences demoPreferences;
     //  private UiLifecycleHelper uiHelper;
     private Button authButton;
     private LoginButton login_button;
     public static String userID = "";
-    ProgressDialog fbProgress;
-    String fbUser;
-    String fbdata;
-    ProgressDialog progress;
-    static String authentication;
-    JsonObjectRequest getRequest;
-    String url1, nameFromRegister = "";
-    RequestQueue queue;
-    JsonObjectRequest jr;
-    SharedPreferences newpref;
-    PackageInfo pInfo;
-    String buildNo, from_Activity;
-    String emailsmsphone;
-    Boolean multipleLinked;
-    String gender = "Male";
-    String firstName = "", lastName = "", eMail = "", user_Name = "", password1 = "", contactNo = "", dateofBirth = "",
-            cPassword = "", middleName = "";
+    private ProgressDialog fbProgress;
+    private String fbUser;
+    private String fbdata;
+    private ProgressDialog progress;
+    private static String authentication;
+    private JsonObjectRequest getRequest;
+    private String url1, nameFromRegister = "";
+    private RequestQueue queue;
+    private JsonObjectRequest jr;
+    private SharedPreferences newpref;
+    private PackageInfo pInfo;
+    private String buildNo, from_Activity;
+    private String emailsmsphone;
+    private Boolean multipleLinked;
+    private String gender = "Male";
+    private String firstName = "", lastName = "", eMail = "", user_Name = "", password1 = "", contactNo = "", dateofBirth = "", cPassword = "", middleName = "";
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
 
-    @Override
-    public void onBackPressed() {
-
-        // -------------------------------------------------------------------
-        from_Activity = Helper.fromactivity;
-        if (from_Activity != null && from_Activity != "" && from_Activity.equalsIgnoreCase("signinMaplab")) {
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else if (from_Activity != null && from_Activity.equalsIgnoreCase("packages")) {
-            /*super.onBackPressed();*/
-            /*Intent i = new Intent(MainActivity.this, Packages.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(i);
-			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-			finish();*/
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else {
-            Intent startMain = new Intent(Intent.ACTION_MAIN);
-            startMain.addCategory(Intent.CATEGORY_HOME);
-            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startMain);
-            /*super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
-
-        }
-    }
+    public static String cook = "";
+    public static String demo = "false";
+    public static final String MyPREFERENCES = "MyPrefs";
+    private PreferenceHelper mPreferenceHelper;
 
     @SuppressWarnings({"deprecation", "deprecation"})
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //uiHelper = new UiLifecycleHelper(this, callback);
-        //  uiHelper.onCreate(savedInstanceState);
-        // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.activity_main);
+        setupActionBar();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         callbackManager = CallbackManager.Factory.create();
         mtracker = new AccessTokenTracker() {
             @Override
@@ -179,8 +164,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         mtracker.startTracking();
         mprofileTracker.startTracking();
-        setContentView(R.layout.activity_main);
-
+        mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
         userName = (EditText) findViewById(R.id.etSubject);
         password = (EditText) findViewById(R.id.etContact);
         //	locationName = (TextView) findViewById(R.id.tvLocationIcon);
@@ -198,28 +182,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         Intent in = getIntent();
         from_Activity = in.getStringExtra("fromActivity");
         queue = Volley.newRequestQueue(this);
-
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        // Thread.setDefaultUncaughtExceptionHandler(new
-        // UncaughtExceptionHandler() {
-        //
-        // @Override
-        // public void uncaughtException(Thread thread, Throwable ex) {
-        // Log.e("Error", "Unhandled exception: " + ex.getMessage());
-        // Toast.makeText(getApplicationContext(),
-        // "Error connecting to the Internet.", Toast.LENGTH_LONG)
-        // .show();
-        // System.exit(1);
-        // }
-        // });
-
-
         if (getIntent().getExtras() != null) {
             if (getIntent().getStringExtra("from logout").equalsIgnoreCase("logout")) {
                 LoginManager.getInstance().logOut();
@@ -237,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -245,81 +207,60 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
             url1 = "https://androidquery.appspot.com/api/market?app=";
 
-            getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null,
-                    new com.android.volley.Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
+            getRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url1, null, new com.android.volley.Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
 
-                            System.out.println("Response: " + response);
-                            try {
-                                String marketVersion = response.getString("version");
+                    Log.i("Response: ", "Response: " + response);
+                    try {
+                        String marketVersion = response.getString("version");
                             /*	double market_vervalue = Double.parseDouble(marketVersion);*/
-                                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                                String version = pInfo.versionName;
-                                //	double currentversion = Double.parseDouble(version);
+                        PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        String version = pInfo.versionName;
+                        //	double currentversion = Double.parseDouble(version);
 
-                                if (!marketVersion.equals(version)) /*if(market_vervalue>currentversion)*/ {
+                        if (!marketVersion.equals(version)){
 
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
+                            alert = new AlertDialog.Builder(MainActivity.this).create();
+                            alert.setTitle("Message");
+                            alert.setMessage("You are using an old version of the app. Please update to the latest version from the Playstore.");
+                            alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                                            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                                            try {
+                                                startActivity(goToMarket);
+                                            } catch (ActivityNotFoundException e) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+                                            }
+                                        }
+                                    });
 
-                                    alert.setTitle("Message");
-                                    alert.setMessage(
-                                            "You are using an old version of the app. Please update to the latest version from the Playstore.");
-
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
-
-                                                public void onClick(DialogInterface dialog, int id) {
-
-                                                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                                                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                                                    try {
-                                                        startActivity(goToMarket);
-                                                    } catch (ActivityNotFoundException e) {
-                                                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                                                Uri.parse("http://play.google.com/store/apps/details?id="
-                                                                        + getPackageName())));
-                                                    }
-
-                                                }
-                                            });
-
-                                    alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip",
-                                            new DialogInterface.OnClickListener() {
-
-                                                public void onClick(DialogInterface dialog, int id) {
-
-                                                    dialog.dismiss();
-
-                                                }
-                                            });
-
-                                    alert.show();
-
-                                }
-
-                            } catch (JSONException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            } catch (NameNotFoundException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+                            alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alert.show();
 
                         }
-                    }, new com.android.volley.Response.ErrorListener() {
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
                 }
             });
-
             queue.add(getRequest);
-
         }
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         demoPreferences.getBoolean("Demo", false);
         if (demoPreferences.contains("Demo")) {
@@ -329,16 +270,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             demo = "false";
             Services demoService = new Services(getApplicationContext());
         }
-
         buildNo = Build.VERSION.RELEASE;
-        // Toast.makeText(getApplicationContext(), buildNo,
-        // Toast.LENGTH_SHORT).show();
-
         register.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Intent intent = new Intent(getApplicationContext(), Register.class);
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
@@ -352,16 +288,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 Editor editor = sharedpreferences.edit();
                 editor.putBoolean("openLocation", false);
                 editor.commit();
-
                 Intent intent = new Intent(MainActivity.this, LocationClass.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
             }
         });
 
@@ -491,29 +423,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     public void onClick(View arg0) {
         // TODO Auto-generated method stub
-
-		/* ** Checking for empty editTexts *** */
+        /* ** Checking for empty editTexts *** */
         if (arg0.getId() == R.id.bSend) {
             if (userName.getText().toString().trim().equals("")) {
-
                 userName.setError("Enter Username first!");
-
                 return;
             } else if (password.getText().toString().trim().equals("")) {
                 password.setError("Enter Password first!");
                 return;
             }
-
-		/* Executing background thread */
+        /* Executing background thread */
             ConnectionDetector con = new ConnectionDetector(MainActivity.this);
             if (!con.isConnectingToInternet()) {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-
             } else {
                 new BackgroundProcess().execute();
             }
         }
-
     }
 
     class FBProcess extends AsyncTask<Void, Void, Void> {
@@ -582,31 +508,49 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    Intent i = new Intent(MainActivity.this, logout.class);
-                    try {
-                        i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
-                        i.putExtra("id", cop);
+                    /*AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+
+
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln + " " + lastname);
-                        i.putExtra("pass", "omg");
-                        // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
-                        startActivity(i);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
 
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } catch (JSONException ex) {
-                        // TODO Auto-generated catch block
-                        ex.printStackTrace();
+                        /*overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        Intent i = new Intent(MainActivity.this, logout.class);
+                        try {
+                            i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
+                            i.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            i.putExtra("fn", fnln + " " + lastname);
+                            i.putExtra("pass", "omg");
+                            // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
+                            startActivity(i);
+
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } catch (JSONException ex) {
+                            // TODO Auto-generated catch block
+                            ex.printStackTrace();
+                        }*/
                     }
                     // finish();
                 } else {
@@ -814,11 +758,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             progress.setTitle("Logging in...");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            MainActivity.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
+            progress.show();
         }
 
         @Override
@@ -828,17 +768,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 // Agree disclaimer automatically
                 new Agree().execute();
 
-            } else if (chkerror == 1) {
-
+            } else if (mChkError == 1) {
+                String receivedMsg = receiveData.optString("d");
                 alert = new AlertDialog.Builder(MainActivity.this).create();
-                alert.setTitle("Message");
-                try {
-                    alert.setMessage(receiveData.getString("d"));
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                alert.setTitle("Alert!");
 
+                if (receivedMsg.contains("@")) {
+                    String msgArray[] = receivedMsg.split("@");
+                    if ("1".equalsIgnoreCase(msgArray[1])) {
+                        alert.setMessage(msgArray[0]);
+                    } else if ("2".equalsIgnoreCase(msgArray[1])) {
+                        alert.setMessage(msgArray[0]);
+                    }
+                } else {
+                    alert.setMessage(receivedMsg);
+                }
                 alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
@@ -847,13 +791,15 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
                     }
                 });
-
                 alert.show();
 
             } else if (chklogin == 1) {
 
                 // System.out.println(fnln);
                 if (contactNumber != null && (!contactNumber.equals(""))) {
+                    if (sharedpreferences == null) {
+                        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    }
                     Editor editor = sharedpreferences.edit();
                     editor.putString(name, uName);
                     editor.putString(pass, uPassword);
@@ -870,6 +816,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    /*AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;*/
 
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -878,18 +835,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         onBackPressed();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                            openQuestionirePage();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), logout.class);
+                            intent.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            intent.putExtra("user", uName);
+                            intent.putExtra("pass", uPassword);
+                            intent.putExtra("fn", fnln + " " + lastname);
+                            // intent.putExtra("tpwd", tpwd);
+                            Helper.authentication_flag = false;
+                            startActivity(intent);
 
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
-                        intent.putExtra("id", cop);
-                        intent.putExtra("PH", PH);
-                        intent.putExtra("user", uName);
-                        intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln + " " + lastname);
-                        // intent.putExtra("tpwd", tpwd);
-                        Helper.authentication_flag = false;
-                        startActivity(intent);
-
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
                         //finish();
                     }
                 } else {
@@ -953,6 +913,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     });
                     dialog1.show();
                 }
+            } else if (receiveData == null) {
+                Toast.makeText(getApplicationContext(), "User Name or Password is incorrect.", Toast.LENGTH_LONG).show();
             }
             progress.dismiss();
         }
@@ -960,7 +922,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         @Override
         protected Void doInBackground(Void... params) {
 
-            chkerror = 0;
+            mChkError = 0;
             chklogin = 0;
             chkDisclaimer = 0;
 
@@ -993,7 +955,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 sendData.put("rememberMe", rem);
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             StaticHolder staticobj = new StaticHolder(MainActivity.this, StaticHolder.Services_static.LogIn, sendData);
@@ -1001,12 +962,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             //receiveData = service.LogIn(sendData);
 
             if (receiveData != null) {
-                abc = receiveData.toString();
-                System.out.println(receiveData);
                 try {
                     String data = receiveData.getString("d");
-                    System.out.println(data);
-
                     if (data.equals("Login Successfully")) {
 
                         sendData = new JSONObject();
@@ -1024,6 +981,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             JSONObject cut = new JSONObject(userCredential);
                             subArray = cut.getJSONArray("Table");
                             cop = subArray.getJSONObject(0).getString("UserId");
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, cop);
                             PH = subArray.getJSONObject(0).getString("UserCode");
                             if (subArray.getJSONObject(0).has("ContactNo")) {
                                 contactNumber = subArray.getJSONObject(0).getString("ContactNo");
@@ -1042,7 +1000,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             disclaimerArray = cut.getJSONArray("Table");
 
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-                             disclaimerDateTime = sdf.format(new Date());
+                            disclaimerDateTime = sdf.format(new Date());
 
                             // Calendar cal = Calendar.getInstance();
                             // disclaimerDateTime =
@@ -1059,7 +1017,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         }
 
                     } else {
-                        chkerror = 1;
+                        mChkError = 1;
                     }
 
                 } catch (JSONException e) {
@@ -1079,7 +1037,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                             new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int id) {
-
                                                     dialog.dismiss();
 
                                                 }
@@ -1096,14 +1053,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                     alert = new AlertDialog.Builder(MainActivity.this).create();
                                     alert.setTitle("Message");
                                     alert.setMessage("Unexpected error. Please try again after sometime.");
-
                                     alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
                                             new DialogInterface.OnClickListener() {
-
                                                 public void onClick(DialogInterface dialog, int id) {
-
                                                     dialog.dismiss();
-
                                                 }
                                             });
 
@@ -1113,10 +1066,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             return null;
                         }
                     } catch (JSONException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -1213,6 +1164,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     e.putString("cook", cook);
                     e.putString("PH", PH);
                     // e.putString("tp", tpwd);
+                    /*AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;*/
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
                     e.commit();
                     from_Activity = Helper.fromactivity;
                     if (from_Activity != null && from_Activity != ""
@@ -1220,18 +1182,22 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     } else {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                            openQuestionirePage();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), logout.class);
+                            intent.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            intent.putExtra("user", uName);
+                            intent.putExtra("pass", uPassword);
+                            intent.putExtra("fn", fnln + " " + lastname);
+                            // intent.putExtra("tpwd", tpwd);
+                            Helper.authentication_flag = false;
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            //finish();
+                        }
 
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
-                        intent.putExtra("id", cop);
-                        intent.putExtra("PH", PH);
-                        intent.putExtra("user", uName);
-                        intent.putExtra("pass", uPassword);
-                        intent.putExtra("fn", fnln + " " + lastname);
-                        // intent.putExtra("tpwd", tpwd);
-                        Helper.authentication_flag = false;
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        //finish();
                     }
                 }
             } catch (Exception e1) {
@@ -1280,28 +1246,38 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(MainActivity.this);
         if (miscTasks.isNetworkAvailable()) {
-
-
             //uiHelper.onResume();
-
             sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             // adding by me for internal login or not if login then open logout
             // class as a landing
             // screen-----------------------------------------------------------------------------
+            String name = sharedPreferences.getString("un", "");
+            String pwd = sharedPreferences.getString("pw", "");
+            String uid = sharedPreferences.getString("ke", "");
+            String first = sharedPreferences.getString("fnln", "");
+            String tp = sharedpreferences.getString("tp", "");
+            String cd = sharedPreferences.getString("cook", "");
+            String PH = sharedPreferences.getString("PH", "");
 
-            if (sharedpreferences.contains(name) || sharedpreferences.contains("name")) {
-                if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
+            /*AppConstant.ID = uid;
+            AppConstant.PH = PH;
+            AppConstant.USER = name;
+            AppConstant.PASS = pwd;
+            AppConstant.FN = first;*/
 
-                    // new Authentication().execute();
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, uid);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, name);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, pwd);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, first);
 
+            if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
+                // new Authentication().execute();
+                if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                    openQuestionirePage();
+                } else {
                     Intent i = new Intent(MainActivity.this, logout.class);
-                    String name = sharedPreferences.getString("un", "");
-                    String pwd = sharedPreferences.getString("pw", "");
-                    String uid = sharedPreferences.getString("ke", "");
-                    String first = sharedPreferences.getString("fnln", "");
-                    String tp = sharedpreferences.getString("tp", "");
-                    String cd = sharedPreferences.getString("cook", "");
-                    String PH = sharedPreferences.getString("PH", "");
+
                     Services.hoja = cd;
 
                     System.out.println(name);
@@ -1331,7 +1307,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO Auto-generated method stub
-                    MainActivity.this.finish();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -1894,7 +1870,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-                        MainActivity.this.finish();
+                        dialog.dismiss();
 
                     }
                 });
@@ -1978,30 +1954,46 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    Intent i = new Intent(MainActivity.this, logout.class);
-                    try {
-                        Helper.authentication_flag = false;
-                        i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
-                        i.putExtra("id", cop);
+                   /* AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
-                        i.putExtra("fn", fnln + " " + lastname);
-                        i.putExtra("pass", "omg");
-                        // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
-                        startActivity(i);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    } catch (JSONException ex) {
-                        // TODO Auto-generated catch block
-                        ex.printStackTrace();
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
+                       /* overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        Intent i = new Intent(MainActivity.this, logout.class);
+                        try {
+                            Helper.authentication_flag = false;
+                            i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
+                            i.putExtra("id", cop);
+                            intent.putExtra("PH", PH);
+                            i.putExtra("fn", fnln + " " + lastname);
+                            i.putExtra("pass", "omg");
+                            // i.putExtra("tpwd",fbarray.getJSONObject(0).getString("Temppwd"));
+                            startActivity(i);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        } catch (JSONException ex) {
+                            // TODO Auto-generated catch block
+                            ex.printStackTrace();
+                        }*/
                     }
                     //finish();
 
@@ -2022,16 +2014,34 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
-                    intent.putExtra("id", cop);
-                    intent.putExtra("PH", PH);
-                    intent.putExtra("user", uName);
-                    intent.putExtra("pass", uPassword);
-                    intent.putExtra("fn", fnln + " " + lastname);
-                    // intent.putExtra("tpwd", tpwd);
-                    Helper.authentication_flag = false;
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    /*AppConstant.ID = cop;
+                    AppConstant.PH = PH;
+                    AppConstant.USER = uName;
+                    AppConstant.PASS = uPassword;
+                    AppConstant.FN = fnln + " " + lastname;*/
+
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+
+                    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        openQuestionirePage();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        intent.putExtra("id", cop);
+                        intent.putExtra("PH", PH);
+                        intent.putExtra("user", uName);
+                        intent.putExtra("pass", uPassword);
+                        intent.putExtra("fn", fnln + " " + lastname);
+                        // intent.putExtra("tpwd", tpwd);
+                        Helper.authentication_flag = false;
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+
+
                     //finish();
                 }
             }
@@ -2080,8 +2090,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 return;
                             }
                         } else {
-							/*
-							 * Toast.makeText(getApplicationContext(),
+                            /*
+                             * Toast.makeText(getApplicationContext(),
 							 * "Error in Uploading File . Please check Internet Connection !"
 							 * , Toast.LENGTH_SHORT) .show();
 							 */
@@ -2108,7 +2118,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
 
     private void CheckEmailIdIsExistMobile() {
-		/*String url = Services.init + "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";*/
+        /*String url = Services.init + "/PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";*/
         sendData1 = new JSONObject();
         try {
             sendData1.put("Email", eMail);
@@ -2131,8 +2141,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                 Toast.LENGTH_LONG).show();*/
                         GetUserCodeFromEmail();
                     } else {
-                        Toast.makeText(MainActivity.this, "User does not exits with this facebook id.",
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Please first link your account with Facebook and try again.", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
@@ -2189,22 +2198,14 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                                                 try {
                                                     String emdata = response.getString("d");
                                                     if (emdata.equals("Exist")) {
-                                                        Toast.makeText(getApplicationContext(),
-                                                                "An account exist with this email id. Create account with other email.",
-                                                                Toast.LENGTH_LONG).show();
+                                                        //Toast.makeText(getApplicationContext(), "An account exist with this email id. Create account with other email.", Toast.LENGTH_LONG).show();
                                                         GetUserCodeFromEmail();
-
                                                     } else {
-
                                                         CheckEmailIdIsExistMobile();
-
                                                     }
-
                                                 } catch (JSONException e) {
-                                                    // TODO Auto-generated catch block
                                                     e.printStackTrace();
                                                 }
-
                                             }
                                         }, new com.android.volley.Response.ErrorListener() {
                                     @Override
@@ -2235,10 +2236,122 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         }
     };
 
+
+    /**
+     * Hides the soft on screen keyboard.
+     *
+     * @return True : If request was executed successfully. It may return false if it fails in attempt
+     * to hide keyboard.
+     */
+    public boolean hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View view = getCurrentFocus();
+        if (view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return hideSoftKeyboard();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
         mtracker.stopTracking();
         mprofileTracker.stopTracking();
     }
+
+    private void openQuestionirePage() {
+        new QuestionDetailAsyncTask().execute();
+    }
+
+    private class QuestionDetailAsyncTask extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.setTitle("Loading");
+            progressDialog.setMessage("Please Wait...");
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONObject response = service.getQuizData(sendData);
+            if (response != null) {
+                try {
+                    String data = response.getString("d");
+                    Log.d("QuestionireFragment", "QuizData Response in MainActivity"+data);
+                    QuestionireParser.paseData(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            Log.d("QuestionireFragment", "onPostExecute in MainActivity");
+            if (QuestionireParser.getQuestionDetailListStatus1().size() > 0) {
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionireActivity");
+                Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
+                startActivity(intentWalk);
+            } else if(QuestionireParser.getQuestionDetailListStatus0().size() > 0){
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionReportActivity");
+                Intent intent = new Intent(MainActivity.this, QuestionReportActivity.class);
+                startActivity(intent);
+            }else{
+                Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
+                Intent intent = new Intent(MainActivity.this, logout.class);
+                startActivity(intent);
+            }
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // -------------------------------------------------------------------
+        from_Activity = Helper.fromactivity;
+        if (from_Activity != null && from_Activity != "" && from_Activity.equalsIgnoreCase("signinMaplab")) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else if (from_Activity != null && from_Activity.equalsIgnoreCase("packages")) {
+            /*super.onBackPressed();*/
+            /*Intent i = new Intent(MainActivity.this, Packages.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+			finish();*/
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else {
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+            /*super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
+
+        }
+    }
+
 }

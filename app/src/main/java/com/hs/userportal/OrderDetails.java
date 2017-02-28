@@ -39,30 +39,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
 /**
  * Created by ashish on 10/28/2015.
  */
-public class OrderDetails extends ActionBarActivity {
+public class OrderDetails extends BaseActivity {
 
-    private String OrderId, OrderDate, LabName, address,
-            TestName, OrderStatus, SamplePickupstatus, scroll_position;
+    private String OrderId, OrderDate, LabName, address, TestName, OrderStatus, SamplePickupstatus, scroll_position;
     private int GrandTotal, SubTotal, Discount, YourPrice, promodiscount;
-    private TextView order_id, order_date, lab_name, sample_pic_add, grand_total, test_name, amount,
-            sub_total, discount, your_price, promo_amount;
+    private TextView order_id, order_date, lab_name, sample_pic_add, grand_total, test_name, amount, sub_total, discount, your_price, promo_amount;
     private RelativeLayout promo_lay;
-    private LinearLayout viewReportLinear_id, resend_confirmation, invoice;
+    private LinearLayout resend_confirmation, invoice;
+    private RelativeLayout viewReportLinear_id;
     private ProgressDialog progressDialog;
     private JsonObjectRequest jr;
-    JSONObject confirm_data;
+    private JSONObject confirm_data;
     private JSONArray orderHistoryarray;
     private RequestQueue queue;
     private Button cancel_btn;
     private JSONObject sendData;
-    int checknull = 0;
-    String type, msg;
-    SharedPreferences sharedPreferences;
-    String patientId, cancel_reason;
+    private int checknull = 0;
+    private String type, msg;
+    private SharedPreferences sharedPreferences;
+    private String patientId, cancel_reason;
    /* private ArrayList<HashMap<String, String>> cancellist = new ArrayList<HashMap<String, String>>();*/
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,18 +116,21 @@ public class OrderDetails extends ActionBarActivity {
         if (OrderStatus.equalsIgnoreCase("0")) {
             cancel_btn.setBackgroundColor(Color.parseColor("#ED2727"));
             cancel_btn.setText("ORDER CANCELLED");
+            cancel_btn.setVisibility(View.GONE);
             cancel_btn.setEnabled(false);
             viewReportLinear_id.setEnabled(false);
             resend_confirmation.setEnabled(false);
         } else if (OrderStatus.equalsIgnoreCase("1") && SamplePickupstatus.equalsIgnoreCase("0")) {
             cancel_btn.setBackgroundColor(Color.parseColor("#ED2727"));
             cancel_btn.setText("ORDER CANCELLED");
+            cancel_btn.setVisibility(View.GONE);
             cancel_btn.setEnabled(false);
             viewReportLinear_id.setEnabled(false);
             resend_confirmation.setEnabled(false);
         } else if (OrderStatus.equalsIgnoreCase("1") && SamplePickupstatus.equalsIgnoreCase("1")) {
             cancel_btn.setBackgroundColor(Color.parseColor("#65A366"));
             cancel_btn.setText("ORDER COMPLETED");
+            cancel_btn.setVisibility(View.VISIBLE);
             cancel_btn.setEnabled(false);
         }
 
@@ -279,6 +283,7 @@ public class OrderDetails extends ActionBarActivity {
                             msg = "Your Order No. " + OrderId + " has been cancelled.";
                             cancel_btn.setBackgroundColor(Color.parseColor("#ED2727"));
                             cancel_btn.setText("ORDER CANCELLED");
+                            cancel_btn.setVisibility(View.GONE);
                             viewReportLinear_id.setEnabled(false);
                             resend_confirmation.setEnabled(false);
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(OrderDetails.this);
@@ -403,12 +408,6 @@ public class OrderDetails extends ActionBarActivity {
         dialog.show();
     }
 
-    private void setupActionBar() {
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-    }
 
     private void getExtra_data() {
         Intent i = getIntent();
@@ -446,7 +445,7 @@ public class OrderDetails extends ActionBarActivity {
         discount = (TextView) findViewById(R.id.discount);
         your_price = (TextView) findViewById(R.id.your_price);
         queue = Volley.newRequestQueue(this);
-        viewReportLinear_id = (LinearLayout) findViewById(R.id.viewReportLinear_id);
+        viewReportLinear_id = (RelativeLayout) findViewById(R.id.viewReportLinear_id);
         resend_confirmation = (LinearLayout) findViewById(R.id.resend_confirmation);
         invoice = (LinearLayout) findViewById(R.id.invoice);
         cancel_btn = (Button) findViewById(R.id.cancel_btn);
@@ -588,8 +587,12 @@ public class OrderDetails extends ActionBarActivity {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        new Authentication(OrderDetails.this, "Common", "onresume").execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(OrderDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(OrderDetails.this, "Common", "onresume").execute();
+        }
     }
 
     private void gettingOrderDetailsData() {

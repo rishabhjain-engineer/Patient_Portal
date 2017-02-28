@@ -21,15 +21,16 @@ import config.StaticHolder;
  * Created by ashish on 10/23/2015.
  */
 public class OtherPackages  extends Activity implements PackagesAdapter.Package_btnListener {
-    String testname, check_test_name;
-    JSONObject sendData, receiveData;
+
+    private String testname, check_test_name;
+    private JSONObject sendData, receiveData;
    // Services service;
     private PackagesAdapter adapterpackage;
-    JSONArray subArray;
-    ProgressDialog progress;
-    String testdetails,CentreId;
-    ListView packagelist;
-    ArrayList<HashMap<String,String>> otherpackglist=new ArrayList<HashMap<String,String>>();
+    private JSONArray subArray;
+    private ProgressDialog progress;
+    private String testdetails,CentreId;
+    private ListView packagelist;
+    private ArrayList<HashMap<String,String>> otherpackglist=new ArrayList<HashMap<String,String>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

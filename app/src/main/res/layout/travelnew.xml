@@ -47,7 +47,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="City:"
+                android:text="City*:"
                 android:textColor="@android:color/black"
 
                 />
@@ -59,7 +59,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:text="State:"
+                android:text="State*:"
 
                 android:textColor="@android:color/black" />
         </LinearLayout>
@@ -187,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:text="To Date:"
+                android:text="To Date*:"
                 android:textColor="@android:color/black" />
 
             <CheckBox
@@ -239,7 +239,7 @@
             android:id="@+id/bAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:background="@color/header_color"
 
             android:layout_marginTop="10dp"
             android:text="ADD" />

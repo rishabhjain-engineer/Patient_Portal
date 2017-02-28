@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F5F5F5"
+        android:paddingBottom="10dp"
         android:orientation="vertical">
 
         <include
@@ -37,7 +38,8 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="#ED2727"
+            android:visibility="gone"
+            android:background="@color/header_color"
             android:text="CANCEL ORDER" />
     </LinearLayout>
 

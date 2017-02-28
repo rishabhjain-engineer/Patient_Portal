@@ -15,15 +15,15 @@ public class StaticHolder {
 
     /*Server Locations */
 
-     public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE
-  //  public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
-  // public final String BASE_URL = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //LOCAL
-  //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE //TODO commented by ayaz
+   // public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //LOCAL //TODO opened by ayaz
+    //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
     // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
-   // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
-   //  public final String BASE_URL1 = "http://192.168.1.202:86/";//local
-    public final String BASE_URL1 = "https://api.healthscion.com/";
-   // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
+    // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
+    public final String BASE_URL1 = "http://192.168.1.11/";//local //TODO opened by ayaz
+    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz
+    // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
 
     //APIs URLs
     //  public static final String SIGNUP = BASE_URL + "SignUpByPatient";
@@ -166,7 +166,7 @@ public class StaticHolder {
                 break;
             case ChangePasswordIOS:
                 //url = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/ChangePasswordIOS";
-                url = BASE_URL1 + "WebServices/CredentialService.asmx/ChangePasswordIOS";
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/ChangePasswordIOS";
                 break;
             /*case Register:
                 url = LIVELOGIN_URL + "laboratorymodule/LISService.asmx/Register";
@@ -219,8 +219,9 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
-               // url = "http://192.168.1.202:86/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local
+                // url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+                url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
                 break;
             case GetUserDetailsFromContactNoMobileService:
@@ -431,9 +432,9 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;*/
             case BASE_URL:
-               //  url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local
-                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live
-               // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
+                //  url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local ///TODO ayaz
+                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live //TODO ayaz
+                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
 
                 break;
             /*case LIVELOGIN_URL:
@@ -444,7 +445,7 @@ public class StaticHolder {
                 //   url = "https://d141702.cloudchowk.com/";//demo   /rahul2  androidios
                 break;*/
             case saveOtherDetail:
-                url = BASE_URL + "saveOtherDetail";
+                url = BASE_URL + "saveOtherDetailMod";
                 break;
 
             case CreateFolder:
@@ -470,7 +471,7 @@ public class StaticHolder {
                 break;
 
             case saveHealthDetail:
-                url = BASE_URL + "saveHealthDetail";
+                url = BASE_URL + "saveHealthDetailMod";
                 break;
 
             case getAllergies:
@@ -505,8 +506,16 @@ public class StaticHolder {
                 url = BASE_URL + "getpatientHistoryDetails";
                 break;
             case Updatepatientbloodgroup:
-                url = BASE_URL +"Updatepatientbloodgroup";
+                url = BASE_URL + "Updatepatientbloodgroup";
                 break;
+            case patientbussinessModel:
+                url = BASE_URL + "patientbussinessModel";
+                break;
+            case GetQuizData:
+                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData"; ///TODO ayaz for local
+                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData"; //TODO ayaz for live
+                break;
+
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -560,7 +569,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData
     }
 
 }

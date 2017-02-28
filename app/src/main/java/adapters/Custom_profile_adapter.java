@@ -19,10 +19,12 @@ import java.util.HashMap;
  * Created by rahul2 on 3/31/2016.
  */
 public class Custom_profile_adapter extends BaseAdapter {
-    Activity activity;
-    ArrayList<HashMap<String, String>> list;
+
+    private Activity activity;
+    private ArrayList<HashMap<String, String>> list;
     private LayoutInflater inflater;
     private String whichactivity;
+
     public Custom_profile_adapter(Activity activity,  ArrayList<HashMap<String, String>> list,String whichactivity){
         this.activity = activity;
         this.list = list;
@@ -57,6 +59,8 @@ public class Custom_profile_adapter extends BaseAdapter {
         TextView top3 = (TextView)convertView.findViewById(R.id.top3);
         TextView top4 = (TextView)convertView.findViewById(R.id.top4);
         TextView top5 = (TextView)convertView.findViewById(R.id.top5);
+        TextView role = (TextView)convertView.findViewById(R.id.role_tv);
+        TextView designation = (TextView)convertView.findViewById(R.id.designation_tv);
 
      //   TextView defaults=(TextView)convertView.findViewById(R.id.defaults);
         if(whichactivity.equalsIgnoreCase("Education")||whichactivity.equalsIgnoreCase("Work")) {
@@ -70,6 +74,8 @@ public class Custom_profile_adapter extends BaseAdapter {
                 top4.setText(list.get(position).get("country"));
             }
             top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            role.setText(list.get(position).get("role"));
+            designation.setText(list.get(position).get("designation"));
 
         }else  if(whichactivity.equalsIgnoreCase("Residence")){
 

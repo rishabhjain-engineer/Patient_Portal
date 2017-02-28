@@ -46,12 +46,14 @@ import java.util.HashMap;
 
 import adapters.Myfamily_Adapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.DataHolder;
 
 /**
  * Created by ashish on 4/19/2016.
  */
-public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.action_button_event {
+public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_button_event {
 
     private ListView family_list;
     private TextView empty_msg;
@@ -66,18 +68,18 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
     private ArrayList<String> revoke;
     private ArrayList<String> remove;
     private ArrayList<String> resend;
-    ArrayList<DataHolder> listholder;
+    private ArrayList<DataHolder> listholder;
     private int repeat = 0;
     private ProgressDialog progress;
     private Myfamily_Adapter family_adapter;
     private static ArrayList<HashMap<String, String>> family_object;
     private static ArrayList<HashMap<String, String>> family_test_object;
     private ArrayList<HashMap<String, String>> sorted_list;
-    ArrayList<HashMap<String, String>> members = new ArrayList<>();
+    private ArrayList<HashMap<String, String>> members = new ArrayList<>();
     private Services service;
     private Menu menu1;
     private String check_userids = "";
-    DataHolder[] dataholderlist;
+    private DataHolder[] dataholderlist;
     private int k = 0;
     private String msg_action = "";
     private ArrayList<HashMap<String, String>> final_memberlist;
@@ -87,10 +89,7 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myfamily);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
         service = new Services(MyFamily.this);
@@ -105,7 +104,11 @@ public class MyFamily extends ActionBarActivity implements Myfamily_Adapter.acti
         Intent i = getIntent();
         User_ID = i.getStringExtra("id");
         members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
-        new Authentication(MyFamily.this, "MyFamily", "").execute();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(MyFamily.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+        new Authentication(MyFamily.this, "MyFamily", "").execute(); }
         // LoadFamilyMembers();
         family_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -62,61 +62,63 @@ import java.util.List;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class lablistdetails extends ActionBarActivity {
-    String id, caseid;
-    byte[] result = null;
-    Services service;
+public class lablistdetails extends BaseActivity {
+
+    private String id, caseid;
+    private byte[] result = null;
+    private Services service;
     //  ListView lv;
-    int check;
+    private int check;
     // Button all, images;
     //  TextView pat, nam, dob, blg, gen, bal, tvreferral;
-    String bal;
-    JSONObject sendData, receiveData, pdfobject, receiveImageData;
-    ArrayAdapter<String> adapter;
-    String ptname = "";
+    private String bal;
+    private JSONObject sendData, receiveData, pdfobject, receiveImageData;
+    private ArrayAdapter<String> adapter;
+    private String ptname = "";
     //  ImageButton info;
-    ArrayList<String> image = new ArrayList<String>();
-    ArrayList<String> imageName = new ArrayList<String>();
-    ArrayList<String> imageId = new ArrayList<String>();
-    ArrayList<String> thumbImage = new ArrayList<String>();
-    JSONArray subArrayImage;
-    String authentication = "";
-    ProgressDialog progress;
-    static ArrayList<String> description = new ArrayList<String>();
-    static ArrayList<String> sample = new ArrayList<String>();
-    static ArrayList<String> labnumber = new ArrayList<String>();
-    static ArrayList<String> testcomplete = new ArrayList<String>();
-    static ArrayList<String> ispublished = new ArrayList<String>();
+    private ArrayList<String> image = new ArrayList<String>();
+    private ArrayList<String> imageName = new ArrayList<String>();
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private ArrayList<String> thumbImage = new ArrayList<String>();
+    private JSONArray subArrayImage;
+    private String authentication = "";
+    private ProgressDialog progress;
+    private static ArrayList<String> description = new ArrayList<String>();
+    private static ArrayList<String> sample = new ArrayList<String>();
+    private static ArrayList<String> labnumber = new ArrayList<String>();
+    private static ArrayList<String> testcomplete = new ArrayList<String>();
+    private static ArrayList<String> ispublished = new ArrayList<String>();
     private List<HashMap<String, String>> caseArray = new ArrayList<>();
     private List<HashMap<String, String>> pastVisitArray = new ArrayList<>();
     private List<OrderList> sortList = new ArrayList<OrderList>();
     private List<HashMap<String, String>> sortList_alias = new ArrayList<>();
-    JsonObjectRequest jr;
+    private JsonObjectRequest jr;
     // ImageView imageView;
     private String case_code;
-    JSONArray subArray, subArray1, pdfarray;
-    float paid = 0;
-
+    private JSONArray subArray, subArray1, pdfarray;
+    private float paid = 0;
     //  private SlidingMenu slidingMenu;
-    ArrayList<String> casecode = new ArrayList<String>();
+    private ArrayList<String> casecode = new ArrayList<String>();
     //  ListView lvcode;
-    JSONObject sendDataList, receiveDataList;
-    List<HashMap<String, String>> fillMaps;
-    ArrayList<String> dated = new ArrayList<String>();
-    ArrayList<String> caseidList = new ArrayList<String>();
-    JSONArray subArrayList;
+    private JSONObject sendDataList, receiveDataList;
+    private List<HashMap<String, String>> fillMaps;
+    private ArrayList<String> dated = new ArrayList<String>();
+    private ArrayList<String> caseidList = new ArrayList<String>();
+    private JSONArray subArrayList;
     private EditText select_member_lab;
-    ArrayList<HashMap<String, String>> family = new ArrayList<>();
-    public static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
-    public List<HashMap<String, String>> order_listarr = new ArrayList<>();
+    private ArrayList<HashMap<String, String>> family = new ArrayList<>();
+    private static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
+    private List<HashMap<String, String>> order_listarr = new ArrayList<>();
     private String patientID, Member_Name;
     private int check_fill = 0;
     private String check_ID;
-    ListView past_visits;
+    private ListView past_visits;
     private PastVisitAdapter past_adapt;
     private String checkID;
-    RequestQueue queue;
+    private RequestQueue queue;
     //  private LinearLayout buttonbar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -129,11 +131,7 @@ public class lablistdetails extends ActionBarActivity {
         family.clear();
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
 
         queue = Volley.newRequestQueue(this);
       /*  slidingMenu = new SlidingMenu(this);
@@ -226,8 +224,12 @@ public class lablistdetails extends ActionBarActivity {
         service = new Services(lablistdetails.this);
         //  lvcode = (ListView) findViewById(R.id.lvcode);
 
-        new Authentication().execute();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(lablistdetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        }else {
+            new Authentication().execute();
+        }
         past_visits.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -524,8 +526,9 @@ public class lablistdetails extends ActionBarActivity {
             if (!currentNetworkInfo.isConnected()) {
 
                 // showAppMsg();
-                Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);
+                Toast.makeText(lablistdetails.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
+              /*  Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
+                startActivity(i);*/
             }
         }
     };
@@ -987,7 +990,9 @@ public class lablistdetails extends ActionBarActivity {
             //===========================getting order list=============================//
 
             getOrderList();
-            // progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
         }
 
         @Override
@@ -1440,10 +1445,14 @@ public class lablistdetails extends ActionBarActivity {
                             hmap.put("OrderId", sortList.get(i).getOrderId());
                             hmap.put("perTextActualPrice_str", sortList.get(i).getStr_peractual_amnt());
                             hmap.put("TestId", sortList.get(i).getTestId());
+                            String orderStatus = sortList.get(i).getOrderStatus();
+                            String pickUpStatus = sortList.get(i).getSamplePickupstatus();
                             hmap.put("OrderStatus", sortList.get(i).getOrderStatus());
                             hmap.put("SamplePickupstatus", sortList.get(i).getSamplePickupstatus());
                             hmap.put("TYPE", "Zureka");
-                            sortList_alias.add(hmap);
+                           if("1".equalsIgnoreCase(orderStatus) && "true".equalsIgnoreCase(pickUpStatus)){
+                                sortList_alias.add(hmap);
+                            }
                         }
                     }
                     if (sortList_alias.size() != 0) {

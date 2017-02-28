@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Questions"
-                    android:textColor="#1998ca"
+                    android:textColor="@color/text_color_blue"
                     android:textSize="24sp" />
             </LinearLayout>
         </LinearLayout>
@@ -98,7 +98,7 @@
         <WebView
             android:id="@+id/faqWebview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <WebView
             android:id="@+id/faqZureka"

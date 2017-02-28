@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ItemAdapter extends ArrayAdapter<ItemRow> {
 
-	List<ItemRow>   data; 
-	Context context;
-	int layoutResID;
+	private List<ItemRow>   data;
+	private Context context;
+	private int layoutResID;
 
 public ItemAdapter(Context context, int layoutResourceId,List<ItemRow> data) {
 	super(context, layoutResourceId, data);

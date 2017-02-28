@@ -4,114 +4,263 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
-public class AddWeight extends ActionBarActivity {
+import ui.BaseActivity;
+import ui.BpActivity;
 
-    private EditText enter_add;
+public class AddWeight extends BaseActivity {
+
+    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText;
     private static EditText lasstCheckedDate;
     private Button bsave;
-    private TextView weight;
-    private String id, htype;
+    private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
+    private String id, htype, mHeightFtValue, mHeightInValue;
     private Services service;
-    static int cyear, month, day;
+    private static int cyear, month, day;
+    private Switch mSwitchWeight, mSwitchHeight;
+    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
+    private boolean mIsFtInchValue = true, mIsHeight, mIsPound = true;
+    private String[] mfeetValues = {"0", "1", "2", "3", "4", "5", "6", "7"};
+    private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
+    private Spinner mHeightFtSpinner, mHeightInchSpinner;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_add);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
+
+
+        mHeightContainer = (LinearLayout) findViewById(R.id.height_container_layout);
+        mSwitchHeight = (Switch) findViewById(R.id.switch_height);
+        mHeightUnitFtTextView = (TextView) findViewById(R.id.height_unit_ft);
+        mHeightUnitInchTextView = (TextView) findViewById(R.id.height_unit_inch);
+        mHeightFtSpinner = (Spinner) findViewById(R.id.enter_ft);
+        mHeightInchSpinner = (Spinner) findViewById(R.id.enter_inch);
+        mHeightInchContainer = (LinearLayout) findViewById(R.id.height_inch_container);
+        mHeightFtContainer = (LinearLayout) findViewById(R.id.height_ft_container);
+        mHeightCmEditText = (EditText) findViewById(R.id.enter_cm);
+
+        mWeightContainer = (LinearLayout) findViewById(R.id.weight_container_layout);
+        mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
+        mWeightUnitTextView = (TextView) findViewById(R.id.switch_weight_unit);
+
+        mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
+        mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
+        mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
+
+
         enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
         bsave = (Button) findViewById(R.id.bsave);
         weight = (TextView) findViewById(R.id.weight);
 
-        final Calendar c = Calendar.getInstance();
+        /*final Calendar c = Calendar.getInstance();
         cyear = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         int month1 = c.get(Calendar.MONTH) + 1;
+        String monthInString = "01";
+        if(month1 < 10){
+            monthInString = "0"+ month1; //on server side expectation is of 01, 02 like this
+        }
         day = c.get(Calendar.DAY_OF_MONTH);
-        lasstCheckedDate.setText(String.valueOf(day) + "/" + String.valueOf(month1) + "/" + String.valueOf(cyear));
+        String dateInString = "01";
+        if(day < 10){
+            dateInString = "0"+day;
+        }*/
+
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(new Date(currentTimeMillis));
+        String[] stringArray = dateString.split("/");
+        day = Integer.parseInt(stringArray[0]);
+        month = Integer.parseInt(stringArray[1]);
+        cyear = Integer.parseInt(stringArray[2]);
+
+        lasstCheckedDate.setText(dateString);
 
         Intent z = getIntent();
         id = z.getStringExtra("id");
         htype = z.getStringExtra("htype");
+
         if (htype.equals("height")) {
-            enter_add.setHint("Enter Height");
-            weight.setText("Height (cm):");
-            action.setTitle("Enter Height");
-        } else {
+          /*  mIsHeight = true;*/
+            weight.setText("Height :");
+            mActionBar.setTitle("Enter Height");
+            mHeightContainer.setVisibility(View.VISIBLE);
+            mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.GONE);
+
+
+        } else if (htype.equals("weight")){
+          /*  mIsHeight = false;*/
             enter_add.setHint("Enter Weight");
-            weight.setText("Weight (kg):");
-            action.setTitle("Enter Weight");
+            weight.setText("Weight :");
+            mActionBar.setTitle("Enter Weight");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.VISIBLE);
+            mBpContainerLl.setVisibility(View.GONE);
+
+
+        }   else  {
+          /*  mIsHeight = false;*/
+            mActionBar.setTitle("Enter Blood Pressure");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.VISIBLE);
         }
+
         service = new Services(AddWeight.this);
+
+
+        ArrayAdapter ftSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mfeetValues);
+        ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mHeightFtSpinner.setAdapter(ftSpinner);
+
+
+        ArrayAdapter inSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mInchValues);
+        ftSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mHeightInchSpinner.setAdapter(inSpinner);
+
+        mHeightInchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mHeightInValue = mInchValues[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        mHeightFtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mHeightFtValue = mfeetValues[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mSwitchWeight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    mWeightUnitTextView.setText("Kg");
+                    mIsPound = false;
+
+                } else {
+                    mWeightUnitTextView.setText("lbs");
+                    mIsPound = true;
+                }
+            }
+        });
+
+        mSwitchHeight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+                if (isChecked) {
+
+                    mHeightUnitFtTextView.setText("cms");
+                    mHeightCmEditText.setVisibility(View.VISIBLE);
+                    mHeightInchContainer.setVisibility(View.GONE);
+                    mHeightFtSpinner.setVisibility(View.GONE);
+                    mHeightCmEditText.setHint("cms");
+                    mIsFtInchValue = false;
+
+
+                } else {
+
+                    mHeightCmEditText.setVisibility(View.GONE);
+                    mHeightInchContainer.setVisibility(View.VISIBLE);
+                    mHeightFtContainer.setVisibility(View.VISIBLE);
+                    mHeightFtSpinner.setVisibility(View.VISIBLE);
+                    mHeightUnitFtTextView.setText("ft");
+                    mHeightUnitInchTextView.setText("inch");
+                    mIsFtInchValue = true;
+                }
+            }
+        });
+
         bsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (enter_add.getText().toString().equals("") || lasstCheckedDate.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "No Field can be blank", Toast.LENGTH_LONG).show();
-                } else {
+
+                if(enter_add.getText().toString() == "" || mBpTopNumberEditText.getText().toString() == "" || mBpBottomNumberEditText.getText().toString() == "")
+                {
+                    Toast.makeText(AddWeight.this, "Fill all the fields" ,Toast.LENGTH_SHORT).show();
+                }
+                else {
                     new submitchange().execute();
                 }
+                // user is in Weight class
+                /*if (mIsHeight == false) {
+                    new submitchange().execute();
+                } else {   // user is Height class
+                    new submitchange().execute();
+                }*/
             }
         });
+
         lasstCheckedDate.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
                 DialogFragment newFragment = new DatePickerFragment();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
-
             }
         });
+
         lasstCheckedDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasfocus) {
-                // TODO Auto-generated method stub
-
                 if (hasfocus) {
                     DialogFragment newFragment = new DatePickerFragment();
                     newFragment.show(getSupportFragmentManager(), "datePicker");
-
                 }
-
             }
         });
     }
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String weight, height, fromdate, message;
+        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend;
         ProgressDialog ghoom;
 
         @Override
@@ -127,11 +276,38 @@ public class AddWeight extends ActionBarActivity {
             ghoom.show();
 
             if (htype.equals("height")) {
+                if (mIsFtInchValue == true) {
+
+                    double tempHeightIndoubleFt = Double.parseDouble(mHeightFtValue);
+                    double tempHeightIndoubleInch = Double.parseDouble(mHeightInValue);
+                    height = (tempHeightIndoubleFt * 12 * 2.54) + (tempHeightIndoubleInch * 2.54) + "";
+                } else {
+                    height = mHeightCmEditText.getText().toString();
+                }
                 weight = "";
-                height = enter_add.getText().toString();
-            } else {
-                weight = enter_add.getText().toString();
+                /////////////////////////////////////////
+                //todo put bloodpressure = " "
+                ////////////////////////////////////////
+            } else if(htype.equalsIgnoreCase("weight")){
+
+                if (mIsPound == true) {
+                    tempPound = enter_add.getText().toString();
+                    double poundInDouble = Double.parseDouble(tempPound);
+                    poundInDouble = poundInDouble * 0.454;
+                    weight = String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(poundInDouble)));
+
+                } else {
+                    weight = enter_add.getText().toString();
+
+                }
                 height = "";
+                /////////////////////////////////////////////////////
+                //todo put bloodpressure = " "
+                /////////////////////////////////////////////////////
+            } else {
+               upperBp = mBpTopNumberEditText.getEditableText().toString();
+                lowerBp = mBpBottomNumberEditText.getEditableText().toString();
+                bpTosend = lowerBp + ","+upperBp;
             }
             fromdate = lasstCheckedDate.getText().toString();
 
@@ -149,11 +325,14 @@ public class AddWeight extends ActionBarActivity {
                     Intent in = new Intent(AddWeight.this, Height.class);
                     in.putExtra("id", id);
                     startActivity(in);
-                } else {
+                } else if(htype.equalsIgnoreCase("weight")){
                     Intent in = new Intent(AddWeight.this, Weight.class);
                     in.putExtra("id", id);
                     startActivity(in);
-
+                } else {
+                    Intent in = new Intent(AddWeight.this, BpActivity.class);
+                    in.putExtra("id", id);
+                    startActivity(in);
                 }
                 finish();
             } else {
@@ -177,6 +356,7 @@ public class AddWeight extends ActionBarActivity {
             try {
                 sendwork.put("weight", weight);
                 sendwork.put("height", height);
+                sendwork.put("bp", bpTosend);
                 sendwork.put("allergy", "");
                 sendwork.put("fromdate", fromdate + " " + time);
                 sendwork.put("todate", "");
@@ -232,7 +412,6 @@ public class AddWeight extends ActionBarActivity {
                         && (dayOfMonth > (cal.get(Calendar.DAY_OF_MONTH))) && (monthOfYear > (cal
                         .get(Calendar.MONTH)))) {
                     Toast.makeText(getActivity(), "Date Of Birth is inavlid ! ", Toast.LENGTH_SHORT).show();
-
                     lasstCheckedDate.setText("");
                 } else if ((year == (cal.get(Calendar.YEAR))) && (monthOfYear == (cal.get(Calendar.MONTH)))
                         && (dayOfMonth > (cal.get(Calendar.DAY_OF_MONTH)))) {
@@ -241,12 +420,9 @@ public class AddWeight extends ActionBarActivity {
                     lasstCheckedDate.setText("");
                 } else if ((year > (cal.get(Calendar.YEAR)))) {
                     Toast.makeText(getActivity(), "Date Of Birth is inavlid ! ", Toast.LENGTH_SHORT).show();
-
                     lasstCheckedDate.setText("");
                 } else {
                     lasstCheckedDate.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
-
-
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -282,8 +458,14 @@ public class AddWeight extends ActionBarActivity {
             Intent in = new Intent(AddWeight.this, Height.class);
             in.putExtra("id", id);
             startActivity(in);
-        } else {
+        } else if(htype.equalsIgnoreCase("weight")){
             Intent in = new Intent(AddWeight.this, Weight.class);
+            in.putExtra("id", id);
+            startActivity(in);
+        }
+
+        else {
+            Intent in = new Intent(AddWeight.this, BpActivity.class);
             in.putExtra("id", id);
             startActivity(in);
         }

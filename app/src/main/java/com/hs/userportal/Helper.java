@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Helper {
+
     public static String canExit;
     public static String resend_sms;
     public static String resend_email;

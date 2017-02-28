@@ -29,6 +29,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,88 +82,92 @@ import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.NavFolder;
 
-public class Filevault extends ActionBarActivity {
+public class Filevault extends BaseActivity {
 
-    ImageLoader mImageLoader;
-    ByteArrayOutputStream byteArrayOutputStream;
-    NetworkImageView mNetworkImageView;
-    JSONObject sendData, receiveData;
+    private ImageLoader mImageLoader;
+    private ByteArrayOutputStream byteArrayOutputStream;
+    private NetworkImageView mNetworkImageView;
+    private JSONObject sendData, receiveData;
     private static Context mContext;
-    JSONArray subArrayImage, S3Objects_arr;
-    ProgressDialog pd;
-    static boolean check_load = false;
+    private JSONArray subArrayImage, S3Objects_arr;
+    private ProgressDialog pd;
+    private static boolean check_load = false;
     private ArrayList<HashMap<String, String>> vault_data;
     private ArrayList<HashMap<String, String>> S3Objects;
     private ArrayList<HashMap<String, String>> S3Objects_folder;
     private ArrayList<HashMap<String, String>> S3Objects_details;
     // static ArrayList<String> thumbImage = new ArrayList<String>();
-   public static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<HashMap<String, String>> thumbImage = new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> thumbImage_folder = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> alias_thumbImage_folder = new ArrayList<HashMap<String, String>>();
-    static ArrayList<String> imageName = new ArrayList<String>();
-    static ArrayList<String> imageNamewithpdf = new ArrayList<String>();
-    public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> showing_Vaultlist = new ArrayList<HashMap<String, String>>();
-    Button upload;
-    static String id = null;
-    final Handler handler = new Handler();
+    private static ArrayList<String> imageName = new ArrayList<String>();
+    private static ArrayList<String> imageNamewithpdf = new ArrayList<String>();
+    private ArrayList<HashMap<String, String>> showing_Vaultlist = new ArrayList<HashMap<String, String>>();
+    private Button upload;
+    private static String id = null;
+    private final Handler handler = new Handler();
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
-    Bitmap bitmap;
-    static String pic = null;
-    String picname = "";
-    static JsonObjectRequest jr;
-    JsonObjectRequest jr2, jr3, jr4;
-    static JsonObjectRequest s3jr;
+    private Bitmap bitmap;
+    private static String pic = null;
+    private String picname = "";
+    private static JsonObjectRequest jr;
+    private JsonObjectRequest jr2, jr3, jr4;
+    private static JsonObjectRequest s3jr;
     private JsonObjectRequest lock_folder;
     private ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
-    int count;
-   public static Menu menu_toggle;
-    ArrayList<String> imageId = new ArrayList<String>();
-    String imageIdsToBeSent = "";
-    RequestQueue queue;
-    RequestQueue queue2;
-    RequestQueue queue3;
-    static RequestQueue req;
+    private int count;
+    private static Menu menu_toggle;
+    private ArrayList<String> imageId = new ArrayList<String>();
+    private String imageIdsToBeSent = "";
+    private RequestQueue queue;
+    private RequestQueue queue2;
+    private RequestQueue queue3;
+    private static RequestQueue req;
     private ListView vault_list;
-    int ipos = 0;
-    Services service;
-    GridView gridView;
-    int check = 0;
-    int check_grid = 0;
-    ProgressDialog progress;
+    private int ipos = 0;
+    private Services service;
+    private GridView gridView;
+    private int check = 0;
+    private int check_grid = 0;
+    private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
-    byte[] byteArray;
+    private byte[] byteArray;
     private boolean view_list = false;
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private String list_operation, patientId, Folder_Clicked, HashKey;
     private Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
-    ProgressBar bar;
+    private ProgressBar bar;
     private boolean toggle_move = false;
-    NotificationHandler nHandler;
+    private NotificationHandler nHandler;
     private ArrayList<HashMap<String, String>> moveFolder1 = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> moveFolder2 = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> dialog_folder = new ArrayList<HashMap<String, String>>();
     private int back_clicked_move = 0;
     private static ArrayList<String> folder_path = new ArrayList<String>();
-    static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM
-            + "/Patient Portal";
-   public static Uri Imguri;
-    static boolean refresh_vault1 = true;
-    String[] rem_dup_folder;
-    String check_view = "";
-    int checkdialog = 0;
+
+    private static boolean refresh_vault1 = true;
+    private String[] rem_dup_folder;
+    private String check_view = "";
+    private int checkdialog = 0;
     private Folder_adapter folder_adapter;
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
-    public static Context file_vaultcontxt;
     private TextView warning_msg;
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
+    private Handler mHandler;
 
+
+    public static Context file_vaultcontxt;
+    public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
+    public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
+    public static Uri Imguri;
     /*@Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
@@ -174,10 +179,12 @@ public class Filevault extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault);
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+        pd = new ProgressDialog(Filevault.this);
+        pd.setMessage("Loading Vault .....");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+
+        setupActionBar();
         Intent z = getIntent();
         id = z.getStringExtra("id");
         mContext = Filevault.this;
@@ -193,7 +200,13 @@ public class Filevault extends ActionBarActivity {
         patientId = sharedPreferences.getString("ke", "");
         warning_msg = (TextView) findViewById(R.id.warning_msg);
         //refresh_vault1 = view_list;
-        new Authentication(Filevault.this, "Filevault", "").execute();
+
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new Authentication(Filevault.this, "Filevault", "").execute();
+        }
 
 
        /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -299,41 +312,38 @@ public class Filevault extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(Filevault.this);
-                builder1.setTitle("Message");
-                builder1.setItems(new CharSequence[]{"Create Folder", "Upload Files"},
-                        new DialogInterface.OnClickListener() {
+                ///////////////////////////////////////////////////////////////////////////////////
+                final Dialog dialog = new Dialog(Filevault.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.uploadfile_alertbox);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+                TextView title = (TextView) dialog.findViewById(R.id.title);
+                TextView item1 = (TextView) dialog.findViewById(R.id.item1_tv);
+                TextView item2 = (TextView) dialog.findViewById(R.id.item2_tv);
+                title.setText("Insert Folder / File");
+                item1.setText("Create Folder");
+                item2.setText("Upload Files");
 
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        show_dialog();
-                                        break;
+                item1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        show_dialog();
+                    }
+                });
 
-                                    case 1:
+                item2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        chooseimage();
 
-                                        // Intent takePictureIntent = new
-                                        // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        // if
-                                        // (takePictureIntent.resolveActivity(getPackageManager())
-                                        // != null)
-                                        // {
-                                        //
-                                        // startActivityForResult(takePictureIntent,PICK_FROM_CAMERA);
-                                        //
-                                        // }
-                                        chooseimage();
+                    }
+                });
+                dialog.show();
 
-
-                                        break;
-
-                                    default:
-                                        break;
-                                }
-                            }
-                        });
-                builder1.show();
             }
         });
 
@@ -355,7 +365,7 @@ public class Filevault extends ActionBarActivity {
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -363,7 +373,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening PDF... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -373,7 +383,7 @@ public class Filevault extends ActionBarActivity {
 
                 } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -381,7 +391,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening DOC... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -390,7 +400,7 @@ public class Filevault extends ActionBarActivity {
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -398,7 +408,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -407,7 +417,7 @@ public class Filevault extends ActionBarActivity {
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
                     Intent i = new Intent(Filevault.this, PdfReader.class);
-                    i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
+                    i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                     startActivity(i);
@@ -415,7 +425,7 @@ public class Filevault extends ActionBarActivity {
                         // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                         Intent inte = new Intent(Intent.ACTION_VIEW);
                         inte.setDataAndType(
-                                Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
+                                Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20")),
                                 "application/pdf");
 
                         startActivity(inte);
@@ -435,9 +445,9 @@ public class Filevault extends ActionBarActivity {
                         String image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         String image_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/", "");
                         if (image_url.contains("/FileVault/Personal/")) {
-                            i.putExtra("image", "https://files.cloudchowk.com/" + image_url.replaceAll(" ", "%20"));
+                            i.putExtra("image", "https://files.healthscion.com/" + image_url.replaceAll(" ", "%20"));
                         } else {
-                            i.putExtra("image", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + image_url.replaceAll(" ", "%20"));
+                            i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + image_url.replaceAll(" ", "%20"));
                         }
                         i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                         startActivity(i);
@@ -635,7 +645,7 @@ public class Filevault extends ActionBarActivity {
 
                     if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -643,7 +653,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening PDF... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -653,7 +663,7 @@ public class Filevault extends ActionBarActivity {
 
                     } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -661,7 +671,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening DOC... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -670,7 +680,7 @@ public class Filevault extends ActionBarActivity {
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -678,7 +688,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -687,7 +697,7 @@ public class Filevault extends ActionBarActivity {
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
                         Intent i = new Intent(Filevault.this, PdfReader.class);
-                        i.putExtra("image_url", "https://files.cloudchowk.com/" + thumbImage.get(position).get("Personal3"));
+                        i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
                         startActivity(i);
@@ -695,7 +705,7 @@ public class Filevault extends ActionBarActivity {
                             // Toast.makeText(getBaseContext(), "Opening xsl... ", Toast.LENGTH_SHORT).show();
                             Intent inte = new Intent(Intent.ACTION_VIEW);
                             inte.setDataAndType(
-                                    Uri.parse("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
+                                    Uri.parse("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3")),
                                     "application/pdf");
 
                             startActivity(inte);
@@ -717,9 +727,9 @@ public class Filevault extends ActionBarActivity {
                             String image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                             String image_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                             if (image_url.contains("/FileVault/Personal/")) {
-                                i.putExtra("image", "https://files.cloudchowk.com/" + image_url);
+                                i.putExtra("image", "https://files.healthscion.com/" + image_url);
                             } else {
-                                i.putExtra("image", "https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + image_url);
+                                i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + image_url);
                             }
                             i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                             startActivity(i);
@@ -751,7 +761,7 @@ public class Filevault extends ActionBarActivity {
                 mNetworkImageView.setErrorImageResId(R.drawable.ic_error);
                 mNetworkImageView.setAdjustViewBounds(true);
 
-                mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + thumbImage.get(position), mImageLoader);
+                mNetworkImageView.setImageUrl("https://files.healthscion.com/" + thumbImage.get(position), mImageLoader);
             }*/
 
            /* for (int l = 0; l < S3Objects.size(); l++) {*/
@@ -794,9 +804,9 @@ public class Filevault extends ActionBarActivity {
                         thumbimg = thumbImage.get(position).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
                     }
                     if (!thumbImage.get(position).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
-                        mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        mNetworkImageView.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
-                        mNetworkImageView.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        mNetworkImageView.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".pdf") &&
                         !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")
@@ -904,7 +914,7 @@ public class Filevault extends ActionBarActivity {
             // ,Toast.LENGTH_LONG ).show();
             System.out.println(b.getString(UploadService.MSG_EXTRA));
             int percent = b.getInt(UploadService.PERCENT_EXTRA);
-            if(bar!=null) {
+            if (bar != null) {
                 bar.setIndeterminate(percent < 0);
                 bar.setProgress(percent);
             }
@@ -947,19 +957,15 @@ public class Filevault extends ActionBarActivity {
 
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-
                 Uri selectedImageUri = data.getData();
-
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
 
                 File imageFile = new File(path);
-                String path1=imageFile.getAbsolutePath();
-                String splitfo_lenthcheck []=path1.split("/");
-                int filenamelength=splitfo_lenthcheck[splitfo_lenthcheck.length-1].length();
+                String path1 = imageFile.getAbsolutePath();
+                String splitfo_lenthcheck[] = path1.split("/");
+                int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
                 long check = ((imageFile.length() / 1024));
-                if (check < 10000&&filenamelength<99) {
-
+                if (check < 10000 && filenamelength < 99) {
                     String splitstr[];
                     String chosenimg = "";
                     String stringcheck = "", exhistimg = "false";
@@ -980,8 +986,6 @@ public class Filevault extends ActionBarActivity {
 
                         }
                     }
-
-
                     Intent intent = new Intent(this, UploadService.class);
                     intent.putExtra(UploadService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
@@ -1028,12 +1032,12 @@ public class Filevault extends ActionBarActivity {
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
-                    String[]  splitstr;
-                    String  chosenimg="";
+                    String[] splitstr;
+                    String chosenimg = "";
                     String stringcheck = "", exhistimg = "false";
                     int leangth = 0;
                     if (path.contains("/")) {
-                      splitstr = imageFile.getAbsolutePath().split("/");
+                        splitstr = imageFile.getAbsolutePath().split("/");
                         chosenimg = splitstr[splitstr.length - 1];
                     }
                     for (int i = 0; i < thumbImage.size(); i++) {
@@ -1069,7 +1073,7 @@ public class Filevault extends ActionBarActivity {
                         pic = "data:image/jpeg;base64," + pic;
                         picname = "camera.jpg";
 
-                       // finish();
+                        // finish();
                         startActivity(getIntent());
                     }
                 } else {
@@ -1303,7 +1307,7 @@ public class Filevault extends ActionBarActivity {
 
                                         if (thumbnailsselection[i]) {
 
-                                            ImageRequest ir = new ImageRequest("https://files.cloudchowk.com/" + thumbImage.get(i).get("Personal3"),
+                                            ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
                                                     new Response.Listener<Bitmap>() {
 
                                                         @Override
@@ -1410,7 +1414,7 @@ public class Filevault extends ActionBarActivity {
 
                                     if (thumbnailsselection[i]) {
 
-                                        ImageRequest ir = new ImageRequest("https://files.cloudchowk.com/" + thumbImage.get(i).get("Personal3"),
+                                        ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
                                                 new Response.Listener<Bitmap>() {
 
                                                     @Override
@@ -1509,36 +1513,38 @@ public class Filevault extends ActionBarActivity {
                         //checkdialog = 0;
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
-                            dialog.setTitle("Delete");
-                            dialog.setMessage("Are you sure you want to delete the selected file(s)?");
+                            final Dialog dialog = new Dialog(this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.unsaved_alert_dialog);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            dialog.setCancelable(false);
+                            dialog.setCanceledOnTouchOutside(false);
+                            TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                            TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                            titleTv.setText("Delete");
+                            Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
+                            Button stayButton = (Button) dialog.findViewById(R.id.stay_btn);
 
-                            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                            messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
-                                public void onClick(DialogInterface dialog, int id) {
-                                    /*vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
-                                    vault_list.setAdapter(vault_adapter);
-                                    vault_list.setSelection(position_scroll);
-                                    thumbnailsselection = new boolean[thumbImage.size()];
-                                    imageAdapter = new ImageAdapter();
-                                    gridView.setAdapter(imageAdapter);*/
+                            stayButton.setText("Cancel");
+                            stayButton.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
-                                   /* toggle_move = false;
-                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
-                                    menu_toggle.findItem(R.id.save).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
-
                                 }
                             });
+
                             toggle_move = true;
-                            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                            okBTN.setVisibility(View.VISIBLE);
+                            okBTN.setText("OK");
+                            okBTN.setOnClickListener(new View.OnClickListener() {
 
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
+                                public void onClick(View v) {
                                     pd = new ProgressDialog(Filevault.this);
                                     pd.setMessage("Deleting .....");
                                     pd.show();
@@ -1721,9 +1727,11 @@ public class Filevault extends ActionBarActivity {
                                     }
                                 };*/
                                     queue2.add(jr2);
-
+                                    dialog.dismiss();
                                 }
+
                             });
+
                             dialog.show();
                         } else {
                             Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
@@ -2561,35 +2569,19 @@ public class Filevault extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-
                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                 intent.setType("image/*");
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-
                                 break;
-
                             case 1:
-
-                                // Intent takePictureIntent = new
-                                // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                // if
-                                // (takePictureIntent.resolveActivity(getPackageManager())
-                                // != null)
-                                // {
-                                //
-                                // startActivityForResult(takePictureIntent,PICK_FROM_CAMERA);
-                                //
-                                // }
-
-
                                 File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
 
-                                      boolean b=photo.delete();
-                                     String df="";
-                                    photo =  new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
+                                    boolean b = photo.delete();
+                                    String df = "";
+                                    photo = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "test1.jpg");
                                 } else {
                                     photo = new File(getCacheDir(), "test1.jpg");
                                 }
@@ -2619,8 +2611,13 @@ public class Filevault extends ActionBarActivity {
         // queue.add(jr);
         Helper help = new Helper();
         help.folder_path.clear();
-        if (Helper.authentication_flag == true) {
-            finish();
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            if (Helper.authentication_flag == true) {
+                finish();
+            }
         }
 
     }
@@ -2749,6 +2746,7 @@ public class Filevault extends ActionBarActivity {
 
     public void createLockFolder() {
         req = Volley.newRequestQueue(this);
+        mHandler = new Handler();
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.CreateLockFolder);
         String url = sttc_holdr.request_Url();
         JSONObject data = new JSONObject();
@@ -2777,7 +2775,7 @@ public class Filevault extends ActionBarActivity {
         req.add(lock_folder);
     }
 
-    public void startBackgroundprocess() {
+    private void startBackgroundprocess() {
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
@@ -2793,13 +2791,6 @@ public class Filevault extends ActionBarActivity {
         StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
-       pd = new ProgressDialog(Filevault.this);
-        pd.setMessage("Loading Vault .....");
-        pd.setCanceledOnTouchOutside(false);
-
-                pd.show();
-
-
         try {
             s3data.put("Key", "");
             s3data.put("patientId", patientId);
@@ -3758,4 +3749,6 @@ public class Filevault extends ActionBarActivity {
         }
         return check;
     }
+
+
 }

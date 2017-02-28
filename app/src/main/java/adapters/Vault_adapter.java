@@ -24,6 +24,7 @@ import java.util.HashMap;
  * Created by ashish on 2/5/2016.
  */
 public class Vault_adapter extends BaseAdapter {
+
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> data_list;
@@ -72,7 +73,7 @@ public class Vault_adapter extends BaseAdapter {
 
         try {
             if (data_list.size() != 0) {
-                // image_vault.setImageUrl("https://files.cloudchowk.com/" + data_list.get(position).get("FileVault2"), mImageLoader);
+                // image_vault.setImageUrl("https://files.healthscion.com/" + data_list.get(position).get("FileVault2"), mImageLoader);
             }
 
             //String pdf_name = data_list.get(position).get("FileVault2").replace(patientId + "/FileVault/", "");
@@ -136,12 +137,12 @@ public class Vault_adapter extends BaseAdapter {
                         image_vault.setDefaultImageResId(R.drawable.box);
                         image_vault.setErrorImageResId(R.drawable.ic_error);
                         image_vault.setAdjustViewBounds(true);
-                        image_vault.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        image_vault.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
                         image_vault.setDefaultImageResId(R.drawable.box);
                         image_vault.setErrorImageResId(R.drawable.ic_error);
                         image_vault.setAdjustViewBounds(true);
-                        image_vault.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        image_vault.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                 } else {
 
@@ -149,12 +150,12 @@ public class Vault_adapter extends BaseAdapter {
                         image_vault.setDefaultImageResId(R.drawable.box);
                         image_vault.setErrorImageResId(R.drawable.ic_error);
                         image_vault.setAdjustViewBounds(true);
-                        image_vault.setImageUrl("https://files.cloudchowk.com/" + patientId + "/FileVault/Personal/" + path_buffer.replaceAll(" ", "%20") + "/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        image_vault.setImageUrl("https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + path_buffer.replaceAll(" ", "%20") + "/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     } else {
                         image_vault.setDefaultImageResId(R.drawable.box);
                         image_vault.setErrorImageResId(R.drawable.ic_error);
                         image_vault.setAdjustViewBounds(true);
-                        image_vault.setImageUrl("https://files.cloudchowk.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
+                        image_vault.setImageUrl("https://files.healthscion.com/" + thumbimg.replaceAll(" ", "%20"), mImageLoader);
                     }
                    /* if (data_list.get(position).get("FileVault2").contains(".png")) {
                         if (data_list.get(position).get("FileVault2").startsWith(patientId + "/FileVault/" + path_buffer)) {

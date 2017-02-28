@@ -10,10 +10,10 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class Authentication extends AsyncTask<Void, Void, Void> {
-	Activity context;
-	String authentication="";
-	String whichbtn,activityname;
+public class Authentication extends AsyncTask<Void, Void, Void> {
+	private Activity context;
+	private String authentication="";
+	private String whichbtn,activityname;
 	
 	public Authentication(Activity context, String activityname , String whichbtnclick){
 		this.context=context;
@@ -118,9 +118,9 @@ class Authentication extends AsyncTask<Void, Void, Void> {
                     ((MyHealth) context).startBackgroundProcess();
                 } else if (activityname.equals("Height") && whichbtn.equals("")) {
                     ((Height) context).startBackgroundprocess();
-                } else if (activityname.equals("Weight") && whichbtn.equals("")) {
+                }/* else if (activityname.equals("Weight") && whichbtn.equals("")) {
                     ((Weight) context).startBackgroundprocess();
-                } else if (activityname.equals("Filevault") && whichbtn.equals("")) {
+                } */else if (activityname.equals("Filevault") && whichbtn.equals("")) {
                     ((Filevault) context).createLockFolder();
                 } else if (activityname.equals("Filevault2") && whichbtn.equals("")) {
                     ((Filevault2) context).startBackgroundprocess();

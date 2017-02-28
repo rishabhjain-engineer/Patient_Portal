@@ -83,6 +83,7 @@ import config.StaticHolder;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
+import networkmngr.NetworkChangeListener;
 import swipelist.ItemRow;
 
 /**
@@ -90,65 +91,62 @@ import swipelist.ItemRow;
  */
 public class Booking_Info extends ActionBarActivity {
 
-    ArrayList<ItemRow> itemData;
-    Activity act;
+    private ArrayList<ItemRow> itemData;
+    private Activity act;
     //  Bookinglist_rowadapter adapter;
     //AutoCompleteTextView etSearchTests;
-    HugeDataPassing hugeData;
-    JSONObject sendData, receiveData;
-    String testString, authentication;
+    private HugeDataPassing hugeData;
+    private JSONObject sendData, receiveData;
+    private String testString, authentication;
     private String patientId;
     //  ImageView deletepromo_txt;
-    JsonObjectRequest getRequest;
-    Double currentlat, currentlon;
+    private JsonObjectRequest getRequest;
+    private Double currentlat, currentlon;
     private EditText promo_code;
-    TextView promo_apply;
-    JsonObjectRequest jr;
+    private TextView promo_apply;
+    private JsonObjectRequest jr;
     // JsonObjectRequest  jr;
     private static final String LOG_TAG = "ExampleApp";
-    ConnectionDetector con;
-    static String from_widget;
-    int pricetotl = 0, finalpriceval1 = 0;
-    String testnametoadd;
-    List<String> testnameList = new ArrayList<String>();
-    JSONArray testArray;
+    private ConnectionDetector con;
+    private static String from_widget;
+    private int pricetotl = 0, finalpriceval1 = 0;
+    private String testnametoadd;
+    private List<String> testnameList = new ArrayList<String>();
+    private JSONArray testArray;
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private static final String API_KEY = "AIzaSyD0NIjG9eekYS6x58yrvpGi9x11STX_BOM";
-    ArrayAdapter<String> testListAdapter;
-    RequestQueue queue;
-    TagView tagView;
-    String[] parts;
+    private ArrayAdapter<String> testListAdapter;
+    private RequestQueue queue;
+    private TagView tagView;
+    private String[] parts;
     private ArrayList<String> tagList = new ArrayList<String>();
-    ProgressDialog progressDialog;
-    Float maxDiscount;
-    private TextView discount_id, tvTotalPrice, tvTotalDiscount, tvTotalPayable, etcoupon, trms,
-            agree_stmt, tvName, tvRating, subtotal, discount_price, price, pkgname, promo_applied;
-    String testname;
-    LinearLayout choose_optn, relHome, sample_lay, coupon_lay, relHome1, promo_open_layout, lay_pickup;
-    RelativeLayout edit_booktype, confirm_btn;
-    TextView book_type_text, etSample, test_container, price_container, tvAddress, promodiscnt,
-            promoamnt, contact_no, bottom_price_text;
-    ImageView open_promo;
-    Boolean open_lay = false, open_promo_lay = false;
-    Typeface tf;
-    ListView testnamedetail_list;
-    AutoCompleteTextView autoCompView;
-    EditText enter_add;
-    SharedPreferences sharedpreferences, sharedPreferences;
-    CheckBox confirm_chk;
-    Boolean edit_drawable_clear = false, edit_drawable_location = false;
-    Boolean is_coupon = false;
+    private ProgressDialog progressDialog;
+    private Float maxDiscount;
+    private TextView discount_id, tvTotalPrice, tvTotalDiscount, tvTotalPayable, etcoupon, trms, agree_stmt, tvName, tvRating, subtotal, discount_price, price, pkgname, promo_applied;
+    private String testname;
+    private LinearLayout choose_optn, relHome, sample_lay, coupon_lay, relHome1, promo_open_layout, lay_pickup;
+    private RelativeLayout edit_booktype, confirm_btn;
+    private TextView book_type_text, etSample, test_container, price_container, tvAddress, promodiscnt, promoamnt, contact_no, bottom_price_text;
+    private ImageView open_promo;
+    private Boolean open_lay = false, open_promo_lay = false;
+    private Typeface tf;
+    private ListView testnamedetail_list;
+    private AutoCompleteTextView autoCompView;
+    private EditText enter_add;
+    private SharedPreferences sharedpreferences, sharedPreferences;
+    private CheckBox confirm_chk;
+    private Boolean edit_drawable_clear = false, edit_drawable_location = false;
+    private Boolean is_coupon = false;
     // String value_use;
-    JSONObject jsondata;
-    ScrollView scoll_down;
-    String totlprice, totaldiscountamont, totalpayable, testnames, CentreName, CentreId, rating,
-            address, discount_pick, testID, msg_info;
-    StringBuffer name_test;
-    String cMaxDiscount, cTestDetails, cTestPrices, cRating, cPatientId, promocode_TestId, promocode_Id, promo_DiscountAmnt, promoTotalamnt;
-    Services service;
-    ArrayList<HashMap<String, String>> price_withTestList;
+    private JSONObject jsondata;
+    private ScrollView scoll_down;
+    private String totlprice, totaldiscountamont, totalpayable, testnames, CentreName, CentreId, rating, address, discount_pick, testID, msg_info;
+    private StringBuffer name_test;
+    private String cMaxDiscount, cTestDetails, cTestPrices, cRating, cPatientId, promocode_TestId, promocode_Id, promo_DiscountAmnt, promoTotalamnt;
+    private Services service;
+    private ArrayList<HashMap<String, String>> price_withTestList;
 
     protected void onCreate(Bundle savedInstancestate) {
 
@@ -683,6 +681,10 @@ public class Booking_Info extends ActionBarActivity {
 
                     } else {
                         placeOrderClicked();
+
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(Booking_Info.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        }else{
                       /*  patientId = sharedPreferences.getString("ke", "");
 
                         if (patientId != "" && patientId != null && (!patientId.equals(""))) {
@@ -690,7 +692,7 @@ public class Booking_Info extends ActionBarActivity {
                         }else{
                             placeOrderClicked();
                         }*/
-                    }
+                    }}
                 } else {
                     if (!confirm_chk.isChecked()) {
                         Toast.makeText(Booking_Info.this, "Please Agree with Terms & Conditions", Toast.LENGTH_SHORT).show();
