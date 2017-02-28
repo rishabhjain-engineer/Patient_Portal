@@ -3,6 +3,7 @@ package com.hs.userportal;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -37,7 +38,11 @@ public class AddGraphDetails extends BaseActivity {
     private Button mAddButton;
     private boolean mIsValidDate = false;
     private String mFromDate, mToDate, mDurationValue ;
+    private int mDurationSpinnerPosition =0 ;
     private Spinner mDurationSpinner;
+    private static final String PREFERENCE_FILE_NAME = "patient_pref_file";
+    private SharedPreferences mSharedPreferences = null;
+    private SharedPreferences.Editor mEditor =null ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +50,7 @@ public class AddGraphDetails extends BaseActivity {
         setContentView(R.layout.addgraphdetail);
         setupActionBar();
         mActionBar.setTitle("Graph Details");
-
+        mSharedPreferences = getSharedPreferences(PREFERENCE_FILE_NAME,0);
         mDateFromEt = (EditText) findViewById(R.id.datefrom_edittext);
         mDateToEt = (EditText) findViewById(R.id.dateto_edittext);
         mDurationSpinner = (Spinner) findViewById(R.id.duration_spinner);
@@ -68,19 +73,22 @@ public class AddGraphDetails extends BaseActivity {
         if(!TextUtils.isEmpty(toDate)){
             mDateToEt.setText(toDate);
         }
+
         ArrayAdapter durationAdapter = new ArrayAdapter(AddGraphDetails.this, R.layout.spinner_appearence, AppConstant.mDurationModeArray);
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mDurationSpinner.setAdapter(durationAdapter);
 
+        int spinnerValue = mSharedPreferences.getInt("userChoiceSpinner",-1);
+        if(spinnerValue != -1) { mDurationSpinner.setSelection(spinnerValue);}
+
         mDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mDurationValue = AppConstant.mDurationModeArray[position];
+                    mDurationSpinnerPosition = position ;
+                    mDurationValue = AppConstant.mDurationModeArray[position];
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -131,6 +139,10 @@ public class AddGraphDetails extends BaseActivity {
                 } else {
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, mFromDate);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, mToDate);
+                    SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+                    mEditor.putInt("userChoiceSpinner",mDurationSpinnerPosition);
+                    mEditor.commit();
+
                     Intent intent = new Intent();
                     intent.putExtra("fromDate", mFromDate);
                     intent.putExtra("toDate", mToDate);
@@ -144,6 +156,11 @@ public class AddGraphDetails extends BaseActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("Duration" , mDurationSpinner.getSelectedItemPosition());
+    }
 
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
