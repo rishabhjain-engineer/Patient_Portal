@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,27 +26,35 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -79,6 +88,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,9 +96,10 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.ProfileContainerActivity;
 
 @SuppressLint("NewApi")
-public class update extends FragmentActivity {
+public class update extends BaseActivity {
 
 
     private TextView email_varifyid, contact_varifyid;
@@ -103,13 +114,15 @@ public class update extends FragmentActivity {
     private String[] salulist = {"Mr.", "Ms.", "Mrs.", "Dr.", "Master", "Baby", "Baby Of"};
     private String[] religionlist = {"Hindu", "Muslim", "Sikh", "Christian", "Jain", "Buddhist", "Other"};
     private String[] bloodlist = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
+    private String[] mOccupationList = {"Business", "Professional", "Salaried", "Retired", "Homemaker", "Student"};
     private String[] genderlist = {"Male", "Female"};
     private ProgressDialog progress;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private String city_id = "", country_id = "", state_id = "", area_id = "", imgid = "", imgname = "", fbLinked, fbLinkedID;
     private String passw = "";
-    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/ religion, nationality, father, husband;
+    private EditText sal, fn, mn, ln, un, em, sex, cont, /*blood,*/
+            religion, nationality, father, husband, mOccupationEditText;
     private static EditText etDOB;
     // AutoCompleteTextView city, state, country, pin;
     // AutoCompleteTextView area;
@@ -147,7 +160,9 @@ public class update extends FragmentActivity {
     private static JSONObject receiveFbImageSave;
     private String check_username;
     private Dialog fbDialog;
-
+    private static final int REQUEST_CAMERA = 0;
+    private String mOccupation;
+    private String unverify, emailverify;
 
 
     public static JSONArray arraybasic;
@@ -166,6 +181,8 @@ public class update extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupActionBar();
+        mActionBar.setTitle("Basic");
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();
@@ -193,6 +210,25 @@ public class update extends FragmentActivity {
         em.setFocusable(true);
         sex = (EditText) findViewById(R.id.editText10);
         nationality = (EditText) findViewById(R.id.Nationality);
+
+        mOccupationEditText = (EditText) findViewById(R.id.occupation_edit_text);
+        final ArrayAdapter<String> occupationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, mOccupationList);
+        mOccupationEditText.setInputType(InputType.TYPE_NULL);
+        mOccupationEditText.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    new AlertDialog.Builder(update.this).setTitle("Select Occupation").setAdapter(occupationAdapter, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int position) {
+                            mOccupationEditText.setText(mOccupationList[position].toString());
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+                }
+                return false;
+            }
+        });
+
         cont = (EditText) findViewById(R.id.etName);
         religion = (EditText) findViewById(R.id.editText9);
         finishbtn = (Button) findViewById(R.id.bSend);
@@ -252,7 +288,8 @@ public class update extends FragmentActivity {
             Toast.makeText(update.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             // new Authentication().execute();
-            new Authentication(update.this, "update", "").execute(); }
+            new Authentication(update.this, "update", "").execute();
+        }
         //new BackgroundProcess().execute();
 
         if (pic.matches((".*[a-kA-Zo-t]+.*"))) {
@@ -287,19 +324,8 @@ public class update extends FragmentActivity {
                                                 break;
 
                                             case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
+                                                //takePhoto();
+                                                checkCameraPermission();
                                                 break;
                                             case 2:
                                                 new fbImagePull().execute();
@@ -330,20 +356,8 @@ public class update extends FragmentActivity {
                                                 }
                                                 break;
                                             case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-
+                                                //takePhoto();
+                                                checkCameraPermission();
                                                 break;
                                             default:
                                                 break;
@@ -528,8 +542,7 @@ public class update extends FragmentActivity {
                 for (int i = 0; i < countrylist.size(); i++) {
                     nationlist[i] = countrylist.get(i);
                 }
-                final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(
-                        update.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
+                final ArrayAdapter<String> nationadapter = new ArrayAdapter<String>(update.this, android.R.layout.simple_spinner_dropdown_item, nationlist);
 
                 if (arg1.getAction() == MotionEvent.ACTION_UP) {
                     AlertDialog.Builder genderBuilder = new AlertDialog.Builder(update.this).setTitle("Select Country").setAdapter(nationadapter, new DialogInterface.OnClickListener() {
@@ -547,8 +560,7 @@ public class update extends FragmentActivity {
                 return false;
             }
         });
-        final ArrayAdapter<String> saluadapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, salulist);
+        final ArrayAdapter<String> saluadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, salulist);
 
         sal.setInputType(InputType.TYPE_NULL);
         sal.setOnTouchListener(new OnTouchListener() {
@@ -583,8 +595,7 @@ public class update extends FragmentActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     new AlertDialog.Builder(update.this)
                             .setTitle("Select Gender")
                             .setAdapter(genderadapter,
@@ -734,139 +745,6 @@ public class update extends FragmentActivity {
         });
     }
 
-
-    private class CheckmailAsynctask extends AsyncTask<Void, Void, Void>{
-
-        JSONObject dataToSend;
-        public CheckmailAsynctask(JSONObject sendData) {
-            dataToSend = sendData;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            receiveData = service.checkemail(dataToSend);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            try {
-                emdata = receiveData.getString("d");
-                if (emdata.equals("true")) {
-                    emailAlreadyRegistered();
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getHeight() / 2, paint);
-        } else {
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getWidth() / 2, paint);
-        }
-
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        // return _bmp;
-        return output;
-    }
-
-    String unverify, emailverify;
-
-    class fbImagePull extends AsyncTask<Void, Void, Void> {
-        InputStream inputStream = null;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(update.this);
-            progress.setCancelable(false);
-            progress.setMessage("Pulling image from Facebook...");
-            progress.setIndeterminate(true);
-            update.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            String url = String
-                    .format("https://graph.facebook.com/%s/picture?type=large",
-                            fbLinkedID);
-
-            try {
-                inputStream = new URL(url)
-                        .openStream();
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch
-                // block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch
-                // block
-                e.printStackTrace();
-            }
-
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            Bitmap bitmap = BitmapFactory
-                    .decodeStream(inputStream);
-            bitmap = getCroppedBitmap(bitmap);
-            dp.setImageBitmap(bitmap);
-            verify = "1";
-            byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100,
-                    byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-            pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-            pic = "data:image/jpeg;base64," + pic;
-            picname = "b.jpg";
-
-            Intent intent = new Intent(update.this, UploadProfileService.class);
-            //oldimage,oldthumbimage,oldimagename,path
-            String check = SaveImage(bitmap);
-            intent.putExtra(UploadService.ARG_FILE_PATH, check);
-            intent.putExtra("add_path", "");
-            intent.putExtra("oldimage", oldimage);
-            intent.putExtra("oldthumbimage", oldthumbimage);
-            startService(intent);
-
-            progress.dismiss();
-
-        }
-    }
-
     class submitchange extends AsyncTask<Void, Void, Void> {
         String Salutation, FirstName, MiddleName, LastName, UserNameAlias, Sex, BloodGroup,
                 DOB, HusbandName, FatherName, Email, ContactNo, NationId, message;
@@ -884,6 +762,7 @@ public class update extends FragmentActivity {
             ghoom.setMessage("Please wait...");
             ghoom.setIndeterminate(true);
             Salutation = sal.getText().toString().trim();
+            mOccupation = mOccupationEditText.getEditableText().toString().trim();
             FirstName = fn.getText().toString().trim();
             MiddleName = mn.getText().toString().trim();
             LastName = ln.getText().toString().trim();
@@ -916,39 +795,40 @@ public class update extends FragmentActivity {
         @Override
         protected Void doInBackground(Void... params) {
 
-                    basic = new JSONObject();
-                    try {
-                        String dg = NationId;
-                        //  basic.put("Address", house.getText().toString());
-                        basic.put("Salutation", Salutation);
-                        basic.put("FirstName", FirstName);
-                        basic.put("MiddleName", MiddleName);
-                        basic.put("LastName", LastName);
-                        basic.put("UserNameAlias", UserNameAlias);
-                        basic.put("Sex", Sex);
+            basic = new JSONObject();
+            try {
+                String dg = NationId;
+                //  basic.put("Address", house.getText().toString());
+                basic.put("Salutation", Salutation);
+                basic.put("Occupation", mOccupation);
+                basic.put("FirstName", FirstName);
+                basic.put("MiddleName", MiddleName);
+                basic.put("LastName", LastName);
+                basic.put("UserNameAlias", UserNameAlias);
+                basic.put("Sex", Sex);
                        /* basic.put("BloodGroup", BloodGroup);*/
-                        basic.put("DOB", DOB);
-                        basic.put("HusbandName", HusbandName);
-                        basic.put("FatherName", FatherName);
-                        basic.put("Email", Email);
-                        basic.put("ContactNo", ContactNo);
-                        basic.put("NationId", NationId);
-                        arraybasic = new JSONArray();
-                        arraybasic.put(basic);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    sendbasic = new JSONObject();
-                    try {
-                        sendbasic.put("basicdetails", arraybasic);
-                        sendbasic.put("UserId", id);
-                        sendbasic.put("typeselect", "basic");
-                        receiveData = service.saveBasicDetail(sendbasic);
-                        message = receiveData.getString("d");
+                basic.put("DOB", DOB);
+                basic.put("HusbandName", HusbandName);
+                basic.put("FatherName", FatherName);
+                basic.put("Email", Email);
+                basic.put("ContactNo", ContactNo);
+                basic.put("NationId", NationId);
+                arraybasic = new JSONArray();
+                arraybasic.put(basic);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            sendbasic = new JSONObject();
+            try {
+                sendbasic.put("basicdetails", arraybasic);
+                sendbasic.put("UserId", id);
+                sendbasic.put("typeselect", "basic");
+                receiveData = service.saveBasicDetail(sendbasic);
+                message = receiveData.getString("d");
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             return null;
         }
@@ -965,7 +845,9 @@ public class update extends FragmentActivity {
             progress.setTitle("Loading");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            progress.show();
+            if (progress != null) {
+                progress.show();
+            }
         }
 
         @Override
@@ -1010,6 +892,7 @@ public class update extends FragmentActivity {
                     MiddleName = commonarray.getJSONObject(m).getString("MiddleName");
                     LastName = commonarray.getJSONObject(m).getString("LastName");
                     Salutation = commonarray.getJSONObject(m).getString("Salutation");
+                    mOccupation = commonarray.getJSONObject(m).optString("Occupation");
                     UserNameAlias = commonarray.getJSONObject(m).getString("UserNameAlias");
                     Sex = commonarray.getJSONObject(m).getString("Sex");
                     BloodGroup = commonarray.getJSONObject(m).getString("BloodGroup");
@@ -1059,6 +942,7 @@ public class update extends FragmentActivity {
 
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
+                mOccupationEditText.setText(mOccupation);
 
                 fn.setText(FirstName);
 
@@ -1091,7 +975,7 @@ public class update extends FragmentActivity {
                 } else {
                     email_varifyid.setVisibility(View.GONE);
                 }
-                if (mobile_varification != null&& mobile_varification.equals("0")) {
+                if (mobile_varification != null && mobile_varification.equals("0")) {
                     contact_varifyid.setText("Contact number is not verified");
                     contact_varifyid.setVisibility(View.VISIBLE);
                 } else {
@@ -1132,10 +1016,10 @@ public class update extends FragmentActivity {
                     // (subArray.getJSONObject(0).getString("ThumbImage").contains("Don't Show Images"))
 
                     {
-                        String image_show =  path
+                        String image_show = path
                                 + subArray.getJSONObject(0).getString("Image");
 
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ","%20")).toString()).getContent());
+                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
 
                         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                                 bitmap.getHeight(), Config.ARGB_8888);
@@ -1197,6 +1081,8 @@ public class update extends FragmentActivity {
 
                     basic.put("Religion", religion.getText().toString());
                     basic.put("Salutation", sal.getText().toString());
+                    basic.put("Occupation", mOccupationEditText.getText().toString());
+
                     basic.put("Sex", sex.getText().toString());
                     basic.put("StateId", state_id);
                     basic.put("UID1", "");
@@ -1222,9 +1108,95 @@ public class update extends FragmentActivity {
                 e.printStackTrace();
             }
 
-            progress.dismiss();
+            if (progress != null && progress.isShowing()) {
+                progress.dismiss();
+            }
         }
 
+    }
+
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getHeight() / 2, paint);
+        } else {
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getWidth() / 2, paint);
+        }
+
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        // return _bmp;
+        return output;
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
+
+    /**
+     * Method to check permission
+     */
+    void checkCameraPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Camera permission has not been granted.
+            requestCameraPermission();
+        } else {
+            takePhoto();
+        }
+    }
+
+    /**
+     * Method to request permission for camera
+     */
+    private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            Log.i("camera", "Received response for Camera permission request.");
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                takePhoto();
+            } else {
+                //Permission not granted
+                Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v("ayaz", "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //resume tasks needing this permission
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1324,7 +1296,7 @@ public class update extends FragmentActivity {
                 File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
-                if (check < 2500) {
+                if (check < 4500) {
                     if (check != 0) {
                         Intent intent = new Intent(this, UploadProfileService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
@@ -1360,7 +1332,6 @@ public class update extends FragmentActivity {
 
     }
 
-
     public String getPath(Uri uri, Activity activity) {
 
         String[] projection = {MediaStore.MediaColumns.DATA};
@@ -1369,6 +1340,300 @@ public class update extends FragmentActivity {
         cursor.moveToFirst();
         return cursor.getString(column_index);
 
+    }
+
+    public void refresh() {
+        Imguri = null;
+        File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        photo.delete();
+        new BackgroundProcess().execute();
+
+
+    }
+
+    private String getPathFromContentUri(Uri uri) {
+        String path = uri.getPath();
+        if (uri.toString().startsWith("content://")) {
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            ContentResolver cr = getApplicationContext().getContentResolver();
+            Cursor cursor = cr.query(uri, projection, null, null, null);
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        path = cursor.getString(0);
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+
+        }
+        return path;
+    }
+
+    public void startBackgroundprocess() {
+        new BackgroundProcess().execute();
+    }
+
+    public boolean isAlphaNumeric(String s) {
+        String pattern = "^[a-zA-Z0-9]*$";
+        if (s.matches(pattern)) {
+            return true;
+        }
+        return false;
+    }
+
+    private class imagesync extends AsyncTask<Void, Void, Void> {
+
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progress = new ProgressDialog(update.this);
+            progress.setCancelable(true);
+            progress.setMessage("Loading...");
+            progress.setIndeterminate(true);
+            update.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    //  progress.show();
+                }
+            });
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (progress != null)
+                progress.dismiss();
+
+            // new BackgroundProcess().execute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+
+            sendData = new JSONObject();
+            try {
+                sendData.put("PatientId", id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println(sendData);
+            receiveData = service.verify(sendData);
+            System.out.println("ImageSync " + receiveData);
+
+            String data;
+            try {
+                data = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data);
+                subArray = cut.getJSONArray("Table");
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            try {
+                String abc = subArray.getJSONObject(0).getString("Image");
+                String def = subArray.getJSONObject(0).getString("ThumbImage");
+                String path = subArray.getJSONObject(0).getString("Path");
+
+                pic = path + abc;
+                // thumbpic = path + def;
+
+                Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(pic).getContent());
+
+                output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+                Canvas canvas = new Canvas(output);
+
+                final Paint paint = new Paint();
+                final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                paint.setAntiAlias(true);
+                canvas.drawARGB(0, 0, 0, 0);
+                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
+                paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+                canvas.drawBitmap(bitmap, rect, rect, paint);
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        dp.setImageBitmap(output);
+                        // imageProgress.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
+
+            return null;
+        }
+
+    }
+
+    private class VerifyEmail extends AsyncTask<Void, Void, Void> {
+
+        private boolean isEmailAlreadyVerified;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isEmailAlreadyVerified = false;
+            ghoom = new ProgressDialog(update.this);
+            ghoom.setCancelable(false);
+            ghoom.setTitle("Updating...");
+            ghoom.setMessage("Please wait...");
+            ghoom.setIndeterminate(true);
+            ghoom.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            sendData = new JSONObject();
+            try {
+                sendData.put("Email", em.getText().toString());
+                sendData.put("Usercode", "");
+                receiveData = service.checkemail(sendData);
+                emdata = receiveData.getString("d");
+                if (emdata.equalsIgnoreCase("true")) {
+                    isEmailAlreadyVerified = true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ghoom.dismiss();
+            if (isEmailAlreadyVerified) {
+                emailAlreadyRegistered();
+            } else {
+                new submitchange().execute();
+            }
+        }
+    }
+
+    private String SaveImage(Bitmap finalBitmap) {
+
+        String path = null;
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+
+        String fname = "Imagefb.jpg";
+        File file = new File(myDir, fname);
+        if (file.exists()) file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+            path = file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    private void emailAlreadyRegistered() {
+        final Dialog dialog = new Dialog(update.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+        messageTv.setText("This E-mail is already registered!");
+        stayButton.setVisibility(View.GONE);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+               /* Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(backNav);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
+                //finish();
+                showUnsavedAlertDialog();
+                return true;
+
+            case R.id.action_home:
+                showUnsavedAlertDialog();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showUnsavedAlertDialog();
+    }
+
+    private void showUnsavedAlertDialog() {
+        final Dialog dialog = new Dialog(update.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                update.Imguri = null;
+                finish();
+            }
+        });
+        stayButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -1435,53 +1700,110 @@ public class update extends FragmentActivity {
         }
     }
 
-    public void refresh() {
-        Imguri = null;
-        File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-        photo.delete();
-        new BackgroundProcess().execute();
+    class fbImagePull extends AsyncTask<Void, Void, Void> {
+        InputStream inputStream = null;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progress = new ProgressDialog(update.this);
+            progress.setCancelable(false);
+            progress.setMessage("Pulling image from Facebook...");
+            progress.setIndeterminate(true);
+            update.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    progress.show();
+                }
+            });
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            String url = String
+                    .format("https://graph.facebook.com/%s/picture?type=large",
+                            fbLinkedID);
+
+            try {
+                inputStream = new URL(url)
+                        .openStream();
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch
+                // block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch
+                // block
+                e.printStackTrace();
+            }
 
 
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            Bitmap bitmap = BitmapFactory
+                    .decodeStream(inputStream);
+            bitmap = getCroppedBitmap(bitmap);
+            dp.setImageBitmap(bitmap);
+            verify = "1";
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100,
+                    byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+            pic = "data:image/jpeg;base64," + pic;
+            picname = "b.jpg";
+
+            Intent intent = new Intent(update.this, UploadProfileService.class);
+            //oldimage,oldthumbimage,oldimagename,path
+            String check = SaveImage(bitmap);
+            intent.putExtra(UploadService.ARG_FILE_PATH, check);
+            intent.putExtra("add_path", "");
+            intent.putExtra("oldimage", oldimage);
+            intent.putExtra("oldthumbimage", oldthumbimage);
+            startService(intent);
+
+            progress.dismiss();
+
+        }
     }
 
-    private String getPathFromContentUri(Uri uri) {
-        String path = uri.getPath();
-        if (uri.toString().startsWith("content://")) {
-            String[] projection = {MediaStore.MediaColumns.DATA};
-            ContentResolver cr = getApplicationContext().getContentResolver();
-            Cursor cursor = cr.query(uri, projection, null, null, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.moveToFirst()) {
-                        path = cursor.getString(0);
-                    }
-                } finally {
-                    cursor.close();
+    private class CheckmailAsynctask extends AsyncTask<Void, Void, Void> {
+
+        JSONObject dataToSend;
+
+        public CheckmailAsynctask(JSONObject sendData) {
+            dataToSend = sendData;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            receiveData = service.checkemail(dataToSend);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            try {
+                emdata = receiveData.getString("d");
+                if (emdata.equals("true")) {
+                    emailAlreadyRegistered();
                 }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
         }
-        return path;
     }
 
-    @Override
-    public void onBackPressed() {
-        this.getParent().onBackPressed();
-    }
-
-    public void startBackgroundprocess() {
-        new BackgroundProcess().execute();
-    }
-
-    public boolean isAlphaNumeric(String s) {
-        String pattern = "^[a-zA-Z0-9]*$";
-        if (s.matches(pattern)) {
-            return true;
-        }
-        return false;
-    }
-
-    class fbImagePull1 extends AsyncTask<Void, Void, Void> {
+    private class fbImagePull1 extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -1569,194 +1891,5 @@ public class update extends FragmentActivity {
         }
     }
 
-    class imagesync extends AsyncTask<Void, Void, Void>
-
-    {
-
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(update.this);
-            progress.setCancelable(true);
-            progress.setMessage("Loading...");
-            progress.setIndeterminate(true);
-            update.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    //  progress.show();
-                }
-            });
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            if(progress!=null)
-                progress.dismiss();
-
-            // new BackgroundProcess().execute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            sendData = new JSONObject();
-            try {
-                sendData.put("PatientId", id);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            System.out.println(sendData);
-            receiveData = service.verify(sendData);
-            System.out.println("ImageSync " + receiveData);
-
-            String data;
-            try {
-                data = receiveData.getString("d");
-                JSONObject cut = new JSONObject(data);
-                subArray = cut.getJSONArray("Table");
-
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            try {
-                String abc = subArray.getJSONObject(0).getString("Image");
-                String def = subArray.getJSONObject(0).getString("ThumbImage");
-                String path = subArray.getJSONObject(0).getString("Path");
-
-                pic = path + abc;
-                // thumbpic = path + def;
-
-                Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(pic).getContent());
-
-                output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-                paint.setAntiAlias(true);
-                canvas.drawARGB(0, 0, 0, 0);
-                canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
-                paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-                canvas.drawBitmap(bitmap, rect, rect, paint);
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-
-                        dp.setImageBitmap(output);
-                        // imageProgress.setVisibility(View.INVISIBLE);
-                    }
-                });
-
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-    }
-
-    private class VerifyEmail extends AsyncTask<Void, Void, Void> {
-
-        private boolean isEmailAlreadyVerified;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            isEmailAlreadyVerified = false;
-            ghoom = new ProgressDialog(update.this);
-            ghoom.setCancelable(false);
-            ghoom.setTitle("Updating...");
-            ghoom.setMessage("Please wait...");
-            ghoom.setIndeterminate(true);
-            ghoom.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            sendData = new JSONObject();
-            try {
-                sendData.put("Email", em.getText().toString());
-                sendData.put("Usercode", "");
-                receiveData = service.checkemail(sendData);
-                emdata = receiveData.getString("d");
-                if(emdata.equalsIgnoreCase("true")){
-                    isEmailAlreadyVerified = true;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            ghoom.dismiss();
-            if (isEmailAlreadyVerified) {
-                emailAlreadyRegistered();
-            }else{
-                new submitchange().execute();
-            }
-        }
-    }
-
-    private String SaveImage(Bitmap finalBitmap) {
-
-        String path = null;
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        Random generator = new Random();
-
-        String fname = "Imagefb.jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            path = file.getAbsolutePath();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return  path;
-    }
-
-    private void emailAlreadyRegistered() {
-        final Dialog dialog = new Dialog(update.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.unsaved_alert_dialog);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        Button okBTN = (Button)dialog.findViewById(R.id.btn_ok);
-        Button stayButton = (Button)dialog.findViewById(R.id.stay_btn);
-        TextView messageTv = (TextView)dialog.findViewById(R.id.message);
-        messageTv.setText("This E-mail is already registered!");
-        stayButton.setVisibility(View.GONE);
-
-        okBTN.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 
 }

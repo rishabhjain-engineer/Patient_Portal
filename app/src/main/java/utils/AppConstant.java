@@ -6,6 +6,8 @@ package utils;
 
 public class AppConstant {
 
+    public static String[] mDurationModeArray = {"Daily", "Weekly", "Monthly", "Quarterly", "Semi-Annually", "Annually"};
+
     public static String ID = "";
 
     public static String USER = "";
@@ -15,5 +17,13 @@ public class AppConstant {
     public static String PASS = "";
 
     public static String FN = "";
+
+    public static int WEIGHT_REQUEST_CODE = 1001;
+    public static int HEIGHT_REQUEST_CODE = 1002;
+    public static int BMI_REQUEST_CODE = 1003;
+    public static int BP_REQUEST_CODE = 1004;
+    public static int CASECODE_REQUEST_CODE = 1005;
+
+
 
 }

@@ -588,8 +588,8 @@
                 <HorizontalScrollView
                     android:id="@+id/horizontal_"
                     android:layout_width="wrap_content"
-                    android:layout_height="100dp"
-                    android:visibility="gone"
+                    android:layout_height="120dp"
+                    android:visibility="visible"
                     android:layout_above="@+id/patient_id">
 
                     <LinearLayout
@@ -601,7 +601,7 @@
                             android:layout_width="140dp"
                             android:layout_height="match_parent"
                             android:scaleType="fitXY"
-                            android:src="@drawable/h1"
+                            android:src="@drawable/screen01"
                             android:text="Button1" />
 
                         <ImageView
@@ -610,32 +610,15 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:scaleType="fitXY"
-                            android:src="@drawable/h5"
+                            android:src="@drawable/screen02"
                             android:text="Button1" />
 
                         <ImageView
                             android:layout_width="140dp"
                             android:layout_height="match_parent"
                             android:scaleType="fitXY"
-                            android:src="@drawable/h3"
+                            android:src="@drawable/screen03"
                             android:text="Button1" />
-
-                        <ImageView
-                            android:layout_width="140dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/h4"
-                            android:text="Button1" />
-
-                        <ImageView
-                            android:layout_width="140dp"
-                            android:layout_height="match_parent"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/h2"
-                            android:text="Button1" />
-
 
                     </LinearLayout>
                 </HorizontalScrollView>

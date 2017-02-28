@@ -12,23 +12,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Base64;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -54,7 +48,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.*;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -63,8 +64,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -77,7 +76,6 @@ import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
 import ui.QuestionReportActivity;
 import ui.QuestionireActivity;
-import utils.AppConstant;
 import utils.PreferenceHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -133,23 +131,26 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
-
+    private String mPasswordValue, mUserNameValue;
     public static String cook = "";
     public static String demo = "false";
     public static final String MyPREFERENCES = "MyPrefs";
     private PreferenceHelper mPreferenceHelper;
+    private int mLoginCount = 0;
+
 
     @SuppressWarnings({"deprecation", "deprecation"})
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        setupActionBar();
+        userName = (EditText) findViewById(R.id.etSubject);
+        password = (EditText) findViewById(R.id.etContact);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
+        setupActionBar();
         callbackManager = CallbackManager.Factory.create();
         mtracker = new AccessTokenTracker() {
             @Override
@@ -164,9 +165,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
         mtracker.startTracking();
         mprofileTracker.startTracking();
-        mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
-        userName = (EditText) findViewById(R.id.etSubject);
-        password = (EditText) findViewById(R.id.etContact);
+
         //	locationName = (TextView) findViewById(R.id.tvLocationIcon);
         labsNear = (Button) findViewById(R.id.relLabs);
         forgot = (TextView) findViewById(R.id.textview1);
@@ -182,27 +181,17 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         Intent in = getIntent();
         from_Activity = in.getStringExtra("fromActivity");
         queue = Volley.newRequestQueue(this);
+
         if (getIntent().getExtras() != null) {
-            if (getIntent().getStringExtra("from logout").equalsIgnoreCase("logout")) {
+            String data = getIntent().getStringExtra("from logout");
+            if (data != null && data.equalsIgnoreCase("logout")) {
                 LoginManager.getInstance().logOut();
             }
         }
 
         MiscellaneousTasks miscTasks = new MiscellaneousTasks(MainActivity.this);
         if (!miscTasks.isNetworkAvailable()) {
-            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-            dialog.setTitle("Internet Connectivity");
-            dialog.setMessage("Internet connection is required to run this application.");
-            dialog.setCancelable(false);
-            dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            showAlertMessage("Internet connection is required to run this application.");
         } else {
 
             url1 = "https://androidquery.appspot.com/api/market?app=";
@@ -219,28 +208,28 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         String version = pInfo.versionName;
                         //	double currentversion = Double.parseDouble(version);
 
-                        if (!marketVersion.equals(version)){
+                        if (!marketVersion.equals(version)) {
 
                             alert = new AlertDialog.Builder(MainActivity.this).create();
                             alert.setTitle("Message");
                             alert.setMessage("You are using an old version of the app. Please update to the latest version from the Playstore.");
                             alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                                            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                                            try {
-                                                startActivity(goToMarket);
-                                            } catch (ActivityNotFoundException e) {
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
-                                            }
-                                        }
-                                    });
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                                    try {
+                                        startActivity(goToMarket);
+                                    } catch (ActivityNotFoundException e) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+                                    }
+                                }
+                            });
 
                             alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Skip", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
                             alert.show();
 
                         }
@@ -311,9 +300,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
                     } else {
 
-                        InputMethodManager inputManager = (InputMethodManager) getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputManager.hideSoftInputFromWindow(password.getWindowToken(), 0);
+
+
                         new BackgroundProcess().execute();
 
                     }
@@ -388,6 +378,20 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 onClickLogin();
             }
         });
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            boolean isComingFromSplash = bundle.getBoolean("isComingFromSplash", false);
+            if (isComingFromSplash && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASSWORD))) {
+                mUserNameValue = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
+                mPasswordValue = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASSWORD);
+                userName.setText(mUserNameValue);
+                password.setText(mPasswordValue);
+                new BackgroundProcess().execute();
+            }
+        } else {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, null);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, null);
+        }
     }
 
    /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
@@ -437,6 +441,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (!con.isConnectingToInternet()) {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
             } else {
+                mLoginCount = 1;
+                mUserNameValue = userName.getText().toString();
+                mPasswordValue = password.getText().toString();
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USERNAME, mUserNameValue);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, mPasswordValue);
                 new BackgroundProcess().execute();
             }
         }
@@ -519,7 +528,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     AppConstant.USER = uName;
                     AppConstant.PASS = uPassword;
                     AppConstant.FN = fnln + " " + lastname;*/
-
 
 
                     if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
@@ -733,11 +741,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
+/*
             if (cb.isChecked()) {
                 rem = "true";
             } else {
                 rem = "false";
             }
+*/
 
             if (userName.getText().toString().trim().contains("/")) {
                 demo = "true";
@@ -767,32 +777,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (chkDisclaimer == 1) {
                 // Agree disclaimer automatically
                 new Agree().execute();
-
             } else if (mChkError == 1) {
                 String receivedMsg = receiveData.optString("d");
-                alert = new AlertDialog.Builder(MainActivity.this).create();
-                alert.setTitle("Alert!");
-
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
                     if ("1".equalsIgnoreCase(msgArray[1])) {
-                        alert.setMessage(msgArray[0]);
+                        showAlertMessage(msgArray[0]);
                     } else if ("2".equalsIgnoreCase(msgArray[1])) {
-                        alert.setMessage(msgArray[0]);
+                        showAlertMessage(msgArray[0]);
                     }
                 } else {
-                    alert.setMessage(receivedMsg);
+                    showAlertMessage(receivedMsg);
                 }
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        dialog.dismiss();
-
-                    }
-                });
-                alert.show();
-
             } else if (chklogin == 1) {
 
                 // System.out.println(fnln);
@@ -1028,39 +1024,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         if (data.indexOf("Authentication failed.") != -1) {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
-
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
-                                    alert.setTitle("Message");
-                                    alert.setMessage("Unexpected error. Please try again after sometime.");
-
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
-
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-
-                                                }
-                                            });
-
-                                    alert.show();
-
+                                    showAlertMessage("Unexpected error. Please try again after sometime.");
                                 }
                             });
                             return null;
                         } else {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
-                                    alert = new AlertDialog.Builder(MainActivity.this).create();
-                                    alert.setTitle("Message");
-                                    alert.setMessage("Unexpected error. Please try again after sometime.");
-                                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-
-                                    alert.show();
+                                    showAlertMessage("Unexpected error. Please try again after sometime.");
                                 }
                             });
                             return null;
@@ -1298,19 +1269,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 }
             }
         } else {
-            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-            dialog.setTitle("Internet Connectivity");
-            dialog.setMessage("Internet connection is required to run this application.");
-            dialog.setCancelable(false);
-            dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            showAlertMessage("Internet connection is required to run this application.");
         }
 
         if (sharedPreferences.contains("FirstName")) {
@@ -1777,7 +1736,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     alert.setView(sv);
 
                 } else {
-                    alert.setMessage(receiveForgetData.getString("d").toString());
+                    showAlertMessage(receiveForgetData.getString("d").toString());
+                 /*   alert.setMessage(receiveForgetData.getString("d").toString());*/
 
                     // LinearLayout.LayoutParams lp = new
                     // LinearLayout.LayoutParams(
@@ -1822,17 +1782,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     // });
 
                 }
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        alert.dismiss();
-
-                    }
-                });
-
-                alert.show();
-
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1861,20 +1810,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
             if (!currentNetworkInfo.isConnected()) {
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).create();
-                dialog.setTitle("Internet Connectivity");
-                dialog.setMessage("Internet connection is required to run this application.");
-                dialog.setCancelable(false);
-                dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        dialog.dismiss();
-
-                    }
-                });
-                dialog.show();
+                showAlertMessage("Internet connection is required to run this application.");
             }
         }
     };
@@ -2295,7 +2231,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             if (response != null) {
                 try {
                     String data = response.getString("d");
-                    Log.d("QuestionireFragment", "QuizData Response in MainActivity"+data);
+                    Log.d("QuestionireFragment", "QuizData Response in MainActivity" + data);
                     QuestionireParser.paseData(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -2313,11 +2249,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionireActivity");
                 Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
                 startActivity(intentWalk);
-            } else if(QuestionireParser.getQuestionDetailListStatus0().size() > 0){
+            } else if (QuestionireParser.getQuestionDetailListStatus0().size() > 0) {
                 Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionReportActivity");
                 Intent intent = new Intent(MainActivity.this, QuestionReportActivity.class);
                 startActivity(intent);
-            }else{
+            } else {
                 Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
                 Intent intent = new Intent(MainActivity.this, logout.class);
                 startActivity(intent);

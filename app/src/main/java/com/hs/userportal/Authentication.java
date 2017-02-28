@@ -118,9 +118,9 @@ public class Authentication extends AsyncTask<Void, Void, Void> {
                     ((MyHealth) context).startBackgroundProcess();
                 } else if (activityname.equals("Height") && whichbtn.equals("")) {
                     ((Height) context).startBackgroundprocess();
-                }/* else if (activityname.equals("Weight") && whichbtn.equals("")) {
+                }else if (activityname.equals("Weight") && whichbtn.equals("")) {
                     ((Weight) context).startBackgroundprocess();
-                } */else if (activityname.equals("Filevault") && whichbtn.equals("")) {
+                } else if (activityname.equals("Filevault") && whichbtn.equals("")) {
                     ((Filevault) context).createLockFolder();
                 } else if (activityname.equals("Filevault2") && whichbtn.equals("")) {
                     ((Filevault2) context).startBackgroundprocess();

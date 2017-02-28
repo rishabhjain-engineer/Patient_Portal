@@ -28,6 +28,10 @@ public class PreferenceHelper {
 
         IS_ALL_QUESTION_ASKED("false"),
 
+        USERNAME("null"),
+
+        PASSWORD("null"),
+
         QUESTION_COUNT("10"),
 
         USER_ID("null"),
@@ -40,7 +44,11 @@ public class PreferenceHelper {
 
         PASS("null"),
 
-        FN("null");
+        FN("null"),
+
+        FROM_DATE("null"),
+
+        TO_DATE("null");
 
         private String defaultValue;
 

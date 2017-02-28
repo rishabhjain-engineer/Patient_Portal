@@ -2,19 +2,25 @@ package com.hs.userportal;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,6 +29,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +48,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ObjectPool;
 
+import org.codehaus.jackson.annotate.JsonValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,38 +67,46 @@ import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.GraphHandlerActivity;
+import utils.AppConstant;
 import utils.MyMarkerView;
+import utils.PreferenceHelper;
 
-public class Weight extends BaseActivity {
+public class Weight extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id;
+    private String id, mDateFormat = "%b '%y", mIntervalMode;
+    private long mFormEpocDate = 0, mEpocToDate = 0;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
     private JsonObjectRequest jr;
     private RequestQueue queue;
     private MiscellaneousTasks misc;
-    private List<String> chartValues = new ArrayList<String>();
-    private List<String> chartValues1 = new ArrayList<String>();
-    private List<String> chartDates = new ArrayList<String>();
     private Services service;
     private ProgressDialog progress;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0;
+    private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
-
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private List<Long> mEpocList = new ArrayList<Long>();
+    private List<String> mValueList = new ArrayList<String>();
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
+    private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
+    private long mDateMaxValue, mDateMinValue;
+    private boolean mIsToAddMaxMinValue = true;
+    private RelativeLayout mListViewHeaderRl;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
+        service = new Services(Weight.this);
+        mListViewHeaderRl = (RelativeLayout)findViewById(R.id.header);
         setupActionBar();
         mActionBar.setTitle("Weight");
 
@@ -101,7 +118,6 @@ public class Weight extends BaseActivity {
         weight_graphView.setFocusableInTouchMode(true);
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
-        settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(true);
@@ -122,7 +138,6 @@ public class Weight extends BaseActivity {
         bsave = (Button) findViewById(R.id.bsave);
         wt_heading = (TextView) findViewById(R.id.wt_heading);
         wt_heading.setText("Weight (Kg)");
-        service = new Services(Weight.this);
         misc = new MiscellaneousTasks(Weight.this);
         Intent z = getIntent();
         id = z.getStringExtra("id");
@@ -139,23 +154,31 @@ public class Weight extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
-                AlertDialog dialog = new AlertDialog.Builder(Weight.this).create();
-                dialog.setTitle("Delete Weight");
-                dialog.setMessage("Are you sure you want to delete the Weight?");
 
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                final Dialog dialog = new Dialog(Weight.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.unsaved_alert_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                titleTv.setText("Delete Weight");
+                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+                messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
-                    public void onClick(DialogInterface dialog, int id) {
-
+                stayButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         dialog.dismiss();
-
                     }
                 });
 
-                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-
+                okBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
+                        dialog.dismiss();
                         deleteWeight();
                     }
                 });
@@ -179,136 +202,36 @@ public class Weight extends BaseActivity {
         new BackgroundProcess().execute();
     }
 
-    public void setLinechart() {
-        linechart.setDrawGridBackground(false);
-        for (int i = 0; i < chartValues.size(); i++) {
-            if (maxYrange < Math.round(Float.parseFloat(chartValues.get(i)))) {
-                maxYrange = Math.round(Float.parseFloat(chartValues.get(i)));
-            }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            weight_listId.setVisibility(View.GONE);
+            mListViewHeaderRl.setVisibility(View.GONE);
+            mActionBar.hide();
+        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            weight_listId.setVisibility(View.VISIBLE);
+            mListViewHeaderRl.setVisibility(View.VISIBLE);
+            mActionBar.show();
         }
-        linechart.setDescription("");
-        linechart.setNoDataTextDescription("You need to provide data for the chart.");
-        // enable touch gestures
-        linechart.setTouchEnabled(true);
-        // enable scaling and dragging
-        linechart.setDragEnabled(true);
-        linechart.setScaleEnabled(true);
-        linechart.setPinchZoom(true);
-        // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
-        llXAxis.setEnabled(false);
-        XAxis xAxis = linechart.getXAxis();
-        //xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setXOffset(0f);
-        xAxis.setEnabled(false);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(true);
-        xAxis.setAxisMinValue(0f);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setGranularity(1.0f);
-        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
-        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
-        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setEnabled(false);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
-        ll1.setTypeface(tf);
-
-        LimitLine ll2 = new LimitLine(0f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-        ll2.setTypeface(tf);
-        ll2.setEnabled(false);
-
-        YAxis leftAxis = linechart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        /*leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);*/
-        leftAxis.setAxisMaxValue(maxYrange + maxYrange / 4);
-        leftAxis.setAxisMinValue(0f);
-        leftAxis.setYOffset(0f);
-        leftAxis.enableGridDashedLine(0f, 0f, 0f);
-        leftAxis.setDrawZeroLine(false);
-        // leftAxis.setEnabled(false);
-        // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
-        linechart.getAxisRight().setEnabled(false);
-
-        //linechart.getViewPortHandler().setMaximumScaleY(2f);
-        //linechart.getViewPortHandler().setMaximumScaleX(2f);
-
-        // add data
-        setData(chartValues.size(), 100);
-
-//        linechart.setVisibleXRange(20);
-//        linechart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        linechart.centerViewTo(20, 50, AxisDependency.LEFT);
-
-        linechart.animateX(2500);
-        //linechart.invalidate();
-        // get the legend (only possible after setting data)
-        Legend l = linechart.getLegend();
-        // modify the legend ...
-        // l.setPosition(LegendPosition.LEFT_OF_CHART);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setEnabled(false);
-        // don't forget to refresh the
-        //drawing
-        linechart.invalidate();
     }
 
-    private void setData(int count, float range) {
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        for (int i = 0; i < count; i++) {
-            float val = Float.parseFloat(chartValues.get(i));
-            values.add(new Entry(i, val));
-        }
-        LineDataSet set1;
-        if (linechart.getData() != null &&
-                linechart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) linechart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            linechart.getData().notifyDataChanged();
-            linechart.notifyDataSetChanged();
-        } else {
-            // create a data set and give it a type
-            set1 = new LineDataSet(values, getIntent().getStringExtra("chartNames"));
-            set1.disableDashedLine();
-            set1.setColor(Color.parseColor("#FF8409"));
-            set1.setCircleColor(Color.parseColor("#FF8409"));
-            set1.setLineWidth(1.5f);
-            set1.setCircleRadius(3.5f);
-            set1.setDrawCircleHole(true);
-            set1.setCircleHoleRadius(7f);
-            set1.setDrawFilled(false);
-            set1.setDrawValues(false);
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
-            // create a data object with the datasets
-            LineData data = new LineData(dataSets);
-            // set data
-            linechart.setData(data);
-        }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i("ayaz", "onRestart");
+        new BackgroundProcess().execute();
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable = false;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
+            isDataAvailable = false;
             progress = new ProgressDialog(Weight.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
@@ -319,123 +242,10 @@ public class Weight extends BaseActivity {
 
         }
 
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(Weight.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Utility.setListViewHeightBasedOnChildren(weight_listId);
-            String db = null;
-            try {
-
-                db = "<!DOCTYPE html> <html> <head>" +
-                        " <title></title>" +
-                        " <link rel='stylesheet' href='kendo.common.min.css' />" +
-                        " <link rel='stylesheet' href='kendo.default.min.css' />"
-
-                        + "  <script src='jquery.min.js'></script>"
-                        + "  <script src='kendo.all.min.js'></script>"
-                        + " </head>"
-                        + " <body>"
-                        + " <div id='example'>"
-                        + "  <div class='demo-section k-content wide'>"
-                        + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
-                        + " </div> \n" +
-                        "    <script>\n" +
-                        "        function createChart() {\n" +
-                        "            $(\"#chart\").kendoChart({\n" +
-                        "                title: {\n" +
-                        "                    text: \"Weight in kg\"\n" +
-                        "                },\n" +
-                        "                legend: {\n" +
-                        "                    position: \"bottom\"\n" +
-                        "                },\n" +
-                        "                chartArea: {\n" +
-                        "                    background: \"\"\n" +
-                        "                },\n" +
-                        "                seriesDefaults: {\n" +
-                        "                    type: \"line\",\n" +
-                        "                    style: \"smooth\"\n" +
-                        "                },\n" +
-                        "                series: [{\n" +
-                        "                    name: \"Weight\",\n" +
-                        "                    data: " + chartValues + "\n" +
-                        "                }  ],\n" +
-                        "                valueAxis: {\n" +
-                        "                    labels: {\n" +
-                        "                        format: \"{0}\"\n" +
-                        "                    },\n" +
-                        "                    line: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    axisCrossingValue: -10\n" +
-                        "                },\n" +
-                        "                categoryAxis: {\n" +
-                        "                    categories: " + chartDates + ",\n" +
-                        "                    majorGridLines: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    labels: {\n" +
-                        "                        rotation: \"auto\"\n" +
-                        "                    }\n" +
-                        "                },\n" +
-                        "                tooltip: {\n" +
-                        "                    visible: true,\n" +
-                        "                    format: \"{0}%\",\n" +
-                        "                    template: \"#= series.name #: #= value #\"\n" +
-                        "                }\n" +
-                        "            });\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        $(document).ready(createChart);\n" +
-                        "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
-                        "    </script>\n" +
-                        "</div>\n" +
-                        "\n" +
-                        "\n" +
-                        "</body>\n" +
-                        "</html>";
-
-              /*  db = "<!DOCTYPE html><html><head><title></title><link data-require=\"nvd3@1.1.14-beta\" " +
-                        "data-semver=\"1.1.14-beta\" rel=\"stylesheet\" href=\"nv.d3.css\"/>" +
-                        "<script data-require=\"d3@3.3.11\" data-semver=\"3.3.11\" src=\"d3.js\">" +
-                        "</script><script data-require=\"nvd3@1.1.14-beta\" data-semver=\"1.1.14-beta\" src=\"nv.d3.js\">" +
-                        "</script><script src=\"jquery.js\"></script></head>" +
-                        "<style>.nv-point {stroke-opacity: 1 !important;stroke-width: 5px;fill-opacity: 1 !important}.bullet" +
-                        " { font: 10px sans-serif; }.bullet .marker { stroke: #000; stroke-width: 2px; }.bullet .tick line " +
-                        "{ stroke: #666; stroke-width: .5px; }.bullet .range.s0 { fill: #eee; }.bullet .range.s1 { fill: #ddd; }" +
-                        ".bullet .range.s2 { fill: #ccc; }.bullet .measure.s0 { fill: steelblue; }.bullet .title { font-size: 14px; " +
-                        "font-weight: bold; }.bullet .subtitle { fill: #999; }</style><body><div id=\"chart\" style=\"height:254px\">" +
-                        "<svg height=\"354 \" width=\"375\"></svg></div><script>" +
-                        "var data1 = [{\"key\":\"Weight (kg)\",\"values\": " +
-                        jsonArrayToSend +
-                        "nv.addGraph(function () {var chart = nv.models.lineChart().x(function (d) {return d[0];}).y(function (d) {return d[1]})." +
-                        "color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, 45.000000])." +
-                        "tooltipContent(function (key, x, y, e) {return '<div id=\"tooltipcustom\">' + '<p>' + y+\" (kg)\" + ' on ' + " +
-                        "new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() +'-' + " +
-                        "new Date(e.point[0]).getFullYear().toString() + '</p></div>'});chart.xAxis.tickValues([]).tickFormat(function (d)" +
-                        " {return d3.time.format(\"%d-%m-%Y\")(new Date(d))});chart.yAxis.tickFormat(function (d) {return d3.format('.2f')" +
-                        "(d)});d3.select('#chart svg').datum(data1).call(chart);nv.utils.windowResize(chart.update);return chart;}, " +
-                        "function (chart) {x = chart;var x1 = chart.xScale()();var x2 = chart.xScale()();var height = chart.yAxis." +
-                        "range()[0];var y2 = chart.yScale()();var y1 = chart.yScale()();var width = chart.xAxis.range()[1];" +
-                        "d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style" +
-                        "('opacity', 0.2).attr('x', 0).attr('width', width);});</script></body></html>";
-
-
-*/
-                setLinechart();
-                progress.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-                progress.dismiss();
-            }
-            weight_graphView.loadUrl("file:///android_asset/html/chart.html");
-        }
-
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
 
                 sendData1.put("UserId", id);
@@ -445,13 +255,11 @@ public class Weight extends BaseActivity {
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
-
-
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
 
-                JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String PatientHistoryId = obj.getString("PatientHistoryId");
@@ -468,12 +276,7 @@ public class Weight extends BaseActivity {
                     hmap.put("ID", ID);
                     hmap.put("weight", weight);
                     hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
-                    chartValues.add(weight);
-                    // chartDates.add("'" + fromdate + "'");
-                    chartDates.add("");
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     Date date = null;
                     try {
                         date = simpleDateFormat.parse(fromdate);
@@ -481,17 +284,61 @@ public class Weight extends BaseActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
 
-                    jsonArray1.put(innerJsonArray);
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            weight_contentlists.add(hmap);
+                        }
+                    } else {
+                        weight_contentlists.add(hmap);
+                    }
+                }
+
+                Helper.sortHealthListByDate(weight_contentlists);
+
+                JSONArray jsonArray1 = new JSONArray();
+                String initialDate = null, lastDate = null;
+                for (int i = 0; i < weight_contentlists.size(); i++) {
+                    Date date = null;
+                    String fromdate = null;
+                    HashMap<String, String> mapValue = weight_contentlists.get(i);
+                    try {
+                        fromdate = mapValue.get("fromdate");
+                        date = simpleDateFormat.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+                    mEpocList.add(epoch);
+                    mValueList.add(mapValue.get("weight"));
+                    if(mIsToAddMaxMinValue && i == 0){
+                        mDateMinValue = epoch;
+                    }
+                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                        mDateMaxValue = epoch;
+                    }
+                    if (mFormEpocDate > 0) {
+                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+                            jsonArray1.put(innerJsonArray);
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+                        jsonArray1.put(innerJsonArray);
+                    }
                 }
                 JSONObject outerJsonObject = new JSONObject();
                 outerJsonObject.put("key", "Weight(kg)");
                 outerJsonObject.put("values", jsonArray1);
+                mJsonArrayToSend = new JSONArray();
                 mJsonArrayToSend.put(outerJsonObject);
-                Collections.reverse(chartValues);
+
+        /*        mTckValuesJsonArray = getInitialJsonForMonthly(initialDate, lastDate);*/
+                //Collections.reverse(chartValues);
 
              /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
                 for(int i=0;i<weight_contentlists.size();i++){
@@ -503,19 +350,38 @@ public class Weight extends BaseActivity {
 
                 e.printStackTrace();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (isDataAvailable) {
+                if (adapter == null) {
+                    adapter = new MyHealthsAdapter(Weight.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                } else {
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
+                Utility.setListViewHeightBasedOnChildren(weight_listId);
+                weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                if (progress != null && progress.isShowing()) {
+                    progress.dismiss();
+                }
+            } else {
+                Intent i = new Intent(Weight.this, AddWeight.class);
+                i.putExtra("id", id);
+                i.putExtra("htype", "weight");
+                startActivity(i);
+                finish();
+            }
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
-
+        getMenuInflater().inflate(R.menu.graphheader, menu);
         return true;
     }
 
@@ -528,19 +394,18 @@ public class Weight extends BaseActivity {
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
-
             case R.id.add:
-
                 Intent i = new Intent(Weight.this, AddWeight.class);
                 i.putExtra("id", id);
                 i.putExtra("htype", "weight");
                 startActivity(i);
-                finish();
-
+                //finish();
                 //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                 return true;
 
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(Weight.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -604,8 +469,9 @@ public class Weight extends BaseActivity {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
+                        //finish();
+                        //startActivity(getIntent());
+                        new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(Weight.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -631,20 +497,155 @@ public class Weight extends BaseActivity {
         queue.add(jr);
     }
 
-   /* public void startBackgroundprocess() {
-        new BackgroundProcess().execute();
-    }*/
+    public void startBackgroundprocess() {
+        //new BackgroundProcess().execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.WEIGHT_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            String fromDate = data.getStringExtra("fromDate");
+            String toDate = data.getStringExtra("toDate");
+
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(fromDate);
+                date2 = simpleDateFormat.parse(toDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
+
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 90;
+            Log.i("ayaz", "onActivityResult");
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(fromDate, toDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mTckValuesJsonArray = getJsonForWeekly(fromDate, toDate);
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(fromDate, toDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mTckValuesJsonArray = getJsonForQuaterly(fromDate, toDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mTckValuesJsonArray = getJsonForSemiAnnually(fromDate, toDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mTckValuesJsonArray = getJsonForYearly(fromDate, toDate);
+                mDateFormat = "%Y";
+                mRotationAngle = 0;
+            }
+
+
+            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
+                if(i==0){
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(i == (mTckValuesJsonArray.length() -1)){
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() -1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
+            Log.e("ayaz", "mJsonArrayToSend: "+mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxWeight;
             return (i + 20);
         }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if (mTckValuesJsonArray == null) {
+                return "null";
+            } else {
+                Log.e("ayaz", "mTckValuesJsonArray: "+mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min: "+mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max: "+mDateMaxValue);
+            return mDateMaxValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
+        }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, "");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, "");
+
+        SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
+        mEditor.putInt("userChoiceSpinner", 0);
+        mEditor.commit();
+    }
+
 }

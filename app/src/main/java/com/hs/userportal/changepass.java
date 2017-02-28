@@ -2,6 +2,8 @@ package com.hs.userportal;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +27,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -98,55 +102,27 @@ public class changepass extends BaseActivity {
 
             @Override
             public void onClick(View arg0) {
-                mChangePassowrdBtn.setClickable(false);
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     mOldPassword = old.getEditableText().toString();
                     mNewPassword = pass.getEditableText().toString();
                     mConfirmPassword = cpass.getEditableText().toString();
 
                     if (TextUtils.isEmpty(mOldPassword) || TextUtils.isEmpty(mNewPassword) || TextUtils.isEmpty(mConfirmPassword)) {
-                        Toast.makeText(getApplicationContext(), "No field can be left blank", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "No field can be left blank", Toast.LENGTH_SHORT).show();
+                        showAlertMessage("No field can be left blank");
                     } else if (!mNewPassword.equals(mConfirmPassword)) {
-                        alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Message");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Password and confirm password field should be same!");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
-                    }else if (mNewPassword.equals(mOldPassword)) {
-                        alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Message");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Old and new password should not be same.");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
-                    }else if(!isValidPassword(mNewPassword)){
-                        final AlertDialog alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Alert!");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Password is not satisfying mentioned condition.");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
+                        showAlertMessage("Password and confirm password field should be same!");
+                    } else if (mNewPassword.equals(mOldPassword)) {
+                        showAlertMessage("Old and new password should not be same.");
+                    } else if (!isValidPassword(mNewPassword)) {
+                        showAlertMessage("Password is not satisfying mentioned condition.");
                     } else {
+                        mChangePassowrdBtn.setClickable(false);
                         new Authentication().execute();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No Internet Connection, Please check", Toast.LENGTH_LONG).show();
+                    showAlertMessage("No Internet Connection, Please check");
+                    //Toast.makeText(getApplicationContext(), "No Internet Connection, Please check", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -170,6 +146,7 @@ public class changepass extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            mProgressDialog.dismiss();
             String str = "Some Server Error";
             try {
                 str = receiveChangPassData.getString("d");
@@ -206,9 +183,21 @@ public class changepass extends BaseActivity {
         }
     }
 
+    private ProgressDialog mProgressDialog;
 
     class Authentication extends AsyncTask<Void, Void, Void> {
         JSONObject sendData, receiveData;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(changepass.this);
+            mProgressDialog.setTitle("Alert!");
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Changing Passowrd...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -228,6 +217,7 @@ public class changepass extends BaseActivity {
             super.onPostExecute(result);
             mChangePassowrdBtn.setClickable(true);
             if (!authentication.equals("true")) {
+                mProgressDialog.dismiss();
                 AlertDialog dialog = new AlertDialog.Builder(changepass.this).create();
                 dialog.setTitle("Session timed out!");
                 dialog.setMessage("Session expired. Please login again.");
@@ -276,4 +266,5 @@ public class changepass extends BaseActivity {
         matcher = pattern.matcher(password);
         return matcher.matches();
     }
-}
+
+ }

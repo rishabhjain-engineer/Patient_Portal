@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.text.DecimalFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +34,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
@@ -183,6 +184,11 @@ public class MyHealth extends BaseActivity {
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
 
     public void showdialog() {
         final Dialog overlay_dialog = new Dialog(MyHealth.this);
@@ -290,6 +296,8 @@ public class MyHealth extends BaseActivity {
                         String data = response.getString("d");
                         if (!data.equalsIgnoreCase("Success")) {
                             Toast.makeText(MyHealth.this, data, Toast.LENGTH_SHORT).show();
+                        }else{
+                            new BackgroundProcess().execute();
                         }
                     } catch (JSONException je) {
                         je.printStackTrace();
@@ -385,7 +393,7 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
+                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);
@@ -484,7 +492,7 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = (weightInDouble)/ (heightInDouble * heightInDouble);
+                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);

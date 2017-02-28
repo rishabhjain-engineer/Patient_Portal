@@ -3,6 +3,7 @@ package adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,9 +74,21 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
-            role.setText(list.get(position).get("role"));
-            designation.setText(list.get(position).get("designation"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
+
+            if(!TextUtils.isEmpty(list.get(position).get("role")) && !"null".equalsIgnoreCase(list.get(position).get("role"))){
+                role.setVisibility(View.VISIBLE);
+                role.setText(list.get(position).get("role"));
+            }
+            if(!TextUtils.isEmpty(list.get(position).get("designation")) && !"null".equalsIgnoreCase(list.get(position).get("designation"))){
+                role.setVisibility(View.VISIBLE);
+                designation.setText(list.get(position).get("designation"));
+            }
+
 
         }else  if(whichactivity.equalsIgnoreCase("Residence")){
 
@@ -88,7 +101,11 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
 
         }else if(whichactivity.equalsIgnoreCase("Travel")){
               top1.setTypeface(null, Typeface.NORMAL);
@@ -109,7 +126,11 @@ public class Custom_profile_adapter extends BaseAdapter {
             }else{
                 top4.setText(list.get(position).get("country"));
             }
-            top5.setText(list.get(position).get("from") + " - " + list.get(position).get("to"));
+            String fromDate = list.get(position).get("from");
+            String toDate = list.get(position).get("to");
+            fromDate = fromDate.replace("00/","");
+            toDate = toDate.replace("00/","");
+            top5.setText(fromDate + " - " + toDate);
         }
 
 

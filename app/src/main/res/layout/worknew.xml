@@ -10,292 +10,375 @@
         android:layout_margin="17dp"
         android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Company Name*:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/etContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textCapWords"
-            android:nextFocusDown="@+id/etSubject"
-            android:singleLine="true" />
-
-
-        <TextView
-            android:id="@+id/designation_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Designation:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/designation_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Team Lead"
-            android:inputType="textCapWords"
-            android:nextFocusDown="@+id/etSubject"
-            android:singleLine="true" />
-
-
-
-        <TextView
-            android:id="@+id/role_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Role:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/role_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Software Development"
-            android:inputType="textCapWords"
-            android:nextFocusDown="@+id/etSubject"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/adtxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Address:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/etSubject"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:ems="10"
-            android:gravity="top"
-            android:inputType="textMultiLine|textCapWords"
-
-            android:maxLines="4"
-
-            />
-
         <LinearLayout
-            android:id="@+id/hed"
+            android:id="@+id/layout_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-
-                android:layout_width="0dp"
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
+                android:text="Company Name*:"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/etContact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:ems="10"
-                android:text="City*:"
-                android:textColor="@android:color/black"
+                android:inputType="textCapWords"
+                android:nextFocusDown="@+id/etSubject"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:id="@+id/designation_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Designation:"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/designation_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Team Lead"
+                android:inputType="textCapWords"
+                android:nextFocusDown="@+id/etSubject"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:id="@+id/role_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Industry"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/role_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Technology"
+                android:inputType="textCapWords"
+                android:nextFocusDown="@+id/etSubject"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/adtxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Address*:"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/etSubject"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:gravity="top"
+                android:inputType="textMultiLine|textCapWords"
+                android:maxLines="4"
 
                 />
 
+            <LinearLayout
+                android:id="@+id/hed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+
+                android:orientation="horizontal">
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="City*:"
+                    android:textColor="@android:color/black"
+
+                    />
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="State:"
+
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editText5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:nextFocusDown="@+id/editText6"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/editText6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:nextFocusDown="@+id/editText7"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/h2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:layout_marginTop="5dp">
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="Country*:"
+                    android:textColor="@android:color/black"
+
+                    />
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="Postal code:"
+
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editText7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/down_arrow"
+                    android:editable="false"
+                    android:ems="10"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/editText8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:nextFocusDown="@+id/etName"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/h3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/L2"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:text="From Date*:"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:text="To Date*:"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/L2"
+                android:visibility="visible">
+
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="date"
+                    android:nextFocusDown="@+id/editText9" />
+
+                <EditText
+                    android:id="@+id/editText9"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="date" />
+
+                <CheckBox
+                    android:id="@+id/cbPresentWork"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/editText9"
+                    android:text="Present"
+                    android:textColor="@android:color/black"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/spinner_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Spinner
+                            android:id="@+id/from_month"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <Spinner
+                            android:id="@+id/from_year"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/h34"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    \
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Spinner
+                            android:id="@+id/to_month"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <Spinner
+                            android:id="@+id/to_year"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="State*:"
-
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
-
-            <EditText
-                android:id="@+id/editText5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textCapWords"
-                android:nextFocusDown="@+id/editText6"
-                android:singleLine="true"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/editText6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textCapWords"
-                android:nextFocusDown="@+id/editText7"
-                android:singleLine="true"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/h2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            android:layout_marginTop="5dp">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="Country*:"
-                android:textColor="@android:color/black"
-
-                />
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="Postal code:"
-
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
-
-            <EditText
-                android:id="@+id/editText7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/down_arrow"
-                android:editable="false"
-                android:ems="10"
-                android:singleLine="true"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/editText8"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="10"
-                android:nextFocusDown="@+id/etName"
-                android:singleLine="true"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/h3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/L2"
-
-            android:layout_marginTop="5dp">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-
-                android:text="From Date*:"
-
-                android:textColor="@android:color/black" />
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:text="To Date*:"
-                android:textColor="@android:color/black" />
-
-            <CheckBox
+                android:id="@+id/not_remember_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:text="Present"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:text="@string/not_remembered"
+                android:textColor="@color/text_color_blue"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
-                android:visibility="invisible" />
+            <Button
+                android:id="@+id/bAdd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/header_color"
+                android:textColor="@color/white"
+                android:text="ADD" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/L2"
-
-            >
-
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="date"
-                android:nextFocusDown="@+id/editText9" />
-
-            <EditText
-                android:id="@+id/editText9"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="date" />
-
-            <CheckBox
-                android:id="@+id/cbPresentWork"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/editText9"
-                android:text="Present"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/bAdd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:background="@color/header_color"
-            android:layout_marginTop="10dp"
-            android:text="ADD" />
 
         <ListView
             android:id="@+id/list"
