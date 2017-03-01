@@ -1039,7 +1039,10 @@ public class update extends BaseActivity {
                         @Override
                         public void run() {
                             Log.i("ayaz", "thread: "+Thread.currentThread().getName());
-                            new GetImagAsyncTask(image_show).execute();
+                           // new GetImagAsyncTask(image_show).execute();
+                            ImageLoader imgLoader = new ImageLoader(getApplicationContext());
+                            int stub_id = R.drawable.ic_launcher;
+                            imgLoader.DisplayImage(image_show, stub_id, dp);
                         }
                     });
                     verify = "1";
