@@ -60,6 +60,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -81,8 +82,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -143,7 +146,7 @@ public class update extends BaseActivity {
     private String[] nationlist;
     private Button finishbtn;
     private String nationid;
-    private ImageButton dp, dpchange;
+    private ImageView dp, dpchange;
     private byte[] byteArray;
     private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
     private String email_varification, mobile_varification;
@@ -234,8 +237,8 @@ public class update extends BaseActivity {
         religion = (EditText) findViewById(R.id.editText9);
         finishbtn = (Button) findViewById(R.id.bSend);
 
-        dp = (ImageButton) findViewById(R.id.dp);
-        dpchange = (ImageButton) findViewById(R.id.dpChange);
+        dp = (ImageView) findViewById(R.id.dp);
+        dpchange = (ImageView) findViewById(R.id.dpChange);
 
         father = (EditText) findViewById(R.id.father);
         husband = (EditText) findViewById(R.id.husband);
@@ -1009,18 +1012,11 @@ public class update extends BaseActivity {
                     System.out.println("oldfile:" + oldfile1);
                 }
 
-                try {
 
-                    if (subArray.getJSONObject(0).getString("ThumbImage")
-                            .matches((".*[a-kA-Zo-t]+.*")))
-                    // if
-                    // (subArray.getJSONObject(0).getString("ThumbImage").contains("Don't Show Images"))
+                if (subArray.getJSONObject(0).getString("ThumbImage").matches((".*[a-kA-Zo-t]+.*"))) {
+                    final String image_show = path + subArray.getJSONObject(0).getString("Image");
 
-                    {
-                        String image_show = path
-                                + subArray.getJSONObject(0).getString("Image");
-
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
+                     /*   bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
 
                         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                                 bitmap.getHeight(), Config.ARGB_8888);
@@ -1038,19 +1034,37 @@ public class update extends BaseActivity {
                         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
                         canvas.drawBitmap(bitmap, rect, rect, paint);
 
-                        dp.setImageBitmap(output);
-                        verify = "1";
+                        dp.setImageBitmap(output);*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("ayaz", "thread: "+Thread.currentThread().getName());
+                           // new GetImagAsyncTask(image_show).execute();
+                            ImageLoader imgLoader = new ImageLoader(getApplicationContext());
+                            int stub_id = R.drawable.ic_launcher;
+                            imgLoader.DisplayImage(image_show, stub_id, dp);
+                        }
+                    });
+                    verify = "1";
 
-                    } else if (gender.equalsIgnoreCase("Male")) {
-                        dp.setImageResource(R.drawable.update);
-                    } else {
-                        dp.setImageResource(R.drawable.female_white);
-                    }
+                } else if (gender.equalsIgnoreCase("Male")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dp.setImageResource(R.drawable.update);
+                        }
+                    });
 
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dp.setImageResource(R.drawable.female_white);
+                        }
+                    });
+
                 }
+
 
                 basic = new JSONObject();
                 try {
@@ -1175,93 +1189,40 @@ public class update extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode + ", " + requestCode);
         try {
-           /* UploadProfileService servi=new UploadProfileService();
-            servi.setRefresh(update.this);*/
+
             if (requestCode == PICK_FROM_GALLERY) {
-
                 Uri selectedImageUri = data.getData();
-
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
-
                 File imageFile = new File(path);
-
                 long check = ((imageFile.length() / 1024));
                 if (check < 2500) {
-
                     Intent intent = new Intent(this, UploadProfileService.class);
-                    //oldimage,oldthumbimage,oldimagename,path
                     intent.putExtra(UploadService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
                     intent.putExtra("oldimage", oldimage);
-
                     intent.putExtra("oldthumbimage", oldthumbimage);
                     startService(intent);
 
-
-                    System.out.println("After Service");
-
-                    String tempPath = getPath(selectedImageUri, update.this);
+                    /*String tempPath = getPath(selectedImageUri, update.this);
                     Bitmap bm;
                     BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
                     btmapOptions.inSampleSize = 4;
                     bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
                     // vault_adapter.notifyDataSetChanged();
                     if (bm != null) {
-
-                        System.out.println("in onactivity");
                         byteArrayOutputStream = new ByteArrayOutputStream();
                         bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
                         byteArray = byteArrayOutputStream.toByteArray();
-
                         pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
                         picname = "b.jpg";
                         pic = "data:image/jpeg;base64," + pic;
-                        //  vault_adapter.notifyDataSetChanged();
-
-                    }
-
+                    }*/
                 } else {
-
                     Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
-
                 }
             }
 
-            if (requestCode == PICK_FROM_CAMERA) {
-
-               /* Bundle extras = data.getExtras();
-                Bitmap bitmap1 = (Bitmap) extras.get("data");
-
-                bitmap = Bitmap.createScaledBitmap(bitmap1, 250, 250, true);
-
-                Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                        bitmap.getHeight(), Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, bitmap.getWidth(),
-                        bitmap.getHeight());
-
-                paint.setAntiAlias(true);
-                canvas.drawARGB(0, 0, 0, 0);
-                canvas.drawCircle(bitmap.getWidth() / 2,
-                        bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
-                paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-                canvas.drawBitmap(bitmap, rect, rect, paint);
-
-                dp.setImageBitmap(output);
-                verify = "1";
-                byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100,
-                        byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream.toByteArray();
-                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                pic = "data:image/jpeg;base64," + pic;
-                picname = "b.jpg";*/
-
-
+           if (requestCode == PICK_FROM_CAMERA) {
                 Uri selectedImageUri = Imguri;
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
@@ -1274,7 +1235,6 @@ public class update extends BaseActivity {
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
                         intent.putExtra("add_path", "");
                         intent.putExtra("oldimage", oldimage);
-
                         intent.putExtra("oldthumbimage", oldthumbimage);
                         startService(intent);
 
@@ -1289,19 +1249,76 @@ public class update extends BaseActivity {
                         pic = "data:image/jpeg;base64," + pic;
                         picname = "camera.jpg";
                     }
-                    // startActivity(getIntent());
-
                 } else {
                     Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
                 }
-
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private class GetImagAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private String imageUrl;
+        private Bitmap mBitmap;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mBitmap = downloadImage();
+            return null;
+        }
+
+        public GetImagAsyncTask(String imagrUrl) {
+            imageUrl = imagrUrl;
+        }
+
+        // Sets the Bitmap returned by doInBackground
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.i("ayaz", "onPostExecute thread: "+Thread.currentThread().getName());
+            dp.setImageBitmap(mBitmap);
+            dp.invalidate();
+        }
+
+        // Creates Bitmap from InputStream and returns it
+        private Bitmap downloadImage() {
+            Bitmap bitmap = null;
+            InputStream stream = null;
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inSampleSize = 1;
+
+            try {
+                stream = getHttpConnection(imageUrl);
+                bitmap = BitmapFactory.decodeStream(stream, null, bmOptions);
+                stream.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        // Makes HttpURLConnection and returns InputStream
+        private InputStream getHttpConnection(String urlString)
+                throws IOException {
+            InputStream stream = null;
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+
+            try {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                httpConnection.setRequestMethod("GET");
+                httpConnection.connect();
+
+                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    stream = httpConnection.getInputStream();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return stream;
+        }
     }
 
     public String getPath(Uri uri, Activity activity) {
@@ -1519,6 +1536,7 @@ public class update extends BaseActivity {
         return path;
     }
 
+
     private void emailAlreadyRegistered() {
         final Dialog dialog = new Dialog(update.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1712,12 +1730,19 @@ public class update extends BaseActivity {
             return null;
         }
 
+        Bitmap bitmap;
+
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            Bitmap bitmap = BitmapFactory
-                    .decodeStream(inputStream);
+            bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap = getCroppedBitmap(bitmap);
-            dp.setImageBitmap(bitmap);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dp.setImageBitmap(bitmap);
+                }
+            });
+
             verify = "1";
             byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100,
