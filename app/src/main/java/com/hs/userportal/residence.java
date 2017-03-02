@@ -109,7 +109,7 @@ public class residence extends BaseActivity {
     ArrayList<String> years1 = new ArrayList<String>();
     private static String mFromCompValue = null, mToCompValue = null;
     private TextView mFromDateNotRemembered , mToDateNotRemembered;
-    private boolean mIsNotRemembered = false, mIsDateValid = true, mIsPresentDateCheck = false;
+    private boolean mIsNotRemembered = false, mIsDateValid = true, mIsPresentDateCheck = true;
     private LinearLayout  mEditBoxContainer;
     private RelativeLayout mDateEditTextContainerRL , mSpinnerContainerRL , mFromDateSpinnerContainer , mToDateSpinnerContainer;
 
@@ -598,39 +598,42 @@ public class residence extends BaseActivity {
             public void onClick(View v) {
 
                 mIsDateValid = true ;
+                mIsPresentDateCheck = true ;
+                boolean isValid = true ;
 
                 mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
                 mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
-                boolean isValid = false ;
+
                 if (mIsNotRemembered == false) {
                     isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
                     if (isValid == false) {
                         mIsDateValid = false ;
-                        showAlertMessage("Start date must be smaller than End date.");
+                       /* showAlertMessage("Start date must be smaller than End date.");*/
                     }
                 } else {
                     isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
                     if (isValid == false) {
                         mIsDateValid = false ;
-                        showAlertMessage("Start date must be smaller than End date.");
+                        /*showAlertMessage("Start date must be smaller than End date.");*/
                     }
                 }
 
 
-              
+
                 if (mIsNotRemembered == false) {
                     mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
                     if (mIsPresentDateCheck == false) {
-                        mIsDateValid = false;
-                        showAlertMessage("From Date cannot be greater than Present Date");
+                        mIsPresentDateCheck = false ;
+                      /*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*/
                     }
                 } else if(mIsNotRemembered == true){
-
                     mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  "MM/yyyy");
                     if (mIsPresentDateCheck == false) {
-                        mIsDateValid = false;
-                        showAlertMessage("From Date cannot be greater than Present Date");
+                        mIsPresentDateCheck = false ;
+                      /*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*/
                     }
                 }
                 if (city.getText().toString().equals("") || country.getText().toString().equals("") || house.getText().toString().equals("") || TextUtils.isEmpty(add.getEditableText().toString())) {
@@ -638,10 +641,13 @@ public class residence extends BaseActivity {
                 }else if (mIsNotRemembered == false && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
                     showAlertMessage("Mandatory fields can not be left Blank !");
                 } else if (mIsDateValid == false) {
-                    showAlertMessage("Invalid Dates.");
+                    showAlertMessage("Start date must be smaller than End date");
                 } else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
                     showAlertMessage("Postal code should be greater than three digits");
-                } else {
+                }else if(mIsPresentDateCheck == false){
+                    showAlertMessage("From date cannot be greater than Present date");
+                }
+                else {
                     mFinalFromDate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                     mFinalToDate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
 
