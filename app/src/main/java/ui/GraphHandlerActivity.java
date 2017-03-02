@@ -1,6 +1,7 @@
 package ui;
 
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -152,7 +153,7 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForMonthly(String date1, String date2) {
 
-        // from first-1 to last+1
+       /* // from first-1 to last+1
         String dateArray[] = date1.split("/");
         String monthInString = dateArray[1];
         String yearInString = dateArray[2];
@@ -183,6 +184,53 @@ public class GraphHandlerActivity extends BaseActivity {
         } else {
             monthInInt2 = monthInInt2 + 2;
         }
+
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
+
+        String dateArray[] = date1.split("/");
+        String dayInString = dateArray[0];
+        String monthInString = dateArray[1];
+        String yearInString = dateArray[2];
+        int dayInInt = Integer.parseInt(dayInString);
+        int monthInInt = Integer.parseInt(monthInString);
+        int yearInInt = Integer.parseInt(yearInString);
+        //int mont = Integer.parseInt(month);
+        if (dayInInt == 1) {
+            if (monthInInt == 1) {
+                monthInInt = 12;
+                yearInInt = yearInInt - 1;
+            } else {
+                monthInInt = monthInInt - 1;
+            }
+
+        }
+        date1 = "01/" + monthInInt + "/" + yearInInt;
+
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+        //int mont = Integer.parseInt(month);
+        if (isLastDateOfMonth(date2)) {
+            if (monthInInt2 == 12) {
+                monthInInt2 = 2;
+                yearInInt2 = yearInInt2 + 1;
+            } else if (monthInInt2 == 11) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else {
+                monthInInt2 = monthInInt2 + 2;
+            }
+        } else {
+            if (monthInInt2 == 12) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else {
+                monthInInt2 = monthInInt2 + 1;
+            }
+        }
+
 
         date2 = "01/" + monthInInt2 + "/" + yearInInt2;
 
@@ -220,6 +268,8 @@ public class GraphHandlerActivity extends BaseActivity {
     }
 
     protected JSONArray getJsonForQuaterly(String date1, String date2) {
+
+        /* //One previous and one later quater is Included
         String dateArray1[] = date1.split("/");
         String monthInString1 = dateArray1[1];
         String yearInString1 = dateArray1[2];
@@ -255,6 +305,61 @@ public class GraphHandlerActivity extends BaseActivity {
             monthInInt2 = 4;
             yearInInt2 = yearInInt2 + 1;
         }
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
+
+        String dateArray1[] = date1.split("/");
+        String dayInString1 = dateArray1[0];
+        String monthInString1 = dateArray1[1];
+        String yearInString1 = dateArray1[2];
+        int dayInInt1 = Integer.parseInt(dayInString1);
+        int monthInInt1 = Integer.parseInt(monthInString1);
+        int yearInInt1 = Integer.parseInt(yearInString1);
+        if (dayInInt1 == 1) {
+            if (monthInInt1 == 1) {
+                monthInInt1 = 12;
+                yearInInt1 = yearInInt1 - 1;
+            } else if (monthInInt1 == 4) {
+                monthInInt1 = 1;
+            } else if (monthInInt1 == 07) {
+                monthInInt1 = 4;
+            } else if (monthInInt1 == 10) {
+                monthInInt1 = 7;
+            }
+        }
+        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
+        ///////////////////////////////////////////////////////////////////////
+
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+
+        if(isLastDateOfMonth(date2)){
+            if (monthInInt2 <= 3) {
+                monthInInt2 = 07;
+            } else if (monthInInt2 <= 6) {
+                monthInInt2 = 10;
+            } else if (monthInInt2 <= 9) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else if (monthInInt2 <= 12) {
+                monthInInt2 = 4;
+                yearInInt2 = yearInInt2 + 1;
+            }
+        }else{
+            if (monthInInt2 <= 3) {
+                monthInInt2 = 04;
+            } else if (monthInInt2 <= 6) {
+                monthInInt2 = 07;
+            } else if (monthInInt2 <= 9) {
+                monthInInt2 = 10;
+            } else if (monthInInt2 <= 12) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            }
+        }
+
         date2 = "01/" + monthInInt2 + "/" + yearInInt2;
 
 
@@ -292,6 +397,7 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForSemiAnnually(String date1, String date2) {
 
+         /*//One previous and one later semiYear is Included
         String dateArray1[] = date1.split("/");
         String monthInString1 = dateArray1[1];
         String yearInString1 = dateArray1[2];
@@ -317,6 +423,30 @@ public class GraphHandlerActivity extends BaseActivity {
             yearInInt2 = yearInInt2 + 1;
         } else {
             monthInInt2 = 7;
+            yearInInt2 = yearInInt2 + 1;
+        }
+        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
+
+        String dateArray1[] = date1.split("/");
+        String monthInString1 = dateArray1[1];
+        String yearInString1 = dateArray1[2];
+        int monthInInt1 = Integer.parseInt(monthInString1);
+        int yearInInt1 = Integer.parseInt(yearInString1);
+        if (monthInInt1 <= 6) {
+            monthInInt1 = 1;
+        } else {
+            monthInInt1 = 7;
+        }
+        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
+        String dateArray2[] = date2.split("/");
+        String monthInString2 = dateArray2[1];
+        String yearInString2 = dateArray2[2];
+        int monthInInt2 = Integer.parseInt(monthInString2);
+        int yearInInt2 = Integer.parseInt(yearInString2);
+        if (monthInInt2 <= 6) {
+            monthInInt2 = 7;
+        } else {
+            monthInInt2 = 1;
             yearInInt2 = yearInInt2 + 1;
         }
         date2 = "01/" + monthInInt2 + "/" + yearInInt2;
@@ -358,13 +488,14 @@ public class GraphHandlerActivity extends BaseActivity {
         String dateArray1[] = date1.split("/");
         String yearInString1 = dateArray1[2];
         int yearInInt1 = Integer.parseInt(yearInString1);
-        yearInInt1 = yearInInt1 - 1;
+        //yearInInt1 = yearInInt1 - 1;  //For one year before
         date1 = "01/01/" + yearInInt1;
 
         String dateArray2[] = date2.split("/");
         String yearInString2 = dateArray2[2];
         int yearInInt2 = Integer.parseInt(yearInString2);
-        yearInInt2 = yearInInt2 + 2;
+        //yearInInt2 = yearInInt2 + 2;  //For one year after
+        yearInInt2 = yearInInt2 + 1;    //For current year
         date2 = "01/01/" + yearInInt2;
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
@@ -398,50 +529,33 @@ public class GraphHandlerActivity extends BaseActivity {
 
     }
 
+    private boolean isLastDateOfMonth(String date1) {
 
-  /*  protected JSONArray getInitialJsonForMonthly(String date1, String date2) {
-
-        if(date1.contains("T")){
-            date1 = date1.replaceAll("-", "/");
-            date2 = date1.replaceAll("-", "/");
-
-            int  indexOfT = date1.indexOf("T");
-            date1 = date1.substring(0, indexOfT);
-            date2 = date2.substring(0,indexOfT);
-        }
-        String dateArray[] = date1.split("/");
-        String month = dateArray[1];
-        int mont = Integer.parseInt(month);
-        mont = mont + 1;
-        //date1 = "01/" + mont + "/" + dateArray[0];
-        date1 = dateArray[0] + "/" + mont + "/01";
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd");
+        String date2 = null;
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
         Calendar beginCalendar = Calendar.getInstance();
-        Calendar finishCalendar = Calendar.getInstance();
         try {
             beginCalendar.setTime(formater.parse(date1));
-            finishCalendar.setTime(formater.parse(date2));
+            beginCalendar.set(Calendar.DAY_OF_MONTH, beginCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+            date2 = formater.format(beginCalendar.getTime());
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        JSONArray jsonArray = new JSONArray();
-        while (beginCalendar.before(finishCalendar)) {
-            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-            } catch (ParseException e) {
-                e.printStackTrace();
+        boolean result = false;
+        if (date1 != null && date2 != null) {
+            String date1Array[] = date1.split("/");
+            String date2Array[] = date2.split("/");
+            int day1Date = Integer.parseInt(date1Array[0]);
+            int day2Date = Integer.parseInt(date2Array[0]);
+            if (day1Date == day2Date) {
+                result = true;
             }
-            Log.i("ayaz", "Date: " + date);
-            long epoch = date.getTime();
-            JSONArray innerJsonArray = new JSONArray();
-            innerJsonArray.put(epoch);
-            jsonArray.put(innerJsonArray);
-            beginCalendar.add(Calendar.MONTH, 1);
         }
+        return result;
+    }
 
-        return jsonArray;
-    }*/
+
 }
