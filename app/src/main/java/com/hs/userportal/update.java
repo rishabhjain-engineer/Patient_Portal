@@ -1295,12 +1295,22 @@ public class update extends BaseActivity {
     }
 
     private void onCaptureImageResult(Intent data) {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            Imguri = Uri.fromFile(photo);
+        }
+        //////////////////
         Uri selectedImageUri = Imguri;
         String path = getPathFromContentUri(selectedImageUri);
-        System.out.println(path);
         File imageFile = new File(path);
         long check = ((imageFile.length() / 1024));
-        if (check < 4500 && check != 0) {
+        //if (check < 10000 && check != 0) {
 
             Intent intent = new Intent(this, UploadProfileService.class);
             intent.putExtra(UploadService.ARG_FILE_PATH, path);
@@ -1331,9 +1341,9 @@ public class update extends BaseActivity {
             dp.setImageBitmap(thumbnail);
 
 
-        } else {
-            Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
-        }
+       /* } else {
+            Toast.makeText(this, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+        }*/
 
     }
 
