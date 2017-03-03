@@ -641,9 +641,43 @@ public class residence extends BaseActivity {
 
                 mIsDateValid = true ;
                 mIsPresentDateCheck = true ;
+                case1 = false;  case2 = false;  case3 = false; case4 = false ;
 
                 mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
                 mFinalToDate = mToMonthValue + "/" + mToYearValue;
+
+
+                    mFromCompValue = from.getText().toString() ;
+                    mToCompValue = to.getText().toString() ;
+
+                if(mFromCompValue != null) {
+                    String[] test  = mFromCompValue.split("/") ;
+                    if(test.length >= 2){
+                        String test1 = test[1] ;
+                        String test2 = test[2] ;
+                        mTempFromMonthYearValue = test1 + "/" + test2 ;
+                    }
+
+
+                }
+
+                if(mToCompValue != null) {
+                    String[] abc  = mToCompValue.split("/") ;
+                    if(abc.length >=2) {
+                        String abc1 = abc[1] ;
+                        String abc2 = abc[2] ;
+                        mTempToMonthYearValue = abc1 + "/" + abc2 ;
+                    }
+                }
+
+
+
+
+
+                Log.e("Rishabh " ," from date value: = "+mFromCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempFromMonthValue) ;
+                Log.e("Rishabh " ," from date value: = "+mToCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempToMonthValue) ;
 
 
                 if( mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == false) {        // Both Spinner Not Visible        ;  CASE 1
@@ -679,8 +713,8 @@ public class residence extends BaseActivity {
 
                 else if (mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == true) {   // fromdate spinner Not Visible and todate spinner Visible   : CASE 4
                     String dateFormat = "MM/yyyy" ;
-                    mIsDateValid =  Utils.isDateValid(mTempFromMonthValue, mFinalToDate, dateFormat);
-                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthValue,  dateFormat);
+                    mIsDateValid =  Utils.isDateValid(mTempFromMonthYearValue, mFinalToDate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthYearValue,  dateFormat);
                     case4 = true ;
                     Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
                     Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
@@ -993,6 +1027,7 @@ public class residence extends BaseActivity {
                     country.setText("");
                     pincode.setText("");
                     from.setText("");
+                    to.setText("");
                     checkedit = "";
                     PatientHistoryId = "";
                     addbtn.setText("ADD");
@@ -1081,6 +1116,7 @@ public class residence extends BaseActivity {
                         country.setText("");
                         pincode.setText("");
                         from.setText("");
+                        to.setText("");
                         year2 = c.get(Calendar.YEAR);
                         month2 = c.get(Calendar.MONTH);
                         day2 = c.get(Calendar.DAY_OF_MONTH);
@@ -1109,7 +1145,7 @@ public class residence extends BaseActivity {
                 country.setText("");
                 pincode.setText("");
                 from.setText("");
-
+                to.setText("");
                 mIsDateValid = false;
                 year2 = c.get(Calendar.YEAR);
                 month2 = c.get(Calendar.MONTH);
