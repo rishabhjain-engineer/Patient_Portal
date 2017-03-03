@@ -28,10 +28,12 @@ public class Utils {
 
     public static boolean isFromDateValid(String startingDate, String myFormatString) {
         boolean isFromDateValid = false ;
+
         long currentTimeMillis = System.currentTimeMillis();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat(myFormatString);
         String dateString = formatter.format(new Date(currentTimeMillis));
         Log.e("Rishabh ", " Present DATE := "+dateString);
+
         try {
             SimpleDateFormat df = new SimpleDateFormat(myFormatString);
             Date startDate = df.parse(startingDate);               // Start Date ; Rishabh
