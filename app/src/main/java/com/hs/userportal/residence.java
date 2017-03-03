@@ -167,7 +167,7 @@ public class residence extends BaseActivity {
         from = (EditText) findViewById(R.id.et_fromdate);
         to = (EditText) findViewById(R.id.et_todate);
         l = (ListView) findViewById(R.id.listView1);
-        present = (CheckBox) findViewById(R.id.cbPresentWork);
+    //    present = (CheckBox) findViewById(R.id.cbPresentWork);
         service = new Services(residence.this);
         update.arrayres = new JSONArray();
 
@@ -1002,7 +1002,7 @@ public class residence extends BaseActivity {
                     year1 = c.get(Calendar.YEAR);
                     month1 = c.get(Calendar.MONTH);
                     day1 = c.get(Calendar.DAY_OF_MONTH);
-                    present.setChecked(false);
+//                    present.setChecked(false);
                     mIsDateValid = false;
 
 
