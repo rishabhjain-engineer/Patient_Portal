@@ -66,7 +66,7 @@ import utils.Utils;
 public class Work extends BaseActivity {
 
     private AlertDialog alertDialog, alert;
-    private static int month2, year2, day2, month1, year1, day1;
+    private static int month2, year2, day2, month1, year1, day1 , mTempFromYearValue , mTempToYearValue;
     private Calendar c;
     private int i = 0;
     private EditText wo, ad, pi, mDesignationEt, mRoleEt;
@@ -103,11 +103,12 @@ public class Work extends BaseActivity {
     private int selection;
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private String mFromMonth, mFromYear, mToMonth, mToYear, mFinalFromDate, mFinalToDate;
-
-    private static String mFromCompValue = null, mToCompValue = null;
+    private static String mFromCompValue = null, mToCompValue = null ,  mTempFromMonthValue   , mTempFromMonthYearValue , mTempToMonthYearValue , mTempToMonthValue;
     private TextView mFromDateNotRemembered , mToDateNotRemembered;
     private LinearLayout mDateEditTextContainerLL, mFromDateSpinnerContainerLL,mToDateSpinnerContainerLL, mEditBoxContainer;
     private boolean mIsNotRemembered = false, mIsDateValid = true, mIsPresentDateCheck = true , mIsFromDateSpinnerVisible = false , mIsToDateSpinnerVisible = false ;
+
+    boolean case1 = false,  case2 = false,  case3 = false, case4 = false ;  // Rishabh : KINDLY ,See Detail of these variable in  ' add.setOnClickListener Section ' .
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +155,48 @@ public class Work extends BaseActivity {
         mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(mIsFromDateSpinnerVisible) {   // Rishabh :  " From Date " spinner is VISIBLE ;
+                    mFromDateNotRemembered.setText(R.string.not_remembered);
+                    from.setVisibility(View.VISIBLE);
+                    mFromDateSpinnerContainerLL.setVisibility(View.GONE);
+                    mIsFromDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " From Date " spinner is  NOT VISIBLE ;
+
+                    mFromDateNotRemembered.setText(R.string.remembered);
+                    from.setVisibility(View.GONE);
+                    mFromDateSpinnerContainerLL.setVisibility(View.VISIBLE);
+                    mIsFromDateSpinnerVisible = true ;
+                }
+
+            }
+        });
+
+        mToDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mIsToDateSpinnerVisible) {   // Rishabh :  " To Date " spinner is VISIBLE ;
+                    mToDateNotRemembered.setText(R.string.not_remembered);
+                    to.setVisibility(View.VISIBLE);
+                    mToDateSpinnerContainerLL.setVisibility(View.GONE);
+                    mIsToDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " To Date " spinner is  NOT VISIBLE ;
+
+                    mToDateNotRemembered.setText(R.string.remembered);
+                    to.setVisibility(View.GONE);
+                    mToDateSpinnerContainerLL.setVisibility(View.VISIBLE);
+                    mIsToDateSpinnerVisible = true ;
+                }
+
+            }
+        });
+
+       /* mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (mIsNotRemembered) {
                     mIsNotRemembered = false;
                     mFromDateNotRemembered.setText(R.string.not_remembered);
@@ -194,7 +237,7 @@ public class Work extends BaseActivity {
                 }
 
             }
-        });
+        });*/
 
 
 
@@ -540,7 +583,54 @@ public class Work extends BaseActivity {
             public void onClick(View v) {
 
 
+                fromdate = mFromMonth + "/" + mFromYear;
+                todate = mToMonth + "/" + mToYear;
+
                 mIsDateValid = true ;
+                mIsPresentDateCheck = true ;
+
+                if( mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == false) {        // Both Spinner Not Visible        ;  CASE 1
+                    String dateFormat = "dd/MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mFromCompValue, mToCompValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  dateFormat);
+                    case1 = true ;
+                    Log.e("Rishabh" , " Both Spinner Not  Visible ") ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if ( mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == true) {   // Both Spinner Visible          : CASE 2
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(fromdate, todate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(fromdate,  dateFormat);
+                    case2 = true ;
+                    Log.e("Rishabh" , "Both Spinner Visible ") ;
+                    Log.e ("Rishabh " ," start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if (mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == false) {    // fromdate spinner Visible and todate spinner not Visible     : CASE 3
+                    String dateFormat = "MM/yyyy" ;
+
+                    mIsDateValid =  Utils.isDateValid(fromdate, mTempToMonthYearValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(fromdate,  dateFormat);
+                    case3 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if (mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == true) {   // fromdate spinner Not Visible and todate spinner Visible   : CASE 4
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mTempFromMonthValue, todate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthValue,  dateFormat);
+                    case4 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                /*mIsDateValid = true ;
                 mIsPresentDateCheck = true ;
                 boolean isValid = true ;
 
@@ -573,7 +663,7 @@ public class Work extends BaseActivity {
                         mIsPresentDateCheck = false ;
                     }
                 }
-
+*/
 
                 if (ad.getText().toString().equals("") || ci.getText().toString().equals("") || co.getText().toString().equals("") || TextUtils.isEmpty(ad.getEditableText().toString()) || wo.getText().toString().equals("") ) {
 
@@ -653,9 +743,16 @@ public class Work extends BaseActivity {
 
 
 
-                else if (mIsNotRemembered == false && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
+                else if (case1 && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
                     showAlertMessage("Mandatory fields can not be left Blank !");
-                } else if (mIsDateValid == false) {
+                }
+                else if(case3 && to.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if(case4 && from.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if (mIsDateValid == false) {
                     showAlertMessage("Start date must be smaller than End date.");
                 } else if (!pi.getText().toString().equals("") && pi.getText().toString().length() < 4) {
                     showAlertMessage("Postal code should be greater than three digits");
@@ -821,8 +918,8 @@ public class Work extends BaseActivity {
             day1 = dayOfMonth;
             year1 = year;
             int month = monthOfYear + 1;
-            String formattedMonth = "" + month;
-            String formattedDayOfMonth = "" + dayOfMonth;
+            String formattedMonth = "" + month1;
+            String formattedDayOfMonth = "" + day1;
 
             if (month < 10) {
 
@@ -832,6 +929,13 @@ public class Work extends BaseActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
+
+            mTempFromMonthValue = formattedMonth ;
+            mTempFromYearValue = year ;
+            mTempFromMonthYearValue = mTempFromMonthValue + "/" + mTempFromYearValue ;
+
+            Log.e("Rishabh " ,  " m temp from moth year value ; == " +mTempFromMonthYearValue) ;
+
             from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
             mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
@@ -860,11 +964,26 @@ public class Work extends BaseActivity {
             //fromdate=from.getText().toString();
             //todate=to.getText().toString();
 
-            if (mIsNotRemembered == false) {
+            /*if (mIsNotRemembered == false) {
                 fromdate = mFromCompValue;
                 todate = mToCompValue;
             } else if (mIsNotRemembered == true) {
                 fromdate = 00 + "/" + mFromMonth + "/" + mFromYear;
+                todate = 00 + "/" + mToMonth + "/" + mToYear;
+            }
+*/
+
+            if (case1){
+                fromdate = mFromCompValue;
+                todate = mToCompValue;
+            }else if(case2) {
+                fromdate = 00 + "/" + mFromMonth + "/" + mFromYear;
+                todate = 00 + "/" + mToMonth + "/" + mToYear;
+            }else if (case3) {
+                fromdate = 00 + "/" + mFromMonth + "/" + mFromYear;
+                todate = mToCompValue;
+            }else if (case4) {
+                fromdate = mFromCompValue;
                 todate = 00 + "/" + mToMonth + "/" + mToYear;
             }
 
@@ -1330,6 +1449,13 @@ public class Work extends BaseActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
+
+            mTempToMonthValue = formattedMonth ;
+            mTempToYearValue = year ;
+            mTempToMonthYearValue = mTempToMonthValue + "/" + mTempToYearValue ;
+
+            Log.e("Rishabh " , " to date kaa  month year value ;;;  " +mTempToMonthYearValue) ;
+
             to.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
             mToCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
