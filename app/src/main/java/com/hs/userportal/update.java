@@ -303,7 +303,8 @@ public class update extends BaseActivity {
             public void onClick(View v) {
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
 
-                    if (fbLinked.equals("true")) {
+                    //if (fbLinked.equals("true")) {
+                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
                         //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
@@ -368,7 +369,9 @@ public class update extends BaseActivity {
                                                 break;
                                             case 1:
 
-                                                File photo = null;
+                                                checkCameraPermission();
+
+                                               /* File photo = null;
                                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                                                     photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
@@ -380,7 +383,7 @@ public class update extends BaseActivity {
                                                     Imguri = Uri.fromFile(photo);
                                                     startActivityForResult(intent1, PICK_FROM_CAMERA);
                                                 }
-
+*/
                                                 break;
                                             default:
                                                 break;
@@ -1259,32 +1262,6 @@ public class update extends BaseActivity {
     }*/
 
 
-    /////////////////////NEW?????????????????????????????????????
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if (userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                }
-                break;
-        }
-    }
-
-    private void galleryIntent() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
-    }
-
-    private void cameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1469,33 +1446,33 @@ public class update extends BaseActivity {
         long check = ((imageFile.length() / 1024));
         //if (check < 10000 && check != 0) {
 
-            Intent intent = new Intent(this, UploadProfileService.class);
-            intent.putExtra(UploadService.ARG_FILE_PATH, path);
-            intent.putExtra("add_path", "");
-            intent.putExtra("oldimage", oldimage);
-            intent.putExtra("oldthumbimage", oldthumbimage);
-            startService(intent);
+        Intent intent = new Intent(this, UploadProfileService.class);
+        intent.putExtra(UploadService.ARG_FILE_PATH, path);
+        intent.putExtra("add_path", "");
+        intent.putExtra("oldimage", oldimage);
+        intent.putExtra("oldthumbimage", oldthumbimage);
+        startService(intent);
 
 
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-            File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+        File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
 
-            FileOutputStream fo;
-            try {
-                destination.createNewFile();
-                fo = new FileOutputStream(destination);
-                fo.write(bytes.toByteArray());
-                fo.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            dp.setImageBitmap(thumbnail);
+        dp.setImageBitmap(thumbnail);
 
 
        /* } else {
@@ -2190,5 +2167,59 @@ public class update extends BaseActivity {
         return output;
     }
 
+    /**
+     * Method to check permission
+     */
+    void checkCameraPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Camera permission has not been granted.
+            requestCameraPermission();
+        } else {
+            takePhoto();
+        }
+    }
+
+    /**
+     * Method to request permission for camera
+     */
+    private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            Log.i("camera", "Received response for Camera permission request.");
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                takePhoto();
+            } else {
+                //Permission not granted
+                Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v("ayaz", "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //resume tasks needing this permission
+        }
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
 
 }
