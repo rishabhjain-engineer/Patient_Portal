@@ -775,7 +775,6 @@ public class logout extends Activity implements View.OnClickListener {
                                             .into(user_pic);*/
 
                                     user_pic.setImageBitmap(output);
-                                    user_pic.setRotation(-90);
                                     //  user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
                                     imageProgress.setVisibility(View.INVISIBLE);
                                 }

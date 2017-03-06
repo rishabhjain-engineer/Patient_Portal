@@ -1533,7 +1533,6 @@ public class update extends BaseActivity {
         protected void onPostExecute(Void result) {
             Log.i("ayaz", "onPostExecute thread: " + Thread.currentThread().getName());
             dp.setImageBitmap(mBitmap);
-            dp.setRotation(-90);
             dp.invalidate();
         }
 
