@@ -105,7 +105,9 @@
 
         <activity
             android:name="com.hs.userportal.update"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- <activity
              android:name=".ViewOrderFiles"
