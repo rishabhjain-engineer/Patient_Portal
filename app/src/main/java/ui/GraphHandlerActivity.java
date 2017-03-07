@@ -27,9 +27,15 @@ import static com.hs.userportal.R.id.date;
 
 public class GraphHandlerActivity extends BaseActivity {
 
+    private List<String> mDateList = new ArrayList<String>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    protected void setDateList(List<String> dateList){
+        mDateList = dateList;
     }
 
     //[1399787880000, 1447669500000, 1448928000000, 1451606400000, 1454284800000, 1456790400000, 1459468800000, 1468195946000];

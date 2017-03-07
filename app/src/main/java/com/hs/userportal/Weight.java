@@ -99,6 +99,7 @@ public class Weight extends GraphHandlerActivity {
     private long mDateMaxValue, mDateMinValue;
     private boolean mIsToAddMaxMinValue = true;
     private RelativeLayout mListViewHeaderRl;
+    private List<String> mDateList = new ArrayList<>();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -272,6 +273,9 @@ public class Weight extends GraphHandlerActivity {
                         }
                     }
                     String fromdate = obj.getString("fromdate");
+                    String dateWithoutHour[] = fromdate.split("T");
+                    mDateList.add(dateWithoutHour[0]);
+
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", weight);
@@ -356,6 +360,7 @@ public class Weight extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (isDataAvailable) {
+                setDateList(mDateList);
                 if (adapter == null) {
                     adapter = new MyHealthsAdapter(Weight.this);
                     adapter.setListData(weight_contentlists);
