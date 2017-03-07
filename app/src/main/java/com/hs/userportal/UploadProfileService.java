@@ -173,8 +173,7 @@ public class UploadProfileService extends IntentService {
 //			String url1 = "http://192.168.1.122:8084/PatientModule/PatientService.asmx/PatientFileVault";
             StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.UploadProfilePic);
             final String url = sttc_holdr.request_Url();
-            jr1 = new JsonObjectRequest(
-                    Request.Method.POST, url, sendData,
+            jr1 = new JsonObjectRequest(Request.Method.POST, url, sendData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {

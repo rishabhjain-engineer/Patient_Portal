@@ -219,7 +219,7 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                 url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                 url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
                 //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
                 //url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
@@ -432,10 +432,7 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;*/
             case BASE_URL:
-                 //url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local ///TODO ayaz
-                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live //TODO ayaz
-                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
-
+                url = BASE_URL; //live //TODO ayaz
                 break;
             /*case LIVELOGIN_URL:
 
@@ -512,8 +509,11 @@ public class StaticHolder {
                 url = BASE_URL + "patientbussinessModel";
                 break;
             case GetQuizData:
-                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData"; ///TODO ayaz for local
-                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData"; //TODO ayaz for live
+                url = BASE_URL + "GetQuizData"; //TODO ayaz for live
+                break;
+            case GetVaccineDetails:
+               // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
                 break;
 
             default:
@@ -569,7 +569,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails
     }
 
 }
