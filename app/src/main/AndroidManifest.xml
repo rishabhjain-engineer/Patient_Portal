@@ -427,6 +427,11 @@
             android:configChanges="orientation|screenSize" />
 
         <activity
+            android:name="ui.VaccineEditActivity"
+            android:configChanges="orientation|screenSize" />
+
+
+        <activity
             android:name="ui.BmiActivity"
             android:configChanges="orientation|screenSize" />
 
