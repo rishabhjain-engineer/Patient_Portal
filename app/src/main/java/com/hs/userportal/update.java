@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -71,6 +72,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1538,19 +1540,20 @@ public class update extends BaseActivity {
         private Bitmap downloadImage() {
             Bitmap bitmap = null;
             InputStream stream = null;
+
+
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inSampleSize = 1;
 
             try {
                 stream = getHttpConnection(imageUrl);
-                bitmap = BitmapFactory.decodeStream(stream, null, bmOptions);
+                bitmap = decodeBitmap(stream , 100 , 100) ;
                 stream.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
             return bitmap;
         }
-
         // Makes HttpURLConnection and returns InputStream
         private InputStream getHttpConnection(String urlString)
                 throws IOException {
@@ -1572,6 +1575,73 @@ public class update extends BaseActivity {
             return stream;
         }
     }
+
+    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth){
+        InputStream copiedStream = getCopiedStream(stream);
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(stream, null, options);
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeStream(copiedStream, null, options);
+        return bitmap;
+    }
+
+    private InputStream getCopiedStream(InputStream inStream)
+    {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        final int buffer_size=1024;
+        try
+        {
+            byte[] bytes=new byte[buffer_size];
+            while(true)
+            {
+                //Read byte from input stream
+
+                int count=inStream.read(bytes, 0, buffer_size);
+                if(count==-1)
+                    break;
+
+                //Write byte from output stream
+                outStream.write(bytes, 0, count);
+            }
+            InputStream copiedStream = new ByteArrayInputStream(outStream.toByteArray());
+            return copiedStream;
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
 
     public String getPath(Uri uri, Activity activity) {
 

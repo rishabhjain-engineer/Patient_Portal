@@ -585,9 +585,33 @@ public class Work extends BaseActivity {
 
                 fromdate = mFromMonth + "/" + mFromYear;
                 todate = mToMonth + "/" + mToYear;
-
+                case1 = false;  case2 = false;  case3 = false; case4 = false ;
                 mIsDateValid = true ;
                 mIsPresentDateCheck = true ;
+
+                mFromCompValue = from.getText().toString() ;
+                mToCompValue = to.getText().toString() ;
+
+                if(mFromCompValue != null) {
+                    String[] test  = mFromCompValue.split("/") ;
+                    if(test.length >= 2){
+                        String test1 = test[1] ;
+                        String test2 = test[2] ;
+                        mTempFromMonthYearValue = test1 + "/" + test2 ;
+                    }
+
+
+                }
+
+                if(mToCompValue != null) {
+                    String[] abc  = mToCompValue.split("/") ;
+                    if(abc.length >=2) {
+                        String abc1 = abc[1] ;
+                        String abc2 = abc[2] ;
+                        mTempToMonthYearValue = abc1 + "/" + abc2 ;
+                    }
+                }
+
 
                 if( mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == false) {        // Both Spinner Not Visible        ;  CASE 1
                     String dateFormat = "dd/MM/yyyy" ;
@@ -622,8 +646,8 @@ public class Work extends BaseActivity {
 
                 else if (mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == true) {   // fromdate spinner Not Visible and todate spinner Visible   : CASE 4
                     String dateFormat = "MM/yyyy" ;
-                    mIsDateValid =  Utils.isDateValid(mTempFromMonthValue, todate, dateFormat);
-                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthValue,  dateFormat);
+                    mIsDateValid =  Utils.isDateValid(mTempFromMonthYearValue, todate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthYearValue,  dateFormat);
                     case4 = true ;
                     Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
                     Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
@@ -1016,6 +1040,7 @@ public class Work extends BaseActivity {
                     co.setText("");
                     pi.setText("");
                     from.setText("");
+                    to.setText("");
                     add.setText("ADD");
                     checkedit = "";
                     PatientHistoryId = "";
