@@ -1,10 +1,11 @@
 package ui;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,10 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.VaccineDetails;
-import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +39,7 @@ public class VaccineActivity extends BaseActivity {
     private ListView mListView;
     private List<VaccineDetails> mVaccineDetailsList = new ArrayList<VaccineDetails>();
     private VaccineAdapter mVaccineAdapter;
+    private Intent mIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,47 +55,49 @@ public class VaccineActivity extends BaseActivity {
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
-    }
 
-    private class GetVaccineDetail extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog mProgressDialog;
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog = new ProgressDialog(VaccineActivity.this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(true);
-        }
+                VaccineDetails selectedItem = (VaccineDetails) mListView.getItemAtPosition(position);
+                mIntent = new Intent(VaccineActivity.this, VaccineEditActivity.class);
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
-        }
+                mIntent.putExtra("Name", selectedItem.getVaccineName());
+                mIntent.putExtra("VaccineNameID", selectedItem.getVaccineID());
+                mIntent.putExtra("VaccineName", selectedItem.getVaccineNameInShort());
+                mIntent.putExtra("AgeAt", selectedItem.getAgeAt());
+                mIntent.putExtra("AgeTo", selectedItem.getAgeTo());
+                mIntent.putExtra("Dose", selectedItem.getVaccineDose());
+                mIntent.putExtra("DoseType", selectedItem.getVaccineDoseType());
+                mIntent.putExtra("comment", selectedItem.getVaccineComment());
+                mIntent.putExtra("VaccineDateTime", selectedItem.getVaccineDateTime());
+                mIntent.putExtra("DoctorNotes", selectedItem.getDoctorNotes());
+                mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
+                startActivity(mIntent);
+
+
+            }
+        });
     }
 
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
 
-    public void sendrequest() {
+    private void sendrequest() {
         mRequestQueue = Volley.newRequestQueue(this);
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Updating Blood group...");
+        mProgressDialog.setMessage("Getting Vaccine Detail...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
         JSONObject sendData = new JSONObject();
         try {
             String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1");
+            sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); ////TODO
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -135,6 +137,7 @@ public class VaccineActivity extends BaseActivity {
                         }
 
                         mVaccineAdapter.setVaccineDetailData(mVaccineDetailsList);
+                        mListView.setAdapter(mVaccineAdapter);
                         mVaccineAdapter.notifyDataSetChanged();
                     }
 
