@@ -34,7 +34,7 @@ public class GraphHandlerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
-    protected void setDateList(List<String> dateList){
+    protected void setDateList(List<String> dateList) {
         mDateList = dateList;
     }
 
@@ -78,6 +78,7 @@ public class GraphHandlerActivity extends BaseActivity {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date1 = null;
         Date date2 = null;
+        boolean prevLoopRun = true ;
         try {
             date1 = dateFormat.parse(startDate);
             date2 = dateFormat.parse(endDate);
@@ -86,46 +87,37 @@ public class GraphHandlerActivity extends BaseActivity {
         }
         Calendar beforePresentDate = Calendar.getInstance();
         beforePresentDate.setTime(date1);
+        beforePresentDate.add(Calendar.DATE, -1);
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date1);
+
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-        beforePresentDate.add(Calendar.DATE, -1);
+
         Log.e("Rishabh ", "Previous date := " + dateFormat.format(beforePresentDate.getTime()));
         JSONArray jsonArray = new JSONArray();
-        if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-            Log.e("Rishabh ", "TOday is monday ");
-            while (beforePresentDate.before(calendar)) {
-                boolean isToQuit = false;
-                if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                    Date dateToConver = beforePresentDate.getTime();
-                    long epoch = dateToConver.getTime();
-                    Log.i("Weekly", "Date: " + dateToConver);
-                    jsonArray.put(epoch);
-                    isToQuit = true;
-                }
-                if (isToQuit) {
-                    break;
-                }
-                beforePresentDate.add(Calendar.DATE, -1);
-            }
 
-        } else {
-            while (beforePresentDate.before(calendar)) {
-                boolean isToQuit = false;
-                if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                    Date dateToConver = beforePresentDate.getTime();
-                    long epoch = dateToConver.getTime();
-                    Log.i("Weekly", "Date: " + dateToConver);
-                    jsonArray.put(epoch);
-                    isToQuit = true;
-                }
-                if (isToQuit) {
-                    break;
-                }
-                beforePresentDate.add(Calendar.DATE, -1);
-            }
+
+        if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY   && !mDateList.contains(startDate))  {
+            prevLoopRun = false ;
         }
+
+        while (beforePresentDate.before(calendar)  && prevLoopRun == true ) {
+            boolean isToQuit = false;
+            if (beforePresentDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                Date dateToConver = beforePresentDate.getTime();
+                long epoch = dateToConver.getTime();
+                Log.i("Weekly", "Date: " + dateToConver);
+                jsonArray.put(epoch);
+                isToQuit = true;
+            }
+            if (isToQuit) {
+                break;
+            }
+            beforePresentDate.add(Calendar.DATE, -1);
+        }
+
 
         Log.e("Rishabh ", "JSon Array size till current date := " + jsonArray.toString());
 
@@ -341,7 +333,7 @@ public class GraphHandlerActivity extends BaseActivity {
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
 
-        if(isLastDateOfMonth(date2)){
+        if (isLastDateOfMonth(date2)) {
             if (monthInInt2 <= 3) {
                 monthInInt2 = 07;
             } else if (monthInInt2 <= 6) {
@@ -353,7 +345,7 @@ public class GraphHandlerActivity extends BaseActivity {
                 monthInInt2 = 4;
                 yearInInt2 = yearInInt2 + 1;
             }
-        }else{
+        } else {
             if (monthInInt2 <= 3) {
                 monthInInt2 = 04;
             } else if (monthInInt2 <= 6) {
