@@ -280,43 +280,29 @@ public class GraphHandlerActivity extends BaseActivity {
 
     protected JSONArray getJsonForQuaterly(String date1, String date2) {
 
-        /* //One previous and one later quater is Included
-        String dateArray1[] = date1.split("/");
-        String monthInString1 = dateArray1[1];
-        String yearInString1 = dateArray1[2];
-        int monthInInt1 = Integer.parseInt(monthInString1);
-        int yearInInt1 = Integer.parseInt(yearInString1);
-        if (monthInInt1 <= 3) {
-            monthInInt1 = 10;
-            yearInInt1 = yearInInt1 - 1;
-        } else if (monthInInt1 <= 6) {
-            monthInInt1 = 1;
-        } else if (monthInInt1 <= 9) {
-            monthInInt1 = 4;
-        } else if (monthInInt1 <= 12) {
-            monthInInt1 = 7;
-        }
-        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
-        ///////////////////////////////////////////////////////////////////////
+        Date RangeToQuarter = null ;  // set RangeFrom date of quarter
+        Date RangeFromQuarter = null ;   // set RangeTo date of quarter
 
-        String dateArray2[] = date2.split("/");
-        String monthInString2 = dateArray2[1];
-        String yearInString2 = dateArray2[2];
-        int monthInInt2 = Integer.parseInt(monthInString2);
-        int yearInInt2 = Integer.parseInt(yearInString2);
+        Date intialDateofFirstQuarter = null ;
+        Date lastDateofFirstQuarter = null ;
 
-        if (monthInInt2 <= 3) {
-            monthInInt2 = 07;
-        } else if (monthInInt2 <= 6) {
-            monthInInt2 = 10;
-        } else if (monthInInt2 <= 9) {
-            monthInInt2 = 1;
-            yearInInt2 = yearInInt2 + 1;
-        } else if (monthInInt2 <= 12) {
-            monthInInt2 = 4;
-            yearInInt2 = yearInInt2 + 1;
+
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            RangeFromQuarter =  formater.parse(date1);
+            RangeToQuarter =  formater.parse(date2);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
+
+        try {
+            RangeFromQuarter = formater.parse(date1);
+            RangeToQuarter = formater.parse(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         String dateArray1[] = date1.split("/");
         String dayInString1 = dateArray1[0];
@@ -337,7 +323,14 @@ public class GraphHandlerActivity extends BaseActivity {
                 monthInInt1 = 7;
             }
         }
-        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
+
+        if(monthInInt1 < 10) {
+            date1 = "01/0" + monthInInt1 + "/" + yearInInt1;
+        }else{
+            date1 = "01/" + monthInInt1 + "/" + yearInInt1;
+        }
+
+
         ///////////////////////////////////////////////////////////////////////
 
         String dateArray2[] = date2.split("/");
@@ -348,7 +341,7 @@ public class GraphHandlerActivity extends BaseActivity {
 
         if (isLastDateOfMonth(date2)) {
             if (monthInInt2 <= 3) {
-                monthInInt2 = 07;
+                monthInInt2 = 7;
             } else if (monthInInt2 <= 6) {
                 monthInInt2 = 10;
             } else if (monthInInt2 <= 9) {
@@ -360,9 +353,9 @@ public class GraphHandlerActivity extends BaseActivity {
             }
         } else {
             if (monthInInt2 <= 3) {
-                monthInInt2 = 04;
+                monthInInt2 = 4;
             } else if (monthInInt2 <= 6) {
-                monthInInt2 = 07;
+                monthInInt2 = 7;
             } else if (monthInInt2 <= 9) {
                 monthInInt2 = 10;
             } else if (monthInInt2 <= 12) {
@@ -371,22 +364,54 @@ public class GraphHandlerActivity extends BaseActivity {
             }
         }
 
-        date2 = "01/" + monthInInt2 + "/" + yearInInt2;
+
+        if(monthInInt2 < 10) {
+            date2 = "01/0" + monthInInt2 + "/" + yearInInt2;
+        }else{
+            date2 = "01/" + monthInInt2 + "/" + yearInInt2;
+        }
 
 
-        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar beforeQuarterMonth = Calendar.getInstance();
+        Calendar afterQuarterMonth = Calendar.getInstance();
+
 
         Calendar beginCalendar = Calendar.getInstance();
         Calendar finishCalendar = Calendar.getInstance();
 
         try {
+
+            intialDateofFirstQuarter =  formater.parse(date1);
+            lastDateofFirstQuarter =  formater.parse(date2);
+
             beginCalendar.setTime(formater.parse(date1));
             finishCalendar.setTime(formater.parse(date2));
+
+            beforeQuarterMonth.setTime(formater.parse(date1));
+            afterQuarterMonth.setTime(formater.parse(date2));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        beforeQuarterMonth.add(Calendar.MONTH, -4);
+        afterQuarterMonth.add(Calendar.MONTH, +4);
+
         JSONArray jsonArray = new JSONArray();
+
+        if(mDateList.contains(date1) && intialDateofFirstQuarter == RangeFromQuarter ){
+
+            String dateInString = formater.format(beforeQuarterMonth.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+                Log.i("monthly", "monthly: " + date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            jsonArray.put(epoch);
+        }
+
         while (beginCalendar.before(finishCalendar)) {
             String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
             Date date = null;
@@ -402,6 +427,23 @@ public class GraphHandlerActivity extends BaseActivity {
             // jsonArray.put(innerJsonArray);
             beginCalendar.add(Calendar.MONTH, 3);
         }
+
+
+        if(mDateList.contains(date1) && lastDateofFirstQuarter == RangeToQuarter ){
+
+            String dateInString = formater.format(afterQuarterMonth.getTime()).toUpperCase();
+            Date date = null;
+            try {
+                date = formater.parse(dateInString);
+                Log.i("monthly", "monthly: " + date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            long epoch = date.getTime();
+            jsonArray.put(epoch);
+        }
+
+
         return jsonArray;
 
     }

@@ -49,7 +49,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ObjectPool;
-import com.github.mikephil.charting.utils.Utils;
 
 import org.codehaus.jackson.annotate.JsonValue;
 import org.json.JSONArray;
@@ -72,6 +71,7 @@ import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 public class Weight extends GraphHandlerActivity {
 
@@ -277,7 +277,7 @@ public class Weight extends GraphHandlerActivity {
                     String fromdate = obj.getString("fromdate");
                     String dateWithoutHour[] = fromdate.split("T");
                     String onlyDate = dateWithoutHour[0] ;
-                    String correctDate =  utils.Utils.correctDateFormat(onlyDate);
+                    String correctDate = Utils.correctDateFormat(onlyDate);
                     mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
