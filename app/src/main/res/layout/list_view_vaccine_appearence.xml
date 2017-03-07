@@ -3,63 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:paddingBottom="5dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="8dp"
+    android:paddingTop="5dp">
 
     <TextView
         android:id="@+id/vaccine_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:text="RotaVirus"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/age_at"
+        android:id="@+id/vaccine_acronyms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="20"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/age_to"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="29"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/dose"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dose3"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/dose_type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="5Y"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hi hello"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="2 jan"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/doctor_notes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ky ho rha hai"
+        android:text="xyz"
         android:textColor="@color/black" />
 
 

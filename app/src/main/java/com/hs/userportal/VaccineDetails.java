@@ -1,5 +1,9 @@
 package com.hs.userportal;
 
+import android.text.TextUtils;
+
+import java.util.Comparator;
+
 /**
  * Created by ayaz on 6/3/17.
  */
@@ -104,5 +108,24 @@ public class VaccineDetails {
 
     public void setPatientVaccineId(String patientVaccineId) {
         this.patientVaccineId = patientVaccineId;
+    }
+
+    public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
+
+        public int compare(VaccineDetails firstObject, VaccineDetails secondObject) {
+
+            int flag = 0;
+            if (firstObject.getAgeAt() == secondObject.getAgeAt()) {
+                flag = 0;                           //if both are null return 0
+            } else if (firstObject.getAgeAt() < 0) {
+                flag = 1;
+            } else if (secondObject.getAgeAt() < 0) {
+                flag = -1;
+            } else {
+                flag = (firstObject.getAgeAt() - secondObject.getAgeAt());
+            }
+
+            return flag;
+        }
     }
 }

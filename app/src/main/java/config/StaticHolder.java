@@ -515,6 +515,15 @@ public class StaticHolder {
                // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
                 url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
                 break;
+            case UpdatePatientVaccineDetails:
+                // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                break;
+
+            case InsertIntoPatientVaccineDetails:
+                // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
+                break;
 
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
@@ -569,7 +578,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails
     }
 
 }
