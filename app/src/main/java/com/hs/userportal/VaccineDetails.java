@@ -8,7 +8,7 @@ import java.util.Comparator;
  * Created by ayaz on 6/3/17.
  */
 
-public class VaccineDetails {
+public class VaccineDetails implements Comparable<VaccineDetails>{
 
     private String vaccineName;
     private String vaccineID;
@@ -110,24 +110,19 @@ public class VaccineDetails {
         this.patientVaccineId = patientVaccineId;
     }
 
-    public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
+    @Override
+    public int compareTo(VaccineDetails o) {
+        return this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
+
+    }
+
+  /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
 
         public int compare(VaccineDetails firstObject, VaccineDetails secondObject) {
 
-            int flag = 0;
-            if (firstObject.getAgeAt() == secondObject.getAgeAt()) {
-                flag = 0;                           //if both are null return 0
-            } else if (firstObject.getAgeAt() < 0) {
-                flag = 1;
-            } else if (secondObject.getAgeAt() < 0) {
-                flag = -1;
-            } else {
-                flag = (firstObject.getAgeAt() - secondObject.getAgeAt());
-            }
+            return (firstObject.getAgeAt() - secondObject.getAgeAt());
 
-            return flag;
-
-           /* if (flag == 0) {
+           *//* if (flag == 0) {
                 if (firstObject.getLinkTo() == secondObject.getLinkTo()) {
                     flag = 0;                           //if both are null return 0
                 } else if (TextUtils.isEmpty(firstObject.getLinkTo()) || firstObject.getLinkTo().equalsIgnoreCase("null")) {
@@ -137,7 +132,7 @@ public class VaccineDetails {
                 } else {
                     flag = Integer.parseInt(firstObject.getLinkTo().trim()) - Integer.parseInt(secondObject.getLinkTo().trim());
                 }
-            }*/
+            }*//*
         }
-    }
+    }*/
 }

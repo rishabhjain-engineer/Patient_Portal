@@ -144,6 +144,8 @@ public class VaccineActivity extends BaseActivity {
                         }
 
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
+                        Collections.sort(mVaccineDetailsList);
+
                         mVaccineAdapter.setVaccineDetailData(mVaccineDetailsList);
                         mListView.setAdapter(mVaccineAdapter);
                         mVaccineAdapter.notifyDataSetChanged();
