@@ -60,6 +60,11 @@ public class VaccineEditActivity extends BaseActivity {
         String doseType = intent.getStringExtra("DoseType");
         String date = intent.getStringExtra("VaccineDateTime");
         String notes = intent.getStringExtra("DoctorNotes");
+        if(!TextUtils.isEmpty(date)){
+            String dateInArray[] = date.split(" ");
+            String dateInArray2[] = dateInArray[0].split("-");
+            date = dateInArray2[2] + "/" + dateInArray2[1] + "/" + dateInArray2[0];
+        }
         String comments = intent.getStringExtra("comment");
         String agAt = intent.getStringExtra("AgeAt");
         String ageTo = intent.getStringExtra("AgeTo");
