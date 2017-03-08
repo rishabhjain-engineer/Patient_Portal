@@ -354,7 +354,7 @@ public class update extends BaseActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -386,6 +386,10 @@ public class update extends BaseActivity {
                                                     startActivityForResult(intent1, PICK_FROM_CAMERA);
                                                 }
 */
+                                                break;
+
+                                            case 2:
+                                                new fbImagePull().execute();
                                                 break;
                                             default:
                                                 break;
