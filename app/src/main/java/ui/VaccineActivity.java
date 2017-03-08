@@ -127,17 +127,17 @@ public class VaccineActivity extends BaseActivity {
 
                             VaccineDetails vaccineDetails = new VaccineDetails();
 
-                            vaccineDetails.setVaccineName(jsonObject.optString("Name"));
-                            vaccineDetails.setVaccineID(jsonObject.optString("VaccineNameID"));
-                            vaccineDetails.setVaccineNameInShort(jsonObject.optString("VaccineName"));
+                            vaccineDetails.setVaccineName(jsonObject.isNull("Name")? null: jsonObject.optString("Name"));
+                            vaccineDetails.setVaccineID(jsonObject.isNull("VaccineNameID")? null: jsonObject.optString("VaccineNameID"));
+                            vaccineDetails.setVaccineNameInShort(jsonObject.isNull("VaccineName")? null: jsonObject.optString("VaccineName"));
                             vaccineDetails.setAgeAt(jsonObject.optInt("AgeAt"));
                             vaccineDetails.setAgeTo(jsonObject.optInt("AgeTo"));
-                            vaccineDetails.setVaccineDose(jsonObject.optString("Dose"));
-                            vaccineDetails.setVaccineDoseType(jsonObject.optString("DoseType"));
-                            vaccineDetails.setVaccineComment(jsonObject.optString("Comments"));
-                            vaccineDetails.setVaccineDateTime(jsonObject.optString("VaccineDateTime"));
-                            vaccineDetails.setDoctorNotes(jsonObject.optString("DoctorNotes"));
-                            vaccineDetails.setPatientVaccineId(jsonObject.optString("PatientVaccineId"));
+                            vaccineDetails.setVaccineDose(jsonObject.isNull("Dose")? null: jsonObject.optString("Dose"));
+                            vaccineDetails.setVaccineDoseType(jsonObject.isNull("DoseType")? null: jsonObject.optString("DoseType"));
+                            vaccineDetails.setVaccineComment(jsonObject.isNull("Comments")? null: jsonObject.optString("Comments"));
+                            vaccineDetails.setVaccineDateTime(jsonObject.isNull("VaccineDateTime")? null: jsonObject.optString("VaccineDateTime"));
+                            vaccineDetails.setDoctorNotes(jsonObject.isNull("DoctorNotes")? null: jsonObject.optString("DoctorNotes"));
+                            vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId")? null: jsonObject.optString("PatientVaccineId"));
 
                             mVaccineDetailsList.add(vaccineDetails);
                         }

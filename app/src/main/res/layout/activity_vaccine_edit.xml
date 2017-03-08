@@ -175,6 +175,7 @@
 
         <EditText
             android:id="@+id/date_edit_text"
+            android:focusable="false"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_weight="8"
@@ -203,6 +204,7 @@
 
         <EditText
             android:id="@+id/comment_edit_text"
+            android:focusable="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="8"
