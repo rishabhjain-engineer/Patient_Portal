@@ -126,6 +126,18 @@ public class VaccineDetails {
             }
 
             return flag;
+
+           /* if (flag == 0) {
+                if (firstObject.getLinkTo() == secondObject.getLinkTo()) {
+                    flag = 0;                           //if both are null return 0
+                } else if (TextUtils.isEmpty(firstObject.getLinkTo()) || firstObject.getLinkTo().equalsIgnoreCase("null")) {
+                    flag = 1;
+                } else if (TextUtils.isEmpty(secondObject.getLinkTo()) || secondObject.getLinkTo().equalsIgnoreCase("null")) {
+                    flag = -1;
+                } else {
+                    flag = Integer.parseInt(firstObject.getLinkTo().trim()) - Integer.parseInt(secondObject.getLinkTo().trim());
+                }
+            }*/
         }
     }
 }

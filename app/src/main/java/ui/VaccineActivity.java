@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import adapters.VaccineAdapter;
@@ -142,6 +143,7 @@ public class VaccineActivity extends BaseActivity {
                             mVaccineDetailsList.add(vaccineDetails);
                         }
 
+                        //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         mVaccineAdapter.setVaccineDetailData(mVaccineDetailsList);
                         mListView.setAdapter(mVaccineAdapter);
                         mVaccineAdapter.notifyDataSetChanged();
