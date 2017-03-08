@@ -71,6 +71,7 @@ import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 public class Weight extends GraphHandlerActivity {
 
@@ -247,6 +248,7 @@ public class Weight extends GraphHandlerActivity {
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
@@ -274,8 +276,9 @@ public class Weight extends GraphHandlerActivity {
                     }
                     String fromdate = obj.getString("fromdate");
                     String dateWithoutHour[] = fromdate.split("T");
-                    mDateList.add(dateWithoutHour[0]);
-
+                    String onlyDate = dateWithoutHour[0] ;
+                    String correctDate = Utils.correctDateFormat(onlyDate);
+                    mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", weight);
