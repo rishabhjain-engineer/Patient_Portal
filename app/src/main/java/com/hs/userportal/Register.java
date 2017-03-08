@@ -76,8 +76,9 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import info.hoang8f.android.segmented.SegmentedGroup;
+import ui.BaseActivity;
 
-public class Register extends ActionBarActivity {
+public class Register extends BaseActivity {
 
     private EditText etFirst, etlast, etUser, etPass, etCpass;
     private static EditText etEmail;
@@ -182,10 +183,7 @@ public class Register extends ActionBarActivity {
 
         final Helper helper = new Helper();
 
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
+       setupActionBar();
         etFirst = (EditText) findViewById(R.id.etFirst);
     /*	etlast = (EditText) findViewById(R.id.etlast);*/
         etEmail = (EditText) findViewById(R.id.etEmail);
