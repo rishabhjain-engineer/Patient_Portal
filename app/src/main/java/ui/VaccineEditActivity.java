@@ -163,6 +163,7 @@ public class VaccineEditActivity extends BaseActivity {
         }
 
         if (!TextUtils.isEmpty(date)) {
+            mDateTosend = date;
             mDateEditText.setText(date);
         }
 
