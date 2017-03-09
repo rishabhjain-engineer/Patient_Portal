@@ -24,13 +24,13 @@
         android:text="xyz"
         android:textColor="@color/black" />
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/vaccine_aget_at"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Date"
         android:layout_marginTop="5dp"
-        android:textColor="@color/black" />
+        android:textColor="@color/black" />-->
 
 
 </LinearLayout>

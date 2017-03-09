@@ -51,7 +51,7 @@ public class VaccineAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView name;
         TextView acronyms;
-        TextView date;
+        //TextView date;
 
     }
 
@@ -63,7 +63,7 @@ public class VaccineAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.vaccine_name_tv);
             holder.acronyms = (TextView) convertView.findViewById(R.id.vaccine_acronyms);
-            holder.date = (TextView) convertView.findViewById(R.id.vaccine_aget_at);
+            //holder.date = (TextView) convertView.findViewById(R.id.vaccine_aget_at);
 
 
             convertView.setTag(holder);
@@ -79,7 +79,7 @@ public class VaccineAdapter extends BaseAdapter {
         }
 
 
-        holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
+        //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
 
 
         return convertView;

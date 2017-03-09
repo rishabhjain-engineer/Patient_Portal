@@ -48,6 +48,8 @@ public class PreferenceHelper {
 
         FROM_DATE("null"),
 
+        MESSAGE_AT_SIGN_IN_UP("null"),
+
         TO_DATE("null");
 
         private String defaultValue;

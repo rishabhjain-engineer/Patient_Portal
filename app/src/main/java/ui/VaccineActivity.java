@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -24,7 +25,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import adapters.VaccineAdapter;
 import config.StaticHolder;
@@ -39,8 +42,11 @@ import utils.PreferenceHelper;
 public class VaccineActivity extends BaseActivity {
     private ListView mListView;
     private List<VaccineDetails> mVaccineDetailsList = new ArrayList<VaccineDetails>();
+    private List<VaccineDetails> mFinalVaccineDetailsListToSend = new ArrayList<VaccineDetails>();
     private VaccineAdapter mVaccineAdapter;
     private Intent mIntent;
+    private Map<String, List<VaccineDetails>> listHashMap = new HashMap<>();
+    private List<String> mKeysList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +83,6 @@ public class VaccineActivity extends BaseActivity {
                 mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
 
                 startActivity(mIntent);
-
-
             }
         });
     }
@@ -118,6 +122,9 @@ public class VaccineActivity extends BaseActivity {
                 mProgressDialog.dismiss();
                 String data = null;
                 mVaccineDetailsList.clear();
+                listHashMap.clear();
+                mKeysList.clear();
+                mFinalVaccineDetailsListToSend.clear();
                 try {
                     data = response.optString("d");
                     JSONObject cut = new JSONObject(data);
@@ -128,25 +135,113 @@ public class VaccineActivity extends BaseActivity {
 
                             VaccineDetails vaccineDetails = new VaccineDetails();
 
-                            vaccineDetails.setVaccineName(jsonObject.isNull("Name")? null: jsonObject.optString("Name"));
-                            vaccineDetails.setVaccineID(jsonObject.isNull("VaccineNameID")? null: jsonObject.optString("VaccineNameID"));
-                            vaccineDetails.setVaccineNameInShort(jsonObject.isNull("VaccineName")? null: jsonObject.optString("VaccineName"));
+                            vaccineDetails.setVaccineName(jsonObject.isNull("Name") ? null : jsonObject.optString("Name"));
+                            vaccineDetails.setVaccineID(jsonObject.isNull("VaccineNameID") ? null : jsonObject.optString("VaccineNameID"));
+                            vaccineDetails.setVaccineNameInShort(jsonObject.isNull("VaccineName") ? null : jsonObject.optString("VaccineName"));
                             vaccineDetails.setAgeAt(jsonObject.optInt("AgeAt"));
                             vaccineDetails.setAgeTo(jsonObject.optInt("AgeTo"));
-                            vaccineDetails.setVaccineDose(jsonObject.isNull("Dose")? null: jsonObject.optString("Dose"));
-                            vaccineDetails.setVaccineDoseType(jsonObject.isNull("DoseType")? null: jsonObject.optString("DoseType"));
-                            vaccineDetails.setVaccineComment(jsonObject.isNull("Comments")? null: jsonObject.optString("Comments"));
-                            vaccineDetails.setVaccineDateTime(jsonObject.isNull("VaccineDateTime")? null: jsonObject.optString("VaccineDateTime"));
-                            vaccineDetails.setDoctorNotes(jsonObject.isNull("DoctorNotes")? null: jsonObject.optString("DoctorNotes"));
-                            vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId")? null: jsonObject.optString("PatientVaccineId"));
+                            vaccineDetails.setVaccineDose(jsonObject.isNull("Dose") ? null : jsonObject.optString("Dose"));
+                            vaccineDetails.setVaccineDoseType(jsonObject.isNull("DoseType") ? null : jsonObject.optString("DoseType"));
+                            vaccineDetails.setVaccineComment(jsonObject.isNull("Comments") ? null : jsonObject.optString("Comments"));
+                            vaccineDetails.setVaccineDateTime(jsonObject.isNull("VaccineDateTime") ? null : jsonObject.optString("VaccineDateTime"));
+                            vaccineDetails.setDoctorNotes(jsonObject.isNull("DoctorNotes") ? null : jsonObject.optString("DoctorNotes"));
+                            vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId") ? null : jsonObject.optString("PatientVaccineId"));
 
                             mVaccineDetailsList.add(vaccineDetails);
                         }
-
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
+                        for (int i = 0; i < mVaccineDetailsList.size(); i++) {
+                            VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
+                            if (vaccineDetails.getAgeAt() % 365 == 0) {
+                                int factor = (vaccineDetails.getAgeAt() / 365);
+                                String key = "y" + factor;
+                                if (mKeysList.contains(key)) {
+                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                } else {
+                                    mKeysList.add(key);
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    listHashMap.put(key, vaccineDetailsList);
+                                }
+                            } else if (vaccineDetails.getAgeAt() % 30 == 0) {
+                                int factor = (vaccineDetails.getAgeAt() / 30);
+                                String key = "m" + factor;
+                                if (mKeysList.contains(key)) {
+                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                } else {
+                                    mKeysList.add(key);
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    listHashMap.put(key, vaccineDetailsList);
+                                }
+                            } else if (vaccineDetails.getAgeAt() % 7 == 0) {
+                                int factor = (vaccineDetails.getAgeAt() / 7);
+                                String key = "d" + factor;
+                                if (mKeysList.contains(key)) {
+                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                } else {
+                                    mKeysList.add(key);
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    listHashMap.put(key, vaccineDetailsList);
+                                }
+                            } else {
+                                String key = "a";
+                                if (mKeysList.contains(key)) {
+                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                } else {
+                                    mKeysList.add(key);
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    listHashMap.put(key, vaccineDetailsList);
+                                }
+                            }
 
-                        mVaccineAdapter.setVaccineDetailData(mVaccineDetailsList);
+                        }
+
+                        Collections.sort(mKeysList, Collections.<String>reverseOrder());
+
+                        for (String key : mKeysList) {
+                            List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                            int counter = 0;
+                            VaccineDetails vaccineDetailsObj = null;
+                            for (VaccineDetails vaccineDetails : vaccineDetailsList) {
+                                boolean isToAdd = false;
+                                if (counter == 0) {
+                                    isToAdd = true;
+                                    counter ++;
+                                    if (key.contains("y")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "Year Group");
+                                    } else if (key.contains("m")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "month Group");
+                                    } else if (key.contains("d")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "Week Group");
+                                    } else {
+                                    }
+                                }
+                                if (isToAdd) {
+                                    mFinalVaccineDetailsListToSend.add(vaccineDetailsObj);
+                                }
+                                mFinalVaccineDetailsListToSend.add(vaccineDetails);
+                            }
+                            Log.i("ayaz", "mFinalVaccineDetailsListToSend: " + mFinalVaccineDetailsListToSend.size());
+                        }
+
+                        mVaccineAdapter.setVaccineDetailData(mFinalVaccineDetailsListToSend);
                         mListView.setAdapter(mVaccineAdapter);
                         mVaccineAdapter.notifyDataSetChanged();
                     }
