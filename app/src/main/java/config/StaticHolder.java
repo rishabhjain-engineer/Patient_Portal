@@ -411,17 +411,19 @@ public class StaticHolder {
                 url = BASE_URL + "GetQuizData";
                 break;
             case GetVaccineDetails:
-               // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                // url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
                 break;
             case UpdatePatientVaccineDetails:
-                // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                //https://api.healthscion.com/WebServices/LabService.asmx/
+                // url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
                 break;
 
             case InsertIntoPatientVaccineDetails:
-                // url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+
+                //url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
                 break;
 
             default:

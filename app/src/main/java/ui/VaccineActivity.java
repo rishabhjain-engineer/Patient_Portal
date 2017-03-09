@@ -154,9 +154,18 @@ public class VaccineActivity extends BaseActivity {
                         Collections.sort(mVaccineDetailsList);
                         for (int i = 0; i < mVaccineDetailsList.size(); i++) {
                             VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
-                            if (vaccineDetails.getAgeAt() % 365 == 0) {
-                                int factor = (vaccineDetails.getAgeAt() / 365);
-                                String key = "y" + factor;
+                            if (vaccineDetails.getAgeAt() % 365 == 0 || vaccineDetails.getAgeTo() % 365 == 0) {
+                                int ageAtFactor = 0, ageToFactor = 0;
+                                String key = null;
+                                if(vaccineDetails.getAgeAt() != -1 && vaccineDetails.getAgeTo() == -1){
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 365);
+                                    key = "y" + ageAtFactor;
+                                }else {
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 365);
+                                    ageToFactor = (vaccineDetails.getAgeTo() / 365);
+                                    key = "y" + ageAtFactor + "-" + ageToFactor;
+                                }
+
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -166,9 +175,19 @@ public class VaccineActivity extends BaseActivity {
                                     vaccineDetailsList.add(vaccineDetails);
                                     listHashMap.put(key, vaccineDetailsList);
                                 }
-                            } else if (vaccineDetails.getAgeAt() % 30 == 0) {
-                                int factor = (vaccineDetails.getAgeAt() / 30);
-                                String key = "m" + factor;
+                            } else if (vaccineDetails.getAgeAt() % 30 == 0 || vaccineDetails.getAgeTo() % 30 == 0) {
+
+                                int ageAtFactor = 0, ageToFactor = 0;
+                                String key = null;
+                                if(vaccineDetails.getAgeAt() != -1 && vaccineDetails.getAgeTo() == -1){
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 30);
+                                    key = "m" + ageAtFactor;
+                                }else {
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 30);
+                                    ageToFactor = (vaccineDetails.getAgeTo() / 30);
+                                    key = "m" + ageAtFactor + "-" + ageToFactor;
+                                }
+
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -178,9 +197,18 @@ public class VaccineActivity extends BaseActivity {
                                     vaccineDetailsList.add(vaccineDetails);
                                     listHashMap.put(key, vaccineDetailsList);
                                 }
-                            } else if (vaccineDetails.getAgeAt() % 7 == 0) {
-                                int factor = (vaccineDetails.getAgeAt() / 7);
-                                String key = "d" + factor;
+                            } else if (vaccineDetails.getAgeAt() % 7 == 0 || vaccineDetails.getAgeTo() % 7 == 0) {
+                                int ageAtFactor = 0, ageToFactor = 0;
+                                String key = null;
+                                if(vaccineDetails.getAgeAt() != -1 && vaccineDetails.getAgeTo() == -1){
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 7);
+                                    key = "d" + ageAtFactor;
+                                }else {
+                                    ageAtFactor = (vaccineDetails.getAgeAt() / 7);
+                                    ageToFactor = (vaccineDetails.getAgeTo() / 7);
+                                    key = "d" + ageAtFactor + "-" + ageToFactor;
+                                }
+
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
