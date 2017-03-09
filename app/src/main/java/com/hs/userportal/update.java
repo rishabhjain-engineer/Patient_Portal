@@ -77,6 +77,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -1282,6 +1283,8 @@ public class update extends BaseActivity {
             servi.setRefresh(update.this);*/
             if (requestCode == PICK_FROM_GALLERY) {
 
+                Log.e("Rishabh ", "PICKED FROM GALLERY onActivityResult . ");
+
                 Uri selectedImageUri = data.getData();
 
                 String path = getPathFromContentUri(selectedImageUri);
@@ -1332,10 +1335,27 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
-                Uri selectedImageUri = Imguri;
+                Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult . ");
+
+                Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                Uri selectedImageUri = imageUri;
+                File imageFile = new File(imageUri.getPath());
+                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+
+                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+
+               /* try {
+                    InputStream ims = new FileInputStream(imageFile);
+                    ivPreview.setImageBitmap(BitmapFactory.decodeStream(ims));
+                } catch (FileNotFoundException e) {
+                    return;
+                }*/
+                //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
+               // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
-                File imageFile = new File(path);
+
+                Log.e("Rishabh" ,"onActivityResult Camera : Path of FILE := "+path) ;
+               // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 2500) {
