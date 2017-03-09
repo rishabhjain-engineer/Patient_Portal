@@ -424,9 +424,10 @@ public class logout extends Activity implements View.OnClickListener {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.lab_records) {
-                // setText() sets the string value of the TextView
                 if (subArrayList != null) {
-                    if (id != null && subArrayList.length() > 0) {
+                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                    } else if (id != null && subArrayList.length() > 0) {
                         Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
                         intent.putExtra("id", id);
                         update.verify = "0";
@@ -2056,4 +2057,29 @@ public class logout extends Activity implements View.OnClickListener {
 
         }
     };
+
+    protected void showSubScriptionDialog(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
 }

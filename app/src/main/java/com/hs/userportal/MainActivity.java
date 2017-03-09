@@ -476,7 +476,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             super.onPostExecute(result);
 
             if (fbDisc == 1) {
-                new GetCredentialDetailsApi().execute();
+                new GetCredentialDetailsApi(true).execute();
             } else if (fberror == 1) {
 
                 alert = new AlertDialog.Builder(MainActivity.this).create();
@@ -763,13 +763,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             super.onPostExecute(result);
             if (chkDisclaimer == 1) {
                 // Agree disclaimer automatically
-                new GetCredentialDetailsApi().execute();
+                new GetCredentialDetailsApi(true).execute();
             } else if (mChkError == 1) {
                 String receivedMsg = receiveData.optString("d");
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, msgArray[0]);
-                    new GetCredentialDetailsApi().execute();
+                    new GetCredentialDetailsApi(false).execute();
                     /*if ("1".equalsIgnoreCase(msgArray[1])) {  // One is not coming Now
                         showAlertMessage(msgArray[0]);
                     } else if ("2".equalsIgnoreCase(msgArray[1])) {
@@ -1085,6 +1085,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     }
 
     class GetCredentialDetailsApi extends AsyncTask<Void, Void, Void> {
+        private boolean isToHitAgreeServiceApi;
+
+        GetCredentialDetailsApi(boolean value) {
+            isToHitAgreeServiceApi = value;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -1146,6 +1151,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         }
 
                     }
+                }else if(!isToHitAgreeServiceApi){
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    startActivity(intent);
                 }
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
@@ -1174,7 +1187,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            receiveData = service.AgreeService(sendData);
+            if(isToHitAgreeServiceApi){
+                receiveData = service.AgreeService(sendData);
+            }
             return null;
         }
     }
