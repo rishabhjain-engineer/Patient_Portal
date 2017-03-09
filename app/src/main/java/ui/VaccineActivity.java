@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -82,8 +83,6 @@ public class VaccineActivity extends BaseActivity {
                 mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
 
                 startActivity(mIntent);
-
-
             }
         });
     }
@@ -123,6 +122,9 @@ public class VaccineActivity extends BaseActivity {
                 mProgressDialog.dismiss();
                 String data = null;
                 mVaccineDetailsList.clear();
+                listHashMap.clear();
+                mKeysList.clear();
+                mFinalVaccineDetailsListToSend.clear();
                 try {
                     data = response.optString("d");
                     JSONObject cut = new JSONObject(data);
@@ -149,12 +151,11 @@ public class VaccineActivity extends BaseActivity {
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
-
                         for (int i = 0; i < mVaccineDetailsList.size(); i++) {
                             VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
                             if (vaccineDetails.getAgeAt() % 365 == 0) {
                                 int factor = (vaccineDetails.getAgeAt() / 365);
-                                String key = "a" + factor;
+                                String key = "y" + factor;
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -166,7 +167,7 @@ public class VaccineActivity extends BaseActivity {
                                 }
                             } else if (vaccineDetails.getAgeAt() % 30 == 0) {
                                 int factor = (vaccineDetails.getAgeAt() / 30);
-                                String key = "b" + factor;
+                                String key = "m" + factor;
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -178,7 +179,7 @@ public class VaccineActivity extends BaseActivity {
                                 }
                             } else if (vaccineDetails.getAgeAt() % 7 == 0) {
                                 int factor = (vaccineDetails.getAgeAt() / 7);
-                                String key = "c" + factor;
+                                String key = "d" + factor;
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -189,7 +190,7 @@ public class VaccineActivity extends BaseActivity {
                                     listHashMap.put(key, vaccineDetailsList);
                                 }
                             } else {
-                                String key = "d1";
+                                String key = "a";
                                 if (mKeysList.contains(key)) {
                                     List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                                     vaccineDetailsList.add(vaccineDetails);
@@ -203,21 +204,44 @@ public class VaccineActivity extends BaseActivity {
 
                         }
 
-                        Collections.sort(mKeysList);
-                        
+                        Collections.sort(mKeysList, Collections.<String>reverseOrder());
+
                         for (String key : mKeysList) {
                             List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
                             int counter = 0;
+                            VaccineDetails vaccineDetailsObj = null;
                             for (VaccineDetails vaccineDetails : vaccineDetailsList) {
-                                counter++;
+                                boolean isToAdd = false;
                                 if (counter == 0) {
-                                    /*VaccineDetails vaccineDetails = new VaccineDetails();
-                                    vaccineDetails.setHeader(true);*/
+                                    isToAdd = true;
+                                    counter ++;
+                                    if (key.contains("y")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "Year Group");
+                                    } else if (key.contains("m")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "month Group");
+                                    } else if (key.contains("d")) {
+                                        String subString = key.substring(1);
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString(subString + "Week Group");
+                                    } else {
+                                    }
                                 }
+                                if (isToAdd) {
+                                    mFinalVaccineDetailsListToSend.add(vaccineDetailsObj);
+                                }
+                                mFinalVaccineDetailsListToSend.add(vaccineDetails);
                             }
+                            Log.i("ayaz", "mFinalVaccineDetailsListToSend: " + mFinalVaccineDetailsListToSend.size());
                         }
 
-                        mVaccineAdapter.setVaccineDetailData(mVaccineDetailsList);
+                        mVaccineAdapter.setVaccineDetailData(mFinalVaccineDetailsListToSend);
                         mListView.setAdapter(mVaccineAdapter);
                         mVaccineAdapter.notifyDataSetChanged();
                     }
