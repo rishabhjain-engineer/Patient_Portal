@@ -705,11 +705,11 @@ public class logout extends Activity implements View.OnClickListener {
                 fbSubArray = slice.getJSONArray("Table");
                 if (fbSubArray.getJSONObject(0).getString("FacebookId").equals("")
                         || fbSubArray.getJSONObject(0).getString("FacebookId").equals("null")) {
-                    facebooklink.setVisibility(View.GONE); //TODO commented by spartans  ; to show fb link change visibility ;
+                    facebooklink.setVisibility(View.VISIBLE); //TODO commented by spartans  ; to show fb link change visibility ;
                     fbLinked = "false";
 
                 } else {
-                    facebooklink.setVisibility(View.GONE);
+                    facebooklink.setVisibility(View.VISIBLE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
                     unlinkmenu = 1;
                     System.out.println("Un-link = " + unlinkmenu);
                     fbLinked = "true";
@@ -1337,7 +1337,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
                 if (receiveDataUnLink.get("d").equals("UnLinked Successfully")) {
-                    facebooklink.setVisibility(View.GONE); //TODO set visible : SPARTANS
+                    facebooklink.setVisibility(View.VISIBLE); //TODO set visible : SPARTANS
                     unlinkmenu = 0;
                     fbLinked = "false";
                 }
@@ -1759,7 +1759,7 @@ public class logout extends Activity implements View.OnClickListener {
             progress.dismiss();
             try {
                 if (receiveDataFbLink.get("d").equals("Successfully Linked")) {
-                    facebooklink.setVisibility(View.GONE);
+                    facebooklink.setVisibility(View.VISIBLE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
                     unlinkmenu = 1;
                     fbLinked = "true";
                     System.out.println("Un-link = " + unlinkmenu);

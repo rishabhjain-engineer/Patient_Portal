@@ -4,12 +4,12 @@
     <item android:state_pressed="true"><shape android:shape="rectangle">
             <corners android:radius="4dip" />
 
-            <solid android:color="#4f993c" />
+            <solid android:color="@color/teal" />
         </shape></item>
     <item><shape android:shape="rectangle">
             <corners android:radius="4dip" />
 
-            <solid android:color="#61bb49" />
+            <solid android:color="@color/header_color" />
         </shape></item>
 
 </selector>

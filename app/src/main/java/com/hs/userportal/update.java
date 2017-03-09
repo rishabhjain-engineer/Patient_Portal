@@ -36,6 +36,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -75,6 +77,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -88,6 +91,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,7 +168,8 @@ public class update extends BaseActivity {
     private String unverify, emailverify;
     private boolean mIsToShowProgressbar = true;
     private String userChoosenTask;
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA = 1;
+    private String mCurrentPhotoPath = null;
 
 
     public static JSONArray arraybasic;
@@ -354,7 +359,7 @@ public class update extends BaseActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -371,7 +376,11 @@ public class update extends BaseActivity {
                                                 break;
                                             case 1:
 
-                                                checkCameraPermission();
+                                                try {
+                                                    checkCameraPermission();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
 
                                                /* File photo = null;
                                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -386,6 +395,10 @@ public class update extends BaseActivity {
                                                     startActivityForResult(intent1, PICK_FROM_CAMERA);
                                                 }
 */
+                                                break;
+
+                                            case 2:
+                                                new fbImagePull().execute();
                                                 break;
                                             default:
                                                 break;
@@ -1262,9 +1275,6 @@ public class update extends BaseActivity {
         }
 
     }*/
-
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode + ", " + requestCode);
@@ -1272,6 +1282,8 @@ public class update extends BaseActivity {
            /* UploadProfileService servi=new UploadProfileService();
             servi.setRefresh(update.this);*/
             if (requestCode == PICK_FROM_GALLERY) {
+
+                Log.e("Rishabh ", "PICKED FROM GALLERY onActivityResult . ");
 
                 Uri selectedImageUri = data.getData();
 
@@ -1323,10 +1335,27 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
-                Uri selectedImageUri = Imguri;
+                Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult . ");
+
+                Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                Uri selectedImageUri = imageUri;
+                File imageFile = new File(imageUri.getPath());
+                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+
+                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+
+               /* try {
+                    InputStream ims = new FileInputStream(imageFile);
+                    ivPreview.setImageBitmap(BitmapFactory.decodeStream(ims));
+                } catch (FileNotFoundException e) {
+                    return;
+                }*/
+                //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
+               // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
-                File imageFile = new File(path);
+
+                Log.e("Rishabh" ,"onActivityResult Camera : Path of FILE := "+path) ;
+               // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 2500) {
@@ -1547,13 +1576,14 @@ public class update extends BaseActivity {
 
             try {
                 stream = getHttpConnection(imageUrl);
-                bitmap = decodeBitmap(stream , 100 , 100) ;
+                bitmap = decodeBitmap(stream, 100, 100);
                 stream.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
             return bitmap;
         }
+
         // Makes HttpURLConnection and returns InputStream
         private InputStream getHttpConnection(String urlString)
                 throws IOException {
@@ -1576,7 +1606,7 @@ public class update extends BaseActivity {
         }
     }
 
-    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth){
+    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth) {
         InputStream copiedStream = getCopiedStream(stream);
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1590,19 +1620,16 @@ public class update extends BaseActivity {
         return bitmap;
     }
 
-    private InputStream getCopiedStream(InputStream inStream)
-    {
+    private InputStream getCopiedStream(InputStream inStream) {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        final int buffer_size=1024;
-        try
-        {
-            byte[] bytes=new byte[buffer_size];
-            while(true)
-            {
+        final int buffer_size = 1024;
+        try {
+            byte[] bytes = new byte[buffer_size];
+            while (true) {
                 //Read byte from input stream
 
-                int count=inStream.read(bytes, 0, buffer_size);
-                if(count==-1)
+                int count = inStream.read(bytes, 0, buffer_size);
+                if (count == -1)
                     break;
 
                 //Write byte from output stream
@@ -1610,8 +1637,7 @@ public class update extends BaseActivity {
             }
             InputStream copiedStream = new ByteArrayInputStream(outStream.toByteArray());
             return copiedStream;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
@@ -2240,10 +2266,13 @@ public class update extends BaseActivity {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Camera permission has not been granted.
-            requestCameraPermission();
+            boolean flag = checkAndRequestPermissions();
+            if (flag == true) {
+                    takePhoto();
+            }
         } else {
             takePhoto();
         }
@@ -2252,7 +2281,7 @@ public class update extends BaseActivity {
     /**
      * Method to request permission for camera
      */
-    private void requestCameraPermission() {
+   /* private void requestCameraPermission() {
         // Camera permission has not been granted yet. Request it directly.
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
     }
@@ -2266,7 +2295,11 @@ public class update extends BaseActivity {
             // Check if the only required permission has been granted
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Camera permission has been granted, preview can be displayed
-                takePhoto();
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 //Permission not granted
                 Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
@@ -2276,9 +2309,35 @@ public class update extends BaseActivity {
             //resume tasks needing this permission
         }
     }
+*/
+    private void takePhoto() throws IOException {
 
-    private void takePhoto() {
-        File photo = null;
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                // Uri photoURI = Uri.fromFile(createImageFile());
+                Uri photoURI = FileProvider.getUriForFile(update.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////
+        ////////////////////// Code Backup //////////////////////////
+        /////////////////////////////////////////////////////////////
+       /* File photo = null;
         Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
@@ -2289,6 +2348,73 @@ public class update extends BaseActivity {
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
             Imguri = Uri.fromFile(photo);
             startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }*/
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+
+        Log.e("Rishabh ", "createImageFile() imageFileName := "+imageFileName) ;
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        Log.e("Rishabh ", "createImageFile() storageDir := "+storageDir) ;
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        Log.e("Rishabh ", "createImageFile() image := "+image) ;
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private boolean checkAndRequestPermissions() {
+        int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+
+
+        int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST_CAMERA);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
+            Log.e("Rishabh", "Permission is going to be granted .");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Permission Granted Successfully. Write working code here.
+            } else {
+
+                Log.e("Rishabh", "Permission else case ...  " );
+                //You did not accept the request can not use the functionality.
+            }
+
         }
     }
 
