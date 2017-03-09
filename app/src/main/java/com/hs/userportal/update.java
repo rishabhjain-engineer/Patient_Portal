@@ -167,8 +167,8 @@ public class update extends BaseActivity {
     private String unverify, emailverify;
     private boolean mIsToShowProgressbar = true;
     private String userChoosenTask;
-    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA =1;
-    private String mCurrentPhotoPath=null;
+    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA = 1;
+    private String mCurrentPhotoPath = null;
 
 
     public static JSONArray arraybasic;
@@ -375,7 +375,11 @@ public class update extends BaseActivity {
                                                 break;
                                             case 1:
 
-                                                checkCameraPermission();
+                                                try {
+                                                    checkCameraPermission();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
 
                                                /* File photo = null;
                                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -1270,9 +1274,6 @@ public class update extends BaseActivity {
         }
 
     }*/
-
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode + ", " + requestCode);
@@ -1555,13 +1556,14 @@ public class update extends BaseActivity {
 
             try {
                 stream = getHttpConnection(imageUrl);
-                bitmap = decodeBitmap(stream , 100 , 100) ;
+                bitmap = decodeBitmap(stream, 100, 100);
                 stream.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
             return bitmap;
         }
+
         // Makes HttpURLConnection and returns InputStream
         private InputStream getHttpConnection(String urlString)
                 throws IOException {
@@ -1584,7 +1586,7 @@ public class update extends BaseActivity {
         }
     }
 
-    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth){
+    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth) {
         InputStream copiedStream = getCopiedStream(stream);
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1598,19 +1600,16 @@ public class update extends BaseActivity {
         return bitmap;
     }
 
-    private InputStream getCopiedStream(InputStream inStream)
-    {
+    private InputStream getCopiedStream(InputStream inStream) {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        final int buffer_size=1024;
-        try
-        {
-            byte[] bytes=new byte[buffer_size];
-            while(true)
-            {
+        final int buffer_size = 1024;
+        try {
+            byte[] bytes = new byte[buffer_size];
+            while (true) {
                 //Read byte from input stream
 
-                int count=inStream.read(bytes, 0, buffer_size);
-                if(count==-1)
+                int count = inStream.read(bytes, 0, buffer_size);
+                if (count == -1)
                     break;
 
                 //Write byte from output stream
@@ -1618,8 +1617,7 @@ public class update extends BaseActivity {
             }
             InputStream copiedStream = new ByteArrayInputStream(outStream.toByteArray());
             return copiedStream;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
@@ -2248,16 +2246,15 @@ public class update extends BaseActivity {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() {
+    void checkCameraPermission() throws IOException {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Camera permission has not been granted.
-            checkAndRequestPermissions();
-        } else {
-            try {
-                takePhoto();
-            } catch (IOException e) {
-                e.printStackTrace();
+            boolean flag = checkAndRequestPermissions();
+            if (flag == true) {
+                    takePhoto();
             }
+        } else {
+            takePhoto();
         }
     }
 
@@ -2293,7 +2290,8 @@ public class update extends BaseActivity {
         }
     }
 */
-    private void takePhoto()  throws IOException {
+    private void takePhoto() throws IOException {
+
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -2303,13 +2301,13 @@ public class update extends BaseActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.e("Rishabh ", "IO Exception := "+ex) ;
+                Log.e("Rishabh ", "IO Exception := " + ex);
                 // Error occurred while creating the File
                 return;
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-               // Uri photoURI = Uri.fromFile(createImageFile());
+                // Uri photoURI = Uri.fromFile(createImageFile());
                 Uri photoURI = FileProvider.getUriForFile(update.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
@@ -2337,13 +2335,16 @@ public class update extends BaseActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
+
+        Log.e("Rishabh ", "createImageFile() imageFileName := "+imageFileName) ;
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        Log.e("Rishabh ", "createImageFile() storageDir := "+storageDir) ;
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
+        Log.e("Rishabh ", "createImageFile() image := "+image) ;
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
@@ -2356,7 +2357,6 @@ public class update extends BaseActivity {
         int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
         int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
 
 
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -2377,20 +2377,23 @@ public class update extends BaseActivity {
         return true;
     }
 
-    @Override    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if(requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
-           Log.e("Rishabh" , "Permission is going to be granted .") ;
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
+            Log.e("Rishabh", "Permission is going to be granted .");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    try {
-                        takePhoto();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //Permission Granted Successfully. Write working code here.
-                } else {
-                    //You did not accept the request can not use the functionality.
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                //Permission Granted Successfully. Write working code here.
+            } else {
+
+                Log.e("Rishabh", "Permission else case ...  " );
+                //You did not accept the request can not use the functionality.
+            }
 
         }
     }
