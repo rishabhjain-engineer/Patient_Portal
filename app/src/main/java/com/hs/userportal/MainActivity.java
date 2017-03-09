@@ -781,11 +781,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 String receivedMsg = receiveData.optString("d");
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
-                    if ("1".equalsIgnoreCase(msgArray[1])) {
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, msgArray[0]);
+                    /*if ("1".equalsIgnoreCase(msgArray[1])) {  // One is not coming Now
                         showAlertMessage(msgArray[0]);
                     } else if ("2".equalsIgnoreCase(msgArray[1])) {
                         showAlertMessage(msgArray[0]);
-                    }
+                    }*/
                 } else {
                     showAlertMessage(receivedMsg);
                 }

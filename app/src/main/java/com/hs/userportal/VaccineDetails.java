@@ -21,6 +21,8 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     private String vaccineDateTime;
     private String DoctorNotes;
     private String patientVaccineId;
+    private boolean header;
+    private String headerString;
 
     public String getVaccineName() {
         return vaccineName;
@@ -114,6 +116,22 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     public int compareTo(VaccineDetails o) {
         return this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
 
+    }
+
+    public boolean isHeader() {
+        return header;
+    }
+
+    public void setHeader(boolean header) {
+        this.header = header;
+    }
+
+    public String getHeaderString() {
+        return headerString;
+    }
+
+    public void setHeaderString(String headerString) {
+        this.headerString = headerString;
     }
 
   /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
