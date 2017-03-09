@@ -68,21 +68,22 @@ public class VaccineActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
 
                 VaccineDetails selectedItem = (VaccineDetails) mListView.getItemAtPosition(position);
-                mIntent = new Intent(VaccineActivity.this, VaccineEditActivity.class);
-
-                mIntent.putExtra("Name", selectedItem.getVaccineName());
-                mIntent.putExtra("VaccineNameID", selectedItem.getVaccineID());
-                mIntent.putExtra("VaccineName", selectedItem.getVaccineNameInShort());
-                mIntent.putExtra("AgeAt", selectedItem.getAgeAt());
-                mIntent.putExtra("AgeTo", selectedItem.getAgeTo());
-                mIntent.putExtra("Dose", selectedItem.getVaccineDose());
-                mIntent.putExtra("DoseType", selectedItem.getVaccineDoseType());
-                mIntent.putExtra("comment", selectedItem.getVaccineComment());
-                mIntent.putExtra("VaccineDateTime", selectedItem.getVaccineDateTime());
-                mIntent.putExtra("DoctorNotes", selectedItem.getDoctorNotes());
-                mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
-
-                startActivity(mIntent);
+                if (selectedItem.isHeader()) {
+                } else {
+                    mIntent = new Intent(VaccineActivity.this, VaccineEditActivity.class);
+                    mIntent.putExtra("Name", selectedItem.getVaccineName());
+                    mIntent.putExtra("VaccineNameID", selectedItem.getVaccineID());
+                    mIntent.putExtra("VaccineName", selectedItem.getVaccineNameInShort());
+                    mIntent.putExtra("AgeAt", selectedItem.getAgeAt());
+                    mIntent.putExtra("AgeTo", selectedItem.getAgeTo());
+                    mIntent.putExtra("Dose", selectedItem.getVaccineDose());
+                    mIntent.putExtra("DoseType", selectedItem.getVaccineDoseType());
+                    mIntent.putExtra("comment", selectedItem.getVaccineComment());
+                    mIntent.putExtra("VaccineDateTime", selectedItem.getVaccineDateTime());
+                    mIntent.putExtra("DoctorNotes", selectedItem.getDoctorNotes());
+                    mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
+                    startActivity(mIntent);
+                }
             }
         });
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hs.userportal.R;
@@ -52,6 +53,8 @@ public class VaccineAdapter extends BaseAdapter {
         TextView name;
         TextView acronyms;
         //TextView date;
+        LinearLayout itemDetailContainer;
+        TextView headerTv;
 
     }
 
@@ -63,25 +66,29 @@ public class VaccineAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.vaccine_name_tv);
             holder.acronyms = (TextView) convertView.findViewById(R.id.vaccine_acronyms);
+            holder.itemDetailContainer = (LinearLayout) convertView.findViewById(R.id.item_detail_container);
+            holder.headerTv = (TextView) convertView.findViewById(R.id.header);
             //holder.date = (TextView) convertView.findViewById(R.id.vaccine_aget_at);
-
-
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (!TextUtils.isEmpty(mVaccineDetailsesList.get(position).getVaccineName())) {
-            holder.name.setText(mVaccineDetailsesList.get(position).getVaccineName());
+        VaccineDetails vaccineDetails = mVaccineDetailsesList.get(position);
+        if (vaccineDetails.isHeader()) {
+            holder.itemDetailContainer.setVisibility(View.GONE);
+            holder.headerTv.setVisibility(View.VISIBLE);
+            holder.headerTv.setText(vaccineDetails.getHeaderString());
+        } else {
+            holder.itemDetailContainer.setVisibility(View.VISIBLE);
+            holder.headerTv.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(vaccineDetails.getVaccineName())) {
+                holder.name.setText(vaccineDetails.getVaccineName());
+            }
+            if (!TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort())) {
+                holder.acronyms.setText((vaccineDetails.getVaccineNameInShort()));
+            }
+            //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
         }
-
-        if (!TextUtils.isEmpty(mVaccineDetailsesList.get(position).getVaccineNameInShort())) {
-            holder.acronyms.setText((mVaccineDetailsesList.get(position).getVaccineNameInShort()));
-        }
-
-
-        //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
-
-
         return convertView;
     }
 }
