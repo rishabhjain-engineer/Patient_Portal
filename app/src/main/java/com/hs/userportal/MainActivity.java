@@ -185,6 +185,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         if (getIntent().getExtras() != null) {
             String data = getIntent().getStringExtra("from logout");
             if (data != null && data.equalsIgnoreCase("logout")) {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
                 LoginManager.getInstance().logOut();
             }
         }
