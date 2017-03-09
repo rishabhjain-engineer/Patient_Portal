@@ -106,7 +106,7 @@ public class Register extends BaseActivity {
     private Matcher matcher, matcher1;
     private RequestQueue queue;
     private JSONObject receive;
-    private String abc, id, cop, fnln, tpwd;
+    private String abc, id, cop, fnln, tpwd, PH;
     private ProgressDialog progress;
     private int fromfb = 0;
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -131,7 +131,6 @@ public class Register extends BaseActivity {
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private ProfileTracker mprofileTracker = null;
-    private String PH;
 
 
     public static String userID;
@@ -1616,13 +1615,14 @@ public class Register extends BaseActivity {
             if (chkDisclaimer == 1) {
 
                 // Agree disclaimer automatically
-                new Agree().execute();
+                new GetCredentialDetailsApi(true).execute();
 
             } else if (chkerror == 1) {
                 String receivedMsg = receiveData.optString("d");
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, msgArray[0]);
+                    new GetCredentialDetailsApi(false).execute();
                     //Make Intent and send Data 
                 } else {
                     alert = new AlertDialog.Builder(Register.this).create();
@@ -1664,7 +1664,11 @@ public class Register extends BaseActivity {
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
                         intent.putExtra("fn", fnln);
-                        // intent.putExtra("tpwd", tpwd);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
 
                         startActivity(intent);
                     } else if (fromActivity.equalsIgnoreCase("anyother_activity")) {
@@ -1673,8 +1677,12 @@ public class Register extends BaseActivity {
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
                         intent.putExtra("fn", fnln);
-                        // intent.putExtra("tpwd", tpwd);
 
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
                         startActivity(intent);
                     } else {
                         Register.this.finish();
@@ -1804,6 +1812,7 @@ public class Register extends BaseActivity {
                         JSONObject cut = new JSONObject(userCredential);
                         subArray = cut.getJSONArray("Table");
                         cop = subArray.getJSONObject(0).getString("UserId");
+                        PH = subArray.getJSONObject(0).getString("UserCode");
                         if (subArray.getJSONObject(0).has("ContactNo")) {
                             contactNumber = subArray.getJSONObject(0).getString("ContactNo");
                         } else {
@@ -1904,7 +1913,11 @@ public class Register extends BaseActivity {
         }
     }
 
-    class Agree extends AsyncTask<Void, Void, Void> {
+    class GetCredentialDetailsApi extends AsyncTask<Void, Void, Void> {
+        private boolean isToHitAgreedApi = true;
+        GetCredentialDetailsApi(boolean value){
+            isToHitAgreedApi = value;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -1916,12 +1929,7 @@ public class Register extends BaseActivity {
             progress.setTitle("Logging in...");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            Register.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
-
+            progress.show();
         }
 
         protected void onPostExecute(Void result) {
@@ -1955,6 +1963,11 @@ public class Register extends BaseActivity {
                         intent.putExtra("fn", fnln);
                         intent.putExtra("PH", PH);
                         // intent.putExtra("tpwd", tpwd);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, password);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(Register.this, logout.class);
@@ -1964,8 +1977,21 @@ public class Register extends BaseActivity {
                         intent.putExtra("fn", fnln);
                         intent.putExtra("PH", PH);
                         // intent.putExtra("tpwd", tpwd);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, password);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
                         startActivity(intent);
                     }
+                }else if(!isToHitAgreedApi){
+                    Intent intent = new Intent(Register.this, logout.class);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, password);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
+                    startActivity(intent);
                 }
             } catch (JSONException e1) {
                 // TODO Auto-generated catch block
@@ -1986,6 +2012,7 @@ public class Register extends BaseActivity {
                 JSONObject cut = new JSONObject(userCredential);
                 subArray = cut.getJSONArray("Table");
                 cop = subArray.getJSONObject(0).getString("UserId");
+                PH = subArray.getJSONObject(0).getString("UserCode");
                 fnln = subArray.getJSONObject(0).getString("FirstName");
                 id = subArray.getJSONObject(0).getString("UserId");
                 sendData.put("UserId", id);
@@ -1996,9 +2023,9 @@ public class Register extends BaseActivity {
                 receiveData = service.AgreeService(sendData);
                 e.printStackTrace();
             }
-            receiveData = service.AgreeService(sendData);
-            System.out.println(receiveData);
-
+            if(isToHitAgreedApi){
+                receiveData = service.AgreeService(sendData);
+            }
             return null;
 
         }
@@ -2091,6 +2118,13 @@ public class Register extends BaseActivity {
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
                         Intent i = new Intent(Register.this, logout.class);
                         try {
+
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, userName);
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, password);
+                            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
+
                             i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
                             i.putExtra("id", cop);
                             i.putExtra("fn", fnln);
@@ -2129,6 +2163,13 @@ public class Register extends BaseActivity {
                         intent.putExtra("pass", password);
                         intent.putExtra("fn", fnln);
                         // intent.putExtra("tpwd", tpwd);
+
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, userName);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, password);
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
+
 
                         startActivity(intent);
 
@@ -2902,7 +2943,7 @@ public class Register extends BaseActivity {
             if (chkDisclaimer == 1) {
 
                 // Agree disclaimer automatically
-                new Agree().execute();
+                new GetCredentialDetailsApi(true).execute();
 
             } else if (chkerror == 1) {
 
@@ -2948,6 +2989,13 @@ public class Register extends BaseActivity {
                 intent.putExtra("pass", uPassword);
                 intent.putExtra("fn", fnln);
                 intent.putExtra("PH", PH);
+
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
+                startActivity(intent);
 
             }
 
@@ -3011,6 +3059,7 @@ public class Register extends BaseActivity {
                         JSONObject cut = new JSONObject(userCredential);
                         subArray = cut.getJSONArray("Table");
                         cop = subArray.getJSONObject(0).getString("UserId");
+                        PH = subArray.getJSONObject(0).getString("UserCode");
                         if (subArray.getJSONObject(0).has("ContactNo")) {
                             contactNumber = subArray.getJSONObject(0).getString("ContactNo");
                         } else {
@@ -3105,4 +3154,5 @@ public class Register extends BaseActivity {
             return null;
         }
     }
+
 }
