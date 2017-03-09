@@ -77,6 +77,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import info.hoang8f.android.segmented.SegmentedGroup;
 import ui.BaseActivity;
+import utils.PreferenceHelper;
 
 public class Register extends BaseActivity {
 
@@ -1618,27 +1619,27 @@ public class Register extends BaseActivity {
                 new Agree().execute();
 
             } else if (chkerror == 1) {
-
-                alert = new AlertDialog.Builder(Register.this).create();
-                alert.setTitle("Message");
-                try {
-                    alert.setMessage(receiveData.getString("d"));
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        dialog.dismiss();
-
+                String receivedMsg = receiveData.optString("d");
+                if (receivedMsg.contains("@")) {
+                    String msgArray[] = receivedMsg.split("@");
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, msgArray[0]);
+                    //Make Intent and send Data 
+                } else {
+                    alert = new AlertDialog.Builder(Register.this).create();
+                    alert.setTitle("Message");
+                    try {
+                        alert.setMessage(receiveData.getString("d"));
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                });
+                    alert.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 
-                alert.show();
-
+                        public void onClick(DialogInterface dialog, int id) {dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                }
             } else if (chklogin == 1) {
 
                 // System.out.println(fnln);
