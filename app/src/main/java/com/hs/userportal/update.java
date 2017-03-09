@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -168,8 +169,9 @@ public class update extends BaseActivity {
     private String unverify, emailverify;
     private boolean mIsToShowProgressbar = true;
     private String userChoosenTask;
-    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA = 1;
+    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA = 1 , WRITE_EXTERNAL =2;
     private String mCurrentPhotoPath = null;
+    private boolean mIsSdkLessThanM = true ;
 
 
     public static JSONArray arraybasic;
@@ -1335,21 +1337,24 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
-                Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult . ");
+                File imageFile = null ;
+                Uri selectedImageUri;
+                if(mIsSdkLessThanM == true){
+                   selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
 
-                Uri imageUri = Uri.parse(mCurrentPhotoPath);
-                Uri selectedImageUri = imageUri;
-                File imageFile = new File(imageUri.getPath());
-                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                }else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                }
 
-                Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
-
-               /* try {
-                    InputStream ims = new FileInputStream(imageFile);
-                    ivPreview.setImageBitmap(BitmapFactory.decodeStream(ims));
-                } catch (FileNotFoundException e) {
-                    return;
-                }*/
                 //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
                // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
@@ -1358,7 +1363,7 @@ public class update extends BaseActivity {
                // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
-                if (check < 2500) {
+                if (check < 10000) {
                     if (check != 0) {
                         Intent intent = new Intent(this, UploadProfileService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
@@ -2268,13 +2273,14 @@ public class update extends BaseActivity {
      */
     void checkCameraPermission() throws IOException {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mIsSdkLessThanM = false ;
             // Camera permission has not been granted.
             boolean flag = checkAndRequestPermissions();
             if (flag == true) {
                     takePhoto();
             }
         } else {
-            takePhoto();
+            startCamera() ;
         }
     }
 
@@ -2312,7 +2318,7 @@ public class update extends BaseActivity {
 */
     private void takePhoto() throws IOException {
 
-
+        mIsSdkLessThanM = false ;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -2355,7 +2361,6 @@ public class update extends BaseActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-
         Log.e("Rishabh ", "createImageFile() imageFileName := "+imageFileName) ;
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         Log.e("Rishabh ", "createImageFile() storageDir := "+storageDir) ;
@@ -2371,14 +2376,10 @@ public class update extends BaseActivity {
     }
 
     private boolean checkAndRequestPermissions() {
+        mIsSdkLessThanM = false ;
         int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-
-
         int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
         int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-
         List<String> listPermissionsNeeded = new ArrayList<>();
         if (storagePermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -2402,6 +2403,19 @@ public class update extends BaseActivity {
         if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
             Log.e("Rishabh", "Permission is going to be granted .");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Permission Granted Successfully. Write working code here.
+            } else {
+                //You did not accept the request can not use the functionality.
+            }
+        }
+        if (requestCode == WRITE_EXTERNAL) {
+            Log.e("Rishabh", "Write Permission is going to be granted .");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 try {
                     takePhoto();
@@ -2410,11 +2424,24 @@ public class update extends BaseActivity {
                 }
                 //Permission Granted Successfully. Write working code here.
             } else {
-
-                Log.e("Rishabh", "Permission else case ...  " );
                 //You did not accept the request can not use the functionality.
             }
+        }
+    }
 
+    void startCamera() {
+        mIsSdkLessThanM = true ;
+         File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
         }
     }
 
