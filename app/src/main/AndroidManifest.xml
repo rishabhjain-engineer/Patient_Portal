@@ -433,11 +433,11 @@
 
         <activity
             android:name="ui.VaccineActivity"
-            android:configChanges="orientation|screenSize" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="ui.VaccineEditActivity"
-            android:configChanges="orientation|screenSize" />
+            android:screenOrientation="portrait" />
 
 
         <activity
