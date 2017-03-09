@@ -37,6 +37,7 @@
                     android:drawableLeft="@drawable/fb"
                     android:padding="10dp"
                     android:text="CONNECT WITH FACEBOOK"
+                    android:textColor="@color/white"
                     android:textSize="14dp"/>
 
             </FrameLayout>
@@ -171,6 +172,7 @@
                 android:layout_marginBottom="35dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/green_button"
+                android:textColor="@color/white"
                 android:text="NEXT" />
         </LinearLayout>
 
@@ -252,6 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/green_button"
+                    android:textColor="@color/white"
                     android:text="SIGN UP" />
             </LinearLayout>
         </LinearLayout>
