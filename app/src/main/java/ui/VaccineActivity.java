@@ -248,19 +248,21 @@ public class VaccineActivity extends BaseActivity {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " Year Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " Year");
                                     } else if (key.contains("m")) {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " month Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " month");
                                     } else if (key.contains("d")) {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " Week Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " Week");
                                     } else {
-
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString("Time Independent");
                                     }
                                 }
                                 if (isToAdd) {
