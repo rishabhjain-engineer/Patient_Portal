@@ -177,166 +177,159 @@
                     android:textColor="#000000" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/h3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/L2"
-                android:visibility="visible"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
-                    android:layout_weight="1"
-
-                    android:text="From Date*:"
-
-                    android:textColor="@android:color/black" />
-
-                <TextView
-
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-                    android:text="To Date*:"
-                    android:textColor="@android:color/black" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    android:text="Present"
-                    android:visibility="gone" />
-            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/L3"
+                android:id="@+id/midContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/L2"
-                android:visibility="visible"
-                android:layout_marginTop="5dp">
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/editText8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="2dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="date" />
-
-                <EditText
-                    android:id="@+id/etName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="date" />
-
-                <CheckBox
-                    android:visibility="gone"
-                    android:id="@+id/cbPresentWork"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/editText9"
-                    android:text="Present"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/spinner_container"
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content"
-                android:weightSum="2"
-                android:visibility="gone"
-                android:layout_marginTop="7dp"
-                android:layout_gravity="center">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/ll_fromDateContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_fromdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:text="From Date*:"
+                        android:textColor="@android:color/black"/>
 
-                        <Spinner
-                            android:id="@+id/from_month"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:spinnerMode="dropdown"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:layout_weight="1"/>
-
-                        <Spinner
-                            android:id="@+id/from_year"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:spinnerMode="dropdown"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/h34"
-                    android:layout_marginLeft="15dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-
-                    <LinearLayout
+                    <EditText
+                        android:id="@+id/et_fromdate"
                         android:layout_width="wrap_content"
+                        android:layout_marginTop="2dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:ems="7"
                         android:gravity="center"
-                        android:weightSum="2">
-                        <Spinner
-                            android:id="@+id/to_month"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:spinnerMode="dropdown"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:layout_weight="1"/>
-                        <Spinner
-                            android:id="@+id/to_year"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:spinnerMode="dropdown"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:layout_weight="1"/>
+                        android:inputType="date" />
 
-                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_fromdateSpinner_container"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/from_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+
+                            <Spinner
+                                android:id="@+id/from_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_fromdate_not_remember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_remembered"
+                        android:textColor="@color/text_color_blue"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_margin="7dp"/>
+
+
+
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/ll_toDateContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:text="To Date*:"
+                        android:textColor="@android:color/black" />
+
+
+                    <EditText
+                        android:id="@+id/et_todate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="7"
+                        android:inputType="date"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_todateSpinner_container"
+                        android:layout_marginLeft="15dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <Spinner
+                                android:id="@+id/to_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+                            <Spinner
+                                android:id="@+id/to_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_todate_not_remember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_remembered"
+                        android:textColor="@color/text_color_blue"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_margin="7dp"/>
+
+                </LinearLayout>
+
+
             </LinearLayout>
-            <TextView
-                android:id="@+id/not_remember_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/not_remembered"
-                android:textColor="@color/text_color_blue"
-                android:textStyle="bold"
-                android:textSize="14dp"
-                android:layout_margin="7dp"/>
+
+
 
             <Button
                 android:id="@+id/bSend"
@@ -348,9 +341,6 @@
                 android:text="ADD" />
 
         </LinearLayout>
-
-
-
 
         <ListView
             android:id="@+id/listView1"

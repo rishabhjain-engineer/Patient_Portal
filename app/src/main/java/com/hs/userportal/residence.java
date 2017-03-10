@@ -42,6 +42,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -106,10 +107,13 @@ public class residence extends BaseActivity {
     private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private ArrayList<String> years = new ArrayList<String>();
     ArrayList<String> years1 = new ArrayList<String>();
-    private static String mFromCompValue = null, mToCompValue = null;
-    private TextView mNotRemembered;
-    private boolean mIsNotRemembered = false, mIsDateValid = false;
-    private LinearLayout mDateEditTextContainerLL, mSpinnerContainerLL, mEditBoxContainer;
+    private static String mFromCompValue = null, mToCompValue = null , mTempFromMonthValue   , mTempFromMonthYearValue , mTempToMonthYearValue , mTempToMonthValue;
+    private static int mTempFromYearValue , mTempToYearValue ;
+    private TextView mFromDateNotRemembered , mToDateNotRemembered;
+    private boolean mIsNotRemembered = false, mIsDateValid = true, mIsPresentDateCheck = true ,  mIsFromDateSpinnerVisible = false , mIsToDateSpinnerVisible = false;
+    boolean case1 = false,  case2 = false,  case3 = false, case4 = false ;  // Rishabh : KINDLY ,See Detail of these variable in  ' add.setOnClickListener Section ' .
+    private LinearLayout  mEditBoxContainer;
+    private RelativeLayout mDateEditTextContainerRL , mSpinnerContainerRL , mFromDateSpinnerContainer , mToDateSpinnerContainer;
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -139,7 +143,14 @@ public class residence extends BaseActivity {
         StrictMode.setThreadPolicy(policy);
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
-        mNotRemembered = (TextView) findViewById(R.id.not_remember_textview);
+
+        mFromDateNotRemembered = (TextView) findViewById(R.id.tv_fromdate_not_remember);
+        mToDateNotRemembered = (TextView) findViewById(R.id.tv_todate_not_remember);
+
+        mFromDateSpinnerContainer = (RelativeLayout) findViewById(R.id.rl_fromdateSpinner_container);
+        mToDateSpinnerContainer = (RelativeLayout) findViewById(R.id.rl_todateSpinner_container);
+
+
         mEditBoxContainer = (LinearLayout) findViewById(R.id.edit_box_container);
 
         scroll_id = (ScrollView) findViewById(R.id.scroll_id);
@@ -153,36 +164,108 @@ public class residence extends BaseActivity {
         state = (EditText) findViewById(R.id.editText5);
         country = (EditText) findViewById(R.id.editText6);
         pincode = (EditText) findViewById(R.id.editText7);
-        from = (EditText) findViewById(R.id.editText8);
-        to = (EditText) findViewById(R.id.etName);
+        from = (EditText) findViewById(R.id.et_fromdate);
+        to = (EditText) findViewById(R.id.et_todate);
         l = (ListView) findViewById(R.id.listView1);
-        present = (CheckBox) findViewById(R.id.cbPresentWork);
+    //    present = (CheckBox) findViewById(R.id.cbPresentWork);
         service = new Services(residence.this);
         update.arrayres = new JSONArray();
 
-        mDateEditTextContainerLL = (LinearLayout) findViewById(R.id.L3);
-        mSpinnerContainerLL = (LinearLayout) findViewById(R.id.spinner_container);
 
-
-        mNotRemembered.setOnClickListener(new OnClickListener() {
+        mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsNotRemembered) {
-                    mIsNotRemembered = false;
-                    mNotRemembered.setText(R.string.not_remembered);
-                    mDateEditTextContainerLL.setVisibility(View.VISIBLE);
-                    mSpinnerContainerLL.setVisibility(View.GONE);
 
+                if(mIsFromDateSpinnerVisible) {   // Rishabh :  " From Date " spinner is VISIBLE ;
+                    mFromDateNotRemembered.setText(R.string.not_remembered);
+                    from.setVisibility(View.VISIBLE);
+                    mFromDateSpinnerContainer.setVisibility(View.GONE);
+                    mIsFromDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " From Date " spinner is  NOT VISIBLE ;
 
-                } else {
-                    mNotRemembered.setText(R.string.remembered);
-                    mIsNotRemembered = true;
-                    mDateEditTextContainerLL.setVisibility(View.GONE);
-                    mSpinnerContainerLL.setVisibility(View.VISIBLE);
+                    mFromDateNotRemembered.setText(R.string.remembered);
+                    from.setVisibility(View.GONE);
+                    mFromDateSpinnerContainer.setVisibility(View.VISIBLE);
+                    mIsFromDateSpinnerVisible = true ;
                 }
 
             }
         });
+
+        mToDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mIsToDateSpinnerVisible) {   // Rishabh :  " To Date " spinner is VISIBLE ;
+                    mToDateNotRemembered.setText(R.string.not_remembered);
+                    to.setVisibility(View.VISIBLE);
+                    mToDateSpinnerContainer.setVisibility(View.GONE);
+                    mIsToDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " To Date " spinner is  NOT VISIBLE ;
+
+                    mToDateNotRemembered.setText(R.string.remembered);
+                    to.setVisibility(View.GONE);
+                    mToDateSpinnerContainer.setVisibility(View.VISIBLE);
+                    mIsToDateSpinnerVisible = true ;
+                }
+
+            }
+        });
+
+       /* mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsNotRemembered) {
+                    mIsNotRemembered = false;
+                    mFromDateNotRemembered.setText(R.string.not_remembered);
+                    from.setVisibility(View.VISIBLE);
+                    mFromDateSpinnerContainer.setVisibility(View.GONE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerRL.setVisibility(View.GONE);*//*
+
+
+                } else {
+                    mFromDateNotRemembered.setText(R.string.remembered);
+                    mIsNotRemembered = true;
+                    from.setVisibility(View.GONE);
+                    mFromDateSpinnerContainer.setVisibility(View.VISIBLE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.GONE);
+                    mSpinnerContainerRL.setVisibility(View.VISIBLE);*//*
+                }
+
+            }
+        });
+
+        mToDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsNotRemembered) {
+                    mIsNotRemembered = false;
+                    mToDateNotRemembered.setText(R.string.not_remembered);
+                    to.setVisibility(View.VISIBLE);
+                    mToDateSpinnerContainer.setVisibility(View.GONE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerRL.setVisibility(View.GONE);*//*
+
+
+                } else {
+                    mToDateNotRemembered.setText(R.string.remembered);
+                    mIsNotRemembered = true;
+                    to.setVisibility(View.GONE);
+                    mToDateSpinnerContainer.setVisibility(View.VISIBLE);
+
+                   *//* mDateEditTextContainerRL.setVisibility(View.GONE);
+                    mSpinnerContainerRL.setVisibility(View.VISIBLE);*//*
+                }
+
+            }
+        });
+*/
 
         long currentTimeMillis = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -412,7 +495,7 @@ public class residence extends BaseActivity {
             }
         });
 
-        present.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*present.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -424,14 +507,14 @@ public class residence extends BaseActivity {
                     to.setVisibility(View.INVISIBLE);
                     year2 = c.get(Calendar.YEAR);
                     month2 = c.get(Calendar.MONTH) - 1;
-                    day2 = c.get(Calendar.DAY_OF_MONTH);
+                    day2 = c.get(Calendar.DAY_OF_MONTH);L3
                 } else {
                     to.setVisibility(View.VISIBLE);
                     to.setText("");
                     // to.setTextColor(Color.parseColor("#000000"));
                 }
             }
-        });
+        });*/
         l.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -556,147 +639,144 @@ public class residence extends BaseActivity {
 
             public void onClick(View v) {
 
+                mIsDateValid = true ;
+                mIsPresentDateCheck = true ;
+                case1 = false;  case2 = false;  case3 = false; case4 = false ;
+
                 mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
                 mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
-                boolean isValid = false ;
-                if (mIsNotRemembered == false) {
-                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
-                    if (isValid == true) {
-                        mIsDateValid = true;
+
+                    mFromCompValue = from.getText().toString() ;
+                    mToCompValue = to.getText().toString() ;
+
+                if(mFromCompValue != null) {
+                    String[] test  = mFromCompValue.split("/") ;
+                    if(test.length >= 2){
+                        String test1 = test[1] ;
+                        String test2 = test[2] ;
+                        mTempFromMonthYearValue = test1 + "/" + test2 ;
                     }
-                } else {
-                    mIsDateValid = false;
-                    isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
-                    if (isValid == true) {
-                        mIsDateValid = true;
+
+
+                }
+
+                if(mToCompValue != null) {
+                    String[] abc  = mToCompValue.split("/") ;
+                    if(abc.length >=2) {
+                        String abc1 = abc[1] ;
+                        String abc2 = abc[2] ;
+                        mTempToMonthYearValue = abc1 + "/" + abc2 ;
                     }
                 }
 
-                boolean isPresentDateCheck = false;
+
+
+
+
+                Log.e("Rishabh " ," from date value: = "+mFromCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempFromMonthValue) ;
+                Log.e("Rishabh " ," from date value: = "+mToCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempToMonthValue) ;
+
+
+                if( mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == false) {        // Both Spinner Not Visible        ;  CASE 1
+                    String dateFormat = "dd/MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mFromCompValue, mToCompValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  dateFormat);
+                    case1 = true ;
+                    Log.e("Rishabh" , " Both Spinner Not  Visible ") ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if ( mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == true) {   // Both Spinner Visible          : CASE 2
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mFinalFromDate, mFinalToDate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  dateFormat);
+                    case2 = true ;
+                    Log.e("Rishabh" , "Both Spinner Visible ") ;
+                    Log.e ("Rishabh " ," start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if (mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == false) {    // fromdate spinner Visible and todate spinner not Visible     : CASE 3
+                    String dateFormat = "MM/yyyy" ;
+
+                    mIsDateValid =  Utils.isDateValid(mFinalFromDate, mTempToMonthYearValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  dateFormat);
+                    case3 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                else if (mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == true) {   // fromdate spinner Not Visible and todate spinner Visible   : CASE 4
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mTempFromMonthYearValue, mFinalToDate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthYearValue,  dateFormat);
+                    case4 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
+
+                /*if (mIsNotRemembered == false) {
+                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
+                    if (isValid == false) {
+                        mIsDateValid = false ;
+                       *//* showAlertMessage("Start date must be smaller than End date.");*//*
+                    }
+                } else {
+                    isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
+                    if (isValid == false) {
+                        mIsDateValid = false ;
+                        *//*showAlertMessage("Start date must be smaller than End date.");*//*
+                    }
+                }
+
+
+
                 if (mIsNotRemembered == false) {
-                    isPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
-                    if (isPresentDateCheck == false) {
-                        showAlertMessage("From Date cannot be greater than Present Date");
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
+                    if (mIsPresentDateCheck == false) {
+                        mIsPresentDateCheck = false ;
+                      *//*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*//*
                     }
                 } else if(mIsNotRemembered == true){
-                    mIsDateValid = false;
-                    isPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  "MM/yyyy");
-                    if (isPresentDateCheck == false) {
-                        showAlertMessage("From Date cannot be greater than Present Date");
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  "MM/yyyy");
+                    if (mIsPresentDateCheck == false) {
+                        mIsPresentDateCheck = false ;
+                      *//*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*//*
                     }
-                }
-
-               /* try {
-
-                    final Calendar c = Calendar.getInstance();
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH);
-                    int day = c.get(Calendar.DAY_OF_MONTH);
-                    month = month + 1;
-                    String formattedMonth = "" + month;
-                    String formattedDayOfMonth = "" + day;
-
-                    if (month < 10) {
-
-                        formattedMonth = "0" + month;
-                    }
-                    if (day < 10) {
-
-                        formattedDayOfMonth = "0" + day;
-                    }
-                    String currentdate=String.valueOf(day)+"/"+String.valueOf(month)+"/"+String.valueOf(year);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    date1 = sdf.parse(from.getText().toString());
-                    datecurrent=sdf.parse(currentdate);
-                    if(to.getText().toString().equals("")){
-                        date2=null;
-                    }else {
-                        date2 = sdf.parse(to.getText().toString());
-                    }
-
-                } catch (Exception e) {
                 }*/
 
-//city, country, state,add, pincode, house,from,to
+
                 if (city.getText().toString().equals("") || country.getText().toString().equals("") || house.getText().toString().equals("") || TextUtils.isEmpty(add.getEditableText().toString())) {
                     showAlertMessage("Mandatory fields can not be left Blank !");
-                }/* else if (date2 != null && (date1.compareTo(date2) > 0
-                        || date1.compareTo(date2) == 0)) {
-
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("From-Date cannot be equal or greater than To-Date.");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-
-                }else if(date1.compareTo(datecurrent)>=0){
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("From-Date cannot be equal or greater than Current Date.");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                }else if(date2!=null&&date2.compareTo(datecurrent)>0){
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("To-Date cannot be greater than Current Date.");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                }*/ else if (mIsNotRemembered == false && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
-
+                }
+                else if (case1 && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
                     showAlertMessage("Mandatory fields can not be left Blank !");
-                } else if (mIsDateValid == false) {
-                    showAlertMessage("Start date must be smaller than End date.");
+                }
+                else if(case3 && to.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if(case4 && from.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                 else if (mIsDateValid == false) {
+                    showAlertMessage("Start date must be smaller than End date");
                 } else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
                     showAlertMessage("Postal code should be greater than three digits");
-                } else {
+                }else if(mIsPresentDateCheck == false){
+                    showAlertMessage("From date cannot be greater than Present date");
+                }
+                else {
                     mFinalFromDate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                     mFinalToDate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
+
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
 //city, country, state,add, pincode, house,from,to
@@ -863,6 +943,12 @@ public class residence extends BaseActivity {
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
 
+            mTempFromMonthValue = formattedMonth ;
+            mTempFromYearValue = year ;
+            mTempFromMonthYearValue = mTempFromMonthValue + "/" + mTempFromYearValue ;
+
+            Log.e("Rishabh " ,  " m temp from moth year value ; == " +mTempFromMonthYearValue) ;
+
             from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
             mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
@@ -891,13 +977,28 @@ public class residence extends BaseActivity {
             Pincode = pincode.getText().toString();
 
 
-            if (mIsNotRemembered == false) {
+            /*if (mIsNotRemembered == false) {
                 fromdate = mFromCompValue;
                 todate = mToCompValue;
             } else if (mIsNotRemembered == true) {
                 fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
                 todate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
+            }*/
+
+            if (case1){
+                fromdate = mFromCompValue;
+                todate = mToCompValue;
+            }else if(case2) {
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToMonthValue;
+            }else if (case3) {
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = mToCompValue;
+            }else if (case4) {
+                fromdate = mFromCompValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToMonthValue;
             }
+
 
             //todate=to.getText().toString();
 
@@ -926,6 +1027,7 @@ public class residence extends BaseActivity {
                     country.setText("");
                     pincode.setText("");
                     from.setText("");
+                    to.setText("");
                     checkedit = "";
                     PatientHistoryId = "";
                     addbtn.setText("ADD");
@@ -935,7 +1037,7 @@ public class residence extends BaseActivity {
                     year1 = c.get(Calendar.YEAR);
                     month1 = c.get(Calendar.MONTH);
                     day1 = c.get(Calendar.DAY_OF_MONTH);
-                    present.setChecked(false);
+//                    present.setChecked(false);
                     mIsDateValid = false;
 
 
@@ -1014,6 +1116,7 @@ public class residence extends BaseActivity {
                         country.setText("");
                         pincode.setText("");
                         from.setText("");
+                        to.setText("");
                         year2 = c.get(Calendar.YEAR);
                         month2 = c.get(Calendar.MONTH);
                         day2 = c.get(Calendar.DAY_OF_MONTH);
@@ -1042,7 +1145,7 @@ public class residence extends BaseActivity {
                 country.setText("");
                 pincode.setText("");
                 from.setText("");
-
+                to.setText("");
                 mIsDateValid = false;
                 year2 = c.get(Calendar.YEAR);
                 month2 = c.get(Calendar.MONTH);
@@ -1376,6 +1479,13 @@ public class residence extends BaseActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
+
+            mTempToMonthValue = formattedMonth ;
+            mTempToYearValue = year ;
+            mTempToMonthYearValue = mTempToMonthValue + "/" + mTempToYearValue ;
+
+            Log.e("Rishabh " , " to date kaa  month year value ;;;  " +mTempToMonthYearValue) ;
+
             to.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
             mToCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 

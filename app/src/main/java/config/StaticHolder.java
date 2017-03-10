@@ -12,113 +12,12 @@ import java.util.HashMap;
 
 public class StaticHolder {
 
+    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
-    /*Server Locations */
+    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //LIVE //TODO commented by ayaz
-   // public final String BASE_URL = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/WebServices/LabService.asmx/"; // testing
-    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //LOCAL //TODO opened by ayaz
-    //  public final String LIVELOGIN_URL = "https://l141702.cloudchowk.com/";     //live
-    // public  final String LIVELOGIN_URL = "https://d141702.cloudchowk.com/";//demo
-    // public final String LIVELOGIN_URL = "http://192.168.1.56:8085/";// local
-    //public final String BASE_URL1 = "http://192.168.1.11/";//local //TODO opened by ayaz
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz
-    // public final String BASE_URL1 = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/";// testing
-
-    //APIs URLs
-    //  public static final String SIGNUP = BASE_URL + "SignUpByPatient";
-    //  public static final String CHECKEMAILIDEXISTS = BASE_URL + "CheckEmailIdIsExistMobile";
-    // public static final String CHECKFBEMAILEXISTS = BASE_URL + "EmailIdExistFacebook";
-    //  public static final String GETUSERCODE = BASE_URL + "GetUserCodeFromEmail";
-    //  public static final String LAB_TEST = BASE_URL + "GetLabByTest";
-    // public static final String TEST_LAB = BASE_URL + "GetTestByLab";
-    // public static final String PRICE_TEST = BASE_URL + "GetTestPriceList";
-    // public static final String PRICE_TEST = BASE_URL + "FindLabsTest";
-    //  public static final String SEND_LABCONTACT = BASE_URL + "SendLabContactDetail";
-    //  public static final String UPDATECONTACT = BASE_URL + "UpdateContact";
-    // public static final String SAMPLEPICKUP = BASE_URL + "SamplePickUp";
-    //public static final String BOOKTEST = BASE_URL + "BookTest";
-    // public static final String COUPON_TESTMAIL = BASE_URL + "SendCouponWithTestViaEmailNew";
-    //  public static final String COUPON_TESTSMS = BASE_URL + "SendCouponWithTestViaSMSNew";
-    // public static final String BOOKTEST = BASE_URL + "BookTestNew";
-    // public static final String GETLABLIST = BASE_URL + "GetLabList";
-    //  public static final String ALLTESTDATA = BASE_URL + "GetAllTestData";
-    //  public static final String IMAGEDATA = BASE_URL + "GetPhotographData";
-    // public static final String DOCTORDATA = BASE_URL + "GetDoctorData";
-    // public static final String CENTREDATA = BASE_URL + "GetCentreData";
-    // public static final String UPLOADPRESCRIPTION = BASE_URL + "UploadPrescriptionMail";
-    // public static final String COUPON_TESTSMS = BASE_URL + "SendCouponWithTestViaSMS";
-    //  public static final String COUPON_SMS = BASE_URL + "SendCouponWithOutTestViaSMS";
-    //  public static final String COUPON_TESTMAIL = BASE_URL + "SendCouponWithTestViaEmail";
-    // public static final String COUPON_EMAIL = BASE_URL + "SendCouponWithOutTestViaEmail";
-    // public static final String GENERATE_COUPON = BASE_URL + "GenerateCoupon";
-    //public static final String GENERATE_COUPON = BASE_URL + "GenerateCouponNew";
-    // public static final String GENERATE_COUPON = BASE_URL + "GenerateCouponNo";
-    //  public static final String pkg_testdetails = BASE_URL + "SinglePackageDetails";
-    //  public static final String ORDER_HISTORY = BASE_URL + "GetOrderHistoryDetails";
-    // public static final String APPLY_PROMOCODE_URL = BASE_URL + "applypromocode";
-    // public static final String ORDER_DETAILS = BASE_URL + "GetFilesForOrderID";
-    //  public static final String RESEND_CONFIRMATION = BASE_URL + "IsContactNoExists";
-    // public static final String SENDALL_REPORT = BASE_URL + "SendAllReportToUser";
-    //  public static final String INVOICE = BASE_URL + "GenerateInvoice";
-    //  public static final String CHECKLABAREA = BASE_URL + "CheckLabrangefrom_area";
-
-    //public static final String LOGIN = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/LogIn";
-    // public static final String VAULTNEW = LIVELOGIN_URL + "PatientModule/PatientService.asmx/PatientFileVaultNew";
-    // public static final String CHECKEMAILIDEXISTS2 = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckEmailIdIsExist";
-    // public static final String CHECKUSERNAMEEXISTS = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckAliasExistMobile";
-    //  public static final String CHECKEMAIL_LOGIN = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";
-    // public static final String CREDETIALDETAILS = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/GetCredentialDetails";
-    //  public static final String PATIENTDISCLAIMER = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/PatientDisclaimer";
-    // public static final String AUTHENTICATION = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/IsUserAuthenticated";
-    // public static final String TERMS_CONDITIONS = LIVELOGIN_URL + "StaffModule/StaffService.asmx/agreeTermsCondition";
-    //  public static final String LOGOUT = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/LogOutIOS";
-    //  public static final String AUTOAREASEARCH = LIVELOGIN_URL + "SupplierModule/SupplierMasterService.asmx/GetAutoAreaSearch";
-    //  public static final String ALIASEXIST = LIVELOGIN_URL + "CommonMasterModule/CommonMasterService.asmx/checkAliasExist";
-    // public static final String PATIENTSIGNUP = LIVELOGIN_URL + "PatientModule/PatientService.asmx/SignUpPatient";
-    //  public static final String PATIENTHISTORY = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientHistory";
-    //  public static final String CHANGEPASSWORD = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/ChangePasswordIOS";
-    //  public static final String OTHERS_AREA = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetOthersFromArea";
-    //  public static final String ALLVACCINES = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetAllVaccines";
-    //  public static final String PATIENTALERT = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientAlertList";
-    //  public static final String REGISTER = LIVELOGIN_URL + "laboratorymodule/LISService.asmx/Register";
-    //  public static final String GETADVISE = LIVELOGIN_URL + "LaboratoryModule/LISService.asmx/GetAdvisedInvestigationDetailMobile";
-    // public static final String PATIENTCASEDETAILS = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";
-    // public static final String GETPATIENT = LIVELOGIN_URL + "PatientModule/PatientBedAssignmentService.asmx/GetPatient";
-    // public static final String TESTREPORT = LIVELOGIN_URL + "LaboratoryModule/LISService.asmx/GetpatienttestReport";
-    //  public static final String FORGOTPASSWORD = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/ForgotPassword";
-    // public static final String NEEDHELP = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/NeedHelp";
-    // public static final String COMPLETEDTESTDETAILS = LIVELOGIN_URL + "LaboratoryModule/LISInvestigationWorklistService.asmx/GetAllCompletedTestDetailsOfPatient";
-    //  public static final String GRAPHREPORT = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientTestRangeDataMobile";
-    //  public static final String PATIENTVERIFICATION = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientVerification";
-    // public static final String CLINICEMAILVERIFICATION = LIVELOGIN_URL + "PatientModule/PatientService.asmx/EmailVerificationClinic";
-    // public static final String RESENDVERIFYCODE = LIVELOGIN_URL + "PatientModule/PatientService.asmx/ResendSmsVerifyCodeClinic";
-    //  public static final String CHECKVERIFYCODE = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckVerifyCodeClinic";
-    //  public static final String CITYLIST1 = LIVELOGIN_URL + "CommonMasterModule/CommonMasterService.asmx/GetCityList1";
-    // public static final String CITYLIST = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetCityList";
-    //  public static final String GETSTATE = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateFromCity";
-    // public static final String GETCOUNTRY = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetCountryList";
-    // public static final String STATELIST = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
-    //public static final String PDFREPORT = LIVELOGIN_URL + "LaboratoryModule/lisservice.asmx/GetPatientTestReportMobile";
-    // public static final String GETNATION = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetAllNationality";
-    //  public static final String LINK_FB = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/FacebookLinked";
-    // public static final String LOGIN_FB = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/FacebookLoginMobile";
-    // public static final String UNLINK_FB = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/FacebookUnLinked";
-    //  public static final String USERDETAILS = LIVELOGIN_URL + "CredentialsModule/CredentialService.asmx/GetUserDeatils";
-    //  public static final String TESTIMAGE_CASES = LIVELOGIN_URL + "LaboratoryModule/LISService.asmx/GetPatientTestImagesInCase";
-    // public static final String UPDATEIMAGE = LIVELOGIN_URL + "laboratorymodule/LISService.asmx/UpdateImage";
-    //  public static final String GETPDF = LIVELOGIN_URL + "LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
-    //  public static final String UPLOADIMG_FILEVAULT = LIVELOGIN_URL + "PatientModule/PatientService.asmx/PatientFileVault";
-    // public static final String USERDISCLAIMER = LIVELOGIN_URL + "StaffModule/StaffService.asmx/GetUserDisclaimer";
-    //  public static final String USERDETAIL_MOBILE = LIVELOGIN_URL + "CommonMasterModule/CommonMasterService.asmx/GetUserDetailsFromContactNoMobileService";
-    // public static final String PATIENTFILES = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientFiles";
-    //  public static final String LOADVAULT = LIVELOGIN_URL + "Patient/loadVaultMobile";
-    //  public static final String DISTINCTTAGS = LIVELOGIN_URL + "Patient/getDistinctTags";
-    //  public static final String DELETE_FILES = LIVELOGIN_URL + "PatientModule/PatientService.asmx/DeletePatientFiles";
-    // public static final String PATIENT_IMG_CASES = LIVELOGIN_URL + "PatientModule/PatientService.asmx/GetPatientImagesInCase";
-
-    //  public static final String allPackages = BASE_URL + "AllPackage";
-    // public static final String HOME_PACKAGE_URL = BASE_URL + "HomePackage";
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
 
@@ -219,7 +118,7 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                 url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                 url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
                 //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
                 //url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
@@ -432,10 +331,7 @@ public class StaticHolder {
                 url = LIVELOGIN_URL + "CommonMasterModule/UIService.asmx/GetStateList";
                 break;*/
             case BASE_URL:
-                 //url = "http://192.168.1.202:86/WebServices/LabService.asmx/"; //local ///TODO ayaz
-                url = "https://api.healthscion.com/WebServices/LabService.asmx/"; //live //TODO ayaz
-                // url = "http://ec2-54-169-123-240.ap-southeast-1.compute.amazonaws.com/"; //testing
-
+                url = BASE_URL;
                 break;
             /*case LIVELOGIN_URL:
 
@@ -512,8 +408,22 @@ public class StaticHolder {
                 url = BASE_URL + "patientbussinessModel";
                 break;
             case GetQuizData:
-                //url = "http://192.168.1.11/WebServices/Labservice.asmx/GetQuizData"; ///TODO ayaz for local
-                url = "https://api.healthscion.com/WebServices/Labservice.asmx/GetQuizData"; //TODO ayaz for live
+                url = BASE_URL + "GetQuizData";
+                break;
+            case GetVaccineDetails:
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                // url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
+                break;
+            case UpdatePatientVaccineDetails:
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                //https://api.healthscion.com/WebServices/LabService.asmx/
+                // url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                break;
+
+            case InsertIntoPatientVaccineDetails:
+                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+
+                //url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
                 break;
 
             default:
@@ -569,7 +479,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails
     }
 
 }

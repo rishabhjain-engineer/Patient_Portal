@@ -7,6 +7,7 @@ package utils;
 public class AppConstant {
 
     public static String[] mDurationModeArray = {"Daily", "Weekly", "Monthly", "Quarterly", "Semi-Annually", "Annually"};
+    public static String[] mDateModeArray = {"exactly", "monthly", "yearly"};
 
     public static String ID = "";
 

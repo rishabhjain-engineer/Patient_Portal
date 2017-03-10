@@ -185,6 +185,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         if (getIntent().getExtras() != null) {
             String data = getIntent().getStringExtra("from logout");
             if (data != null && data.equalsIgnoreCase("logout")) {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
                 LoginManager.getInstance().logOut();
             }
         }
@@ -476,10 +477,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             super.onPostExecute(result);
 
             if (fbDisc == 1) {
-
-                new Agree().execute();
-
-
+                new GetCredentialDetailsApi(true).execute();
             } else if (fberror == 1) {
 
                 alert = new AlertDialog.Builder(MainActivity.this).create();
@@ -738,17 +736,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-
-/*
-            if (cb.isChecked()) {
-                rem = "true";
-            } else {
-                rem = "false";
-            }
-*/
-
             if (userName.getText().toString().trim().contains("/")) {
                 demo = "true";
                 Editor demoEdit = demoPreferences.edit();
@@ -776,16 +764,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             super.onPostExecute(result);
             if (chkDisclaimer == 1) {
                 // Agree disclaimer automatically
-                new Agree().execute();
+                new GetCredentialDetailsApi(true).execute();
             } else if (mChkError == 1) {
                 String receivedMsg = receiveData.optString("d");
                 if (receivedMsg.contains("@")) {
                     String msgArray[] = receivedMsg.split("@");
-                    if ("1".equalsIgnoreCase(msgArray[1])) {
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, msgArray[0]);
+                    new GetCredentialDetailsApi(false).execute();
+                    /*if ("1".equalsIgnoreCase(msgArray[1])) {  // One is not coming Now
                         showAlertMessage(msgArray[0]);
                     } else if ("2".equalsIgnoreCase(msgArray[1])) {
                         showAlertMessage(msgArray[0]);
-                    }
+                    }*/
                 } else {
                     showAlertMessage(receivedMsg);
                 }
@@ -1095,24 +1085,22 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    class Agree extends AsyncTask<Void, Void, Void> {
+    class GetCredentialDetailsApi extends AsyncTask<Void, Void, Void> {
+        private boolean isToHitAgreeServiceApi;
+
+        GetCredentialDetailsApi(boolean value) {
+            isToHitAgreeServiceApi = value;
+        }
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-
             progress = new ProgressDialog(MainActivity.this);
             progress.setCancelable(false);
             progress.setTitle("Logging in...");
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            MainActivity.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
-
+            progress.show();
         }
 
         protected void onPostExecute(Void result) {
@@ -1134,12 +1122,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     e.putString("fnln", fnln + " " + lastname);
                     e.putString("cook", cook);
                     e.putString("PH", PH);
-                    // e.putString("tp", tpwd);
-                    /*AppConstant.ID = cop;
-                    AppConstant.PH = PH;
-                    AppConstant.USER = uName;
-                    AppConstant.PASS = uPassword;
-                    AppConstant.FN = fnln + " " + lastname;*/
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
@@ -1170,6 +1152,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         }
 
                     }
+                }else if(!isToHitAgreeServiceApi){
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
+                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    startActivity(intent);
                 }
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
@@ -1179,10 +1169,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         }
 
         protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
             String userCredential;
-
             try {
                 sendData = new JSONObject();
                 receiveData = service.GetCredentialDetails(sendData);
@@ -1197,18 +1184,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 sendData.put("UserId", id);
                 sendData.put("versionNo", disclaimerVersion);
                 sendData.put("DateTime", disclaimerDateTime);
-                System.out.println(sendData);
 
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
-
-            receiveData = service.AgreeService(sendData);
-            System.out.println(receiveData);
-
+            if(isToHitAgreeServiceApi){
+                receiveData = service.AgreeService(sendData);
+            }
             return null;
-
         }
     }
 

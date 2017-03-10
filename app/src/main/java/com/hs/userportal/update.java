@@ -13,32 +13,32 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -54,12 +54,11 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -76,13 +75,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,7 +100,8 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
-import ui.ProfileContainerActivity;
+import utils.Utility;
+
 
 @SuppressLint("NewApi")
 public class update extends BaseActivity {
@@ -143,7 +148,7 @@ public class update extends BaseActivity {
     private String[] nationlist;
     private Button finishbtn;
     private String nationid;
-    private ImageButton dp, dpchange;
+    private ImageView dp, dpchange;
     private byte[] byteArray;
     private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
     private String email_varification, mobile_varification;
@@ -160,9 +165,13 @@ public class update extends BaseActivity {
     private static JSONObject receiveFbImageSave;
     private String check_username;
     private Dialog fbDialog;
-    private static final int REQUEST_CAMERA = 0;
     private String mOccupation;
     private String unverify, emailverify;
+    private boolean mIsToShowProgressbar = true;
+    private String userChoosenTask;
+    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ MY_PERMISSIONS_REQUEST_CAMERA = 1 , WRITE_EXTERNAL =2;
+    private String mCurrentPhotoPath = null;
+    private boolean mIsSdkLessThanM = true ;
 
 
     public static JSONArray arraybasic;
@@ -233,8 +242,8 @@ public class update extends BaseActivity {
         religion = (EditText) findViewById(R.id.editText9);
         finishbtn = (Button) findViewById(R.id.bSend);
 
-        dp = (ImageButton) findViewById(R.id.dp);
-        dpchange = (ImageButton) findViewById(R.id.dpChange);
+        dp = (ImageView) findViewById(R.id.dp);
+        dpchange = (ImageView) findViewById(R.id.dpChange);
 
         father = (EditText) findViewById(R.id.father);
         husband = (EditText) findViewById(R.id.husband);
@@ -303,7 +312,8 @@ public class update extends BaseActivity {
             public void onClick(View v) {
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
 
-                    if (fbLinked.equals("true")) {
+                    //if (fbLinked.equals("true")) {
+                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
                         //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
@@ -324,8 +334,19 @@ public class update extends BaseActivity {
                                                 break;
 
                                             case 1:
-                                                //takePhoto();
-                                                checkCameraPermission();
+
+                                                File photo = null;
+                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+                                                } else {
+                                                    photo = new File(getCacheDir(), "test.jpg");
+                                                }
+                                                if (photo != null) {
+                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                                                    Imguri = Uri.fromFile(photo);
+                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
+                                                }
                                                 break;
                                             case 2:
                                                 new fbImagePull().execute();
@@ -340,7 +361,7 @@ public class update extends BaseActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
                                 new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -356,8 +377,30 @@ public class update extends BaseActivity {
                                                 }
                                                 break;
                                             case 1:
-                                                //takePhoto();
-                                                checkCameraPermission();
+
+                                                try {
+                                                    checkCameraPermission();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                               /* File photo = null;
+                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+                                                } else {
+                                                    photo = new File(getCacheDir(), "test.jpg");
+                                                }
+                                                if (photo != null) {
+                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                                                    Imguri = Uri.fromFile(photo);
+                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
+                                                }
+*/
+                                                break;
+
+                                            case 2:
+                                                new fbImagePull().execute();
                                                 break;
                                             default:
                                                 break;
@@ -1008,18 +1051,11 @@ public class update extends BaseActivity {
                     System.out.println("oldfile:" + oldfile1);
                 }
 
-                try {
 
-                    if (subArray.getJSONObject(0).getString("ThumbImage")
-                            .matches((".*[a-kA-Zo-t]+.*")))
-                    // if
-                    // (subArray.getJSONObject(0).getString("ThumbImage").contains("Don't Show Images"))
+                if (subArray.getJSONObject(0).getString("ThumbImage").matches((".*[a-kA-Zo-t]+.*"))) {
+                    final String image_show = path + subArray.getJSONObject(0).getString("Image");
 
-                    {
-                        String image_show = path
-                                + subArray.getJSONObject(0).getString("Image");
-
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
+                     /*   bitmap = BitmapFactory.decodeStream((InputStream) new URL(Uri.parse(image_show.replaceAll(" ", "%20")).toString()).getContent());
 
                         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                                 bitmap.getHeight(), Config.ARGB_8888);
@@ -1037,19 +1073,37 @@ public class update extends BaseActivity {
                         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
                         canvas.drawBitmap(bitmap, rect, rect, paint);
 
-                        dp.setImageBitmap(output);
-                        verify = "1";
+                        dp.setImageBitmap(output);*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("ayaz", "thread: " + Thread.currentThread().getName());
+                            new GetImagAsyncTask(image_show).execute();
+                           /* ImageLoader imgLoader = new ImageLoader(getApplicationContext());
+                            int stub_id = R.drawable.ic_launcher;
+                            imgLoader.DisplayImage(image_show, stub_id, dp);*/
+                        }
+                    });
+                    verify = "1";
 
-                    } else if (gender.equalsIgnoreCase("Male")) {
-                        dp.setImageResource(R.drawable.update);
-                    } else {
-                        dp.setImageResource(R.drawable.female_white);
-                    }
+                } else if (gender.equalsIgnoreCase("Male")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dp.setImageResource(R.drawable.update);
+                        }
+                    });
 
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dp.setImageResource(R.drawable.female_white);
+                        }
+                    });
+
                 }
+
 
                 basic = new JSONObject();
                 try {
@@ -1115,36 +1169,7 @@ public class update extends BaseActivity {
 
     }
 
-    private Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getHeight() / 2, paint);
-        } else {
-            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                    bitmap.getWidth() / 2, paint);
-        }
-
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        // return _bmp;
-        return output;
-    }
-
-    private void takePhoto() {
+    /*private void takePhoto() {
         File photo = null;
         Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -1159,9 +1184,9 @@ public class update extends BaseActivity {
         }
     }
 
-    /**
+    *//**
      * Method to check permission
-     */
+     *//*
     void checkCameraPermission() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // Camera permission has not been granted.
@@ -1171,34 +1196,87 @@ public class update extends BaseActivity {
         }
     }
 
+    */
+
     /**
      * Method to request permission for camera
-     */
+     *//*
     private void requestCameraPermission() {
         // Camera permission has not been granted yet. Request it directly.
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
     }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(resultCode + ", " + requestCode);
+        try {
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA) {
-            // BEGIN_INCLUDE(permission_result)
-            // Received permission result for camera permission.
-            Log.i("camera", "Received response for Camera permission request.");
-            // Check if the only required permission has been granted
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Camera permission has been granted, preview can be displayed
-                takePhoto();
-            } else {
-                //Permission not granted
-                Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            if (requestCode == PICK_FROM_GALLERY) {
+                Uri selectedImageUri = data.getData();
+                String path = getPathFromContentUri(selectedImageUri);
+                File imageFile = new File(path);
+                long check = ((imageFile.length() / 1024));
+                if (check < 2500) {
+                    Intent intent = new Intent(this, UploadProfileService.class);
+                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    intent.putExtra("add_path", "");
+                    intent.putExtra("oldimage", oldimage);
+                    intent.putExtra("oldthumbimage", oldthumbimage);
+                    startService(intent);
+
+                    *//*String tempPath = getPath(selectedImageUri, update.this);
+                    Bitmap bm;
+                    BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+                    btmapOptions.inSampleSize = 4;
+                    bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+                    // vault_adapter.notifyDataSetChanged();
+                    if (bm != null) {
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                        byteArray = byteArrayOutputStream.toByteArray();
+                        pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        picname = "b.jpg";
+                        pic = "data:image/jpeg;base64," + pic;
+                    }*//*
+                } else {
+                    Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+                }
             }
-        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.v("ayaz", "Permission: " + permissions[0] + "was " + grantResults[0]);
-            //resume tasks needing this permission
-        }
-    }
 
+            if (requestCode == PICK_FROM_CAMERA) {
+                Uri selectedImageUri = Imguri;
+                String path = getPathFromContentUri(selectedImageUri);
+                System.out.println(path);
+                File imageFile = new File(path);
+                long check = ((imageFile.length() / 1024));
+
+                if (check < 4500 && check != 0) {
+                    Intent intent = new Intent(this, UploadProfileService.class);
+                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    intent.putExtra("add_path", "");
+                    intent.putExtra("oldimage", oldimage);
+                    intent.putExtra("oldthumbimage", oldthumbimage);
+                    startService(intent);
+
+                    ContentResolver cr = getContentResolver();
+                    Bitmap bitmap;
+                    bitmap = MediaStore.Images.Media.getBitmap(cr, selectedImageUri);
+
+                    byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
+                    byteArray = byteArrayOutputStream.toByteArray();
+                    pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    pic = "data:image/jpeg;base64," + pic;
+                    picname = "camera.jpg";
+
+                } else {
+                    Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println(resultCode + ", " + requestCode);
@@ -1206,6 +1284,8 @@ public class update extends BaseActivity {
            /* UploadProfileService servi=new UploadProfileService();
             servi.setRefresh(update.this);*/
             if (requestCode == PICK_FROM_GALLERY) {
+
+                Log.e("Rishabh ", "PICKED FROM GALLERY onActivityResult . ");
 
                 Uri selectedImageUri = data.getData();
 
@@ -1257,46 +1337,33 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
+                File imageFile = null ;
+                Uri selectedImageUri;
+                if(mIsSdkLessThanM == true){
+                   selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
 
-               /* Bundle extras = data.getExtras();
-                Bitmap bitmap1 = (Bitmap) extras.get("data");
+                }else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                }
 
-                bitmap = Bitmap.createScaledBitmap(bitmap1, 250, 250, true);
-
-                Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                        bitmap.getHeight(), Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, bitmap.getWidth(),
-                        bitmap.getHeight());
-
-                paint.setAntiAlias(true);
-                canvas.drawARGB(0, 0, 0, 0);
-                canvas.drawCircle(bitmap.getWidth() / 2,
-                        bitmap.getHeight() / 2, bitmap.getHeight() / 2, paint);
-                paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-                canvas.drawBitmap(bitmap, rect, rect, paint);
-
-                dp.setImageBitmap(output);
-                verify = "1";
-                byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100,
-                        byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream.toByteArray();
-                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                pic = "data:image/jpeg;base64," + pic;
-                picname = "b.jpg";*/
-
-
-                Uri selectedImageUri = Imguri;
+                //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
+               // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
-                System.out.println(path);
-                File imageFile = new File(path);
+
+                Log.e("Rishabh" ,"onActivityResult Camera : Path of FILE := "+path) ;
+               // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
-                if (check < 4500) {
+                if (check < 10000) {
                     if (check != 0) {
                         Intent intent = new Intent(this, UploadProfileService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
@@ -1332,6 +1399,281 @@ public class update extends BaseActivity {
 
     }
 
+    public void preventRotation(String filePath) {
+        try {
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+            bmOptions.inJustDecodeBounds = false;
+
+            bmOptions.inPurgeable = true;
+
+
+            Bitmap cameraBitmap = BitmapFactory.decodeFile(filePath);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+
+            ExifInterface exif = new ExifInterface(filePath);
+
+            float rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            System.out.println(rotation);
+
+
+            float rotationInDegrees = exifToDegrees(rotation);
+
+            System.out.println(rotationInDegrees);
+
+
+            Matrix matrix = new Matrix();
+
+            matrix.postRotate(rotationInDegrees);
+            Bitmap scaledBitmap = Bitmap.createBitmap(cameraBitmap);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(cameraBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+            FileOutputStream fos = new FileOutputStream(filePath);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static float exifToDegrees(float exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+
+   /* @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+    }*/
+
+    private void onCaptureImageResult(Intent data) {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            Imguri = Uri.fromFile(photo);
+        }
+        //////////////////
+        Uri selectedImageUri = Imguri;
+        String path = getPathFromContentUri(selectedImageUri);
+        File imageFile = new File(path);
+        long check = ((imageFile.length() / 1024));
+        //if (check < 10000 && check != 0) {
+
+        Intent intent = new Intent(this, UploadProfileService.class);
+        intent.putExtra(UploadService.ARG_FILE_PATH, path);
+        intent.putExtra("add_path", "");
+        intent.putExtra("oldimage", oldimage);
+        intent.putExtra("oldthumbimage", oldthumbimage);
+        startService(intent);
+
+
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+        File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        dp.setImageBitmap(thumbnail);
+
+
+       /* } else {
+            Toast.makeText(this, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+        }*/
+
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+
+        Uri selectedImageUri = data.getData();
+        String path = getPathFromContentUri(selectedImageUri);
+        File imageFile = new File(path);
+        long check = ((imageFile.length() / 1024));
+        if (check < 2500) {
+            Intent intent = new Intent(this, UploadProfileService.class);
+            intent.putExtra(UploadService.ARG_FILE_PATH, path);
+            intent.putExtra("add_path", "");
+            intent.putExtra("oldimage", oldimage);
+            intent.putExtra("oldthumbimage", oldthumbimage);
+            startService(intent);
+            Bitmap bm = null;
+            if (data != null) {
+                try {
+                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            dp.setImageBitmap(bm);
+        } else {
+            Toast.makeText(this, "Image should be less than 2.5 mb.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    ///////////////////////NEW/////////////////////////////////////
+    private class GetImagAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private String imageUrl;
+        private Bitmap mBitmap;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mBitmap = downloadImage();
+            return null;
+        }
+
+        public GetImagAsyncTask(String imagrUrl) {
+            imageUrl = imagrUrl;
+        }
+
+        // Sets the Bitmap returned by doInBackground
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.i("ayaz", "onPostExecute thread: " + Thread.currentThread().getName());
+            dp.setImageBitmap(mBitmap);
+            dp.invalidate();
+        }
+
+        // Creates Bitmap from InputStream and returns it
+        private Bitmap downloadImage() {
+            Bitmap bitmap = null;
+            InputStream stream = null;
+
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inSampleSize = 1;
+
+            try {
+                stream = getHttpConnection(imageUrl);
+                bitmap = decodeBitmap(stream, 100, 100);
+                stream.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        // Makes HttpURLConnection and returns InputStream
+        private InputStream getHttpConnection(String urlString)
+                throws IOException {
+            InputStream stream = null;
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+
+            try {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                httpConnection.setRequestMethod("GET");
+                httpConnection.connect();
+
+                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    stream = httpConnection.getInputStream();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return stream;
+        }
+    }
+
+    private Bitmap decodeBitmap(InputStream stream, int reqHeight, int reqWidth) {
+        InputStream copiedStream = getCopiedStream(stream);
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(stream, null, options);
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeStream(copiedStream, null, options);
+        return bitmap;
+    }
+
+    private InputStream getCopiedStream(InputStream inStream) {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        final int buffer_size = 1024;
+        try {
+            byte[] bytes = new byte[buffer_size];
+            while (true) {
+                //Read byte from input stream
+
+                int count = inStream.read(bytes, 0, buffer_size);
+                if (count == -1)
+                    break;
+
+                //Write byte from output stream
+                outStream.write(bytes, 0, count);
+            }
+            InputStream copiedStream = new ByteArrayInputStream(outStream.toByteArray());
+            return copiedStream;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+
     public String getPath(Uri uri, Activity activity) {
 
         String[] projection = {MediaStore.MediaColumns.DATA};
@@ -1347,8 +1689,6 @@ public class update extends BaseActivity {
         File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
         photo.delete();
         new BackgroundProcess().execute();
-
-
     }
 
     private String getPathFromContentUri(Uri uri) {
@@ -1549,6 +1889,7 @@ public class update extends BaseActivity {
         return path;
     }
 
+
     private void emailAlreadyRegistered() {
         final Dialog dialog = new Dialog(update.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1742,12 +2083,19 @@ public class update extends BaseActivity {
             return null;
         }
 
+        Bitmap bitmap;
+
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            Bitmap bitmap = BitmapFactory
-                    .decodeStream(inputStream);
+            bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap = getCroppedBitmap(bitmap);
-            dp.setImageBitmap(bitmap);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dp.setImageBitmap(bitmap);
+                }
+            });
+
             verify = "1";
             byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100,
@@ -1891,5 +2239,210 @@ public class update extends BaseActivity {
         }
     }
 
+    private Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getHeight() / 2, paint);
+        } else {
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                    bitmap.getWidth() / 2, paint);
+        }
+
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        // return _bmp;
+        return output;
+    }
+
+    /**
+     * Method to check permission
+     */
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mIsSdkLessThanM = false ;
+            // Camera permission has not been granted.
+            boolean flag = checkAndRequestPermissions();
+            if (flag == true) {
+                    takePhoto();
+            }
+        } else {
+            startCamera() ;
+        }
+    }
+
+    /**
+     * Method to request permission for camera
+     */
+   /* private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            Log.i("camera", "Received response for Camera permission request.");
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //Permission not granted
+                Toast.makeText(this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.v("ayaz", "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //resume tasks needing this permission
+        }
+    }
+*/
+    private void takePhoto() throws IOException {
+
+        mIsSdkLessThanM = false ;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                // Uri photoURI = Uri.fromFile(createImageFile());
+                Uri photoURI = FileProvider.getUriForFile(update.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////
+        ////////////////////// Code Backup //////////////////////////
+        /////////////////////////////////////////////////////////////
+       /* File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }*/
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        Log.e("Rishabh ", "createImageFile() imageFileName := "+imageFileName) ;
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        Log.e("Rishabh ", "createImageFile() storageDir := "+storageDir) ;
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        Log.e("Rishabh ", "createImageFile() image := "+image) ;
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private boolean checkAndRequestPermissions() {
+        mIsSdkLessThanM = false ;
+        int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST_CAMERA);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
+            Log.e("Rishabh", "Permission is going to be granted .");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Permission Granted Successfully. Write working code here.
+            } else {
+                //You did not accept the request can not use the functionality.
+            }
+        }
+        if (requestCode == WRITE_EXTERNAL) {
+            Log.e("Rishabh", "Write Permission is going to be granted .");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                try {
+                    takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Permission Granted Successfully. Write working code here.
+            } else {
+                //You did not accept the request can not use the functionality.
+            }
+        }
+    }
+
+    void startCamera() {
+        mIsSdkLessThanM = true ;
+         File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
 
 }

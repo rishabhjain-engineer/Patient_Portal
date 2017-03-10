@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="8dp"
+    android:paddingTop="5dp">
+
+    <LinearLayout
+        android:id="@+id/item_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/vaccine_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="RotaVirus"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/vaccine_acronyms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="xyz"
+            android:textColor="@color/black" />
+
+
+        <!-- <TextView
+             android:id="@+id/vaccine_aget_at"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Date"
+             android:layout_marginTop="5dp"
+             android:textColor="@color/black" />-->
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/grey"
+        android:gravity="center"
+        android:text="5 year"
+        android:textColor="@color/black" />
+
+
+</LinearLayout>

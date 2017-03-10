@@ -67,8 +67,7 @@ public class UploadProfileService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        s3Client = new AmazonS3Client(
-                new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+        s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         IntentFilter f = new IntentFilter();
@@ -174,30 +173,16 @@ public class UploadProfileService extends IntentService {
 //			String url1 = "http://192.168.1.122:8084/PatientModule/PatientService.asmx/PatientFileVault";
             StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.UploadProfilePic);
             final String url = sttc_holdr.request_Url();
-            jr1 = new JsonObjectRequest(
-                    Request.Method.POST, url, sendData,
+            jr1 = new JsonObjectRequest(Request.Method.POST, url, sendData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-
-                            System.out.println(response);
                             try {
-
-
-
-                                    Toast.makeText(getApplicationContext(),
-                                           "Successfully uploaded",
-                                            Toast.LENGTH_SHORT).show();
-
-                               ((update)update.mcontext).refresh();
-
-
-
+                                Toast.makeText(getApplicationContext(), "Successfully uploaded", Toast.LENGTH_SHORT).show();
+                                ((update) update.mcontext).refresh();
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                 @Override

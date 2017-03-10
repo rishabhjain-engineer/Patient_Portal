@@ -42,6 +42,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.BmiActivity;
 import ui.BpActivity;
+import ui.VaccineActivity;
 
 import static java.lang.Math.round;
 
@@ -50,7 +51,7 @@ public class MyHealth extends BaseActivity {
     private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
     private EditText blood_group;
     private String id, show_blood, bgroup, height, weight, mBp;
-    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer;
+    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer, mVaccineContainer;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
@@ -84,6 +85,7 @@ public class MyHealth extends BaseActivity {
         allergyLayout = (LinearLayout) findViewById(R.id.allergyLayout);
         mBmiContainer = (LinearLayout) findViewById(R.id.bmi_container);
         mBpContainer = (LinearLayout) findViewById(R.id.bp_container);
+        mVaccineContainer = (LinearLayout) findViewById(R.id.vaccine_container);
         setupActionBar();
         mActionBar.setTitle("My Health");
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -178,6 +180,15 @@ public class MyHealth extends BaseActivity {
                 in.putExtra("id", id);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+        mVaccineContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyHealth.this, VaccineActivity.class);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                startActivity(intent);
             }
         });
 
