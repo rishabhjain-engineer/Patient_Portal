@@ -313,7 +313,7 @@ public class update extends BaseActivity {
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
 
                     askRunTimePermissions() ;
-
+                    mIsSdkLessThanM = true ;
                     //if (fbLinked.equals("true")) {
                     if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
@@ -2315,7 +2315,7 @@ public class update extends BaseActivity {
     }
 
     private void takePhoto() throws IOException {
-
+        mIsSdkLessThanM = false ;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
