@@ -3,6 +3,7 @@ package adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.hs.userportal.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by ashish on 2/5/2016.
@@ -28,19 +30,23 @@ public class Vault_adapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private ArrayList<HashMap<String, String>> data_list;
+    private static ArrayList<HashMap<String, String>> privatearray;
     private ImageLoader mImageLoader;
     private String patientId;
     private String path_buffer;
     private boolean islist;
 
-    public Vault_adapter(Activity activity, ArrayList<HashMap<String, String>> SortList,
-                         boolean list_view, String patientId, String path_buffer) {
+    public Vault_adapter(Activity activity, ArrayList<HashMap<String, String>> SortList, boolean list_view, String patientId, String path_buffer) {
         this.activity = activity;
         this.data_list = SortList;
         this.patientId = patientId;
         this.islist = list_view;
         this.path_buffer = path_buffer;
         mImageLoader = MyVolleySingleton.getInstance(activity).getImageLoader();
+
+        privatearray = new ArrayList<HashMap<String, String>>();
+        privatearray.addAll(data_list);
+        Log.e("Rishabh " , "Vault Adapter : data _ list := "+data_list.toString());
     }
 
     @Override
@@ -78,6 +84,7 @@ public class Vault_adapter extends BaseAdapter {
 
             //String pdf_name = data_list.get(position).get("FileVault2").replace(patientId + "/FileVault/", "");
             String[] pdf_name = data_list.get(position).get("Personal3").split("/");
+            Log.e("Rishabh ", "Search entry : String name := "+pdf_name) ;
             int length = pdf_name.length;
             String time = data_list.get(position).get("LastModified");
             String[] parts = time.split("T");
@@ -221,5 +228,23 @@ public class Vault_adapter extends BaseAdapter {
         final String[] units = new String[]{"B", "Kb", "Mb", "Gb", "Tb"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    public void filter(String charText) {
+        HashMap<String, String> hmap;
+        charText = charText.toLowerCase(Locale.getDefault());
+        this.data_list.clear();
+        if (charText.length() == 0) {
+            this.data_list.addAll(privatearray);
+        } else {
+            for (int i = 0; i < this.privatearray.size(); i++) {//TestDescription
+                if (privatearray.get(i).get("Personal3").toLowerCase(Locale.getDefault()).contains(charText)) {
+                    Log.e("Rishabh" , "data List enties to be searched  := "+privatearray.get(i).get("Personal3").toLowerCase(Locale.getDefault()).contains(charText)) ;
+                    HashMap<String, String> hmap1 = privatearray.get(i);
+                    this.data_list.add(hmap1);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
