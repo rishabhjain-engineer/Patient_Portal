@@ -95,7 +95,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private String title;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
-
     private List<String> mDateList = new ArrayList<>();
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -212,18 +211,24 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         setData();
     }
+
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
+
     private void setData(){
-         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         graphDetailValueAndDateList.clear();
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
-
+            mDateList.clear();
             for (int i=0 ; i < chartValues.size(); i++) {
 
                 String dateInString = chartDates.get(i);
+                String dateArray[] = dateInString.split(" ");
+                dateInString = dateArray[0];
                 String chartValueInString = chartValues.get(i);
                 String caseCode = chartValues.get(i);
+                mDateList.add(dateInString);
 
                 GraphDetailValueAndDate graphDetailValueAndDate = new GraphDetailValueAndDate();
                 graphDetailValueAndDate.setDate(dateInString);
@@ -235,7 +240,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             }
 
             mFilteredGraphDetailValueAndDateList.clear();
-            Log.i("ayaz", "size: "+mFilteredGraphDetailValueAndDateList.size());
 
             if (mFormEpocDate > 0) {
                 for(GraphDetailValueAndDate graphDetailValueAndDate : graphDetailValueAndDateList){
@@ -247,7 +251,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                     }
                     long epoch = date.getTime();
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             mFilteredGraphDetailValueAndDateList.add(graphDetailValueAndDate);
                         }
                     }
@@ -258,8 +262,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
 
         JSONArray jsonArray1 = new JSONArray();
-        Log.i("ayaz", "size11111: "+mFilteredGraphDetailValueAndDateList.size());
         for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
+
             GraphDetailValueAndDate graphDetailValueAndDateObj = mFilteredGraphDetailValueAndDateList.get(i);
 
             String chartValueInString = graphDetailValueAndDateObj.getValue();
@@ -270,7 +274,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 try {
                     value = Double.parseDouble(chartValueInString);
                 }catch (NumberFormatException exc){
-                    Log.e("Rishabh", "GraphDetailNew Numberformat exception "+exc);
+                    Log.e("crash", "GraphDetailNew Numberformat exception "+exc);
                 }
                 if(mMaxValue <= value){
                     mMaxValue = value;
@@ -292,7 +296,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
 
                 if (mFormEpocDate > 0) {
-                    if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                    if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                         JSONArray innerJsonArray = new JSONArray();
                         innerJsonArray.put(epoch);
                         innerJsonArray.put(chartValueInString);
@@ -318,13 +322,13 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 e.printStackTrace();
             }
         }
-
+        
+        setDateList(mDateList);
         if(adapter == null){
             adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
             adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
             graph_listview_id.setAdapter(adapter);
         }else{
-
             adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
             adapter.notifyDataSetChanged();
         }
@@ -666,7 +670,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 mDateFormat = "'%Y";
                 mRotationAngle = 0;
             }
-            Log.e("ayaz", "TickValues: "+mTckValuesJsonArray.toString());
             for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
                 if(i==0){
                     try {
