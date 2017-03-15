@@ -276,12 +276,14 @@ public class GraphHandlerActivity extends BaseActivity {
         }
 
         String dateArray2[] = date2.split("/");
+        String dayInString2 = dateArray2[0];
         String monthInString2 = dateArray2[1];
         String yearInString2 = dateArray2[2];
+        int dayInInt2 = Integer.parseInt(dayInString2);
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
 
-        if (mDateList.contains(date2) && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10) && isLastDateOfMonth(date2)) {
+        if (mDateList.contains(date2) && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10) && dayInInt2 == 1) {
             if (monthInInt2 == 1) {
                 monthInInt2 = 7;
             } else if (monthInInt2 == 4) {
