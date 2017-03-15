@@ -66,6 +66,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -103,6 +104,8 @@ public class BmiActivity extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private RelativeLayout mListViewHeaderRl;
     private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
+
+    private List<String> mDateList = new ArrayList<>();
 
 
     @Override
@@ -213,6 +216,7 @@ public class BmiActivity extends GraphHandlerActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            setDateList(mDateList);
             adapter = new MyHealthsAdapter(BmiActivity.this, weight_contentlists);
             weight_listId.setAdapter(adapter);
             Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
@@ -232,6 +236,7 @@ public class BmiActivity extends GraphHandlerActivity {
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
@@ -263,6 +268,10 @@ public class BmiActivity extends GraphHandlerActivity {
                         bmiValue = df.format(bmi);
 
                         String fromdate = obj.getString("fromdate");
+                        String dateWithoutHour[] = fromdate.split("T");
+                        String onlyDate = dateWithoutHour[0] ;
+                        String correctDate = Utils.correctDateFormat(onlyDate);
+                        mDateList.add(correctDate);
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("ID", ID);
                         hmap.put("fromdate", fromdate);

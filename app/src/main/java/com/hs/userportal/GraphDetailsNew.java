@@ -96,6 +96,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private String title;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
 
+    private List<String> mDateList = new ArrayList<>();
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
