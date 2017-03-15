@@ -33,7 +33,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -166,6 +168,8 @@ public class Filevault extends BaseActivity {
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
+    private ImageView mSearchBarImageView ;
+    private EditText mSearchBarEditText ;
 
 
     public static Context file_vaultcontxt;
@@ -198,6 +202,10 @@ public class Filevault extends BaseActivity {
         vault_list = (ListView) findViewById(R.id.vault_list);
         list_header = (RelativeLayout) findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) findViewById(R.id.list_header2);
+
+        mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
+        mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
+
         sendData = new JSONObject();
         service = new Services(Filevault.this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -213,6 +221,22 @@ public class Filevault extends BaseActivity {
         }
 
 
+       mSearchBarEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                vault_adapter.filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
        /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -32,7 +32,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -178,6 +180,8 @@ public class Filevault2 extends BaseActivity {
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
     private static final int REQUEST_CAMERA = 0;
+    private ImageView mSearchBarImageView ;
+    private EditText mSearchBarEditText ;
 
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
@@ -208,6 +212,10 @@ public class Filevault2 extends BaseActivity {
         vault_list = (ListView) findViewById(R.id.vault_list);
         list_header = (RelativeLayout) findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) findViewById(R.id.list_header2);
+        mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
+        mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
+
+
         sendData = new JSONObject();
         service = new Services(Filevault2.this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -227,6 +235,23 @@ public class Filevault2 extends BaseActivity {
         queue = Volley.newRequestQueue(this);
         queue3 = Volley.newRequestQueue(this);
         req = Volley.newRequestQueue(this);
+        mSearchBarEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                vault_adapter.filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         upload.setOnClickListener(new View.OnClickListener() {
 
             @Override
