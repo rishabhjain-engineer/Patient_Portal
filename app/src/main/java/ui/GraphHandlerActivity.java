@@ -281,15 +281,16 @@ public class GraphHandlerActivity extends BaseActivity {
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
 
-        if ((monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10) && isLastDateOfMonth(date2)) {
+        if (mDateList.contains(date2) && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10) && isLastDateOfMonth(date2)) {
             if (monthInInt2 == 1) {
-                monthInInt2 = 4;
-            } else if (monthInInt2 == 4) {
                 monthInInt2 = 7;
-            } else if (monthInInt2 == 7) {
+            } else if (monthInInt2 == 4) {
                 monthInInt2 = 10;
-            } else if (monthInInt2 == 10) {
+            } else if (monthInInt2 == 7) {
                 monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else if (monthInInt2 == 10) {
+                monthInInt2 = 4;
                 yearInInt2 = yearInInt2 + 1;
             }
         } else {
@@ -332,7 +333,7 @@ public class GraphHandlerActivity extends BaseActivity {
             }
             long epoch = date.getTime();
             jsonArray.put(epoch);
-            beginCalendar.add(Calendar.MONTH, 4);
+            beginCalendar.add(Calendar.MONTH, 3);
         }
         return jsonArray;
 
