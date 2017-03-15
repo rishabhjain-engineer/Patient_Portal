@@ -1584,7 +1584,10 @@ public class update extends BaseActivity {
             try {
                 stream = getHttpConnection(imageUrl);
                 bitmap = decodeBitmap(stream, 100, 100);
-                stream.close();
+                if(stream!=null) {
+                    stream.close();
+                }
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
