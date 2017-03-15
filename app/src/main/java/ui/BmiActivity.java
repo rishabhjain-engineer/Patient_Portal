@@ -291,7 +291,7 @@ public class BmiActivity extends GraphHandlerActivity {
                             long epoch = date.getTime();
 
                             if (mFormEpocDate > 0) {
-                                if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                                if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                                     weight_contentlists.add(hmap);
                                 }
                             } else {
@@ -328,7 +328,7 @@ public class BmiActivity extends GraphHandlerActivity {
                         mDateMaxValue = epoch;
                     }
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
                             innerJsonArray.put(mapValue.get("weight"));

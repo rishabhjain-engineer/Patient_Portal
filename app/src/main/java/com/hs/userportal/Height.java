@@ -422,7 +422,7 @@ public class Height extends GraphHandlerActivity {
                     long epoch = date.getTime();
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             weight_contentlists.add(hmap);
                         }
                     } else {
@@ -455,7 +455,7 @@ public class Height extends GraphHandlerActivity {
                     }
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
                             innerJsonArray.put(mapValue.get("weight"));

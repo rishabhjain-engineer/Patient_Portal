@@ -298,7 +298,7 @@ public class BpActivity extends GraphHandlerActivity {
                     long epoch = date.getTime();
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             weight_contentlists.add(hmap);
                         }
                     } else {
@@ -333,7 +333,7 @@ public class BpActivity extends GraphHandlerActivity {
                     }
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             String bp = mapValue.get("weight");
                             String bpArray[] = bp.split(",");
