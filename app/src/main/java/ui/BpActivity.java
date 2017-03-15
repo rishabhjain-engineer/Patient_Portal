@@ -64,6 +64,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -92,12 +93,12 @@ public class BpActivity extends GraphHandlerActivity {
     private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
-    private List<Long> mEpocList = new ArrayList<Long>();
-    private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private boolean mIsToAddMaxMinValue = true;
     private long mDateMaxValue, mDateMinValue;
     private RelativeLayout mListViewHeaderRl;
+
+    private List<String> mDateList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -222,6 +223,7 @@ public class BpActivity extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if(isDataAvailable){
+                setDateList(mDateList);
                 if(adapter == null){
                     adapter = new MyHealthsAdapter(BpActivity.this);
                     adapter.setListData(weight_contentlists);
@@ -246,8 +248,10 @@ public class BpActivity extends GraphHandlerActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             JSONObject sendData1 = new JSONObject();
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
@@ -274,21 +278,25 @@ public class BpActivity extends GraphHandlerActivity {
 
 
                     String fromdate = obj.optString("fromdate");
+                    String dateWithoutHour[] = fromdate.split("T");
+                    String onlyDate = dateWithoutHour[0] ;
+                    String correctDate = Utils.correctDateFormat(onlyDate);
+                    mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", bp);
-                    hmap.put("fromdate", fromdate);
+                    hmap.put("fromdate", onlyDate);
 
                     Date date = null;
                     try {
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(onlyDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             weight_contentlists.add(hmap);
                         }
                     } else {
@@ -307,13 +315,11 @@ public class BpActivity extends GraphHandlerActivity {
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
                         String fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    mEpocList.add(epoch);
-                    mValueList.add(mapValue.get("weight"));
 
                     if(mIsToAddMaxMinValue && i == 0){
                         mDateMinValue = epoch;
@@ -323,7 +329,7 @@ public class BpActivity extends GraphHandlerActivity {
                     }
 
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             String bp = mapValue.get("weight");
                             String bpArray[] = bp.split(",");

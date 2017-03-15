@@ -297,14 +297,18 @@ public class logout extends Activity implements View.OnClickListener {
                 } else {
                     if (subArrayList != null) {
                         if (id != null && subArrayList.length() > 0) {
-                            Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
-                            intent.putExtra("id", id);
-                            update.verify = "0";
-                            intent.putExtra("family", family_object);
-                            String member = username.getText().toString();
-                            intent.putExtra("Member_Name", member);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                                showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                            }else{
+                                Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
+                                intent.putExtra("id", id);
+                                update.verify = "0";
+                                intent.putExtra("family", family_object);
+                                String member = username.getText().toString();
+                                intent.putExtra("Member_Name", member);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
                         }

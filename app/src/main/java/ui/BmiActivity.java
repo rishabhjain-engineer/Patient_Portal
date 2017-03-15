@@ -66,6 +66,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -103,6 +104,8 @@ public class BmiActivity extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private RelativeLayout mListViewHeaderRl;
     private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
+
+    private List<String> mDateList = new ArrayList<>();
 
 
     @Override
@@ -213,6 +216,7 @@ public class BmiActivity extends GraphHandlerActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            setDateList(mDateList);
             adapter = new MyHealthsAdapter(BmiActivity.this, weight_contentlists);
             weight_listId.setAdapter(adapter);
             Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
@@ -231,7 +235,9 @@ public class BmiActivity extends GraphHandlerActivity {
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
@@ -263,9 +269,13 @@ public class BmiActivity extends GraphHandlerActivity {
                         bmiValue = df.format(bmi);
 
                         String fromdate = obj.getString("fromdate");
+                        String dateWithoutHour[] = fromdate.split("T");
+                        String onlyDate = dateWithoutHour[0] ;
+                        String correctDate = Utils.correctDateFormat(onlyDate);
+                        mDateList.add(correctDate);
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("ID", ID);
-                        hmap.put("fromdate", fromdate);
+                        hmap.put("fromdate", onlyDate);
                         if (bmiValue != null) {
                             double bmiIndouble = Double.parseDouble(bmiValue);
                             if (mMaxBMI <= bmiIndouble) {
@@ -274,14 +284,14 @@ public class BmiActivity extends GraphHandlerActivity {
                             hmap.put("weight", bmiValue);
                             Date date = null;
                             try {
-                                date = simpleDateFormat.parse(fromdate);
+                                date = simpleDateFormatDash.parse(onlyDate);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             long epoch = date.getTime();
 
                             if (mFormEpocDate > 0) {
-                                if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                                if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                                     weight_contentlists.add(hmap);
                                 }
                             } else {
@@ -304,7 +314,7 @@ public class BmiActivity extends GraphHandlerActivity {
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
                         String fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -318,7 +328,7 @@ public class BmiActivity extends GraphHandlerActivity {
                         mDateMaxValue = epoch;
                     }
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
                             innerJsonArray.put(mapValue.get("weight"));

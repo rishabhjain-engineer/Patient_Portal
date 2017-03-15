@@ -109,7 +109,8 @@ public class VaccineActivity extends BaseActivity {
         JSONObject sendData = new JSONObject();
         try {
             String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+            //sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+            sendData.put("patientId", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -248,19 +249,21 @@ public class VaccineActivity extends BaseActivity {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " Year Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " Year");
                                     } else if (key.contains("m")) {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " month Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " month");
                                     } else if (key.contains("d")) {
                                         String subString = key.substring(1);
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString(subString + " Week Group");
+                                        vaccineDetailsObj.setHeaderString(subString + " Week");
                                     } else {
-
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString("Time Independent");
                                     }
                                 }
                                 if (isToAdd) {

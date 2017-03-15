@@ -236,7 +236,9 @@ public class AddWeight extends BaseActivity {
                             int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
                             if (lowerBp > upperBp) {
                                 Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
-                            } else {
+                            } else if(lowerBp < 40  || upperBp > 400){
+                                Toast.makeText(AddWeight.this, "Bp value seems incorrect", Toast.LENGTH_SHORT).show();
+                            } else{
                                 new submitchange().execute();
                             }
                         } catch (NumberFormatException ex) {
@@ -244,7 +246,7 @@ public class AddWeight extends BaseActivity {
                         }
                     }
                 } else if (htype.equalsIgnoreCase("height")) {
-                    if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString())) {
+                    if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString()) && mIsFtInchValue == false) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
                         new submitchange().execute();
