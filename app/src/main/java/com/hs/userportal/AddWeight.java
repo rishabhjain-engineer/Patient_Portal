@@ -236,7 +236,9 @@ public class AddWeight extends BaseActivity {
                             int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
                             if (lowerBp > upperBp) {
                                 Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
-                            } else {
+                            } else if(lowerBp < 40  || upperBp > 400){
+                                Toast.makeText(AddWeight.this, "Bp value seems incorrect", Toast.LENGTH_SHORT).show();
+                            } else{
                                 new submitchange().execute();
                             }
                         } catch (NumberFormatException ex) {
