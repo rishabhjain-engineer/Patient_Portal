@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/folder_root"
-        android:background="#FE975F"
+        android:background="@color/header_color"
         android:clickable="false"
         android:orientation="vertical" />
 
@@ -54,7 +54,7 @@
         android:id="@+id/move_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1DBBE3"
+        android:background="@color/header_color"
         android:text="MOVE"
         android:textColor="@android:color/white" />
 
