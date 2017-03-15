@@ -246,7 +246,7 @@ public class AddWeight extends BaseActivity {
                         }
                     }
                 } else if (htype.equalsIgnoreCase("height")) {
-                    if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString())) {
+                    if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString()) && mIsFtInchValue == false) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
                         new submitchange().execute();
