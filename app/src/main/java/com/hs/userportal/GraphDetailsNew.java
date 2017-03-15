@@ -322,7 +322,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 e.printStackTrace();
             }
         }
-        
+
         setDateList(mDateList);
         if(adapter == null){
             adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);

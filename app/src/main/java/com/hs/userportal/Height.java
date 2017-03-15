@@ -415,7 +415,7 @@ public class Height extends GraphHandlerActivity {
 
                     Date date = null;
                     try {
-                        date = simpleDateFormatDash.parse(fromdate);
+                        date = simpleDateFormatDash.parse(onlyDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
