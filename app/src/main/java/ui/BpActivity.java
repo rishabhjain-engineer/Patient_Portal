@@ -93,8 +93,6 @@ public class BpActivity extends GraphHandlerActivity {
     private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
-    private List<Long> mEpocList = new ArrayList<Long>();
-    private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private boolean mIsToAddMaxMinValue = true;
     private long mDateMaxValue, mDateMinValue;
@@ -291,7 +289,7 @@ public class BpActivity extends GraphHandlerActivity {
 
                     Date date = null;
                     try {
-                        date = simpleDateFormatDash.parse(fromdate);
+                        date = simpleDateFormatDash.parse(onlyDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -322,8 +320,6 @@ public class BpActivity extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    mEpocList.add(epoch);
-                    mValueList.add(mapValue.get("weight"));
 
                     if(mIsToAddMaxMinValue && i == 0){
                         mDateMinValue = epoch;

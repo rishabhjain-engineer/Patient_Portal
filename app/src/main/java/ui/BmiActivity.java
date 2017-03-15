@@ -284,7 +284,7 @@ public class BmiActivity extends GraphHandlerActivity {
                             hmap.put("weight", bmiValue);
                             Date date = null;
                             try {
-                                date = simpleDateFormatDash.parse(fromdate);
+                                date = simpleDateFormatDash.parse(onlyDate);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
