@@ -250,7 +250,8 @@ public class BpActivity extends GraphHandlerActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             JSONObject sendData1 = new JSONObject();
             mDateList.clear();
             try {
@@ -286,11 +287,11 @@ public class BpActivity extends GraphHandlerActivity {
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", bp);
-                    hmap.put("fromdate", fromdate);
+                    hmap.put("fromdate", onlyDate);
 
                     Date date = null;
                     try {
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -316,7 +317,7 @@ public class BpActivity extends GraphHandlerActivity {
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
                         String fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

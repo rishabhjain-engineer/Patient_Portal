@@ -66,9 +66,9 @@ public class MyHealthsAdapter extends BaseAdapter {
         TextView wt_heading = (TextView) convertView.findViewById(R.id.wt_heading);
         TextView fromdate_id = (TextView) convertView.findViewById(R.id.fromdate_id);
         wt_heading.setText(OrderReportList.get(position).get("weight"));
-        String date[] = OrderReportList.get(position).get("fromdate").split("T");
-        fromdate_id.setText(parseDateToddMMyyyy(date[0]));
-
+        //String date[] = OrderReportList.get(position).get("fromdate").split("T");
+        //fromdate_id.setText(parseDateToddMMyyyy(date[0]));
+        fromdate_id.setText(parseDateToddMMyyyy(OrderReportList.get(position).get("fromdate")));
         return convertView;
     }
 

@@ -235,7 +235,8 @@ public class BmiActivity extends GraphHandlerActivity {
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             mDateList.clear();
             try {
 
@@ -274,7 +275,7 @@ public class BmiActivity extends GraphHandlerActivity {
                         mDateList.add(correctDate);
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("ID", ID);
-                        hmap.put("fromdate", fromdate);
+                        hmap.put("fromdate", onlyDate);
                         if (bmiValue != null) {
                             double bmiIndouble = Double.parseDouble(bmiValue);
                             if (mMaxBMI <= bmiIndouble) {
@@ -283,7 +284,7 @@ public class BmiActivity extends GraphHandlerActivity {
                             hmap.put("weight", bmiValue);
                             Date date = null;
                             try {
-                                date = simpleDateFormat.parse(fromdate);
+                                date = simpleDateFormatDash.parse(fromdate);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -313,7 +314,7 @@ public class BmiActivity extends GraphHandlerActivity {
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
                         String fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
