@@ -70,6 +70,7 @@ import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 public class Height extends GraphHandlerActivity {
 
@@ -101,6 +102,7 @@ public class Height extends GraphHandlerActivity {
     private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
     private JSONArray mJsonArrayToSend,  mTckValuesJsonArray = null;
     private RelativeLayout mListViewHeaderRl;
+    private List<String> mDateList = new ArrayList<>();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -374,7 +376,7 @@ public class Height extends GraphHandlerActivity {
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", mId);
@@ -401,6 +403,10 @@ public class Height extends GraphHandlerActivity {
                         }
                     }
                     String fromdate = obj.getString("fromdate");
+                    String dateWithoutHour[] = fromdate.split("T");
+                    String onlyDate = dateWithoutHour[0] ;
+                    String correctDate = Utils.correctDateFormat(onlyDate);
+                    mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", height);
@@ -476,6 +482,7 @@ public class Height extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if(isDataAvailable){
+                setDateList(mDateList);
                 if(adapter == null){
                     adapter = new MyHealthsAdapter(Height.this);
                     adapter.setListData(weight_contentlists);

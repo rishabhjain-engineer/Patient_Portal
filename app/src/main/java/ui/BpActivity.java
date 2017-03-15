@@ -64,6 +64,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utils;
 
 /**
  * Created by Rishabh on 15/2/17.
@@ -98,6 +99,8 @@ public class BpActivity extends GraphHandlerActivity {
     private boolean mIsToAddMaxMinValue = true;
     private long mDateMaxValue, mDateMinValue;
     private RelativeLayout mListViewHeaderRl;
+
+    private List<String> mDateList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -222,6 +225,7 @@ public class BpActivity extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if(isDataAvailable){
+                setDateList(mDateList);
                 if(adapter == null){
                     adapter = new MyHealthsAdapter(BpActivity.this);
                     adapter.setListData(weight_contentlists);
@@ -248,6 +252,7 @@ public class BpActivity extends GraphHandlerActivity {
         protected Void doInBackground(Void... params) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             JSONObject sendData1 = new JSONObject();
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
@@ -274,6 +279,10 @@ public class BpActivity extends GraphHandlerActivity {
 
 
                     String fromdate = obj.optString("fromdate");
+                    String dateWithoutHour[] = fromdate.split("T");
+                    String onlyDate = dateWithoutHour[0] ;
+                    String correctDate = Utils.correctDateFormat(onlyDate);
+                    mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", bp);
