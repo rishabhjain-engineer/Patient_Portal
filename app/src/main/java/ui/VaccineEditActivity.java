@@ -240,7 +240,8 @@ public class VaccineEditActivity extends BaseActivity {
                 sendData.put("VaccineNameID", mVaccineNameId);
                 sendData.put("VaccineDateTime", mDateTosend);
                 String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-                sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+               // sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+                sendData.put("PatientId", id);
                 sendData.put("Comments", mNoteEditText.getEditableText().toString());
 
                 StaticHolder staticHolder = new StaticHolder(VaccineEditActivity.this, StaticHolder.Services_static.InsertIntoPatientVaccineDetails);

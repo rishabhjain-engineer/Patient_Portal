@@ -109,7 +109,8 @@ public class VaccineActivity extends BaseActivity {
         JSONObject sendData = new JSONObject();
         try {
             String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+            //sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+            sendData.put("patientId", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
