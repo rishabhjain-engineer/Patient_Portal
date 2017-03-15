@@ -238,16 +238,14 @@ public class Weight extends GraphHandlerActivity {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-
             progress.show();
-
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+           // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             mDateList.clear();
             try {
 
@@ -282,18 +280,18 @@ public class Weight extends GraphHandlerActivity {
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
                     hmap.put("weight", weight);
-                    hmap.put("fromdate", fromdate);
+                    hmap.put("fromdate", onlyDate);
 
                     Date date = null;
                     try {
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    long epoch = date.getTime();
 
+                    long epoch = date.getTime();
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             weight_contentlists.add(hmap);
                         }
                     } else {
@@ -304,14 +302,13 @@ public class Weight extends GraphHandlerActivity {
                 Helper.sortHealthListByDate(weight_contentlists);
 
                 JSONArray jsonArray1 = new JSONArray();
-                String initialDate = null, lastDate = null;
                 for (int i = 0; i < weight_contentlists.size(); i++) {
                     Date date = null;
                     String fromdate = null;
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
                     try {
                         fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(fromdate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -325,7 +322,7 @@ public class Weight extends GraphHandlerActivity {
                         mDateMaxValue = epoch;
                     }
                     if (mFormEpocDate > 0) {
-                        if (epoch < mEpocToDate && epoch > mFormEpocDate) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
                             innerJsonArray.put(mapValue.get("weight"));

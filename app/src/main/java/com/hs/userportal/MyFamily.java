@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import utils.DataHolder;
+import utils.PreferenceHelper;
 
 /**
  * Created by ashish on 4/19/2016.
@@ -115,14 +117,18 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String HM = family_object.get(position).get("HM");
                 if (family_object.get(position).get("IsApproved").equals("true") && HM.equals("2")) {
-                    Intent i = new Intent(MyFamily.this, lablistdetails.class);
-                    logout.id = family_object.get(position).get("FamilyMemberId");
-                    i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
-                    i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
-                            + family_object.get(position).get("LastName"));
-                    i.putExtra("family", members);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                    }else{
+                        Intent i = new Intent(MyFamily.this, lablistdetails.class);
+                        logout.id = family_object.get(position).get("FamilyMemberId");
+                        i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
+                        i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
+                                + family_object.get(position).get("LastName"));
+                        i.putExtra("family", members);
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
                 } else {
                     //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
                 }
@@ -808,5 +814,30 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             finish();
         }
         super.onResume();
+    }
+
+    protected void showSubScriptionDialog(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }
