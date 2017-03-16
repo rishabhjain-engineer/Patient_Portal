@@ -75,7 +75,7 @@ public class BpActivity extends GraphHandlerActivity {
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id, mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
+    private String id, mDateFormat = "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -97,6 +97,7 @@ public class BpActivity extends GraphHandlerActivity {
     private boolean mIsToAddMaxMinValue = true;
     private long mDateMaxValue, mDateMinValue;
     private RelativeLayout mListViewHeaderRl;
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
 
     private List<String> mDateList = new ArrayList<>();
 
@@ -104,7 +105,7 @@ public class BpActivity extends GraphHandlerActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bp_activity);
-        mListViewHeaderRl = (RelativeLayout)findViewById(R.id.header);
+        mListViewHeaderRl = (RelativeLayout) findViewById(R.id.header);
         setupActionBar();
         mActionBar.setTitle("Blood Pressure");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
@@ -187,11 +188,11 @@ public class BpActivity extends GraphHandlerActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             weight_listId.setVisibility(View.GONE);
             mListViewHeaderRl.setVisibility(View.GONE);
             mActionBar.hide();
-        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             weight_listId.setVisibility(View.VISIBLE);
             mListViewHeaderRl.setVisibility(View.VISIBLE);
             mActionBar.show();
@@ -222,22 +223,22 @@ public class BpActivity extends GraphHandlerActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(isDataAvailable){
+            if (isDataAvailable) {
                 setDateList(mDateList);
-                if(adapter == null){
+                if (adapter == null) {
                     adapter = new MyHealthsAdapter(BpActivity.this);
                     adapter.setListData(weight_contentlists);
                     weight_listId.setAdapter(adapter);
-                }else{
+                } else {
                     adapter.setListData(weight_contentlists);
                     adapter.notifyDataSetChanged();
                 }
                 Height.Utility.setListViewHeightBasedOnChildren(weight_listId);
                 weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
-                if(progress != null && progress.isShowing()){
+                if (progress != null && progress.isShowing()) {
                     progress.dismiss();
                 }
-            }else {
+            } else {
                 Intent i = new Intent(BpActivity.this, AddWeight.class);
                 i.putExtra("id", id);
                 i.putExtra("htype", "bp");
@@ -279,7 +280,7 @@ public class BpActivity extends GraphHandlerActivity {
 
                     String fromdate = obj.optString("fromdate");
                     String dateWithoutHour[] = fromdate.split("T");
-                    String onlyDate = dateWithoutHour[0] ;
+                    String onlyDate = dateWithoutHour[0];
                     String correctDate = Utils.correctDateFormat(onlyDate);
                     mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
@@ -309,7 +310,7 @@ public class BpActivity extends GraphHandlerActivity {
 
                 Helper.sortHealthListByDate(weight_contentlists);
 
-                for(int i=0; i< weight_contentlists.size() ; i++){
+                for (int i = 0; i < weight_contentlists.size(); i++) {
 
                     Date date = null;
                     HashMap<String, String> mapValue = weight_contentlists.get(i);
@@ -321,10 +322,10 @@ public class BpActivity extends GraphHandlerActivity {
                     }
                     long epoch = date.getTime();
 
-                    if(mIsToAddMaxMinValue && i == 0){
+                    if (mIsToAddMaxMinValue && i == 0) {
                         mDateMinValue = epoch;
                     }
-                    if(mIsToAddMaxMinValue && i == (weight_contentlists.size() -1)){
+                    if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
                         mDateMaxValue = epoch;
                     }
 
@@ -345,6 +346,13 @@ public class BpActivity extends GraphHandlerActivity {
                             innerJsonArrayTopBP.put(epoch);
                             innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
                             jsonArrayTopBp.put(innerJsonArrayTopBP);
+
+
+                            double bpInDouble = Double.parseDouble(bpArray[0]);
+                            if (mMaxWeight <= bpInDouble) {
+                                mMaxWeight = bpInDouble;
+                            }
+
                         }
                     } else {
                         JSONArray innerJsonArray = new JSONArray();
@@ -362,6 +370,13 @@ public class BpActivity extends GraphHandlerActivity {
                         innerJsonArrayTopBP.put(epoch);
                         innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
                         jsonArrayTopBp.put(innerJsonArrayTopBP);
+
+
+                        double bpInDouble = Double.parseDouble(bpArray[0]);
+                        if (mMaxWeight <= bpInDouble) {
+                            mMaxWeight = bpInDouble;
+                        }
+
                     }
                 }
 
@@ -438,8 +453,8 @@ public class BpActivity extends GraphHandlerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, "");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, "");
 
         SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
         mEditor.putInt("userChoiceSpinner", 0);
@@ -499,7 +514,7 @@ public class BpActivity extends GraphHandlerActivity {
                         progress.dismiss();
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
-                       //startActivity(getIntent());
+                        //startActivity(getIntent());
                         new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
@@ -574,8 +589,8 @@ public class BpActivity extends GraphHandlerActivity {
                 mDateFormat = "%Y";
                 mRotationAngle = 0;
             }
-            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
-                if(i==0){
+            for (int i = 0; i < mTckValuesJsonArray.length(); i++) {
+                if (i == 0) {
                     try {
                         Object a = mTckValuesJsonArray.get(0);
                         String stringToConvert = String.valueOf(a);
@@ -585,9 +600,9 @@ public class BpActivity extends GraphHandlerActivity {
                     }
                 }
 
-                if(i == (mTckValuesJsonArray.length() -1)){
+                if (i == (mTckValuesJsonArray.length() - 1)) {
                     try {
-                        int pos = ((mTckValuesJsonArray.length() -1));
+                        int pos = ((mTckValuesJsonArray.length() - 1));
                         Object a = mTckValuesJsonArray.get(pos);
                         String stringToConvert = String.valueOf(a);
                         mDateMaxValue = Long.parseLong(stringToConvert);
@@ -602,12 +617,12 @@ public class BpActivity extends GraphHandlerActivity {
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
-            Log.e("ayaz", "Jsonarraytosend  bp "+mJsonArrayToSend.toString());
+            Log.e("ayaz", "Jsonarraytosend  bp " + mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxWeight;
             return (i + 20);
         }
@@ -619,10 +634,10 @@ public class BpActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public String getTickValues() {
-            if(mTckValuesJsonArray == null){
+            if (mTckValuesJsonArray == null) {
                 return "null";
-            }else{
-                Log.e("ayaz", "Tick Values  ( bp )  "+mTckValuesJsonArray.toString());
+            } else {
+                Log.e("ayaz", "Tick Values  ( bp )  " + mTckValuesJsonArray.toString());
                 return mTckValuesJsonArray.toString();
             }
         }
@@ -634,14 +649,25 @@ public class BpActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public long minDateValue() {
-            Log.e("ayaz", "min bp: "+mDateMinValue);
+            Log.e("ayaz", "min bp: " + mDateMinValue);
             return mDateMinValue;
         }
 
         @JavascriptInterface
         public long maxDateValue() {
-            Log.e("ayaz", "max bp: "+mDateMaxValue);
+            Log.e("ayaz", "max bp: " + mDateMaxValue);
             return mDateMaxValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
         }
     }
 
