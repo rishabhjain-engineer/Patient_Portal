@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ui.HealthCommonActivity;
+
 public class Authentication extends AsyncTask<Void, Void, Void> {
 	private Activity context;
 	private String authentication="";
@@ -128,7 +130,9 @@ public class Authentication extends AsyncTask<Void, Void, Void> {
                     ((MyFamily) context).LoadFamilyMembers();
                 } else if (activityname.equalsIgnoreCase("ReportRecords") && whichbtn.equals("")) {
                     ((ReportRecords) context).startBackgroundProcess();
-                }
+                }else if (activityname.equalsIgnoreCase("healthCommon") && whichbtn.equals("")) {
+					((HealthCommonActivity) context).startBackgroundprocess();
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
