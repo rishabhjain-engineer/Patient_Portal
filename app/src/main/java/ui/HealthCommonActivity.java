@@ -261,6 +261,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 JSONArray jsonArray = cut.getJSONArray("Table");
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
+                JSONArray jsonArrayLowerBp = new JSONArray();
+                JSONArray jsonArrayTopBp = new JSONArray();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     isDataAvailable = true;
@@ -273,7 +275,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
 
                     //FOR BMI
-                    if(mFromBMI){
+                    if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
                         String height = obj.getString("height");
                         String bmiValue = null;
@@ -288,7 +290,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                             String fromdate = obj.getString("fromdate");
                             String dateWithoutHour[] = fromdate.split("T");
-                            String onlyDate = dateWithoutHour[0] ;
+                            String onlyDate = dateWithoutHour[0];
                             String correctDate = Utils.correctDateFormat(onlyDate);
                             mDateList.add(correctDate);
                             hmap.put("PatientHistoryId", PatientHistoryId);
@@ -320,7 +322,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                         }
 
-                    }else{
+                    } else {
                         if (!TextUtils.isEmpty(weight)) {
                             double weightInDouble = Double.parseDouble(weight);
                             if (mMaxWeight <= weightInDouble) {
@@ -334,9 +336,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         mDateList.add(correctDate);
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("ID", ID);
-                        if(mFromBp){
+                        if (mFromBp) {
                             hmap.put("weight", bp);
-                        }else{
+                        } else {
                             hmap.put("weight", weight); //TODO ayaz check for height
                         }
                         hmap.put("fromdate", onlyDate);
@@ -363,38 +365,102 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                 JSONArray jsonArray1 = new JSONArray();
                 for (int i = 0; i < weight_contentlists.size(); i++) {
-                    Date date = null;
-                    String fromdate = null;
-                    HashMap<String, String> mapValue = weight_contentlists.get(i);
-                    try {
-                        fromdate = mapValue.get("fromdate");
-                        date = simpleDateFormatDash.parse(fromdate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    long epoch = date.getTime();
-                    if (mIsToAddMaxMinValue && i == 0) {
-                        mDateMinValue = epoch;
-                    }
-                    if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
-                        mDateMaxValue = epoch;
-                    }
-                    if (mFormEpocDate > 0) {
-                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                    if (mFromBp) {
+                        Date date = null;
+                        HashMap<String, String> mapValue = weight_contentlists.get(i);
+                        try {
+                            String fromdate = mapValue.get("fromdate");
+                            date = simpleDateFormatDash.parse(fromdate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        long epoch = date.getTime();
+
+                        if (mIsToAddMaxMinValue && i == 0) {
+                            mDateMinValue = epoch;
+                        }
+                        if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
+                            mDateMaxValue = epoch;
+                        }
+
+                        if (mFormEpocDate > 0) {
+                            if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                                JSONArray innerJsonArray = new JSONArray();
+                                String bp = mapValue.get("weight");
+                                String bpArray[] = bp.split(",");
+                                innerJsonArray.put(epoch);
+                                innerJsonArray.put(mapValue.get("weight"));
+
+                                JSONArray innerJsonArrayLowerBp = new JSONArray();
+                                JSONArray innerJsonArrayTopBP = new JSONArray();
+                                innerJsonArrayLowerBp.put(epoch);
+                                innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                                jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+
+                                innerJsonArrayTopBP.put(epoch);
+                                innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                                jsonArrayTopBp.put(innerJsonArrayTopBP);
+                            }
+                        } else {
+                            JSONArray innerJsonArray = new JSONArray();
+                            String bp = mapValue.get("weight");
+                            String bpArray[] = bp.split(",");
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+
+                            JSONArray innerJsonArrayLowerBp = new JSONArray();
+                            JSONArray innerJsonArrayTopBP = new JSONArray();
+                            innerJsonArrayLowerBp.put(epoch);
+                            innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                            jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+
+                            innerJsonArrayTopBP.put(epoch);
+                            innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                            jsonArrayTopBp.put(innerJsonArrayTopBP);
+                        }
+
+                        mJsonArrayToSend = new JSONArray();
+                        JSONObject outerJsonObjectUpperBp = new JSONObject();
+                        outerJsonObjectUpperBp.put("key", "systolic");
+                        outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
+                        mJsonArrayToSend.put(outerJsonObjectUpperBp);
+
+                        JSONObject outerJsonObjectLowerBp = new JSONObject();
+                        outerJsonObjectLowerBp.put("key", "daistolic");
+                        outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
+                        mJsonArrayToSend.put(outerJsonObjectLowerBp);
+                    } else {
+                        Date date = null;
+                        String fromdate = null;
+                        HashMap<String, String> mapValue = weight_contentlists.get(i);
+                        try {
+                            fromdate = mapValue.get("fromdate");
+                            date = simpleDateFormatDash.parse(fromdate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        long epoch = date.getTime();
+                        if (mIsToAddMaxMinValue && i == 0) {
+                            mDateMinValue = epoch;
+                        }
+                        if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
+                            mDateMaxValue = epoch;
+                        }
+                        if (mFormEpocDate > 0) {
+                            if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                                JSONArray innerJsonArray = new JSONArray();
+                                innerJsonArray.put(epoch);
+                                innerJsonArray.put(mapValue.get("weight"));
+                                jsonArray1.put(innerJsonArray);
+                            }
+                        } else {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
                             innerJsonArray.put(mapValue.get("weight"));
                             jsonArray1.put(innerJsonArray);
                         }
-                    } else {
-                        JSONArray innerJsonArray = new JSONArray();
-                        innerJsonArray.put(epoch);
-                        innerJsonArray.put(mapValue.get("weight"));
-                        jsonArray1.put(innerJsonArray);
-                    }
-                }
-                JSONObject outerJsonObject = new JSONObject();
-                //TODO Ayaz
+                        JSONObject outerJsonObject = new JSONObject();
+                        //TODO Ayaz
                  /*  if(mFromHeight){
              outerJsonObject.put("key", "Height(cm)");
         }else if (mFromWeight){
@@ -405,19 +471,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             outerJsonObject.put("key", "BMI");
         }*/
 
-                outerJsonObject.put("values", jsonArray1);
-                mJsonArrayToSend = new JSONArray();
-                mJsonArrayToSend.put(outerJsonObject);
-
-        /*        mTckValuesJsonArray = getInitialJsonForMonthly(initialDate, lastDate);*/
-                //Collections.reverse(chartValues);
-
-             /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
-                for(int i=0;i<weight_contentlists.size();i++){
-                    chartValues.add(weight_contentlists.get(i).get("weight"));
-                    chartDates.add(String.valueOf(i+1));
+                        outerJsonObject.put("values", jsonArray1);
+                        mJsonArrayToSend = new JSONArray();
+                        mJsonArrayToSend.put(outerJsonObject);
+                    }
                 }
-                Collections.reverse(chartValues);*/
+
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -427,20 +486,20 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(mFromBMI){
+            if (mFromBMI) {
                 setDateList(mDateList);
                 adapter = new MyHealthsAdapter(HealthCommonActivity.this, weight_contentlists);
                 weight_listId.setAdapter(adapter);
                 Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
 
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
-                if(progress != null && progress.isShowing()){
+                if (progress != null && progress.isShowing()) {
                     progress.dismiss();
                 }
                 if (mIsBmiEmpty) {
                     Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
                 }
-            }else{
+            } else {
                 if (isDataAvailable) {
                     setDateList(mDateList);
                     if (adapter == null) {
@@ -452,9 +511,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         adapter.notifyDataSetChanged();
                     }
                     HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(weight_listId);
-                    if(mFromBp){
+                    if (mFromBp) {
                         weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
-                    }else{
+                    } else {
                         weight_graphView.loadUrl("file:///android_asset/html/index.html");
                     }
                     if (progress != null && progress.isShowing()) {
@@ -478,15 +537,15 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     finish();
                 }
             }
-            }
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.graphheader, menu);
-        if(mFromBMI){
+        if (mFromBMI) {
             MenuItem addItem = menu.findItem(R.id.add);
-            addItem.setVisible(false) ;
+            addItem.setVisible(false);
         }
         return true;
     }
