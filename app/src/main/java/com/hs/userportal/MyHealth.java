@@ -42,13 +42,14 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.BmiActivity;
 import ui.BpActivity;
+import ui.HealthCommonActivity;
 import ui.VaccineActivity;
 
 import static java.lang.Math.round;
 
 public class MyHealth extends BaseActivity {
 
-    private TextView weighttxtid, heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
+    private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
     private EditText blood_group;
     private String id, show_blood, bgroup, height, weight, mBp;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer, mVaccineContainer;
@@ -65,7 +66,6 @@ public class MyHealth extends BaseActivity {
         service = new Services(MyHealth.this);
         mBpTvValue = (TextView) findViewById(R.id.bp_tv);
         mBmiTvValue = (TextView) findViewById(R.id.bmi_tv_2);
-        weighttxtid = (TextView) findViewById(R.id.weighttxtid);
         heighttxt_id = (TextView) findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) findViewById(R.id.allergytxtid);
         blood_group = (EditText) findViewById(R.id.blood_group);
@@ -101,33 +101,7 @@ public class MyHealth extends BaseActivity {
         } else {
             bgHeader.setVisibility(View.GONE);
         }
-        weighttxtid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Weight.class);
-                in.putExtra("id", id);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-        heighttxt_id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Height.class);
-                in.putExtra("id", id);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-        alergytxtid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Allergy.class);
-                in.putExtra("id", id);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
+
         bgHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,8 +111,10 @@ public class MyHealth extends BaseActivity {
         weightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Weight.class);
+                //Intent in = new Intent(MyHealth.this, Weight.class);
+                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
                 in.putExtra("id", id);
+                in.putExtra("forWeight", true);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -146,8 +122,10 @@ public class MyHealth extends BaseActivity {
         heightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Height.class);
+               // Intent in = new Intent(MyHealth.this, Height.class);
+                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
                 in.putExtra("id", id);
+                in.putExtra("forHeight", true);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -165,8 +143,10 @@ public class MyHealth extends BaseActivity {
         mBmiContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, BmiActivity.class);
+                //Intent in = new Intent(MyHealth.this, BmiActivity.class);
+                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
                 in.putExtra("id", id);
+                in.putExtra("forBmi", true);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -176,8 +156,10 @@ public class MyHealth extends BaseActivity {
         mBpContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, BpActivity.class);
+                //Intent in = new Intent(MyHealth.this, BpActivity.class);
+                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
                 in.putExtra("id", id);
+                in.putExtra("forBp", true);
                 startActivity(in);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

@@ -432,6 +432,10 @@
             android:configChanges="orientation|screenSize" />
 
         <activity
+            android:name="ui.HealthCommonActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
             android:name="ui.VaccineActivity"
             android:screenOrientation="portrait" />
 
