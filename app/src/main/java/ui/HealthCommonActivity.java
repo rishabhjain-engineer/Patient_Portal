@@ -49,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +77,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private Button bsave;
     private String id, mDateFormat = "%b '%y", mIntervalMode;
     private long mFormEpocDate = 0, mEpocToDate = 0;
-    private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
     private JsonObjectRequest jr;
@@ -88,8 +88,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private LineChart linechart;
     private int mRotationAngle = 0;
     private double mMaxWeight = 0;
-    private List<Long> mEpocList = new ArrayList<Long>();
-    private List<String> mValueList = new ArrayList<String>();
     private double mRangeToInDouble = 0, mRangeFromInDouble = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
@@ -97,6 +95,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private RelativeLayout mListViewHeaderRl;
     private List<String> mDateList = new ArrayList<>();
     private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
+    private boolean mIsBmiEmpty = true;
+    private double mMaxBMI = 0;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -140,12 +140,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(HealthCommonActivity.this, "Weight", "").execute();
+            new Authentication(HealthCommonActivity.this, "Weight", "").execute(); //TODO know the purpose for all section
         }
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
-        wt_heading = (TextView) findViewById(R.id.wt_heading);
-        wt_heading.setText("Weight (Kg)");
         Intent z = getIntent();
         id = z.getStringExtra("id");
 
@@ -252,9 +250,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }else if (mFromWeight){
             sendData1.put("htype", "weight");
         }else if (mFromBp){
-            mActionBar.setTitle("Blood Pressure");
+           sendData1.put("htype", "bp");
         }else if (mFromBMI){
-            mActionBar.setTitle("BMI");
+            sendData1.put("htype", "weight");
         }*/
                 ;
                 receiveData1 = service.patienBasicDetails(sendData1);
@@ -271,36 +269,93 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String PatientHistoryId = obj.getString("PatientHistoryId");
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
-                    if (!TextUtils.isEmpty(weight)) {
-                        double weightInDouble = Double.parseDouble(weight);
-                        if (mMaxWeight <= weightInDouble) {
-                            mMaxWeight = weightInDouble;
+                    String bp = obj.optString("bp");
+
+
+                    //FOR BMI
+                    if(mFromBMI){
+                        int heightInInt = obj.optInt("height");
+                        String height = obj.getString("height");
+                        String bmiValue = null;
+                        if (!TextUtils.isEmpty(height) && heightInInt != 0 && !TextUtils.isEmpty(weight)) {
+                            mIsBmiEmpty = false;
+                            double weightInDouble = Double.parseDouble(weight);
+                            double heightInDouble = Double.parseDouble(height);
+                            double bmi = ((weightInDouble) / (heightInDouble * heightInDouble) * 10000);
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            // double time = Double.valueOf(df.format(bmi));
+                            bmiValue = df.format(bmi);
+
+                            String fromdate = obj.getString("fromdate");
+                            String dateWithoutHour[] = fromdate.split("T");
+                            String onlyDate = dateWithoutHour[0] ;
+                            String correctDate = Utils.correctDateFormat(onlyDate);
+                            mDateList.add(correctDate);
+                            hmap.put("PatientHistoryId", PatientHistoryId);
+                            hmap.put("ID", ID);
+                            hmap.put("fromdate", onlyDate);
+                            if (bmiValue != null) {
+                                double bmiIndouble = Double.parseDouble(bmiValue);
+                                if (mMaxBMI <= bmiIndouble) {
+                                    mMaxBMI = bmiIndouble;
+                                }
+                                hmap.put("weight", bmiValue);
+                                Date date = null;
+                                try {
+                                    date = simpleDateFormatDash.parse(onlyDate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                long epoch = date.getTime();
+
+                                if (mFormEpocDate > 0) {
+                                    if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                                        weight_contentlists.add(hmap);
+                                    }
+                                } else {
+                                    weight_contentlists.add(hmap);
+                                }
+
+                            }
+
                         }
-                    }
-                    String fromdate = obj.getString("fromdate");
-                    String dateWithoutHour[] = fromdate.split("T");
-                    String onlyDate = dateWithoutHour[0];
-                    String correctDate = Utils.correctDateFormat(onlyDate);
-                    mDateList.add(correctDate);
-                    hmap.put("PatientHistoryId", PatientHistoryId);
-                    hmap.put("ID", ID);
-                    hmap.put("weight", weight);
-                    hmap.put("fromdate", onlyDate);
 
-                    Date date = null;
-                    try {
-                        date = simpleDateFormatDash.parse(fromdate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    }else{
+                        if (!TextUtils.isEmpty(weight)) {
+                            double weightInDouble = Double.parseDouble(weight);
+                            if (mMaxWeight <= weightInDouble) {
+                                mMaxWeight = weightInDouble;
+                            }
+                        }
+                        String fromdate = obj.getString("fromdate");
+                        String dateWithoutHour[] = fromdate.split("T");
+                        String onlyDate = dateWithoutHour[0];
+                        String correctDate = Utils.correctDateFormat(onlyDate);
+                        mDateList.add(correctDate);
+                        hmap.put("PatientHistoryId", PatientHistoryId);
+                        hmap.put("ID", ID);
+                        if(mFromBp){
+                            hmap.put("weight", bp);
+                        }else{
+                            hmap.put("weight", weight); //TODO ayaz check for height
+                        }
+                        hmap.put("fromdate", onlyDate);
 
-                    long epoch = date.getTime();
-                    if (mFormEpocDate > 0) {
-                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                        Date date = null;
+                        try {
+                            date = simpleDateFormatDash.parse(fromdate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        long epoch = date.getTime();
+                        if (mFormEpocDate > 0) {
+                            if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                                weight_contentlists.add(hmap);
+                            }
+                        } else {
                             weight_contentlists.add(hmap);
                         }
-                    } else {
-                        weight_contentlists.add(hmap);
                     }
                 }
 
@@ -318,8 +373,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    mEpocList.add(epoch);
-                    mValueList.add(mapValue.get("weight"));
                     if (mIsToAddMaxMinValue && i == 0) {
                         mDateMinValue = epoch;
                     }
@@ -349,7 +402,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }else if (mFromBp){
             mActionBar.setTitle("Blood Pressure");
         }else if (mFromBMI){
-            mActionBar.setTitle("BMI");
+            outerJsonObject.put("key", "BMI");
         }*/
 
                 outerJsonObject.put("values", jsonArray1);
@@ -374,26 +427,44 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if (isDataAvailable) {
+            if(mFromBMI){
                 setDateList(mDateList);
-                if (adapter == null) {
-                    adapter = new MyHealthsAdapter(HealthCommonActivity.this);
-                    adapter.setListData(weight_contentlists);
-                    weight_listId.setAdapter(adapter);
-                } else {
-                    adapter.setListData(weight_contentlists);
-                    adapter.notifyDataSetChanged();
-                }
-                HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                adapter = new MyHealthsAdapter(HealthCommonActivity.this, weight_contentlists);
+                weight_listId.setAdapter(adapter);
+                Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
+
                 weight_graphView.loadUrl("file:///android_asset/html/index.html");
-                if (progress != null && progress.isShowing()) {
+                if(progress != null && progress.isShowing()){
                     progress.dismiss();
                 }
-            } else {
-                Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                i.putExtra("id", id);
+                if (mIsBmiEmpty) {
+                    Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
+                }
+            }else{
+                if (isDataAvailable) {
+                    setDateList(mDateList);
+                    if (adapter == null) {
+                        adapter = new MyHealthsAdapter(HealthCommonActivity.this);
+                        adapter.setListData(weight_contentlists);
+                        weight_listId.setAdapter(adapter);
+                    } else {
+                        adapter.setListData(weight_contentlists);
+                        adapter.notifyDataSetChanged();
+                    }
+                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                    if(mFromBp){
+                        weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+                    }else{
+                        weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                    }
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                } else {
+                    Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
+                    i.putExtra("id", id);
 
-                //TODO Ayaz
+                    //TODO Ayaz
                  /*  if(mFromHeight){
               i.putExtra("htype", "height");
         }else if (mFromWeight){
@@ -403,15 +474,20 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }else if (mFromBMI){
             mActionBar.setTitle("BMI");
         }*/
-                startActivity(i);
-                finish();
+                    startActivity(i);
+                    finish();
+                }
             }
-        }
+            }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.graphheader, menu);
+        if(mFromBMI){
+            MenuItem addItem = menu.findItem(R.id.add);
+            addItem.setVisible(false) ;
+        }
         return true;
     }
 
@@ -434,13 +510,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }else if (mFromWeight){
             i.putExtra("htype", "weight");
         }else if (mFromBp){
-            mActionBar.setTitle("Blood Pressure");
-        }else if (mFromBMI){
-            mActionBar.setTitle("BMI");
+            i.putExtra("htype", "bp");
         }*/
                 startActivity(i);
-                //finish();
-                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
 
             case R.id.option:
@@ -517,7 +589,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     }
 
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -629,7 +700,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getMaxData() {
-            int i = (int) mMaxWeight;
+            int i = (int) mMaxWeight; //TODO ayaz for all, its same for bp but method name in bp is getDouble
+            //int i = (int) mMaxBMI;
             return (i + 20);
         }
 
