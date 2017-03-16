@@ -96,7 +96,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private List<String> mDateList = new ArrayList<>();
     private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
     private boolean mIsBmiEmpty = true;
-    private double mMaxBMI = 0;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -151,43 +150,45 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         weight_listId.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
+                if (!mFromBMI) {
+                    parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
 
-                final Dialog dialog = new Dialog(HealthCommonActivity.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.unsaved_alert_dialog);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.setCancelable(false);
-                dialog.setCanceledOnTouchOutside(false);
-                TextView messageTv = (TextView) dialog.findViewById(R.id.message);
-                TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                    final Dialog dialog = new Dialog(HealthCommonActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.unsaved_alert_dialog);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                    TextView titleTv = (TextView) dialog.findViewById(R.id.title);
 
-                if (mFromHeight) {
-                    titleTv.setText("Delete Height");
-                } else if (mFromWeight) {
-                    titleTv.setText("Delete Weight");
-                } else if (mFromBp) {
-                    mActionBar.setTitle("Delete Blood Pressure");
+                    if (mFromHeight) {
+                        titleTv.setText("Delete Height");
+                    } else if (mFromWeight) {
+                        titleTv.setText("Delete Weight");
+                    } else if (mFromBp) {
+                        mActionBar.setTitle("Delete Blood Pressure");
+                    }
+
+                    TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                    TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+                    messageTv.setText("Are you sure you want to delete the selected file(s)?");
+
+                    stayButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    okBTN.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            deleteWeight();
+                        }
+                    });
+                    dialog.show();
                 }
-
-                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
-                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
-                messageTv.setText("Are you sure you want to delete the selected file(s)?");
-
-                stayButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                okBTN.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        deleteWeight();
-                    }
-                });
-                dialog.show();
             }
 
         });
@@ -267,13 +268,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String ID = obj.getString("ID");
                     String weight = obj.getString("weight");
                     String bp = obj.optString("bp");
-                    String heightInString = obj.getString("height");
+                    String height = obj.getString("height");
 
 
                     //FOR BMI
                     if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
-                        String height = obj.getString("height");
                         String bmiValue = null;
                         if (!TextUtils.isEmpty(height) && heightInInt != 0 && !TextUtils.isEmpty(weight)) {
                             mIsBmiEmpty = false;
@@ -294,8 +294,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             hmap.put("fromdate", onlyDate);
                             if (bmiValue != null) {
                                 double bmiIndouble = Double.parseDouble(bmiValue);
-                                if (mMaxBMI <= bmiIndouble) {
-                                    mMaxBMI = bmiIndouble;
+                                if (mMaxWeight <= bmiIndouble) {
+                                    mMaxWeight = bmiIndouble;
                                 }
                                 hmap.put("weight", bmiValue);
                                 Date date = null;
@@ -313,7 +313,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                                 } else {
                                     weight_contentlists.add(hmap);
                                 }
+
                             }
+
                         }
                     } else {
                         if (!TextUtils.isEmpty(weight)) {
@@ -334,7 +336,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         if (mFromBp) {
                             hmap.put("weight", bp);
                         } else if (mFromHeight) {
-                            hmap.put("weight", heightInString);
+                            hmap.put("weight", height);
                         } else if (mFromWeight) {
                             hmap.put("weight", weight);
                         }
