@@ -99,8 +99,6 @@ public class BmiActivity extends GraphHandlerActivity {
     private boolean mIsBmiEmpty = true;
     private long mDateMaxValue, mDateMinValue;
     private boolean mIsToAddMaxMinValue = true;
-    private List<Long> mEpocList = new ArrayList<Long>();
-    private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private RelativeLayout mListViewHeaderRl;
     private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
@@ -225,8 +223,7 @@ public class BmiActivity extends GraphHandlerActivity {
             if(progress != null && progress.isShowing()){
                 progress.dismiss();
             }
-
-            if (mIsBmiEmpty == true) {
+            if (mIsBmiEmpty) {
                 Toast.makeText(BmiActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
             }
         }
@@ -319,8 +316,6 @@ public class BmiActivity extends GraphHandlerActivity {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    mEpocList.add(epoch);
-                    mValueList.add(mapValue.get("weight"));
                     if(mIsToAddMaxMinValue && i == 0){
                         mDateMinValue = epoch;
                     }

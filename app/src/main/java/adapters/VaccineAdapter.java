@@ -73,6 +73,7 @@ public class VaccineAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         VaccineDetails vaccineDetails = mVaccineDetailsesList.get(position);
         if (vaccineDetails.isHeader()) {
             holder.itemDetailContainer.setVisibility(View.GONE);
