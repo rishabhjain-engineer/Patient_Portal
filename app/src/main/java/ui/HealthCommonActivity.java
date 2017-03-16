@@ -74,7 +74,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
-    private Button bsave;
     private String id, mDateFormat = "%b '%y", mIntervalMode;
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private JSONObject sendData;
@@ -85,7 +84,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private ProgressDialog progress;
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
-    private LineChart linechart;
     private int mRotationAngle = 0;
     private double mMaxWeight = 0;
     private double mRangeToInDouble = 0, mRangeFromInDouble = 0;
@@ -96,6 +94,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private List<String> mDateList = new ArrayList<>();
     private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
     private boolean mIsBmiEmpty = true;
+    private TextView mListHeadingTv;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -104,6 +103,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         setContentView(R.layout.weight_layout);
         service = new Services(HealthCommonActivity.this);
         mListViewHeaderRl = (RelativeLayout) findViewById(R.id.header);
+        mListHeadingTv = (TextView) findViewById(R.id.wt_heading);
         setupActionBar();
         Intent intent = getIntent();
         mFromHeight = intent.getBooleanExtra("forHeight", false);
@@ -113,12 +113,17 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         if (mFromHeight) {
             mActionBar.setTitle("Height");
+            mListHeadingTv.setText("Height (cm)");
         } else if (mFromWeight) {
             mActionBar.setTitle("Weight");
+            mListHeadingTv.setText("Weight (Kg)");
         } else if (mFromBp) {
             mActionBar.setTitle("Blood Pressure");
+            mListHeadingTv.setText("Bp (mmHg)");
+
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
+            mListHeadingTv.setText("BMI");;
         }
 
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
@@ -142,8 +147,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         } else {
             //new Authentication(HealthCommonActivity.this, "healthCommon", "").execute();
         }
+
         weight_listId = (ListView) findViewById(R.id.weight_listId);
-        bsave = (Button) findViewById(R.id.bsave);
         Intent z = getIntent();
         id = z.getStringExtra("id");
 
@@ -239,10 +244,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             mDateList.clear();
             try {
-
                 sendData1.put("UserId", id);
                 sendData1.put("profileParameter", "health");
-
                 if (mFromHeight) {
                     sendData1.put("htype", "height");
                 } else if (mFromWeight || mFromBMI) {
@@ -250,16 +253,15 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 } else if (mFromBp) {
                     sendData1.put("htype", "bp");
                 }
-
                 receiveData1 = service.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
+
                 JSONArray jsonArrayLowerBp = new JSONArray();
                 JSONArray jsonArrayTopBp = new JSONArray();
-
                 for (int i = 0; i < jsonArray.length(); i++) {
                     isDataAvailable = true;
                     hmap = new HashMap<String, String>();
@@ -269,8 +271,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String weight = obj.optString("weight");
                     String bp = obj.optString("bp");
                     String height = obj.optString("height");
-
-
                     //FOR BMI
                     if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
@@ -313,19 +313,17 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                                 } else {
                                     weight_contentlists.add(hmap);
                                 }
-
                             }
-
                         }
                     } else {
-                        if (!TextUtils.isEmpty(weight)) {
+                        if (!TextUtils.isEmpty(weight) && mFromWeight) {
                             double weightInDouble = Double.parseDouble(weight);
                             if (mMaxWeight <= weightInDouble) {
                                 mMaxWeight = weightInDouble;
                             }
                         }
 
-                        if (!TextUtils.isEmpty(height)) {
+                        if (!TextUtils.isEmpty(height) && mFromHeight) {
                             double heightInDouble = Double.parseDouble(height);
                             if (mMaxWeight <= heightInDouble) {
                                 mMaxWeight = heightInDouble;
@@ -598,36 +596,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public static class Utility {
-        public static void setListViewHeightBasedOnChildren(ListView listView) {
-            ListAdapter listAdapter = listView.getAdapter();
-
-            if (listAdapter == null) {
-                // pre-condition
-                return;
-            }
-
-            int totalHeight = listView.getPaddingTop()
-                    + listView.getPaddingBottom();
-            for (int i = 0; i < listAdapter.getCount(); i++) {
-                View listItem = listAdapter.getView(i, null, listView);
-                if (listItem instanceof ViewGroup) {
-                    listItem.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
-                }
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight() + 30;
-            }
-
-            ViewGroup.LayoutParams params = listView.getLayoutParams();
-            params.height = totalHeight
-                    + (listView.getDividerHeight()
-                    * (listAdapter.getCount() - 1) + 30);
-            listView.setLayoutParams(params);
-        }
-    }
-
     private void deleteWeight() {
         progress = new ProgressDialog(HealthCommonActivity.this);
         progress.setMessage("Deleting .....");
@@ -643,9 +611,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                System.out.println(response);
-
                 try {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
@@ -660,19 +625,15 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
                 Toast.makeText(getApplicationContext(), "Error while deleting data, Try Later", Toast.LENGTH_SHORT).show();
                 progress.dismiss();
                 finish();
             }
         }) {
-
         };
         queue.add(jr);
     }
@@ -769,7 +730,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getMaxData() {
-            int i = (int) mMaxWeight; //TODO ayaz for all, its same for bp but method name in bp is getDouble
+            int i = (int) mMaxWeight;
             return (i + 20);
         }
 
@@ -826,6 +787,36 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
         mEditor.putInt("userChoiceSpinner", 0);
         mEditor.commit();
+    }
+
+    public static class Utility {
+        public static void setListViewHeightBasedOnChildren(ListView listView) {
+            ListAdapter listAdapter = listView.getAdapter();
+
+            if (listAdapter == null) {
+                // pre-condition
+                return;
+            }
+
+            int totalHeight = listView.getPaddingTop()
+                    + listView.getPaddingBottom();
+            for (int i = 0; i < listAdapter.getCount(); i++) {
+                View listItem = listAdapter.getView(i, null, listView);
+                if (listItem instanceof ViewGroup) {
+                    listItem.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                }
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight() + 30;
+            }
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight
+                    + (listView.getDividerHeight()
+                    * (listAdapter.getCount() - 1) + 30);
+            listView.setLayoutParams(params);
+        }
     }
 
 }
