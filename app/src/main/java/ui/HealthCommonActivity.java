@@ -252,7 +252,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 }
 
                 receiveData1 = service.patienBasicDetails(sendData1);
-                String data = receiveData1.getString("d");
+                String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
                 HashMap<String, String> hmap;
@@ -264,11 +264,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
-                    String PatientHistoryId = obj.getString("PatientHistoryId");
-                    String ID = obj.getString("ID");
-                    String weight = obj.getString("weight");
+                    String PatientHistoryId = obj.optString("PatientHistoryId");
+                    String ID = obj.optString("ID");
+                    String weight = obj.optString("weight");
                     String bp = obj.optString("bp");
-                    String height = obj.getString("height");
+                    String height = obj.optString("height");
 
 
                     //FOR BMI
@@ -284,7 +284,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             // double time = Double.valueOf(df.format(bmi));
                             bmiValue = df.format(bmi);
 
-                            String fromdate = obj.getString("fromdate");
+                            String fromdate = obj.optString("fromdate");
                             String dateWithoutHour[] = fromdate.split("T");
                             String onlyDate = dateWithoutHour[0];
                             String correctDate = Utils.correctDateFormat(onlyDate);
@@ -324,7 +324,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                                 mMaxWeight = weightInDouble;
                             }
                         }
-                        String fromdate = obj.getString("fromdate");
+                        String fromdate = obj.optString("fromdate");
                         String dateWithoutHour[] = fromdate.split("T");
                         String onlyDate = dateWithoutHour[0];
                         String correctDate = Utils.correctDateFormat(onlyDate);
@@ -519,12 +519,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         adapter.setListData(weight_contentlists);
                         adapter.notifyDataSetChanged();
                     }
+
                     HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(weight_listId);
-                    if (mFromBp) {
-                        weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
-                    } else {
-                        weight_graphView.loadUrl("file:///android_asset/html/index.html");
-                    }
+                    weight_graphView.loadUrl("file:///android_asset/html/index.html");
+
                     if (progress != null && progress.isShowing()) {
                         progress.dismiss();
                     }
