@@ -78,16 +78,16 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private JSONObject sendData;
     private String mParenthistoryId;
-    private JsonObjectRequest jr;
-    private RequestQueue queue;
-    private Services service;
-    private ProgressDialog progress;
-    private MyHealthsAdapter adapter;
-    private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
+    private JsonObjectRequest mJsonObjectRequest;
+    private RequestQueue mRequestQueue;
+    private Services mServices;
+    private ProgressDialog mProgressDialog;
+    private MyHealthsAdapter mMyHealthsAdapter;
+    private ArrayList<HashMap<String, String>> mValuesAndDateList = new ArrayList<HashMap<String, String>>();
     private int mRotationAngle = 0;
     private double mMaxWeight = 0;
     private double mRangeToInDouble = 0, mRangeFromInDouble = 0;
-    private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
+    private JSONArray mDateAndValuesJsonArray = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
     private boolean mIsToAddMaxMinValue = true;
     private RelativeLayout mListViewHeaderRl;
@@ -101,7 +101,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         setContentView(R.layout.weight_layout);
-        service = new Services(HealthCommonActivity.this);
+        mServices = new Services(HealthCommonActivity.this);
         mListViewHeaderRl = (RelativeLayout) findViewById(R.id.header);
         mListHeadingTv = (TextView) findViewById(R.id.wt_heading);
         setupActionBar();
@@ -140,7 +140,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mWebView.setInitialScale(1);
         mWebView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
 
-        queue = Volley.newRequestQueue(this);
+        mRequestQueue = Volley.newRequestQueue(this);
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -156,7 +156,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mFromBMI) {
-                    mParenthistoryId = weight_contentlists.get(position).get("PatientHistoryId");
+                    mParenthistoryId = mValuesAndDateList.get(position).get("PatientHistoryId");
 
                     final Dialog dialog = new Dialog(HealthCommonActivity.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -253,12 +253,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 } else if (mFromBp) {
                     sendData1.put("htype", "bp");
                 }
-                receiveData1 = service.patienBasicDetails(sendData1);
+                receiveData1 = mServices.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
                 HashMap<String, String> hmap;
-                weight_contentlists.clear();
+                mValuesAndDateList.clear();
 
                 JSONArray jsonArrayLowerBp = new JSONArray();
                 JSONArray jsonArrayTopBp = new JSONArray();
@@ -308,10 +308,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                                 if (mFormEpocDate > 0) {
                                     if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
-                                        weight_contentlists.add(hmap);
+                                        mValuesAndDateList.add(hmap);
                                     }
                                 } else {
-                                    weight_contentlists.add(hmap);
+                                    mValuesAndDateList.add(hmap);
                                 }
                             }
                         }
@@ -359,21 +359,21 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         long epoch = date.getTime();
                         if (mFormEpocDate > 0) {
                             if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
-                                weight_contentlists.add(hmap);
+                                mValuesAndDateList.add(hmap);
                             }
                         } else {
-                            weight_contentlists.add(hmap);
+                            mValuesAndDateList.add(hmap);
                         }
                     }
                 }
 
-                Helper.sortHealthListByDate(weight_contentlists);
+                Helper.sortHealthListByDate(mValuesAndDateList);
 
                 JSONArray jsonArray1 = new JSONArray();
-                for (int i = 0; i < weight_contentlists.size(); i++) {
+                for (int i = 0; i < mValuesAndDateList.size(); i++) {
                     if (mFromBp) {
                         Date date = null;
-                        HashMap<String, String> mapValue = weight_contentlists.get(i);
+                        HashMap<String, String> mapValue = mValuesAndDateList.get(i);
                         try {
                             String fromdate = mapValue.get("fromdate");
                             date = simpleDateFormatDash.parse(fromdate);
@@ -385,7 +385,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         if (mIsToAddMaxMinValue && i == 0) {
                             mDateMinValue = epoch;
                         }
-                        if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
+                        if (mIsToAddMaxMinValue && i == (mValuesAndDateList.size() - 1)) {
                             mDateMaxValue = epoch;
                         }
 
@@ -435,20 +435,20 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             }
                         }
 
-                        mJsonArrayToSend = new JSONArray();
+                        mDateAndValuesJsonArray = new JSONArray();
                         JSONObject outerJsonObjectUpperBp = new JSONObject();
                         outerJsonObjectUpperBp.put("key", "systolic");
                         outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
-                        mJsonArrayToSend.put(outerJsonObjectUpperBp);
+                        mDateAndValuesJsonArray.put(outerJsonObjectUpperBp);
 
                         JSONObject outerJsonObjectLowerBp = new JSONObject();
                         outerJsonObjectLowerBp.put("key", "daistolic");
                         outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
-                        mJsonArrayToSend.put(outerJsonObjectLowerBp);
+                        mDateAndValuesJsonArray.put(outerJsonObjectLowerBp);
                     } else {
                         Date date = null;
                         String fromdate = null;
-                        HashMap<String, String> mapValue = weight_contentlists.get(i);
+                        HashMap<String, String> mapValue = mValuesAndDateList.get(i);
                         try {
                             fromdate = mapValue.get("fromdate");
                             date = simpleDateFormatDash.parse(fromdate);
@@ -459,7 +459,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         if (mIsToAddMaxMinValue && i == 0) {
                             mDateMinValue = epoch;
                         }
-                        if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
+                        if (mIsToAddMaxMinValue && i == (mValuesAndDateList.size() - 1)) {
                             mDateMaxValue = epoch;
                         }
                         if (mFormEpocDate > 0) {
@@ -487,8 +487,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         }
 
                         outerJsonObject.put("values", jsonArray1);
-                        mJsonArrayToSend = new JSONArray();
-                        mJsonArrayToSend.put(outerJsonObject);
+                        mDateAndValuesJsonArray = new JSONArray();
+                        mDateAndValuesJsonArray.put(outerJsonObject);
                     }
                 }
 
@@ -503,8 +503,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             super.onPostExecute(result);
             if (mFromBMI) {
                 setDateList(mDateList);
-                adapter = new MyHealthsAdapter(HealthCommonActivity.this, weight_contentlists);
-                mListView.setAdapter(adapter);
+                mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
+                mListView.setAdapter(mMyHealthsAdapter);
                 Weight.Utility.setListViewHeightBasedOnChildren(mListView);
 
                 mWebView.loadUrl("file:///android_asset/html/index.html");
@@ -517,13 +517,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             } else {
                 if (isDataAvailable) {
                     setDateList(mDateList);
-                    if (adapter == null) {
-                        adapter = new MyHealthsAdapter(HealthCommonActivity.this);
-                        adapter.setListData(weight_contentlists);
-                        mListView.setAdapter(adapter);
+                    if (mMyHealthsAdapter == null) {
+                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mListView.setAdapter(mMyHealthsAdapter);
                     } else {
-                        adapter.setListData(weight_contentlists);
-                        adapter.notifyDataSetChanged();
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mMyHealthsAdapter.notifyDataSetChanged();
                     }
 
                     HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
@@ -597,9 +597,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     }
 
     private void deleteWeight() {
-        progress = new ProgressDialog(HealthCommonActivity.this);
-        progress.setMessage("Deleting .....");
-        progress.show();
+        mProgressDialog = new ProgressDialog(HealthCommonActivity.this);
+        mProgressDialog.setMessage("Deleting .....");
+        mProgressDialog.show();
         sendData = new JSONObject();
         try {
             sendData.put("patientHistoryId", mParenthistoryId);
@@ -608,12 +608,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }
         StaticHolder sttc_holdr = new StaticHolder(HealthCommonActivity.this, StaticHolder.Services_static.deleteSingularDetails);
         String url = sttc_holdr.request_Url();
-        jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+        mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     if (response.getString("d").equalsIgnoreCase("success")) {
-                        progress.dismiss();
+                        mProgressDialog.dismiss();
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
                         //startActivity(getIntent());
@@ -630,12 +630,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "Error while deleting data, Try Later", Toast.LENGTH_SHORT).show();
-                progress.dismiss();
+                mProgressDialog.dismiss();
                 finish();
             }
         }) {
         };
-        queue.add(jr);
+        mRequestQueue.add(mJsonObjectRequest);
     }
 
     public void startBackgroundprocess() {
@@ -724,8 +724,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
-            Log.e("ayaz", "mJsonArrayToSend: " + mJsonArrayToSend.toString());
-            return mJsonArrayToSend.toString();
+            Log.e("ayaz", "mJsonArrayToSend: " + mDateAndValuesJsonArray.toString());
+            return mDateAndValuesJsonArray.toString();
         }
 
         @JavascriptInterface
@@ -789,7 +789,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mEditor.commit();
     }
 
-    public static class Utility {
+    private static class Utility {
         public static void setListViewHeightBasedOnChildren(ListView listView) {
             ListAdapter listAdapter = listView.getAdapter();
 
