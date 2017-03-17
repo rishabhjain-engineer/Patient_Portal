@@ -297,7 +297,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                                 if (mMaxWeight <= bmiIndouble) {
                                     mMaxWeight = bmiIndouble;
                                 }
-                                hmap.put("weight", bmiValue);
+                                hmap.put("dataValue", bmiValue);
                                 Date date = null;
                                 try {
                                     date = simpleDateFormatDash.parse(onlyDate);
@@ -339,12 +339,19 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         hmap.put("ID", ID);
 
                         //For bmi will not come in this section
+
                         if (mFromBp) {
-                            hmap.put("weight", bp);
+                            hmap.put("dataValue", bp);
                         } else if (mFromHeight) {
-                            hmap.put("weight", height);
+                            double heightInDouble = obj.optDouble("height");
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            height = df.format(heightInDouble);
+                            hmap.put("dataValue", height);
                         } else if (mFromWeight) {
-                            hmap.put("weight", weight);
+                            double weightInDouble = obj.optDouble("weight");
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            weight = df.format(weightInDouble);
+                            hmap.put("dataValue", weight);
                         }
 
                         hmap.put("fromdate", onlyDate);
@@ -392,10 +399,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         if (mFormEpocDate > 0) {
                             if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                                 JSONArray innerJsonArray = new JSONArray();
-                                String bp = mapValue.get("weight");
+                                String bp = mapValue.get("dataValue");
                                 String bpArray[] = bp.split(",");
                                 innerJsonArray.put(epoch);
-                                innerJsonArray.put(mapValue.get("weight"));
+                                innerJsonArray.put(mapValue.get("dataValue"));
 
                                 JSONArray innerJsonArrayLowerBp = new JSONArray();
                                 JSONArray innerJsonArrayTopBP = new JSONArray();
@@ -414,10 +421,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             }
                         } else {
                             JSONArray innerJsonArray = new JSONArray();
-                            String bp = mapValue.get("weight");
+                            String bp = mapValue.get("dataValue");
                             String bpArray[] = bp.split(",");
                             innerJsonArray.put(epoch);
-                            innerJsonArray.put(mapValue.get("weight"));
+                            innerJsonArray.put(mapValue.get("dataValue"));
 
                             JSONArray innerJsonArrayLowerBp = new JSONArray();
                             JSONArray innerJsonArrayTopBP = new JSONArray();
@@ -466,13 +473,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
                                 JSONArray innerJsonArray = new JSONArray();
                                 innerJsonArray.put(epoch);
-                                innerJsonArray.put(mapValue.get("weight"));
+                                innerJsonArray.put(mapValue.get("dataValue"));
                                 jsonArray1.put(innerJsonArray);
                             }
                         } else {
                             JSONArray innerJsonArray = new JSONArray();
                             innerJsonArray.put(epoch);
-                            innerJsonArray.put(mapValue.get("weight"));
+                            innerJsonArray.put(mapValue.get("dataValue"));
                             jsonArray1.put(innerJsonArray);
                         }
                         JSONObject outerJsonObject = new JSONObject();
