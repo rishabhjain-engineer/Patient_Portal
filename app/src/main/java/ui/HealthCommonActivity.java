@@ -72,12 +72,12 @@ import utils.Utils;
 
 public class HealthCommonActivity extends GraphHandlerActivity {
 
-    private WebView weight_graphView;
-    private ListView weight_listId;
-    private String id, mDateFormat = "%b '%y", mIntervalMode;
+    private WebView mWebView;
+    private ListView mListView;
+    private String mPatientId, mDateFormat = "%b '%y", mIntervalMode;
     private long mFormEpocDate = 0, mEpocToDate = 0;
     private JSONObject sendData;
-    private String parenthistory_ID;
+    private String mParenthistoryId;
     private JsonObjectRequest jr;
     private RequestQueue queue;
     private Services service;
@@ -126,10 +126,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             mListHeadingTv.setText("BMI");;
         }
 
-        weight_graphView = (WebView) findViewById(R.id.weight_graphView);
-        WebSettings settings = weight_graphView.getSettings();
-        weight_graphView.setFocusable(true);
-        weight_graphView.setFocusableInTouchMode(true);
+        mWebView = (WebView) findViewById(R.id.weight_graphView);
+        WebSettings settings = mWebView.getSettings();
+        mWebView.setFocusable(true);
+        mWebView.setFocusableInTouchMode(true);
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
         settings.setUseWideViewPort(true);
@@ -137,8 +137,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         settings.setDisplayZoomControls(true);
         settings.setSupportZoom(true);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-        weight_graphView.setInitialScale(1);
-        weight_graphView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
+        mWebView.setInitialScale(1);
+        mWebView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
 
         queue = Volley.newRequestQueue(this);
 
@@ -148,15 +148,15 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             //new Authentication(HealthCommonActivity.this, "healthCommon", "").execute();
         }
 
-        weight_listId = (ListView) findViewById(R.id.weight_listId);
+        mListView = (ListView) findViewById(R.id.weight_listId);
         Intent z = getIntent();
-        id = z.getStringExtra("id");
+        mPatientId = z.getStringExtra("id");
 
-        weight_listId.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mFromBMI) {
-                    parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
+                    mParenthistoryId = weight_contentlists.get(position).get("PatientHistoryId");
 
                     final Dialog dialog = new Dialog(HealthCommonActivity.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -204,11 +204,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            weight_listId.setVisibility(View.GONE);
+            mListView.setVisibility(View.GONE);
             mListViewHeaderRl.setVisibility(View.GONE);
             mActionBar.hide();
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            weight_listId.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.VISIBLE);
             mListViewHeaderRl.setVisibility(View.VISIBLE);
             mActionBar.show();
         }
@@ -244,7 +244,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             mDateList.clear();
             try {
-                sendData1.put("UserId", id);
+                sendData1.put("UserId", mPatientId);
                 sendData1.put("profileParameter", "health");
                 if (mFromHeight) {
                     sendData1.put("htype", "height");
@@ -504,10 +504,10 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             if (mFromBMI) {
                 setDateList(mDateList);
                 adapter = new MyHealthsAdapter(HealthCommonActivity.this, weight_contentlists);
-                weight_listId.setAdapter(adapter);
-                Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                mListView.setAdapter(adapter);
+                Weight.Utility.setListViewHeightBasedOnChildren(mListView);
 
-                weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                mWebView.loadUrl("file:///android_asset/html/index.html");
                 if (progress != null && progress.isShowing()) {
                     progress.dismiss();
                 }
@@ -520,21 +520,21 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     if (adapter == null) {
                         adapter = new MyHealthsAdapter(HealthCommonActivity.this);
                         adapter.setListData(weight_contentlists);
-                        weight_listId.setAdapter(adapter);
+                        mListView.setAdapter(adapter);
                     } else {
                         adapter.setListData(weight_contentlists);
                         adapter.notifyDataSetChanged();
                     }
 
-                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(weight_listId);
-                    weight_graphView.loadUrl("file:///android_asset/html/index.html");
+                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
+                    mWebView.loadUrl("file:///android_asset/html/index.html");
 
                     if (progress != null && progress.isShowing()) {
                         progress.dismiss();
                     }
                 } else {
                     Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                    i.putExtra("id", id);
+                    i.putExtra("id", mPatientId);
                     if (mFromHeight) {
                         i.putExtra("htype", "height");
                     } else if (mFromWeight) {
@@ -570,7 +570,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 return true;
             case R.id.add:
                 Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                i.putExtra("id", id);
+                i.putExtra("id", mPatientId);
 
                 if (mFromHeight) {
                     i.putExtra("htype", "height");
@@ -602,7 +602,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         progress.show();
         sendData = new JSONObject();
         try {
-            sendData.put("patientHistoryId", parenthistory_ID);
+            sendData.put("patientHistoryId", mParenthistoryId);
         } catch (JSONException je) {
             je.printStackTrace();
         }
