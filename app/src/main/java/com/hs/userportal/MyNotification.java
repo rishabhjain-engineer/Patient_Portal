@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -43,7 +44,7 @@ public class MyNotification extends BaseActivity {
     private ListView notifications;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> noti = new ArrayList<String>();
-    private String usid, user, cont, code, mailid;
+    private String usid, user, contactNumber, PhCode, mailid;
     private Services service;
     private JSONObject sendData, receiveData;
     private TextView nonoti;
@@ -58,8 +59,8 @@ public class MyNotification extends BaseActivity {
         // Receiving the Data i.e. I.D.
         usid = i.getStringExtra("userid");
         user = i.getStringExtra("userName");
-        cont = i.getStringExtra("ContactNo");
-        code = i.getStringExtra("patientcode");
+        contactNumber = i.getStringExtra("ContactNo");
+        PhCode = i.getStringExtra("patientcode");
         mailid = i.getStringExtra("UserMailId");
 
         setContentView(R.layout.mynotification);
@@ -116,6 +117,7 @@ public class MyNotification extends BaseActivity {
                     alertDialog.setTitle("Phone Number Verification");
                     alertDialog.setMessage("Please enter the verification code sent to you on your registered mobile number.");
                     final EditText input = new EditText(MyNotification.this);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.leftMargin = 15;
                     lp.rightMargin = 15;
@@ -132,7 +134,7 @@ public class MyNotification extends BaseActivity {
                                 sendData = new JSONObject();
                                 try {
                                     sendData.put("code", input.getText().toString());
-                                    sendData.put("patientcode", code);
+                                    sendData.put("patientcode", PhCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -157,17 +159,17 @@ public class MyNotification extends BaseActivity {
                                         Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         try {
-                                      /*  sendData.put("userid", usid);
-                                        sendData.put("userName", user);
-                                        sendData.put("userRole", "Patient");
-                                        sendData.put("UserMailId", "");
-                                        sendData.put("ContactNo", Helper.resend_sms);*/
-                                            sendData.put("code", input.getText().toString());
-                                            sendData.put("patientcode", code);
+                                            sendData.put("userid", usid);
+                                            sendData.put("userName", user);
+                                            sendData.put("userRole", "Patient");
+                                            sendData.put("UserMailId", "");
+                                            sendData.put("ContactNo", input.getEditableText().toString().trim());
+                                           /* sendData.put("code", input.getText().toString());
+                                            sendData.put("patientcode", PhCode);*/
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        new MyAsynckTask(sendData, false, true).execute();
+                                        new MyAsynckTask(sendData, true, false).execute();
                                     }
                                 }
 
@@ -183,7 +185,7 @@ public class MyNotification extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       // getMenuInflater().inflate(R.menu.home, menu);
+        // getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
@@ -244,19 +246,19 @@ public class MyNotification extends BaseActivity {
 
     private class MyAsynckTask extends AsyncTask<Void, Void, Void> {
         JSONObject dataToSend;
-        boolean verifyEmail, verifysms;
+        boolean verifyEmailORResenOtp, verifyOtp;
 
         MyAsynckTask(JSONObject jsonObject, boolean verifyEmail, boolean verifysms) {
             dataToSend = jsonObject;
-            this.verifyEmail = verifyEmail;
-            this.verifysms = verifysms;
+            this.verifyEmailORResenOtp = verifyEmail;
+            this.verifyOtp = verifysms;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (verifyEmail) {
+            if (verifyEmailORResenOtp) {
                 service.verifyemail(dataToSend);
-            } else if (verifysms) {
+            } else if (verifyOtp) {
                 receiveData = service.verifysms(sendData);
             }
 
@@ -266,9 +268,9 @@ public class MyNotification extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (verifyEmail) {
-                Toast.makeText(getApplicationContext(), "SMS sent successfully.", Toast.LENGTH_SHORT).show();
-            } else if (verifysms) {
+            if (verifyEmailORResenOtp) {
+                Toast.makeText(getApplicationContext(), "Operation performed successfully.", Toast.LENGTH_SHORT).show();
+            } else if (verifyOtp) {
                 String data, verify;
                 try {
                     data = receiveData.getString("d");
