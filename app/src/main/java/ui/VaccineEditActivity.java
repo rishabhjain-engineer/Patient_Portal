@@ -150,23 +150,38 @@ public class VaccineEditActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(name)) {
             nameTv.setText("Vaccine For: " + name);
+        }else{
+            nameTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(abbreviationName)) {
             vaccineAbreviationTv.setText("Vaccine: " + abbreviationName);
+        }else{
+            vaccineAbreviationTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(dose)) {
             doseTv.setText("Dose: " + dose);
+        }else{
+            doseTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(doseType)) {
             doseTypeTv.setText("Dose Type: " + doseType);
+        }else{
+            doseTypeTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(doseFrequency)) {
             doseFrequencyTv.setText("Dose Frequency: " + doseFrequency);
+        }else{
+            doseFrequencyTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(comments)) {
             commentTv.setText("Comments: " + comments);
+        }else{
+            commentTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(date)) {

@@ -257,7 +257,7 @@
                     android:id="@+id/bp_topnumber_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Top Number ( systolic ) :"
+                    android:text="Top Number ( Systolic ) :"
                     android:textColor="@android:color/black"
                     android:textSize="14dp"
                     android:textStyle="bold" />
@@ -295,7 +295,7 @@
                     android:id="@+id/bp_bottomnumber_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bottom Number ( daistolic ) :"
+                    android:text="Bottom Number ( Diastolic ) :"
                     android:textColor="@android:color/black"
                     android:textSize="14dp"
                     android:textStyle="bold" />
