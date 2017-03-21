@@ -444,12 +444,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                         mDateAndValuesJsonArray = new JSONArray();
                         JSONObject outerJsonObjectUpperBp = new JSONObject();
-                        outerJsonObjectUpperBp.put("key", "systolic");
+                        outerJsonObjectUpperBp.put("key", "Systolic");
                         outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
                         mDateAndValuesJsonArray.put(outerJsonObjectUpperBp);
 
                         JSONObject outerJsonObjectLowerBp = new JSONObject();
-                        outerJsonObjectLowerBp.put("key", "daistolic");
+                        outerJsonObjectLowerBp.put("key", "Diastolic");
                         outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
                         mDateAndValuesJsonArray.put(outerJsonObjectLowerBp);
                     } else {
@@ -486,9 +486,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
                         //For BP will not come in this section
                         if (mFromHeight) {
-                            outerJsonObject.put("key", "Height(cm)");
+                            outerJsonObject.put("key", "Height (cm)");
                         } else if (mFromWeight) {
-                            outerJsonObject.put("key", "Weight(kg)");
+                            outerJsonObject.put("key", "Weight (kg)");
                         } else if (mFromBMI) {
                             outerJsonObject.put("key", "BMI");
                         }

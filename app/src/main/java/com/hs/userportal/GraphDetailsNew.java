@@ -723,6 +723,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRangeFrom() {
+
             return (int)mRangeFromInDouble;
         }
 

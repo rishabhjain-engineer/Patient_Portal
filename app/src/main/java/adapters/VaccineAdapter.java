@@ -96,9 +96,9 @@ public class VaccineAdapter extends BaseAdapter {
             } else if (TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort()) && !TextUtils.isEmpty(vaccineDetails.getVaccineDose())) {
                 vaccineNameWithDose = vaccineDetails.getVaccineDose();
             } else {
-                vaccineNameWithDose = vaccineDetails.getVaccineNameInShort() + "-" + vaccineDetails.getVaccineDose();
+                vaccineNameWithDose = vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose();
             }
-            holder.acronyms.setText((vaccineDetails.getVaccineNameInShort()));
+            holder.acronyms.setText((vaccineNameWithDose));
             //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
         }
         return convertView;
