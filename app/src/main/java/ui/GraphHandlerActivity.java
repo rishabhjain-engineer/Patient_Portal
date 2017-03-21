@@ -307,16 +307,16 @@ public class GraphHandlerActivity extends BaseActivity {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
             }*/
-            
+
             //Taking Next Quarter e.g 6 july then we will show upto 1 october not till 1 july only
-            if (monthInInt2 == 1) {
+            if (monthInInt2 <= 3) {
                 monthInInt2 = 7;
-            } else if (monthInInt2 == 4) {
+            } else if (monthInInt2 <= 6) {
                 monthInInt2 = 10;
-            } else if (monthInInt2 == 7) {
+            } else if (monthInInt2 <= 9) {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
-            } else if (monthInInt2 == 10) {
+            } else if (monthInInt2 <= 12) {
                 monthInInt2 = 4;
                 yearInInt2 = yearInInt2 + 1;
             }
@@ -399,15 +399,27 @@ public class GraphHandlerActivity extends BaseActivity {
         }
         date1 = "01/" + monthInInt1 + "/" + yearInInt1;
         String dateArray2[] = date2.split("/");
+        String dayInString2 = dateArray2[0];
         String monthInString2 = dateArray2[1];
         String yearInString2 = dateArray2[2];
+        int dateInInt2 = Integer.parseInt(dayInString2);
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
-        if (monthInInt2 <= 6) {
-            monthInInt2 = 7;
-        } else {
-            monthInInt2 = 1;
-            yearInInt2 = yearInInt2 + 1;
+        if(dateInInt2 == 1 && (monthInInt2 == 7 || monthInInt2 == 1)){
+            if (monthInInt2 == 7) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else {
+                monthInInt2 = 7;
+            }
+        }else{
+            if (monthInInt2 <= 6) {
+                monthInInt2 = 1;
+                yearInInt2 = yearInInt2 + 1;
+            } else {
+                monthInInt2 = 7;
+                yearInInt2 = yearInInt2 + 1;
+            }
         }
         date2 = "01/" + monthInInt2 + "/" + yearInInt2;
 
@@ -452,10 +464,19 @@ public class GraphHandlerActivity extends BaseActivity {
         date1 = "01/01/" + yearInInt1;
 
         String dateArray2[] = date2.split("/");
+        String dayInString2 = dateArray2[0];
+        String monthInString2 = dateArray2[1];
         String yearInString2 = dateArray2[2];
+        int dayInInt2 = Integer.parseInt(dayInString2);
+        int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
-        //yearInInt2 = yearInInt2 + 2;  //For one year after
-        yearInInt2 = yearInInt2 + 1;    //For current year
+
+
+        if(dayInInt2 == 1 && monthInInt2 == 1){
+            yearInInt2 = yearInInt2 + 1;    //For current year
+        }else{
+            yearInInt2 = yearInInt2 + 2;    //For next year
+        }
         date2 = "01/01/" + yearInInt2;
 
         SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");

@@ -149,6 +149,7 @@ public class VaccineActivity extends BaseActivity {
                             vaccineDetails.setVaccineDateTime(jsonObject.isNull("VaccineDateTime") ? null : jsonObject.optString("VaccineDateTime"));
                             vaccineDetails.setDoctorNotes(jsonObject.isNull("DoctorNotes") ? null : jsonObject.optString("DoctorNotes"));
                             vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId") ? null : jsonObject.optString("PatientVaccineId"));
+                            vaccineDetails.setDoseFrequency(jsonObject.isNull("DoseFrequency") ? null : jsonObject.optString("DoseFrequency"));
 
                             mVaccineDetailsList.add(vaccineDetails);
                         }
