@@ -754,6 +754,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             Log.e("ayaz", "max: graphdetail "+mDateMaxValue);
             return mDateMaxValue;
         }
+
+        @JavascriptInterface
+        public boolean getUserInteractiveGuidline() {
+                return false;
+            }
     }
 
 }
