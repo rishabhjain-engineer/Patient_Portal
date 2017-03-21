@@ -783,6 +783,15 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         public int getRangeFrom() {
             return (int) mRangeFromInDouble;
         }
+
+        @JavascriptInterface
+        public boolean getUserInteractiveGuidline() {
+            if(mFromBp){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 
     @Override
