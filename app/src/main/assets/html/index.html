@@ -63,6 +63,7 @@
   var enddate = Interface.maxDateValue();
   var rangeto = Interface.getRangeTo();
   var rangefrom = Interface.getRangeFrom();
+  var useInteractiveGuideline = Interface.getUserInteractiveGuidline();
           
     		nv.addGraph(function () {
               var chart = nv.models.lineChart()//.interpolate('monotone')              
@@ -74,7 +75,7 @@
                 })  
                 .color(d3.scale.category10().range())
                 //.transitionDuration(300)
-                //.useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
+                .useInteractiveGuideline(useInteractiveGuideline)    //Tooltips which show all data points. Very nice!
                 .showLegend(true)
                 .showYAxis(true)
                 //.forceY([50, 500])

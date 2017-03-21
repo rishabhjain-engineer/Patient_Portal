@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -239,6 +240,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
             }
 
+
+
             mFilteredGraphDetailValueAndDateList.clear();
 
             if (mFormEpocDate > 0) {
@@ -260,7 +263,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 mFilteredGraphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>(graphDetailValueAndDateList);
             }
         }
-
+        Collections.sort(mFilteredGraphDetailValueAndDateList);
         JSONArray jsonArray1 = new JSONArray();
         for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
 
@@ -751,6 +754,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             Log.e("ayaz", "max: graphdetail "+mDateMaxValue);
             return mDateMaxValue;
         }
+
+        @JavascriptInterface
+        public boolean getUserInteractiveGuidline() {
+                return false;
+            }
     }
 
 }
