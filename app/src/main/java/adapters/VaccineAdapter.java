@@ -85,9 +85,20 @@ public class VaccineAdapter extends BaseAdapter {
             if (!TextUtils.isEmpty(vaccineDetails.getVaccineName())) {
                 holder.name.setText(vaccineDetails.getVaccineName());
             }
-            if (!TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort())) {
-                holder.acronyms.setText((vaccineDetails.getVaccineNameInShort()));
+
+            //show Dose Next to vaccine Name, if Vaccine Name is empty then show dose only
+            String vaccineNameWithDose = "";
+
+            if (TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort()) && TextUtils.isEmpty(vaccineDetails.getVaccineDose())) {
+                //DO nothing
+            } else if (!TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort()) && TextUtils.isEmpty(vaccineDetails.getVaccineDose())) {
+                vaccineNameWithDose = vaccineDetails.getVaccineNameInShort();
+            } else if (TextUtils.isEmpty(vaccineDetails.getVaccineNameInShort()) && !TextUtils.isEmpty(vaccineDetails.getVaccineDose())) {
+                vaccineNameWithDose = vaccineDetails.getVaccineDose();
+            } else {
+                vaccineNameWithDose = vaccineDetails.getVaccineNameInShort() + "-" + vaccineDetails.getVaccineDose();
             }
+            holder.acronyms.setText((vaccineDetails.getVaccineNameInShort()));
             //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
         }
         return convertView;

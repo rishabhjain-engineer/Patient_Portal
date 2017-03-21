@@ -79,6 +79,7 @@ public class VaccineActivity extends BaseActivity {
                     mIntent.putExtra("Dose", selectedItem.getVaccineDose());
                     mIntent.putExtra("DoseType", selectedItem.getVaccineDoseType());
                     mIntent.putExtra("comment", selectedItem.getVaccineComment());
+                    mIntent.putExtra("doseFrequency", selectedItem.getDoseFrequency());
                     mIntent.putExtra("VaccineDateTime", selectedItem.getVaccineDateTime());
                     mIntent.putExtra("DoctorNotes", selectedItem.getDoctorNotes());
                     mIntent.putExtra("PatientVaccineId", selectedItem.getPatientVaccineId());
