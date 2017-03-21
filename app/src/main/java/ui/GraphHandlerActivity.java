@@ -307,16 +307,16 @@ public class GraphHandlerActivity extends BaseActivity {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
             }*/
-            
+
             //Taking Next Quarter e.g 6 july then we will show upto 1 october not till 1 july only
-            if (monthInInt2 == 1) {
+            if (monthInInt2 <= 3) {
                 monthInInt2 = 7;
-            } else if (monthInInt2 == 4) {
+            } else if (monthInInt2 <= 6) {
                 monthInInt2 = 10;
-            } else if (monthInInt2 == 7) {
+            } else if (monthInInt2 <= 9) {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
-            } else if (monthInInt2 == 10) {
+            } else if (monthInInt2 <= 12) {
                 monthInInt2 = 4;
                 yearInInt2 = yearInInt2 + 1;
             }
