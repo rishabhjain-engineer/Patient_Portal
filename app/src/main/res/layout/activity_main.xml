@@ -34,6 +34,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
+                android:textColor="@color/sign_in_gray_color"
+                android:textSize="13dp"
                 android:text="use your registered email id / Facebook and jump right in!" />
 
             <EditText
@@ -91,7 +93,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="@string/forgot"
-                    android:textColor="@color/header_color"
+                    android:textColor="@color/sign_in_blue_color"
                     android:textSize="14sp" />
             </RelativeLayout>
 
@@ -150,7 +152,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sign_up"
-                    android:textColor="@color/header_color"
+                    android:textColor="@color/sign_in_blue_color"
                     android:textSize="16sp" />
             </LinearLayout>
 
