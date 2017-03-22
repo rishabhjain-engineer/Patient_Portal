@@ -151,6 +151,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         demoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPreferenceHelper = (PreferenceHelper) PreferenceHelper.getInstance();
         setupActionBar();
+        mActionBar.hide();
         callbackManager = CallbackManager.Factory.create();
         mtracker = new AccessTokenTracker() {
             @Override

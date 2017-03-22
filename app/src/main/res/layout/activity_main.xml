@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
     android:background="#FFFFFF"
     android:orientation="vertical">
 
@@ -23,12 +25,18 @@
             android:scaleType="fitCenter"
             android:src="@drawable/logo_update" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="use your registered email id / Facebook and jump right in!" />
+
         <EditText
             android:id="@+id/etSubject"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="25dp"
             android:background="@drawable/register_edittextnew"
             android:drawableLeft="@drawable/user"
@@ -46,8 +54,6 @@
             android:id="@+id/etContact"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="7dp"
             android:background="@drawable/register_edittextnew"
             android:drawableLeft="@drawable/password"
@@ -64,8 +70,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="10dp">
 
             <CheckBox
@@ -74,57 +78,55 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="Remember me"
-                android:visibility="gone"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textview1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="@string/forgot"
-                android:textColor="@color/text_color_blue"
+                android:textColor="@color/header_color"
                 android:textSize="14sp" />
         </RelativeLayout>
 
-        <LinearLayout
+
+        <Button
+            android:id="@+id/bSend"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/sign_signup_button_design"
+            android:text="Sign in"
+            android:textColor="@color/white" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="OR"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/bSend"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/registerbtn_green"
-                android:text="SIGN IN"
-                android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/register"
+            android:visibility="gone"
+            android:layout_width="230dp"
+            android:layout_height="60dp"
+            android:background="@drawable/sign_signup_button_design"
+            android:text="SIGN Up"
+            android:textColor="@color/white" />
 
-            <Button
-                android:id="@+id/register"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/registerbtn_green"
-                android:text="SIGN UP"
-                android:textColor="@color/white"
-                android:visibility="visible" />
-        </LinearLayout>
 
         <LinearLayout
-            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="0dp"
@@ -136,7 +138,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
                 android:text="OR"
                 android:textSize="16sp" />
 
@@ -152,7 +155,7 @@
             android:id="@+id/FrameLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"
@@ -170,7 +173,7 @@
                 android:background="@drawable/facebook_button"
                 android:drawableLeft="@drawable/fb"
                 android:text="LOGIN WITH FACEBOOK"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
         </FrameLayout>
 
@@ -197,40 +200,7 @@
             android:drawableLeft="@drawable/navii"
             android:text="@string/labs"
             android:visibility="gone" />
-        <!-- <RelativeLayout
-             android:id="@+id/relLabs"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginLeft="15dp"
-             android:layout_marginRight="15dp"
-             android:layout_marginTop="10dp"
-             android:padding="8dp"
 
-             android:background="@drawable/orange_button"
-             android:layout_gravity="center">
-
-             <TextView
-                 android:id="@+id/tvLocationIcon"
-                 android:layout_width="wrap_content"
-                 android:layout_height="fill_parent"
-                 android:layout_centerVertical="true"
-                  android:layout_marginRight="10dp"
-                 android:layout_toLeftOf="@+id/tvLocationText"
-                 android:textColor="#0276FD"
-                 android:textSize="15sp" />
-
-             <TextView
-                 android:id="@+id/tvLocationText"
-                 android:layout_width="wrap_content"
-                 android:layout_height="fill_parent"
-                 android:layout_centerInParent="true"
-                 android:layout_marginLeft="23dp"
-                 android:paddingLeft="20dp"
-                 android:text="@string/labs"
-                 android:textStyle="bold"
-                 android:textColor="#ffffff"
-                 android:textSize="16sp" />
-         </RelativeLayout>-->
     </LinearLayout>
 
     <RelativeLayout
@@ -238,14 +208,15 @@
         android:layout_height="42dp"
         android:layout_alignParentBottom="true"
         android:background="#5a5a5d"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/secret"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:maxLines="2"
             android:text="@string/cloud"
             android:textColor="@android:color/white"
