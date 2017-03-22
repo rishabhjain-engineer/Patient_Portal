@@ -90,7 +90,7 @@
             android:id="@+id/duration_textview"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Duration :"
+            android:text="Interval :"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:layout_marginLeft="25dp"
@@ -110,7 +110,7 @@
         android:id="@+id/addbutton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ADD"
+        android:text="View"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
         android:background="@color/header_color"/>

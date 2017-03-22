@@ -23,6 +23,7 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     private String patientVaccineId;
     private boolean header;
     private String headerString;
+    private String doseFrequency;
 
     public String getVaccineName() {
         return vaccineName;
@@ -132,6 +133,14 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
 
     public void setHeaderString(String headerString) {
         this.headerString = headerString;
+    }
+
+    public String getDoseFrequency() {
+        return doseFrequency;
+    }
+
+    public void setDoseFrequency(String doseFrequency) {
+        this.doseFrequency = doseFrequency;
     }
 
   /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
