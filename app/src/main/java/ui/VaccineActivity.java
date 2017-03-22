@@ -231,7 +231,7 @@ public class VaccineActivity extends BaseActivity {
                             }
                         }
 
-                        Collections.sort(mKeysList, Collections.<String>reverseOrder());
+                        //Collections.sort(mKeysList, Collections.<String>reverseOrder());
 
                         for (String key : mKeysList) {
                             List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
