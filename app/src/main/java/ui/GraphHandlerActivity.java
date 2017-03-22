@@ -37,7 +37,7 @@ public class GraphHandlerActivity extends BaseActivity {
     protected void setDateList(List<String> dateList) {
         mDateList = dateList;
     }
-    
+
     protected JSONArray getJsonForDaily(String dateString1, String dateString2) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date1 = null;
@@ -192,11 +192,23 @@ public class GraphHandlerActivity extends BaseActivity {
                 monthInInt2 = monthInInt2 + 2;
             }
         } else {
-            if (monthInInt2 == 12) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
+            if (dayInInt2 == 1) {
+                if (monthInInt2 == 12) {
+                    monthInInt2 = 1;
+                    yearInInt2 = yearInInt2 + 1;
+                } else {
+                    monthInInt2 = monthInInt2 + 1;
+                }
             } else {
-                monthInInt2 = monthInInt2 + 1;
+                if (monthInInt2 == 12) {
+                    monthInInt2 = 2;
+                    yearInInt2 = yearInInt2 + 1;
+                } else if (monthInInt2 == 11) {
+                    monthInInt2 = 1;
+                    yearInInt2 = yearInInt2 + 1;
+                } else {
+                    monthInInt2 = monthInInt2 + 2;
+                }
             }
         }
 
@@ -247,7 +259,7 @@ public class GraphHandlerActivity extends BaseActivity {
         int monthInInt1 = Integer.parseInt(monthInString1);
         int yearInInt1 = Integer.parseInt(yearInString1);
 
-        if (mDateList.contains(date1) && dayInInt1 == 1 && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10)){
+        if (mDateList.contains(date1) && dayInInt1 == 1 && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10)) {
             if (monthInInt1 == 1) {
                 monthInInt1 = 10;
                 yearInInt1 = yearInInt1 - 1;
@@ -284,7 +296,7 @@ public class GraphHandlerActivity extends BaseActivity {
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
 
-        if (mDateList.contains(date2) && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10) && dayInInt2 == 1) {
+        if (dayInInt2 == 1 && mDateList.contains(date2) && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10)) {
             if (monthInInt2 == 1) {
                 monthInInt2 = 7;
             } else if (monthInInt2 == 4) {
@@ -309,16 +321,29 @@ public class GraphHandlerActivity extends BaseActivity {
             }*/
 
             //Taking Next Quarter e.g 6 july then we will show upto 1 october not till 1 july only
-            if (monthInInt2 <= 3) {
-                monthInInt2 = 7;
-            } else if (monthInInt2 <= 6) {
-                monthInInt2 = 10;
-            } else if (monthInInt2 <= 9) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
-            } else if (monthInInt2 <= 12) {
-                monthInInt2 = 4;
-                yearInInt2 = yearInInt2 + 1;
+            if (dayInInt2 == 1 && (monthInInt1 == 1 || monthInInt1 == 4 || monthInInt1 == 7 || monthInInt1 == 10)) {
+                if (monthInInt2 == 1) {
+                    monthInInt2 = 4;
+                } else if (monthInInt2 == 4) {
+                    monthInInt2 = 7;
+                } else if (monthInInt2 == 7) {
+                    monthInInt2 = 10;
+                } else if (monthInInt2 == 10) {
+                    monthInInt2 = 1;
+                    yearInInt2 = yearInInt2 + 1;
+                }
+            } else {
+                if (monthInInt2 <= 3) {
+                    monthInInt2 = 7;
+                } else if (monthInInt2 <= 6) {
+                    monthInInt2 = 10;
+                } else if (monthInInt2 <= 9) {
+                    monthInInt2 = 1;
+                    yearInInt2 = yearInInt2 + 1;
+                } else if (monthInInt2 <= 12) {
+                    monthInInt2 = 4;
+                    yearInInt2 = yearInInt2 + 1;
+                }
             }
         }
 
@@ -405,14 +430,14 @@ public class GraphHandlerActivity extends BaseActivity {
         int dateInInt2 = Integer.parseInt(dayInString2);
         int monthInInt2 = Integer.parseInt(monthInString2);
         int yearInInt2 = Integer.parseInt(yearInString2);
-        if(dateInInt2 == 1 && (monthInInt2 == 7 || monthInInt2 == 1)){
+        if (dateInInt2 == 1 && (monthInInt2 == 7 || monthInInt2 == 1)) {
             if (monthInInt2 == 7) {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
             } else {
                 monthInInt2 = 7;
             }
-        }else{
+        } else {
             if (monthInInt2 <= 6) {
                 monthInInt2 = 1;
                 yearInInt2 = yearInInt2 + 1;
@@ -472,9 +497,9 @@ public class GraphHandlerActivity extends BaseActivity {
         int yearInInt2 = Integer.parseInt(yearInString2);
 
 
-        if(dayInInt2 == 1 && monthInInt2 == 1){
+        if (dayInInt2 == 1 && monthInInt2 == 1) {
             yearInInt2 = yearInInt2 + 1;    //For current year
-        }else{
+        } else {
             yearInInt2 = yearInInt2 + 2;    //For next year
         }
         date2 = "01/01/" + yearInInt2;
@@ -536,436 +561,6 @@ public class GraphHandlerActivity extends BaseActivity {
             }
         }
         return result;
-    }
-
-    protected JSONArray getJsonForMonthlyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy(String date1, String date2) {
-
-        boolean isFirstDateOfMonth = false;
-
-        String lastDate0fMonth = null ;
-        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-        Date rangeFromMonth =null ;
-        Date rangeToMonth = null ;
-        Date firstdateofmonth = null ;
-        Date lastdateofmonth = null ;
-        try {
-            rangeFromMonth = formater.parse(date1);
-            rangeToMonth = formater.parse(date2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String dateArray[] = date1.split("/");
-        String dayInString = dateArray[0];
-        String monthInString = dateArray[1];
-        String yearInString = dateArray[2];
-        int dayInInt = Integer.parseInt(dayInString);
-        int monthInInt = Integer.parseInt(monthInString);
-        int yearInInt = Integer.parseInt(yearInString);
-       /* if (dayInInt == 1) {  //Not going to back one month if it is month's initial date
-            if (monthInInt == 1) {
-                monthInInt = 12;
-                yearInInt = yearInInt - 1;
-            } else {
-                monthInInt = monthInInt - 1;
-            }
-        }*/
-        if(monthInInt < 10){
-            date1 = "01/0" + monthInInt + "/" + yearInInt;
-
-        }else{
-            date1 = "01/" + monthInInt + "/" + yearInInt;
-        }
-
-        String dateArray2[] = date2.split("/");
-        String dayInString2 = dateArray2[0];
-        String monthInString2 = dateArray2[1];
-        String yearInString2 = dateArray2[2];
-        int monthInInt2 = Integer.parseInt(monthInString2);
-        int yearInInt2 = Integer.parseInt(yearInString2);
-        //int mont = Integer.parseInt(month);
-        if (isLastDateOfMonth(date2)) {
-            if (monthInInt2 == 12) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
-            } else if (monthInInt2 == 11) {
-                monthInInt2 = 12;
-            } else {
-                monthInInt2 = monthInInt2 + 1;
-            }
-        } else {
-            if (monthInInt2 == 12) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
-            } else {
-                monthInInt2 = monthInInt2 + 1;
-            }
-        }
-
-        if(monthInInt2 <10 ){
-            date2 = "01/0" + monthInInt2 + "/" + yearInInt2;
-
-        }else{
-            date2 = "01/" + monthInInt2 + "/" + yearInInt2;
-        }
-
-
-        Calendar endOfMonthDate = Calendar.getInstance();
-        endOfMonthDate.setTime(rangeToMonth);
-        endOfMonthDate.set(Calendar.DAY_OF_MONTH, endOfMonthDate.getActualMaximum(Calendar.DAY_OF_MONTH));
-        lastDate0fMonth = formater.format(endOfMonthDate.getTime()) ;
-
-        Calendar beforePresentMonth = Calendar.getInstance();
-        Calendar afterEndMonth = Calendar.getInstance();
-        try {
-            firstdateofmonth =  formater.parse(date1);
-            lastdateofmonth =  formater.parse(lastDate0fMonth);
-            beforePresentMonth.setTime(formater.parse(date1));
-            afterEndMonth.setTime(formater.parse(date2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        beforePresentMonth.add(Calendar.MONTH, -1);
-        afterEndMonth.add(Calendar.MONTH, +1);
-        Calendar beginCalendar = Calendar.getInstance();
-        Calendar finishCalendar = Calendar.getInstance();
-        try {
-            beginCalendar.setTime(formater.parse(date1));
-            finishCalendar.setTime(formater.parse(date2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        JSONArray jsonArray = new JSONArray();
-        if(mDateList.contains(date1) && rangeFromMonth == firstdateofmonth ){
-
-                String dateInString = formater.format(beforePresentMonth.getTime()).toUpperCase();
-            Date date = null;
-                try {
-                    date = formater.parse(dateInString);
-                    Log.i("monthly", "monthly: " + date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                long epoch = date.getTime();
-            jsonArray.put(epoch);
-        }
-
-        while (beginCalendar.before(finishCalendar)) {
-            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
-            Log.i("ayaz", "Date: " + dateInString);
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("monthly", "monthly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            jsonArray.put(epoch);
-            beginCalendar.add(Calendar.MONTH, 1);
-        }
-
-        if(mDateList.contains(date2) && rangeToMonth == lastdateofmonth){
-
-            String dateInString = formater.format(afterEndMonth.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("monthly", "monthly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            jsonArray.put(epoch);
-        }
-        return jsonArray;
-               /* // from first-1 to last+1
-
-        String dateArray[] = date1.split("/");
-
-        String monthInString = dateArray[1];
-
-        String yearInString = dateArray[2];
-
-        int monthInInt = Integer.parseInt(monthInString);
-
-        int yearInInt = Integer.parseInt(yearInString);
-
-        //int mont = Integer.parseInt(month);
-
-        if (monthInInt == 1) {
-
-            monthInInt = 12;
-
-            yearInInt = yearInInt - 1;
-
-        } else {
-
-            monthInInt = monthInInt - 1;
-
-            ;
-
-        }
-
-        date1 = "01/" + monthInInt + "/" + yearInInt;
-
-
-        String dateArray2[] = date2.split("/");
-
-        String monthInString2 = dateArray2[1];
-
-        String yearInString2 = dateArray2[2];
-
-        int monthInInt2 = Integer.parseInt(monthInString2);
-
-        int yearInInt2 = Integer.parseInt(yearInString2);
-
-        //int mont = Integer.parseInt(month);
-
-        if (monthInInt2 == 12) {
-
-            monthInInt2 = 2;
-
-            yearInInt2 = yearInInt2 + 1;
-
-        } else if (monthInInt2 == 11) {
-
-            monthInInt2 = 1;
-
-            yearInInt2 = yearInInt2 + 1;
-
-        } else {
-
-            monthInInt2 = monthInInt2 + 2;
-
-        }
-
-
-        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
-
-    }
-
-    protected JSONArray getJsonForQuaterlyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy(String date1, String date2) {
-
-        Date RangeToQuarter = null;  // set RangeFrom date of quarter
-        Date RangeFromQuarter = null;   // set RangeTo date of quarter
-        Date intialDateofFirstQuarter = null;       // First Date of the month
-        Date lastDateofFirstQuarter = null;         // Last date of the month
-        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-
-        try {
-            RangeFromQuarter = formater.parse(date1);
-            RangeToQuarter = formater.parse(date2);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        String dateArray1[] = date1.split("/");
-        String dayInString1 = dateArray1[0];
-        String monthInString1 = dateArray1[1];
-        String yearInString1 = dateArray1[2];
-        int dayInInt1 = Integer.parseInt(dayInString1);
-        int monthInInt1 = Integer.parseInt(monthInString1);
-        int yearInInt1 = Integer.parseInt(yearInString1);
-        if (dayInInt1 == 1) {
-            if (monthInInt1 == 1) {
-                monthInInt1 = 12;
-                yearInInt1 = yearInInt1 - 1;
-            } else if (monthInInt1 == 4) {
-                monthInInt1 = 1;
-            } else if (monthInInt1 == 07) {
-                monthInInt1 = 4;
-            } else if (monthInInt1 == 10) {
-                monthInInt1 = 7;
-            }
-        }
-
-        if (monthInInt1 < 10) {
-            date1 = "01/0" + monthInInt1 + "/" + yearInInt1;
-        } else {
-            date1 = "01/" + monthInInt1 + "/" + yearInInt1;
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-        String dateArray2[] = date2.split("/");
-        String monthInString2 = dateArray2[1];
-        String yearInString2 = dateArray2[2];
-        int monthInInt2 = Integer.parseInt(monthInString2);
-        int yearInInt2 = Integer.parseInt(yearInString2);
-
-        if (isLastDateOfMonth(date2)) {
-            if (monthInInt2 <= 3) {
-                monthInInt2 = 7;
-            } else if (monthInInt2 <= 6) {
-                monthInInt2 = 10;
-            } else if (monthInInt2 <= 9) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
-            } else if (monthInInt2 <= 12) {
-                monthInInt2 = 4;
-                yearInInt2 = yearInInt2 + 1;
-            }
-        } else {
-            if (monthInInt2 <= 3) {
-                monthInInt2 = 4;
-            } else if (monthInInt2 <= 6) {
-                monthInInt2 = 7;
-            } else if (monthInInt2 <= 9) {
-                monthInInt2 = 10;
-            } else if (monthInInt2 <= 12) {
-                monthInInt2 = 1;
-                yearInInt2 = yearInInt2 + 1;
-            }
-        }
-
-        if (monthInInt2 < 10) {
-            date2 = "01/0" + monthInInt2 + "/" + yearInInt2;
-        } else {
-            date2 = "01/" + monthInInt2 + "/" + yearInInt2;
-        }
-
-        Calendar beforeQuarterMonth = Calendar.getInstance();
-        Calendar afterQuarterMonth = Calendar.getInstance();
-        Calendar beginCalendar = Calendar.getInstance();
-        Calendar finishCalendar = Calendar.getInstance();
-        try {
-
-            intialDateofFirstQuarter = formater.parse(date1);
-            beginCalendar.setTime(formater.parse(date1));
-            finishCalendar.setTime(formater.parse(date2));
-            beforeQuarterMonth.setTime(formater.parse(date1));
-            afterQuarterMonth.setTime(formater.parse(date2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        beforeQuarterMonth.add(Calendar.MONTH, -4);
-        afterQuarterMonth.add(Calendar.MONTH, +4);
-        Calendar endOfMonthDate = Calendar.getInstance();
-        endOfMonthDate.setTime(RangeToQuarter);
-        endOfMonthDate.set(Calendar.DAY_OF_MONTH, endOfMonthDate.getActualMaximum(Calendar.DAY_OF_MONTH));
-        String lastDateofMonth = formater.format(endOfMonthDate.getTime());
-        try {
-            lastDateofFirstQuarter = formater.parse(lastDateofMonth);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        JSONArray jsonArray = new JSONArray();
-        if (mDateList.contains(date1) && intialDateofFirstQuarter == RangeFromQuarter) {   // comparing : firstdateofselectedmonth with Rangefromdate
-            String dateInString = formater.format(beforeQuarterMonth.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("monthly", "monthly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            jsonArray.put(epoch);
-        }
-        while (beginCalendar.before(finishCalendar)) {
-            String dateInString = formater.format(beginCalendar.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("quaterly", "quaterly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            // JSONArray innerJsonArray = new JSONArray();
-            jsonArray.put(epoch);
-            // jsonArray.put(innerJsonArray);
-            beginCalendar.add(Calendar.MONTH, 3);
-        }
-        if (mDateList.contains(date2) && lastDateofFirstQuarter == RangeToQuarter) {    // comparing : firstdateofselectedmonth with Rangefromdate
-
-            String dateInString = formater.format(afterQuarterMonth.getTime()).toUpperCase();
-            Date date = null;
-            try {
-                date = formater.parse(dateInString);
-                Log.i("monthly", "monthly: " + date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long epoch = date.getTime();
-            jsonArray.put(epoch);
-        }
-        return jsonArray;
-
-                /* //One previous and one later quater is Included
-
-        String dateArray1[] = date1.split("/");
-
-        String monthInString1 = dateArray1[1];
-
-        String yearInString1 = dateArray1[2];
-
-        int monthInInt1 = Integer.parseInt(monthInString1);
-
-        int yearInInt1 = Integer.parseInt(yearInString1);
-
-        if (monthInInt1 <= 3) {
-
-            monthInInt1 = 10;
-
-            yearInInt1 = yearInInt1 - 1;
-
-        } else if (monthInInt1 <= 6) {
-
-            monthInInt1 = 1;
-
-        } else if (monthInInt1 <= 9) {
-
-            monthInInt1 = 4;
-
-        } else if (monthInInt1 <= 12) {
-
-            monthInInt1 = 7;
-
-        }
-
-        date1 = "01/" + monthInInt1 + "/" + yearInInt1;
-
-        ///////////////////////////////////////////////////////////////////////
-
-
-        String dateArray2[] = date2.split("/");
-
-        String monthInString2 = dateArray2[1];
-
-        String yearInString2 = dateArray2[2];
-
-        int monthInInt2 = Integer.parseInt(monthInString2);
-
-        int yearInInt2 = Integer.parseInt(yearInString2);
-
-
-        if (monthInInt2 <= 3) {
-
-            monthInInt2 = 07;
-
-        } else if (monthInInt2 <= 6) {
-
-            monthInInt2 = 10;
-
-        } else if (monthInInt2 <= 9) {
-
-            monthInInt2 = 1;
-
-            yearInInt2 = yearInInt2 + 1;
-
-        } else if (monthInInt2 <= 12) {
-
-            monthInInt2 = 4;
-
-            yearInInt2 = yearInInt2 + 1;
-
-        }
-
-        date2 = "01/" + monthInInt2 + "/" + yearInInt2;*/
-
     }
 
 }
