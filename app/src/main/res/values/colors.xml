@@ -101,6 +101,7 @@
     <color name="text_color_blue">#4180AB</color>
     <color name="sign_in_gray_color">#9fa1a2</color>
     <color name="sign_in_blue_color">#01c8cd</color>
+    <color name="sign_in_fb_blue_color">#3a579b</color>
 
 
 </resources>

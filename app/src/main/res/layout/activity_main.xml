@@ -34,9 +34,9 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
+                android:text="use your registered email id / Facebook and jump right in!"
                 android:textColor="@color/sign_in_gray_color"
-                android:textSize="13dp"
-                android:text="use your registered email id / Facebook and jump right in!" />
+                android:textSize="16dp" />
 
             <EditText
                 android:id="@+id/etSubject"
@@ -94,7 +94,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/forgot"
                     android:textColor="@color/sign_in_blue_color"
-                    android:textSize="14sp" />
+                    android:textSize="14dp" />
             </RelativeLayout>
 
             <Button
@@ -114,7 +114,8 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/sign_signup_button_design"
                 android:text="Sign in"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -123,16 +124,30 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:text="OR"
-                android:textSize="16sp" />
+                android:textSize="15dp" />
 
-            <Button
-                android:id="@+id/authButton"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@drawable/sign_signup_button_design"
-                android:drawableLeft="@drawable/fb"
-                android:text="Login with Facebook"
-                android:textColor="@color/white" />
+                android:background="@drawable/sign_in_sign_up_fb_bg"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/fb" />
+
+                <Button
+                    android:id="@+id/authButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Login with Facebook"
+                    android:background="@null"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -145,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/donot_have_an_account"
-                    android:textSize="16sp" />
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/sign_up_tv"
@@ -153,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/sign_up"
                     android:textColor="@color/sign_in_blue_color"
-                    android:textSize="16sp" />
+                    android:textSize="14dp" />
             </LinearLayout>
 
 
