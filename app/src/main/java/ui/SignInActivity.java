@@ -43,8 +43,9 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mDisclaimerInformation, mTerms;
+    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mDisclaimerInformation;
     private int mPatientBussinessFlag;
+    private boolean mTerms;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,6 +114,8 @@ public class SignInActivity extends BaseActivity {
     }
 
     private JSONObject loginApiSendData, loginApiReceivedData;
+    private boolean iSToShowSignInErrorMessage;
+    private String mDAsString;
 
     private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
@@ -147,10 +150,10 @@ public class SignInActivity extends BaseActivity {
             StaticHolder staticobj = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewLogIn, loginApiSendData);
             loginApiReceivedData = mServices.NewLogInApi(loginApiSendData);
             if (loginApiReceivedData != null) {
-                String dAsString = loginApiReceivedData.optString("d");
+                mDAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;
                 try {
-                    jsonObject = new JSONObject(dAsString);
+                    jsonObject = new JSONObject(mDAsString);
                     JSONArray tableArray = jsonObject.optJSONArray("Table");
                     if (tableArray != null) {
                         JSONObject innerJsonObject = tableArray.optJSONObject(0);
@@ -164,9 +167,9 @@ public class SignInActivity extends BaseActivity {
                         mLastName = innerJsonObject.optString("LastName");
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mDisclaimerInformation = innerJsonObject.optString("disclaimerInformation");
-                        mTerms = innerJsonObject.optString("Terms");
+                        mTerms = innerJsonObject.optBoolean("Terms");
                     } else {
-                       showAlertMessage(dAsString);
+                        iSToShowSignInErrorMessage = true;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -179,6 +182,13 @@ public class SignInActivity extends BaseActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
+            if (iSToShowSignInErrorMessage) {
+                showAlertMessage(mDAsString);
+            }
+            if (mTerms) {
+             //Show Terms and condition
+            }
+
         }
     }
 
