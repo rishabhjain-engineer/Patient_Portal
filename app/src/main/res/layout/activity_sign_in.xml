@@ -75,7 +75,7 @@
             android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sign_in_button_text_height"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/sign_signup_button_design"
             android:text="Sign in"
             android:textColor="@color/white"
@@ -95,13 +95,13 @@
             android:id="@+id/sign_in_fb_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sign_in_button_text_height"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/sign_in_sign_up_fb_bg"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="20dp"
+                android:layout_width="15dp"
                 android:layout_height="25dp"
                 android:src="@drawable/fb" />
 
@@ -109,6 +109,7 @@
                 android:id="@+id/sign_in_fb_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
                 android:background="@null"
                 android:text="Login with Facebook"
                 android:textColor="@color/white"
