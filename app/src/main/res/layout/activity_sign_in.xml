@@ -33,13 +33,13 @@
 
 
         <EditText
-            android:id="@+id/singn_in_email_et"
+            android:id="@+id/singn_in_user_et"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sign_in_edit_text_height"
             android:layout_marginTop="20dp"
             android:background="@drawable/login_edit_text_style"
             android:gravity="center"
-            android:hint="Email"
+            android:hint="User Name"
             android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/create_account_tv_color"

@@ -12,11 +12,11 @@ import java.util.HashMap;
 
 public class StaticHolder {
 
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+   // public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
-    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
@@ -411,20 +411,20 @@ public class StaticHolder {
                 url = BASE_URL + "GetQuizData";
                 break;
             case GetVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
             case UpdatePatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                //https://api.healthscion.com/WebServices/LabService.asmx/
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
 
             case InsertIntoPatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-
-                //url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
+
+            case NewLogIn:
+                url = BASE_URL + "NewLogIn";
+                break;
+
 
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
@@ -456,7 +456,7 @@ public class StaticHolder {
     }
 
     public enum Services_static {
-        LogIn, IsUserAuthenticated, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
+        LogIn,NewLogIn, IsUserAuthenticated, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
         LogOutIOS, ChangePasswordIOS, Register, GetUserDisclaimer, FacebookLinked, FacebookLoginMobile,
         FacebookUnLinked, GetUserDeatils, ForgotPassword, NeedHelp, CheckEmailIdIsExistMobile,
         PatientDisclaimer, EmailIdExistFacebook, GetUserCodeFromEmail, SignUpByPatient,

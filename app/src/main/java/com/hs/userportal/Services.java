@@ -1301,4 +1301,12 @@ public class Services {
 
     }
 
+    public JSONObject NewLogInApi(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.NewLogIn);
+        String url = staticHolder.request_Url();
+        JSONObject jsonObjectResponse = common(sendData, url);
+        return jsonObjectResponse;
+
+    }
+
 }
