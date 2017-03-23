@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -239,6 +240,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
             }
 
+
+
             mFilteredGraphDetailValueAndDateList.clear();
 
             if (mFormEpocDate > 0) {
@@ -260,7 +263,9 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 mFilteredGraphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>(graphDetailValueAndDateList);
             }
         }
-
+        //Collections.sort(mFilteredGraphDetailValueAndDateList);
+        //Collections.sort(mFilteredGraphDetailValueAndDateList, new GraphDetailValueAndDate.GraphDetailValueAndDateComparator());
+        sortListByDate(mFilteredGraphDetailValueAndDateList);
         JSONArray jsonArray1 = new JSONArray();
         for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
 
@@ -718,6 +723,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getRangeFrom() {
+
             return (int)mRangeFromInDouble;
         }
 
@@ -751,6 +757,39 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             Log.e("ayaz", "max: graphdetail "+mDateMaxValue);
             return mDateMaxValue;
         }
+
+        @JavascriptInterface
+        public boolean getUserInteractiveGuidline() {
+                return false;
+            }
+    }
+
+    private static List<GraphDetailValueAndDate> sortListByDate(List<GraphDetailValueAndDate> list) {
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i; j < list.size(); j++) {
+                try {
+                    String first = list.get(i).getDate();
+                    String second = list.get(j).getDate();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date1 = simpleDateFormat.parse(first);
+                    Date date2 = simpleDateFormat.parse(second);
+
+                    if (date1.compareTo(date2) < 0) {//it means first is greater than second
+                        GraphDetailValueAndDate firstitem = list.get(i);
+                        GraphDetailValueAndDate seconditem = list.get(j);
+                        //swap position first with second
+                        list.add(i, seconditem);
+                        list.add(j, firstitem);
+                        list.remove(i + 1);
+                        list.remove(j + 1);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
 }

@@ -106,6 +106,7 @@ public class VaccineEditActivity extends BaseActivity {
         TextView vaccineAbreviationTv = (TextView) findViewById(R.id.vaccine_abreviation);
         TextView doseTv = (TextView) findViewById(R.id.dose);
         TextView doseTypeTv = (TextView) findViewById(R.id.dose_type);
+        TextView doseFrequencyTv = (TextView) findViewById(R.id.dose_frequency);
         TextView commentTv = (TextView) findViewById(R.id.comments);
         mDateEditText = (EditText) findViewById(R.id.date_edit_text);
         mNoteEditText = (EditText) findViewById(R.id.comment_edit_text);
@@ -119,6 +120,7 @@ public class VaccineEditActivity extends BaseActivity {
         String dose = intent.getStringExtra("Dose");
         String doseType = intent.getStringExtra("DoseType");
         String notes = intent.getStringExtra("DoctorNotes");
+        String doseFrequency = intent.getStringExtra("doseFrequency");
         String comments = intent.getStringExtra("comment");
         String agAt = intent.getStringExtra("AgeAt");
         String ageTo = intent.getStringExtra("AgeTo");
@@ -147,19 +149,39 @@ public class VaccineEditActivity extends BaseActivity {
         }
 
         if (!TextUtils.isEmpty(name)) {
-            nameTv.setText("Vaccine Name: " + name);
+            nameTv.setText("Vaccine For: " + name);
+        }else{
+            nameTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(abbreviationName)) {
-            vaccineAbreviationTv.setText("Vaccine Type: " + abbreviationName);
+            vaccineAbreviationTv.setText("Vaccine: " + abbreviationName);
+        }else{
+            vaccineAbreviationTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(dose)) {
             doseTv.setText("Dose: " + dose);
+        }else{
+            doseTv.setVisibility(View.GONE);
         }
+
         if (!TextUtils.isEmpty(doseType)) {
             doseTypeTv.setText("Dose Type: " + doseType);
+        }else{
+            doseTypeTv.setVisibility(View.GONE);
         }
+
+        if (!TextUtils.isEmpty(doseFrequency)) {
+            doseFrequencyTv.setText("Dose Frequency: " + doseFrequency);
+        }else{
+            doseFrequencyTv.setVisibility(View.GONE);
+        }
+
         if (!TextUtils.isEmpty(comments)) {
             commentTv.setText("Comments: " + comments);
+        }else{
+            commentTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(date)) {

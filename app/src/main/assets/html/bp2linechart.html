@@ -72,6 +72,7 @@
   }];
 
   var values = JSON.parse(Interface.passDataToHtml());
+  var max = Interface.getMaxData();
   var angle = Interface.getRotationAngle();
   var dateformat = Interface.getDateFormat();
   var ticket = JSON.parse(Interface.getTickValues());
@@ -89,6 +90,7 @@
                 .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!
                 .showLegend(true)
                 .showYAxis(true)
+                .forceY([0, max])
                 //.forceY([50, 500])
                 //.forceY([0, 100])
                  .forceX([startdate,enddate])

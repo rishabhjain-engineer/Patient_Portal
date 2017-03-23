@@ -117,9 +117,9 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String HM = family_object.get(position).get("HM");
                 if (family_object.get(position).get("IsApproved").equals("true") && HM.equals("2")) {
-                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                    /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                    }else{
+                    }else{*/
                         Intent i = new Intent(MyFamily.this, lablistdetails.class);
                         logout.id = family_object.get(position).get("FamilyMemberId");
                         i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
@@ -128,7 +128,7 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                         i.putExtra("family", members);
                         startActivity(i);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
+                    //}
                 } else {
                     //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
                 }

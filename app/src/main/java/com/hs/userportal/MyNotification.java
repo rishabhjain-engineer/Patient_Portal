@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 
 public class MyNotification extends BaseActivity {
@@ -43,7 +45,7 @@ public class MyNotification extends BaseActivity {
     private ListView notifications;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> noti = new ArrayList<String>();
-    private String usid, user, cont, code, mailid;
+    private String usid, user, contactNumber, PhCode, mailid;
     private Services service;
     private JSONObject sendData, receiveData;
     private TextView nonoti;
@@ -58,8 +60,8 @@ public class MyNotification extends BaseActivity {
         // Receiving the Data i.e. I.D.
         usid = i.getStringExtra("userid");
         user = i.getStringExtra("userName");
-        cont = i.getStringExtra("ContactNo");
-        code = i.getStringExtra("patientcode");
+        contactNumber = i.getStringExtra("ContactNo");
+        PhCode = i.getStringExtra("patientcode");
         mailid = i.getStringExtra("UserMailId");
 
         setContentView(R.layout.mynotification);
@@ -107,7 +109,12 @@ public class MyNotification extends BaseActivity {
 
                         e.printStackTrace();
                     }
-                    new MyAsynckTask(sendData, true, false).execute();
+
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(getApplicationContext(), "No internet connection,Plese try again", Toast.LENGTH_SHORT).show();
+                    } else {
+                        new MyAsynckTask(sendData, true, false).execute();
+                    }
                 }
 
                 if (selectedFromList.equals("Resend Verification code to registered phone")) {
@@ -116,6 +123,7 @@ public class MyNotification extends BaseActivity {
                     alertDialog.setTitle("Phone Number Verification");
                     alertDialog.setMessage("Please enter the verification code sent to you on your registered mobile number.");
                     final EditText input = new EditText(MyNotification.this);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     lp.leftMargin = 15;
                     lp.rightMargin = 15;
@@ -128,11 +136,13 @@ public class MyNotification extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
                                 Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                            } else if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                Toast.makeText(getApplicationContext(), "No internet connection,Plese try again", Toast.LENGTH_SHORT).show();
                             } else {
                                 sendData = new JSONObject();
                                 try {
                                     sendData.put("code", input.getText().toString());
-                                    sendData.put("patientcode", code);
+                                    sendData.put("patientcode", PhCode);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -144,7 +154,6 @@ public class MyNotification extends BaseActivity {
                     alertDialog.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.i("ayaz", "Cancel is Clicked");
                                     dialog.cancel();
                                 }
                             });
@@ -155,19 +164,21 @@ public class MyNotification extends BaseActivity {
                                     sendData = new JSONObject();
                                     if (TextUtils.isEmpty(input.getEditableText().toString().trim())) {
                                         Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                                    } else if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                        Toast.makeText(getApplicationContext(), "No internet connection,Plese try again", Toast.LENGTH_SHORT).show();
                                     } else {
                                         try {
-                                      /*  sendData.put("userid", usid);
-                                        sendData.put("userName", user);
-                                        sendData.put("userRole", "Patient");
-                                        sendData.put("UserMailId", "");
-                                        sendData.put("ContactNo", Helper.resend_sms);*/
-                                            sendData.put("code", input.getText().toString());
-                                            sendData.put("patientcode", code);
+                                            sendData.put("userid", usid);
+                                            sendData.put("userName", user);
+                                            sendData.put("userRole", "Patient");
+                                            sendData.put("UserMailId", "");
+                                            sendData.put("ContactNo", input.getEditableText().toString().trim());
+                                           /* sendData.put("code", input.getText().toString());
+                                            sendData.put("patientcode", PhCode);*/
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        new MyAsynckTask(sendData, false, true).execute();
+                                        new MyAsynckTask(sendData, true, false).execute();
                                     }
                                 }
 
@@ -183,7 +194,7 @@ public class MyNotification extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       // getMenuInflater().inflate(R.menu.home, menu);
+        // getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
@@ -212,51 +223,30 @@ public class MyNotification extends BaseActivity {
 
     @Override
     protected void onPause() {
-        this.unregisterReceiver(this.mConnReceiver);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         super.onResume();
     }
 
-    private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            boolean noConnectivity = intent.getBooleanExtra(
-                    ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            String reason = intent
-                    .getStringExtra(ConnectivityManager.EXTRA_REASON);
-            boolean isFailover = intent.getBooleanExtra(
-                    ConnectivityManager.EXTRA_IS_FAILOVER, false);
-
-            NetworkInfo currentNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-            NetworkInfo otherNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-
-            if (!currentNetworkInfo.isConnected()) {
-                Toast.makeText(MyNotification.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
 
     private class MyAsynckTask extends AsyncTask<Void, Void, Void> {
         JSONObject dataToSend;
-        boolean verifyEmail, verifysms;
+        boolean verifyEmailORResenOtp, verifyOtp;
 
         MyAsynckTask(JSONObject jsonObject, boolean verifyEmail, boolean verifysms) {
             dataToSend = jsonObject;
-            this.verifyEmail = verifyEmail;
-            this.verifysms = verifysms;
+            this.verifyEmailORResenOtp = verifyEmail;
+            this.verifyOtp = verifysms;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (verifyEmail) {
+            if (verifyEmailORResenOtp) {
                 service.verifyemail(dataToSend);
-            } else if (verifysms) {
+            } else if (verifyOtp) {
                 receiveData = service.verifysms(sendData);
             }
 
@@ -266,9 +256,9 @@ public class MyNotification extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (verifyEmail) {
-                Toast.makeText(getApplicationContext(), "SMS sent successfully.", Toast.LENGTH_SHORT).show();
-            } else if (verifysms) {
+            if (verifyEmailORResenOtp) {
+                Toast.makeText(getApplicationContext(), "Operation performed successfully.", Toast.LENGTH_SHORT).show();
+            } else if (verifyOtp) {
                 String data, verify;
                 try {
                     data = receiveData.getString("d");
