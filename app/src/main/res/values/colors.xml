@@ -104,6 +104,7 @@
     <color name="sign_in_fb_blue_color">#3a579b</color>
     <color name="sign_in_edit_bg">#f7f7f9</color>
     <color name="sign_in_edit_bg_hint">#b3bcc1</color>
+    <color name="create_account_tv_color">#696870</color>
 
 
 </resources>

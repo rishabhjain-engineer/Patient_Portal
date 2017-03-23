@@ -53,4 +53,7 @@
     <string name="file_extension_text"><![CDATA[File extension should be \u2022png, \u2022jpg, \u2022bmp, \u2022gif, \u2022pdf, \u2022doc, \u2022docx, \u2022xls, \u2022xlsx. File name and size should be less than 99 characters and 10 MB respectively.]]></string>
     <string name="donot_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">&#160;Sign Up</string>
+    <string name="sign_in">&#160;Sign in</string>
+    <string name="let_started_text">Let\'s get you started in few clicks.</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
