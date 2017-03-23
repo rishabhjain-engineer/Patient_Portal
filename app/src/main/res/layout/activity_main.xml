@@ -13,8 +13,6 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:orientation="vertical">
 
             <ImageView
@@ -34,43 +32,34 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="use your registered email id / Facebook and jump right in!"
+                android:text="use your registered email id/Facebook and jump right in!"
                 android:textColor="@color/sign_in_gray_color"
                 android:textSize="16dp" />
 
+
             <EditText
                 android:id="@+id/etSubject"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/register_edittextnew"
-                android:drawableLeft="@drawable/user"
-                android:drawablePadding="15dp"
-                android:ems="10"
-                android:hint="Username"
-                android:paddingBottom="8dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="8dp"
-                android:singleLine="true"
-                android:textColorHint="#DBDBDB" />
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/login_edit_text_style"
+                android:ellipsize="start"
+                android:gravity="center"
+                android:hint="Search text"
+                android:inputType="text"
+                android:textColorHint="@color/sign_in_edit_bg_hint" />
+
 
             <EditText
                 android:id="@+id/etContact"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/register_edittextnew"
-                android:drawableLeft="@drawable/password"
-                android:drawablePadding="15dp"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:paddingBottom="8dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="8dp"
-                android:singleLine="true"
-                android:textColorHint="#DBDBDB"></EditText>
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/login_edit_text_style"
+                android:ellipsize="start"
+                android:gravity="center"
+                android:hint="Search text"
+                android:inputType="text"
+                android:textColorHint="@color/sign_in_edit_bg_hint" />
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -110,7 +99,7 @@
             <Button
                 android:id="@+id/bSend"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/sign_in_button_text_height"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/sign_signup_button_design"
                 android:text="Sign in"
@@ -129,7 +118,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/sign_in_button_text_height"
                 android:background="@drawable/sign_in_sign_up_fb_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -143,8 +132,8 @@
                     android:id="@+id/authButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Login with Facebook"
                     android:background="@null"
+                    android:text="Login with Facebook"
                     android:textColor="@color/white"
                     android:textSize="16dp" />
             </LinearLayout>

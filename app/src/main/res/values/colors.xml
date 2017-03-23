@@ -99,9 +99,11 @@
     <color name="gray_medium">#E5E5E5</color>
     <color name="header_color">#1da17f</color>
     <color name="text_color_blue">#4180AB</color>
-    <color name="sign_in_gray_color">#9fa1a2</color>
+    <color name="sign_in_use_your_gray_color">#9fa1a2</color>
     <color name="sign_in_blue_color">#01c8cd</color>
     <color name="sign_in_fb_blue_color">#3a579b</color>
+    <color name="sign_in_edit_bg">#f7f7f9</color>
+    <color name="sign_in_edit_bg_hint">#b3bcc1</color>
 
 
 </resources>
