@@ -1,22 +1,17 @@
 package ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -25,19 +20,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hs.userportal.Helper;
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
-import com.hs.userportal.logout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
@@ -54,13 +43,15 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
+    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mDisclaimerInformation, mTerms;
+    private int mPatientBussinessFlag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        setupActionBar();
-        mActionBar.hide();
+        //setupActionBar();
+        // mActionBar.hide();
         mServices = new Services(SignInActivity.this);
 
         getViewObject();
@@ -117,15 +108,17 @@ public class SignInActivity extends BaseActivity {
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USERNAME, userName);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, passWord);
-            new SignInActivity.NewLogInAsymc().execute();
+            new SignInActivity.NewLogInAsync().execute();
         }
     }
 
     private JSONObject loginApiSendData, loginApiReceivedData;
-    private class NewLogInAsymc extends AsyncTask<Void, Void, Void> {
+
+    private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         String userName = "";
         String passWord = "", buildNo;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -142,19 +135,56 @@ public class SignInActivity extends BaseActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
+            loginApiSendData = new JSONObject();
+            try {
+                loginApiSendData.put("UserName", userName);
+                loginApiSendData.put("Password", passWord);
+                loginApiSendData.put("applicationType", "Mobile");
+                loginApiSendData.put("browserType", buildNo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            StaticHolder staticobj = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewLogIn, loginApiSendData);
+            loginApiReceivedData = mServices.NewLogInApi(loginApiSendData);
+            if (loginApiReceivedData != null) {
+                String dAsString = loginApiReceivedData.optString("d");
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(dAsString);
+                    JSONArray tableArray = jsonObject.optJSONArray("Table");
+                    if (tableArray != null) {
+                        JSONObject innerJsonObject = tableArray.optJSONObject(0);
+                        mUserId = innerJsonObject.optString("UserId");
+                        mPatientCode = innerJsonObject.optString("PatientCode");
+                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessFlag");
+                        mRoleName = innerJsonObject.optString("RoleName");
+                        mFirstName = innerJsonObject.optString("FirstName");
+                        mMiddleName = innerJsonObject.optString("MiddleName");
+                        mLastName = innerJsonObject.optString("LastName");
+                        mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                        mDisclaimerInformation = innerJsonObject.optString("disclaimerInformation");
+                        mTerms = innerJsonObject.optString("Terms");
+                    } else {
+                       showAlertMessage(dAsString);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             return null;
-
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            progress.dismiss();
         }
     }
 
 
-
     private String mForgotEmailRrPhoneNo;
+
     private void showForgotAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignInActivity.this);
         alertDialog.setTitle("Forgot Password");
@@ -192,7 +222,7 @@ public class SignInActivity extends BaseActivity {
     private AlertDialog mForgotAlertDialog;
     private boolean multipleLinked;
 
-    private  class ForgotPasswordAsync extends AsyncTask<Void, Void, Void> {
+    private class ForgotPasswordAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
