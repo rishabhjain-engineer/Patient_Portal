@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,7 +63,7 @@ public class SignUpActivity extends BaseActivity {
 
     private AccessTokenTracker mAccessTokenTracker;
     private Button mSignUpBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect;
+    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false;
     private CallbackManager mCallbackManager;
     private EditText mSignUpUserEt, mSignUpContactNoEt, mSignUpPasswordEt;
     private FacebookCallback<LoginResult> mCallback;
@@ -141,6 +142,15 @@ public class SignUpActivity extends BaseActivity {
         mFacebookWidgetLoginButton = (LoginButton) findViewById(R.id.facebook_widget_btn);
 
 
+        mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    mobileNumberVaildInput() ;
+                }
+            }
+        });
+
         mSignUpPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -154,6 +164,8 @@ public class SignUpActivity extends BaseActivity {
         mSignInTv.setOnClickListener(mOnClickListener);                // onClickListener on Already have account : " sign-in" TextView
     }
 
+
+
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -161,7 +173,8 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
-
+                    createAccount() ;
+                    signupNextPage() ;
             } else if (viewId == R.id.signup_fb_btn) {
                 facebookSignUp();
             } else if (viewId == R.id.sign_in_tv) {
@@ -173,6 +186,12 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
+    public void mobileNumberVaildInput() {
+        String contact = mSignUpContactNoEt.getText().toString() ;
+        if(TextUtils.isEmpty(contact) && contact.length() != 10) {
+            showAlertMessage("Enter Valid 10 digit Contact no.");
+        }
+    }
 
     public void passwordCheck() {
         String pass = mSignUpPasswordEt.getText().toString();
@@ -278,6 +297,44 @@ public class SignUpActivity extends BaseActivity {
 
             }
         };
+    }
+
+    public void createAccount() {
+
+        mSendData = new JSONObject() ;
+        try {
+            mSendData.put("ContactNo:", mSignUpContactNoEt.getText().toString());
+        } catch (JSONException e) {
+            Log.e("Rishabh" , "Signup page: contact no exception: "+e);
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckContactNoExist);     // TODO add this API into SERVICE class
+        String url = sttc_holdr.request_Url();
+        mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    String result = jsonObject.getString("d");
+                    Log.e("Rishabh" , "Create account : Response := "+result) ;
+                    if(result.equalsIgnoreCase("username")) {
+                        mShowUserNameUI = false ;                   // User Name UI is INVISIBLE at Sign-UP second page .
+                    }else{
+                        mShowUserNameUI = true ;                     // User Name UI is VISIBLE at Sign-UP second page .
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh" , "create account volley error :=" +volleyError) ;
+            }
+        });
+    }
+
+    public void signupNextPage() {
+        
     }
 
 

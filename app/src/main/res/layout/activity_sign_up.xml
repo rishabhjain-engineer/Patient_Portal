@@ -63,8 +63,7 @@
             android:background="@drawable/login_edit_text_style"
             android:gravity="center"
             android:hint="Contact No."
-            android:inputType="text"
-            android:singleLine="true"
+            android:inputType="number"
             android:textColor="@color/create_account_tv_color"
             android:textColorHint="@color/sign_in_edit_bg_hint" />
 
