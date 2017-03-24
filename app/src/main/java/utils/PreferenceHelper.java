@@ -50,6 +50,8 @@ public class PreferenceHelper {
 
         MESSAGE_AT_SIGN_IN_UP("null"),
 
+        FACE_BOOK_ID("null"),
+
         TO_DATE("null");
 
         private String defaultValue;

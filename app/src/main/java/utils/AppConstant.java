@@ -6,6 +6,7 @@ package utils;
 
 public class AppConstant {
 
+    public static final String MyPREFERENCES = "MyPrefs";
     public static String[] mDurationModeArray = {"Daily", "Weekly", "Monthly", "Quarterly", "Semi-Annually", "Annually"};
     public static String[] mDateModeArray = {"exactly", "monthly", "yearly"};
 
