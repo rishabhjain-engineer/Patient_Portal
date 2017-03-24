@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -20,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
@@ -125,6 +128,7 @@ public class SignInActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            iSToShowSignInErrorMessage = false;
             userName = mSingnInUserEt.getText().toString().trim();
             passWord = mSingnInPasswordEt.getText().toString();
             buildNo = Build.VERSION.RELEASE;
@@ -186,12 +190,25 @@ public class SignInActivity extends BaseActivity {
                 showAlertMessage(mDAsString);
             }
             if (mTerms) {
-             //Show Terms and condition
+                //Show Terms and condition
+                showTermsAndCondition();
             }
 
         }
     }
 
+    private Dialog termsAndConditionDialog;
+
+    private void showTermsAndCondition() {
+        termsAndConditionDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
+        termsAndConditionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        termsAndConditionDialog.setCancelable(false);
+        termsAndConditionDialog.setContentView(R.layout.alert_terms_condition);
+
+        TextView termsAndConditionTv = (TextView) termsAndConditionDialog.findViewById(R.id.terms_and_condition);
+        termsAndConditionTv.setText(mDisclaimerInformation);
+        termsAndConditionDialog.show();
+    }
 
     private String mForgotEmailRrPhoneNo;
 
