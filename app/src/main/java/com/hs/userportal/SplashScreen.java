@@ -33,6 +33,7 @@ import java.util.Locale;
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
 import ui.QuestionireActivity;
+import ui.SignInActivity;
 
 public class SplashScreen extends Activity {
 
@@ -72,17 +73,15 @@ public class SplashScreen extends Activity {
                 sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
-                        Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
                         intentMain.putExtra("isComingFromSplash", true);
                         startActivity(intentMain);
                         finish();
                     }
                 } else {
-                    Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
-                    intentWalk.putExtra("walk", "walk");
-                    intentWalk.putExtra("pos", 0);
-                    startActivity(intentWalk);
-                    overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
+                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                    intentMain.putExtra("isComingFromSplash", true);
+                    startActivity(intentMain);
                     finish();
                 }
             }

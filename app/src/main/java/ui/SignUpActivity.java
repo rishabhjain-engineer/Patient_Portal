@@ -55,17 +55,17 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 
 /**
- * Created by ayaz on 23/3/17.
+ * Created by Rishabh Jain on 23/3/17.
  */
 
 public class SignUpActivity extends BaseActivity {
 
 
     private AccessTokenTracker mAccessTokenTracker;
-    private Button mSignUpBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false;
+    private Button mSignUpBtn, mSignUpContinueBtn;
+    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false , mUserNameAvailable;
     private CallbackManager mCallbackManager;
-    private EditText mSignUpUserEt, mSignUpContactNoEt, mSignUpPasswordEt;
+    private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt , mSignUpUserNameEt, mSignUpDateOfBirth , mSignUpGender;
     private FacebookCallback<LoginResult> mCallback;
     private Helper mHelper;
     private JSONObject mSendData;
@@ -133,14 +133,30 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void getViewObject() {
-        mSignUpUserEt = (EditText) findViewById(R.id.sign_up_name_et);
+        mSignUpNameEt = (EditText) findViewById(R.id.sign_up_name_et);
         mSignUpContactNoEt = (EditText) findViewById(R.id.sign_up_contact_et);
         mSignUpPasswordEt = (EditText) findViewById(R.id.sign_up_password_et);
         mSignUpBtn = (Button) findViewById(R.id.create_account_bt);
         mSignUpFbContainer = (LinearLayout) findViewById(R.id.signup_fb_btn);
         mSignInTv = (TextView) findViewById(R.id.sign_in_tv);
         mFacebookWidgetLoginButton = (LoginButton) findViewById(R.id.facebook_widget_btn);
+        mSignUpUserNameEt = (EditText) findViewById(R.id.sign_up__user_name_et);
+        mSignUpContinueBtn = (Button) findViewById(R.id.sign_up_continue);
+        mSignUpDateOfBirth = (EditText) findViewById(R.id.sign_up__dob_et);
+        mSignUpGender = (EditText) findViewById(R.id.sign_up__gender_et);
 
+
+        mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String name = mSignUpNameEt.getText().toString();
+                    if(TextUtils.isEmpty(name)) {
+                        Toast.makeText(SignUpActivity.this , "Please enter your name." , Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
 
         mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -162,6 +178,7 @@ public class SignUpActivity extends BaseActivity {
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
         mSignInTv.setOnClickListener(mOnClickListener);                // onClickListener on Already have account : " sign-in" TextView
+        mSignUpContinueBtn.setOnClickListener(mOnClickListener);       // onClickListener on SignUp Second Page: " CONTINUE BUTTON" to proceed for dashboard ; if all successfull
     }
 
 
@@ -173,16 +190,19 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
-                    createAccount() ;
-                    signupNextPage() ;
+                    createAccount() ;                                   // API hit CheckContactNoExist , to check corresponding user name of given contact number .
+                    signupNextPage() ;                                  // call to second sign-up page
             } else if (viewId == R.id.signup_fb_btn) {
                 facebookSignUp();
             } else if (viewId == R.id.sign_in_tv) {
                 Intent intent = new Intent(getApplicationContext(), Register.class);    // TODO check this Intent to Register.class
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
+            } else if(viewId == R.id.sign_up_continue) {
+                if(mUserNameAvailable){                                     //
+                    NewSignUpByPatientAPI() ;                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
+                }
             }
-
         }
     };
 
@@ -334,9 +354,89 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void signupNextPage() {
-        
+        // TODO ; decide whether to DISPLAY USERNAME UI or not; based on boolean variable mShowUserNameUI .
+        if(mShowUserNameUI){
+            mSignUpUserNameEt.setVisibility(View.VISIBLE);
+            mSignUpUserNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus) {
+                        CheckDupUserNameAPI() ;           // API is hit to check whether user name exist or not
+                    }
+                }
+            });
+        }
+
     }
 
+    public void CheckDupUserNameAPI() {
+        mSendData = new JSONObject() ;
+        try {
+            mSendData.put("userName:", mSignUpUserNameEt.getText().toString());
+        } catch (JSONException e) {
+            Log.e("Rishabh" , "Signup NEXT page:  userName exception: "+e);
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckDupUserName);     // TODO add this API into SERVICE class
+        String url = sttc_holdr.request_Url();
+        mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    String result = jsonObject.getString("d");
+                    Log.e("Rishabh" , "CheckDupUserNameAPI : Response := "+result) ;
+                    if(result.equalsIgnoreCase("true")) {
+                        mUserNameAvailable = false ;                                                                        // if user name is not available then don't hit NewSignUpByPatient API .
+                        Toast.makeText(SignUpActivity.this , "Username is already taken.", Toast.LENGTH_SHORT).show();     // User Name already registered ; when response comes out to be  TRUE , even no NULL string
+                    }else{
+                        mUserNameAvailable = true ;                                                                         // now , username is available, allow user to go for dashboard page, but first hit NewSignUpByPatient API .
+                        Toast.makeText(SignUpActivity.this , "Username is available.", Toast.LENGTH_SHORT).show();          //  USER name is AVAILABLE ;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh" , "CheckDupUserNameAPI volley error :=" +volleyError) ;
+            }
+        });
+    }
+
+    public void NewSignUpByPatientAPI() {
+        mSendData = new JSONObject() ;
+        try {
+            mSendData.put("name:", mSignUpNameEt.getText().toString());
+            mSendData.put("contactNo:", mSignUpContactNoEt.getText().toString());
+            mSendData.put("password:", mSignUpPasswordEt.getText().toString());
+            mSendData.put("dob:", mSignUpDateOfBirth.getText().toString());
+            mSendData.put("gender:", mSignUpGender.getText().toString());
+            mSendData.put("username:", mSignUpUserNameEt.getText().toString());
+
+        } catch (JSONException e) {
+            Log.e("Rishabh" , "Signup page: contact no exception: "+e);
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);     // TODO add this API into SERVICE class
+        String url = sttc_holdr.request_Url();
+        mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    String result = jsonObject.getString("d");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh" , "create account volley error :=" +volleyError) ;
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
