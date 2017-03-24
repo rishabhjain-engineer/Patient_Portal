@@ -3,10 +3,8 @@ package ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -25,26 +23,30 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
-import com.hs.userportal.VaccineDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
@@ -63,21 +65,104 @@ public class SignInActivity extends BaseActivity {
     private Services mServices;
     private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo;
     private int mPatientBussinessFlag;
-    private boolean mTerms;
+    private boolean mTerms, mIscontactNumerVerified;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
+    private CallbackManager callbackManager = null;
+    private AccessTokenTracker mtracker = null;
+    //private LoginButton login_button;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        //setupActionBar();
-        // mActionBar.hide();
+        setupActionBar();
+        mActionBar.hide();
         mServices = new Services(SignInActivity.this);
         mRequestQueue = Volley.newRequestQueue(this);
+        callbackManager = CallbackManager.Factory.create();
+        // login_button = (LoginButton) findViewById(R.id.login_button);
+        // login_button.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+        //login_button.registerCallback(callbackManager, callback);
 
         getViewObject();
     }
+
+    /*FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    // JSON of FB ID as response.
+                    try {
+                        userID = object.getString("id");
+                        firstName = object.getString("first_name");
+                        fnln = firstName;
+                        lastName = object.getString("last_name");
+                        lastname = lastName;
+                        try {
+                            eMail = object.getString("email");
+                        } catch (NullPointerException ex) {
+                            eMail = "";
+                        }
+                        dateofBirth = object.getString("birthday");
+                        String genderFB = object.getString("gender");
+                        if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
+                            gender = "Male";
+                        } else {
+                            gender = "Female";
+                        }
+                        contactNo = "";
+                        sendData = new JSONObject();
+                        sendData.put("EmailId", eMail);
+                        StaticHolder sttc_holdr = new StaticHolder(MainActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
+                        String url = sttc_holdr.request_Url();
+                        jr = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
+                                new com.android.volley.Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Exist or Not-Exist
+                                        try {
+                                            String emdata = response.getString("d");
+                                            if (emdata.equals("Exist")) {
+                                                //Toast.makeText(getApplicationContext(), "An account exist with this email id. Create account with other email.", Toast.LENGTH_LONG).show();
+                                                GetUserCodeFromEmail();
+                                            } else {
+                                                CheckEmailIdIsExistMobile();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, new com.android.volley.Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                System.out.println(error);
+                            }
+                        });
+                        queue.add(jr);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };*/
 
     private void getViewObject() {
         mSingnInUserEt = (EditText) findViewById(R.id.singn_in_user_et);
@@ -104,7 +189,7 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_btn) {
                 signInBtnHandling();
             } else if (viewId == R.id.sign_in_fb_container) {
-
+                onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
                 Intent intent = new Intent(getApplicationContext(), Register.class);
                 intent.putExtra("fromActivity", "main_activity");
@@ -126,7 +211,7 @@ public class SignInActivity extends BaseActivity {
         }
         ConnectionDetector con = new ConnectionDetector(SignInActivity.this);
         if (!con.isConnectingToInternet()) {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+            showAlertMessage("No Internet Connection.");
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USERNAME, userName);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, passWord);
@@ -135,7 +220,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private JSONObject loginApiSendData, loginApiReceivedData;
-    private boolean iSToShowSignInErrorMessage;
+    private boolean isToShowSignInErrorMessage;
     private String mDAsString;
 
     private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
@@ -146,7 +231,7 @@ public class SignInActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            iSToShowSignInErrorMessage = false;
+            isToShowSignInErrorMessage = false;
             userName = mSingnInUserEt.getText().toString().trim();
             passWord = mSingnInPasswordEt.getText().toString();
             buildNo = Build.VERSION.RELEASE;
@@ -169,7 +254,7 @@ public class SignInActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            StaticHolder staticobj = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewLogIn, loginApiSendData);
+
             loginApiReceivedData = mServices.NewLogInApi(loginApiSendData);
             if (loginApiReceivedData != null) {
                 mDAsString = loginApiReceivedData.optString("d");
@@ -191,7 +276,7 @@ public class SignInActivity extends BaseActivity {
                         mContactNo = innerJsonObject.optString("ContactNo");
                         mTerms = innerJsonObject.optBoolean("Terms");
                     } else {
-                        iSToShowSignInErrorMessage = true;
+                        isToShowSignInErrorMessage = true;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -209,45 +294,64 @@ public class SignInActivity extends BaseActivity {
             } else {
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
             }
-            if (iSToShowSignInErrorMessage) {
+            if (isToShowSignInErrorMessage) {
                 showAlertMessage(mDAsString);
+            } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                goToDashBoardPage();
+            } else {
+                if (mTerms) {
+                    sendrequestForDesclaimer();
+                    //new SendrequestForDesclaimer().execute();
+                }
+                if (!mIscontactNumerVerified && TextUtils.isEmpty(mContactNo)) {
+                    updateContactAlert();
+                }
             }
-
-            if (mTerms) {
-                showTermsAndCondition();
-            }
-
-            if (TextUtils.isEmpty(mContactNo)) {
-                //hit update Contact Api
-            }
-
         }
     }
 
+    private class SendrequestForDesclaimer extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData = new JSONObject();
+                sendData.put("UserdisclaimerType", "Patient");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            loginApiReceivedData = mServices.GetLatestVersionInfo(sendData);
+            Log.i("ayaz", "ayaz: " + loginApiReceivedData);
+            return null;
+        }
+    }
 
     private void sendrequestForDesclaimer() {
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setMessage("Loading Plese wait...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
         JSONObject sendData = new JSONObject();
         try {
             sendData = new JSONObject();
-            sendData.put("UserRole", "Patient");
+            sendData.put("UserdisclaimerType", "Patient");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.PatientDisclaimer);
+        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.GetLatestVersionInfo);
         String url = staticHolder.request_Url();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
+                   showTermsAndCondition();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -274,7 +378,44 @@ public class SignInActivity extends BaseActivity {
         termsAndConditionDialog.show();
     }
 
-    private void updateContactApi() {
+    private Dialog updateContactDialog;
+
+    private void updateContactAlert() {
+        updateContactDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
+        updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        updateContactDialog.setCancelable(false);
+        updateContactDialog.setContentView(R.layout.mobileno_feild);
+        final EditText editnumber = (EditText) updateContactDialog.findViewById(R.id.mobile_fieldid);
+        Button ok = (Button) updateContactDialog.findViewById(R.id.submit_id);
+        TextView cancel_id = (TextView) updateContactDialog.findViewById(R.id.cancel_id);
+        ok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String mobileNumber = editnumber.getText().toString();
+                if (TextUtils.isEmpty(mobileNumber)) {
+                    Toast.makeText(getApplicationContext(), "Mobile Number Should not empty !", Toast.LENGTH_LONG).show();
+                } else if (!isValidatePhoneNumber(mobileNumber)) {
+                    Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
+                } else {
+                    updateContactApi(mobileNumber);
+                    updateContactDialog.dismiss();
+                }
+            }
+
+        });
+        cancel_id.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                updateContactDialog.dismiss();
+
+            }
+        });
+        updateContactDialog.show();
+    }
+
+    private void updateContactApi(String contactnumber) {
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
@@ -284,20 +425,21 @@ public class SignInActivity extends BaseActivity {
 
         JSONObject sendData = new JSONObject();
         try {
-            String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            //sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
-            sendData.put("patientId", id);
+            sendData.put("userid", mUserId);
+            sendData.put("contact", contactnumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.GetVaccineDetails);
+        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.UpdateContact);
         String url = staticHolder.request_Url();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
+                updateContactDialog.dismiss();
+                Toast.makeText(SignInActivity.this, "Contact is verified succesfully", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -547,5 +689,33 @@ public class SignInActivity extends BaseActivity {
         }
     }
 
+    private void goToDashBoardPage() {
+
+    }
+
+    private boolean isValidatePhoneNumber(String phoneNo) {
+        // validate phone numbers of format "1234567890"
+        if (phoneNo.matches("\\d{10}"))
+            return true;
+            // validating phone number with -, . or spaces
+        else if (phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
+            return true;
+            // validating phone number with extension length
+            // from 3 to 5
+        else if (phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}"))
+            return true;
+            // validating phone number where area code is in
+            // braces ()
+        else if (phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}"))
+            return true;
+            // return false if nothing matches the input
+        else
+            return false;
+
+    }
+
+    private void onClickLogin() {
+        // login_button.performClick();
+    }
 
 }
