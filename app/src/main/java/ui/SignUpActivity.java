@@ -1,6 +1,8 @@
 package ui;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,14 +13,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +46,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.hs.userportal.AddWeight;
 import com.hs.userportal.Helper;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
@@ -48,6 +56,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,14 +72,16 @@ public class SignUpActivity extends BaseActivity {
 
     private AccessTokenTracker mAccessTokenTracker;
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false , mUserNameAvailable;
+    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true;
     private CallbackManager mCallbackManager;
-    private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt , mSignUpUserNameEt, mSignUpDateOfBirth , mSignUpGender;
+    private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
+    private static EditText mSignUpDateOfBirth;
     private FacebookCallback<LoginResult> mCallback;
     private Helper mHelper;
+    private static int mYear, mMonth, mDay;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
-    private LinearLayout mSignUpFbContainer;
+    private LinearLayout mSignUpFbContainer , mSignUpSecondPageContainer, mSignUpFirstPageContainer;
     private LoginButton mFacebookWidgetLoginButton;
     private ProfileTracker mProfileTracker;
     private RequestQueue mRequestQueue;
@@ -78,10 +89,13 @@ public class SignUpActivity extends BaseActivity {
     private SharedPreferences mSharedPreferences, mNewSharedPreferences, mDemoPreferences;
     private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo;
     private String abc, id, cop, fnln, tpwd, PH;    // SHARED PREFERENCES VARIABLES ;
-    private String mUserCodeFromEmail = null, mBuildNo;
-    private static String mDemoString = "false", mFromActivity;
+
+    private Spinner mSignUpGender;
+    private String mUserCodeFromEmail = null, mBuildNo, mGenderResult;
+    private static String mDemoString = "false", mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
     private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,16})";
+    private String[] mGenderValue = {"MALE", "FEMALE"};
     private TextView mSignInTv;
 
     public static String userID;
@@ -143,16 +157,33 @@ public class SignUpActivity extends BaseActivity {
         mSignUpUserNameEt = (EditText) findViewById(R.id.sign_up__user_name_et);
         mSignUpContinueBtn = (Button) findViewById(R.id.sign_up_continue);
         mSignUpDateOfBirth = (EditText) findViewById(R.id.sign_up__dob_et);
-        mSignUpGender = (EditText) findViewById(R.id.sign_up__gender_et);
+        mSignUpGender = (Spinner) findViewById(R.id.sign_up__gender_et);
+        mSignUpSecondPageContainer = (LinearLayout) findViewById(R.id.sign_up__container_2);
+        mSignUpFirstPageContainer = (LinearLayout) findViewById(R.id.signup_container);
 
+        ArrayAdapter genderAdapter = new ArrayAdapter(SignUpActivity.this, android.R.layout.simple_spinner_item, mGenderValue);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSignUpGender.setAdapter(genderAdapter);
+
+        mSignUpGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mGenderResult = mGenderValue[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     String name = mSignUpNameEt.getText().toString();
-                    if(TextUtils.isEmpty(name)) {
-                        Toast.makeText(SignUpActivity.this , "Please enter your name." , Toast.LENGTH_SHORT).show();
+                    if (TextUtils.isEmpty(name)) {
+                        Toast.makeText(SignUpActivity.this, "Please enter your name.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -161,8 +192,8 @@ public class SignUpActivity extends BaseActivity {
         mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    mobileNumberVaildInput() ;
+                if (!hasFocus) {
+                    mobileNumberVaildInput();
                 }
             }
         });
@@ -175,12 +206,13 @@ public class SignUpActivity extends BaseActivity {
                 }
             }
         });
+
+        mSignUpDateOfBirth.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
         mSignInTv.setOnClickListener(mOnClickListener);                // onClickListener on Already have account : " sign-in" TextView
         mSignUpContinueBtn.setOnClickListener(mOnClickListener);       // onClickListener on SignUp Second Page: " CONTINUE BUTTON" to proceed for dashboard ; if all successfull
     }
-
 
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -190,32 +222,39 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
-                    createAccount() ;                                   // API hit CheckContactNoExist , to check corresponding user name of given contact number .
-                    signupNextPage() ;                                  // call to second sign-up page
+                createAccount();                                                                     // API hit CheckContactNoExist , to check corresponding user name of given contact number .
+                if (mPermitToNextSignUpPage) {
+                    mSignUpFirstPageContainer.setVisibility(View.GONE);                               // Sign up first page visibility gone
+                    mSignUpSecondPageContainer.setVisibility(View.VISIBLE);                           // Sign up Second page visibility visible
+                    signupNextPage();                                                                // call to second sign-up page
+                }
             } else if (viewId == R.id.signup_fb_btn) {
                 facebookSignUp();
             } else if (viewId == R.id.sign_in_tv) {
                 Intent intent = new Intent(getApplicationContext(), Register.class);    // TODO check this Intent to Register.class
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
-            } else if(viewId == R.id.sign_up_continue) {
-                if(mUserNameAvailable){                                     //
-                    NewSignUpByPatientAPI() ;                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
+            } else if (viewId == R.id.sign_up_continue) {
+                if (mUserNameAvailable) {                                     //
+                    NewSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
                 }
+            } else if (viewId == R.id.sign_up__dob_et) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         }
     };
 
     public void mobileNumberVaildInput() {
-        String contact = mSignUpContactNoEt.getText().toString() ;
-        if(TextUtils.isEmpty(contact) && contact.length() != 10) {
+        String contact = mSignUpContactNoEt.getText().toString();
+        if (TextUtils.isEmpty(contact) && contact.length() != 10) {
             showAlertMessage("Enter Valid 10 digit Contact no.");
         }
     }
 
     public void passwordCheck() {
         String pass = mSignUpPasswordEt.getText().toString();
-        if (!TextUtils.isEmpty(pass) &&pass.length() > 0 ) {
+        if (!TextUtils.isEmpty(pass) && pass.length() > 0) {
             mIsPasswordCorrect = isValidPassword(pass);
             if (!mIsPasswordCorrect) {
                 showAlertMessage(" 1. Password must be of length 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
@@ -321,11 +360,11 @@ public class SignUpActivity extends BaseActivity {
 
     public void createAccount() {
 
-        mSendData = new JSONObject() ;
+        mSendData = new JSONObject();
         try {
             mSendData.put("ContactNo:", mSignUpContactNoEt.getText().toString());
         } catch (JSONException e) {
-            Log.e("Rishabh" , "Signup page: contact no exception: "+e);
+            Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
         StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckContactNoExist);     // TODO add this API into SERVICE class
@@ -335,11 +374,14 @@ public class SignUpActivity extends BaseActivity {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     String result = jsonObject.getString("d");
-                    Log.e("Rishabh" , "Create account : Response := "+result) ;
-                    if(result.equalsIgnoreCase("username")) {
-                        mShowUserNameUI = false ;                   // User Name UI is INVISIBLE at Sign-UP second page .
-                    }else{
-                        mShowUserNameUI = true ;                     // User Name UI is VISIBLE at Sign-UP second page .
+                    Log.e("Rishabh", "Create account : Response := " + result);
+                    if (result.equalsIgnoreCase("username")) {
+                        mShowUserNameUI = true;                   // User Name UI is VISIBLE at Sign-UP second page .
+                    } else if (TextUtils.isEmpty(result)) {
+                        mShowUserNameUI = false;                     // User Name UI is INVISIBLE at Sign-UP second page . ; result = " " ; It means backend has USER NAME Already .
+                    } else {
+                        mPermitToNextSignUpPage = false;
+                        showAlertMessage(result);                   // error message , phone number exist ; Stop user from going to sign up second page  ; use variable permitToNextSignUpPage = false ; by default it will be true
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -348,20 +390,20 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Rishabh" , "create account volley error :=" +volleyError) ;
+                Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
     }
 
     public void signupNextPage() {
         // TODO ; decide whether to DISPLAY USERNAME UI or not; based on boolean variable mShowUserNameUI .
-        if(mShowUserNameUI){
+        if (mShowUserNameUI) {
             mSignUpUserNameEt.setVisibility(View.VISIBLE);
             mSignUpUserNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(!hasFocus) {
-                        CheckDupUserNameAPI() ;           // API is hit to check whether user name exist or not
+                    if (!hasFocus) {
+                        CheckDupUserNameAPI();           // API is hit to check whether user name exist or not
                     }
                 }
             });
@@ -370,11 +412,11 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void CheckDupUserNameAPI() {
-        mSendData = new JSONObject() ;
+        mSendData = new JSONObject();
         try {
             mSendData.put("userName:", mSignUpUserNameEt.getText().toString());
         } catch (JSONException e) {
-            Log.e("Rishabh" , "Signup NEXT page:  userName exception: "+e);
+            Log.e("Rishabh", "Signup NEXT page:  userName exception: " + e);
             e.printStackTrace();
         }
         StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckDupUserName);     // TODO add this API into SERVICE class
@@ -384,13 +426,13 @@ public class SignUpActivity extends BaseActivity {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     String result = jsonObject.getString("d");
-                    Log.e("Rishabh" , "CheckDupUserNameAPI : Response := "+result) ;
-                    if(result.equalsIgnoreCase("true")) {
-                        mUserNameAvailable = false ;                                                                        // if user name is not available then don't hit NewSignUpByPatient API .
-                        Toast.makeText(SignUpActivity.this , "Username is already taken.", Toast.LENGTH_SHORT).show();     // User Name already registered ; when response comes out to be  TRUE , even no NULL string
-                    }else{
-                        mUserNameAvailable = true ;                                                                         // now , username is available, allow user to go for dashboard page, but first hit NewSignUpByPatient API .
-                        Toast.makeText(SignUpActivity.this , "Username is available.", Toast.LENGTH_SHORT).show();          //  USER name is AVAILABLE ;
+                    Log.e("Rishabh", "CheckDupUserNameAPI : Response := " + result);
+                    if (result.equalsIgnoreCase("true")) {
+                        mUserNameAvailable = false;                                                                        // if user name is not available then don't hit NewSignUpByPatient API .
+                        Toast.makeText(SignUpActivity.this, "Username is already taken.", Toast.LENGTH_SHORT).show();     // User Name already registered ; when response comes out to be  TRUE , even no NULL string
+                    } else {
+                        mUserNameAvailable = true;                                                                         // now , username is available, allow user to go for dashboard page, but first hit NewSignUpByPatient API .
+                        Toast.makeText(SignUpActivity.this, "Username is available.", Toast.LENGTH_SHORT).show();          //  USER name is AVAILABLE ;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -399,23 +441,23 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Rishabh" , "CheckDupUserNameAPI volley error :=" +volleyError) ;
+                Log.e("Rishabh", "CheckDupUserNameAPI volley error :=" + volleyError);
             }
         });
     }
 
     public void NewSignUpByPatientAPI() {
-        mSendData = new JSONObject() ;
+        mSendData = new JSONObject();
         try {
             mSendData.put("name:", mSignUpNameEt.getText().toString());
             mSendData.put("contactNo:", mSignUpContactNoEt.getText().toString());
             mSendData.put("password:", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob:", mSignUpDateOfBirth.getText().toString());
-            mSendData.put("gender:", mSignUpGender.getText().toString());
+            mSendData.put("gender:", mGenderResult);
             mSendData.put("username:", mSignUpUserNameEt.getText().toString());
 
         } catch (JSONException e) {
-            Log.e("Rishabh" , "Signup page: contact no exception: "+e);
+            Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
         StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);     // TODO add this API into SERVICE class
@@ -433,9 +475,44 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Rishabh" , "create account volley error :=" +volleyError) ;
+                Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, mYear, mMonth, mDay);
+        }
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            // Do something with the date chosen by the user
+
+            mMonth = monthOfYear;
+            mDay = dayOfMonth;
+            mYear = year;
+
+            int month = monthOfYear + 1;
+
+            String formattedMonth = "" + month;
+            String formattedDayOfMonth = "" + dayOfMonth;
+
+            if (month < 10) {
+
+                formattedMonth = "0" + month;
+            }
+            if (dayOfMonth < 10) {
+
+                formattedDayOfMonth = "0" + dayOfMonth;
+            }
+            mSignUpDateOfBirth.setText(year + "-" + formattedMonth + "-" + formattedDayOfMonth);
+            mDateOfBirthResult = (year + "-" + formattedMonth + "-" + formattedDayOfMonth);
+        }
     }
 
     @Override
