@@ -84,7 +84,6 @@ public class Vault_adapter extends BaseAdapter {
 
             //String pdf_name = data_list.get(position).get("FileVault2").replace(patientId + "/FileVault/", "");
             String[] pdf_name = data_list.get(position).get("Personal3").split("/");
-            Log.e("Rishabh ", "Search entry : String name := "+pdf_name) ;
             int length = pdf_name.length;
             String time = data_list.get(position).get("LastModified");
             String[] parts = time.split("T");
