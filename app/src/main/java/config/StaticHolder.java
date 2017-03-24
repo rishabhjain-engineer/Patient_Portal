@@ -421,6 +421,10 @@ public class StaticHolder {
                 url = BASE_URL + "GetVaccineDetails";
                 break;
 
+            case GetLatestVersionInfo:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/GetLatestVersionInfo1";
+                break;
+
             case NewLogIn:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogIn";
                 break;
@@ -479,7 +483,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo
     }
 
 }

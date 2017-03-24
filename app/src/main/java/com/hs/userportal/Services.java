@@ -168,6 +168,13 @@ public class Services {
 
     }
 
+    public JSONObject GetLatestVersionInfo(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetLatestVersionInfo);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
     public JSONObject IsUserAuthenticated(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/

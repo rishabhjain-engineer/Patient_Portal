@@ -602,7 +602,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
                         @Override
                         public void onClick(View v) {
-                            // TODO Auto-generated method stub
                             if (editnumber.getText().toString().equals("")) {
                                 Toast.makeText(getApplicationContext(), "Mobile Number Should not empty !",
                                         Toast.LENGTH_LONG).show();
