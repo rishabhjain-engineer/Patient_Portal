@@ -3,8 +3,10 @@ package ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -12,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -22,14 +25,26 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
+import com.hs.userportal.VaccineDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
@@ -46,9 +61,11 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mDisclaimerInformation;
+    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo;
     private int mPatientBussinessFlag;
     private boolean mTerms;
+    private ProgressDialog mProgressDialog;
+    private RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +74,7 @@ public class SignInActivity extends BaseActivity {
         //setupActionBar();
         // mActionBar.hide();
         mServices = new Services(SignInActivity.this);
+        mRequestQueue = Volley.newRequestQueue(this);
 
         getViewObject();
     }
@@ -170,7 +188,7 @@ public class SignInActivity extends BaseActivity {
                         mMiddleName = innerJsonObject.optString("MiddleName");
                         mLastName = innerJsonObject.optString("LastName");
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
-                        mDisclaimerInformation = innerJsonObject.optString("disclaimerInformation");
+                        mContactNo = innerJsonObject.optString("ContactNo");
                         mTerms = innerJsonObject.optBoolean("Terms");
                     } else {
                         iSToShowSignInErrorMessage = true;
@@ -186,28 +204,110 @@ public class SignInActivity extends BaseActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
+            if (mPatientBussinessFlag == 2) {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
+            } else {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+            }
             if (iSToShowSignInErrorMessage) {
                 showAlertMessage(mDAsString);
             }
+
             if (mTerms) {
-                //Show Terms and condition
                 showTermsAndCondition();
+            }
+
+            if (TextUtils.isEmpty(mContactNo)) {
+                //hit update Contact Api
             }
 
         }
     }
 
+
+    private void sendrequestForDesclaimer() {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData = new JSONObject();
+            sendData.put("UserRole", "Patient");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.PatientDisclaimer);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
+    }
+
     private Dialog termsAndConditionDialog;
 
     private void showTermsAndCondition() {
+
         termsAndConditionDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         termsAndConditionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         termsAndConditionDialog.setCancelable(false);
         termsAndConditionDialog.setContentView(R.layout.alert_terms_condition);
 
         TextView termsAndConditionTv = (TextView) termsAndConditionDialog.findViewById(R.id.terms_and_condition);
-        termsAndConditionTv.setText(mDisclaimerInformation);
+        // termsAndConditionTv.setText(mDisclaimerInformation);
         termsAndConditionDialog.show();
+    }
+
+    private void updateContactApi() {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+            //sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+            sendData.put("patientId", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.GetVaccineDetails);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
     }
 
     private String mForgotEmailRrPhoneNo;
