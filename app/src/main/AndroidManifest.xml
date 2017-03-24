@@ -454,6 +454,11 @@
 
 
         <activity
+            android:name="ui.SignInActivity"
+            android:configChanges="orientation|screenSize" />
+
+
+        <activity
             android:name="com.hs.userportal.MyHealth"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />

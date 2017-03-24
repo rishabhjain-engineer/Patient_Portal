@@ -422,7 +422,7 @@ public class StaticHolder {
                 break;
 
             case NewLogIn:
-                url = BASE_URL + "NewLogIn";
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogIn";
                 break;
 
 
