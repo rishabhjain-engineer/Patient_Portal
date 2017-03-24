@@ -39,10 +39,12 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.hs.userportal.Helper;
 import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
+import com.hs.userportal.logout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -344,9 +346,6 @@ public class SignInActivity extends BaseActivity {
                     if (jsonArray != null && jsonArray.length() > 0) {
                         JSONObject jsonObject = jsonArray.optJSONObject(0);
                         mTermsAndCondition = jsonObject.optString("disclaimerInformation");
-                        if (TextUtils.isEmpty(mContactNo)) {
-                            updateContactAlert();
-                        }
                     }
                     showTermsAndCondition();
                 } catch (JSONException e) {
@@ -416,8 +415,8 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
-                updateContactDialog.dismiss();
-                Toast.makeText(SignInActivity.this, "Contact is verified succesfully", Toast.LENGTH_LONG).show();
+                termsAndConditionDialog.dismiss();
+                 goToDashBoardPage();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -431,7 +430,6 @@ public class SignInActivity extends BaseActivity {
     }
 
     private Dialog updateContactDialog;
-
     private void updateContactAlert() {
         updateContactDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -451,7 +449,6 @@ public class SignInActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
                 } else {
                     updateContactApi(mobileNumber);
-                    updateContactDialog.dismiss();
                 }
             }
 
@@ -491,7 +488,7 @@ public class SignInActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 updateContactDialog.dismiss();
-                Toast.makeText(SignInActivity.this, "Contact is verified succesfully", Toast.LENGTH_LONG).show();
+                goToDashBoardPage();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -742,7 +739,13 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserId);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
+        Intent intent = new Intent(SignInActivity.this, logout.class);
+        startActivity(intent);
     }
 
     private boolean isValidatePhoneNumber(String phoneNo) {
