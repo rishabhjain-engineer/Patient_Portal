@@ -72,7 +72,7 @@ public class SignUpActivity extends BaseActivity {
 
     private AccessTokenTracker mAccessTokenTracker;
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true;
+    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck;
     private CallbackManager mCallbackManager;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
@@ -271,6 +271,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void facebookSignUp() {
+        mSignUpThroughFacebookCheck = true ;
         mFacebookWidgetLoginButton.performClick();
 
         mCallback = new FacebookCallback<LoginResult>() {
@@ -454,7 +455,16 @@ public class SignUpActivity extends BaseActivity {
             mSendData.put("password:", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob:", mSignUpDateOfBirth.getText().toString());
             mSendData.put("gender:", mGenderResult);
-            mSendData.put("username:", mSignUpUserNameEt.getText().toString());
+            if(mUserNameAvailable) {
+                mSendData.put("username:",mSignUpUserNameEt.getText().toString());
+            }else {
+                mSendData.put("username:",mSignUpContactNoEt.getText().toString());
+            }
+
+            if(mSignUpThroughFacebookCheck) {
+                mSendData.put("email", eMail);
+                mSendData.put("facebookId", userID);            // variable userId is retrieved from facebook ; it is facebook id .
+            }
 
         } catch (JSONException e) {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
@@ -467,6 +477,13 @@ public class SignUpActivity extends BaseActivity {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     String result = jsonObject.getString("d");
+                    if(!TextUtils.isEmpty(result) && result.contains("error")){
+                        showAlertMessage("Some Error Occured");
+                    } else if (!TextUtils.isEmpty(result) && result.contains("user")) {
+                        showAlertMessage("User name already exist !");
+                    } else {
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
