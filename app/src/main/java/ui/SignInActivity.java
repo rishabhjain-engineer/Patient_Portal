@@ -69,7 +69,7 @@ public class SignInActivity extends BaseActivity {
     private Services mServices;
     private String mUserId, mPatientCode, mVersionNumber, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo, mTermsAndCondition;
     private int mPatientBussinessFlag;
-    private boolean mTerms, mIscontactNumerVerified;
+    private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
@@ -195,7 +195,7 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
             }
@@ -303,11 +303,11 @@ public class SignInActivity extends BaseActivity {
             } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
                 goToDashBoardPage();
             } else {
+                if (TextUtils.isEmpty(mContactNo)) {
+                    updateContactAlert();
+                }
                 if (mTerms) {
                     sendrequestForDesclaimer();
-                }
-                if (!mIscontactNumerVerified && TextUtils.isEmpty(mContactNo)) {
-                    updateContactAlert();
                 }
             }
         }
@@ -336,14 +336,17 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
-                String data =  data = response.optString("d");
+                String data = data = response.optString("d");
                 JSONObject cut = null;
                 try {
                     cut = new JSONObject(data);
                     JSONArray jsonArray = cut.optJSONArray("Table");
-                    if(jsonArray != null && jsonArray.length() > 0){
+                    if (jsonArray != null && jsonArray.length() > 0) {
                         JSONObject jsonObject = jsonArray.optJSONObject(0);
                         mTermsAndCondition = jsonObject.optString("disclaimerInformation");
+                        if (TextUtils.isEmpty(mContactNo)) {
+                            updateContactAlert();
+                        }
                     }
                     showTermsAndCondition();
                 } catch (JSONException e) {
@@ -362,6 +365,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private Dialog termsAndConditionDialog;
+
     private void showTermsAndCondition() {
 
         termsAndConditionDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
@@ -376,9 +380,9 @@ public class SignInActivity extends BaseActivity {
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!termsAndConditionCheckBox.isChecked()){
+                if (!termsAndConditionCheckBox.isChecked()) {
                     showAlertMessage("Please agree terms and condition");
-                }else{
+                } else {
                     callTermsAndConditionApi();
                 }
             }
@@ -427,6 +431,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private Dialog updateContactDialog;
+
     private void updateContactAlert() {
         updateContactDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -500,6 +505,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private String mForgotEmailRrPhoneNo;
+
     private void showForgotAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignInActivity.this);
         alertDialog.setTitle("Forgot Password");
