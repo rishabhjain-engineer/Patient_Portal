@@ -1850,7 +1850,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
         @Override
         protected String doInBackground(Void... params) {
-            // TODO Auto-generated method stub
             JSONObject sendData = new JSONObject();
             String userId = cop;
             String result = null;
