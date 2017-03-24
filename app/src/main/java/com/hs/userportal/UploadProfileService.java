@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import ui.SignInActivity;
 
 public class UploadProfileService extends IntentService {
 
@@ -317,7 +318,7 @@ public class UploadProfileService extends IntentService {
         builder.setOngoing(true);
         builder.setProgress(100, progress, false);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, SignInActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         builder.setContentIntent(contentIntent);

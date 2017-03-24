@@ -52,31 +52,6 @@ public class Services {
     public Services(Context context) {
         client = new DefaultHttpClient();
         this.context = context;
-        if (MainActivity.demo.equals("true")) {
-
-            // init = "http://192.168.1.45:8083";
-
-            // init = "http://192.168.1.56";
-            // init = "http://192.168.1.202:81";
-			/*init ="https://d141702.cloudchowk.com/";*///"https://demo0421.cloudchowk.com";//"https://d141702.cloudchowk.com/";//"https://demo0421.cloudchowk.com";//////;//////
-            // init = "http://192.168.1.122";
-            // init = "https://l141702.cloudchowk.com";
-            // init = "http://192.168.1.122:8084";
-            // init= "http://192.168.1.106";
-
-        } else {
-            // init = "http://192.168.1.122";
-            // init = "https://l141702.cloudchowk.com";
-			/*init ="https://l141702.cloudchowk.com/"*/
-            ;//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";//////;////
-
-            // //replace by
-            // init = "http://192.168.1.202:81";
-            // init = "http://192.168.1.56";
-            // init = "http://192.168.1.122:8084";
-            // init= "http://192.168.1.106";
-        }
-
     }
 
     public JSONObject LogIn(JSONObject sendData, String url) {// {"browserType":"4.4.2","UserName":"dheer","applicationType":"Mobile","rememberMe":"false","Password":"dheer@123"}

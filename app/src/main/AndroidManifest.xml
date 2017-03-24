@@ -81,24 +81,6 @@
         <service android:name="utils.QuestionReportPageService" />
 
         <activity
-            android:name="com.hs.userportal.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="goo.gl"
-                    android:pathPrefix="/6UBTR6"
-                    android:scheme="http" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.hs.userportal.logout"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"

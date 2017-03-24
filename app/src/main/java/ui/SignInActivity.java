@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -33,16 +32,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.hs.userportal.Helper;
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
-import com.hs.userportal.Register;
 import com.hs.userportal.Services;
 import com.hs.userportal.logout;
 
@@ -51,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 import config.StaticHolder;
@@ -197,9 +186,9 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+               /* Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 intent.putExtra("fromActivity", "main_activity");
-                startActivity(intent);
+                startActivity(intent);*/
             }
 
         }

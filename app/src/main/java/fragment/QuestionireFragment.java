@@ -3,25 +3,18 @@ package fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,11 +30,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,7 +37,6 @@ import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ProgressEvent;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -58,16 +45,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Filevault;
-import com.hs.userportal.Filevault2;
 import com.hs.userportal.LocationClass;
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.MapLabDetails;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.UploadService;
-import com.hs.userportal.WalthroughFragment;
-import com.hs.userportal.update;
 import com.readystatesoftware.simpl3r.UploadIterruptedException;
 import com.readystatesoftware.simpl3r.Uploader;
 
@@ -76,8 +57,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -87,12 +66,8 @@ import java.util.List;
 import java.util.Map;
 
 import config.QuestionireParser;
-import config.StaticHolder;
 import utils.PreferenceHelper;
 import utils.QuestionReportPageService;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
-import static com.hs.userportal.R.color.white;
 
 /**
  * Created by ayaz on 27/1/17.

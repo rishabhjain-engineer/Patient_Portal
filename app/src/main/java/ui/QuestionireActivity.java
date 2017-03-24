@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.logout;
 import com.viewpagerindicator.CirclePageIndicator;

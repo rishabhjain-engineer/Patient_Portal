@@ -15,6 +15,8 @@ import android.widget.Button;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
+import ui.SignInActivity;
+
 public class SampleCirclesDefault extends FragmentActivity {
 
 	private FragmentAdapter mAdapter;
@@ -71,7 +73,7 @@ public class SampleCirclesDefault extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(SampleCirclesDefault.this, MainActivity.class);
+				Intent i = new Intent(SampleCirclesDefault.this, SignInActivity.class);
 				startActivity(i);
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				finish();
@@ -82,17 +84,6 @@ public class SampleCirclesDefault extends FragmentActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// Intent i = new
-				// Intent(SampleCirclesDefault.this,MainActivity.class);
-				// i.putExtra("from", "walk");
-
-				SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
-						Context.MODE_PRIVATE);
-				Editor editor = sharedpreferences.edit();
-				editor.putBoolean("openLocation", false);
-				editor.commit();
-
 				Intent i = new Intent(SampleCirclesDefault.this, Register.class);
 				//i.putExtra("from", "walk");
 				startActivity(i);
