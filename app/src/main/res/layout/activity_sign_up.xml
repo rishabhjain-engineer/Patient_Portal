@@ -2,90 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/sign_up_create_account_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="Create Account"
-            android:textColor="@color/create_account_tv_color"
-            android:textSize="33dp" />
-
-        <TextView
-            android:id="@+id/sign_up_lets_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:gravity="center"
-            android:text="@string/let_started_text"
-            android:textColor="@color/sign_in_use_your_gray_color"
-            android:textSize="18dp" />
-
-        <EditText
-            android:id="@+id/sign_up_name_et"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sign_in_edit_text_height"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/login_edit_text_style"
-            android:gravity="center"
-            android:hint="Name"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="@color/create_account_tv_color"
-            android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
-        <EditText
-            android:id="@+id/sign_up_contact_et"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sign_in_edit_text_height"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/login_edit_text_style"
-            android:gravity="center"
-            android:hint="Contact No."
-            android:inputType="number"
-            android:textColor="@color/create_account_tv_color"
-            android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
-        <EditText
-            android:id="@+id/sign_up_password_et"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sign_in_edit_text_height"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/login_edit_text_style"
-            android:ellipsize="start"
-            android:gravity="center"
-            android:hint="Password"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="@color/create_account_tv_color"
-            android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-        <Button
-            android:id="@+id/create_account_bt"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sign_in_button_text_height"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/sign_signup_button_design"
-            android:text="Create account"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <TextView
-            android:id="@+id/sign_up_or_tv"
-
         <LinearLayout
             android:id="@+id/signup_container"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/sign_in_sign_up_margin"
@@ -93,14 +15,6 @@
             android:orientation="vertical"
             android:paddingBottom="10dp"
             android:visibility="gone">
-
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_widget_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-
             <ImageView
                 android:id="@+id/sign_up_plus_iv"
                 android:layout_width="80dp"
@@ -109,8 +23,6 @@
                 android:layout_marginTop="15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/sign_up_plus" />
-
-
             <TextView
                 android:id="@+id/sign_up_create_account_tv"
                 android:layout_width="match_parent"
@@ -120,7 +32,6 @@
                 android:text="Create Account"
                 android:textColor="@color/create_account_tv_color"
                 android:textSize="33dp" />
-
             <TextView
                 android:id="@+id/sign_up_lets_tv"
                 android:layout_width="match_parent"
@@ -130,7 +41,6 @@
                 android:text="@string/let_started_text"
                 android:textColor="@color/sign_in_use_your_gray_color"
                 android:textSize="18dp" />
-
             <EditText
                 android:id="@+id/sign_up_name_et"
                 android:layout_width="match_parent"
@@ -143,8 +53,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
             <EditText
                 android:id="@+id/sign_up_contact_et"
                 android:layout_width="match_parent"
@@ -157,8 +65,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
             <EditText
                 android:id="@+id/sign_up_password_et"
                 android:layout_width="match_parent"
@@ -172,7 +78,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
             <Button
                 android:id="@+id/create_account_bt"
                 android:layout_width="match_parent"
@@ -182,7 +87,6 @@
                 android:text="Create account"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
-
             <TextView
                 android:id="@+id/sign_up_or_tv"
                 android:layout_width="match_parent"
@@ -192,8 +96,6 @@
                 android:text="OR"
                 android:textColor="@color/sign_in_use_your_gray_color"
                 android:textSize="15dp" />
-
-
             <LinearLayout
                 android:id="@+id/signup_fb_btn"
                 android:layout_width="match_parent"
@@ -202,12 +104,10 @@
                 android:background="@drawable/sign_in_sign_up_fb_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
-
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="25dp"
                     android:src="@drawable/fb" />
-
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -217,14 +117,12 @@
                     android:textColor="@color/white"
                     android:textSize="16dp" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:orientation="horizontal">
-
                 <TextView
                     android:id="@+id/already_have_tv"
                     android:layout_width="wrap_content"
@@ -232,7 +130,6 @@
                     android:text="@string/already_have_an_account"
                     android:textColor="@color/sign_in_use_your_gray_color"
                     android:textSize="14dp" />
-
                 <TextView
                     android:id="@+id/sign_in_tv"
                     android:layout_width="wrap_content"
@@ -241,9 +138,7 @@
                     android:textColor="@color/sign_in_blue_color"
                     android:textSize="14dp" />
             </LinearLayout>
-
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/sign_up__container_2"
             android:layout_width="match_parent"
@@ -252,7 +147,6 @@
             android:layout_marginRight="40dp"
             android:orientation="vertical"
             android:paddingBottom="10dp">
-
             <ImageView
                 android:id="@+id/sign_up__sciontra_iv"
                 android:layout_width="200dp"
@@ -261,7 +155,6 @@
                 android:layout_marginTop="15dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/logo_update" />
-
             <TextView
                 android:id="@+id/sign_up_basic_information"
                 android:layout_width="match_parent"
@@ -271,7 +164,6 @@
                 android:text="Basic Information"
                 android:textColor="@color/create_account_tv_color"
                 android:textSize="33dp" />
-
             <EditText
                 android:id="@+id/sign_up__user_name_et"
                 android:layout_width="match_parent"
@@ -285,8 +177,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
             <EditText
                 android:id="@+id/sign_up__dob_et"
                 android:layout_width="match_parent"
@@ -299,8 +189,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
-
             <EditText
                 android:id="@+id/sign_up__gender_et"
                 android:layout_width="match_parent"
@@ -314,7 +202,6 @@
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
-
             <Button
                 android:id="@+id/sign_up_continue"
                 android:layout_width="match_parent"
@@ -324,10 +211,6 @@
                 android:text="Continue"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
-
         </LinearLayout>
-
     </LinearLayout>
-
-
 </ScrollView>
