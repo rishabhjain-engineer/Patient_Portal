@@ -88,7 +88,6 @@ public class Services {
 
             }
             hoja = cookieData;
-            MainActivity.cook = hoja;
             LocationClass.cook = hoja;
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -952,7 +951,6 @@ public class Services {
 
             }
             hoja = cookieData;
-            MainActivity.cook = hoja;
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
