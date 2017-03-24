@@ -90,8 +90,6 @@ public class Services {
             hoja = cookieData;
             MainActivity.cook = hoja;
             LocationClass.cook = hoja;
-
-            // System.out.println(hoja);
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
             outputStream.write(cookieData.getBytes());
@@ -325,7 +323,6 @@ public class Services {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
 
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
@@ -350,7 +347,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -390,8 +386,6 @@ public class Services {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
-
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -415,7 +409,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -551,7 +544,6 @@ public class Services {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
 
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
@@ -570,7 +562,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -618,7 +609,6 @@ public class Services {
     // request.setHeader("Content-type", "application/json");
     // request.setHeader("Accept", "application/octet-stream");
     // request.setHeader("Cookie", hoja);
-    // // System.out.println(hoja);
     //
     // try {
     // request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
