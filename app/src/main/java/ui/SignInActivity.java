@@ -11,11 +11,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -46,7 +48,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
@@ -63,9 +67,9 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mPatientBussinessDateTime, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo;
+    private String mUserId, mPatientCode, mVersionNumber, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo, mTermsAndCondition;
     private int mPatientBussinessFlag;
-    private boolean mTerms, mIscontactNumerVerified;
+    private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
@@ -191,7 +195,7 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
             }
@@ -267,10 +271,10 @@ public class SignInActivity extends BaseActivity {
                         mUserId = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
                         mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
-                        mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessFlag");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
+                        mVersionNumber = innerJsonObject.optString("versionNo");
                         mLastName = innerJsonObject.optString("LastName");
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mContactNo = innerJsonObject.optString("ContactNo");
@@ -299,32 +303,13 @@ public class SignInActivity extends BaseActivity {
             } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
                 goToDashBoardPage();
             } else {
-                if (mTerms) {
-                    sendrequestForDesclaimer();
-                    //new SendrequestForDesclaimer().execute();
-                }
-                if (!mIscontactNumerVerified && TextUtils.isEmpty(mContactNo)) {
+                if (TextUtils.isEmpty(mContactNo)) {
                     updateContactAlert();
                 }
+                if (mTerms) {
+                    sendrequestForDesclaimer();
+                }
             }
-        }
-    }
-
-    private class SendrequestForDesclaimer extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            JSONObject sendData = new JSONObject();
-            try {
-                sendData = new JSONObject();
-                sendData.put("UserdisclaimerType", "Patient");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            loginApiReceivedData = mServices.GetLatestVersionInfo(sendData);
-            Log.i("ayaz", "ayaz: " + loginApiReceivedData);
-            return null;
         }
     }
 
@@ -351,7 +336,22 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
-                   showTermsAndCondition();
+                String data = data = response.optString("d");
+                JSONObject cut = null;
+                try {
+                    cut = new JSONObject(data);
+                    JSONArray jsonArray = cut.optJSONArray("Table");
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                        mTermsAndCondition = jsonObject.optString("disclaimerInformation");
+                        if (TextUtils.isEmpty(mContactNo)) {
+                            updateContactAlert();
+                        }
+                    }
+                    showTermsAndCondition();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -372,10 +372,62 @@ public class SignInActivity extends BaseActivity {
         termsAndConditionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         termsAndConditionDialog.setCancelable(false);
         termsAndConditionDialog.setContentView(R.layout.alert_terms_condition);
-
         TextView termsAndConditionTv = (TextView) termsAndConditionDialog.findViewById(R.id.terms_and_condition);
-        // termsAndConditionTv.setText(mDisclaimerInformation);
+        Button buttonOk = (Button) termsAndConditionDialog.findViewById(R.id.btn_ok);
+        final CheckBox termsAndConditionCheckBox = (CheckBox) termsAndConditionDialog.findViewById(R.id.terms_and_condition_check_box);
+        termsAndConditionTv.setText(Html.fromHtml(mTermsAndCondition));
+
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!termsAndConditionCheckBox.isChecked()) {
+                    showAlertMessage("Please agree terms and condition");
+                } else {
+                    callTermsAndConditionApi();
+                }
+            }
+        });
         termsAndConditionDialog.show();
+    }
+
+    private void callTermsAndConditionApi() {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("UserId", mUserId);
+            sendData.put("versionNo", mVersionNumber);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            String disclaimerDateTime = sdf.format(new Date());
+            sendData.put("DateTime", disclaimerDateTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.agreeTermsCondition);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+                updateContactDialog.dismiss();
+                Toast.makeText(SignInActivity.this, "Contact is verified succesfully", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
     }
 
     private Dialog updateContactDialog;
