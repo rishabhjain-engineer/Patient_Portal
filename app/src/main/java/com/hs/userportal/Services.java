@@ -56,7 +56,6 @@ public class Services {
 
     public JSONObject LogIn(JSONObject sendData, String url) {// {"browserType":"4.4.2","UserName":"dheer","applicationType":"Mobile","rememberMe":"false","Password":"dheer@123"}
 
-	/*	url = init + "/CredentialsModule/CredentialService.asmx/LogIn";*/ // http://192.168.1.202:81/CredentialsModule/CredentialService.asmx/LogIn
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
@@ -64,28 +63,16 @@ public class Services {
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         try {
-
-            // URL myUrl = new URL(url);
-            // URLConnection connection = myUrl.openConnection();
-            // connection.setConnectTimeout(5000);
-            // connection.connect();
             response = getThreadSafeClient().execute(request);
             String result = response.toString();
-
             cookies = response.getHeaders("Set-Cookie");
-
-			/* **** SAVING COOKIE DATA ON PHONE STORAGE *** */
             String cookieData = "";
-
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";"; // ASP.NET_SessionId=spghlyjtkcymxiw5d0pzm3u0;
-                // path=/; HttpOnly;
-
             }
             hoja = cookieData;
             LocationClass.cook = hoja;
@@ -103,21 +90,14 @@ public class Services {
             receiveData = new JSONObject(new String(sb));
 
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             Log.e("Client", "Error checking internet connection", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             Log.e("IO", "Error checking internet connection", e);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
-
             Log.e("JSON", "Error checking internet connection", e);
         }
 
         return receiveData;
-
-        // LOGOUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     }
 
     public JSONObject GetCredentialDetails(JSONObject sendData) {
@@ -1274,7 +1254,7 @@ public class Services {
     public JSONObject NewLogInApi(JSONObject sendData) {
         StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.NewLogIn);
         String url = staticHolder.request_Url();
-        JSONObject jsonObjectResponse = common(sendData, url);
+        JSONObject jsonObjectResponse = LogIn(sendData, url);
         return jsonObjectResponse;
 
     }

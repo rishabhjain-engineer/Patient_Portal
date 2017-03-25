@@ -79,9 +79,11 @@ public class SplashScreen extends Activity {
                         finish();
                     }
                 } else {
-                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
-                    intentMain.putExtra("isComingFromSplash", true);
-                    startActivity(intentMain);
+                    Intent intentWalk = new Intent(getApplicationContext(), SampleCirclesDefault.class);
+                    intentWalk.putExtra("walk", "walk");
+                    intentWalk.putExtra("pos", 0);
+                    startActivity(intentWalk);
+                    overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
                     finish();
                 }
             }
