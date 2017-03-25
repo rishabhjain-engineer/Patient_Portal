@@ -1,3 +1,4 @@
+/*
 package ui;
 
 import android.app.AlertDialog;
@@ -63,9 +64,11 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 
+*/
 /**
  * Created by Rishabh Jain on 23/3/17.
- */
+ *//*
+
 
 public class SignUpActivity extends BaseActivity {
 
@@ -544,3 +547,4 @@ public class SignUpActivity extends BaseActivity {
         mProfileTracker.stopTracking();
     }
 }
+*/

@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import ui.BaseActivity;
+import ui.SignInActivity;
 
 
 public class AboutUs extends BaseActivity {
@@ -148,7 +149,7 @@ public class AboutUs extends BaseActivity {
 
 			} else if (from.equals("login")) {
 
-				Intent backNav = new Intent(AboutUs.this, MainActivity.class);
+				Intent backNav = new Intent(AboutUs.this, SignInActivity.class);
 				backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 				startActivity(backNav);
 

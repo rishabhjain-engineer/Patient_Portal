@@ -85,6 +85,7 @@ import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
 import networkmngr.NetworkChangeListener;
 import swipelist.ItemRow;
+import ui.SignInActivity;
 
 /**
  * Created by ashish on 11/4/2015.
@@ -1861,7 +1862,7 @@ public class Booking_Info extends ActionBarActivity {
                 dialog.dismiss();
                 // finish();
 
-                Intent main = new Intent(Booking_Info.this, MainActivity.class);
+                Intent main = new Intent(Booking_Info.this, SignInActivity.class);
                 //  main.putExtra("fromActivity", "signinMaplab");
                 Helper.fromactivity = "signinMaplab";
                 Booking_Info.this.from_widget = from_widget;

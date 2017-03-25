@@ -72,6 +72,7 @@ import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import ui.ProfileContainerActivity;
 import ui.QuestionireActivity;
+import ui.SignInActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -171,8 +172,9 @@ public class logout extends Activity implements View.OnClickListener {
         packages = (RelativeLayout) findViewById(R.id.packages);
         my_family = (RelativeLayout) findViewById(R.id.my_family);
         my_health = (RelativeLayout) findViewById(R.id.my_health);
-        if (!new MainActivity().userID.equalsIgnoreCase("")) {
-          facebookPic = new MainActivity().userID;
+        String facebookId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID);
+        if (!TextUtils.isEmpty(facebookId)) {
+          facebookPic = facebookId;
         } else {
             facebookPic = new Register().userID;
         }
@@ -446,7 +448,7 @@ public class logout extends Activity implements View.OnClickListener {
                 }
             } else if (v.getId() == R.id.find_labs) {
                 // setText() sets the string value of the TextView
-                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                SharedPreferences sharedpreferences = getSharedPreferences(AppConstant.MyPREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("openLocation", true);
@@ -575,7 +577,7 @@ public class logout extends Activity implements View.OnClickListener {
                 // Toast.makeText(getApplicationContext(),
                 // "Log out successful.",Toast.LENGTH_SHORT).show();
 
-                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                SharedPreferences sharedpreferences = getSharedPreferences(AppConstant.MyPREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.clear();
@@ -592,7 +594,7 @@ public class logout extends Activity implements View.OnClickListener {
                 family_object.clear();
                 image_parse = "";
                 progress.dismiss();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("from logout", "logout");
                 startActivity(intent);
@@ -602,7 +604,7 @@ public class logout extends Activity implements View.OnClickListener {
                 update.verify = "0";
                 user_pic.setImageResource(R.drawable.dashpic_update);
                 LoginManager.getInstance().logOut();
-                new MainActivity().userID = "";
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
                 new Register().userID = "";
                 finish();
 
@@ -611,7 +613,7 @@ public class logout extends Activity implements View.OnClickListener {
                 // Toast.makeText(getApplicationContext(),
                 // "Log out unsuccessful.",Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
-                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES,
+                SharedPreferences sharedpreferences = getSharedPreferences(AppConstant.MyPREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.clear();
@@ -630,7 +632,7 @@ public class logout extends Activity implements View.OnClickListener {
                 }
                 image_parse = "";
                 progress.dismiss();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("from logout", "logout");
                 startActivity(intent);
@@ -640,7 +642,7 @@ public class logout extends Activity implements View.OnClickListener {
                 update.verify = "0";
                 user_pic.setImageResource(R.drawable.dashpic_update);
                 LoginManager.getInstance().logOut();
-                new MainActivity().userID = "";
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
                 new Register().userID = "";
                 finish();
             } catch (NullPointerException ex) {

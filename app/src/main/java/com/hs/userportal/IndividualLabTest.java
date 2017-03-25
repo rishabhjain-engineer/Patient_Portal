@@ -72,6 +72,7 @@ import networkmngr.HugeDataPassing;
 import networkmngr.NetworkChangeListener;
 import swipelist.ItemAdapter;
 import swipelist.ItemRow;
+import ui.SignInActivity;
 
 /*import swipelist.ItemAdapter;
 import swipelist.ItemRow;*/
@@ -1594,7 +1595,7 @@ public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.
                 dialog.dismiss();
                 // finish();
 
-                Intent main = new Intent(IndividualLabTest.this, MainActivity.class);
+                Intent main = new Intent(IndividualLabTest.this, SignInActivity.class);
                 //main.putExtra("fromActivity", "signinMaplab");
                 Helper.fromactivity = "signinMaplab";
                 IndividualLabTest.this.from_widget = from_widget;

@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import ui.SignInActivity;
+
 /**
  * Created by rahul2 on 10/27/2015.
  */
@@ -83,7 +85,7 @@ public class Login_First extends Activity {
         loginwith_zrk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              Intent in=new Intent(Login_First.this,MainActivity.class);
+              Intent in=new Intent(Login_First.this, SignInActivity.class);
                 in.putExtra("fromActivity", "packages");
                 in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(in);

@@ -70,6 +70,7 @@ import java.util.Map;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.SignInActivity;
 
 public class MapLabDetails extends ActionBarActivity {
 
@@ -1187,7 +1188,7 @@ public class MapLabDetails extends ActionBarActivity {
                 dialog.dismiss();
                 // finish();
 
-                Intent main = new Intent(MapLabDetails.this, MainActivity.class);
+                Intent main = new Intent(MapLabDetails.this, SignInActivity.class);
                 main.putExtra("fromActivity", "signinMaplab");
                 MapLabDetails.this.from_widget = from_widget;
                 startActivity(main);
