@@ -1,7 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="#FFFFFF"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:id="@+id/sign_in_container"
@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:paddingBottom="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/singn_in_sciontra_iv"
@@ -64,9 +64,9 @@
             android:id="@+id/singn_in_forgot_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:gravity="end"
             android:text="@string/forgot"
-            android:layout_marginTop="3dp"
             android:textColor="@color/sign_in_blue_color"
             android:textSize="14dp" />
 
@@ -100,6 +100,12 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="25dp"
@@ -109,8 +115,8 @@
                 android:id="@+id/sign_in_fb_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
                 android:background="@null"
+                android:paddingLeft="5dp"
                 android:text="Login with Facebook"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
@@ -126,9 +132,9 @@
             <TextView
                 android:id="@+id/sign_in_dont_tv"
                 android:layout_width="wrap_content"
-                android:textColor="@color/sign_in_use_your_gray_color"
                 android:layout_height="wrap_content"
                 android:text="@string/donot_have_an_account"
+                android:textColor="@color/sign_in_use_your_gray_color"
                 android:textSize="14dp" />
 
             <TextView
