@@ -52,6 +52,21 @@ public class StaticHolder {
         String url = null;
         switch (serviceName) {
 
+            case CheckContactNoExist :
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckContactNoExist";
+                url = BASE_URL + "CheckContactNoExist";
+                break;
+
+            case CheckDupUserName :
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckDupUserName";
+                url = BASE_URL + "CheckDupUserName";
+                break;
+
+            case NewSignUpByPatient :
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/NewSignUpByPatient";
+                url = BASE_URL + "NewSignUpByPatient";
+                break;
+
             case CheckEmailIdIsExistMobile:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";
                 url = BASE_URL + "CheckEmailIdIsExistMobile";
@@ -487,7 +502,8 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo,
+        CheckContactNoExist , CheckDupUserName, NewSignUpByPatient
     }
 
 }

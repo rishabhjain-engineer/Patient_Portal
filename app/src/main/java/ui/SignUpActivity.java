@@ -1,4 +1,3 @@
-/*
 package ui;
 
 import android.app.AlertDialog;
@@ -53,6 +52,7 @@ import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,10 +64,9 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 
-*/
-/**
+/*
  * Created by Rishabh Jain on 23/3/17.
- *//*
+ */
 
 
 public class SignUpActivity extends BaseActivity {
@@ -238,7 +237,7 @@ public class SignUpActivity extends BaseActivity {
                 intent.putExtra("fromActivity", "main_activity");
                 startActivity(intent);
             } else if (viewId == R.id.sign_up_continue) {
-                if (mUserNameAvailable) {                                     //
+                if (mUserNameAvailable && !TextUtils.isEmpty(mGenderResult) && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString()) ) {           // check for : NON existing user name , gender value , DOB value
                     NewSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
                 }
             } else if (viewId == R.id.sign_up__dob_et) {
@@ -380,9 +379,9 @@ public class SignUpActivity extends BaseActivity {
                     String result = jsonObject.getString("d");
                     Log.e("Rishabh", "Create account : Response := " + result);
                     if (result.equalsIgnoreCase("username")) {
-                        mShowUserNameUI = true;                   // User Name UI is VISIBLE at Sign-UP second page .
+                        mShowUserNameUI = true;                   // User Name UI is VISIBLE at Sign-UP second page .; backend team doesnt have its username; so on next page . show ui and get username .
                     } else if (TextUtils.isEmpty(result)) {
-                        mShowUserNameUI = false;                     // User Name UI is INVISIBLE at Sign-UP second page . ; result = " " ; It means backend has USER NAME Already .
+                        mShowUserNameUI = false;                     // User Name UI is INVISIBLE at Sign-UP second page . ; result = " " ; backend team have user name , so dont show username UI in second page.
                     } else {
                         mPermitToNextSignUpPage = false;
                         showAlertMessage(result);                   // error message , phone number exist ; Stop user from going to sign up second page  ; use variable permitToNextSignUpPage = false ; by default it will be true
@@ -458,7 +457,7 @@ public class SignUpActivity extends BaseActivity {
             mSendData.put("password:", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob:", mSignUpDateOfBirth.getText().toString());
             mSendData.put("gender:", mGenderResult);
-            if(mUserNameAvailable) {
+            if(mShowUserNameUI) {
                 mSendData.put("username:",mSignUpUserNameEt.getText().toString());
             }else {
                 mSendData.put("username:",mSignUpContactNoEt.getText().toString());
@@ -479,13 +478,21 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
-                    String result = jsonObject.getString("d");
+                    String result = jsonObject.optString("d");
                     if(!TextUtils.isEmpty(result) && result.contains("error")){
                         showAlertMessage("Some Error Occured");
                     } else if (!TextUtils.isEmpty(result) && result.contains("user")) {
                         showAlertMessage("User name already exist !");
                     } else {
-
+                        try {
+                            JSONObject jsonObject1 = new JSONObject(result) ;
+                            JSONArray jsonArray = jsonObject1.optJSONArray("Table");
+                            if(jsonArray != null && jsonArray.length()>0) {
+                                
+                            }
+                        }catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
 
                 } catch (JSONException e) {
@@ -547,4 +554,3 @@ public class SignUpActivity extends BaseActivity {
         mProfileTracker.stopTracking();
     }
 }
-*/
