@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -13,8 +16,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -32,6 +38,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 import com.hs.userportal.logout;
@@ -40,7 +53,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import config.StaticHolder;
@@ -65,70 +81,79 @@ public class SignInActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
-    //private LoginButton login_button;
+    private LoginButton fbLoginButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        getViewObject();
         setupActionBar();
         mActionBar.hide();
         mServices = new Services(SignInActivity.this);
         mRequestQueue = Volley.newRequestQueue(this);
-        callbackManager = CallbackManager.Factory.create();
-        // login_button = (LoginButton) findViewById(R.id.login_button);
-        // login_button.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
-        //login_button.registerCallback(callbackManager, callback);
 
-        getViewObject();
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton = (LoginButton) findViewById(R.id.login_button);
+        fbLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+        fbLoginButton.registerCallback(callbackManager, facebookCallback);
+
+        if (getIntent().getExtras() != null) {
+            String data = getIntent().getStringExtra("from logout");
+            if (data != null && data.equalsIgnoreCase("logout")) {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+                LoginManager.getInstance().logOut();
+            }
+        }
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getSHa();
     }
 
-    /*FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+    private void getSHa(){
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.hs.userportal",PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String sign=Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                Log.e("MY KEY HASH:", sign);
+                Toast.makeText(getApplicationContext(),sign,         Toast.LENGTH_LONG).show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
+        }
+    }
+
+    private void onClickLogin() {
+        fbLoginButton.performClick();
+
+    }
+
+    private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     // JSON of FB ID as response.
                     try {
-                        userID = object.getString("id");
-                        firstName = object.getString("first_name");
-                        fnln = firstName;
-                        lastName = object.getString("last_name");
-                        lastname = lastName;
-                        try {
-                            eMail = object.getString("email");
-                        } catch (NullPointerException ex) {
-                            eMail = "";
-                        }
-                        dateofBirth = object.getString("birthday");
-                        String genderFB = object.getString("gender");
-                        if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
-                            gender = "Male";
-                        } else {
-                            gender = "Female";
-                        }
-                        contactNo = "";
-                        sendData = new JSONObject();
-                        sendData.put("EmailId", eMail);
-                        StaticHolder sttc_holdr = new StaticHolder(MainActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
+                        String fbUserID = object.getString("id");
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
+                        String firstName = object.optString("first_name");
+                        String lastName = object.optString("last_name");
+                        String eMail = object.optString("email");
+                        String dateofBirth = object.optString("birthday");
+                        String genderFB = object.optString("gender");
+                        JSONObject sendData = new JSONObject();
+                        sendData.put("facebookid", fbUserID);
+                        sendData.put("emailid", eMail);
+                        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
                         String url = sttc_holdr.request_Url();
-                        jr = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        // Exist or Not-Exist
-                                        try {
-                                            String emdata = response.getString("d");
-                                            if (emdata.equals("Exist")) {
-                                                //Toast.makeText(getApplicationContext(), "An account exist with this email id. Create account with other email.", Toast.LENGTH_LONG).show();
-                                                GetUserCodeFromEmail();
-                                            } else {
-                                                CheckEmailIdIsExistMobile();
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+
                                     }
                                 }, new com.android.volley.Response.ErrorListener() {
                             @Override
@@ -136,7 +161,7 @@ public class SignInActivity extends BaseActivity {
                                 System.out.println(error);
                             }
                         });
-                        queue.add(jr);
+                        mRequestQueue.add(jsonObjectRequest);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -144,20 +169,24 @@ public class SignInActivity extends BaseActivity {
             });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
-            request.setParameters(parameters);
-            request.executeAsync();
+            graphRequest.setParameters(parameters);
+            graphRequest.executeAsync();
         }
 
         @Override
         public void onCancel() {
-
         }
 
         @Override
         public void onError(FacebookException error) {
-
+            Log.i("ayaz", "FacebookException");
         }
-    };*/
+    };
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void getViewObject() {
         mSingnInUserEt = (EditText) findViewById(R.id.singn_in_user_et);
@@ -405,7 +434,7 @@ public class SignInActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 termsAndConditionDialog.dismiss();
-                 goToDashBoardPage();
+                goToDashBoardPage();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -419,6 +448,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private Dialog updateContactDialog;
+
     private void updateContactAlert() {
         updateContactDialog = new Dialog(SignInActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -490,7 +520,7 @@ public class SignInActivity extends BaseActivity {
         mRequestQueue.add(jsonObjectRequest);
     }
 
-    private String mForgotEmailRrPhoneNo;
+    private String mForgotEmailOrPhoneNo;
 
     private void showForgotAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignInActivity.this);
@@ -510,7 +540,7 @@ public class SignInActivity extends BaseActivity {
                 if (input.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
                 } else {
-                    mForgotEmailRrPhoneNo = input.getText().toString().trim();
+                    mForgotEmailOrPhoneNo = input.getText().toString().trim();
                     new SignInActivity.ForgotPasswordAsync().execute();
                 }
 
@@ -547,7 +577,7 @@ public class SignInActivity extends BaseActivity {
 
             mSendForgetDataObj = new JSONObject();
             try {
-                mSendForgetDataObj.put("EmailSmsPhone", mForgotEmailRrPhoneNo);
+                mSendForgetDataObj.put("EmailSmsPhone", mForgotEmailOrPhoneNo);
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -559,7 +589,7 @@ public class SignInActivity extends BaseActivity {
                     //  multipleLinked = false;
                     multipleLinked = true;
                     mSendForgetDataObj = new JSONObject();
-                    mSendForgetDataObj.put("contactNo", mForgotEmailRrPhoneNo);
+                    mSendForgetDataObj.put("contactNo", mForgotEmailOrPhoneNo);
                     mRecivedForgotPatientData = mServices.GetUserDetailsFromContactNoMobileService(mSendForgetDataObj);
                 } else {
                     multipleLinked = false;
@@ -757,9 +787,4 @@ public class SignInActivity extends BaseActivity {
             return false;
 
     }
-
-    private void onClickLogin() {
-        // login_button.performClick();
-    }
-
 }

@@ -17,7 +17,6 @@
             android:id="@+id/terms_and_condition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ddffg dsfdg dfsgf dsafdfg "
             android:textSize="15dp"></TextView>
 
         <LinearLayout
