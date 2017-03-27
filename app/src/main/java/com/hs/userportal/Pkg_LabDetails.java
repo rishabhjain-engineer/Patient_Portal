@@ -68,6 +68,7 @@ import java.util.Map;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.SignInActivity;
+import ui.SignUpActivity;
 
 public class Pkg_LabDetails extends Activity {
 
@@ -1038,7 +1039,7 @@ public class Pkg_LabDetails extends Activity {
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(Pkg_LabDetails.this, Register.class);
+                Intent i = new Intent(Pkg_LabDetails.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 Pkg_LabDetails.this.from_widget=from_widget;
                 startActivity(i);
