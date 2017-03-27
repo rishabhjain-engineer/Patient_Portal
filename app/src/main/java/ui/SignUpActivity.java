@@ -64,7 +64,7 @@ public class SignUpActivity extends BaseActivity {
 
     private AccessTokenTracker mAccessTokenTracker;
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck;
+    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck=false;
     private CallbackManager mCallbackManager;
     private Double mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
@@ -396,7 +396,7 @@ public class SignUpActivity extends BaseActivity {
     public void checkDupUserNameAPI() {
         mSendData = new JSONObject();
         try {
-            mSendData.put("userName:", mSignUpUserNameEt.getText().toString());
+            mSendData.put("userName", mSignUpUserNameEt.getText().toString());
         } catch (JSONException e) {
             Log.e("Rishabh", "Signup NEXT page:  userName exception: " + e);
             e.printStackTrace();
@@ -432,15 +432,15 @@ public class SignUpActivity extends BaseActivity {
     public void newSignUpByPatientAPI() {
         mSendData = new JSONObject();
         try {
-            mSendData.put("name:", mSignUpNameEt.getText().toString());
-            mSendData.put("contactNo:", mSignUpContactNoEt.getText().toString());
-            mSendData.put("password:", mSignUpPasswordEt.getText().toString());
-            mSendData.put("dob:", mSignUpDateOfBirth.getText().toString());
-            mSendData.put("gender:", mGenderResult);
+            mSendData.put("name", mSignUpNameEt.getText().toString());
+            mSendData.put("contactNo", mSignUpContactNoEt.getText().toString());
+            mSendData.put("password", mSignUpPasswordEt.getText().toString());
+            mSendData.put("dob", mSignUpDateOfBirth.getText().toString());
+            mSendData.put("gender", mGenderResult);
             if (mShowUserNameUI) {
-                mSendData.put("username:", mSignUpUserNameEt.getText().toString());
+                mSendData.put("username", mSignUpUserNameEt.getText().toString());
             } else {
-                mSendData.put("username:", mSignUpContactNoEt.getText().toString());
+                mSendData.put("username", mSignUpContactNoEt.getText().toString());
             }
 
             if(mSignUpThroughFacebookCheck) {
