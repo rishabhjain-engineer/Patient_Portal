@@ -505,7 +505,8 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient
     }
 
 }

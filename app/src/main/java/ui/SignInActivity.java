@@ -226,9 +226,9 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-               /* Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 intent.putExtra("fromActivity", "main_activity");
-                startActivity(intent);*/
+                startActivity(intent);
             }
 
         }
