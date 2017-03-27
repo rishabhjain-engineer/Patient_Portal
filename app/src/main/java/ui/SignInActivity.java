@@ -36,6 +36,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.R;
@@ -87,6 +88,14 @@ public class SignInActivity extends BaseActivity {
         fbLoginButton = (LoginButton) findViewById(R.id.login_button);
         fbLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
         fbLoginButton.registerCallback(callbackManager, facebookCallback);
+
+        if (getIntent().getExtras() != null) {
+            String data = getIntent().getStringExtra("from logout");
+            if (data != null && data.equalsIgnoreCase("logout")) {
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+                LoginManager.getInstance().logOut();
+            }
+        }
 
         getViewObject();
     }
