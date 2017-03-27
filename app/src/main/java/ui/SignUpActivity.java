@@ -163,9 +163,9 @@ public class SignUpActivity extends BaseActivity {
                     showAlertMessage("Please fill all the details. ");
                 } else if ((contactNo.length() != 10)) {
                     showAlertMessage("Enter Valid 10 digit Contact no.");
-                }/* else if (!isValidPassword(password)) {
-                    showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
-                } */ else if (!con.isConnectingToInternet()) {
+                } else if (!isValidPassword(password)) {
+                    showAlertMessage("1. Check password length from 8-16" + "\n" + "2. Password must be AplhaNumeric");
+                }  else if (!con.isConnectingToInternet()) {
                     showAlertMessage("No Internet Connection.");
                 } else {
                     createAccount();
