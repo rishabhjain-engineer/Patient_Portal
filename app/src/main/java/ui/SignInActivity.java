@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,6 +83,8 @@ public class SignInActivity extends BaseActivity {
     private CallbackManager callbackManager = null;
     private AccessTokenTracker mtracker = null;
     private LoginButton fbLoginButton;
+    private String mDAsString;
+    String mUserName = "", mPassWord = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,10 +109,10 @@ public class SignInActivity extends BaseActivity {
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        //getSHa();
+        //getSha();
     }
 
-    private void getSHa() {
+    private void getSha() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo("com.hs.userportal", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
@@ -157,14 +160,34 @@ public class SignInActivity extends BaseActivity {
                                             if (tableArray != null) {
                                                 JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                                 mUserId = innerJsonObject.optString("UserId");
+                                                mPatientCode = innerJsonObject.optString("PatientCode");
+                                                mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                mRoleName = innerJsonObject.optString("RoleName");
+                                                mFirstName = innerJsonObject.optString("FirstName");
+                                                mMiddleName = innerJsonObject.optString("MiddleName");
+                                                mVersionNumber = innerJsonObject.optString("versionNo");
+                                                mLastName = innerJsonObject.optString("LastName");
+                                                mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                                                mContactNo = innerJsonObject.optString("ContactNo");
+                                                mTerms = innerJsonObject.optBoolean("Terms");
                                             } else {
                                                 isToShowSignInErrorMessage = true;
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
+
                                         if (isToShowSignInErrorMessage) {
-                                            showAlertMessage(mDAsString);
+                                            if (mDAsString.equalsIgnoreCase("Offer to create account")) {
+                                                facebookDecesionAlertDialog(mDAsString, false);
+                                            } else if (mDAsString.contains("|")) {
+                                                String[] array = mDAsString.split("|");
+                                                mUserName = array[1];
+                                                mPassWord = array[2];
+                                                facebookDecesionAlertDialog(array[0], true);
+                                            } else {
+                                                showAlertMessage(mDAsString);
+                                            }
                                         }
                                     }
                                 }, new com.android.volley.Response.ErrorListener() {
@@ -226,9 +249,7 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                intent.putExtra("fromActivity", "main_activity");
-                startActivity(intent);
+                goToSignUpPage();
             }
 
         }
@@ -256,19 +277,17 @@ public class SignInActivity extends BaseActivity {
 
     private JSONObject loginApiSendData, loginApiReceivedData;
     private boolean isToShowSignInErrorMessage;
-    private String mDAsString;
 
     private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
-        String userName = "";
-        String passWord = "", buildNo;
+        String buildNo;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             isToShowSignInErrorMessage = false;
-            userName = mSingnInUserEt.getText().toString().trim();
-            passWord = mSingnInPasswordEt.getText().toString();
+            mUserName = mSingnInUserEt.getText().toString().trim();
+            mPassWord = mSingnInPasswordEt.getText().toString();
             buildNo = Build.VERSION.RELEASE;
             progress = new ProgressDialog(SignInActivity.this);
             progress.setCancelable(false);
@@ -282,8 +301,8 @@ public class SignInActivity extends BaseActivity {
         protected Void doInBackground(Void... params) {
             loginApiSendData = new JSONObject();
             try {
-                loginApiSendData.put("UserName", userName);
-                loginApiSendData.put("Password", passWord);
+                loginApiSendData.put("UserName", mUserName);
+                loginApiSendData.put("Password", mPassWord);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
             } catch (JSONException e) {
@@ -776,6 +795,12 @@ public class SignInActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    private void goToSignUpPage() {
+        Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+        intent.putExtra("fromActivity", "main_activity");
+        startActivity(intent);
+    }
+
     private boolean isValidatePhoneNumber(String phoneNo) {
         // validate phone numbers of format "1234567890"
         if (phoneNo.matches("\\d{10}"))
@@ -795,5 +820,41 @@ public class SignInActivity extends BaseActivity {
         else
             return false;
 
+    }
+
+    private void facebookDecesionAlertDialog(String message, final boolean isToLogin) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        stayButton.setText("No");
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (isToLogin) {
+                    new NewLogInAsync().execute();
+                } else {
+                    goToSignUpPage();
+                }
+            }
+        });
+
+        stayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }
