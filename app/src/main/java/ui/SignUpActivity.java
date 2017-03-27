@@ -43,6 +43,7 @@ import com.hs.userportal.Helper;
 import com.hs.userportal.R;
 import com.hs.userportal.Register;
 import com.hs.userportal.Services;
+import com.hs.userportal.logout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +55,7 @@ import java.util.regex.Pattern;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import utils.PreferenceHelper;
 
 /*
  * Created by Rishabh Jain on 23/3/17.
@@ -65,7 +67,7 @@ public class SignUpActivity extends BaseActivity {
     private Button mSignUpBtn, mSignUpContinueBtn;
     private boolean mShowUserNameUI = false, mUserNameAvailable = true, mSignUpThroughFacebookCheck = false;
     private CallbackManager mCallbackManager;
-    private Double mVersionNo;
+    private String mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
     private FacebookCallback<LoginResult> mCallback;
@@ -163,7 +165,7 @@ public class SignUpActivity extends BaseActivity {
                     showAlertMessage("Enter Valid 10 digit Contact no.");
                 }/* else if (!isValidPassword(password)) {
                     showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
-                } */else if (!con.isConnectingToInternet()) {
+                } */ else if (!con.isConnectingToInternet()) {
                     showAlertMessage("No Internet Connection.");
                 } else {
                     createAccount();
@@ -410,35 +412,31 @@ public class SignUpActivity extends BaseActivity {
             public void onResponse(JSONObject jsonObject) {
 
                 String result = jsonObject.optString("d");
-                Log.e("Rishabh ", "New sign up by Patient API response := " + result);
-                if (!TextUtils.isEmpty(result) && result.contains("error")) {
-                    showAlertMessage("Some Error Occured");
-                } else if (!TextUtils.isEmpty(result) && result.contains("user")) {
-                    showAlertMessage("User name already exist !");
-                } else {
-                    try {
-                        JSONObject jsonObject1 = new JSONObject(result);
-                        JSONArray jsonArray = jsonObject1.optJSONArray("Table");
-                        if (jsonArray != null && jsonArray.length() > 0) {
-                            JSONObject innerJsonObject = new JSONObject(String.valueOf(jsonArray));
-                            mUserID = innerJsonObject.getString("UserId");
-                            mPatientCode = innerJsonObject.getString("PatientCode");
-                            mPatientBusinessFlag = innerJsonObject.getInt("PatientBussinessFlag");
-                            mPatientBussinessDateTime = innerJsonObject.getString("PatientBussinessDateTime");
-                            mRoleName = innerJsonObject.getString("RoleName");
-                            mFirstName = innerJsonObject.getString("FirstName");
-                            mMiddleName = innerJsonObject.getString("MiddleName");
-                            mLastName = innerJsonObject.getString("LastName");
-                            mVersionNo = innerJsonObject.getDouble("versionNo");
-                            mDisclaimerType = innerJsonObject.getString("disclaimerType");
-                            mUserVersionNo = innerJsonObject.getString("UserVersionNo");
-                            mContactNo = innerJsonObject.getString("ContactNo");
-
-                        }
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
+                try {
+                    JSONObject jsonObject1 = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject1.optJSONArray("Table");
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        JSONObject innerJsonObject = new JSONObject(String.valueOf(jsonArray));
+                        mUserID = innerJsonObject.optString("UserId");
+                        mPatientCode = innerJsonObject.optString("PatientCode");
+                        mPatientBusinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessDateTime");
+                        mRoleName = innerJsonObject.optString("RoleName");
+                        mFirstName = innerJsonObject.optString("FirstName");
+                        mMiddleName = innerJsonObject.optString("MiddleName");
+                        mLastName = innerJsonObject.optString("LastName");
+                        mVersionNo = innerJsonObject.optString("versionNo");
+                        mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                        mUserVersionNo = innerJsonObject.optString("UserVersionNo");
+                        mContactNo = innerJsonObject.optString("ContactNo");
+                        goToDashBoardPage();
+                    }else{
+                        showAlertMessage(result);
                     }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -448,6 +446,7 @@ public class SignUpActivity extends BaseActivity {
         });
         mRequestQueue.add(mJsonObjectRequest);
     }
+
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -487,6 +486,16 @@ public class SignUpActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void goToDashBoardPage() {
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
+        Intent intent = new Intent(SignUpActivity.this, logout.class);
+        startActivity(intent);
     }
 
 }
