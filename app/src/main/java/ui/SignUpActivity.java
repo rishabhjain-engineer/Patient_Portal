@@ -62,13 +62,12 @@ import config.StaticHolder;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck=false;
+    private Boolean mIsPasswordCorrect=false, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = false, mSignUpThroughFacebookCheck=false, mContactNoVerified = false;
     private CallbackManager mCallbackManager;
     private Double mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
     private FacebookCallback<LoginResult> mCallback;
-    private Helper mHelper;
     private static int mYear, mMonth, mDay, mPatientBusinessFlag;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
@@ -137,36 +136,6 @@ public class SignUpActivity extends BaseActivity {
             }
         });
 
-        mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String name = mSignUpNameEt.getText().toString();
-                    if (TextUtils.isEmpty(name)) {
-                        Toast.makeText(SignUpActivity.this, "Please enter your name.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-        mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    mobileNumberVaildInput();
-                }
-            }
-        });
-
-        mSignUpPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    passwordCheck();
-                }
-            }
-        });
-
         mSignUpDateOfBirth.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button ; CREATE ACCOUNT BUTTON
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
@@ -181,8 +150,12 @@ public class SignUpActivity extends BaseActivity {
 
             int viewId = v.getId();
 
-            if (viewId == R.id.create_account_bt && !TextUtils.isEmpty(mSignUpNameEt.getText()) && !TextUtils.isEmpty(mSignUpContactNoEt.getText()) && !TextUtils.isEmpty(mSignUpPasswordEt.getText()) && mIsPasswordCorrect) {
-                createAccount();                                                                     // API hit CheckContactNoExist , to check corresponding user name of given contact number .
+            if (viewId == R.id.create_account_bt) {
+                signUpBtnhandling() ;
+                if(mContactNoVerified && mIsPasswordCorrect){
+                    createAccount();
+                }
+                                                                                 // API hit CheckContactNoExist , to check corresponding user name of given contact number .
                 if (mPermitToNextSignUpPage) {
                     mSignUpFirstPageContainer.setVisibility(View.GONE);                               // Sign up first page visibility gone
                     mSignUpSecondPageContainer.setVisibility(View.VISIBLE);                           // Sign up Second page visibility visible
@@ -207,10 +180,24 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
+    private void signUpBtnhandling() {
+        String name = mSignUpNameEt.getText().toString();
+        String contactNo = mSignUpContactNoEt.getText().toString();
+        String password = mSignUpPasswordEt.getText().toString();
+
+        if(TextUtils.isEmpty(name) && TextUtils.isEmpty(contactNo) && TextUtils.isEmpty(password) ) {
+            showAlertMessage("Please fill all the details. ");
+        }
+        mobileNumberVaildInput();
+        passwordCheck();
+    }
+
     public void mobileNumberVaildInput() {
         String contact = mSignUpContactNoEt.getText().toString();
-        if (TextUtils.isEmpty(contact) && contact.length() != 10) {
+        if (contact.length() != 10) {
             showAlertMessage("Enter Valid 10 digit Contact no.");
+        }else {
+            mContactNoVerified = true ;
         }
     }
 
@@ -219,7 +206,7 @@ public class SignUpActivity extends BaseActivity {
         if (!TextUtils.isEmpty(pass) && pass.length() > 0) {
             mIsPasswordCorrect = isValidPassword(pass);
             if (!mIsPasswordCorrect) {
-                showAlertMessage(" 1. Password must be of length 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
+                showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
             }
         }
     }
