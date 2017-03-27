@@ -495,7 +495,7 @@ public class SignInActivity extends BaseActivity {
         mRequestQueue.add(jsonObjectRequest);
     }
 
-    private String mForgotEmailRrPhoneNo;
+    private String mForgotEmailOrPhoneNo;
 
     private void showForgotAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignInActivity.this);
@@ -515,7 +515,7 @@ public class SignInActivity extends BaseActivity {
                 if (input.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
                 } else {
-                    mForgotEmailRrPhoneNo = input.getText().toString().trim();
+                    mForgotEmailOrPhoneNo = input.getText().toString().trim();
                     new SignInActivity.ForgotPasswordAsync().execute();
                 }
 
@@ -552,7 +552,7 @@ public class SignInActivity extends BaseActivity {
 
             mSendForgetDataObj = new JSONObject();
             try {
-                mSendForgetDataObj.put("EmailSmsPhone", mForgotEmailRrPhoneNo);
+                mSendForgetDataObj.put("EmailSmsPhone", mForgotEmailOrPhoneNo);
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -564,7 +564,7 @@ public class SignInActivity extends BaseActivity {
                     //  multipleLinked = false;
                     multipleLinked = true;
                     mSendForgetDataObj = new JSONObject();
-                    mSendForgetDataObj.put("contactNo", mForgotEmailRrPhoneNo);
+                    mSendForgetDataObj.put("contactNo", mForgotEmailOrPhoneNo);
                     mRecivedForgotPatientData = mServices.GetUserDetailsFromContactNoMobileService(mSendForgetDataObj);
                 } else {
                     multipleLinked = false;

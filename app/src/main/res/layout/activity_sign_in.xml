@@ -91,14 +91,10 @@
             android:textSize="15dp" />
 
 
-        <LinearLayout
-            android:id="@+id/sign_in_fb_container"
+        <FrameLayout
+            android:id="@+id/FrameLayout1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/sign_in_button_text_height"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/sign_in_sign_up_fb_bg"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"
@@ -106,21 +102,33 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="25dp"
-                android:src="@drawable/fb" />
+            <LinearLayout
+                android:id="@+id/sign_in_fb_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sign_in_button_text_height"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/sign_in_sign_up_fb_bg"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/sign_in_fb_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:paddingLeft="5dp"
-                android:text="Login with Facebook"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
-        </LinearLayout>
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/fb" />
+
+                <Button
+                    android:id="@+id/sign_in_fb_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:paddingLeft="5dp"
+                    android:text="Login with Facebook"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+            </LinearLayout>
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
