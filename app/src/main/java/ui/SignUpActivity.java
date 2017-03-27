@@ -76,11 +76,12 @@ public class SignUpActivity extends BaseActivity {
     private Button mSignUpBtn, mSignUpContinueBtn;
     private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck;
     private CallbackManager mCallbackManager;
+    private Double mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
     private FacebookCallback<LoginResult> mCallback;
     private Helper mHelper;
-    private static int mYear, mMonth, mDay;
+    private static int mYear, mMonth, mDay, mPatientBusinessFlag;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
     private LinearLayout mSignUpFbContainer , mSignUpSecondPageContainer, mSignUpFirstPageContainer;
@@ -91,6 +92,7 @@ public class SignUpActivity extends BaseActivity {
     private SharedPreferences mSharedPreferences, mNewSharedPreferences, mDemoPreferences;
     private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo;
     private String abc, id, cop, fnln, tpwd, PH;    // SHARED PREFERENCES VARIABLES ;
+    private String mUserID , mPatientCode , mPatientBussinessDateTime , mRoleName , mMiddleName , mDisclaimerType , mUserVersionNo;
 
     private Spinner mSignUpGender;
     private String mUserCodeFromEmail = null, mBuildNo, mGenderResult;
@@ -146,6 +148,8 @@ public class SignUpActivity extends BaseActivity {
         getViewObject();
         mFacebookWidgetLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
         mFacebookWidgetLoginButton.registerCallback(mCallbackManager, mCallback);
+        mSignUpFirstPageContainer.setVisibility(View.VISIBLE);
+        mSignUpSecondPageContainer.setVisibility(View.GONE);
     }
 
     private void getViewObject() {
@@ -210,7 +214,7 @@ public class SignUpActivity extends BaseActivity {
         });
 
         mSignUpDateOfBirth.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
-        mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button
+        mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button ; CREATE ACCOUNT BUTTON
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
         mSignInTv.setOnClickListener(mOnClickListener);                // onClickListener on Already have account : " sign-in" TextView
         mSignUpContinueBtn.setOnClickListener(mOnClickListener);       // onClickListener on SignUp Second Page: " CONTINUE BUTTON" to proceed for dashboard ; if all successfull
@@ -365,7 +369,7 @@ public class SignUpActivity extends BaseActivity {
 
         mSendData = new JSONObject();
         try {
-            mSendData.put("ContactNo:", mSignUpContactNoEt.getText().toString());
+            mSendData.put("ContactNo", mSignUpContactNoEt.getText().toString());
         } catch (JSONException e) {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
@@ -463,10 +467,10 @@ public class SignUpActivity extends BaseActivity {
                 mSendData.put("username:",mSignUpContactNoEt.getText().toString());
             }
 
-            if(mSignUpThroughFacebookCheck) {
+           /* if(mSignUpThroughFacebookCheck) {
                 mSendData.put("email", eMail);
                 mSendData.put("facebookId", userID);            // variable userId is retrieved from facebook ; it is facebook id .
-            }
+            }*/
 
         } catch (JSONException e) {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
@@ -477,8 +481,9 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                try {
+
                     String result = jsonObject.optString("d");
+                Log.e("Rishabh " , "New sign up by Patient API response := " +result);
                     if(!TextUtils.isEmpty(result) && result.contains("error")){
                         showAlertMessage("Some Error Occured");
                     } else if (!TextUtils.isEmpty(result) && result.contains("user")) {
@@ -488,16 +493,25 @@ public class SignUpActivity extends BaseActivity {
                             JSONObject jsonObject1 = new JSONObject(result) ;
                             JSONArray jsonArray = jsonObject1.optJSONArray("Table");
                             if(jsonArray != null && jsonArray.length()>0) {
-                                
+                                JSONObject innerJsonObject =  new JSONObject(String.valueOf(jsonArray));
+                                mUserID = innerJsonObject.getString("UserId");
+                                mPatientCode = innerJsonObject.getString("PatientCode") ;
+                                mPatientBusinessFlag = innerJsonObject.getInt("PatientBussinessFlag") ;
+                                mPatientBussinessDateTime = innerJsonObject.getString("PatientBussinessDateTime") ;
+                                mRoleName = innerJsonObject.getString("RoleName") ;
+                                mFirstName = innerJsonObject.getString("FirstName") ;
+                                mMiddleName = innerJsonObject.getString("MiddleName") ;
+                                mLastName = innerJsonObject.getString("LastName") ;
+                                mVersionNo = innerJsonObject.getDouble("versionNo") ;
+                                mDisclaimerType = innerJsonObject.getString("disclaimerType") ;
+                                mUserVersionNo = innerJsonObject.getString("UserVersionNo") ;
+                                mContactNo = innerJsonObject.getString("ContactNo") ;
+
                             }
                         }catch (JSONException e1) {
                             e1.printStackTrace();
                         }
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
         }, new Response.ErrorListener() {
             @Override
