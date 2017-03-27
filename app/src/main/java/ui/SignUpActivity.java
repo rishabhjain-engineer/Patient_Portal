@@ -172,9 +172,9 @@ public class SignUpActivity extends BaseActivity {
                     showAlertMessage("Please fill all the details. ");
                 } else if ((contactNo.length() != 10)) {
                     showAlertMessage("Enter Valid 10 digit Contact no.");
-                }/* else if (!isValidPassword(password)) {
-                    showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
-                } */ else if (!con.isConnectingToInternet()) {
+                } else if (!isValidPassword(password)) {
+                    showAlertMessage("1. Check password length from 8-16" + "\n" + "2. Password must be AplhaNumeric");
+                }  else if (!con.isConnectingToInternet()) {
                     showAlertMessage("No Internet Connection.");
                 } else {
                     createAccount();
@@ -393,12 +393,15 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void newSignUpByPatientAPI() {
+        String dateExtracted = mSignUpDateOfBirth.getText().toString() ;
+        String dateFormatToSend = dateExtracted.replace("-","/");
+        Log.e("Rishabh", "date formaated:= "+dateFormatToSend);
         mSendData = new JSONObject();
         try {
             mSendData.put("name", mSignUpNameEt.getText().toString());
             mSendData.put("contactNo", mSignUpContactNoEt.getText().toString());
             mSendData.put("password", mSignUpPasswordEt.getText().toString());
-            mSendData.put("dob", mSignUpDateOfBirth.getText().toString());
+            mSendData.put("dob", dateFormatToSend);
             mSendData.put("gender", mGenderResult);
             if (mShowUserNameUI) {
                 mSendData.put("username", mSignUpUserNameEt.getText().toString());
@@ -501,7 +504,11 @@ public class SignUpActivity extends BaseActivity {
     private void goToDashBoardPage() {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
+        if(mShowUserNameUI){
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
+        }else {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpContactNoEt.getEditableText().toString());
+        }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignUpActivity.this, logout.class);

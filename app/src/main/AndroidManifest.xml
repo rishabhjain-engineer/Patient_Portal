@@ -441,7 +441,8 @@
 
         <activity
             android:name="ui.SignUpActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateHidden"/>
 
 
 
