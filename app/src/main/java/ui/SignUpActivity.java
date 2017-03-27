@@ -374,7 +374,7 @@ public class SignUpActivity extends BaseActivity {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckContactNoExist);     // TODO add this API into SERVICE class
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.CheckContactNoExist);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override

@@ -106,18 +106,18 @@ public class SignInActivity extends BaseActivity {
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        getSHa();
+        //getSHa();
     }
 
-    private void getSHa(){
+    private void getSHa() {
         try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.hs.userportal",PackageManager.GET_SIGNATURES);
+            PackageInfo info = getPackageManager().getPackageInfo("com.hs.userportal", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                String sign=Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                String sign = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 Log.e("MY KEY HASH:", sign);
-                Toast.makeText(getApplicationContext(),sign,         Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), sign, Toast.LENGTH_LONG).show();
             }
         } catch (PackageManager.NameNotFoundException e) {
         } catch (NoSuchAlgorithmException e) {
@@ -139,26 +139,37 @@ public class SignInActivity extends BaseActivity {
                     try {
                         String fbUserID = object.getString("id");
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
-                        String firstName = object.optString("first_name");
-                        String lastName = object.optString("last_name");
                         String eMail = object.optString("email");
-                        String dateofBirth = object.optString("birthday");
-                        String genderFB = object.optString("gender");
                         JSONObject sendData = new JSONObject();
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
-                        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);
+                        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
                         String url = sttc_holdr.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-
+                                        mDAsString = response.optString("d");
+                                        JSONObject jsonObject = null;
+                                        try {
+                                            jsonObject = new JSONObject(mDAsString);
+                                            JSONArray tableArray = jsonObject.optJSONArray("Table");
+                                            if (tableArray != null) {
+                                                JSONObject innerJsonObject = tableArray.optJSONObject(0);
+                                                mUserId = innerJsonObject.optString("UserId");
+                                            } else {
+                                                isToShowSignInErrorMessage = true;
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (isToShowSignInErrorMessage) {
+                                            showAlertMessage(mDAsString);
+                                        }
                                     }
                                 }, new com.android.volley.Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                System.out.println(error);
                             }
                         });
                         mRequestQueue.add(jsonObjectRequest);
@@ -215,9 +226,9 @@ public class SignInActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_fb_container) {
                 onClickLogin();
             } else if (viewId == R.id.sign_up_tv) {
-               /* Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 intent.putExtra("fromActivity", "main_activity");
-                startActivity(intent);*/
+                startActivity(intent);
             }
 
         }
@@ -707,7 +718,6 @@ public class SignInActivity extends BaseActivity {
 
                         if (forgotMail.contains("@") && forgotMail.contains(".")) {
 
-                            // System.out.println(forgotMail);
                             String s1[] = forgotMail.split("@");
                             String part1 = s1[0];
                             String second = s1[1];
@@ -721,7 +731,6 @@ public class SignInActivity extends BaseActivity {
                                 // forgotMail = replaceByAsterisk(part1, 1, 1)
                                 // + "@" + replaceByAsterisk(part2, 1, 1)
                                 // + "." + part3;
-                                // System.out.println(forgotMail);
 
                                 layout = new LinearLayout(SignInActivity.this);
                                 layout.setOrientation(LinearLayout.HORIZONTAL);
