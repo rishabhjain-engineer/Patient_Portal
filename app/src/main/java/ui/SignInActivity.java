@@ -15,6 +15,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -79,6 +80,7 @@ public class SignInActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        getViewObject();
         setupActionBar();
         mActionBar.hide();
         mServices = new Services(SignInActivity.this);
@@ -96,8 +98,7 @@ public class SignInActivity extends BaseActivity {
                 LoginManager.getInstance().logOut();
             }
         }
-
-        getViewObject();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private void onClickLogin() {
