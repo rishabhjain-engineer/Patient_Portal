@@ -35,6 +35,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -108,6 +109,7 @@ public class SignUpActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDemoPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mRequestQueue = Volley.newRequestQueue(this);
         mBuildNo = Build.VERSION.RELEASE;
         mDemoPreferences.getBoolean("Demo", false);
         if (mDemoPreferences.contains("Demo")) {
@@ -400,6 +402,7 @@ public class SignUpActivity extends BaseActivity {
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
+        mRequestQueue.add(mJsonObjectRequest);
     }
 
     public void signupNextPage() {
@@ -451,6 +454,7 @@ public class SignUpActivity extends BaseActivity {
                 Log.e("Rishabh", "CheckDupUserNameAPI volley error :=" + volleyError);
             }
         });
+        mRequestQueue.add(mJsonObjectRequest);
     }
 
     public void NewSignUpByPatientAPI() {
@@ -519,6 +523,7 @@ public class SignUpActivity extends BaseActivity {
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
+        mRequestQueue.add(mJsonObjectRequest);
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
