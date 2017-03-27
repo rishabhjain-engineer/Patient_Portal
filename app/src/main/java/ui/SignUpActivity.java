@@ -53,6 +53,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.StaticHolder;
+import networkmngr.ConnectionDetector;
 
 /*
  * Created by Rishabh Jain on 23/3/17.
@@ -62,7 +63,7 @@ import config.StaticHolder;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private Boolean mIsPasswordCorrect=false, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = false, mSignUpThroughFacebookCheck=false, mContactNoVerified = false;
+    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mSignUpThroughFacebookCheck = false;
     private CallbackManager mCallbackManager;
     private Double mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
@@ -80,7 +81,7 @@ public class SignUpActivity extends BaseActivity {
 
     private Spinner mSignUpGender;
     private String mUserCodeFromEmail = null, mBuildNo, mGenderResult, fnln;
-    private static String mFromActivity, mDateOfBirthResult ;
+    private static String mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
     private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,16})";
     private String[] mGenderValue = {"MALE", "FEMALE"};
@@ -151,22 +152,28 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
-                signUpBtnhandling() ;
-                if(mContactNoVerified && mIsPasswordCorrect){
+
+                String name = mSignUpNameEt.getText().toString();
+                String contactNo = mSignUpContactNoEt.getText().toString();
+                String password = mSignUpPasswordEt.getText().toString();
+                ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
+                    showAlertMessage("Please fill all the details. ");
+                } else if ((contactNo.length() != 10)) {
+                    showAlertMessage("Enter Valid 10 digit Contact no.");
+                }/* else if (!isValidPassword(password)) {
+                    showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
+                } */else if (!con.isConnectingToInternet()) {
+                    showAlertMessage("No Internet Connection.");
+                } else {
                     createAccount();
-                }
-                                                                                 // API hit CheckContactNoExist , to check corresponding user name of given contact number .
-                if (mPermitToNextSignUpPage) {
-                    mSignUpFirstPageContainer.setVisibility(View.GONE);                               // Sign up first page visibility gone
-                    mSignUpSecondPageContainer.setVisibility(View.VISIBLE);                           // Sign up Second page visibility visible
-                    signupNextPage();                                                                // call to second sign-up page
                 }
             } else if (viewId == R.id.signup_fb_btn) {
                 facebookSignUp();
             } else if (viewId == R.id.sign_in_tv) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);    // TODO check this Intent to Register.class
-                intent.putExtra("fromActivity", "main_activity");
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(intent);
+                finish();
             } else if (viewId == R.id.sign_up_continue) {
                 if (mUserNameAvailable && !TextUtils.isEmpty(mGenderResult) && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
                     newSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
@@ -180,38 +187,7 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
-    private void signUpBtnhandling() {
-        String name = mSignUpNameEt.getText().toString();
-        String contactNo = mSignUpContactNoEt.getText().toString();
-        String password = mSignUpPasswordEt.getText().toString();
-
-        if(TextUtils.isEmpty(name) && TextUtils.isEmpty(contactNo) && TextUtils.isEmpty(password) ) {
-            showAlertMessage("Please fill all the details. ");
-        }
-        mobileNumberVaildInput();
-        passwordCheck();
-    }
-
-    public void mobileNumberVaildInput() {
-        String contact = mSignUpContactNoEt.getText().toString();
-        if (contact.length() != 10) {
-            showAlertMessage("Enter Valid 10 digit Contact no.");
-        }else {
-            mContactNoVerified = true ;
-        }
-    }
-
-    public void passwordCheck() {
-        String pass = mSignUpPasswordEt.getText().toString();
-        if (!TextUtils.isEmpty(pass) && pass.length() > 0) {
-            mIsPasswordCorrect = isValidPassword(pass);
-            if (!mIsPasswordCorrect) {
-                showAlertMessage(" 1. Check password length from 8 to 16 " + "\n" + "2. Password must be AplhaNumeric");
-            }
-        }
-    }
-
-    public boolean isValidPassword(String password) {
+    private boolean isValidPassword(String password) {
         Pattern pattern;
         Matcher matcher;
         pattern = Pattern.compile(PASSWORD_PATTERN);
@@ -219,7 +195,7 @@ public class SignUpActivity extends BaseActivity {
         return matcher.matches();
     }
 
-    public void facebookSignUp() {
+    private void facebookSignUp() {
         mSignUpThroughFacebookCheck = true;
         mFacebookWidgetLoginButton.performClick();
 
@@ -308,7 +284,7 @@ public class SignUpActivity extends BaseActivity {
         };
     }
 
-    public void createAccount() {
+    private void createAccount() {
 
         mSendData = new JSONObject();
         try {
@@ -322,6 +298,7 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                boolean permitToNextSignUpPage = true;
                 try {
                     String result = jsonObject.getString("d");
                     Log.e("Rishabh", "Create account : Response := " + result);
@@ -330,8 +307,13 @@ public class SignUpActivity extends BaseActivity {
                     } else if (TextUtils.isEmpty(result)) {
                         mShowUserNameUI = false;                     // User Name UI is INVISIBLE at Sign-UP second page . ; result = " " ; backend team have user name , so dont show username UI in second page.
                     } else {
-                        mPermitToNextSignUpPage = false;
+                        permitToNextSignUpPage = false;
                         showAlertMessage(result);                   // error message , phone number exist ; Stop user from going to sign up second page  ; use variable permitToNextSignUpPage = false ; by default it will be true
+                    }
+                    if (permitToNextSignUpPage) {
+                        mSignUpFirstPageContainer.setVisibility(View.GONE);
+                        mSignUpSecondPageContainer.setVisibility(View.VISIBLE);
+                        signupNextPage();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -346,7 +328,7 @@ public class SignUpActivity extends BaseActivity {
         mRequestQueue.add(mJsonObjectRequest);
     }
 
-    public void signupNextPage() {
+    private void signupNextPage() {
         // TODO ; decide whether to DISPLAY USERNAME UI or not; based on boolean variable mShowUserNameUI .
         if (mShowUserNameUI) {
             mSignUpUserNameEt.setVisibility(View.VISIBLE);
@@ -362,7 +344,7 @@ public class SignUpActivity extends BaseActivity {
 
     }
 
-    public void checkDupUserNameAPI() {
+    private void checkDupUserNameAPI() {
         mSendData = new JSONObject();
         try {
             mSendData.put("userName", mSignUpUserNameEt.getText().toString());
@@ -398,7 +380,7 @@ public class SignUpActivity extends BaseActivity {
         mRequestQueue.add(mJsonObjectRequest);
     }
 
-    public void newSignUpByPatientAPI() {
+    private void newSignUpByPatientAPI() {
         mSendData = new JSONObject();
         try {
             mSendData.put("name", mSignUpNameEt.getText().toString());
@@ -412,7 +394,7 @@ public class SignUpActivity extends BaseActivity {
                 mSendData.put("username", mSignUpContactNoEt.getText().toString());
             }
 
-            if(mSignUpThroughFacebookCheck) {
+            if (mSignUpThroughFacebookCheck) {
                 mSendData.put("email", eMail);
                 mSendData.put("facebookId", userID);            // variable userId is retrieved from facebook ; it is facebook id .
             }
