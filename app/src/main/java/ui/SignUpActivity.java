@@ -37,6 +37,7 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.Helper;
@@ -122,6 +123,14 @@ public class SignUpActivity extends BaseActivity {
         mSignUpGender = (Spinner) findViewById(R.id.sign_up__gender_et);
         mSignUpSecondPageContainer = (LinearLayout) findViewById(R.id.sign_up__container_2);
         mSignUpFirstPageContainer = (LinearLayout) findViewById(R.id.signup_container);
+
+        if (getIntent().getExtras() != null) {
+            String data = getIntent().getStringExtra("fbUserName");
+            if(TextUtils.isEmpty(data)){
+                mSignUpNameEt.setText(data);
+            }
+
+        }
 
         ArrayAdapter genderAdapter = new ArrayAdapter(SignUpActivity.this, android.R.layout.simple_spinner_item, mGenderValue);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -211,6 +220,7 @@ public class SignUpActivity extends BaseActivity {
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 try {
                                     userID = object.getString("id");
+                                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, userID);
                                     mFirstName = object.getString("first_name");
                                     fnln = mFirstName;
                                     mLastName = object.getString("last_name");
@@ -416,7 +426,7 @@ public class SignUpActivity extends BaseActivity {
                     JSONObject jsonObject1 = new JSONObject(result);
                     JSONArray jsonArray = jsonObject1.optJSONArray("Table");
                     if (jsonArray != null && jsonArray.length() > 0) {
-                        JSONObject innerJsonObject = new JSONObject(String.valueOf(jsonArray));
+                        JSONObject innerJsonObject = jsonArray.optJSONObject(0);
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
                         mPatientBusinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
