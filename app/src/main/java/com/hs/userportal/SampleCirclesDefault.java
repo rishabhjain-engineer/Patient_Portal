@@ -16,6 +16,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
 import ui.SignInActivity;
+import ui.SignUpActivity;
 import utils.AppConstant;
 
 public class SampleCirclesDefault extends FragmentActivity {
@@ -90,7 +91,7 @@ public class SampleCirclesDefault extends FragmentActivity {
                 Editor editor = sharedpreferences.edit();
                 editor.putBoolean("openLocation", false);
                 editor.commit();
-                Intent i = new Intent(SampleCirclesDefault.this, Register.class);
+                Intent i = new Intent(SampleCirclesDefault.this, SignUpActivity.class);
                 //i.putExtra("from", "walk");
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
