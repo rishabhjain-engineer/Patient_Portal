@@ -432,6 +432,9 @@ public class StaticHolder {
             case NewLogIn:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogIn";
                 break;
+            case NewFacebookLogin:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
+                break;
 
 
             default:
@@ -487,7 +490,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo
+        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin
     }
 
 }
