@@ -85,6 +85,7 @@ public class SignInActivity extends BaseActivity {
     private LoginButton fbLoginButton;
     private String mDAsString;
     String mUserName = "", mPassWord = "";
+    private String mFbUserName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,6 +147,8 @@ public class SignInActivity extends BaseActivity {
                         JSONObject sendData = new JSONObject();
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
+                        mFbUserName = object.getString("name");
+
                         StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
                         String url = sttc_holdr.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
@@ -797,7 +800,8 @@ public class SignInActivity extends BaseActivity {
 
     private void goToSignUpPage() {
         Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-        intent.putExtra("fromActivity", "main_activity");
+        intent.putExtra("fromActivity", "signin_activity");
+        intent.putExtra("fbUserName", mFbUserName);
         startActivity(intent);
     }
 
