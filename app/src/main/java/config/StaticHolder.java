@@ -451,6 +451,10 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
                 break;
 
+            case NewSignUpByPatientFacebook :
+                url = BASE_URL + "NewSignUpByPatientFacebook";
+                break;
+
 
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
@@ -506,7 +510,7 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient, NewSignUpByPatientFacebook
     }
 
 }
