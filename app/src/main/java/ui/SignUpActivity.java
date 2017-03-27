@@ -61,8 +61,6 @@ import config.StaticHolder;
 
 public class SignUpActivity extends BaseActivity {
 
-
-    private AccessTokenTracker mAccessTokenTracker;
     private Button mSignUpBtn, mSignUpContinueBtn;
     private Boolean mIsFromLocation, mIsPasswordCorrect, mShowUserNameUI = false, mUserNameAvailable = true, mPermitToNextSignUpPage = true, mSignUpThroughFacebookCheck=false;
     private CallbackManager mCallbackManager;
@@ -76,7 +74,6 @@ public class SignUpActivity extends BaseActivity {
     private JsonObjectRequest mJsonObjectRequest;
     private LinearLayout mSignUpFbContainer, mSignUpSecondPageContainer, mSignUpFirstPageContainer;
     private LoginButton mFacebookWidgetLoginButton;
-    private ProfileTracker mProfileTracker;
     private RequestQueue mRequestQueue;
     private Services mServices;
     private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo;
@@ -96,22 +93,7 @@ public class SignUpActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRequestQueue = Volley.newRequestQueue(this);
-        Intent i = getIntent();
         mCallbackManager = CallbackManager.Factory.create();
-        mAccessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-            }
-        };
-        mProfileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(com.facebook.Profile oldProfile, com.facebook.Profile currentProfile) {
-
-            }
-        };
-
-        mAccessTokenTracker.startTracking();
-        mProfileTracker.startTracking();
         setContentView(R.layout.activity_sign_up);
         setupActionBar();
         mActionBar.hide();
@@ -538,10 +520,4 @@ public class SignUpActivity extends BaseActivity {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mAccessTokenTracker.stopTracking();
-        mProfileTracker.stopTracking();
-    }
 }
