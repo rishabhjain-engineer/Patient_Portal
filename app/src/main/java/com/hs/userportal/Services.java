@@ -1259,4 +1259,12 @@ public class Services {
 
     }
 
+    public JSONObject NewSignUpByPatientFacebook(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.NewSignUpByPatientFacebook);
+        String url = staticHolder.request_Url();
+        JSONObject jsonObjectResponse = LogIn(sendData, url);
+        return jsonObjectResponse;
+
+    }
+
 }

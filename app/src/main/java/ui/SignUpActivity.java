@@ -66,7 +66,7 @@ import utils.PreferenceHelper;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mSignUpThroughFacebookCheck = false;
+    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms;
     private CallbackManager mCallbackManager;
     private String mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
@@ -206,10 +206,9 @@ public class SignUpActivity extends BaseActivity {
         return matcher.matches();
     }
 
+    boolean isToShowSignInErrorMessage = false;
     private void facebookSignUp() {
-        mSignUpThroughFacebookCheck = true;
         mFacebookWidgetLoginButton.performClick();
-
         mCallback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -222,7 +221,6 @@ public class SignUpActivity extends BaseActivity {
                                     userID = object.getString("id");
                                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, userID);
                                     mFirstName = object.getString("first_name");
-                                    fnln = mFirstName;
                                     mLastName = object.getString("last_name");
                                     try {
                                         eMail = object.getString("email");
@@ -237,34 +235,52 @@ public class SignUpActivity extends BaseActivity {
                                         mGender = "Female";
                                     }
                                     mContactNo = "";
+                                    String userName = object.getString("name");
+
                                     mSendData = new JSONObject();
-                                    mSendData.put("EmailId", eMail);
-                                    StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.EmailIdExistFacebook);  //TODO Verify the API Service
+                                    mSendData.put("name", mFirstName + " " + mLastName);
+                                    mSendData.put("contactNo", "");
+                                    mSendData.put("password", "");
+                                    mSendData.put("dob", mDateOfBirth);
+                                    mSendData.put("gender", genderFB);
+                                    mSendData.put("username", userName);
+                                    mSendData.put("email", eMail);
+                                    mSendData.put("facebookId", userID);
+
+                                    StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientFacebook);
                                     String url = sttc_holdr.request_Url();
                                     mJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, mSendData,
                                             new com.android.volley.Response.Listener<JSONObject>() {
                                                 @Override
                                                 public void onResponse(JSONObject response) {
-                                                    // Exist or Not-Exist
+                                                    JSONObject jsonObject = null;
                                                     try {
-                                                        String emdata = response.getString("d");
-                                                        if (emdata.equals("Exist")) {
-                                                            Toast.makeText(getApplicationContext(),
-                                                                    "An account exist with this email id. Create account with other email.",
-                                                                    Toast.LENGTH_LONG).show();
-                                                            // GetUserCodeFromEmail();
-
+                                                        String dAsString = response.optString("d");
+                                                        jsonObject = new JSONObject(dAsString);
+                                                        JSONArray tableArray = jsonObject.optJSONArray("Table");
+                                                        if (tableArray != null) {
+                                                            JSONObject innerJsonObject = tableArray.optJSONObject(0);
+                                                            mUserID = innerJsonObject.optString("UserId");
+                                                            mPatientCode = innerJsonObject.optString("PatientCode");
+                                                            mPatientBusinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                            mRoleName = innerJsonObject.optString("RoleName");
+                                                            mFirstName = innerJsonObject.optString("FirstName");
+                                                            mMiddleName = innerJsonObject.optString("MiddleName");
+                                                            mVersionNo = innerJsonObject.optString("versionNo");
+                                                            mLastName = innerJsonObject.optString("LastName");
+                                                            mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                                                            mContactNo = innerJsonObject.optString("ContactNo");
+                                                            mTerms = innerJsonObject.optBoolean("Terms");
                                                         } else {
-
-                                                            // CheckEmailIdIsExistMobile();
-
+                                                            isToShowSignInErrorMessage = true;
                                                         }
-
                                                     } catch (JSONException e) {
-                                                        // TODO Auto-generated catch block
                                                         e.printStackTrace();
                                                     }
 
+                                                    if (isToShowSignInErrorMessage) {
+                                                     //   showAlertMessage(dAsString);
+                                                    }
                                                 }
                                             }, new com.android.volley.Response.ErrorListener() {
                                         @Override
@@ -408,12 +424,6 @@ public class SignUpActivity extends BaseActivity {
             } else {
                 mSendData.put("username", mSignUpContactNoEt.getText().toString());
             }
-
-            if (mSignUpThroughFacebookCheck) {
-                mSendData.put("email", eMail);
-                mSendData.put("facebookId", userID);            // variable userId is retrieved from facebook ; it is facebook id .
-            }
-
         } catch (JSONException e) {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
