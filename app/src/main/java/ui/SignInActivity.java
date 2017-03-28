@@ -196,8 +196,8 @@ public class SignInActivity extends BaseActivity {
                                             }else if(decesionString.equalsIgnoreCase("4")){
                                                 facebookDecesionAlertDialog(messageString, false);
                                             }else if(decesionString.equalsIgnoreCase("2")){
-                                                mUserName = array[1];
-                                                mPassWord = array[2];
+                                                mUserName = array[2];
+                                                mPassWord = array[3];
                                                 facebookDecesionAlertDialog(messageString, true);
                                             }
                                         }
@@ -283,7 +283,7 @@ public class SignInActivity extends BaseActivity {
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USERNAME, userName);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, passWord);
-            new SignInActivity.NewLogInAsync().execute();
+            new SignInActivity.NewLogInAsync(true).execute();
         }
     }
 
@@ -293,13 +293,19 @@ public class SignInActivity extends BaseActivity {
     private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         String buildNo;
+        boolean isToTakeFromEditbox;
+        public NewLogInAsync(boolean value){
+            isToTakeFromEditbox = value;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             isToShowSignInErrorMessage = false;
-            mUserName = mSingnInUserEt.getText().toString().trim();
-            mPassWord = mSingnInPasswordEt.getText().toString();
+            if(isToTakeFromEditbox){
+                mUserName = mSingnInUserEt.getText().toString().trim();
+                mPassWord = mSingnInPasswordEt.getText().toString();
+            }
             buildNo = Build.VERSION.RELEASE;
             progress = new ProgressDialog(SignInActivity.this);
             progress.setCancelable(false);
@@ -345,6 +351,7 @@ public class SignInActivity extends BaseActivity {
                         isToShowSignInErrorMessage = true;
                     }
                 } catch (JSONException e) {
+                    isToShowSignInErrorMessage = true;
                     e.printStackTrace();
                 }
             }
@@ -854,7 +861,7 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isToLogin) {
-                    new NewLogInAsync().execute();
+                    new NewLogInAsync(false).execute();
                 } else {
                     goToSignUpPage();
                 }
