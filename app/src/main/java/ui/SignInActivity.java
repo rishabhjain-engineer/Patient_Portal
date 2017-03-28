@@ -148,6 +148,7 @@ public class SignInActivity extends BaseActivity {
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
                         mFbUserName = object.getString("name");
+                        isToShowSignInErrorMessage = false;
 
                         StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
                         String url = sttc_holdr.request_Url();
@@ -173,23 +174,31 @@ public class SignInActivity extends BaseActivity {
                                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                 mContactNo = innerJsonObject.optString("ContactNo");
                                                 mTerms = innerJsonObject.optBoolean("Terms");
+                                                goToDashBoardPage();
                                             } else {
                                                 isToShowSignInErrorMessage = true;
                                             }
                                         } catch (JSONException e) {
+                                            isToShowSignInErrorMessage = true;
                                             e.printStackTrace();
                                         }
 
                                         if (isToShowSignInErrorMessage) {
-                                            if (mDAsString.equalsIgnoreCase("Offer to create account")) {
-                                                facebookDecesionAlertDialog(mDAsString, false);
-                                            } else if (mDAsString.contains("|")) {
-                                                String[] array = mDAsString.split("|");
+                                            String array[] = mDAsString.split("\\|");
+                                            String decesionString = "";
+                                            String messageString = "";
+                                            if(array != null && array.length >=2){
+                                                decesionString = array[0];
+                                                messageString = array[1];
+                                            }
+                                            if(decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")){
+                                                showAlertMessage(mDAsString);
+                                            }else if(decesionString.equalsIgnoreCase("4")){
+                                                facebookDecesionAlertDialog(messageString, false);
+                                            }else if(decesionString.equalsIgnoreCase("2")){
                                                 mUserName = array[1];
                                                 mPassWord = array[2];
-                                                facebookDecesionAlertDialog(array[0], true);
-                                            } else {
-                                                showAlertMessage(mDAsString);
+                                                facebookDecesionAlertDialog(messageString, true);
                                             }
                                         }
                                     }
