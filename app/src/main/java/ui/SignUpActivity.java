@@ -132,8 +132,8 @@ public class SignUpActivity extends BaseActivity {
 
         }
 
-        ArrayAdapter genderAdapter = new ArrayAdapter(SignUpActivity.this, android.R.layout.simple_spinner_item, mGenderValue);
-        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter genderAdapter = new ArrayAdapter(SignUpActivity.this, R.layout.spinner_signup_textview, mGenderValue);
+        genderAdapter.setDropDownViewResource(R.layout.spinner_signup_textview);
         mSignUpGender.setAdapter(genderAdapter);
 
         mSignUpGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
