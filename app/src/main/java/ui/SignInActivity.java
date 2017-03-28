@@ -192,7 +192,7 @@ public class SignInActivity extends BaseActivity {
                                                 messageString = array[1];
                                             }
                                             if(decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")){
-                                                showAlertMessage(mDAsString);
+                                                showAlertMessage(messageString);
                                             }else if(decesionString.equalsIgnoreCase("4")){
                                                 facebookDecesionAlertDialog(messageString, false);
                                             }else if(decesionString.equalsIgnoreCase("2")){
@@ -844,7 +844,7 @@ public class SignInActivity extends BaseActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
-        stayButton.setText("No");
+        stayButton.setText("NO");
 
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
         messageTextView.setText(message);
@@ -858,6 +858,7 @@ public class SignInActivity extends BaseActivity {
                 } else {
                     goToSignUpPage();
                 }
+                dialog.dismiss();
             }
         });
 

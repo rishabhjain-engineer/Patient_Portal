@@ -129,7 +129,7 @@ public class SignUpActivity extends BaseActivity {
 
         if (getIntent().getExtras() != null) {
             String data = getIntent().getStringExtra("fbUserName");
-            if(TextUtils.isEmpty(data)){
+            if(!TextUtils.isEmpty(data)){
                 mSignUpNameEt.setText(data);
             }
 
