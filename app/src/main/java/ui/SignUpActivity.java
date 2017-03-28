@@ -254,8 +254,9 @@ public class SignUpActivity extends BaseActivity {
                                                 @Override
                                                 public void onResponse(JSONObject response) {
                                                     JSONObject jsonObject = null;
+                                                    String dAsString = "";
                                                     try {
-                                                        String dAsString = response.optString("d");
+                                                        dAsString = response.optString("d");
                                                         jsonObject = new JSONObject(dAsString);
                                                         JSONArray tableArray = jsonObject.optJSONArray("Table");
                                                         if (tableArray != null) {
@@ -271,6 +272,7 @@ public class SignUpActivity extends BaseActivity {
                                                             mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                             mContactNo = innerJsonObject.optString("ContactNo");
                                                             mTerms = innerJsonObject.optBoolean("Terms");
+                                                            goToDashBoardPage();
                                                         } else {
                                                             isToShowSignInErrorMessage = true;
                                                         }
@@ -279,13 +281,13 @@ public class SignUpActivity extends BaseActivity {
                                                     }
 
                                                     if (isToShowSignInErrorMessage) {
-                                                     //   showAlertMessage(dAsString);
+                                                      showAlertMessage(dAsString);
                                                     }
                                                 }
                                             }, new com.android.volley.Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            System.out.println(error);
+                                            Log.e("Error", "error: "+error);
                                         }
                                     });
                                     mRequestQueue.add(mJsonObjectRequest);
@@ -428,7 +430,7 @@ public class SignUpActivity extends BaseActivity {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);     // TODO add this API into SERVICE class
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
