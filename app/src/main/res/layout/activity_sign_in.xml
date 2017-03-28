@@ -55,7 +55,7 @@
             android:ellipsize="start"
             android:gravity="center"
             android:hint="Password"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:singleLine="true"
             android:textColor="@color/create_account_tv_color"
             android:textColorHint="@color/sign_in_edit_bg_hint" />
