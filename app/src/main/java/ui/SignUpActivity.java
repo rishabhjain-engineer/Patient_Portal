@@ -50,7 +50,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -410,10 +413,11 @@ public class SignUpActivity extends BaseActivity {
         mRequestQueue.add(mJsonObjectRequest);
     }
 
+    boolean isToShowErrorDialog;
     private void newSignUpByPatientAPI() {
+        isToShowErrorDialog = false;
         String dateExtracted = mSignUpDateOfBirth.getText().toString() ;
         String dateFormatToSend = dateExtracted.replace("-","/");
-        Log.e("Rishabh", "date formaated:= "+dateFormatToSend);
         mSendData = new JSONObject();
         try {
             mSendData.put("name", mSignUpNameEt.getText().toString());
@@ -437,6 +441,7 @@ public class SignUpActivity extends BaseActivity {
             public void onResponse(JSONObject jsonObject) {
 
                 String result = jsonObject.optString("d");
+                Log.e("Rishabh",  "NewSingUpByPatient Response := "+result) ;
                 try {
                     JSONObject jsonObject1 = new JSONObject(result);
                     JSONArray jsonArray = jsonObject1.optJSONArray("Table");
@@ -456,10 +461,14 @@ public class SignUpActivity extends BaseActivity {
                         mContactNo = innerJsonObject.optString("ContactNo");
                         goToDashBoardPage();
                     }else{
-                        showAlertMessage(result);
+                        isToShowErrorDialog = true;
                     }
                 } catch (JSONException e1) {
+                    isToShowErrorDialog = true;
                     e1.printStackTrace();
+                }
+                if(isToShowErrorDialog){
+                    showAlertMessage(result);
                 }
 
             }
