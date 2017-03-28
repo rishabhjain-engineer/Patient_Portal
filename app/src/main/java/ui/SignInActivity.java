@@ -812,6 +812,7 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignInActivity.this, logout.class);
         startActivity(intent);
+        finish();
     }
 
     private void goToSignUpPage() {

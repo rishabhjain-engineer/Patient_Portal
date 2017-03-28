@@ -88,7 +88,7 @@ public class SignUpActivity extends BaseActivity {
     private String mUserCodeFromEmail = null, mBuildNo, mGenderResult, fnln;
     private static String mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
-    private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,16})";
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,}$";
     private String[] mGenderValue = {"MALE", "FEMALE"};
     private TextView mSignInTv;
 
@@ -238,6 +238,9 @@ public class SignUpActivity extends BaseActivity {
                                 mDateOfBirth = object.optString("birthday");
                                 if(TextUtils.isEmpty(mDateOfBirth)){
                                     mDateOfBirth = currentTime ;                                            // just in case birthday is not extracted from FB ; pass current date , required to hit API
+                                }else{
+                                    String array[] = mDateOfBirth.split("/");
+                                    mDateOfBirth = array[2] +  "/"+ array[1]+ "/"+ array[0];
                                 }
                                 String genderFB = object.optString("gender");
                                 if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
@@ -254,7 +257,7 @@ public class SignUpActivity extends BaseActivity {
                                 mSendData.put("password", "");
                                 mSendData.put("dob", mDateOfBirth);
                                 mSendData.put("gender", genderFB);
-                                mSendData.put("username", userName);
+                                mSendData.put("username", "");
                                 mSendData.put("email", eMail);
                                 mSendData.put("facebookId", fbUserID);
 
@@ -288,6 +291,7 @@ public class SignUpActivity extends BaseActivity {
                                                         isToShowSignInErrorMessage = true;
                                                     }
                                                 } catch (JSONException e) {
+                                                    isToShowSignInErrorMessage = true;
                                                     e.printStackTrace();
                                                 }
 
@@ -542,6 +546,7 @@ public class SignUpActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignUpActivity.this, logout.class);
         startActivity(intent);
+        finish();
     }
 
 }
