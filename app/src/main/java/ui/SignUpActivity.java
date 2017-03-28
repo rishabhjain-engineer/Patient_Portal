@@ -88,7 +88,7 @@ public class SignUpActivity extends BaseActivity {
     private String mUserCodeFromEmail = null, mBuildNo, mGenderResult, fnln;
     private static String mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
-    private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*[@#$%]).{8,16})";
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,}$";
     private String[] mGenderValue = {"MALE", "FEMALE"};
     private TextView mSignInTv;
 
