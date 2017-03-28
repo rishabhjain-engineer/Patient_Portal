@@ -444,7 +444,7 @@ public class SignInActivity extends BaseActivity {
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setMessage("Loading...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
@@ -520,7 +520,7 @@ public class SignInActivity extends BaseActivity {
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setMessage("uploading contact...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
