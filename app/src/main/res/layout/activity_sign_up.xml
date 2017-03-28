@@ -96,32 +96,45 @@
                 android:text="OR"
                 android:textColor="@color/sign_in_use_your_gray_color"
                 android:textSize="15dp" />
-            <LinearLayout
-                android:id="@+id/signup_fb_btn"
+            
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/sign_in_button_text_height"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/sign_in_sign_up_fb_bg"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
+
                 <com.facebook.login.widget.LoginButton
                     android:id="@+id/facebook_widget_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"/>
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/fb" />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:paddingLeft="5dp"
-                    android:text="Continue with Facebook"
-                    android:textColor="@color/white"
-                    android:textSize="16dp" />
-            </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/signup_fb_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sign_in_button_text_height"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/sign_in_sign_up_fb_bg"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="25dp"
+                        android:clickable="false"
+                        android:src="@drawable/fb" />
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:background="@null"
+                        android:paddingLeft="5dp"
+                        android:text="Continue with Facebook"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+                </LinearLayout>
+            </FrameLayout>
+
+            
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
