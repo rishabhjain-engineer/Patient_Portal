@@ -5,7 +5,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true">
         <LinearLayout
             android:id="@+id/signup_container"
             android:layout_width="match_parent"
@@ -14,6 +17,9 @@
             android:layout_marginRight="@dimen/sign_in_sign_up_margin"
             android:orientation="vertical"
             android:paddingBottom="10dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
             android:visibility="visible">
             <ImageView
                 android:id="@+id/sign_up_plus_iv"
@@ -48,6 +54,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/login_edit_text_style"
                 android:gravity="center"
+                android:cursorVisible="false"
                 android:hint="Name"
                 android:inputType="textPersonName"
                 android:singleLine="true"
@@ -61,6 +68,7 @@
                 android:background="@drawable/login_edit_text_style"
                 android:gravity="center"
                 android:hint="Contact No."
+                android:cursorVisible="false"
                 android:inputType="phone"
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
@@ -74,6 +82,7 @@
                 android:ellipsize="start"
                 android:gravity="center"
                 android:hint="Password"
+                android:cursorVisible="false"
                 android:inputType="textPassword"
                 android:singleLine="true"
                 android:textColor="@color/create_account_tv_color"
@@ -91,7 +100,7 @@
                 android:id="@+id/sign_up_or_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="OR"
                 android:textColor="@color/sign_in_use_your_gray_color"
@@ -165,6 +174,9 @@
             android:layout_marginRight="40dp"
             android:orientation="vertical"
             android:paddingBottom="10dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
             android:visibility="gone">
             <ImageView
                 android:id="@+id/sign_up__sciontra_iv"
@@ -192,6 +204,7 @@
                 android:ellipsize="start"
                 android:gravity="center"
                 android:hint="User Name*"
+                android:cursorVisible="false"
                 android:inputType="textPersonName"
                 android:visibility="gone"
                 android:singleLine="true"
@@ -213,6 +226,7 @@
                     android:background="@drawable/login_edit_text_style"
                     android:gravity="center"
                     android:hint="Date of Birth*"
+                    android:cursorVisible="false"
                     android:inputType="text"
                     android:singleLine="true"
                     android:textColor="@color/create_account_tv_color"

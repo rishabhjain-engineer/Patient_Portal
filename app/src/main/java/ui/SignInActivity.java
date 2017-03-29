@@ -242,6 +242,27 @@ public class SignInActivity extends BaseActivity {
         mSignInFbContainer = (LinearLayout) findViewById(R.id.sign_in_fb_container);
         mSignUpTv = (TextView) findViewById(R.id.sign_up_tv);
 
+
+        mSingnInUserEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    mSingnInUserEt.setHint("");
+                }else{
+                    mSingnInUserEt.setHint("User Name");
+                }
+            }
+        });
+        mSingnInPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    mSingnInPasswordEt.setHint("");
+                }else{
+                    mSingnInPasswordEt.setHint("Password");
+                }
+            }
+        });
         mSingnInForgotTv.setOnClickListener(mOnClickListener);
         mSignInBtn.setOnClickListener(mOnClickListener);
         mSignInFbContainer.setOnClickListener(mOnClickListener);
@@ -362,11 +383,6 @@ public class SignInActivity extends BaseActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
-            if (mPatientBussinessFlag == 2) {
-                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
-            } else {
-                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
-            }
             if (isToShowSignInErrorMessage) {
                 showAlertMessage(mDAsString);
             } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
@@ -805,6 +821,11 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
+        if (mPatientBussinessFlag == 2) {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
+        } else {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+        }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());

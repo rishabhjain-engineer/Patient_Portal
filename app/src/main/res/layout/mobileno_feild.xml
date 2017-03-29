@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
- <ImageView
+    <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerVertical="true"
-        android:layout_above="@+id/linearLayout1"
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:layout_marginTop="51dp"
         android:scaleType="fitCenter"
@@ -25,7 +24,7 @@
         android:layout_marginBottom="38dp"
         android:clickable="true"
         android:text="Cancel"
-        android:textColor="@color/text_selector"
+        android:textColor="@color/header_color"
         android:textSize="16dp" />
 
     <Button
@@ -44,12 +43,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/submit_id"
-        
-       android:layout_marginLeft="10dp"
-       android:layout_marginRight="10dp"
+
         android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/edit"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView1"
@@ -70,7 +69,7 @@
             android:hint="Phone Number"
             android:inputType="number"
             android:paddingLeft="10dp"
-            android:textSize="16dp" >
+            android:textSize="16dp">
 
             <requestFocus />
         </EditText>
