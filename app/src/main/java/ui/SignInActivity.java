@@ -19,9 +19,11 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -267,6 +269,20 @@ public class SignInActivity extends BaseActivity {
                 }
             }
         });
+
+
+        mSingnInPasswordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("Rishabh", " SIGNIN PAGE: Create Button Functionality called, from softkeyboard 'DONE' button ");
+                    signInBtnHandling();
+                }
+                return false ;
+            }
+
+        });
+
         mSingnInForgotTv.setOnClickListener(mOnClickListener);
         mSignInBtn.setOnClickListener(mOnClickListener);
         mSignInFbContainer.setOnClickListener(mOnClickListener);
@@ -825,7 +841,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2) {
+        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);

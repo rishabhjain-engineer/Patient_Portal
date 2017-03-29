@@ -12,7 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -200,6 +202,18 @@ public class SignUpActivity extends BaseActivity {
             }
         });
 
+        mSignUpPasswordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("Rishabh", "Create Button Functionality called, from softkeyboard 'DONE' button ");
+                    createButtonhandling() ;
+                }
+                return false ;
+            }
+
+        });
+
         mSignUpDateOfBirthContainer.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button ; CREATE ACCOUNT BUTTON
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
@@ -215,22 +229,8 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
+                createButtonhandling() ;
 
-                String name = mSignUpNameEt.getText().toString();
-                String contactNo = mSignUpContactNoEt.getText().toString();
-                String password = mSignUpPasswordEt.getText().toString();
-                ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
-                    showAlertMessage("Please fill all the details. ");
-                } else if ((contactNo.length() != 10)) {
-                    showAlertMessage("Please enter a valid 10 digit mobile number.");
-                } else if (!isValidPassword(password)) {
-                    showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
-                } else if (!con.isConnectingToInternet()) {
-                    showAlertMessage("No Internet Connection.");
-                } else {
-                    createAccount();
-                }
             } else if (viewId == R.id.signup_fb_btn) {
                 onClickLogin();
             } else if (viewId == R.id.sign_in_tv) {
@@ -250,6 +250,23 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
+    private void createButtonhandling() {
+        String name = mSignUpNameEt.getText().toString();
+        String contactNo = mSignUpContactNoEt.getText().toString();
+        String password = mSignUpPasswordEt.getText().toString();
+        ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
+            showAlertMessage("Please fill all the details. ");
+        } else if ((contactNo.length() != 10)) {
+            showAlertMessage("Please enter a valid 10 digit mobile number.");
+        } else if (!isValidPassword(password)) {
+            showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
+        } else if (!con.isConnectingToInternet()) {
+            showAlertMessage("No Internet Connection.");
+        } else {
+            createAccount();
+        }
+    }
     private void onClickLogin() {
         mFacebookWidgetLoginButton.performClick();
     }
@@ -586,7 +603,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2) {
+        if (mPatientBussinessFlag == 2 ||mPatientBussinessFlag == 3) {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
