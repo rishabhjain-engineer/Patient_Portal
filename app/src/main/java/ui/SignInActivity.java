@@ -110,7 +110,7 @@ public class SignInActivity extends BaseActivity {
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        //getSha();
+       // getSha();
     }
 
     private void getSha() {
@@ -248,8 +248,10 @@ public class SignInActivity extends BaseActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
                     mSingnInUserEt.setHint("");
+                    mSingnInUserEt.setCursorVisible(true);
                 }else{
                     mSingnInUserEt.setHint("User Name");
+                    mSingnInUserEt.setCursorVisible(false);
                 }
             }
         });
@@ -258,8 +260,10 @@ public class SignInActivity extends BaseActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
                     mSingnInPasswordEt.setHint("");
+                    mSingnInPasswordEt.setCursorVisible(true);
                 }else{
                     mSingnInPasswordEt.setHint("Password");
+                    mSingnInPasswordEt.setCursorVisible(false);
                 }
             }
         });

@@ -20,7 +20,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:clickable="true"
-            android:visibility="visible">
+            android:visibility="gone">
             <ImageView
                 android:id="@+id/sign_up_plus_iv"
                 android:layout_width="80dp"
@@ -177,7 +177,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:clickable="true"
-            android:visibility="gone">
+            android:visibility="visible">
             <ImageView
                 android:id="@+id/sign_up__sciontra_iv"
                 android:layout_width="200dp"
@@ -212,9 +212,11 @@
                 android:textColorHint="@color/sign_in_edit_bg_hint" />
             
             <LinearLayout
+                android:id="@+id/sign_up_dob_container"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/login_edit_text_style"
                 android:orientation="horizontal">
 
                 <EditText
@@ -244,15 +246,35 @@
 
 
 
-                <Spinner
-                    android:id="@+id/sign_up__gender_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/sign_in_edit_text_height"
-                    android:textSize="14sp"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center"
-                    android:background="@drawable/spinner_signup"
-                    android:textColor="@color/create_account_tv_color" />
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/segmented"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                segmentedgroup:border_width="0.8dp"
+                segmentedgroup:checked_text_color="@color/white"
+                segmentedgroup:corner_radius="5dp"
+                segmentedgroup:tint_color="@color/header_color" >
+
+                <RadioButton
+                    android:id="@+id/male_radiobtn"
+                    style="@style/RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="MALE" />
+
+                <RadioButton
+                    android:id="@+id/female_radiobtn"
+                    style="@style/RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="FEMALE" />
+            </info.hoang8f.android.segmented.SegmentedGroup>
 
 
 
