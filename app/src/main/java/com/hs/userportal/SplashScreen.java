@@ -70,7 +70,13 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
 
-                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+                ////////////////////////////////////////////////////////////////////////////////////
+                ////  Uncommment this section to introduce walk through pages  /////////////////////
+                ////////////////////////////////////////////////////////////////////////////////////
+
+
+                /*sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
                         Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
@@ -85,7 +91,13 @@ public class SplashScreen extends Activity {
                     startActivity(intentWalk);
                     overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
                     finish();
-                }
+                }*/
+
+                Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(intentMain);
+                finish();
+
+
             }
         }, 900);
     }
