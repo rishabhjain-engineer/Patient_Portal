@@ -219,6 +219,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
+                android:focusable="true"
+                android:clickable="true"
                 android:background="@drawable/login_edit_text_style"
                 android:orientation="horizontal">
 
@@ -226,7 +228,7 @@
                     android:id="@+id/sign_up__dob_et"
                     android:layout_width="0dp"
                     android:layout_weight="8"
-                    android:focusable="false"
+                    android:clickable="false"
                     android:layout_height="@dimen/sign_in_edit_text_height"
                     android:background="@drawable/login_edit_text_style"
                     android:gravity="center"
@@ -240,6 +242,7 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:clickable="false"
                     android:layout_height="55dp"
                     android:background="@drawable/login_edit_text_style"
                     android:src="@drawable/calender_icon"

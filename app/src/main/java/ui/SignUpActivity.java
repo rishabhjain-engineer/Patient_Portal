@@ -97,9 +97,6 @@ public class SignUpActivity extends BaseActivity {
     private TextView mSignInTv;
 
 
-
-
-
     public static String userID;
 
     @Override
@@ -168,10 +165,10 @@ public class SignUpActivity extends BaseActivity {
         mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpNameEt.setHint("");
                     mSignUpNameEt.setCursorVisible(true);
-                }else{
+                } else {
                     mSignUpNameEt.setHint("Name");
                     mSignUpNameEt.setCursorVisible(false);
                 }
@@ -180,10 +177,10 @@ public class SignUpActivity extends BaseActivity {
         mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpContactNoEt.setHint("");
                     mSignUpContactNoEt.setCursorVisible(true);
-                }else{
+                } else {
                     mSignUpContactNoEt.setHint("Contact No.");
                     mSignUpContactNoEt.setCursorVisible(false);
                 }
@@ -192,10 +189,10 @@ public class SignUpActivity extends BaseActivity {
         mSignUpPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpPasswordEt.setHint("");
                     mSignUpPasswordEt.setCursorVisible(true);
-                }else{
+                } else {
                     mSignUpPasswordEt.setHint("Password");
                     mSignUpPasswordEt.setCursorVisible(false);
                 }
@@ -207,9 +204,9 @@ public class SignUpActivity extends BaseActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     Log.e("Rishabh", "Create Button Functionality called, from softkeyboard 'DONE' button ");
-                    createButtonhandling() ;
+                    createButtonhandling();
                 }
-                return false ;
+                return false;
             }
 
         });
@@ -229,7 +226,7 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
-                createButtonhandling() ;
+                createButtonhandling();
 
             } else if (viewId == R.id.signup_fb_btn) {
                 onClickLogin();
@@ -267,6 +264,7 @@ public class SignUpActivity extends BaseActivity {
             createAccount();
         }
     }
+
     private void onClickLogin() {
         mFacebookWidgetLoginButton.performClick();
     }
@@ -302,11 +300,11 @@ public class SignUpActivity extends BaseActivity {
                                     eMail = "";
                                 }
                                 mDateOfBirth = object.optString("birthday");
-                                if(TextUtils.isEmpty(mDateOfBirth)){
-                                    mDateOfBirth = currentTime ;                                            // just in case birthday is not extracted from FB ; pass current date , required to hit API
-                                }else{
+                                if (TextUtils.isEmpty(mDateOfBirth)) {
+                                    mDateOfBirth = currentTime;                                            // just in case birthday is not extracted from FB ; pass current date , required to hit API
+                                } else {
                                     String array[] = mDateOfBirth.split("/");
-                                    mDateOfBirth = array[2] +  "/"+ array[1]+ "/"+ array[0];
+                                    mDateOfBirth = array[2] + "/" + array[1] + "/" + array[0];
                                 }
                                 String genderFB = object.optString("gender");
                                 if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
@@ -412,7 +410,7 @@ public class SignUpActivity extends BaseActivity {
                 try {
                     String result = jsonObject.getString("d");
                     if (result.equalsIgnoreCase("username")) {
-                        permitToNextSignUpPage = true ;
+                        permitToNextSignUpPage = true;
                         mShowUserNameUI = true;                   // User Name UI is VISIBLE at Sign-UP second page .; backend team doesnt have its username; so on next page . show ui and get username .
                     } else if (TextUtils.isEmpty(result)) {
                         permitToNextSignUpPage = true;
@@ -603,7 +601,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2 ||mPatientBussinessFlag == 3) {
+        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
@@ -624,12 +622,13 @@ public class SignUpActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(permitToNextSignUpPage){                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
+        //   super.onBackPressed();
+        if (permitToNextSignUpPage) {                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
             mSignUpFirstPageContainer.setVisibility(View.VISIBLE);
             mSignUpSecondPageContainer.setVisibility(View.GONE);
-        }else{                                                                      // SignUp First page VISIBLE , finish activity.
-           finish();
+
+        } else {                                                                      // SignUp First page VISIBLE , finish activity.
+            finish();
         }
     }
 }

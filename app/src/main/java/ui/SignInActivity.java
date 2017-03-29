@@ -861,6 +861,7 @@ public class SignInActivity extends BaseActivity {
         intent.putExtra("fromActivity", "signin_activity");
         intent.putExtra("fbUserName", mFbUserName);
         startActivity(intent);
+        finish();
     }
 
     private boolean isValidatePhoneNumber(String phoneNo) {
