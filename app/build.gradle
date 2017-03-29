@@ -68,4 +68,5 @@ dependencies {
     compile project(':SegmentedControlLibrary')
     compile project(':Simpl3r')
     compile project(':MPChartLib')
+    compile project(':dynamicgrid')
 }
