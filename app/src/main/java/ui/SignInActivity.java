@@ -403,7 +403,7 @@ public class SignInActivity extends BaseActivity {
                         isToShowSignInErrorMessage = true;
                     }
                 } catch (JSONException e) {
-
+                    isToShowSignInErrorMessage = true;
                     e.printStackTrace();
                 }
             }
