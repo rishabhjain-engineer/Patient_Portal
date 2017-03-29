@@ -50,7 +50,8 @@
             android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/create_account_tv_color"
-            android:textColorHint="@color/sign_in_edit_bg_hint" />
+            android:textColorHint="@color/sign_in_edit_bg_hint"
+            android:nextFocusDown="@+id/singn_in_password_et"/>
 
 
         <EditText

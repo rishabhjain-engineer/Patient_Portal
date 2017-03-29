@@ -12,13 +12,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +62,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.StaticHolder;
+import info.hoang8f.android.segmented.SegmentedGroup;
 import networkmngr.ConnectionDetector;
 import utils.PreferenceHelper;
 
@@ -69,28 +74,28 @@ import utils.PreferenceHelper;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms;
+    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms, permitToNextSignUpPage = false;
     private CallbackManager mCallbackManager;
     private String mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
-     private static int mYear, mMonth, mDay, mPatientBussinessFlag;
+    private static int mYear, mMonth, mDay, mPatientBussinessFlag;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
-    private LinearLayout mSignUpFbContainer, mSignUpSecondPageContainer, mSignUpFirstPageContainer;
+    private LinearLayout mSignUpFbContainer, mSignUpSecondPageContainer, mSignUpFirstPageContainer, mSignUpDateOfBirthContainer;
     private LoginButton mFacebookWidgetLoginButton;
     private RequestQueue mRequestQueue;
+    private RadioButton mSignUpMaleRadioButton, mSignUpFemaleRadioButton;
+    private SegmentedGroup mSegmentedGroup;
     private Services mServices;
     private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo;
     private String mUserID, mPatientCode, mPatientBussinessDateTime, mRoleName, mMiddleName, mDisclaimerType, mUserVersionNo;
-
-    private Spinner mSignUpGender;
-    private String mUserCodeFromEmail = null, mBuildNo, mGenderResult, fnln;
+    private String mUserCodeFromEmail = null, mBuildNo, fnln;
     private static String mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,16}$";
-    private String[] mGenderValue = {"MALE", "FEMALE"};
     private TextView mSignInTv;
+
 
     public static String userID;
 
@@ -118,14 +123,17 @@ public class SignUpActivity extends BaseActivity {
         mSignUpPasswordEt = (EditText) findViewById(R.id.sign_up_password_et);
         mSignUpBtn = (Button) findViewById(R.id.create_account_bt);
         mSignUpFbContainer = (LinearLayout) findViewById(R.id.signup_fb_btn);
+        mSignUpDateOfBirthContainer = (LinearLayout) findViewById(R.id.sign_up_dob_container);
         mSignInTv = (TextView) findViewById(R.id.sign_in_tv);
         mFacebookWidgetLoginButton = (LoginButton) findViewById(R.id.facebook_widget_btn);
         mSignUpUserNameEt = (EditText) findViewById(R.id.sign_up__user_name_et);
         mSignUpContinueBtn = (Button) findViewById(R.id.sign_up_continue);
         mSignUpDateOfBirth = (EditText) findViewById(R.id.sign_up__dob_et);
-        mSignUpGender = (Spinner) findViewById(R.id.sign_up__gender_et);
         mSignUpSecondPageContainer = (LinearLayout) findViewById(R.id.sign_up__container_2);
         mSignUpFirstPageContainer = (LinearLayout) findViewById(R.id.signup_container);
+        mSignUpMaleRadioButton = (RadioButton) findViewById(R.id.male_radiobtn);
+        mSignUpFemaleRadioButton = (RadioButton) findViewById(R.id.female_radiobtn);
+        mSegmentedGroup = (SegmentedGroup) findViewById(R.id.segmented);
 
         if (getIntent().getExtras() != null) {
             String data = getIntent().getStringExtra("fbUserName");
@@ -134,55 +142,76 @@ public class SignUpActivity extends BaseActivity {
             }
 
         }
-
-        ArrayAdapter genderAdapter = new ArrayAdapter(SignUpActivity.this, R.layout.spinner_signup_textview, mGenderValue);
-        genderAdapter.setDropDownViewResource(R.layout.spinner_signup_textview);
-        mSignUpGender.setAdapter(genderAdapter);
-
-        mSignUpGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mGenderResult = mGenderValue[position];
-            }
+        mSegmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // TODO Auto-generated method stub
 
+                // System.out.println("Yes!");
+
+                switch (checkedId) {
+                    case R.id.male_radiobtn:
+                        mGender = "Male";
+                        return;
+                    case R.id.female_radiobtn:
+                        mGender = "Female";
+                        return;
+
+                }
             }
         });
 
         mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpNameEt.setHint("");
-                }else{
+                    mSignUpNameEt.setCursorVisible(true);
+                } else {
                     mSignUpNameEt.setHint("Name");
+                    mSignUpNameEt.setCursorVisible(false);
                 }
             }
         });
         mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpContactNoEt.setHint("");
-                }else{
+                    mSignUpContactNoEt.setCursorVisible(true);
+                } else {
                     mSignUpContactNoEt.setHint("Contact No.");
+                    mSignUpContactNoEt.setCursorVisible(false);
                 }
             }
         });
         mSignUpPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSignUpPasswordEt.setHint("");
-                }else{
+                    mSignUpPasswordEt.setCursorVisible(true);
+                } else {
                     mSignUpPasswordEt.setHint("Password");
+                    mSignUpPasswordEt.setCursorVisible(false);
                 }
             }
         });
 
-        mSignUpDateOfBirth.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
+        mSignUpPasswordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("Rishabh", "Create Button Functionality called, from softkeyboard 'DONE' button ");
+                    createButtonhandling();
+                }
+                return false;
+            }
+
+        });
+
+        mSignUpDateOfBirthContainer.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button ; CREATE ACCOUNT BUTTON
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
         mSignInTv.setOnClickListener(mOnClickListener);                // onClickListener on Already have account : " sign-in" TextView
@@ -197,22 +226,8 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
+                createButtonhandling();
 
-                String name = mSignUpNameEt.getText().toString();
-                String contactNo = mSignUpContactNoEt.getText().toString();
-                String password = mSignUpPasswordEt.getText().toString();
-                ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
-                    showAlertMessage("Please fill all the details. ");
-                } else if ((contactNo.length() != 10)) {
-                    showAlertMessage("Please enter a valid 10 digit mobile number.");
-                } else if (!isValidPassword(password)) {
-                    showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
-                } else if (!con.isConnectingToInternet()) {
-                    showAlertMessage("No Internet Connection.");
-                } else {
-                    createAccount();
-                }
             } else if (viewId == R.id.signup_fb_btn) {
                 onClickLogin();
             } else if (viewId == R.id.sign_in_tv) {
@@ -220,10 +235,10 @@ public class SignUpActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             } else if (viewId == R.id.sign_up_continue) {
-                if (mUserNameAvailable && !TextUtils.isEmpty(mGenderResult) && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
+                if (mUserNameAvailable && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
                     newSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
                 }
-            } else if (viewId == R.id.sign_up__dob_et) {
+            } else if (viewId == R.id.sign_up_dob_container) {
                 DialogFragment newFragment = new DatePickerFragment();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
             } else if (TextUtils.isEmpty(mSignUpNameEt.getText()) || TextUtils.isEmpty(mSignUpContactNoEt.getText()) || !TextUtils.isEmpty(mSignUpPasswordEt.getText())) {
@@ -231,6 +246,24 @@ public class SignUpActivity extends BaseActivity {
             }
         }
     };
+
+    private void createButtonhandling() {
+        String name = mSignUpNameEt.getText().toString();
+        String contactNo = mSignUpContactNoEt.getText().toString();
+        String password = mSignUpPasswordEt.getText().toString();
+        ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
+            showAlertMessage("Please fill all the details. ");
+        } else if ((contactNo.length() != 10)) {
+            showAlertMessage("Please enter a valid 10 digit mobile number.");
+        } else if (!isValidPassword(password)) {
+            showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
+        } else if (!con.isConnectingToInternet()) {
+            showAlertMessage("No Internet Connection.");
+        } else {
+            createAccount();
+        }
+    }
 
     private void onClickLogin() {
         mFacebookWidgetLoginButton.performClick();
@@ -267,11 +300,11 @@ public class SignUpActivity extends BaseActivity {
                                     eMail = "";
                                 }
                                 mDateOfBirth = object.optString("birthday");
-                                if(TextUtils.isEmpty(mDateOfBirth)){
-                                    mDateOfBirth = currentTime ;                                            // just in case birthday is not extracted from FB ; pass current date , required to hit API
-                                }else{
+                                if (TextUtils.isEmpty(mDateOfBirth)) {
+                                    mDateOfBirth = currentTime;                                            // just in case birthday is not extracted from FB ; pass current date , required to hit API
+                                } else {
                                     String array[] = mDateOfBirth.split("/");
-                                    mDateOfBirth = array[2] +  "/"+ array[1]+ "/"+ array[0];
+                                    mDateOfBirth = array[2] + "/" + array[1] + "/" + array[0];
                                 }
                                 String genderFB = object.optString("gender");
                                 if (genderFB != null && genderFB.trim().equalsIgnoreCase("male")) {
@@ -373,12 +406,14 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                boolean permitToNextSignUpPage = true;
+
                 try {
                     String result = jsonObject.getString("d");
                     if (result.equalsIgnoreCase("username")) {
+                        permitToNextSignUpPage = true;
                         mShowUserNameUI = true;                   // User Name UI is VISIBLE at Sign-UP second page .; backend team doesnt have its username; so on next page . show ui and get username .
                     } else if (TextUtils.isEmpty(result)) {
+                        permitToNextSignUpPage = true;
                         mShowUserNameUI = false;                     // User Name UI is INVISIBLE at Sign-UP second page . ; result = " " ; backend team have user name , so dont show username UI in second page.
                     } else {
                         permitToNextSignUpPage = false;
@@ -467,7 +502,7 @@ public class SignUpActivity extends BaseActivity {
             mSendData.put("contactNo", mSignUpContactNoEt.getText().toString());
             mSendData.put("password", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob", dateFormatToSend);
-            mSendData.put("gender", mGenderResult);
+            mSendData.put("gender", mGender);
             if (mShowUserNameUI) {
                 mSendData.put("username", mSignUpUserNameEt.getText().toString());
             } else {
@@ -566,7 +601,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2) {
+        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
@@ -585,4 +620,15 @@ public class SignUpActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        //   super.onBackPressed();
+        if (permitToNextSignUpPage) {                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
+            mSignUpFirstPageContainer.setVisibility(View.VISIBLE);
+            mSignUpSecondPageContainer.setVisibility(View.GONE);
+
+        } else {                                                                      // SignUp First page VISIBLE , finish activity.
+            finish();
+        }
+    }
 }
