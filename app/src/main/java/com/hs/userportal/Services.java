@@ -130,10 +130,16 @@ public class Services {
     public JSONObject IsUserAuthenticated(JSONObject sendData) {
 
 		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/
-        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
-        String url = sttc_holdr.request_Url();
-        JSONObject abc = common(sendData, url);
-        return abc;
+        //StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
+        //String url = sttc_holdr.request_Url();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("d", "true");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //JSONObject abc = common(sendData, url);
+        return jsonObject;
 
     }
 
