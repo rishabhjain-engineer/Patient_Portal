@@ -350,6 +350,16 @@ public class SignUpActivity extends BaseActivity {
                                                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                         mContactNo = innerJsonObject.optString("ContactNo");
                                                         mTerms = innerJsonObject.optBoolean("Terms");
+                                                        if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                                                            goToDashBoardPage();
+                                                        } else {
+                                                            if (TextUtils.isEmpty(mContactNo)) {
+                                                                updateContactAlert();
+                                                            }
+                                                            if (mTerms) {
+                                                                sendrequestForDesclaimer();
+                                                            }
+                                                        }
                                                         goToDashBoardPage();
                                                     } else {
                                                         isToShowSignInErrorMessage = true;
