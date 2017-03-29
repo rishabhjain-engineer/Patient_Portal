@@ -74,7 +74,7 @@ public class SignUpActivity extends BaseActivity {
     private String mVersionNo;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
-     private static int mYear, mMonth, mDay, mPatientBusinessFlag;
+     private static int mYear, mMonth, mDay, mPatientBussinessFlag;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
     private LinearLayout mSignUpFbContainer, mSignUpSecondPageContainer, mSignUpFirstPageContainer;
@@ -88,7 +88,7 @@ public class SignUpActivity extends BaseActivity {
     private String mUserCodeFromEmail = null, mBuildNo, mGenderResult, fnln;
     private static String mFromActivity, mDateOfBirthResult;
     private static final String MyPREFERENCES = "MyPrefs";
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,16}$";
     private String[] mGenderValue = {"MALE", "FEMALE"};
     private TextView mSignInTv;
 
@@ -151,6 +151,37 @@ public class SignUpActivity extends BaseActivity {
             }
         });
 
+        mSignUpNameEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    mSignUpNameEt.setHint("");
+                }else{
+                    mSignUpNameEt.setHint("Name");
+                }
+            }
+        });
+        mSignUpContactNoEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    mSignUpContactNoEt.setHint("");
+                }else{
+                    mSignUpContactNoEt.setHint("Contact No.");
+                }
+            }
+        });
+        mSignUpPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    mSignUpPasswordEt.setHint("");
+                }else{
+                    mSignUpPasswordEt.setHint("Password");
+                }
+            }
+        });
+
         mSignUpDateOfBirth.setOnClickListener(mOnClickListener);        // onClickListener on Date of Birth
         mSignUpBtn.setOnClickListener(mOnClickListener);               // onClicKListener on Sign-Up Button ; CREATE ACCOUNT BUTTON
         mSignUpFbContainer.setOnClickListener(mOnClickListener);       // onClicKListener on facebook LinearLayout conatiner
@@ -174,9 +205,9 @@ public class SignUpActivity extends BaseActivity {
                 if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
                     showAlertMessage("Please fill all the details. ");
                 } else if ((contactNo.length() != 10)) {
-                    showAlertMessage("Enter Valid 10 digit Contact no.");
+                    showAlertMessage("Please enter a valid 10 digit mobile number.");
                 } else if (!isValidPassword(password)) {
-                    showAlertMessage("1. Check password length from 8-16" + "\n" + "2. Password must be AplhaNumeric");
+                    showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
                 } else if (!con.isConnectingToInternet()) {
                     showAlertMessage("No Internet Connection.");
                 } else {
@@ -277,7 +308,7 @@ public class SignUpActivity extends BaseActivity {
                                                         JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                                         mUserID = innerJsonObject.optString("UserId");
                                                         mPatientCode = innerJsonObject.optString("PatientCode");
-                                                        mPatientBusinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
                                                         mRoleName = innerJsonObject.optString("RoleName");
                                                         mFirstName = innerJsonObject.optString("FirstName");
                                                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -461,7 +492,7 @@ public class SignUpActivity extends BaseActivity {
                         JSONObject innerJsonObject = jsonArray.optJSONObject(0);
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
-                        mPatientBusinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
                         mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessDateTime");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
@@ -535,6 +566,11 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
+        if (mPatientBussinessFlag == 2) {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
+        } else {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+        }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
         if (mShowUserNameUI) {
