@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -176,7 +177,17 @@ public class SignInActivity extends BaseActivity {
                                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                 mContactNo = innerJsonObject.optString("ContactNo");
                                                 mTerms = innerJsonObject.optBoolean("Terms");
-                                                goToDashBoardPage();
+
+                                                if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                                                    goToDashBoardPage();
+                                                } else {
+                                                    if (TextUtils.isEmpty(mContactNo)) {
+                                                        updateContactAlert();
+                                                    }
+                                                    if (mTerms) {
+                                                        sendrequestForDesclaimer();
+                                                    }
+                                                }
                                             } else {
                                                 isToShowSignInErrorMessage = true;
                                             }
@@ -475,9 +486,21 @@ public class SignInActivity extends BaseActivity {
         termsAndConditionDialog.setCancelable(false);
         termsAndConditionDialog.setContentView(R.layout.alert_terms_condition);
         TextView termsAndConditionTv = (TextView) termsAndConditionDialog.findViewById(R.id.terms_and_condition);
-        Button buttonOk = (Button) termsAndConditionDialog.findViewById(R.id.btn_ok);
+        final Button buttonOk = (Button) termsAndConditionDialog.findViewById(R.id.btn_ok);
         final CheckBox termsAndConditionCheckBox = (CheckBox) termsAndConditionDialog.findViewById(R.id.terms_and_condition_check_box);
+        buttonOk.setBackgroundColor(getResources().getColor(R.color.sign_in_edit_bg_hint));
         termsAndConditionTv.setText(Html.fromHtml(mTermsAndCondition));
+        termsAndConditionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(termsAndConditionCheckBox.isChecked()){
+                    buttonOk.setBackgroundColor(getResources().getColor(R.color.header_color));
+                }else{
+                    buttonOk.setBackgroundColor(getResources().getColor(R.color.sign_in_edit_bg_hint));
+                }
+
+            }
+        });
 
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -862,27 +885,6 @@ public class SignInActivity extends BaseActivity {
         intent.putExtra("fbUserName", mFbUserName);
         startActivity(intent);
         finish();
-    }
-
-    private boolean isValidatePhoneNumber(String phoneNo) {
-        // validate phone numbers of format "1234567890"
-        if (phoneNo.matches("\\d{10}"))
-            return true;
-            // validating phone number with -, . or spaces
-        else if (phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}"))
-            return true;
-            // validating phone number with extension length
-            // from 3 to 5
-        else if (phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}"))
-            return true;
-            // validating phone number where area code is in
-            // braces ()
-        else if (phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}"))
-            return true;
-            // return false if nothing matches the input
-        else
-            return false;
-
     }
 
     private void facebookDecesionAlertDialog(String message, final boolean isToLogin) {

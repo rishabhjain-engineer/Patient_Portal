@@ -2,6 +2,7 @@ package ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,14 +11,18 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -76,7 +81,7 @@ public class SignUpActivity extends BaseActivity {
     private Button mSignUpBtn, mSignUpContinueBtn;
     private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms, permitToNextSignUpPage = false;
     private CallbackManager mCallbackManager;
-    private String mVersionNo;
+    private String mVersionNo, mTermsAndCondition;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
     private static int mYear, mMonth, mDay, mPatientBussinessFlag;
@@ -350,7 +355,16 @@ public class SignUpActivity extends BaseActivity {
                                                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                         mContactNo = innerJsonObject.optString("ContactNo");
                                                         mTerms = innerJsonObject.optBoolean("Terms");
-                                                        goToDashBoardPage();
+                                                        if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                                                            goToDashBoardPage();
+                                                        } else {
+                                                            if (TextUtils.isEmpty(mContactNo)) {
+                                                                updateContactAlert();
+                                                            }
+                                                            if (mTerms) {
+                                                                sendrequestForDesclaimer();
+                                                            }
+                                                        }
                                                     } else {
                                                         isToShowSignInErrorMessage = true;
                                                     }
@@ -537,7 +551,10 @@ public class SignUpActivity extends BaseActivity {
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mUserVersionNo = innerJsonObject.optString("UserVersionNo");
                         mContactNo = innerJsonObject.optString("ContactNo");
-                        goToDashBoardPage();
+                        boolean terms = innerJsonObject.optBoolean("Terms");
+                        if (mTerms) {
+                            sendrequestForDesclaimer();
+                        }
                     } else {
                         isToShowErrorDialog = true;
                     }
@@ -630,5 +647,204 @@ public class SignUpActivity extends BaseActivity {
         } else {                                                                      // SignUp First page VISIBLE , finish activity.
             finish();
         }
+    }
+
+    private Dialog updateContactDialog;
+
+    private void updateContactAlert() {
+        updateContactDialog = new Dialog(SignUpActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
+        updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        updateContactDialog.setCancelable(false);
+        updateContactDialog.setContentView(R.layout.mobileno_feild);
+        final EditText editnumber = (EditText) updateContactDialog.findViewById(R.id.mobile_fieldid);
+        Button ok = (Button) updateContactDialog.findViewById(R.id.submit_id);
+        TextView cancel_id = (TextView) updateContactDialog.findViewById(R.id.cancel_id);
+        ok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String mobileNumber = editnumber.getText().toString();
+                if (TextUtils.isEmpty(mobileNumber)) {
+                    Toast.makeText(getApplicationContext(), "Mobile Number Should not empty !", Toast.LENGTH_LONG).show();
+                } else if (!isValidatePhoneNumber(mobileNumber)) {
+                    Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
+                } else {
+                    updateContactApi(mobileNumber);
+                }
+            }
+
+        });
+        cancel_id.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                updateContactDialog.dismiss();
+
+            }
+        });
+        updateContactDialog.show();
+    }
+
+    private ProgressDialog mProgressDialog;
+
+    private void updateContactApi(String contactnumber) {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("uploading contact...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("userid", mUserID);
+            sendData.put("contact", contactnumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.UpdateContact);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+                updateContactDialog.dismiss();
+                goToDashBoardPage();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
+    }
+
+    private void sendrequestForDesclaimer() {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Loading Plese wait...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData = new JSONObject();
+            sendData.put("UserdisclaimerType", "Patient");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.GetLatestVersionInfo);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+                String data = data = response.optString("d");
+                JSONObject cut = null;
+                try {
+                    cut = new JSONObject(data);
+                    JSONArray jsonArray = cut.optJSONArray("Table");
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(0);
+                        mTermsAndCondition = jsonObject.optString("disclaimerInformation");
+                    }
+                    showTermsAndCondition();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
+    }
+    private Dialog termsAndConditionDialog;
+    private void showTermsAndCondition() {
+
+        termsAndConditionDialog = new Dialog(SignUpActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
+        termsAndConditionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        termsAndConditionDialog.setCancelable(false);
+        termsAndConditionDialog.setContentView(R.layout.alert_terms_condition);
+        TextView termsAndConditionTv = (TextView) termsAndConditionDialog.findViewById(R.id.terms_and_condition);
+        final Button buttonOk = (Button) termsAndConditionDialog.findViewById(R.id.btn_ok);
+        final CheckBox termsAndConditionCheckBox = (CheckBox) termsAndConditionDialog.findViewById(R.id.terms_and_condition_check_box);
+        buttonOk.setBackgroundColor(getResources().getColor(R.color.sign_in_edit_bg_hint));
+        termsAndConditionTv.setText(Html.fromHtml(mTermsAndCondition));
+        termsAndConditionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(termsAndConditionCheckBox.isChecked()){
+                    buttonOk.setBackgroundColor(getResources().getColor(R.color.header_color));
+                }else{
+                    buttonOk.setBackgroundColor(getResources().getColor(R.color.sign_in_edit_bg_hint));
+                }
+
+            }
+        });
+
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!termsAndConditionCheckBox.isChecked()) {
+                    showAlertMessage("Please agree terms and condition");
+                } else {
+                    callTermsAndConditionApi();
+                }
+            }
+        });
+        termsAndConditionDialog.show();
+    }
+
+    private void callTermsAndConditionApi() {
+        mRequestQueue = Volley.newRequestQueue(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Loading...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("UserId", mUserID);
+            sendData.put("versionNo", mVersionNo);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            String disclaimerDateTime = sdf.format(new Date());
+            sendData.put("DateTime", disclaimerDateTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        StaticHolder staticHolder = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.agreeTermsCondition);
+        String url = staticHolder.request_Url();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mProgressDialog.dismiss();
+                termsAndConditionDialog.dismiss();
+                goToDashBoardPage();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
     }
 }
