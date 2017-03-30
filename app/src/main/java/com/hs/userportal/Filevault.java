@@ -90,6 +90,7 @@ import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.NavFolder;
 
 public class Filevault extends BaseActivity {
@@ -1133,7 +1134,7 @@ public class Filevault extends BaseActivity {
             case android.R.id.home:
                 if (!toggle_move) {
           /*  super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
@@ -1155,7 +1156,7 @@ public class Filevault extends BaseActivity {
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
            /* super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
@@ -1247,7 +1248,7 @@ public class Filevault extends BaseActivity {
                 // Toast.LENGTH_SHORT).show();
                 // }
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 finish();
@@ -2654,7 +2655,7 @@ public class Filevault extends BaseActivity {
     public void onBackPressed() {
         if (!toggle_move) {
           /*  super.onBackPressed();*/
-            Intent intent = new Intent(getApplicationContext(), logout.class);
+            Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             thumbImage.clear();
@@ -2676,7 +2677,7 @@ public class Filevault extends BaseActivity {
             thumbnailsselection = new boolean[thumbImage.size()];
         } else {
            /* super.onBackPressed();*/
-            Intent intent = new Intent(getApplicationContext(), logout.class);
+            Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             thumbImage.clear();

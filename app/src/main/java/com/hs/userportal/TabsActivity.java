@@ -33,6 +33,8 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ui.DashBoardActivity;
+
 public class TabsActivity extends TabActivity {
 
 	private static TabHost tabHost;
@@ -355,7 +357,7 @@ public class TabsActivity extends TabActivity {
 		switch (item.getItemId()) {
 
 		case android.R.id.home:
-			Intent backNav = new Intent(getApplicationContext(), logout.class);
+			Intent backNav = new Intent(getApplicationContext(), DashBoardActivity.class);
 			backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(backNav);
 			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
