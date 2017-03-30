@@ -29,7 +29,7 @@
 
 
     <GridView
-        android:id="@+id/gridview"
+        android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/seprator_view"
@@ -39,4 +39,11 @@
         android:numColumns="2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp" />
+
+    <include
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grid_view"
+        layout="@layout/dashboard_footer"/>
 </RelativeLayout>
