@@ -175,8 +175,6 @@ public class logout extends Activity implements View.OnClickListener {
         String facebookId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID);
         if (!TextUtils.isEmpty(facebookId)) {
           facebookPic = facebookId;
-        } else {
-            facebookPic = new Register().userID;
         }
         //logout=(LinearLayout)findViewById(R.id.logout);
         editimg = (ImageButton) findViewById(R.id.editimg);
@@ -605,7 +603,6 @@ public class logout extends Activity implements View.OnClickListener {
                 user_pic.setImageResource(R.drawable.dashpic_update);
                 LoginManager.getInstance().logOut();
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
-                new Register().userID = "";
                 finish();
 
             } catch (JSONException e) {
@@ -643,7 +640,6 @@ public class logout extends Activity implements View.OnClickListener {
                 user_pic.setImageResource(R.drawable.dashpic_update);
                 LoginManager.getInstance().logOut();
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
-                new Register().userID = "";
                 finish();
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
