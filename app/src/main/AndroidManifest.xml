@@ -441,8 +441,7 @@
         <activity
             android:name="ui.DashBoardActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"  />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="ui.SignUpActivity"

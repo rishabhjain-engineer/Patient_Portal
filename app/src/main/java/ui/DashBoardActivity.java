@@ -44,7 +44,7 @@ import utils.PreferenceHelper;
  * Created by ayaz on 29/3/17.
  */
 
-public class DashBoardActivity extends Activity {
+public class DashBoardActivity extends BaseActivity {
     private DynamicGridView mDaDynamicGridView;
     private List<String> mList = new ArrayList<>();
     private String privatery_id;
@@ -64,6 +64,8 @@ public class DashBoardActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         mPreferenceHelper = PreferenceHelper.getInstance();
+        setupActionBar();
+        mActionBar.hide();
 
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
        /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
@@ -90,11 +92,11 @@ public class DashBoardActivity extends Activity {
                 } else if (position == 1) {
                     goToHealth(position);
                 } else if (position == 2) {
-                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
+                    showAlertMessage("Comming Soon");
                 } else if (position == 3) {
-                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
+                    showAlertMessage("Comming Soon");
                 } else if (position == 4) {
-                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
+                    showAlertMessage("Comming Soon");
                 }
             }
         });
