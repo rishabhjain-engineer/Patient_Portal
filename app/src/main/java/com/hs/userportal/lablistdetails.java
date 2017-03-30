@@ -25,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -206,32 +208,38 @@ public class lablistdetails extends BaseActivity {
         }
         family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
         patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+        if(family != null){
+            if (check_fill == 0) {
+                for (int chk = 0; chk < family.size(); chk++) {
+                    if (family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
+                        family.remove(chk);
+                    }
+                }
+                HashMap<String, String> hmap = new HashMap<>();
+                hmap.put("Image", DashBoardActivity.image_parse);
+                hmap.put("FirstName", "Self");
+                hmap.put("LastName", " ");
+                hmap.put("HM", "");
+                hmap.put("FamilyMemberId", patientID);
+                family.add(hmap);
+            }
 
-        if (check_fill == 0) {
-            for (int chk = 0; chk < family.size(); chk++) {
-                if (family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
-                    family.remove(chk);
+            if (family.size() == 1) {
+                select_member_lab.setVisibility(View.GONE);
+            } else {
+                for (int c = 0; c < family.size(); c++) {
+                    if (family.get(c).get("HM").equals("1")) {
+                        select_member_lab.setVisibility(View.GONE);
+                    }
                 }
             }
-            HashMap<String, String> hmap = new HashMap<>();
-            hmap.put("Image", DashBoardActivity.image_parse);
-            hmap.put("FirstName", "Self");
-            hmap.put("LastName", " ");
-            hmap.put("HM", "");
-            hmap.put("FamilyMemberId", patientID);
-            family.add(hmap);
+
+            static_family.addAll(family);
         }
 
-        if (family.size() == 1) {
-            select_member_lab.setVisibility(View.GONE);
-        } else {
-            for (int c = 0; c < family.size(); c++) {
-                if (family.get(c).get("HM").equals("1")) {
-                    select_member_lab.setVisibility(View.GONE);
-                }
-            }
-        }
-        static_family.addAll(family);
+
+
+
         check_fill = 1;
         // caseid = z.getStringExtra("caseid");
         caseid = "";
@@ -930,7 +938,7 @@ public class lablistdetails extends BaseActivity {
                 labnumber.clear();
                 ispublished.clear();
                 testcomplete.clear();
-                data1 = receiveData.getString("d");
+                data1 = receiveData.optString("d");
                 JSONObject cut = new JSONObject(data1);
                 subArray = cut.getJSONArray("Table");
 
@@ -1012,6 +1020,7 @@ public class lablistdetails extends BaseActivity {
                 blg.setText("");
                 bal.setText("");*/
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
+                Log.e("Rishabh", "JSONException error messgae := "+e);
                 //  buttonbar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
@@ -1513,7 +1522,6 @@ public class lablistdetails extends BaseActivity {
                 public void onErrorResponse(VolleyError error) {
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(), "Some error occurred please try again later.", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
             });
         } catch (Exception e1) {
