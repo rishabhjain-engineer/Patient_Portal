@@ -112,7 +112,7 @@ public class SignInActivity extends BaseActivity {
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-       // getSha();
+        // getSha();
     }
 
     private void getSha() {
@@ -199,15 +199,15 @@ public class SignInActivity extends BaseActivity {
                                             String array[] = mDAsString.split("\\|");
                                             String decesionString = "";
                                             String messageString = "";
-                                            if(array != null && array.length >=2){
+                                            if (array != null && array.length >= 2) {
                                                 decesionString = array[0];
                                                 messageString = array[1];
                                             }
-                                            if(decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")){
+                                            if (decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")) {
                                                 showAlertMessage(messageString);
-                                            }else if(decesionString.equalsIgnoreCase("4")){
+                                            } else if (decesionString.equalsIgnoreCase("4")) {
                                                 facebookDecesionAlertDialog(messageString, false);
-                                            }else if(decesionString.equalsIgnoreCase("2")){
+                                            } else if (decesionString.equalsIgnoreCase("2")) {
                                                 mUserName = array[2];
                                                 mPassWord = array[3];
                                                 facebookDecesionAlertDialog(messageString, true);
@@ -258,10 +258,10 @@ public class SignInActivity extends BaseActivity {
         mSingnInUserEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSingnInUserEt.setHint("");
                     mSingnInUserEt.setCursorVisible(true);
-                }else{
+                } else {
                     mSingnInUserEt.setHint("User Name");
                     mSingnInUserEt.setCursorVisible(false);
                 }
@@ -270,10 +270,10 @@ public class SignInActivity extends BaseActivity {
         mSingnInPasswordEt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     mSingnInPasswordEt.setHint("");
                     mSingnInPasswordEt.setCursorVisible(true);
-                }else{
+                } else {
                     mSingnInPasswordEt.setHint("Password");
                     mSingnInPasswordEt.setCursorVisible(false);
                 }
@@ -288,7 +288,7 @@ public class SignInActivity extends BaseActivity {
                     Log.e("Rishabh", " SIGNIN PAGE: Create Button Functionality called, from softkeyboard 'DONE' button ");
                     signInBtnHandling();
                 }
-                return false ;
+                return false;
             }
 
         });
@@ -345,7 +345,8 @@ public class SignInActivity extends BaseActivity {
         private ProgressDialog progress;
         String buildNo;
         boolean isToTakeFromEditbox;
-        public NewLogInAsync(boolean value){
+
+        public NewLogInAsync(boolean value) {
             isToTakeFromEditbox = value;
         }
 
@@ -353,7 +354,7 @@ public class SignInActivity extends BaseActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             isToShowSignInErrorMessage = false;
-            if(isToTakeFromEditbox){
+            if (isToTakeFromEditbox) {
                 mUserName = mSingnInUserEt.getText().toString().trim();
                 mPassWord = mSingnInPasswordEt.getText().toString();
             }
@@ -413,18 +414,24 @@ public class SignInActivity extends BaseActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
-            if (isToShowSignInErrorMessage) {
-                showAlertMessage(mDAsString);
-            } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
-                goToDashBoardPage();
+
+            if (loginApiReceivedData == null) {
+                showAlertMessage("An error occured, please try again.");
             } else {
-                if (TextUtils.isEmpty(mContactNo)) {
-                    updateContactAlert();
-                }
-                if (mTerms) {
-                    sendrequestForDesclaimer();
+                if (isToShowSignInErrorMessage) {
+                    showAlertMessage(mDAsString);
+                } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                    goToDashBoardPage();
+                } else {
+                    if (TextUtils.isEmpty(mContactNo)) {
+                        updateContactAlert();
+                    }
+                    if (mTerms) {
+                        sendrequestForDesclaimer();
+                    }
                 }
             }
+
         }
     }
 
@@ -492,9 +499,9 @@ public class SignInActivity extends BaseActivity {
         termsAndConditionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(termsAndConditionCheckBox.isChecked()){
+                if (termsAndConditionCheckBox.isChecked()) {
                     buttonOk.setBackgroundColor(getResources().getColor(R.color.header_color));
-                }else{
+                } else {
                     buttonOk.setBackgroundColor(getResources().getColor(R.color.sign_in_edit_bg_hint));
                 }
 

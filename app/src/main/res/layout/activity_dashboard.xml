@@ -36,6 +36,7 @@
         android:layout_below="@+id/seprator_view"
         android:gravity="center"
         android:numColumns="2"
+        android:layout_above="@+id/footer"
         android:background="#dedede"
         android:verticalSpacing="1dp"
         android:horizontalSpacing="1dp"
