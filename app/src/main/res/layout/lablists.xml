@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -64,13 +64,18 @@
     <ListView
         android:id="@+id/past_visits"
         android:layout_width="match_parent"
+        android:layout_below="@+id/select_member_lab"
         android:scrollbars="none"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:drawSelectorOnTop="true"
         android:divider="@android:color/transparent"
         android:dividerHeight="10dp"></ListView>
+    <include
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        layout="@layout/dashboard_footer"/>
 
-    <include layout="@layout/dashboard_footer"/>
-
-</LinearLayout>
+</RelativeLayout>
