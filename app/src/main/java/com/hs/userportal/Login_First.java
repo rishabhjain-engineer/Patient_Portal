@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import ui.DashBoardActivity;
 import ui.SignInActivity;
 
 /**
@@ -201,7 +202,7 @@ public class Login_First extends Activity {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     intent.putExtra("id", cop);
                     intent.putExtra("user", uName);
                     intent.putExtra("pass", uPassword);
@@ -210,7 +211,7 @@ public class Login_First extends Activity {
 
                     startActivity(intent);
 
-                    Intent i = new Intent(Login_First.this, logout.class);
+                    Intent i = new Intent(Login_First.this, DashBoardActivity.class);
                     try {
                         i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
                         i.putExtra("id", cop);
@@ -441,7 +442,7 @@ public class Login_First extends Activity {
                         onBackPressed();
                     } else {*/
 
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
@@ -566,7 +567,7 @@ public class Login_First extends Activity {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     intent.putExtra("id", cop);
                     intent.putExtra("user", uName);
                     intent.putExtra("pass", uPassword);
@@ -575,7 +576,7 @@ public class Login_First extends Activity {
 
                     startActivity(intent);
 
-                    Intent i = new Intent(Login_First.this, logout.class);
+                    Intent i = new Intent(Login_First.this, DashBoardActivity.class);
                     try {
                         i.putExtra("user", subArray.getJSONObject(0).getString("UserNameAlias"));
                         i.putExtra("id", cop);
@@ -606,7 +607,7 @@ public class Login_First extends Activity {
                     // e.putString("tp", tpwd);
                     e.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                     intent.putExtra("id", cop);
                     intent.putExtra("user", uName);
                     intent.putExtra("pass", uPassword);
@@ -665,7 +666,7 @@ public class Login_First extends Activity {
 
                     // new Authentication().execute();
 
-                    Intent i = new Intent(Login_First.this, logout.class);
+                    Intent i = new Intent(Login_First.this, DashBoardActivity.class);
                     System.out.println("hahaha");
                     String name = sharedPreferences.getString("un", "");
                     String pwd = sharedPreferences.getString("pw", "");

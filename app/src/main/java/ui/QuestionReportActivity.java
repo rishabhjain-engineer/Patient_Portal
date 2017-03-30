@@ -9,7 +9,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hs.userportal.R;
-import com.hs.userportal.logout;
 
 import adapters.QuesetionireReprtFragmentAdapter;
 
@@ -33,7 +32,7 @@ public class QuestionReportActivity extends BaseActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentMain = new Intent(QuestionReportActivity.this, logout.class);
+                Intent intentMain = new Intent(QuestionReportActivity.this, DashBoardActivity.class);
                 startActivity(intentMain);
                 finish();
             }

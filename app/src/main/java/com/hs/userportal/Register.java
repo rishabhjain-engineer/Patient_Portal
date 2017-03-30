@@ -77,6 +77,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import info.hoang8f.android.segmented.SegmentedGroup;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.PreferenceHelper;
 
 public class Register extends BaseActivity {
@@ -1659,7 +1660,7 @@ public class Register extends BaseActivity {
                     // e.putString("tp", tpwd);
                     e.commit();
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
@@ -1672,7 +1673,7 @@ public class Register extends BaseActivity {
 
                         startActivity(intent);
                     } else if (fromActivity.equalsIgnoreCase("anyother_activity")) {
-                        Intent intent = new Intent(getApplicationContext(), logout.class);
+                        Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", uPassword);
@@ -1956,7 +1957,7 @@ public class Register extends BaseActivity {
                     e.commit();
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
 
-                        Intent intent = new Intent(Register.this, logout.class);
+                        Intent intent = new Intent(Register.this, DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", password);
@@ -1970,7 +1971,7 @@ public class Register extends BaseActivity {
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln);
                         startActivity(intent);
                     } else {
-                        Intent intent = new Intent(Register.this, logout.class);
+                        Intent intent = new Intent(Register.this, DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", uName);
                         intent.putExtra("pass", password);
@@ -1985,7 +1986,7 @@ public class Register extends BaseActivity {
                         startActivity(intent);
                     }
                 }else if(!isToHitAgreedApi){
-                    Intent intent = new Intent(Register.this, logout.class);
+                    Intent intent = new Intent(Register.this, DashBoardActivity.class);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, PH);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, uName);
@@ -2116,7 +2117,7 @@ public class Register extends BaseActivity {
 					 * startActivity(intent);
 					 */
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
-                        Intent i = new Intent(Register.this, logout.class);
+                        Intent i = new Intent(Register.this, DashBoardActivity.class);
                         try {
 
                             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, cop);
@@ -2157,7 +2158,7 @@ public class Register extends BaseActivity {
                     // e.putString("tp", tpwd);
                     e.commit();
                     if (fromActivity.equalsIgnoreCase("main_activity")) {
-                        Intent intent = new Intent(Register.this, logout.class);
+                        Intent intent = new Intent(Register.this, DashBoardActivity.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("user", userName);
                         intent.putExtra("pass", password);
@@ -2983,7 +2984,7 @@ public class Register extends BaseActivity {
                 e.putString("PH", PH);
                 editor.commit();
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.putExtra("id", cop);
                 intent.putExtra("user", uName);
                 intent.putExtra("pass", uPassword);

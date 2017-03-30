@@ -51,7 +51,6 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.logout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -874,7 +873,7 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
-        Intent intent = new Intent(SignInActivity.this, logout.class);
+        Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);
         startActivity(intent);
         finish();
     }

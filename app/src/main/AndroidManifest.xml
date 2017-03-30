@@ -81,12 +81,6 @@
         <service android:name="utils.QuestionReportPageService" />
 
         <activity
-            android:name="com.hs.userportal.logout"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
-
-        <activity
             android:name="com.hs.userportal.Register"
             android:label="Sign Up"
             android:parentActivityName="com.hs.userportal.MainActivity"

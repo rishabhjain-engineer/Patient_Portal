@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ui.DashBoardActivity;
+
 public class Profile extends ActionBarActivity {
 
 	private JSONObject sendData, receiveData;
@@ -95,7 +97,7 @@ public class Profile extends ActionBarActivity {
 
 		case R.id.action_home:
 
-			Intent intent = new Intent(getApplicationContext(), logout.class);
+			Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 
