@@ -43,6 +43,7 @@ import java.util.List;
 
 import adapters.Group_testAdapter;
 import networkmngr.NetworkChangeListener;
+import ui.DashBoardActivity;
 
 public class GraphDetails extends ActionBarActivity {
 
@@ -408,7 +409,7 @@ public class GraphDetails extends ActionBarActivity {
                 startActivity(in);
                 finish();*/
                 Intent in = new Intent(GraphDetails.this, ReportRecords.class);
-                in.putExtra("id", logout.id);
+                in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId",caseIds.get(position));
                 startActivity(in);

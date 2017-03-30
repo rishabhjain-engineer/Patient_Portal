@@ -23,6 +23,12 @@ import adapters.DashboardActivityAdapter;
 public class DashBoardActivity extends Activity {
     private DynamicGridView mDaDynamicGridView;
     private List<String> mList = new ArrayList<>();
+
+    public static String image_parse;
+    public static String emailid;
+    public static String id, privatery_id;
+    public static String notiem = "no", notisms = "no";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
