@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,6 +55,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -169,9 +171,9 @@ public class Filevault extends BaseActivity {
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
-    private ImageView mSearchBarImageView ;
+    private ImageView mSearchBarImageView , mFooterDashBoardImageView ,mFooterReportsImageView,mFooterFamilyImageView,mFooterAccountImageView;
     private EditText mSearchBarEditText ;
-
+    private LinearLayout mFooterDashBoard , mFooterReports, mFooterFamily , mFooterAccount ;
 
     public static Context file_vaultcontxt;
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
@@ -206,6 +208,25 @@ public class Filevault extends BaseActivity {
 
         mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
         mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
+
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
+
+
 
         sendData = new JSONObject();
         service = new Services(Filevault.this);
@@ -537,6 +558,31 @@ public class Filevault extends BaseActivity {
         });
 
     }
+
+    private View.OnClickListener mOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                intent = new Intent(Filevault.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
+                intent = new Intent(Filevault.this , lablistdetails.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_family_container){
+                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                intent = new Intent(Filevault.this , MyFamily.class);                               // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                intent = new Intent(Filevault.this , Account.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);

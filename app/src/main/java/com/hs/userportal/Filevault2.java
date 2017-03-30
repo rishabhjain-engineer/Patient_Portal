@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -52,6 +53,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -87,6 +89,7 @@ import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.NavFolder;
 
 /**
@@ -180,8 +183,11 @@ public class Filevault2 extends BaseActivity {
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
     private static final int REQUEST_CAMERA = 0;
-    private ImageView mSearchBarImageView ;
+
     private EditText mSearchBarEditText ;
+
+    private ImageView mSearchBarImageView , mFooterDashBoardImageView ,mFooterReportsImageView,mFooterFamilyImageView,mFooterAccountImageView;
+    private LinearLayout mFooterDashBoard , mFooterReports, mFooterFamily , mFooterAccount ;
 
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
@@ -215,6 +221,22 @@ public class Filevault2 extends BaseActivity {
         mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
         mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
 
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
 
         sendData = new JSONObject();
         service = new Services(Filevault2.this);
@@ -508,6 +530,31 @@ public class Filevault2 extends BaseActivity {
             }
         });
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                intent = new Intent(Filevault2.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
+                intent = new Intent(Filevault2.this , lablistdetails.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_family_container){
+                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                intent = new Intent(Filevault2.this , MyFamily.class);                               // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                intent = new Intent(Filevault2.this , Account.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);

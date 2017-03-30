@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.accounts.Account;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,6 +90,10 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
     private ArrayList<HashMap<String, String>> final_memberlist;
     private int check_commas =0;
 
+    private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
+    private ImageView mFooterDashBoardImageView ,mFooterReportsImageView,mFooterRepositoryImageView,mFooterAccountImageView;
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +102,23 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
         service = new Services(MyFamily.this);
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        mFooterRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterRepository.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
+
         repeat = 0;
         revoke = new ArrayList<>();
         resend = new ArrayList<>();
@@ -137,6 +160,30 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         });
     }
 
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                intent = new Intent(MyFamily.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
+                intent = new Intent(MyFamily.this , lablistdetails.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_repository_container){
+                mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
+                intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                intent = new Intent(MyFamily.this , Account.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     public void LoadFamilyMembers() {
         request = Volley.newRequestQueue(this);

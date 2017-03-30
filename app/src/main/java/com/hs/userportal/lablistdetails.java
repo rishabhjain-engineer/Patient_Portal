@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -120,6 +122,9 @@ public class lablistdetails extends BaseActivity {
     private PastVisitAdapter past_adapt;
     private String checkID;
     private RequestQueue queue;
+
+    private LinearLayout mFooterDashBoard , mFooterFamily, mFooterRepository , mFooterAccount ;
+    private ImageView mFooterDashBoardImageView ,mFooterFamilyImageView,mFooterRepositoryImageView,mFooterAccountImageView;
     //  private LinearLayout buttonbar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -149,6 +154,22 @@ public class lablistdetails extends BaseActivity {
         select_member_lab = (EditText) findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) findViewById(R.id.past_visits);
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        mFooterRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterRepository.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
@@ -440,6 +461,31 @@ public class lablistdetails extends BaseActivity {
             }
         });
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                intent = new Intent(lablistdetails.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                intent = new Intent(lablistdetails.this , MyFamily.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_repository_container){
+                mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
+                intent = new Intent(lablistdetails.this , Filevault.class);                               // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                intent = new Intent(lablistdetails.this , Account.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
