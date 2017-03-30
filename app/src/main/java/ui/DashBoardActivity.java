@@ -83,6 +83,8 @@ public class DashBoardActivity extends Activity {
                 } else if (position == 1) {
                     goToHealth(position);
                 } else if (position == 2) {
+                    Intent intent = new Intent(DashBoardActivity.this, AccountActivity.class);
+                    startActivity(intent);
 
                 } else if (position == 3) {
 
