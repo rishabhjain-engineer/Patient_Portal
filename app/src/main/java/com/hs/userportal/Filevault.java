@@ -171,7 +171,7 @@ public class Filevault extends BaseActivity {
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
-    private ImageView mSearchBarImageView , mFooterDashBoardImageView ,mFooterReportsImageView,mFooterFamilyImageView,mFooterAccountImageView;
+    private ImageView mRepositoryImageView;
     private EditText mSearchBarEditText ;
     private LinearLayout mFooterDashBoard , mFooterReports, mFooterFamily , mFooterAccount ;
 
@@ -206,7 +206,6 @@ public class Filevault extends BaseActivity {
         list_header = (RelativeLayout) findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) findViewById(R.id.list_header2);
 
-        mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
         mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
 
 
@@ -215,11 +214,8 @@ public class Filevault extends BaseActivity {
         mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
         mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
 
-        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
-        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
-        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
-        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
-
+        mRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
+        mRepositoryImageView.setImageResource(R.drawable.repository_active);
 
         mFooterDashBoard.setOnClickListener(mOnClickListener);
         mFooterReports.setOnClickListener(mOnClickListener);
@@ -565,19 +561,15 @@ public class Filevault extends BaseActivity {
             int viewId = v.getId();
             Intent intent = null ;
             if(viewId == R.id.footer_dashboard_container) {
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
                 intent = new Intent(Filevault.this , DashBoardActivity.class);                       // TODO check intent class ..
                 startActivity(intent);
             }else if (viewId == R.id.footer_reports_container){
-                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
                 intent = new Intent(Filevault.this , lablistdetails.class);                      // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_family_container){
-                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
                 intent = new Intent(Filevault.this , MyFamily.class);                               // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
-                mFooterAccountImageView.setImageResource(R.drawable.account_active);
                 intent = new Intent(Filevault.this , Account.class);                                // TODO check intent class ..
                 startActivity(intent);
             }

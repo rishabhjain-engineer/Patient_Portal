@@ -91,7 +91,6 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
     private int check_commas =0;
 
     private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
-    private ImageView mFooterDashBoardImageView ,mFooterReportsImageView,mFooterRepositoryImageView,mFooterAccountImageView;
 
 
 
@@ -108,10 +107,8 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
         mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
 
-        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
-        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
-        mFooterRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
-        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+        ImageView familyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        familyImageView.setImageResource(R.drawable.family_active);
 
 
         mFooterDashBoard.setOnClickListener(mOnClickListener);
@@ -166,19 +163,15 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             int viewId = v.getId();
             Intent intent = null ;
             if(viewId == R.id.footer_dashboard_container) {
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
                 intent = new Intent(MyFamily.this , DashBoardActivity.class);                       // TODO check intent class ..
                 startActivity(intent);
             }else if (viewId == R.id.footer_reports_container){
-                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
                 intent = new Intent(MyFamily.this , lablistdetails.class);                      // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_repository_container){
-                mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
                 intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
-                mFooterAccountImageView.setImageResource(R.drawable.account_active);
                 intent = new Intent(MyFamily.this , Account.class);                                // TODO check intent class ..
                 startActivity(intent);
             }
