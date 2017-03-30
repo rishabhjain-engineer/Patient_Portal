@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <!--<org.askerov.dynamicgrid.DynamicGridView
        android:id="@+id/gridview"
@@ -31,19 +31,20 @@
 
     <GridView
         android:id="@+id/grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/seprator_view"
         android:gravity="center"
         android:numColumns="2"
-        android:divider="@color/dashboard_devider"
-        android:dividerHeight="1dp"
-         />
+        android:background="#dedede"
+        android:verticalSpacing="1dp"
+        android:horizontalSpacing="1dp"
+       />
 
     <include
         android:id="@+id/footer"
         android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/grid_view"
         layout="@layout/dashboard_footer"/>
 </RelativeLayout>
