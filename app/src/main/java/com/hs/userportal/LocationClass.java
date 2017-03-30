@@ -121,6 +121,7 @@ import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
 import ui.SignInActivity;
+import ui.SignUpActivity;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class LocationClass extends ActionBarActivity
@@ -2725,7 +2726,7 @@ public class LocationClass extends ActionBarActivity
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(LocationClass.this, Register.class);
+                Intent i = new Intent(LocationClass.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 LocationClass.this.from_widget = from_widget;
                 startActivity(i);
