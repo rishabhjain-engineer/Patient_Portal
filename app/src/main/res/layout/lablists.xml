@@ -71,4 +71,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="10dp"></ListView>
 
+    <include layout="@layout/dashboard_footer"/>
+
 </LinearLayout>

@@ -242,5 +242,7 @@
             android:layout_margin="25dp"
             android:background="@drawable/addfile_button" />
     </RelativeLayout>
+
  <include layout="@layout/dashboard_footer"/>
+
 </LinearLayout>
