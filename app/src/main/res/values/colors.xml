@@ -108,6 +108,8 @@
 
     <color name="dashboard_footer_textcolor">#9fa0a2</color>
     <color name="dashboard_footer_background">#f7f7f7</color>
+    <color name="dashboard_devider">#dedede</color>
+    <color name="dashboard_header_color">#0f9347</color>
 
 
 </resources>

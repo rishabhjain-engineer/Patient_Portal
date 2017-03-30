@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +54,23 @@ public class DashBoardActivity extends Activity {
         mGridView = (GridView) findViewById(R.id.grid_view);
         DashboardActivityAdapter dashboardActivityAdapter = new DashboardActivityAdapter(this);
         mGridView.setAdapter(dashboardActivityAdapter);
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
+                if (position == 0) {
+
+                } else if (position == 1) {
+
+                } else if (position == 2) {
+
+                } else if (position == 3) {
+
+                } else if (position == 4) {
+
+                }
+            }
+        });
         //findFamily();
     }
 
@@ -66,13 +84,13 @@ public class DashBoardActivity extends Activity {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.i("GetMember", "url: "+url);
-        Log.i("GetMember", "data to Send: "+data);
+        Log.i("GetMember", "url: " + url);
+        Log.i("GetMember", "data to Send: " + data);
         JsonObjectRequest family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("GetMember", "Received Data: "+response);
+                    Log.i("GetMember", "Received Data: " + response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     JSONArray family_arr = j.getJSONArray("Table");
