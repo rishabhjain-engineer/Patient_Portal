@@ -86,6 +86,7 @@ import networkmngr.HugeDataPassing;
 import networkmngr.NetworkChangeListener;
 import swipelist.ItemRow;
 import ui.SignInActivity;
+import ui.SignUpActivity;
 
 /**
  * Created by ashish on 11/4/2015.
@@ -1876,7 +1877,7 @@ public class Booking_Info extends ActionBarActivity {
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(Booking_Info.this, Register.class);
+                Intent i = new Intent(Booking_Info.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 Booking_Info.this.from_widget = from_widget;
                 startActivity(i);
