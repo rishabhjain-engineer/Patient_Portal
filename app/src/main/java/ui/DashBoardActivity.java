@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
+import com.hs.userportal.logout;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
@@ -28,6 +31,8 @@ import java.util.List;
 
 import adapters.DashboardActivityAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 29/3/17.
@@ -45,15 +50,60 @@ public class DashBoardActivity extends Activity {
     public static String emailid;
     public static String id;
     public static String notiem = "no", notisms = "no";
+    private PreferenceHelper mPreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        mPreferenceHelper = PreferenceHelper.getInstance();
+
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+       /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
+        user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
+
+        Log.i("logout", "id: "+id);
+        Log.i("logout", "PH: "+PH);
+        Log.i("logout", "user: "+user);
+        Log.i("logout", "passw: "+passw);
+        Log.i("logout", "name: "+name);*/
+
+
         mGridView = (GridView) findViewById(R.id.grid_view);
         DashboardActivityAdapter dashboardActivityAdapter = new DashboardActivityAdapter(this);
         mGridView.setAdapter(dashboardActivityAdapter);
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
+                if (position == 0) {
+                    goToHealth(position);
+                } else if (position == 1) {
+                    goToHealth(position);
+                } else if (position == 2) {
+
+                } else if (position == 3) {
+
+                } else if (position == 4) {
+
+                }
+            }
+        });
         //findFamily();
+    }
+
+    private void goToHealth(int position) {
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(DashBoardActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MyHealth.class);
+            intent.putExtra("id", id);
+            intent.putExtra("position", position);
+            intent.putExtra("show_blood", "yes");
+            startActivity(intent);
+        }
     }
 
     private void findFamily() {
@@ -66,13 +116,13 @@ public class DashBoardActivity extends Activity {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.i("GetMember", "url: "+url);
-        Log.i("GetMember", "data to Send: "+data);
+        Log.i("GetMember", "url: " + url);
+        Log.i("GetMember", "data to Send: " + data);
         JsonObjectRequest family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("GetMember", "Received Data: "+response);
+                    Log.i("GetMember", "Received Data: " + response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     JSONArray family_arr = j.getJSONArray("Table");

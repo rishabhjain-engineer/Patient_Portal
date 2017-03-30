@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <!--<org.askerov.dynamicgrid.DynamicGridView
@@ -17,7 +18,7 @@
         android:layout_height="60dp"
         android:gravity="center"
         android:text="Sciontra"
-        android:textColor="@color/header_color"
+        android:textColor="@color/dashboard_header_color"
         android:textSize="30dp" />
 
     <View
@@ -33,12 +34,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/seprator_view"
-        android:columnWidth="90dp"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
         android:numColumns="2"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:divider="@color/dashboard_devider"
+        android:dividerHeight="1dp"
+         />
 
     <include
         android:id="@+id/footer"
