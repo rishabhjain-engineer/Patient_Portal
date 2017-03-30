@@ -13,17 +13,22 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.hs.userportal.AboutUs;
 import com.hs.userportal.FAQ;
+import com.hs.userportal.Filevault;
 import com.hs.userportal.Help;
+import com.hs.userportal.MyFamily;
 import com.hs.userportal.PrivacyPolicy;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 import com.hs.userportal.changepass;
+import com.hs.userportal.lablistdetails;
 import com.hs.userportal.update;
 
 import org.json.JSONException;
@@ -39,6 +44,7 @@ import utils.PreferenceHelper;
 
 public class AccountActivity extends BaseActivity {
     private Services mServices;
+    private LinearLayout mFooterDashBoard, mFooterReports, mRepository,  mFooterFamily;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +102,41 @@ public class AccountActivity extends BaseActivity {
             }
 
         });
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+
+        ImageView accountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+        accountImageView.setImageResource(R.drawable.account_active);
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mRepository.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null;
+            if (viewId == R.id.footer_dashboard_container) {
+                intent = new Intent(AccountActivity.this, DashBoardActivity.class);
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container) {
+                intent = new Intent(AccountActivity.this, lablistdetails.class);
+                startActivity(intent);
+            }else if (viewId == R.id.footer_repository_container) {
+                intent = new Intent(AccountActivity.this, Filevault.class);
+                startActivity(intent);
+            } else if (viewId == R.id.footer_family_container) {
+                intent = new Intent(AccountActivity.this, MyFamily.class);
+                startActivity(intent);
+            }
+        }
+    };
 
     private AlertDialog alert;
 

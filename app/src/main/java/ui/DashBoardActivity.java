@@ -1,5 +1,6 @@
 package ui;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -15,8 +18,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.Filevault;
+import com.hs.userportal.MyFamily;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
+import com.hs.userportal.lablistdetails;
 import com.hs.userportal.logout;
 
 import org.askerov.dynamicgrid.DynamicGridView;
@@ -51,6 +57,7 @@ public class DashBoardActivity extends Activity {
     public static String id;
     public static String notiem = "no", notisms = "no";
     private PreferenceHelper mPreferenceHelper;
+    private LinearLayout mFooterDashBoard, mFooterReports, mFooterFamily, mFooterAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +90,52 @@ public class DashBoardActivity extends Activity {
                 } else if (position == 1) {
                     goToHealth(position);
                 } else if (position == 2) {
-                    Intent intent = new Intent(DashBoardActivity.this, AccountActivity.class);
-                    startActivity(intent);
-
+                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
                 } else if (position == 3) {
-
+                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
                 } else if (position == 4) {
-
+                    Toast.makeText(DashBoardActivity.this, "Comming Soon", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        ImageView dashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        dashBoardImageView.setImageResource(R.drawable.dashboard_active);
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
+
         //findFamily();
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null;
+            if (viewId == R.id.footer_reports_container) {
+                intent = new Intent(DashBoardActivity.this, lablistdetails.class);
+                startActivity(intent);
+            }else if (viewId == R.id.footer_repository_container) {
+                intent = new Intent(DashBoardActivity.this, Filevault.class);
+                startActivity(intent);
+            } else if (viewId == R.id.footer_family_container) {
+                intent = new Intent(DashBoardActivity.this, MyFamily.class);
+                startActivity(intent);
+            } else if (viewId == R.id.footer_account_container) {
+                intent = new Intent(DashBoardActivity.this, AccountActivity.class);
+                startActivity(intent);
+            }
+        }
+    };
+
 
     private void goToHealth(int position) {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
