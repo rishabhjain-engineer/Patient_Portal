@@ -58,6 +58,7 @@ import java.util.List;
 import adapters.Group_testAdapter;
 import ui.BaseActivity;
 import ui.BmiActivity;
+import ui.DashBoardActivity;
 import ui.GraphHandlerActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
@@ -201,7 +202,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 caseindex = casecodes.get(position);
                 System.out.println(caseindex);
                 Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
-                in.putExtra("id", logout.id);
+                in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);

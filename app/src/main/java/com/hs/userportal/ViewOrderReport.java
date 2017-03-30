@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import config.StaticHolder;
+import ui.DashBoardActivity;
 
 /**
  * Created by rahul2 on 11/20/2015.
@@ -439,7 +440,7 @@ public class ViewOrderReport extends ActionBarActivity {
             String patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
             sendreport_data = new JSONObject();
             sendreport_data.put("OrderId", getIntent().getStringExtra("order_id").trim());
-            sendreport_data.put("EmailId", logout.emailid);
+            sendreport_data.put("EmailId", DashBoardActivity.emailid);
             sendreport_data.put("UserId", patientID);
             System.out.println(sendreport_data);
         } catch (Exception e) {
