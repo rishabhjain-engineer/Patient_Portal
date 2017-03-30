@@ -49,6 +49,7 @@ import adapters.Myfamily_Adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.DataHolder;
 import utils.PreferenceHelper;
 
@@ -121,7 +122,7 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     }else{*/
                         Intent i = new Intent(MyFamily.this, lablistdetails.class);
-                        logout.id = family_object.get(position).get("FamilyMemberId");
+                        DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                         i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
                         i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
                                 + family_object.get(position).get("LastName"));

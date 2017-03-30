@@ -43,6 +43,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import ui.DashBoardActivity;
+
 public class ImageGridActivity extends ActionBarActivity {
 
 	private static String[] imageUrls, thumbimageUrls, pdfUrls;
@@ -387,7 +389,7 @@ public class ImageGridActivity extends ActionBarActivity {
 		case R.id.action_home:
 
 			Intent intent = new Intent(getApplicationContext(),
-					logout.class);
+					DashBoardActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 

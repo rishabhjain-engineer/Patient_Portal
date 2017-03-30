@@ -64,6 +64,7 @@ import adapters.PastVisitAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 
 public class lablistdetails extends BaseActivity {
 
@@ -195,7 +196,7 @@ public class lablistdetails extends BaseActivity {
                 }
             }
             HashMap<String, String> hmap = new HashMap<>();
-            hmap.put("Image", logout.image_parse);
+            hmap.put("Image", DashBoardActivity.image_parse);
             hmap.put("FirstName", "Self");
             hmap.put("LastName", " ");
             hmap.put("HM", "");
@@ -1009,7 +1010,7 @@ public class lablistdetails extends BaseActivity {
 
             // //////////////////////////////////////////////////
             if (id == null) {
-                id = logout.id;
+                id = DashBoardActivity.id;
             } else if (check_ID != null) {
                 id = check_ID;
             }
@@ -1272,7 +1273,7 @@ public class lablistdetails extends BaseActivity {
         overlay_dialog.setCanceledOnTouchOutside(true);
         overlay_dialog.setContentView(R.layout.select_member_order);
         ListView list_member = (ListView) overlay_dialog.findViewById(R.id.list_member);
-        list_member.setAdapter(new Order_family_adapter(lablistdetails.this, family, logout.image_parse));
+        list_member.setAdapter(new Order_family_adapter(lablistdetails.this, family, DashBoardActivity.image_parse));
         list_member.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
