@@ -50,7 +50,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator12"
+        android:id="@+id/blood_group_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -92,7 +92,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator2"
+        android:id="@+id/weight_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -135,7 +135,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator3"
+        android:id="@+id/height_sepraor"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -178,7 +178,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator5"
+        android:id="@+id/alergy_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -221,7 +221,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator6"
+        android:id="@+id/bmi_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -264,7 +264,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/separator7"
+        android:id="@+id/bp_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
@@ -308,7 +308,7 @@
 
     <LinearLayout
 
-        android:id="@+id/separator4"
+        android:id="@+id/vaccine_seprator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
