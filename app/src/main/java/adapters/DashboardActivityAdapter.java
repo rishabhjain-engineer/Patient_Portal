@@ -1,26 +1,17 @@
 package adapters;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
-import android.text.style.DrawableMarginSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.askerov.dynamicgrid.BaseDynamicGridAdapter;
+import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.hs.userportal.R;
-import com.hs.userportal.VaccineDetails;
 
 import ui.DashBoardActivity;
 
@@ -41,12 +32,14 @@ public class DashboardActivityAdapter extends BaseAdapter {
         mList.add("Discounts");
         mList.add("Coach");
         mList.add("Alerts");
+        mList.add("");
 
         mImageList.add(R.drawable.vital1_144);
         mImageList.add(R.drawable.vital2_144);
         mImageList.add(R.drawable.discounts_144);
         mImageList.add(R.drawable.coach_144);
         mImageList.add(R.drawable.alerts_144);
+        mImageList.add(R.drawable.whitebackground);
     }
 
 
