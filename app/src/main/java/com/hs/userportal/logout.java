@@ -348,12 +348,12 @@ public class logout extends Activity implements View.OnClickListener {
         passw = AppConstant.PASS;
         name = AppConstant.FN;*/
 
-        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         privatery_id = id;
-        PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
+        PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_CODE);
         user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
         passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
-        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
 
         Log.i("logout", "id: "+id);
         Log.i("logout", "PH: "+PH);
