@@ -53,6 +53,7 @@ import com.hs.userportal.lablistdetails;
 import com.hs.userportal.logout;
 import com.hs.userportal.update;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,7 +80,6 @@ public class AccountActivity extends BaseActivity {
     private CallbackManager mCallbackManager = null;
     private String facebookPic, userID, id, name;
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
-  //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
 
 
     @Override
@@ -90,7 +90,6 @@ public class AccountActivity extends BaseActivity {
         mActionBar.setTitle("Account");
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         Intent i = getIntent();
-       /* family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");*/
         mServices = new Services(this);
         mImageLoader = MyVolleySingleton.getInstance(AccountActivity.this).getImageLoader();
         name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
@@ -112,12 +111,12 @@ public class AccountActivity extends BaseActivity {
                 if (position == 0) {
                     //Profile
                     Intent intent = new Intent(getApplicationContext(), ProfileContainerActivity.class);
-                    intent.putExtra("id", id);
-                  /*  intent.putExtra("pass", passw);
+                    intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+                    intent.putExtra("pass", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS));
                     intent.putExtra("pic", pic);
                     intent.putExtra("picname", picname);
-                    intent.putExtra("fbLinked", fbLinked);
-                    intent.putExtra("fbLinkedID", fbLinkedID);*/
+                    //intent.putExtra("fbLinked", fbLinked);
+                   // intent.putExtra("fbLinkedID", fbLinkedID);
                     startActivity(intent);
                 } else if (position == 1) {
                     //FAQ
@@ -187,7 +186,6 @@ public class AccountActivity extends BaseActivity {
     };
 
     private AlertDialog alert;
-
     private void logout() {
         alert = new AlertDialog.Builder(AccountActivity.this).create();
         alert.setTitle("Message");
@@ -286,7 +284,7 @@ public class AccountActivity extends BaseActivity {
         }
     };
 
-   /* private Dialog fbDialog;
+    private Dialog fbDialog;
     private JSONObject receiveDataFbLink;
     private class FbLinkAsync extends AsyncTask<Void, Void, Void> {
 
@@ -383,6 +381,7 @@ public class AccountActivity extends BaseActivity {
         }
     }
 
+    JSONObject receiveFbImageSave;
     private class FbImagePull extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -405,13 +404,9 @@ public class AccountActivity extends BaseActivity {
                 sendData.put("patientCode", subArray.getJSONObject(0).getString("patientCode").toString());
 
             } catch (JSONException e) {
-                // TODO Auto-generated catch
-                // block
                 e.printStackTrace();
             }
-            System.out.println(sendData);
-            receiveFbImageSave = service.UpdateImage(sendData);
-            System.out.println(receiveFbImageSave);
+            receiveFbImageSave = mServices.UpdateImage(sendData);
             return null;
         }
 
@@ -422,12 +417,11 @@ public class AccountActivity extends BaseActivity {
                 fbDialog.dismiss();
                 progress.dismiss();
                 if (receiveFbImageSave.getString("d").equals("\"Patient Image updated Successfully\"")) {
-                    new logout.Imagesync().execute();
+                    new AccountActivity.Imagesync().execute();
                 } else {
                     Toast.makeText(getApplicationContext(), "Profile picture couldn't be updated. Please try again!", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             progress.dismiss();
@@ -437,7 +431,6 @@ public class AccountActivity extends BaseActivity {
     private class Imagesync extends AsyncTask<Void, Void, Void> {
 
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progress = new ProgressDialog(AccountActivity.this);
             progress.setCancelable(true);
@@ -450,23 +443,23 @@ public class AccountActivity extends BaseActivity {
             if (progress != null) {
                 progress.dismiss();
             }
-            user_pic.setImageBitmap(output);
+            //user_pic.setImageBitmap(output);
             // user_pic.setImageUrl(pic.replaceAll(" ", "%20"),mImageLoader);
-            imageProgress.setVisibility(View.INVISIBLE);
+            //imageProgress.setVisibility(View.INVISIBLE);
             // new BackgroundProcess().execute();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-
-            sendData = new JSONObject();
+            JSONArray subArray = null;
+            JSONObject sendData = new JSONObject();
             try {
                 sendData.put("PatientId", id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             System.out.println(sendData);
-            receiveData = service.verify(sendData);
+            JSONObject receiveData = mServices.verify(sendData);
             System.out.println("ImageSync " + receiveData);
 
             String data;
@@ -488,8 +481,7 @@ public class AccountActivity extends BaseActivity {
 
 
                 Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(thumbpic).getContent());
-
-                output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(output);
 
                 final Paint paint = new Paint();
@@ -541,5 +533,5 @@ public class AccountActivity extends BaseActivity {
         // Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
         // return _bmp;
         return output;
-    }*/
+    }
 }
