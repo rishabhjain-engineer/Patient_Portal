@@ -482,7 +482,7 @@ public class lablistdetails extends BaseActivity {
             if(viewId == R.id.footer_dashboard_container) {
                 intent = new Intent(lablistdetails.this , DashBoardActivity.class);                       // TODO check intent class ..
                 startActivity(intent);
-            }else if (viewId == R.id.footer_reports_container){
+            }else if (viewId == R.id.footer_family_container){
                 intent = new Intent(lablistdetails.this , MyFamily.class);                      // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_repository_container){

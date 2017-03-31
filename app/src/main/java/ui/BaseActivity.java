@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
         mActionBar = getSupportActionBar();
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         mActionBar.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
     }
 
     /**
