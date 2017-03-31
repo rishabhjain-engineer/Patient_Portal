@@ -50,6 +50,7 @@ public class MyNotification extends BaseActivity {
     private Services service;
     private JSONObject sendData, receiveData;
     private TextView nonoti;
+    public static String notiem = "no", notisms = "no";
 
 
     @Override

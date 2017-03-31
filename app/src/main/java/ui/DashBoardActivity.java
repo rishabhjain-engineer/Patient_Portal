@@ -2,15 +2,31 @@ package ui;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -19,17 +35,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.Filevault;
+import com.hs.userportal.Helper;
 import com.hs.userportal.MyFamily;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
+import com.hs.userportal.Services;
 import com.hs.userportal.lablistdetails;
 import com.hs.userportal.logout;
+import com.hs.userportal.update;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,9 +77,10 @@ public class DashBoardActivity extends BaseActivity {
     public static String image_parse;
     public static String emailid;
     public static String id;
-    public static String notiem = "no", notisms = "no";
     private PreferenceHelper mPreferenceHelper;
     private LinearLayout mFooterDashBoard, mFooterReports, mFooterFamily, mFooterAccount;
+    private Services mServices;
+    public static String notiem = "no", notisms = "no";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +90,7 @@ public class DashBoardActivity extends BaseActivity {
         setupActionBar();
         mActionBar.hide();
 
+        mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
        /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
         user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
@@ -124,9 +147,14 @@ public class DashBoardActivity extends BaseActivity {
             int viewId = v.getId();
             Intent intent = null;
             if (viewId == R.id.footer_reports_container) {
-                intent = new Intent(DashBoardActivity.this, lablistdetails.class);
 
-                startActivity(intent);
+                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                    } else {
+                        Intent intent1 = new Intent(getApplicationContext(), lablistdetails.class);
+                        startActivity(intent1);
+                    }
+
             }else if (viewId == R.id.footer_repository_container) {
                 intent = new Intent(DashBoardActivity.this, Filevault.class);
 
@@ -239,4 +267,30 @@ public class DashBoardActivity extends BaseActivity {
         });
         request.add(family);
     }
+
+    protected void showSubScriptionDialog(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
 }

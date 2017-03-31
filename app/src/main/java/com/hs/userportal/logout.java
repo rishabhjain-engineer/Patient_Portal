@@ -220,15 +220,15 @@ public class logout extends Activity implements View.OnClickListener {
             public void onClick(View v) {
 
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(logout.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), MyHealth.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("show_blood", "yes");
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
-                else {
-                Intent intent = new Intent(getApplicationContext(), MyHealth.class);
-                intent.putExtra("id", id);
-                intent.putExtra("show_blood", "yes");
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }}
+            }
         });
        /* user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,9 +294,9 @@ public class logout extends Activity implements View.OnClickListener {
                 } else {
                     if (subArrayList != null) {
                         if (id != null && subArrayList.length() > 0) {
-                            if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                            if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                                 showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                            }else{
+                            } else {
                                 Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
                                 intent.putExtra("id", id);
                                 update.verify = "0";
@@ -355,11 +355,11 @@ public class logout extends Activity implements View.OnClickListener {
         passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
         name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
 
-        Log.i("logout", "id: "+id);
-        Log.i("logout", "PH: "+PH);
-        Log.i("logout", "user: "+user);
-        Log.i("logout", "passw: "+passw);
-        Log.i("logout", "name: "+name);
+        Log.i("logout", "id: " + id);
+        Log.i("logout", "PH: " + PH);
+        Log.i("logout", "user: " + user);
+        Log.i("logout", "passw: " + passw);
+        Log.i("logout", "name: " + name);
 
         Helper.resend_name = name;
         username.setText(name);
@@ -397,8 +397,8 @@ public class logout extends Activity implements View.OnClickListener {
         }
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(logout.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
             new Authentication().execute();
         }
     }
@@ -407,9 +407,8 @@ public class logout extends Activity implements View.OnClickListener {
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(this,"No Internet Connection",Toast.LENGTH_SHORT).show();
-        }
-        else {
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+        } else {
 
 
             // getId() returns this view's identifier.
@@ -426,7 +425,7 @@ public class logout extends Activity implements View.OnClickListener {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.lab_records) {
                 if (subArrayList != null) {
-                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                    if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     } else if (id != null && subArrayList.length() > 0) {
                         Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
@@ -505,6 +504,7 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
         }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -787,7 +787,7 @@ public class logout extends Activity implements View.OnClickListener {
                             } else {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new Register().userID + "/picture?type=large").getContent());
                             }*/
-                            bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" +facebookPic+ "/picture?type=large").getContent());
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + facebookPic + "/picture?type=large").getContent());
 
                             output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(output);
@@ -842,7 +842,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                         try {
                             String dataList = receiveDataList.optString("d");// {"Table":[]}
-                            if(!TextUtils.isEmpty(dataList)){
+                            if (!TextUtils.isEmpty(dataList)) {
                                 JSONObject cut = new JSONObject(dataList);
                                 subArrayList = cut.getJSONArray("Table");
                                 String caseid = subArrayList.getJSONObject(0).getString("CaseId");
@@ -867,7 +867,7 @@ public class logout extends Activity implements View.OnClickListener {
                                     ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
                                 }
                             }
-                            
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -957,7 +957,6 @@ public class logout extends Activity implements View.OnClickListener {
                 receiveDataFb = service.GetUserDetails(sendDataFb);
 
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
 
                 SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -1142,7 +1141,6 @@ public class logout extends Activity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
         menu.add(Menu.NONE, MENU_LINK, Menu.NONE, "Un-link Facebook account");
@@ -1165,14 +1163,7 @@ public class logout extends Activity implements View.OnClickListener {
             imgMessagesIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Your click on the action bar item will be captured here
-                    // progress = new ProgressDialog(logout.this);
-                    // progress.setMessage("Loading...");
-                    // progress.setIndeterminate(true);
-                    // progress.show();
-
                     Intent intentNot = new Intent(getApplicationContext(), MyNotification.class);
-
                     try {
                         intentNot.putExtra("userid", id);
                         intentNot.putExtra("userName", name);
@@ -1192,8 +1183,6 @@ public class logout extends Activity implements View.OnClickListener {
             System.out.println("Noti = " + noti);
             int badgeCnt = noti;// Add your count here
             if (messageCenterBadge == null && badgeCnt > 0) {
-                // imgMessagesIcon is the imageview in your custom view, apply
-                // the badge to this view.
                 messageCenterBadge = new com.readystatesoftware.viewbadger.BadgeView(this, imgMessagesIcon);
                 messageCenterBadge.setBadgePosition(com.readystatesoftware.viewbadger.BadgeView.POSITION_TOP_RIGHT);
                 messageCenterBadge.setBadgeMargin(0);
@@ -1213,50 +1202,9 @@ public class logout extends Activity implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
-		/*
-         * case R.id.action_count:
-		 *
-		 * progress = new ProgressDialog(logout.this);
-		 * progress.setMessage("Loading..."); progress.setIndeterminate(true);
-		 * progress.show();
-		 *
-		 * Intent intentNot = new Intent(getApplicationContext(),
-		 * MyNotification.class);
-		 *
-		 * try { intentNot.putExtra("userid", id);
-		 * intentNot.putExtra("userName", name); intentNot.putExtra("ContactNo",
-		 * subArray.getJSONObject(0).getString("ContactNo"));
-		 * intentNot.putExtra("patientcode",
-		 * subArray.getJSONObject(0).getString("patientCode"));
-		 * intentNot.putExtra("UserMailId",
-		 * subArray.getJSONObject(0).getString("Email"));
-		 *
-		 * } catch (JSONException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 *
-		 * startActivity(intentNot); return true;
-		 */
-
             case MENU_LINK:
                 new FbUnlinkAsync().execute();
                 return true;
-
-           /* case R.id.action_profile:
-
-                Intent intentPro = new Intent(getApplicationContext(), Profile.class);
-                intentPro.putExtra("id", id);
-                startActivity(intentPro);
-                return true;*/
-
-            /*case R.id.action_tour:
-                Intent intentTour = new Intent(getApplicationContext(), SampleCirclesDefault.class);
-                intentTour.putExtra("name", name);
-                intentTour.putExtra("walk", "tour");
-                startActivity(intentTour);
-
-                return true;*/
-
             case R.id.action_contact:
                 Intent intentContact = new Intent(getApplicationContext(), Help.class);
                 intentContact.putExtra("id", id);
@@ -1390,8 +1338,8 @@ public class logout extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
-        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
         messageTextView.setText("Are you sure you want to Logout?");
         okBTN.setOnClickListener(new View.OnClickListener() {
@@ -1414,26 +1362,6 @@ public class logout extends Activity implements View.OnClickListener {
         });
         dialog.show();
     }
-
-    private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-            boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
-
-            NetworkInfo currentNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-            NetworkInfo otherNetworkInfo = (NetworkInfo) intent
-                    .getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-
-            if (!currentNetworkInfo.isConnected()) {
-                Toast.makeText(logout.this, "Network Problem, Please check your net.", Toast.LENGTH_LONG).show();
-                /*Intent i = new Intent(getApplicationContext(), java.lang.Error.class);
-                startActivity(i);*/
-                // showAppMsg();
-            }
-        }
-    };
 
     private class Imagesync extends AsyncTask<Void, Void, Void> {
 
@@ -1526,7 +1454,6 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     protected void onPause() {
         super.onPause();
-        this.unregisterReceiver(this.mConnReceiver);
         //  uiHelper.onPause();
         if (progress != null) {
             progress.dismiss();
@@ -1538,8 +1465,7 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // uiHelper.onDestroy();
-       finish();
+        finish();
         output = null;
         update.verify = "0";
     }
@@ -1547,7 +1473,6 @@ public class logout extends Activity implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // uiHelper.onSaveInstanceState(outState);
     }
 
     @Override
@@ -1559,16 +1484,12 @@ public class logout extends Activity implements View.OnClickListener {
         if (Helper.authentication_flag == true) {
             finish();
         }
-        /*if (sharedpreferences.getBoolean("openLocation", false)) {
-               new Authentication(logout.this,"logout","onresume").execute();
-			   }*/
-        this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
-        //uiHelper.onResume();
-        new AuthenticationfromresumeAsyncTask().execute();}
+            Toast.makeText(logout.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            //uiHelper.onResume();
+            new AuthenticationfromresumeAsyncTask().execute();
+        }
 
         if (update.verify.equals("1")) {
             try {
@@ -1697,25 +1618,6 @@ public class logout extends Activity implements View.OnClickListener {
 
     }
 
-    /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-             if (state.isOpened()) {
-                 Log.i("", "Logged in...");
-
-             } else if (state.isClosed()) {
-                 Log.i("", "Logged out...");
-                 // authButton.setText(" Link account with Facebook");
-                 // unlinkmenu = 0;
-                 // authButton.setVisibility(View.VISIBLE);
-             }
-         }
-
-         private Session.StatusCallback callback = new Session.StatusCallback() {
-             @Override
-             public void call(Session session, SessionState state, Exception exception) {
-                 onSessionStateChange(session, state, exception);
-             }
-         };
-     */
     private void onClickLink() {
         login_button.performClick();
     }
@@ -1950,13 +1852,13 @@ public class logout extends Activity implements View.OnClickListener {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.i("GetMember", "url: "+url);
-        Log.i("GetMember", "data to Send: "+data);
+        Log.i("GetMember", "url: " + url);
+        Log.i("GetMember", "data to Send: " + data);
         family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("GetMember", "Received Data: "+response);
+                    Log.i("GetMember", "Received Data: " + response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     family_arr = j.getJSONArray("Table");
@@ -2029,17 +1931,17 @@ public class logout extends Activity implements View.OnClickListener {
         @Override
         public void onSuccess(LoginResult loginResult) {
             GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            // JSON of FB ID as response.
-                            try {
-                                userID = object.getString("id");
-                                new FbLinkAsync().execute();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    });
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    // JSON of FB ID as response.
+                    try {
+                        userID = object.getString("id");
+                        new FbLinkAsync().execute();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
             request.setParameters(parameters);
@@ -2064,8 +1966,8 @@ public class logout extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
-        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         stayButton.setVisibility(View.GONE);
 
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
