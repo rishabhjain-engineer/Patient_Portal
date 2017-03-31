@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+
     <LinearLayout
         android:id="@+id/checkbox_container"
         android:layout_width="match_parent"
@@ -14,15 +15,26 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/black_header"
+            android:text="Legal Disclaimer"/>
+
+        <TextView
             android:id="@+id/terms_and_condition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15dp"></TextView>
+            android:textSize="15dp"
+            android:text=""></TextView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
             <CheckBox
                 android:id="@+id/terms_and_condition_check_box"
