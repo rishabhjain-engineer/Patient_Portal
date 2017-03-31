@@ -94,6 +94,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
 import utils.NavFolder;
+import utils.PreferenceHelper;
 
 public class Filevault extends BaseActivity {
 
@@ -196,8 +197,10 @@ public class Filevault extends BaseActivity {
         pd.show();
 
         setupActionBar();
-        Intent z = getIntent();
-        id = z.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+    /*    Intent z = getIntent();
+        id = z.getStringExtra("id");*/
+
         mContext = Filevault.this;
         file_vaultcontxt = Filevault.this;
         upload = (Button) findViewById(R.id.upload);
@@ -2861,7 +2864,7 @@ public class Filevault extends BaseActivity {
         JSONObject s3data = new JSONObject();
         try {
             s3data.put("Key", "");
-            s3data.put("patientId", patientId);
+            s3data.put("patientId", id);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -2869,7 +2872,7 @@ public class Filevault extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String data = response.getString("d");
+                    String data = response.optString("d");
                     JSONObject j = new JSONObject(data);
                     S3Objects_arr = j.getJSONArray("S3Objects");
                     thumbImage.clear();
