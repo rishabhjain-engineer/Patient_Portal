@@ -114,6 +114,9 @@ public class SignInActivity extends BaseActivity {
         // getSha();
     }
 
+    /**
+     * For getting system sha
+     */
     private void getSha() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo("com.hs.userportal", PackageManager.GET_SIGNATURES);
@@ -134,6 +137,9 @@ public class SignInActivity extends BaseActivity {
 
     }
 
+    /**
+     * Getting data from facebook and hitting NewFacebookLogin api with facebookid and emailid
+     */
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -150,8 +156,8 @@ public class SignInActivity extends BaseActivity {
                         mFbUserName = object.getString("name");
                         isToShowSignInErrorMessage = false;
 
-                        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
-                        String url = sttc_holdr.request_Url();
+                        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
+                        String url = staticHolder.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
                                     @Override
@@ -253,6 +259,9 @@ public class SignInActivity extends BaseActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * getting Object of views
+     */
     private void getViewObject() {
         mSingnInUserEt = (EditText) findViewById(R.id.singn_in_user_et);
         mSingnInPasswordEt = (EditText) findViewById(R.id.singn_in_password_et);
@@ -348,6 +357,9 @@ public class SignInActivity extends BaseActivity {
     private JSONObject loginApiSendData, loginApiReceivedData;
     private boolean isToShowSignInErrorMessage;
 
+    /**
+     * NewLogIn handling
+     */
     private class NewLogInAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         String buildNo;
