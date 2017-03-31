@@ -77,13 +77,12 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mVersionNumber, mRoleName, mFirstName, mMiddleName, mLastName, mDisclaimerType, mContactNo, mTermsAndCondition;
+    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mRoleName, mDisclaimerType, mMiddleName;
     private int mPatientBussinessFlag;
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
-    private AccessTokenTracker mtracker = null;
     private LoginButton fbLoginButton;
     private String mDAsString;
     String mUserName = "", mPassWord = "";
@@ -141,7 +140,6 @@ public class SignInActivity extends BaseActivity {
             GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
-                    // JSON of FB ID as response.
                     try {
                         String fbUserID = object.getString("id");
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
@@ -196,22 +194,27 @@ public class SignInActivity extends BaseActivity {
                                         }
 
                                         if (isToShowSignInErrorMessage) {
-                                            String array[] = mDAsString.split("\\|");
-                                            String decesionString = "";
-                                            String messageString = "";
-                                            if (array != null && array.length >= 2) {
-                                                decesionString = array[0];
-                                                messageString = array[1];
+                                            if(response != null){
+                                                String array[] = mDAsString.split("\\|");
+                                                String decesionString = "";
+                                                String messageString = "";
+                                                if (array != null && array.length >= 2) {
+                                                    decesionString = array[0];
+                                                    messageString = array[1];
+                                                }
+                                                if (decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")) {
+                                                    showAlertMessage(messageString);
+                                                } else if (decesionString.equalsIgnoreCase("4")) {
+                                                    facebookDecesionAlertDialog(messageString, false);
+                                                } else if (decesionString.equalsIgnoreCase("2")) {
+                                                    mUserName = array[2];
+                                                    mPassWord = array[3];
+                                                    facebookDecesionAlertDialog(messageString, true);
+                                                }
+                                            }else{
+                                                showAlertMessage("An error occured, please try again.");
                                             }
-                                            if (decesionString.equalsIgnoreCase("3") || decesionString.equalsIgnoreCase("5")) {
-                                                showAlertMessage(messageString);
-                                            } else if (decesionString.equalsIgnoreCase("4")) {
-                                                facebookDecesionAlertDialog(messageString, false);
-                                            } else if (decesionString.equalsIgnoreCase("2")) {
-                                                mUserName = array[2];
-                                                mPassWord = array[3];
-                                                facebookDecesionAlertDialog(messageString, true);
-                                            }
+
                                         }
                                     }
                                 }, new com.android.volley.Response.ErrorListener() {
@@ -554,6 +557,7 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
+                termsAndConditionDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
 
             }
@@ -627,6 +631,7 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
+                updateContactDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
 
             }
