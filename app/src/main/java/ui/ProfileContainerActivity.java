@@ -65,6 +65,7 @@ public class ProfileContainerActivity extends BaseActivity {
         basicContainerLL.setOnClickListener(mClickListener);
         residenceContainer.setOnClickListener(mClickListener);
         workContainer.setOnClickListener(mClickListener);
+        new BackgroundProcess().execute();
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {
@@ -123,6 +124,7 @@ public class ProfileContainerActivity extends BaseActivity {
     private String path;
     JSONObject receiveDataFb, receiveData;
     JSONArray subArray;
+
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
