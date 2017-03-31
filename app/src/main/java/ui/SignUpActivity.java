@@ -3,11 +3,14 @@ package ui;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
@@ -39,6 +42,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hs.userportal.R;
@@ -57,6 +61,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import info.hoang8f.android.segmented.SegmentedGroup;
 import networkmngr.ConnectionDetector;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /*
@@ -67,7 +72,7 @@ import utils.PreferenceHelper;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms, permitToNextSignUpPage = false;
+    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms, permitToNextSignUpPage = false, mSignUpThroughFacebook = false;
     private CallbackManager mCallbackManager;
     private String mVersionNo, mTermsAndCondition;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
@@ -255,7 +260,8 @@ public class SignUpActivity extends BaseActivity {
         } else if (!con.isConnectingToInternet()) {
             showAlertMessage("No Internet Connection.");
         } else {
-            createAccount();
+            mSignUpThroughFacebook=false;
+            checkContactNoExistAPI();
         }
     }
 
@@ -433,7 +439,7 @@ public class SignUpActivity extends BaseActivity {
     };
 
 
-    private void createAccount() {
+    private void checkContactNoExistAPI() {
 
         mSendData = new JSONObject();
         try {
@@ -459,7 +465,7 @@ public class SignUpActivity extends BaseActivity {
                         permitToNextSignUpPage = false;
                         showAlertMessage(result);                   // error message , phone number exist ; Stop user from going to sign up second page  ; use variable permitToNextSignUpPage = false ; by default it will be true
                     }
-                    if (permitToNextSignUpPage) {
+                    if (permitToNextSignUpPage && !mSignUpThroughFacebook) {
                         mSignUpFirstPageContainer.setVisibility(View.GONE);
                         mSignUpSecondPageContainer.setVisibility(View.VISIBLE);
                         signupNextPage();
@@ -666,6 +672,9 @@ public class SignUpActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         //   super.onBackPressed();
+        if(termsAndConditionDialog != null && termsAndConditionDialog.isShowing()){
+            new LogoutAsync().execute() ;
+        }
         if (permitToNextSignUpPage) {                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
             mSignUpFirstPageContainer.setVisibility(View.VISIBLE);
             mSignUpSecondPageContainer.setVisibility(View.GONE);
@@ -678,6 +687,7 @@ public class SignUpActivity extends BaseActivity {
     private Dialog updateContactDialog;
 
     private void updateContactAlert() {
+        mSignUpThroughFacebook = true ;
         updateContactDialog = new Dialog(SignUpActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         updateContactDialog.setCancelable(false);
@@ -695,7 +705,10 @@ public class SignUpActivity extends BaseActivity {
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
                     Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
                 } else {
-                    updateContactApi(mobileNumber);
+                    checkContactNoExistAPI();                    // API hit ; to check duplicate mobile number ;
+                    if(permitToNextSignUpPage) {
+                        updateContactApi(mobileNumber);
+                    }
                 }
             }
 
@@ -1060,6 +1073,48 @@ public class SignUpActivity extends BaseActivity {
         });
 
         dialog.show();
+    }
+    private class LogoutAsync extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progress;
+        private JSONObject logoutReceivedJsonObject;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(SignUpActivity.this);
+            progress.setMessage("Loading...");
+            progress.setCancelable(false);
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("UserId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            logoutReceivedJsonObject = mServices.LogOut(sendData);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            SharedPreferences sharedpreferences = getSharedPreferences(AppConstant.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
+            progress.dismiss();
+            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+            intent.putExtra("from logout", "logout");
+            startActivity(intent);
+            LoginManager.getInstance().logOut();
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
+            finish();
+        }
+
     }
 
 }
