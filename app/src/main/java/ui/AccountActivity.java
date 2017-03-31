@@ -401,7 +401,7 @@ public class AccountActivity extends BaseActivity {
                 sendData.put("FileName", picname);
                 sendData.put("File", pic);
                 sendData.put("OldFile1", oldfile1);
-                sendData.put("patientCode", subArray.getJSONObject(0).getString("patientCode").toString());
+                //sendData.put("patientCode", subArray.getJSONObject(0).getString("patientCode").toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();
