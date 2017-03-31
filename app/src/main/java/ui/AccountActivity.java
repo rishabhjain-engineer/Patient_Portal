@@ -116,7 +116,7 @@ public class AccountActivity extends BaseActivity {
                     intent.putExtra("pic", pic);
                     intent.putExtra("picname", picname);
                     //intent.putExtra("fbLinked", fbLinked);
-                   // intent.putExtra("fbLinkedID", fbLinkedID);
+                    //intent.putExtra("fbLinkedID", fbLinkedID);
                     startActivity(intent);
                 } else if (position == 1) {
                     //FAQ

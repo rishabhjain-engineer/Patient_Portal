@@ -349,13 +349,11 @@ public class DashBoardActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                path = subArray.getJSONObject(0).getString("Path");
-                img = path + subArray.getJSONObject(0).getString("Image");
+                String path = subArray.getJSONObject(0).getString("Path");
+                String img = path + subArray.getJSONObject(0).getString("Image");
+                String thumbpic = path + subArray.getJSONObject(0).getString("ThumbImage");
 
-                System.out.println(img);
-                thumbpic = path + subArray.getJSONObject(0).getString("ThumbImage");
-
-                oldfile1 = thumbpic;
+                String oldfile1 = thumbpic;
 
                 if (subArray.getJSONObject(0).getString("Validate").equals("0")) {
                     noti = noti + 1;
@@ -389,8 +387,8 @@ public class DashBoardActivity extends BaseActivity {
             try {
                 if (subArray.getJSONObject(0).getString("Image").matches((".*[a-kA-Zo-t]+.*")))
                 {
-                    pic = subArray.getJSONObject(0).getString("Image");
-                    picname = subArray.getJSONObject(0).getString("ImageName");
+                    String pic = subArray.getJSONObject(0).getString("Image");
+                    String picname = subArray.getJSONObject(0).getString("ImageName");
                     if (pic.matches((".*[a-kA-Zo-t]+.*"))) {
                         oldfile = path + pic;
                     }
