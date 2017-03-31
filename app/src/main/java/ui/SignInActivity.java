@@ -332,7 +332,7 @@ public class SignInActivity extends BaseActivity {
         if (!con.isConnectingToInternet()) {
             showAlertMessage("No Internet Connection.");
         } else {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USERNAME, userName);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, userName);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, passWord);
             new SignInActivity.NewLogInAsync(true).execute();
         }
@@ -875,11 +875,11 @@ public class SignInActivity extends BaseActivity {
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserId);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);
         startActivity(intent);
         finish();
