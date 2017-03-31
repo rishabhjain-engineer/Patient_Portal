@@ -957,7 +957,6 @@ public class logout extends Activity implements View.OnClickListener {
                 receiveDataFb = service.GetUserDetails(sendDataFb);
 
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
 
                 SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
