@@ -172,10 +172,7 @@ public class logout extends Activity implements View.OnClickListener {
         packages = (RelativeLayout) findViewById(R.id.packages);
         my_family = (RelativeLayout) findViewById(R.id.my_family);
         my_health = (RelativeLayout) findViewById(R.id.my_health);
-        String facebookId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID);
-        if (!TextUtils.isEmpty(facebookId)) {
-          facebookPic = facebookId;
-        }
+
         //logout=(LinearLayout)findViewById(R.id.logout);
         editimg = (ImageButton) findViewById(R.id.editimg);
         username = (TextView) findViewById(R.id.username);
