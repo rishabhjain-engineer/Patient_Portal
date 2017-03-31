@@ -261,7 +261,7 @@ public class SignUpActivity extends BaseActivity {
             showAlertMessage("No Internet Connection.");
         } else {
             mSignUpThroughFacebook=false;
-            createAccount();
+            checkContactNoExistAPI();
         }
     }
 
@@ -439,7 +439,7 @@ public class SignUpActivity extends BaseActivity {
     };
 
 
-    private void createAccount() {
+    private void checkContactNoExistAPI() {
 
         mSendData = new JSONObject();
         try {
@@ -705,7 +705,7 @@ public class SignUpActivity extends BaseActivity {
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
                     Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
                 } else {
-                    createAccount();                    // API hit ; to check duplicate mobile number ;
+                    checkContactNoExistAPI();                    // API hit ; to check duplicate mobile number ;
                     if(permitToNextSignUpPage) {
                         updateContactApi(mobileNumber);
                     }
