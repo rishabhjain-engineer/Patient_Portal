@@ -3,8 +3,10 @@ package ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -14,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -64,6 +67,7 @@ import java.util.Date;
 
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -949,5 +953,56 @@ public class SignInActivity extends BaseActivity {
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(termsAndConditionDialog != null && termsAndConditionDialog.isShowing()){
+            new SignInActivity.LogoutAsync().execute() ;
+        }
+    }
+
+    private class LogoutAsync extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progress;
+        private JSONObject logoutReceivedJsonObject;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(SignInActivity.this);
+            progress.setMessage("Loading...");
+            progress.setCancelable(false);
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("UserId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            logoutReceivedJsonObject = mServices.LogOut(sendData);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            SharedPreferences sharedpreferences = getSharedPreferences(AppConstant.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
+            progress.dismiss();
+            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+            intent.putExtra("from logout", "logout");
+            startActivity(intent);
+            LoginManager.getInstance().logOut();
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
+            finish();
+        }
+
     }
 }
