@@ -418,7 +418,7 @@ public class SignInActivity extends BaseActivity {
             super.onPostExecute(result);
             progress.dismiss();
 
-            if (loginApiReceivedData == null) {
+            if (loginApiReceivedData == null || TextUtils.isEmpty(mDAsString)) {
                 showAlertMessage("An error occured, please try again.");
             } else {
                 if (isToShowSignInErrorMessage) {
