@@ -399,9 +399,13 @@ public class SignUpActivity extends BaseActivity {
                                                     // NewSignUpByPatientFacebook api call
                                                     newSignUpByPatientFacebookApiCall(jsonObjectForNewSignUpByPatientFacebook);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    mUserName = array[2];
-                                                    mPassWord = array[3];
-                                                    facebookDecesionAlertDialog(messageString, true);
+                                                    if(array .length >= 4){
+                                                        mUserName = array[2];
+                                                        mPassWord = array[3];
+                                                        facebookDecesionAlertDialog(messageString, true);
+                                                    }else{
+                                                        showAlertMessage("An error occured, please try again.");
+                                                    }
                                                 }
                                             } else {
                                                 showAlertMessage("An error occured, please try again.");
