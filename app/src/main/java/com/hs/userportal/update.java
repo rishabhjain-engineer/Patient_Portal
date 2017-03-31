@@ -100,6 +100,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import utils.PreferenceHelper;
 import utils.Utility;
 
 
@@ -195,8 +196,8 @@ public class update extends BaseActivity {
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();
-        id = i.getStringExtra("id");
-        passw = i.getStringExtra("pass");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
         pic = i.getStringExtra("pic");
         picname = i.getStringExtra("picname");
         mcontext = update.this;
