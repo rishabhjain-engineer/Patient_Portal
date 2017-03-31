@@ -72,7 +72,7 @@ import utils.PreferenceHelper;
 public class SignUpActivity extends BaseActivity {
 
     private Button mSignUpBtn, mSignUpContinueBtn;
-    private boolean mShowUserNameUI = false, mUserNameAvailable = true, mTerms, permitToNextSignUpPage = false, mSignUpThroughFacebook = false;
+    private boolean mShowUserNameUI = false, mUserNameAvailable = true, permitToNextSignUpPage = false, mSignUpThroughFacebook = false;
     private CallbackManager mCallbackManager;
     private String mVersionNo, mTermsAndCondition;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
@@ -364,15 +364,15 @@ public class SignUpActivity extends BaseActivity {
                                                 mLastName = innerJsonObject.optString("LastName");
                                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                 mContactNo = innerJsonObject.optString("ContactNo");
-                                                mTerms = innerJsonObject.optBoolean("Terms");
+                                                boolean terms = innerJsonObject.optBoolean("Terms");
 
-                                                if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                                                if (!terms && !TextUtils.isEmpty(mContactNo)) {
                                                     goToDashBoardPage();
                                                 } else {
                                                     if (TextUtils.isEmpty(mContactNo)) {
                                                         updateContactAlert();
                                                     }
-                                                    if (mTerms) {
+                                                    if (terms) {
                                                         sendrequestForDesclaimer();
                                                     }
                                                 }
@@ -584,7 +584,7 @@ public class SignUpActivity extends BaseActivity {
                         mUserVersionNo = innerJsonObject.optString("UserVersionNo");
                         mContactNo = innerJsonObject.optString("ContactNo");
                         boolean terms = innerJsonObject.optBoolean("Terms");
-                        if (mTerms) {
+                        if (terms) {
                             sendrequestForDesclaimer();
                         }
                     } else {
@@ -914,14 +914,14 @@ public class SignUpActivity extends BaseActivity {
                                 mLastName = innerJsonObject.optString("LastName");
                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                 mContactNo = innerJsonObject.optString("ContactNo");
-                                mTerms = innerJsonObject.optBoolean("Terms");
-                                if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                                boolean terms = innerJsonObject.optBoolean("Terms");
+                                if (!terms && !TextUtils.isEmpty(mContactNo)) {
                                     goToDashBoardPage();
                                 } else {
                                     if (TextUtils.isEmpty(mContactNo)) {
                                         updateContactAlert();
                                     }
-                                    if (mTerms) {
+                                    if (terms) {
                                         sendrequestForDesclaimer();
                                     }
                                 }
@@ -952,7 +952,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     JSONObject loginApiSendData, loginApiReceivedData;
-
+     private boolean loginTerms;
     private class NewLogInAsync extends AsyncTask<Void, Void, String> {
         private ProgressDialog progress;
         String buildNo;
@@ -1003,7 +1003,7 @@ public class SignUpActivity extends BaseActivity {
                         mLastName = innerJsonObject.optString("LastName");
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mContactNo = innerJsonObject.optString("ContactNo");
-                        mTerms = innerJsonObject.optBoolean("Terms");
+                        loginTerms = innerJsonObject.optBoolean("Terms");
                     } else {
                         isToShowSignInErrorMessage = true;
                     }
@@ -1025,13 +1025,13 @@ public class SignUpActivity extends BaseActivity {
             } else {
                 if (isToShowSignInErrorMessage) {
                     showAlertMessage(result);
-                } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                } else if (!loginTerms && !TextUtils.isEmpty(mContactNo)) {
                     goToDashBoardPage();
                 } else {
                     if (TextUtils.isEmpty(mContactNo)) {
                         updateContactAlert();
                     }
-                    if (mTerms) {
+                    if (loginTerms) {
                         sendrequestForDesclaimer();
                     }
                 }
