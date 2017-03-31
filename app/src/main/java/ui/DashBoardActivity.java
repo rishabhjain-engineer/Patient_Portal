@@ -67,7 +67,7 @@ public class DashBoardActivity extends BaseActivity {
         setupActionBar();
         mActionBar.hide();
 
-        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
        /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
         user = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER);
         passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);

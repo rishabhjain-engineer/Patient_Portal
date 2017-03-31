@@ -28,23 +28,19 @@ public class PreferenceHelper {
 
         IS_ALL_QUESTION_ASKED("false"),
 
-        USERNAME("null"),
-
         PASSWORD("null"),
 
         QUESTION_COUNT("10"),
 
         USER_ID("null"),
 
-        ID("null"),
-
         USER("null"),
 
-        PH("null"),
+        PATIENT_CODE("null"),
 
         PASS("null"),
 
-        FN("null"),
+        USER_NAME("null"),
 
         FROM_DATE("null"),
 

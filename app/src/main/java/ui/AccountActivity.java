@@ -85,10 +85,10 @@ public class AccountActivity extends BaseActivity {
         setContentView(R.layout.activity_account);
         setupActionBar();
         mActionBar.setTitle("Account");
-        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mServices = new Services(this);
         mImageLoader = MyVolleySingleton.getInstance(AccountActivity.this).getImageLoader();
-        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
+        name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
         mCallbackManager = CallbackManager.Factory.create();
         String facebookId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID);
         if (!TextUtils.isEmpty(facebookId)) {
@@ -221,7 +221,7 @@ public class AccountActivity extends BaseActivity {
         protected Void doInBackground(Void... params) {
             JSONObject sendData = new JSONObject();
             try {
-                sendData.put("UserId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID));
+                sendData.put("UserId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

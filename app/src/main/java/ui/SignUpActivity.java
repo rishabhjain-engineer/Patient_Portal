@@ -608,15 +608,15 @@ public class SignUpActivity extends BaseActivity {
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ID, mUserID);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PH, mPatientCode);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         if (mShowUserNameUI) {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpContactNoEt.getEditableText().toString());
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, mFirstName + " " + mLastName);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
         startActivity(intent);
         finish();
