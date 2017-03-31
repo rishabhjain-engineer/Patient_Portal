@@ -125,7 +125,8 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         resend.add("Cancel Request");
         remove.add("Remove Member");
         Intent i = getIntent();
-        User_ID = i.getStringExtra("id");
+      /*  User_ID = i.getStringExtra("id");*/
+        User_ID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
         members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {

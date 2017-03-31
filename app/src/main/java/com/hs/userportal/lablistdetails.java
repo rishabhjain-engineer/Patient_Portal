@@ -69,6 +69,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
+import utils.PreferenceHelper;
 
 public class lablistdetails extends BaseActivity {
 
@@ -117,7 +118,7 @@ public class lablistdetails extends BaseActivity {
     private ArrayList<HashMap<String, String>> family = new ArrayList<>();
     private static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
     private List<HashMap<String, String>> order_listarr = new ArrayList<>();
-    private String patientID, Member_Name;
+    private String  Member_Name;
     private int check_fill = 0;
     private String check_ID;
     private ListView past_visits;
@@ -200,14 +201,18 @@ public class lablistdetails extends BaseActivity {
         // dor = (TextView) findViewById(R.id.tvdor);
         // gen = (TextView) findViewById(R.id.tvgender);
 
+
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
+        Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
+
         Intent z = getIntent();
-        id = z.getStringExtra("id");
-        Member_Name = z.getStringExtra("Member_Name");
+     /*   id = z.getStringExtra("id");
+        Member_Name = z.getStringExtra("Member_Name");*/
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
         family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
-        patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+      //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
         if(family != null){
             if (check_fill == 0) {
                 for (int chk = 0; chk < family.size(); chk++) {
@@ -220,7 +225,7 @@ public class lablistdetails extends BaseActivity {
                 hmap.put("FirstName", "Self");
                 hmap.put("LastName", " ");
                 hmap.put("HM", "");
-                hmap.put("FamilyMemberId", patientID);
+                hmap.put("FamilyMemberId", id);
                 family.add(hmap);
             }
 
@@ -1347,17 +1352,17 @@ public class lablistdetails extends BaseActivity {
 
         try {
             sendData = new JSONObject();
-            patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+          //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
             Intent i = getIntent();
             String checkid = i.getStringExtra("id");
             if (checkid != null) {
-                patientID = checkid;
+                id = checkid;
             }
             if (checkid == null && checkID != null) {
-                patientID = checkID;
+               id = checkID;
             }
-            if (patientID != null) {
-                sendData.put("userId", patientID);//   //patientID //"825D9C5A-4CF3-4440-BFE9-810E39CADDC1"
+            if (id != null) {
+                sendData.put("userId", id);//   //patientID //"825D9C5A-4CF3-4440-BFE9-810E39CADDC1"
             }
             StaticHolder sttc_holdr = new StaticHolder(lablistdetails.this, StaticHolder.Services_static.GetOrderHistoryDetails);
             String url = sttc_holdr.request_Url();
