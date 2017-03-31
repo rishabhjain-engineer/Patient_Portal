@@ -61,6 +61,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import networkmngr.ConnectionDetector;
 import utils.AppConstant;
@@ -77,6 +79,7 @@ public class AccountActivity extends BaseActivity {
     private CallbackManager mCallbackManager = null;
     private String facebookPic, userID, id, name;
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
+  //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
 
 
     @Override
@@ -86,6 +89,8 @@ public class AccountActivity extends BaseActivity {
         setupActionBar();
         mActionBar.setTitle("Account");
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        Intent i = getIntent();
+       /* family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");*/
         mServices = new Services(this);
         mImageLoader = MyVolleySingleton.getInstance(AccountActivity.this).getImageLoader();
         name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
@@ -168,12 +173,14 @@ public class AccountActivity extends BaseActivity {
                 startActivity(intent);
             }else if (viewId == R.id.footer_reports_container) {
                 intent = new Intent(AccountActivity.this, lablistdetails.class);
+
                 startActivity(intent);
             }else if (viewId == R.id.footer_repository_container) {
                 intent = new Intent(AccountActivity.this, Filevault.class);
                 startActivity(intent);
             } else if (viewId == R.id.footer_family_container) {
                 intent = new Intent(AccountActivity.this, MyFamily.class);
+
                 startActivity(intent);
             }
         }

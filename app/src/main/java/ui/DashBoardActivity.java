@@ -38,6 +38,7 @@ import java.util.List;
 import adapters.DashboardActivityAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -49,8 +50,8 @@ public class DashBoardActivity extends BaseActivity {
     private List<String> mList = new ArrayList<>();
     private String privatery_id;
     private static RequestQueue request;
-    private ArrayList<HashMap<String, String>> family_object;
     private GridView mGridView;
+
 
     public static String image_parse;
     public static String emailid;
@@ -114,7 +115,7 @@ public class DashBoardActivity extends BaseActivity {
         mFooterFamily.setOnClickListener(mOnClickListener);
         mFooterAccount.setOnClickListener(mOnClickListener);
 
-        //findFamily();
+        findFamily();
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -124,12 +125,15 @@ public class DashBoardActivity extends BaseActivity {
             Intent intent = null;
             if (viewId == R.id.footer_reports_container) {
                 intent = new Intent(DashBoardActivity.this, lablistdetails.class);
+
                 startActivity(intent);
             }else if (viewId == R.id.footer_repository_container) {
                 intent = new Intent(DashBoardActivity.this, Filevault.class);
+
                 startActivity(intent);
             } else if (viewId == R.id.footer_family_container) {
                 intent = new Intent(DashBoardActivity.this, MyFamily.class);
+
                 startActivity(intent);
             } else if (viewId == R.id.footer_account_container) {
                 intent = new Intent(DashBoardActivity.this, AccountActivity.class);
@@ -171,7 +175,7 @@ public class DashBoardActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     JSONArray family_arr = j.getJSONArray("Table");
-                    family_object = new ArrayList<HashMap<String, String>>();
+                    AppConstant.mFamilyMembersList = new ArrayList<HashMap<String, String>>();
                     if (family_arr.length() == 0) {
                     } else {
                         HashMap<String, String> hmap;
@@ -213,10 +217,10 @@ public class DashBoardActivity extends BaseActivity {
                             hmap.put("IsApproved", json_obj.getString("IsApproved"));
                             hmap.put("IsMemberRemoved", json_obj.getString("IsMemberRemoved"));
                             if (json_obj.getString("IsApproved").equals("true")) {
-                                family_object.add(hmap);
+                                AppConstant.mFamilyMembersList.add(hmap);
                             }
                         }
-                        int s = family_object.size();
+                        int s =  AppConstant.mFamilyMembersList.size();
                         String size = new DecimalFormat("00").format(s);
                         //members.setText(size);
                     }

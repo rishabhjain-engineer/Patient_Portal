@@ -91,9 +91,11 @@ import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.AccountActivity;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
 import utils.NavFolder;
+import utils.PreferenceHelper;
 
 public class Filevault extends BaseActivity {
 
@@ -179,6 +181,8 @@ public class Filevault extends BaseActivity {
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
+  //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
+
     /*@Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
@@ -196,8 +200,10 @@ public class Filevault extends BaseActivity {
         pd.show();
 
         setupActionBar();
-        Intent z = getIntent();
-        id = z.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+
+      /*  Intent i = getIntent();
+        family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");*/
         mContext = Filevault.this;
         file_vaultcontxt = Filevault.this;
         upload = (Button) findViewById(R.id.upload);
@@ -565,12 +571,14 @@ public class Filevault extends BaseActivity {
                 startActivity(intent);
             }else if (viewId == R.id.footer_reports_container){
                 intent = new Intent(Filevault.this , lablistdetails.class);                      // TODO check intent class ..
+
                 startActivity(intent);
             }else if(viewId == R.id.footer_family_container){
                 intent = new Intent(Filevault.this , MyFamily.class);                               // TODO check intent class ..
+
                 startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
-                intent = new Intent(Filevault.this , Account.class);                                // TODO check intent class ..
+                intent = new Intent(Filevault.this , AccountActivity.class);                                // TODO check intent class ..
                 startActivity(intent);
             }
         }
@@ -2861,7 +2869,7 @@ public class Filevault extends BaseActivity {
         JSONObject s3data = new JSONObject();
         try {
             s3data.put("Key", "");
-            s3data.put("patientId", patientId);
+            s3data.put("patientId", id);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -2869,7 +2877,7 @@ public class Filevault extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String data = response.getString("d");
+                    String data = response.optString("d");
                     JSONObject j = new JSONObject(data);
                     S3Objects_arr = j.getJSONArray("S3Objects");
                     thumbImage.clear();
