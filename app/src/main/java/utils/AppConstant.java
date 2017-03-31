@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by ayaz on 27/1/17.
  */
@@ -9,6 +12,7 @@ public class AppConstant {
     public static final String MyPREFERENCES = "MyPrefs";
     public static String[] mDurationModeArray = {"Daily", "Weekly", "Monthly", "Quarterly", "Semi-Annually", "Annually"};
     public static String[] mDateModeArray = {"exactly", "monthly", "yearly"};
+    public static ArrayList<HashMap<String, String>> mFamilyMembersList = new ArrayList<>();
 
     public static String ID = "";
 

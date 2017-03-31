@@ -50,8 +50,10 @@ import java.util.HashMap;
 import adapters.Myfamily_Adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.AccountActivity;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
+import utils.AppConstant;
 import utils.DataHolder;
 import utils.PreferenceHelper;
 
@@ -80,14 +82,14 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
     private static ArrayList<HashMap<String, String>> family_object;
     private static ArrayList<HashMap<String, String>> family_test_object;
     private ArrayList<HashMap<String, String>> sorted_list;
-    private ArrayList<HashMap<String, String>> members = new ArrayList<>();
+  //  private ArrayList<HashMap<String, String>> members = new ArrayList<>();
     private Services service;
     private Menu menu1;
     private String check_userids = "";
     private DataHolder[] dataholderlist;
     private int k = 0;
     private String msg_action = "";
-    private ArrayList<HashMap<String, String>> final_memberlist;
+   private ArrayList<HashMap<String, String>> final_memberlist;
     private int check_commas =0;
 
     private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
@@ -126,8 +128,8 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         remove.add("Remove Member");
         Intent i = getIntent();
       /*  User_ID = i.getStringExtra("id");*/
-        User_ID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
-        members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
+        User_ID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+      //   members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(MyFamily.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -147,7 +149,7 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                         i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
                         i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
                                 + family_object.get(position).get("LastName"));
-                        i.putExtra("family", members);
+                        i.putExtra("family",  AppConstant.mFamilyMembersList);
                         startActivity(i);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     //}
@@ -173,7 +175,7 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                 intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
-                intent = new Intent(MyFamily.this , Account.class);                                // TODO check intent class ..
+                intent = new Intent(MyFamily.this , AccountActivity.class);                                // TODO check intent class ..
                 startActivity(intent);
             }
         }
