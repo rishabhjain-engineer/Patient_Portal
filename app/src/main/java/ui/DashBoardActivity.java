@@ -89,7 +89,7 @@ public class DashBoardActivity extends BaseActivity {
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
         mActionBar.hide();
-
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
        /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);

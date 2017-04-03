@@ -142,7 +142,7 @@ public class lablistdetails extends BaseActivity {
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
         setupActionBar();
-
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         queue = Volley.newRequestQueue(this);
       /*  slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.RIGHT);

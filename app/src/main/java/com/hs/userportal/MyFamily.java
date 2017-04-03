@@ -100,6 +100,7 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myfamily);
         setupActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
         service = new Services(MyFamily.this);
