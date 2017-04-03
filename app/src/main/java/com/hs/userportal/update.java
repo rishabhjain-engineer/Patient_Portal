@@ -172,7 +172,7 @@ public class update extends BaseActivity {
     private String userChoosenTask;
     private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ /*MY_PERMISSIONS_REQUEST_CAMERA = 1 , WRITE_EXTERNAL =2 ,*/ MY_PERMISSIONS_REQUEST =1;
     private String mCurrentPhotoPath = null;
-    private boolean mIsSdkLessThanM = true ;
+    private boolean mIsSdkLessThanM = true, mPermissionGranted  ;
 
 
     public static JSONArray arraybasic;
@@ -315,52 +315,57 @@ public class update extends BaseActivity {
 
                     askRunTimePermissions() ;
                     mIsSdkLessThanM = true ;
-                    //if (fbLinked.equals("true")) {
-                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
-                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        builder.setTitle("Choose Image Source");
-                        //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
-                                new DialogInterface.OnClickListener() {
+                   /*  askRunTimePermissions() ;
+                    mIsSdkLessThanM = true ;
+                   //if (fbLinked.equals("true")) {
+                    -                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
+                        -                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
+                        -                        builder.setTitle("Choose Image Source");
+                        -                        //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
+                                -                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                                        -                                new DialogInterface.OnClickListener() {
+                                            -
+                                                    -                                    @Override
+                                            -                                    public void onClick(DialogInterface dialog,
+                                                                                                     -                                                        int which) {
+                                                -                                        switch (which) {
+                                                    -                                            case 0:
+                                                        -                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                                        -                                                try {
+                                                            -                                                    intent.putExtra("return-data", true);
+                                                            -                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                                            -                                                } catch (ActivityNotFoundException e) {
+                                                            -                                                }
+                                                        -                                                break;
+                                                    -
+                                                            -                                            case 1:
+                                                        -
+                                                                -                                                File photo = null;
+                                                        -                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+                                                        -                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                                            -                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+                                                            -                                                } else {
+                                                            -                                                    photo = new File(getCacheDir(), "test.jpg");
+                                                            -                                                }
+                                                        -                                                if (photo != null) {
+                                                            -                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                                                            -                                                    Imguri = Uri.fromFile(photo);
+                                                            -                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
+                                                            -                                                }
+                                                        -                                                break;
+                                                    -                                            case 2:
+                                                        -                                                new fbImagePull().execute();
+                                                        -                                                break;
+                                                    -                                            default:
+                                                        -                                                break;
+                                                    -                                        }
+                                                -                                    }
+                                            -                                });
+                        -                        builder.show();
+                        -                    } else {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-
-                                            case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-                                                break;
-                                            case 2:
-                                                new fbImagePull().execute();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
-                        builder.show();
-                    } else {
+                        //if (fbLinked.equals("true")) {*/
+                     if(mPermissionGranted) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
@@ -2311,8 +2316,10 @@ public class update extends BaseActivity {
         if (requestCode == MY_PERMISSIONS_REQUEST) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mPermissionGranted = true ;
                 Log.e("Rishabh", "Permissions are Granted .");
             } else {
+                mPermissionGranted = false ;
                 Log.e("Rishabh", "Permissions are not granted .");
             }
         }
