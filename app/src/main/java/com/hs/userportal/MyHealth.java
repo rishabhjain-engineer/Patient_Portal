@@ -44,6 +44,7 @@ import ui.BmiActivity;
 import ui.BpActivity;
 import ui.HealthCommonActivity;
 import ui.VaccineActivity;
+import utils.PreferenceHelper;
 
 import static java.lang.Math.round;
 
@@ -94,7 +95,7 @@ public class MyHealth extends BaseActivity {
             new Authentication(MyHealth.this, "MyHealth", "").execute();
         }
         Intent z = getIntent();
-        id = z.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         show_blood = z.getStringExtra("show_blood");
         int position = z.getIntExtra("position", -1);
         if (show_blood.equalsIgnoreCase("yes")) {

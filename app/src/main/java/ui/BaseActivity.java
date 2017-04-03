@@ -86,7 +86,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void showAlertMessage(String message) {
+    public void showAlertMessage(String message) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);

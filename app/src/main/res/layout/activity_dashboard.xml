@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -11,41 +10,20 @@
        android:layout_width="match_parent"
        android:numColumns="2"
        />-->
-
-    <TextView
-        android:id="@+id/dashboard_header_tv"
+    <LinearLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="Sciontra"
-        android:textColor="@color/dashboard_header_color"
-        android:textSize="30dp" />
-
-    <View
-        android:id="@+id/seprator_view"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/dashboard_header_tv"
-        android:background="@color/gray" />
-
-
-    <GridView
-        android:id="@+id/grid_view"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seprator_view"
-        android:gravity="center"
-        android:numColumns="2"
         android:layout_above="@+id/footer"
-        android:background="#dedede"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
-       />
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+    </LinearLayout>
 
     <include
         android:id="@+id/footer"
+        layout="@layout/dashboard_footer"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
-        layout="@layout/dashboard_footer"/>
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

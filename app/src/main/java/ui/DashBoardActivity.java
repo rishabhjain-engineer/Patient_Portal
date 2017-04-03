@@ -3,6 +3,8 @@ package ui;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,6 +60,8 @@ import java.util.List;
 
 import adapters.DashboardActivityAdapter;
 import config.StaticHolder;
+import fragment.AccountFragment;
+import fragment.DashboardFragment;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -67,18 +71,14 @@ import utils.PreferenceHelper;
  */
 
 public class DashBoardActivity extends BaseActivity {
-    private DynamicGridView mDaDynamicGridView;
-    private List<String> mList = new ArrayList<>();
-    private String privatery_id;
     private static RequestQueue request;
-    private GridView mGridView;
-
 
     public static String image_parse;
     public static String emailid;
     public static String id;
     private PreferenceHelper mPreferenceHelper;
-    private LinearLayout mFooterDashBoard, mFooterReports, mFooterFamily, mFooterAccount;
+    private LinearLayout mFooterDashBoard, mFooterReports, mFooterFamily, mFooterAccount, mFooterRepository;
+    private ImageView mFooterDashBoardImageView, mFooterReportImageView, mFooterRepositoryImageView, mFooterFamilyImageView, mFooterAccountImageView;
     private Services mServices;
     public static String notiem = "no", notisms = "no";
 
@@ -103,40 +103,31 @@ public class DashBoardActivity extends BaseActivity {
         Log.i("logout", "passw: "+passw);
         Log.i("logout", "name: "+name);*/
 
-
-        mGridView = (GridView) findViewById(R.id.grid_view);
-        DashboardActivityAdapter dashboardActivityAdapter = new DashboardActivityAdapter(this);
-        mGridView.setAdapter(dashboardActivityAdapter);
-
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                if (position == 0) {
-                    goToHealth(position);
-                } else if (position == 1) {
-                    goToHealth(position);
-                } else if (position == 2) {
-                    showAlertMessage("Comming Soon");
-                } else if (position == 3) {
-                    showAlertMessage("Comming Soon");
-                } else if (position == 4) {
-                    showAlertMessage("Comming Soon");
-                }
-            }
-        });
-
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
         mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
-        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
         mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
         mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
 
-        ImageView dashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
-        dashBoardImageView.setImageResource(R.drawable.dashboard_active);
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterReportImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        mFooterRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
+        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+        mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
 
         mFooterDashBoard.setOnClickListener(mOnClickListener);
         mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterRepository.setOnClickListener(mOnClickListener);
         mFooterFamily.setOnClickListener(mOnClickListener);
         mFooterAccount.setOnClickListener(mOnClickListener);
+
+        Fragment newFragment = new DashboardFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
         findFamily();
     }
@@ -146,16 +137,28 @@ public class DashBoardActivity extends BaseActivity {
         public void onClick(View v) {
             int viewId = v.getId();
             Intent intent = null;
-            if (viewId == R.id.footer_reports_container) {
+            if (viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                Fragment newFragment = new DashboardFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
-                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
-                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                    } else {
-                        Intent intent1 = new Intent(getApplicationContext(), lablistdetails.class);
-                        startActivity(intent1);
-                    }
+            } else if (viewId == R.id.footer_reports_container) {
 
-            }else if (viewId == R.id.footer_repository_container) {
+                if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
+                    showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                } else {
+                    Intent intent1 = new Intent(getApplicationContext(), lablistdetails.class);
+                    startActivity(intent1);
+                }
+
+            } else if (viewId == R.id.footer_repository_container) {
                 intent = new Intent(DashBoardActivity.this, Filevault.class);
 
                 startActivity(intent);
@@ -164,24 +167,21 @@ public class DashBoardActivity extends BaseActivity {
 
                 startActivity(intent);
             } else if (viewId == R.id.footer_account_container) {
-                intent = new Intent(DashBoardActivity.this, AccountActivity.class);
-                startActivity(intent);
+               /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
+                startActivity(intent);*/
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                Fragment newFragment = new AccountFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         }
     };
-
-
-    private void goToHealth(int position) {
-        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(DashBoardActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(getApplicationContext(), MyHealth.class);
-            intent.putExtra("id", id);
-            intent.putExtra("position", position);
-            intent.putExtra("show_blood", "yes");
-            startActivity(intent);
-        }
-    }
 
     private void findFamily() {
         request = Volley.newRequestQueue(this);
@@ -248,7 +248,7 @@ public class DashBoardActivity extends BaseActivity {
                                 AppConstant.mFamilyMembersList.add(hmap);
                             }
                         }
-                        int s =  AppConstant.mFamilyMembersList.size();
+                        int s = AppConstant.mFamilyMembersList.size();
                         String size = new DecimalFormat("00").format(s);
                         //members.setText(size);
                     }
@@ -275,8 +275,8 @@ public class DashBoardActivity extends BaseActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
-        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         stayButton.setVisibility(View.GONE);
 
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
@@ -293,4 +293,8 @@ public class DashBoardActivity extends BaseActivity {
         dialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
