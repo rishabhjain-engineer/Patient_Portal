@@ -88,6 +88,7 @@ public class AccountActivity extends BaseActivity {
         setContentView(R.layout.activity_account);
         setupActionBar();
         mActionBar.setTitle("Account");
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         Intent i = getIntent();
         mServices = new Services(this);

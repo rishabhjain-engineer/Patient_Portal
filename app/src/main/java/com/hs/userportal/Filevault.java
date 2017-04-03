@@ -200,6 +200,7 @@ public class Filevault extends BaseActivity {
         pd.show();
 
         setupActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
 
       /*  Intent i = getIntent();
