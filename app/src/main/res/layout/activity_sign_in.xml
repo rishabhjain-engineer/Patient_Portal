@@ -23,7 +23,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/logo_update" />
 
@@ -31,7 +31,7 @@
             android:id="@+id/singn_in_use_your_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="use your registered email id/Facebook and jump right in!"
             android:textColor="@color/sign_in_use_your_gray_color"
