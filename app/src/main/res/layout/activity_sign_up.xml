@@ -26,7 +26,7 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/sign_up_plus" />
             <TextView
@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:text="Create Account"
                 android:textColor="@color/create_account_tv_color"
-                android:textSize="33dp" />
+                android:textSize="30sp" />
             <TextView
                 android:id="@+id/sign_up_lets_tv"
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:id="@+id/sign_up_name_et"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sign_in_edit_text_height"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/login_edit_text_style"
                 android:gravity="center"
                 android:cursorVisible="false"
@@ -65,7 +65,7 @@
                 android:id="@+id/sign_up_contact_et"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sign_in_edit_text_height"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/login_edit_text_style"
                 android:gravity="center"
                 android:hint="Contact No."
@@ -79,7 +79,7 @@
                 android:id="@+id/sign_up_password_et"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sign_in_edit_text_height"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/login_edit_text_style"
                 android:ellipsize="start"
                 android:gravity="center"
