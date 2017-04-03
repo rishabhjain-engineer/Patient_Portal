@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.util.Random;
 
 import ui.BaseActivity;
+import utils.PreferenceHelper;
 
 public class Help extends BaseActivity {
 
@@ -70,6 +71,7 @@ public class Help extends BaseActivity {
 		service = new Services(Help.this);
 		contact.setText(Helper.resend_sms);
 		name.setText(Helper.resend_name);
+		name.setText(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME));
 		subject.setText(Helper.resend_email);
 
 	//	new BackgroundProcess().execute();
