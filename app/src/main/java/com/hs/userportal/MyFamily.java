@@ -147,10 +147,11 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                     }else{*/
                         Intent i = new Intent(MyFamily.this, lablistdetails.class);
                         DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
-                        i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
+                        i.putExtra("id", id);
+                        i.putExtra("fromFamilyClass" , true) ;
                         i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
                                 + family_object.get(position).get("LastName"));
-                        i.putExtra("family",  AppConstant.mFamilyMembersList);
+                        i.putExtra("family",  family_object);
                         startActivity(i);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     //}
