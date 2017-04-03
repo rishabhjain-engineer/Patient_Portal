@@ -204,14 +204,15 @@ public class ReportFragment extends Fragment {
 
 
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        boolean isComingFromMyFamilyClass = z.getBooleanExtra("fromFamilyClass", false);
-        Member_Name = z.getStringExtra("Member_Name");
+        Bundle bundle = getArguments();
+        boolean isComingFromMyFamilyClass = bundle.getBoolean("fromFamilyClass", false);
+        Member_Name = bundle.getString("Member_Name");
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
 
         if (isComingFromMyFamilyClass) {
-            family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
+            family = (ArrayList<HashMap<String, String>>) bundle.getSerializable("family");
         } else {
             family = AppConstant.mFamilyMembersList;
         }
