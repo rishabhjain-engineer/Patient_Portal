@@ -117,7 +117,7 @@ public class lablistdetails extends BaseActivity {
     private ArrayList<String> caseidList = new ArrayList<String>();
     private JSONArray subArrayList;
     private EditText select_member_lab;
-   // private ArrayList<HashMap<String, String>> family = new ArrayList<>();
+    private ArrayList<HashMap<String, String>> family = new ArrayList<>();
     private static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
     private List<HashMap<String, String>> order_listarr = new ArrayList<>();
     private String  Member_Name;
@@ -138,7 +138,7 @@ public class lablistdetails extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.lablists);
-        AppConstant.mFamilyMembersList.clear();
+        family.clear();
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
         setupActionBar();
@@ -204,22 +204,29 @@ public class lablistdetails extends BaseActivity {
         // gen = (TextView) findViewById(R.id.tvgender);
 
 
-        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
+       // id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+       // Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
 
         Intent z = getIntent();
-     /*   id = z.getStringExtra("id");
-        Member_Name = z.getStringExtra("Member_Name");*/
+        id = z.getStringExtra("id");
+        boolean isComingFromMyFamilyClass = z.getBooleanExtra("fromFamilyClass", false) ;
+        Member_Name = z.getStringExtra("Member_Name");
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
-     //   family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
+
+        if(isComingFromMyFamilyClass){
+            family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
+        }
+       else {
+            family = AppConstant.mFamilyMembersList;
+        }
       //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
-        if( AppConstant.mFamilyMembersList != null){
+        if( family != null){
             if (check_fill == 0) {
-                for (int chk = 0; chk <  AppConstant.mFamilyMembersList.size(); chk++) {
-                    if ( AppConstant.mFamilyMembersList.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
-                        AppConstant.mFamilyMembersList.remove(chk);
+                for (int chk = 0; chk <  family.size(); chk++) {
+                    if ( family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
+                        family.remove(chk);
                     }
                 }
                 HashMap<String, String> hmap = new HashMap<>();
@@ -228,20 +235,20 @@ public class lablistdetails extends BaseActivity {
                 hmap.put("LastName", " ");
                 hmap.put("HM", "");
                 hmap.put("FamilyMemberId", id);
-                AppConstant.mFamilyMembersList.add(hmap);
+                family.add(hmap);
             }
 
-            if ( AppConstant.mFamilyMembersList.size() == 1) {
+            if ( family.size() == 1) {
                 select_member_lab.setVisibility(View.GONE);
             } else {
-                for (int c = 0; c <  AppConstant.mFamilyMembersList.size(); c++) {
-                    if ( AppConstant.mFamilyMembersList.get(c).get("HM").equals("1")) {
+                for (int c = 0; c <  family.size(); c++) {
+                    if ( family.get(c).get("HM").equals("1")) {
                         select_member_lab.setVisibility(View.GONE);
                     }
                 }
             }
 
-            static_family.addAll( AppConstant.mFamilyMembersList);
+            static_family.addAll( family);
         }
 
 
@@ -539,7 +546,7 @@ public class lablistdetails extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        AppConstant.mFamilyMembersList.clear();
+        family.clear();
         static_family.clear();
         finish();
     }
@@ -1328,12 +1335,12 @@ public class lablistdetails extends BaseActivity {
         overlay_dialog.setCanceledOnTouchOutside(true);
         overlay_dialog.setContentView(R.layout.select_member_order);
         ListView list_member = (ListView) overlay_dialog.findViewById(R.id.list_member);
-        list_member.setAdapter(new Order_family_adapter(lablistdetails.this,  AppConstant.mFamilyMembersList, DashBoardActivity.image_parse));
+        list_member.setAdapter(new Order_family_adapter(lablistdetails.this,  family, DashBoardActivity.image_parse));
         list_member.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                check_ID =  AppConstant.mFamilyMembersList.get(position).get("FamilyMemberId");
-                select_member_lab.setText( AppConstant.mFamilyMembersList.get(position).get("FirstName") + " " +  AppConstant.mFamilyMembersList.get(position)
+                check_ID =  family.get(position).get("FamilyMemberId");
+                select_member_lab.setText( family.get(position).get("FirstName") + " " +  family.get(position)
                         .get("LastName"));
                 overlay_dialog.dismiss();
                 description.clear();
