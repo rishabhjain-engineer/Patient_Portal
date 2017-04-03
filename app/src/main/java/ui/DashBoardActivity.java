@@ -160,11 +160,9 @@ public class DashBoardActivity extends BaseActivity {
 
             } else if (viewId == R.id.footer_repository_container) {
                 intent = new Intent(DashBoardActivity.this, Filevault.class);
-
                 startActivity(intent);
             } else if (viewId == R.id.footer_family_container) {
                 intent = new Intent(DashBoardActivity.this, MyFamily.class);
-
                 startActivity(intent);
             } else if (viewId == R.id.footer_account_container) {
                /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
