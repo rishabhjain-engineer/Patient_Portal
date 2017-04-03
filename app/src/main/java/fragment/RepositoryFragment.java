@@ -659,9 +659,9 @@ public class RepositoryFragment extends Fragment {
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-            final Filevault.ViewHolder holder;
+            final RepositoryFragment.ViewHolder holder;
             if (convertView == null) {
-                holder = new Filevault.ViewHolder();
+                holder = new RepositoryFragment.ViewHolder();
                 convertView = mInflater.inflate(R.layout.filevaultdeleteitem, null);
                 holder.imageview = (ImageView) convertView.findViewById(R.id.thumbImage);
                 // holder.thumbImage2 = (ImageView) convertView.findViewById(R.id.thumbImage2);
@@ -670,7 +670,7 @@ public class RepositoryFragment extends Fragment {
                 holder.image_name = (TextView) convertView.findViewById(R.id.image_name);
                 convertView.setTag(holder);
             } else {
-                holder = (Filevault.ViewHolder) convertView.getTag();
+                holder = (RepositoryFragment.ViewHolder) convertView.getTag();
             }
             holder.checkbox.setId(position);
             holder.imageview.setId(position);
@@ -715,14 +715,13 @@ public class RepositoryFragment extends Fragment {
             holder.folder_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(Filevault.this, Filevault2.class);
+                    Intent i = new Intent(mActivity, Filevault2.class);
                     i.putExtra("Folder_Clicked", holder.folder_name.getText().toString().trim());
                     i.putExtra("check_load", check_load);
                     i.putExtra("view", "Gird");
                     i.putExtra("hash_keyvalue", "Personal3");
                     i.putExtra("first_timefolderclicked", thumbImage.get(position).get("Personal3").trim());
                     startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             });
 
@@ -732,7 +731,7 @@ public class RepositoryFragment extends Fragment {
                     // TODO Auto-generated method stub
 
                     if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -750,7 +749,7 @@ public class RepositoryFragment extends Fragment {
                         }
 
                     } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -767,7 +766,7 @@ public class RepositoryFragment extends Fragment {
                             // Log.e("Viewer not installed on your device.", e.getMessage());
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -784,7 +783,7 @@ public class RepositoryFragment extends Fragment {
                             // Log.e("Viewer not installed on your device.", e.getMessage());
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -803,7 +802,7 @@ public class RepositoryFragment extends Fragment {
                     } else {
 
 
-                        Intent i = new Intent(Filevault.this, ExpandImage.class);
+                        Intent i = new Intent(mActivity, ExpandImage.class);
                         String removeonejpg = thumbImage.get(position).get("Personal3");
                         if (thumbImage.get(position).get("Personal3").endsWith(".jpg")) {
 
@@ -981,16 +980,16 @@ public class RepositoryFragment extends Fragment {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         IntentFilter f = new IntentFilter();
         f.addAction(UploadService.UPLOAD_STATE_CHANGED_ACTION);
-        registerReceiver(uploadStateReceiver, f);
+        mActivity.registerReceiver(uploadStateReceiver, f);
     }
 
     @Override
-    protected void onStop() {
-        unregisterReceiver(uploadStateReceiver);
+    public void onStop() {
+        mActivity.unregisterReceiver(uploadStateReceiver);
         super.onStop();
     }
 
@@ -1013,7 +1012,7 @@ public class RepositoryFragment extends Fragment {
         String path = uri.getPath();
         if (uri.toString().startsWith("content://")) {
             String[] projection = {MediaStore.MediaColumns.DATA};
-            ContentResolver cr = getApplicationContext().getContentResolver();
+            ContentResolver cr = mActivity.getContentResolver();
             Cursor cursor = cr.query(uri, projection, null, null, null);
             if (cursor != null) {
                 try {
@@ -1041,7 +1040,7 @@ public class RepositoryFragment extends Fragment {
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         try {
             if (requestCode == PICK_FROM_GALLERY) {
@@ -1074,17 +1073,17 @@ public class RepositoryFragment extends Fragment {
 
                         }
                     }
-                    Intent intent = new Intent(this, UploadService.class);
+                    Intent intent = new Intent(mActivity, UploadService.class);
                     intent.putExtra(UploadService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
                     intent.putExtra(UploadService.uploadfrom, "");
                     intent.putExtra("exhistimg", exhistimg);
                     intent.putExtra("stringcheck", stringcheck);
-                    startService(intent);
+                    mActivity.startService(intent);
 
                     System.out.println("After Service");
 
-                    String tempPath = getPath(selectedImageUri, Filevault.this);
+                    String tempPath = getPath(selectedImageUri, mActivity);
                     Bitmap bm;
                     BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
                     btmapOptions.inSampleSize = 4;
@@ -1142,16 +1141,16 @@ public class RepositoryFragment extends Fragment {
                     }
                     if (check != 0) {
                         preventRotation(path);
-                        Intent intent = new Intent(this, UploadService.class);
+                        Intent intent = new Intent(mActivity, UploadService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
                         intent.putExtra(UploadService.uploadfrom, "");
                         intent.putExtra("add_path", "");
                         intent.putExtra(UploadService.uploadfrom, "");
                         intent.putExtra("exhistimg", exhistimg);
                         intent.putExtra("stringcheck", stringcheck);
-                        startService(intent);
+                        mActivity.startService(intent);
 
-                        ContentResolver cr = getContentResolver();
+                        ContentResolver cr = mActivity.getContentResolver();
                         Bitmap bitmap;
                         bitmap = MediaStore.Images.Media.getBitmap(cr, selectedImageUri);
                         byteArrayOutputStream = new ByteArrayOutputStream();
@@ -1162,10 +1161,10 @@ public class RepositoryFragment extends Fragment {
                         picname = "camera.jpg";
 
                         // finish();
-                        startActivity(getIntent());
+                        startActivity(mActivity.getIntent());
                     }
                 } else {
-                    Toast.makeText(this, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -1193,17 +1192,16 @@ public class RepositoryFragment extends Fragment {
             case android.R.id.home:
                 if (!toggle_move) {
           /*  super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                    Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
                     originalVaultlist.clear();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    finish();
+                    mActivity.finish();
                 } else if (!view_list) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
-                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     toggle_move = false;
                     check_para = 0;
@@ -1215,13 +1213,12 @@ public class RepositoryFragment extends Fragment {
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
            /* super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                    Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
                     originalVaultlist.clear();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    finish();
+                    mActivity.finish();
                 }
                 return true;
 
@@ -1276,7 +1273,7 @@ public class RepositoryFragment extends Fragment {
                 imageAdapter = new Filevault.ImageAdapter();
                 gridView.setAdapter(imageAdapter);
                 if (!view_list) {
-                    vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                    vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                     vault_list.setAdapter(vault_delete_adapter);
                   /*  vault_delete_adapter.notifyDataSetChanged();*/
                     list_header2.setVisibility(View.VISIBLE);
@@ -1307,10 +1304,10 @@ public class RepositoryFragment extends Fragment {
                 // Toast.LENGTH_SHORT).show();
                 // }
 
-                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                Intent intent = new Intent(mActivity, DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
-                finish();
+                mActivity.finish();
                 return true;
 
             case R.id.save:
@@ -1323,11 +1320,11 @@ public class RepositoryFragment extends Fragment {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                 } else if (toggle_move && checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
-                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     vault_list.setSelection(position_scroll);
                     thumbnailsselection = new boolean[thumbImage.size()];
@@ -1339,7 +1336,7 @@ public class RepositoryFragment extends Fragment {
                                 position_scroll = i;
                             }
                         }
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         vault_delete_adapter.notifyDataSetChanged();
@@ -1357,7 +1354,7 @@ public class RepositoryFragment extends Fragment {
 
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                            AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                             dialog.setTitle("Save");
                             dialog.setMessage("Are you sure you want to save the selected file(s)?");
 
@@ -1388,7 +1385,7 @@ public class RepositoryFragment extends Fragment {
 
                                     ipos = 0;
                                     toggle_move = false;
-                                    Toast.makeText(Filevault.this, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
                                     check_para = 0;
                                     for (int i = 0; i < thumbnailsselection.length; i++) {
 
@@ -1428,15 +1425,15 @@ public class RepositoryFragment extends Fragment {
                                                                     File f = new File(path, fname);
                                                                     Uri contentUri = Uri.fromFile(f);
                                                                     mediaScanIntent.setData(contentUri);
-                                                                    sendBroadcast(mediaScanIntent);
+                                                                    mActivity.sendBroadcast(mediaScanIntent);
                                                                 } else {
-                                                                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                    mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                                                                             + Environment.getExternalStorageDirectory())));
                                                                 }
 
                                                             }
 
-                                                            nHandler.createSimpleNotification(Filevault.this, ipos, fname);
+                                                            nHandler.createSimpleNotification(mActivity, ipos, fname);
 
                                                         }
                                                     }, 0, 0, null, null);
@@ -1452,7 +1449,7 @@ public class RepositoryFragment extends Fragment {
                             dialog.show();
 
                         } else {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -1466,7 +1463,7 @@ public class RepositoryFragment extends Fragment {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Save");
                         dialog.setMessage("Are you sure you want to save the selected file(s)?");
 
@@ -1496,7 +1493,7 @@ public class RepositoryFragment extends Fragment {
 
                                 ipos = 0;
                                 toggle_move = false;
-                                Toast.makeText(Filevault.this, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
 
@@ -1535,15 +1532,15 @@ public class RepositoryFragment extends Fragment {
                                                                 File f = new File(path, fname);
                                                                 Uri contentUri = Uri.fromFile(f);
                                                                 mediaScanIntent.setData(contentUri);
-                                                                sendBroadcast(mediaScanIntent);
+                                                                mActivity.sendBroadcast(mediaScanIntent);
                                                             } else {
-                                                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                                                                         + Environment.getExternalStorageDirectory())));
                                                             }
 
                                                         }
 
-                                                        nHandler.createSimpleNotification(Filevault.this, ipos, fname);
+                                                        nHandler.createSimpleNotification(mActivity, ipos, fname);
 
                                                     }
                                                 }, 0, 0, null, null);
@@ -1559,7 +1556,7 @@ public class RepositoryFragment extends Fragment {
                         dialog.show();
 
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -1576,7 +1573,7 @@ public class RepositoryFragment extends Fragment {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                 } /*else if (toggle_move && checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
@@ -1593,7 +1590,7 @@ public class RepositoryFragment extends Fragment {
                         }
                         list_header.setVisibility(View.GONE);
                         list_header2.setVisibility(View.VISIBLE);
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         toggle_move = true;
@@ -1601,7 +1598,7 @@ public class RepositoryFragment extends Fragment {
                         //checkdialog = 0;
                         if (checkdialog == 1) {
 
-                            final Dialog dialog = new Dialog(this);
+                            final Dialog dialog = new Dialog(mActivity);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dialog.setContentView(R.layout.unsaved_alert_dialog);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -1633,7 +1630,7 @@ public class RepositoryFragment extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    pd = new ProgressDialog(Filevault.this);
+                                    pd = new ProgressDialog(mActivity);
                                     pd.setMessage("Deleting .....");
                                     pd.show();
                                     toggle_move = false;
@@ -1766,7 +1763,7 @@ public class RepositoryFragment extends Fragment {
 
                                     System.out.println(array);
 
-                                    queue2 = Volley.newRequestQueue(Filevault.this);
+                                    queue2 = Volley.newRequestQueue(mActivity);
 
                                     sendData = new JSONObject();
                                     try {
@@ -1778,7 +1775,7 @@ public class RepositoryFragment extends Fragment {
                                     }
 
 				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
-                                    StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
+                                    StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                     String url = sttc_holdr.request_Url();
                                     jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                                         @Override
@@ -1786,7 +1783,7 @@ public class RepositoryFragment extends Fragment {
                                             System.out.println(response);
 
                                             try {
-                                                Toast.makeText(Filevault.this, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                                Toast.makeText(mActivity, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
                                                         .show();
                                                 //  S3Objects.clear();
                                                 pd.dismiss();
@@ -1804,7 +1801,7 @@ public class RepositoryFragment extends Fragment {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             pd.dismiss();
-                                            Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
                                         }
                                     });/* {
                                     @Override
@@ -1822,7 +1819,7 @@ public class RepositoryFragment extends Fragment {
 
                             dialog.show();
                         } else {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -1836,7 +1833,7 @@ public class RepositoryFragment extends Fragment {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Delete");
                         dialog.setMessage("Are you sure you want to delete the selected file(s)?");
 
@@ -1865,7 +1862,7 @@ public class RepositoryFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 JSONArray array = new JSONArray();
-                                pd = new ProgressDialog(Filevault.this);
+                                pd = new ProgressDialog(mActivity);
                                 pd.setMessage("Deleting .....");
                                 pd.show();
                                 toggle_move = false;
@@ -1994,7 +1991,7 @@ public class RepositoryFragment extends Fragment {
 
                                 System.out.println(array);
 
-                                queue2 = Volley.newRequestQueue(Filevault.this);
+                                queue2 = Volley.newRequestQueue(mActivity);
 
                                 sendData = new JSONObject();
                                 try {
@@ -2006,7 +2003,7 @@ public class RepositoryFragment extends Fragment {
                                 }
 
 				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
-                                StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
+                                StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                                     @Override
@@ -2014,7 +2011,7 @@ public class RepositoryFragment extends Fragment {
                                         System.out.println(response);
 
                                         try {
-                                            Toast.makeText(Filevault.this, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                            Toast.makeText(mActivity, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
                                                     .show();
                                             // S3Objects.clear();
                                             pd.dismiss();
@@ -2033,7 +2030,7 @@ public class RepositoryFragment extends Fragment {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
                                         pd.dismiss();
-                                        Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 queue2.add(jr2);
@@ -2043,7 +2040,7 @@ public class RepositoryFragment extends Fragment {
                         });
                         dialog.show();
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;
@@ -2092,7 +2089,7 @@ public class RepositoryFragment extends Fragment {
                         }
                     }
                     if (show_menu1 == 1) {
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         menu_toggle.findItem(R.id.action_move).setVisible(true);
@@ -2106,7 +2103,7 @@ public class RepositoryFragment extends Fragment {
                     } else {
                         list_header.setVisibility(View.VISIBLE);
                         list_header2.setVisibility(View.GONE);
-                        vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                        vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                         vault_list.setAdapter(vault_adapter);
                         vault_list.setSelection(position_scroll);
                         vault_list.setVisibility(View.VISIBLE);
@@ -2141,7 +2138,7 @@ public class RepositoryFragment extends Fragment {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please Select file(s).", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "Please Select file(s).", Toast.LENGTH_SHORT).show();
                 } /*else if (*//*toggle_move &&*//* checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
@@ -2158,7 +2155,7 @@ public class RepositoryFragment extends Fragment {
                         }
                         list_header.setVisibility(View.GONE);
                         list_header2.setVisibility(View.VISIBLE);
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         toggle_move = true;
@@ -2173,7 +2170,7 @@ public class RepositoryFragment extends Fragment {
                         }
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                            AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                             dialog.setTitle("Move");
                             dialog.setMessage("Are you sure you want to move the selected file(s)?");
 
@@ -2358,7 +2355,7 @@ public class RepositoryFragment extends Fragment {
                                 AlertDialog alert = builder.create();
                                 alert.show();*/
 
-                                    final Dialog move_dialog = new Dialog(Filevault.this);
+                                    final Dialog move_dialog = new Dialog(mActivity);
                                     move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     //setting custom layout to dialog
                                     move_dialog.setContentView(R.layout.move_folderlist);
@@ -2367,7 +2364,7 @@ public class RepositoryFragment extends Fragment {
                                     final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
                                     folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     folder_root.setEnabled(false);
-                                    folder_adapter = new Folder_adapter(Filevault.this, moveFolder1, patientId, "");
+                                    folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, "");
                                     folder_list.setAdapter(folder_adapter);
                                     folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -2387,7 +2384,7 @@ public class RepositoryFragment extends Fragment {
                                         @Override
                                         public void onClick(View v) {
                                             if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
-                                                Toast.makeText(Filevault.this, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -2405,7 +2402,7 @@ public class RepositoryFragment extends Fragment {
                         } else
 
                         {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -2419,7 +2416,7 @@ public class RepositoryFragment extends Fragment {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Move");
                         dialog.setMessage("Are you sure you want to move the selected file(s) or Folder(s)?");
 
@@ -2590,7 +2587,7 @@ public class RepositoryFragment extends Fragment {
                                 });
                                 AlertDialog alert = builder.create();
                                 alert.show();*/
-                                final Dialog move_dialog = new Dialog(Filevault.this);
+                                final Dialog move_dialog = new Dialog(mActivity);
                                 move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 //setting custom layout to dialog
                                 move_dialog.setContentView(R.layout.move_folderlist);
@@ -2599,7 +2596,7 @@ public class RepositoryFragment extends Fragment {
                                 final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
                                 folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                 folder_root.setEnabled(false);
-                                folder_adapter = new Folder_adapter(Filevault.this, moveFolder2, patientId, "");
+                                folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, "");
                                 folder_list.setAdapter(folder_adapter);
                                 folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
@@ -2620,7 +2617,7 @@ public class RepositoryFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
                                         if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
-                                            Toast.makeText(Filevault.this, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -2635,7 +2632,7 @@ public class RepositoryFragment extends Fragment {
                         });
                         dialog.show();
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -2648,7 +2645,7 @@ public class RepositoryFragment extends Fragment {
 
     private void chooseimage() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("Choose Image Source");
         builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera"},
                 new DialogInterface.OnClickListener() {
@@ -2702,10 +2699,10 @@ public class RepositoryFragment extends Fragment {
         help.folder_path.clear();
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             if (Helper.authentication_flag == true) {
-                finish();
+                mActivity.finish();
             }
         }
 
@@ -2869,11 +2866,11 @@ public class RepositoryFragment extends Fragment {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        nHandler = NotificationHandler.getInstance(this);
+        nHandler = NotificationHandler.getInstance(mActivity);
         bar = (ProgressBar) findViewById(R.id.pg);
-        queue = Volley.newRequestQueue(this);
-        queue3 = Volley.newRequestQueue(this);
-        req = Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(mActivity);
+        queue3 = Volley.newRequestQueue(mActivity);
+        req = Volley.newRequestQueue(mActivity);
         mImageLoader = MyVolleySingleton.getInstance(mActivity).getImageLoader();
         StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
