@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.text.Selection;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -96,6 +98,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     private String msg_action = "";
     private ArrayList<HashMap<String, String>> final_memberlist;
     private int check_commas =0;
+    Bundle mbundle = new Bundle();
 
     private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
     private Activity mActivity;
@@ -126,6 +129,16 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         resend.add("Resend Request");
         resend.add("Cancel Request");
         remove.add("Remove Member");
+
+
+
+
+
+
+
+
+
+
         //Intent i = getIntent();
       /*  User_ID = i.getStringExtra("id");*/
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
@@ -145,21 +158,39 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     }else{*/
-                    Intent i = new Intent(mActivity, lablistdetails.class);
+
+
+                    ReportFragment fragInfo = new ReportFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+               
+                    mbundle = new Bundle();
+                    mbundle.putString("id",DashBoardActivity.id);
+                    mbundle.putBoolean("fromFamilyClass",true);
+                    mbundle.putString("Member_Name", family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName"));
+                    mbundle.putSerializable("family",family_object);
+                    fragInfo.setArguments(mbundle);
+                    transaction.commit();
+
+
+
+
+
+                   /* Intent i = new Intent(mActivity, lablistdetails.class);
                     DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                     i.putExtra("id", id);
+
                     i.putExtra("fromFamilyClass" , true) ;
                     i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
                             + family_object.get(position).get("LastName"));
                     i.putExtra("family",  family_object);
-                    startActivity(i);
+                    startActivity(i);*/
                     //}
                 } else {
                     //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -269,7 +300,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 sorted_list.add(sorted_hmap1);
                                 family_adapter = new Myfamily_Adapter(mActivity, family_object, dataholderlist, User_ID/*, sorted_list, k*/);
                                 family_list.setAdapter(family_adapter);
-                                family_adapter.getListenerobj(MyFamily.this);
+                                family_adapter.getListenerobj(FamilyFragment.this);
 
                             } else {
                                 loadtestData(User_ID);
@@ -301,10 +332,10 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         mActivity.getMenuInflater().inflate(R.menu.weightmenu, menu);
         menu1 = menu;
-        return true;
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -312,8 +343,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                super.onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
                 return true;
 
             case R.id.add:
@@ -439,8 +469,8 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     }
 
     public void sendrequest(String ph_code, String relation, int repeat) {
-        send_request = Volley.newRequestQueue(this);
-        progress = new ProgressDialog(MyFamily.this);
+        send_request = Volley.newRequestQueue(mActivity);
+        progress = new ProgressDialog(mActivity);
         progress.setCancelable(false);
         progress.setMessage("Sending Request...");
         progress.setIndeterminate(true);
@@ -456,7 +486,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             } catch (JSONException je) {
                 je.printStackTrace();
             }
-            StaticHolder sttc_holdr = new StaticHolder(MyFamily.this, StaticHolder.Services_static.AddMember);
+            StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.AddMember);
             String url = sttc_holdr.request_Url();
             JsonObjectRequest jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                 @Override
@@ -466,27 +496,27 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     try {
                         String data = response.getString("d");
                         if (!data.equalsIgnoreCase("Success")) {
-                            Toast.makeText(MyFamily.this, data, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, data, Toast.LENGTH_SHORT).show();
                         }
                         // showalert(data);
                         if (data.equals("1")) {
-                            Toast.makeText(MyFamily.this, "You can't add this member. He is already a member of some other family."
+                            Toast.makeText(mActivity, "You can't add this member. He is already a member of some other family."
                                     , Toast.LENGTH_SHORT).show();
                             // showalert("You can't add this member. He is already a member of some other family.");
                         } else if (data.equals("2")) {
-                            Toast.makeText(MyFamily.this, "You can't add this member. He is already a head of some other family."
+                            Toast.makeText(mActivity, "You can't add this member. He is already a head of some other family."
                                     , Toast.LENGTH_SHORT).show();
                             // showalert("You can't add this member. He is already a head of some other family.");
                         } else if (data.equals("3")) {
-                            Toast.makeText(MyFamily.this, "You can't send family request to yourself."
+                            Toast.makeText(mActivity, "You can't send family request to yourself."
                                     , Toast.LENGTH_SHORT).show();
                             //showalert("You can't send family request to yourself.");
                         } else if (data.equals("4")) {
-                            Toast.makeText(MyFamily.this, "No patient is exist with this patient code."
+                            Toast.makeText(mActivity, "No patient is exist with this patient code."
                                     , Toast.LENGTH_SHORT).show();
                             //showalert("No patient is exist with this patient code.");
                         } else if (data.equals("Success")) {
-                            Toast.makeText(getApplicationContext(), "Family request sent successfully.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity.getApplicationContext(), "Family request sent successfully.", Toast.LENGTH_SHORT).show();
                             refresh();
                         }
                     } catch (JSONException je) {
@@ -509,7 +539,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     }
 
     public void showalert(String alert) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MyFamily.this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
         alertDialogBuilder
                 .setMessage(alert)
                 .setCancelable(true)
@@ -564,7 +594,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(FamilyFragment.this);
+            progress = new ProgressDialog(mActivity);
             progress.setCancelable(false);
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
