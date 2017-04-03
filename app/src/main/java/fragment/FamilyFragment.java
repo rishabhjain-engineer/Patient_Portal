@@ -1,4 +1,3 @@
-/*
 package fragment;
 
 import android.app.Activity;
@@ -63,11 +62,9 @@ import utils.PreferenceHelper;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-*/
 /**
  * Created by android1 on 3/4/17.
- *//*
-
+ */
 
 public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_button_event {
     private ListView family_list;
@@ -130,9 +127,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         resend.add("Cancel Request");
         remove.add("Remove Member");
         //Intent i = getIntent();
-      */
-/*  User_ID = i.getStringExtra("id");*//*
-
+      /*  User_ID = i.getStringExtra("id");*/
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         User_ID = preferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         //   members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
@@ -147,11 +142,9 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String HM = family_object.get(position).get("HM");
                 if (family_object.get(position).get("IsApproved").equals("true") && HM.equals("2")) {
-                    */
-/*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                    /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                    }else{*//*
-
+                    }else{*/
                     Intent i = new Intent(mActivity, lablistdetails.class);
                     DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                     i.putExtra("id", id);
@@ -172,12 +165,10 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
 
     public void LoadFamilyMembers() {
         request = Volley.newRequestQueue(mActivity);
-       */
-/* final ProgressDialog pd = new ProgressDialog(MyFamily.this);
+       /* final ProgressDialog pd = new ProgressDialog(MyFamily.this);
         pd.setMessage("Loading.....");
         pd.setCanceledOnTouchOutside(false);
-        pd.show();*//*
-
+        pd.show();*/
         StaticHolder static_holder = new StaticHolder(mActivity, StaticHolder.Services_static.GetMember);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -224,13 +215,11 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 hmap.put("Result", "");
                             }
                             hmap.put("Processing", json_obj.getString("Processing"));
-                           */
-/* if (json_obj.has("Result")) {
+                           /* if (json_obj.has("Result")) {
                                 hmap.put("TestName", json_obj.getString("TestName"));
                             } else {
                                 hmap.put("TestName", "");
-                            }*//*
-
+                            }*/
                             if (json_obj.has("Result")) {
                                 hmap.put("DateOfReport", json_obj.getString("DateOfReport"));
                             } else {
@@ -262,17 +251,13 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                             dataholderlist[i] = listholder.get(i);
                         }
                         for (int n = 0; n < family_object.size(); n++) {
-                            if (family_object.get(n).get("HM").equalsIgnoreCase("1") */
-/*&&
-                                    family_object.get(n).get("IsApproved").equalsIgnoreCase("true")*//*
-) {
+                            if (family_object.get(n).get("HM").equalsIgnoreCase("1") /*&&
+                                    family_object.get(n).get("IsApproved").equalsIgnoreCase("true")*/) {
                                 menu1.findItem(R.id.add).setVisible(false);
-                              */
-/*  DataHolder[] dataholderlist = new DataHolder[listholder.size()];
+                              /*  DataHolder[] dataholderlist = new DataHolder[listholder.size()];
                                 for (int i = 0; i < listholder.size(); i++) {
                                     dataholderlist[i] = listholder.get(i);
-                                }*//*
-
+                                }*/
                                 sorted_list = new ArrayList<>();
                                 HashMap<String, String> sorted_hmap1 = new HashMap<String, String>();
                                 sorted_hmap1.put("userid", "");
@@ -282,9 +267,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 sorted_hmap1.put("Unit", "");
                                 sorted_hmap1.put("IsTestCompletedNew", "");
                                 sorted_list.add(sorted_hmap1);
-                                family_adapter = new Myfamily_Adapter(mActivity, family_object, dataholderlist, User_ID*/
-/*, sorted_list, k*//*
-);
+                                family_adapter = new Myfamily_Adapter(mActivity, family_object, dataholderlist, User_ID/*, sorted_list, k*/);
                                 family_list.setAdapter(family_adapter);
                                 family_adapter.getListenerobj(MyFamily.this);
 
@@ -478,9 +461,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             JsonObjectRequest jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                     */
-/*System.out.println(response);*//*
-
+                     /*System.out.println(response);*/
                     progress.dismiss();
                     try {
                         String data = response.getString("d");
@@ -517,7 +498,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
 
                 }
             });
@@ -583,7 +564,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(MyFamily.this);
+            progress = new ProgressDialog(FamilyFragment.this);
             progress.setCancelable(false);
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
@@ -596,9 +577,9 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             try {
                 receiveData1.getString("d");
                 if (receiveData1.getString("d").equalsIgnoreCase("success")) {
-                    Toast.makeText(MyFamily.this, msg_action, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, msg_action, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MyFamily.this, receiveData1.getString("d"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, receiveData1.getString("d"), Toast.LENGTH_SHORT).show();
                 }
                 refresh();
             } catch (JSONException e) {
@@ -639,18 +620,14 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     family_test_object = new ArrayList<HashMap<String, String>>();
                     family_test_object.clear();
                     if (family_test_arr.length() == 0) {
-                        */
-/*Toast.makeText(MyFamily.this, "Your Family members don't have any test from our recommended labs."
-                                , Toast.LENGTH_SHORT).show();*//*
-
+                        /*Toast.makeText(MyFamily.this, "Your Family members don't have any test from our recommended labs."
+                                , Toast.LENGTH_SHORT).show();*/
                     } else {
                         HashMap<String, String> hmap;
                         for (int i = 0; i < family_test_arr.length(); i++) {
                             JSONObject json_obj = family_test_arr.getJSONObject(i);
                             hmap = new HashMap<String, String>();
-                           */
-/* if(!json_obj.getString("IsTestCompletedNew").equalsIgnoreCase("null"))*//*
-
+                           /* if(!json_obj.getString("IsTestCompletedNew").equalsIgnoreCase("null"))*/
                             {
                                 hmap.put("userid", json_obj.getString("userid"));
                                 hmap.put("TestName", json_obj.getString("TestName"));
@@ -685,9 +662,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 HashMap<String, String> sorted_hmap = new HashMap<String, String>();
                                 for (int k = l + 1; k <family_test_object.size(); k++) {
                                     if (family_test_object.get(l).get("userid").equals(family_test_object.get(k).get("userid"))
-                                           */
-/* && family_test_object.get(k).get("IsTestCompletedNew").equals("1")*//*
-) {
+                                           /* && family_test_object.get(k).get("IsTestCompletedNew").equals("1")*/) {
 
                                         if(check_commas==0){
                                             str_test.append(num +". "+family_test_object.get(k - 1).get("TestName"));
@@ -697,27 +672,21 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                         }check_commas++;
                                         //sorted_hmap.put("userid",family_test_object.get(k).get("userid"));
                                         sorted_hmap.put("TestName", str_test.toString());
-                                   */
-/* sorted_hmap.put("DateOfReport", "");
+                                   /* sorted_hmap.put("DateOfReport", "");
                                     sorted_hmap.put("Result", "");
                                     sorted_hmap.put("Unit", "");
-                                    sorted_hmap.put("IsTestCompletedNew",family_test_object.get(k).get("IsTestCompletedNew"));*//*
-
+                                    sorted_hmap.put("IsTestCompletedNew",family_test_object.get(k).get("IsTestCompletedNew"));*/
                                         check_userids = family_test_object.get(l).get("userid");
                                         family_test_object.remove(k - 1);
                                         k--;
                                     } else {
                                         check_commas=0;
-                                       */
-/* if (!family_test_object.get(k).get("IsTestCompletedNew").equals("null"))*//*
- {
+                                       /* if (!family_test_object.get(k).get("IsTestCompletedNew").equals("null"))*/ {
                                             str_test.append("1. "+family_test_object.get(l).get("TestName") + "#");
                                             check_userids = family_test_object.get(l).get("userid");
-                                        } */
-/*else {
+                                        } /*else {
 
-                                        }*//*
-
+                                        }*/
 
                                     }
                                 }
@@ -736,26 +705,18 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 sorted_list.add(sorted_hmap);
                             }
                         }
-                       */
-/* DataHolder[] dataholderlist = new DataHolder[listholder.size()];
+                       /* DataHolder[] dataholderlist = new DataHolder[listholder.size()];
                         for (int i = 0; i < listholder.size(); i++) {
                             dataholderlist[i] = listholder.get(i);
-                        }*//*
-
-                       */
-/* for (int n = 0; n < family_object.size(); n++) {
-                            if (family_object.get(n).get("HM").equalsIgnoreCase("1") *//*
-*/
-/*&&
-                                    family_object.get(n).get("IsApproved").equalsIgnoreCase("true")*//*
-*/
-/*) {
+                        }*/
+                       /* for (int n = 0; n < family_object.size(); n++) {
+                            if (family_object.get(n).get("HM").equalsIgnoreCase("1") *//*&&
+                                    family_object.get(n).get("IsApproved").equalsIgnoreCase("true")*//*) {
                                 menu1.findItem(R.id.add).setVisible(false);
                             } else {
                                 menu1.findItem(R.id.add).setVisible(true);
                             }
-                        }*//*
-
+                        }*/
                         int s1 = family_object.size();
                         int s2 = sorted_list.size();
                         int diff = s1 - s2;
@@ -804,8 +765,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
 
                     // arrange sorted list to right position//
                     if (family_test_object.size() != 0) {
-                       */
-/* final_memberlist = new ArrayList<>();
+                       /* final_memberlist = new ArrayList<>();
                         for (int k = 0; k < family_object.size(); k++) {
                             for (int l = 0; l < sorted_list.size(); l++) {
                                 if (family_object.get(k).get("FamilyMemberId").equals(sorted_list.get(l).get("userid"))) {
@@ -826,12 +786,10 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                                 family_object.remove(i);
                                 family_object.add(i, hmap);
                             }
-                        }*//*
-
+                        }*/
                     }
                     // listholder.clear();
-                   */
-/* for(int d=0; d<family_object.size();d++) {
+                   /* for(int d=0; d<family_object.size();d++) {
                         if (family_object.get(d).get("IsApproved").equals("true")) {
                             DataHolder dh = new DataHolder(MyFamily.this, revoke);
                             listholder.add(dh);
@@ -844,13 +802,10 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                 dataholderlist = new DataHolder[listholder.size()];
                 for (int i = 0; i < listholder.size(); i++) {
                     dataholderlist[i] = listholder.get(i);
-                }*//*
-
-                    family_adapter = new Myfamily_Adapter(MyFamily.this, family_object, dataholderlist, User_ID*/
-/*, sorted_list, k*//*
-);
+                }*/
+                    family_adapter = new Myfamily_Adapter(mActivity, family_object, dataholderlist, User_ID/*, sorted_list, k*/);
                     family_list.setAdapter(family_adapter);
-                    family_adapter.getListenerobj(MyFamily.this);
+                    family_adapter.getListenerobj(FamilyFragment.this);
                     pd.dismiss();
 
                 } catch (JSONException je) {
@@ -865,14 +820,14 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             public void onErrorResponse(VolleyError error) {
                 pd.dismiss();
                 //onBackPressed();
-                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
         test_request.add(family_test);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         if (Helper.authentication_flag == true) {
             mActivity.finish();
         }
@@ -904,4 +859,3 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         dialog.show();
     }
 }
-*/
