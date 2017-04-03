@@ -208,17 +208,21 @@ public class lablistdetails extends BaseActivity {
        // Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
 
         Intent z = getIntent();
-        id = z.getStringExtra("id");
+
         boolean isComingFromMyFamilyClass = z.getBooleanExtra("fromFamilyClass", false) ;
-        Member_Name = z.getStringExtra("Member_Name");
+
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
 
         if(isComingFromMyFamilyClass){
+            id = z.getStringExtra("id");
+            Member_Name = z.getStringExtra("Member_Name");
             family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
         }
        else {
+            id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+            Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
             family = AppConstant.mFamilyMembersList;
         }
       //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
