@@ -6,7 +6,6 @@
     <LinearLayout
         android:id="@+id/container"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -253,13 +252,5 @@
 
 
     </LinearLayout>
-
-    <include
-        android:id="@+id/footer"
-        layout="@layout/dashboard_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
 </RelativeLayout>
 
