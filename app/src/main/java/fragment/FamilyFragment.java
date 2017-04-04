@@ -99,28 +99,15 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     private ArrayList<HashMap<String, String>> final_memberlist;
     private int check_commas =0;
     Bundle mbundle = new Bundle();
-
-    private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
     private Activity mActivity;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account, null);
-
+        View view = inflater.inflate(R.layout.myfamily, null);
         mActivity = getActivity();
         family_list = (ListView) view.findViewById(R.id.family_list);
         empty_msg = (TextView) view.findViewById(R.id.empty_msg);
         service = new Services(mActivity);
-
-        mFooterDashBoard = (LinearLayout) view.findViewById(R.id.footer_dashboard_container);
-        mFooterReports = (LinearLayout) view.findViewById(R.id.footer_reports_container);
-        mFooterRepository = (LinearLayout) view.findViewById(R.id.footer_repository_container);
-        mFooterAccount = (LinearLayout) view.findViewById(R.id.footer_account_container);
-
-        ImageView familyImageView = (ImageView) view.findViewById(R.id.footer_family_imageview);
-        familyImageView.setImageResource(R.drawable.family_active);
-
-
         repeat = 0;
         revoke = new ArrayList<>();
         resend = new ArrayList<>();
@@ -129,27 +116,13 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         resend.add("Resend Request");
         resend.add("Cancel Request");
         remove.add("Remove Member");
-
-
-
-
-
-
-
-
-
-
-        //Intent i = getIntent();
-      /*  User_ID = i.getStringExtra("id");*/
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         User_ID = preferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        //   members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
-
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(mActivity, "MyFamily", "").execute(); }
-        // LoadFamilyMembers();
+         LoadFamilyMembers();
         family_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -160,21 +133,20 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     }else{*/
 
 
+
+
+
                     ReportFragment fragInfo = new ReportFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-               
                     mbundle = new Bundle();
                     mbundle.putString("id",DashBoardActivity.id);
                     mbundle.putBoolean("fromFamilyClass",true);
                     mbundle.putString("Member_Name", family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName"));
                     mbundle.putSerializable("family",family_object);
                     fragInfo.setArguments(mbundle);
+
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
                     transaction.commit();
-
-
-
-
-
                    /* Intent i = new Intent(mActivity, lablistdetails.class);
                     DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                     i.putExtra("id", id);
