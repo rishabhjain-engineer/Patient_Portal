@@ -669,7 +669,7 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                 }
 
@@ -1150,6 +1150,7 @@ public class RepositoryFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.delete, menu);
         menu_toggle = menu;
+        menu_toggle.findItem(R.id.action_home).setVisible(false);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -1179,7 +1180,7 @@ public class RepositoryFragment extends Fragment {
                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
                     menu_toggle.findItem(R.id.save).setVisible(false);
                     menu_toggle.findItem(R.id.action_move).setVisible(false);
-                    menu_toggle.findItem(R.id.action_home).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
            /* super.onBackPressed();*/
@@ -1212,7 +1213,7 @@ public class RepositoryFragment extends Fragment {
                             menu_toggle.findItem(R.id.action_delete).setVisible(false);
                             menu_toggle.findItem(R.id.save).setVisible(false);
                             menu_toggle.findItem(R.id.action_move).setVisible(false);
-                            menu_toggle.findItem(R.id.action_home).setVisible(true);
+                            menu_toggle.findItem(R.id.action_home).setVisible(false);
                         }
                     }
                     check++;
@@ -1232,7 +1233,7 @@ public class RepositoryFragment extends Fragment {
                             menu_toggle.findItem(R.id.action_delete).setVisible(false);
                             menu_toggle.findItem(R.id.save).setVisible(false);
                             menu_toggle.findItem(R.id.action_move).setVisible(false);
-                            menu_toggle.findItem(R.id.action_home).setVisible(true);
+                            menu_toggle.findItem(R.id.action_home).setVisible(false);
                         }
                     }
                     check_grid++;
@@ -2035,7 +2036,7 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                     gridView.setVisibility(View.VISIBLE);
                     imageAdapter.notifyDataSetChanged();
@@ -2081,7 +2082,7 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                     /*list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
@@ -2698,7 +2699,7 @@ public class RepositoryFragment extends Fragment {
             menu_toggle.findItem(R.id.action_delete).setVisible(false);
             menu_toggle.findItem(R.id.save).setVisible(false);
             menu_toggle.findItem(R.id.action_move).setVisible(false);
-            menu_toggle.findItem(R.id.action_home).setVisible(true);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
             thumbnailsselection = new boolean[thumbImage.size()];
         } else {
            /* super.onBackPressed();*/
@@ -2965,7 +2966,7 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                     if (S3Objects.size() != 0) {
                         menu_toggle.findItem(R.id.action_listview).setVisible(true);
@@ -2974,7 +2975,7 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                         warning_msg.setVisibility(View.GONE);
                     }
                 } catch (JSONException je) {
