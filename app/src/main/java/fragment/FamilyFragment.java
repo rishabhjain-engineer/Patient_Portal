@@ -131,18 +131,8 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     }else{*/
-
-                    ReportFragment fragInfo = new ReportFragment();
-                    mbundle = new Bundle();
-                    mbundle.putString("id",DashBoardActivity.id);
-                    mbundle.putBoolean("fromFamilyClass",true);
-                    mbundle.putString("Member_Name", family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName"));
-                    mbundle.putSerializable("family",family_object);
-                    fragInfo.setArguments(mbundle);
-
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                    transaction.commit();
+                    String memberName = family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName");
+                    ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName);
                    /* Intent i = new Intent(mActivity, lablistdetails.class);
                     DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                     i.putExtra("id", id);

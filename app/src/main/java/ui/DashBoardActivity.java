@@ -141,6 +141,7 @@ public class DashBoardActivity extends BaseActivity {
             int viewId = v.getId();
             Intent intent = null;
             if (viewId == R.id.footer_dashboard_container) {
+                mActionBar.hide();
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -157,12 +158,17 @@ public class DashBoardActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                     showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                 } else {
+                    mActionBar.show();
+                    mActionBar.setTitle("Reports");
                     mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                     mFooterReportImageView.setImageResource(R.drawable.reports_active);
                     mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
                     mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
                     mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("fromFamilyClass", false);
                     Fragment newFragment = new ReportFragment();
+                    newFragment.setArguments(bundle);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, newFragment);
                     transaction.addToBackStack(null);
@@ -172,6 +178,8 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_repository_container) {
                 /*intent = new Intent(DashBoardActivity.this, Filevault.class);
                 startActivity(intent);*/
+                mActionBar.show();
+                mActionBar.setTitle("Repository");
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
@@ -185,6 +193,8 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_family_container) {
              /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
+                mActionBar.show();
+                mActionBar.setTitle("Family");
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -198,6 +208,8 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_account_container) {
                /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
                 startActivity(intent);*/
+                mActionBar.show();
+                mActionBar.setTitle("Account");
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -325,5 +337,25 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name){
+        mActionBar.show();
+        mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+        mFooterReportImageView.setImageResource(R.drawable.reports_active);
+        mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+        mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+        mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+        Bundle bundle = new Bundle();
+        bundle.putString("id",id);
+        bundle.putBoolean("fromFamilyClass",true);
+        bundle.putString("Member_Name", name);
+        bundle.putSerializable("family",family_object);
+        Fragment newFragment = new ReportFragment();
+        newFragment.setArguments(bundle);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

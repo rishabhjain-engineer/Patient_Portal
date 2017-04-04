@@ -462,9 +462,9 @@ public class ReportFragment extends Fragment {
                 return false;
             }
         });
+        setHasOptionsMenu(true);
         return view;
     }
-
 
     @Override
     public void onPause() {
