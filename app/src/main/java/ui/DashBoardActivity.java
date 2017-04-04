@@ -62,6 +62,7 @@ import adapters.DashboardActivityAdapter;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
+import fragment.FamilyFragment;
 import fragment.ReportFragment;
 import fragment.RepositoryFragment;
 import networkmngr.NetworkChangeListener;
@@ -182,8 +183,18 @@ public class DashBoardActivity extends BaseActivity {
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (viewId == R.id.footer_family_container) {
-                intent = new Intent(DashBoardActivity.this, MyFamily.class);
-                startActivity(intent);
+             /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
+                startActivity(intent);*/
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                Fragment newFragment = new FamilyFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             } else if (viewId == R.id.footer_account_container) {
                /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
                 startActivity(intent);*/
