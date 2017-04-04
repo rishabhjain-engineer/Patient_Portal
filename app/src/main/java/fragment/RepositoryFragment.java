@@ -143,7 +143,7 @@ public class RepositoryFragment extends Fragment {
     private JsonObjectRequest jr2, jr3, jr4;
     private static JsonObjectRequest s3jr;
     private JsonObjectRequest lock_folder;
-    private Filevault.ImageAdapter imageAdapter;
+    private RepositoryFragment.ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
     private int count;
     private static Menu menu_toggle;
@@ -225,6 +225,7 @@ public class RepositoryFragment extends Fragment {
         vault_list = (ListView) view.findViewById(R.id.vault_list);
         list_header = (RelativeLayout) view.findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) view.findViewById(R.id.list_header2);
+        bar = (ProgressBar) view.findViewById(R.id.pg);
 
         mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
 
@@ -1270,7 +1271,7 @@ public class RepositoryFragment extends Fragment {
                 select_times = 1;
                 toggle_move = true;
                 check_para = 1;
-                imageAdapter = new Filevault.ImageAdapter();
+                imageAdapter = new RepositoryFragment.ImageAdapter();
                 gridView.setAdapter(imageAdapter);
                 if (!view_list) {
                     vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
@@ -2867,7 +2868,6 @@ public class RepositoryFragment extends Fragment {
             e.printStackTrace();
         }
         nHandler = NotificationHandler.getInstance(mActivity);
-        bar = (ProgressBar) findViewById(R.id.pg);
         queue = Volley.newRequestQueue(mActivity);
         queue3 = Volley.newRequestQueue(mActivity);
         req = Volley.newRequestQueue(mActivity);
@@ -2960,7 +2960,7 @@ public class RepositoryFragment extends Fragment {
                     }
                     new Helper().sortHashList(thumbImage, "Personal3");
                     thumbnailsselection = new boolean[thumbImage.size()];
-                    imageAdapter = new Filevault.ImageAdapter();
+                    imageAdapter = new RepositoryFragment.ImageAdapter();
                     gridView.setAdapter(imageAdapter);
                     vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
