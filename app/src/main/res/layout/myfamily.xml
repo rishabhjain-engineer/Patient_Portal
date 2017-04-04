@@ -21,11 +21,6 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <include
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"
-        layout="@layout/dashboard_footer"/>
+
 
 </RelativeLayout>
