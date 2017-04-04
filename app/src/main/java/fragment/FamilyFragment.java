@@ -132,10 +132,6 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     }else{*/
 
-
-
-
-
                     ReportFragment fragInfo = new ReportFragment();
                     mbundle = new Bundle();
                     mbundle.putString("id",DashBoardActivity.id);
