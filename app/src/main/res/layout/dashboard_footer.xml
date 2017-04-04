@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/footer_dashboard_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/dashboard_inactive" />
 
         <TextView
@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/footer_reports_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/reports_inactive" />
 
         <TextView
@@ -71,8 +71,8 @@
 
         <ImageView
             android:id="@+id/footer_repository_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/repository_inactive" />
 
         <TextView
@@ -96,8 +96,8 @@
 
         <ImageView
             android:id="@+id/footer_family_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/family_inactive" />
 
         <TextView
@@ -121,8 +121,8 @@
 
         <ImageView
             android:id="@+id/footer_account_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/account_inactive" />
 
         <TextView
