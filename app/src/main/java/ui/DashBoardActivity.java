@@ -8,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -19,6 +20,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -91,7 +93,9 @@ public class DashBoardActivity extends BaseActivity {
         setContentView(R.layout.activity_dashboard);
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
-        mActionBar.hide();
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">"+ "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "  + "  Sciontra" + "</font>"));
+        //mActionBar.hide();
         mActionBar.setDisplayHomeAsUpEnabled(false);
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
@@ -141,7 +145,9 @@ public class DashBoardActivity extends BaseActivity {
             int viewId = v.getId();
             Intent intent = null;
             if (viewId == R.id.footer_dashboard_container) {
-                mActionBar.hide();
+                //mActionBar.hide();
+                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+                mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">"+ "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "  + "  Sciontra" + "</font>"));
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -158,8 +164,9 @@ public class DashBoardActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                     showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                 } else {
-                    mActionBar.show();
+                    //mActionBar.show();
                     mActionBar.setTitle("Reports");
+                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
                     mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                     mFooterReportImageView.setImageResource(R.drawable.reports_active);
                     mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -178,8 +185,9 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_repository_container) {
                 /*intent = new Intent(DashBoardActivity.this, Filevault.class);
                 startActivity(intent);*/
-                mActionBar.show();
+               // mActionBar.show();
                 mActionBar.setTitle("Repository");
+                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
@@ -193,8 +201,9 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_family_container) {
              /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
-                mActionBar.show();
+                //mActionBar.show();
                 mActionBar.setTitle("Family");
+                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -208,7 +217,8 @@ public class DashBoardActivity extends BaseActivity {
             } else if (viewId == R.id.footer_account_container) {
                /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
                 startActivity(intent);*/
-                mActionBar.show();
+                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+               // mActionBar.show();
                 mActionBar.setTitle("Account");
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
@@ -339,15 +349,17 @@ public class DashBoardActivity extends BaseActivity {
         finish();
     }
 
-    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name){
-        mActionBar.show();
+    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId){
+        //mActionBar.show();
+        mActionBar.setTitle("Reports");
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
         mFooterReportImageView.setImageResource(R.drawable.reports_active);
         mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
         mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
         mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
         Bundle bundle = new Bundle();
-        bundle.putString("id",id);
+        bundle.putString("id",userId);
         bundle.putBoolean("fromFamilyClass",true);
         bundle.putString("Member_Name", name);
         bundle.putSerializable("family",family_object);
