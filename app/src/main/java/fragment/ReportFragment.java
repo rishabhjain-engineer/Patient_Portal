@@ -128,8 +128,6 @@ public class ReportFragment extends Fragment {
     private PastVisitAdapter past_adapt;
     private String checkID;
     private RequestQueue queue;
-
-    private LinearLayout mFooterDashBoard, mFooterFamily, mFooterRepository, mFooterAccount;
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
 
@@ -157,15 +155,6 @@ public class ReportFragment extends Fragment {
         select_member_lab = (EditText) view.findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) view.findViewById(R.id.past_visits);
-
-        mFooterDashBoard = (LinearLayout) view.findViewById(R.id.footer_dashboard_container);
-        mFooterFamily = (LinearLayout) view.findViewById(R.id.footer_family_container);
-        mFooterRepository = (LinearLayout) view.findViewById(R.id.footer_repository_container);
-        mFooterAccount = (LinearLayout) view.findViewById(R.id.footer_account_container);
-
-        ImageView reportImageView = (ImageView) view.findViewById(R.id.footer_reports_imageview);
-        reportImageView.setImageResource(R.drawable.reports_active);
-
 
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {

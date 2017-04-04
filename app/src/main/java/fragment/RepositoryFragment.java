@@ -186,9 +186,7 @@ public class RepositoryFragment extends Fragment {
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
-    private ImageView mRepositoryImageView;
     private EditText mSearchBarEditText;
-    private LinearLayout mFooterDashBoard, mFooterReports, mFooterFamily, mFooterAccount;
 
     public static Context file_vaultcontxt;
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
@@ -207,7 +205,7 @@ public class RepositoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lablists, null);
+        View view = inflater.inflate(R.layout.filevault, null);
 
         mActivity = getActivity();
         pd = new ProgressDialog(mActivity);
@@ -228,21 +226,6 @@ public class RepositoryFragment extends Fragment {
         bar = (ProgressBar) view.findViewById(R.id.pg);
 
         mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
-
-
-        mFooterDashBoard = (LinearLayout) view.findViewById(R.id.footer_dashboard_container);
-        mFooterReports = (LinearLayout) view.findViewById(R.id.footer_reports_container);
-        mFooterFamily = (LinearLayout) view.findViewById(R.id.footer_family_container);
-        mFooterAccount = (LinearLayout) view.findViewById(R.id.footer_account_container);
-
-        mRepositoryImageView = (ImageView) view.findViewById(R.id.footer_repository_imageview);
-        mRepositoryImageView.setImageResource(R.drawable.repository_active);
-
-        mFooterDashBoard.setOnClickListener(mOnClickListener);
-        mFooterReports.setOnClickListener(mOnClickListener);
-        mFooterFamily.setOnClickListener(mOnClickListener);
-        mFooterAccount.setOnClickListener(mOnClickListener);
-
 
         sendData = new JSONObject();
         service = new Services(mActivity);
@@ -573,30 +556,6 @@ public class RepositoryFragment extends Fragment {
         });
         return view;
     }
-
-
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int viewId = v.getId();
-            Intent intent = null ;
-            if(viewId == R.id.footer_dashboard_container) {
-                intent = new Intent(mActivity , DashBoardActivity.class);                       // TODO check intent class ..
-                startActivity(intent);
-            }else if (viewId == R.id.footer_reports_container){
-                intent = new Intent(mActivity , lablistdetails.class);                      // TODO check intent class ..
-
-                startActivity(intent);
-            }else if(viewId == R.id.footer_family_container){
-                intent = new Intent(mActivity, MyFamily.class);                               // TODO check intent class ..
-
-                startActivity(intent);
-            }else if(viewId == R.id.footer_account_container){
-                intent = new Intent(mActivity , AccountActivity.class);                                // TODO check intent class ..
-                startActivity(intent);
-            }
-        }
-    };
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);
