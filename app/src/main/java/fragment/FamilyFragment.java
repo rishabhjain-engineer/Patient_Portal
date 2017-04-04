@@ -132,7 +132,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     }else{*/
                     String memberName = family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName");
-                    ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName);
+                    ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
                    /* Intent i = new Intent(mActivity, lablistdetails.class);
                     DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
                     i.putExtra("id", id);
