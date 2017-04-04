@@ -216,6 +216,7 @@ public class RepositoryFragment extends Fragment {
 
         mPreferenceHelper = PreferenceHelper.getInstance();
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        patientId = id;
 
       /*  Intent i = getIntent();
         family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");*/
@@ -231,7 +232,6 @@ public class RepositoryFragment extends Fragment {
         sendData = new JSONObject();
         service = new Services(mActivity);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        patientId = sharedPreferences.getString("ke", "");
         warning_msg = (TextView) view.findViewById(R.id.warning_msg);
         //refresh_vault1 = view_list;
 
