@@ -37,6 +37,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,7 +239,8 @@ public class RepositoryFragment extends Fragment {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(mActivity, "Filevault", "").execute();
+            //new Authentication(mActivity, "Filevault", "").execute();
+            createLockFolder();
         }
 
 
@@ -554,6 +556,7 @@ public class RepositoryFragment extends Fragment {
                 return onLongListItemClick(v, pos, id);
             }
         });
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -1137,10 +1140,17 @@ public class RepositoryFragment extends Fragment {
     }
 
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    /*public boolean onCreateOptionsMenu(Menu menu) {
         mActivity.getMenuInflater().inflate(R.menu.delete, menu);
         menu_toggle = menu;
         return true;
+    }*/
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.delete, menu);
+        menu_toggle = menu;
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     @SuppressWarnings("deprecation")
