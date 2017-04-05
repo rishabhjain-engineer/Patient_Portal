@@ -606,7 +606,7 @@ public class SignInActivity extends BaseActivity {
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
                     Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
                 } else {
-                    updateContactApi(mobileNumber);
+                    checkContactNoExistAPI(mobileNumber);
                 }
             }
 
@@ -620,6 +620,41 @@ public class SignInActivity extends BaseActivity {
             }
         });
         updateContactDialog.show();
+    }
+
+
+    private void checkContactNoExistAPI(final String contactNumber) {
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("ContactNo",contactNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.CheckContactNoExist);
+        String url = sttc_holdr.request_Url();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+                try {
+                    String result = jsonObject.getString("d");
+                    if (result.equalsIgnoreCase("username") || TextUtils.isEmpty(result)) {
+                        updateContactApi(contactNumber);
+                    } else{
+                       showAlertMessage(result);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh", "create account volley error :=" + volleyError);
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
     }
 
     private void updateContactApi(String contactnumber) {
