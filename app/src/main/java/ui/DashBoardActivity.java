@@ -290,6 +290,7 @@ public class DashBoardActivity extends BaseActivity {
                                 hmap.put("DateOfReport", "");
                             }
                             hmap.put("Image", json_obj.getString("Image"));
+                            hmap.put("PatientBussinessFlag", json_obj.optString("PatientBussinessFlag"));
                             hmap.put("Age", json_obj.getString("Age"));
                             hmap.put("RelationName", json_obj.getString("RelationName"));
                             hmap.put("HM", json_obj.getString("HM"));
