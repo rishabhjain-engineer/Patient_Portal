@@ -432,6 +432,10 @@
             android:name="ui.ProfileContainerActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="ui.CreditsActivity"
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name="ui.SignInActivity"

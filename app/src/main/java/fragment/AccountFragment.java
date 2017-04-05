@@ -66,6 +66,7 @@ import java.net.URL;
 import networkmngr.ConnectionDetector;
 import ui.AccountActivity;
 import ui.BaseActivity;
+import ui.CreditsActivity;
 import ui.ProfileContainerActivity;
 import ui.SignInActivity;
 import utils.AppConstant;
@@ -101,7 +102,7 @@ public class AccountFragment extends Fragment{
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"My Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Logout"};
+        String[] values = new String[]{"My Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);
@@ -137,11 +138,16 @@ public class AccountFragment extends Fragment{
                     Intent change = new Intent(mActivity, changepass.class);
                     change.putExtra("id", id);
                     startActivity(change);
-                } else if (position == 5) {
+                }  else if (position == 5) {
                     //Terms
                     Intent termsAndCondition = new Intent(mActivity, PrivacyPolicy.class);
                     startActivity(termsAndCondition);
                 } else if (position == 6) {
+                    //Credits
+                    Intent termsAndCondition = new Intent(mActivity, CreditsActivity.class);
+                    startActivity(termsAndCondition);
+                } else if (position == 7) {
+                    //logout
                     logout();
                 }
             }

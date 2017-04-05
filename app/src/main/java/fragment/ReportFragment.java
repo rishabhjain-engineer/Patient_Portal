@@ -130,6 +130,7 @@ public class ReportFragment extends Fragment {
     private RequestQueue queue;
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
+    boolean mIsComingFromMyFamilyClass;
 
     @Nullable
     @Override
@@ -194,13 +195,13 @@ public class ReportFragment extends Fragment {
 
 
         Bundle bundle = getArguments();
-        boolean isComingFromMyFamilyClass = bundle.getBoolean("fromFamilyClass", false);
+        mIsComingFromMyFamilyClass = bundle.getBoolean("fromFamilyClass", false);
 
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
 
-        if (isComingFromMyFamilyClass) {
+        if (mIsComingFromMyFamilyClass) {
             id = bundle.getString("id");
             Member_Name = bundle.getString("Member_Name");
             family = (ArrayList<HashMap<String, String>>) bundle.getSerializable("family");
@@ -755,8 +756,9 @@ public class ReportFragment extends Fragment {
             }
 
             //===========================getting order list=============================//
-
-            getOrderList();
+            if(!mIsComingFromMyFamilyClass){
+                getOrderList();
+            }
             if (progress != null && progress.isShowing()) {
                 progress.dismiss();
             }
