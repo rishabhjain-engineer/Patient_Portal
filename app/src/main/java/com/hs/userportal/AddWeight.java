@@ -520,6 +520,16 @@ public class AddWeight extends BaseActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
                         String height = obj.optString("height");
+
+                        if(!TextUtils.isEmpty(height)){
+                            try {
+                                double heightInDouble = Double.parseDouble(height);
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                height = df.format(heightInDouble);
+                            }catch (NumberFormatException ex){
+
+                            }
+                        }
                         mHeightList.add(height);
                     }
                 }
