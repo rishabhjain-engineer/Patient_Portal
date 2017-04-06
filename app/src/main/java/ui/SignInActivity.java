@@ -82,7 +82,7 @@ public class SignInActivity extends BaseActivity {
     private LinearLayout mSignInFbContainer;
     private Services mServices;
     private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mRoleName, mDisclaimerType, mMiddleName;
-    private int mPatientBussinessFlag;
+    private String mPatientBussinessFlag;
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
@@ -176,7 +176,7 @@ public class SignInActivity extends BaseActivity {
                                                 JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                                 mUserId = innerJsonObject.optString("UserId");
                                                 mPatientCode = innerJsonObject.optString("PatientCode");
-                                                mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
                                                 mRoleName = innerJsonObject.optString("RoleName");
                                                 mFirstName = innerJsonObject.optString("FirstName");
                                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -414,7 +414,7 @@ public class SignInActivity extends BaseActivity {
                         JSONObject innerJsonObject = tableArray.optJSONObject(0);
                         mUserId = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
-                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -931,9 +931,11 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
-        } else {
+        if(mPatientBussinessFlag.contains("|")){
+            String array[] = mPatientBussinessFlag.split("\\|");
+            String message = array[1];
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
+        }else{
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
