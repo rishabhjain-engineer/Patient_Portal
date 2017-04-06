@@ -938,7 +938,7 @@ public class SignUpActivity extends BaseActivity {
 
     JSONObject loginApiSendData, loginApiReceivedData;
      private boolean loginTerms;
-    private class NewLogInAsync extends AsyncTask<Void, Void, String> {
+    private class LogInUserFacebook extends AsyncTask<Void, Void, String> {
         private ProgressDialog progress;
         String buildNo;
         boolean isToTakeFromEditbox;
@@ -961,15 +961,14 @@ public class SignUpActivity extends BaseActivity {
             String dAsString = "";
             loginApiSendData = new JSONObject();
             try {
-                loginApiSendData.put("UserName", mUserName);
-                loginApiSendData.put("Password", mPassWord);
+                loginApiSendData.put("username", mUserName);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            loginApiReceivedData = mServices.NewLogInApi(loginApiSendData);
+            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
             if (loginApiReceivedData != null) {
                 dAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;
@@ -1045,7 +1044,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isToLogin) {
-                    new SignUpActivity.NewLogInAsync().execute();
+                    new SignUpActivity.LogInUserFacebook().execute();
                 }
                 dialog.dismiss();
             }
