@@ -65,7 +65,9 @@ public class ProfileContainerActivity extends BaseActivity {
         basicContainerLL.setOnClickListener(mClickListener);
         residenceContainer.setOnClickListener(mClickListener);
         workContainer.setOnClickListener(mClickListener);
-        new BackgroundProcess().execute();
+        if(isSessionExist()){
+            new BackgroundProcess().execute();
+        }
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {
@@ -73,22 +75,25 @@ public class ProfileContainerActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.basic_container) {
-                Intent intent = new Intent(ProfileContainerActivity.this, update.class);
-                intent.putExtra("pic", pic);
-                intent.putExtra("picname", picname);
-                intent.putExtra("fbLinked", fbLinked);
-                intent.putExtra("fbLinkedID", fbLinkedID);
-                startActivity(intent);
-
+                if(isSessionExist()){
+                    Intent intent = new Intent(ProfileContainerActivity.this, update.class);
+                    intent.putExtra("pic", pic);
+                    intent.putExtra("picname", picname);
+                    intent.putExtra("fbLinked", fbLinked);
+                    intent.putExtra("fbLinkedID", fbLinkedID);
+                    startActivity(intent);
+                }
             } else if (id == R.id.residence_container) {
-                Intent intent = new Intent(ProfileContainerActivity.this, residence.class);
-                intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+                if(isSessionExist()) {
+                    Intent intent = new Intent(ProfileContainerActivity.this, residence.class);
+                    intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
               /*  intent.putExtra("pass", pass);
                 intent.putExtra("pic", pic);
                 intent.putExtra("picname", picname);
                 intent.putExtra("fbLinked", fbLinked);
                 intent.putExtra("fbLinkedID", fbLinkedID);*/
-                startActivity(intent);
+                    startActivity(intent);
+                }
 
             } else if (id == R.id.work_container) {
                 Intent intent = new Intent(ProfileContainerActivity.this, Work.class);

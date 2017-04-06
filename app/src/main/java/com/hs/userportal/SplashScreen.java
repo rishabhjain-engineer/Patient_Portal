@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -32,10 +33,12 @@ import java.util.Locale;
 
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import ui.QuestionireActivity;
 import ui.SignInActivity;
+import utils.PreferenceHelper;
 
-public class SplashScreen extends Activity {
+public class SplashScreen extends BaseActivity {
 
 
     private static final String MyPREFERENCES = "MyPrefs";
@@ -66,14 +69,19 @@ public class SplashScreen extends Activity {
         if (!con.isConnectingToInternet()) {
             Toast.makeText(getApplicationContext(), "No internet connection.Please connect to internet.", Toast.LENGTH_LONG).show();
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
+            Intent intent = new Intent(this, DashBoardActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
 
-                ////////////////////////////////////////////////////////////////////////////////////
-                ////  Uncommment this section to introduce walk through pages  /////////////////////
-                ////////////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////
+                    ////  Uncommment this section to introduce walk through pages  /////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////
 
 
                 /*sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -93,12 +101,13 @@ public class SplashScreen extends Activity {
                     finish();
                 }*/
 
-                Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
-                startActivity(intentMain);
-                finish();
+                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                    startActivity(intentMain);
+                    finish();
 
 
-            }
-        },400);
+                }
+            },400);
+        }
     }
 }

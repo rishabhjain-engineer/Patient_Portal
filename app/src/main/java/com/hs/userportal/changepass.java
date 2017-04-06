@@ -127,7 +127,7 @@ public class changepass extends BaseActivity {
                 }
             }
         });
-
+     isSessionExist();
     }
 
     class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void> {

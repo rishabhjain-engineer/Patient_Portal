@@ -175,8 +175,8 @@ public class Help extends BaseActivity {
 			}
 		});
 
-
-	}
+     isSessionExist();
+	}//end of onCreate
 	
 	class SendMail extends AsyncTask<Void, Void, Void>
 	{

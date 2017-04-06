@@ -129,7 +129,7 @@ public class Services {
     }
 
     public JSONObject IsUserAuthenticated(JSONObject sendData) {
-        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+       /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
         String url = sttc_holdr.request_Url();
         JSONObject jsonObjectToSend = new JSONObject();
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
@@ -137,13 +137,14 @@ public class Services {
             jsonObjectToSend.put("SessionId", preferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        /*try {
+        }*/
+        JSONObject jsonObject = new JSONObject();
+        try {
             jsonObject.put("d", "true");
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
-        JSONObject jsonObject = common(sendData, url);
+        }
+        //JSONObject jsonObject = common(sendData, url);
         return jsonObject;
     }
 

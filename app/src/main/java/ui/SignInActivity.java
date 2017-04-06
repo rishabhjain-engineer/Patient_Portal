@@ -219,7 +219,6 @@ public class SignInActivity extends BaseActivity {
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
                                                     if(array .length >= 4){
                                                         mUserName = array[2];
-                                                        mPassWord = array[3];
                                                         facebookDecesionAlertDialog(messageString, true);
                                                     }else{
                                                         showAlertMessage("An error occured, please try again.");

@@ -67,7 +67,6 @@
         <activity
             android:name="com.hs.userportal.SplashScreen"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyAppTheme"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
