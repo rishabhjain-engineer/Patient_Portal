@@ -74,7 +74,7 @@ public class SignUpActivity extends BaseActivity {
     private Button mSignUpBtn, mSignUpContinueBtn;
     private boolean mShowUserNameUI = false, mUserNameAvailable = true, permitToNextSignUpPage = false, mSignUpThroughFacebook = false;
     private CallbackManager mCallbackManager;
-    private String mVersionNo, mTermsAndCondition, mPatientBussinessFlag;
+    private String mVersionNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
     private static int mYear, mMonth, mDay;
@@ -94,8 +94,6 @@ public class SignUpActivity extends BaseActivity {
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,16}$";
     private TextView mSignInTv;
     private String mUserName, mPassWord;
-
-
     public static String userID;
 
     @Override
@@ -357,6 +355,7 @@ public class SignUpActivity extends BaseActivity {
                                                 mUserID = innerJsonObject.optString("UserId");
                                                 mPatientCode = innerJsonObject.optString("PatientCode");
                                                 mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                                mSessionID = innerJsonObject.optString("SessionID");
                                                 mRoleName = innerJsonObject.optString("RoleName");
                                                 mFirstName = innerJsonObject.optString("FirstName");
                                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -578,6 +577,7 @@ public class SignUpActivity extends BaseActivity {
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
                         mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessDateTime");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
@@ -891,6 +891,7 @@ public class SignUpActivity extends BaseActivity {
                                 mUserID = innerJsonObject.optString("UserId");
                                 mPatientCode = innerJsonObject.optString("PatientCode");
                                 mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                mSessionID = innerJsonObject.optString("SessionID");
                                 mRoleName = innerJsonObject.optString("RoleName");
                                 mFirstName = innerJsonObject.optString("FirstName");
                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -980,6 +981,7 @@ public class SignUpActivity extends BaseActivity {
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
                         mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -1110,6 +1112,7 @@ public class SignUpActivity extends BaseActivity {
         }else{
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         if (mShowUserNameUI) {

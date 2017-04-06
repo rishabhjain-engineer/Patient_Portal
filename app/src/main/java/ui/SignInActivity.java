@@ -81,15 +81,13 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mRoleName, mDisclaimerType, mMiddleName;
-    private String mPatientBussinessFlag;
+    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mRoleName, mDisclaimerType, mMiddleName;
+    private String mDAsString, mUserName = "", mPassWord = "";
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
     private LoginButton fbLoginButton;
-    private String mDAsString;
-    String mUserName = "", mPassWord = "";
     private String mFbUserName;
 
     @Override
@@ -177,6 +175,7 @@ public class SignInActivity extends BaseActivity {
                                                 mUserId = innerJsonObject.optString("UserId");
                                                 mPatientCode = innerJsonObject.optString("PatientCode");
                                                 mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                                mSessionID = innerJsonObject.optString("SessionID");
                                                 mRoleName = innerJsonObject.optString("RoleName");
                                                 mFirstName = innerJsonObject.optString("FirstName");
                                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -415,6 +414,7 @@ public class SignInActivity extends BaseActivity {
                         mUserId = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
                         mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -938,6 +938,8 @@ public class SignInActivity extends BaseActivity {
         }else{
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());

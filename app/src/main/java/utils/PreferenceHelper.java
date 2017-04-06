@@ -48,6 +48,8 @@ public class PreferenceHelper {
 
         FACE_BOOK_ID("null"),
 
+        SESSION_ID("null"),
+
         TO_DATE("null");
 
         private String defaultValue;

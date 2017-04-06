@@ -320,7 +320,7 @@ public class DashBoardActivity extends BaseActivity {
         request.add(family);
     }
 
-    protected void showSubScriptionDialog(String message) {
+    private void showSubScriptionDialog(String message) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
@@ -371,4 +371,9 @@ public class DashBoardActivity extends BaseActivity {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    private boolean isSessionExist(){
+        return true;
+    }
+
 }

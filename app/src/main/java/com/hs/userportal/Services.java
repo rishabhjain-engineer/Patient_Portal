@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import config.StaticHolder;
+import utils.PreferenceHelper;
 
 public class Services {
     /* Variables declaration */
@@ -128,19 +129,22 @@ public class Services {
     }
 
     public JSONObject IsUserAuthenticated(JSONObject sendData) {
-
-		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/
-        //StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
-        //String url = sttc_holdr.request_Url();
-        JSONObject jsonObject = new JSONObject();
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonObjectToSend = new JSONObject();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         try {
-            jsonObject.put("d", "true");
+            jsonObjectToSend.put("SessionId", preferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //JSONObject abc = common(sendData, url);
+        /*try {
+            jsonObject.put("d", "true");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        JSONObject jsonObject = common(sendData, url);
         return jsonObject;
-
     }
 
     public JSONObject AgreeService(JSONObject sendData) {

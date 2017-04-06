@@ -295,8 +295,8 @@ public class StaticHolder {
             case CheckLabrangefrom_area:
                 url = BASE_URL + "CheckLabrangefrom_area";
                 break;
-            case IsUserAuthenticated:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/IsUserAuthenticated";
+            case AuthenticateUserSession:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/AuthenticateUserSession";
                 break;
             case agreeTermsCondition:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/agreeTermsCondition";
@@ -486,7 +486,7 @@ public class StaticHolder {
     }
 
     public enum Services_static {
-        LogIn,NewLogIn, IsUserAuthenticated, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
+        LogIn,NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
         LogOutIOS, ChangePasswordIOS, Register, GetUserDisclaimer, FacebookLinked, FacebookLoginMobile,
         FacebookUnLinked, GetUserDeatils, ForgotPassword, NeedHelp, CheckEmailIdIsExistMobile,
         PatientDisclaimer, EmailIdExistFacebook, GetUserCodeFromEmail, SignUpByPatient,
