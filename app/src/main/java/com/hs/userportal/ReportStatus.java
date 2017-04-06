@@ -1572,7 +1572,7 @@ public class ReportStatus extends BaseActivity {
             finish();
         }
     }
-    
+
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             boolean noConnectivity = intent.getBooleanExtra(
