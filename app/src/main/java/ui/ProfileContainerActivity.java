@@ -96,14 +96,16 @@ public class ProfileContainerActivity extends BaseActivity {
                 }
 
             } else if (id == R.id.work_container) {
-                Intent intent = new Intent(ProfileContainerActivity.this, Work.class);
-                intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+                if(isSessionExist()) {
+                    Intent intent = new Intent(ProfileContainerActivity.this, Work.class);
+                    intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
                /* intent.putExtra("pass", pass);
                 intent.putExtra("pic", pic);
                 intent.putExtra("picname", picname);
                 intent.putExtra("fbLinked", fbLinked);
                 intent.putExtra("fbLinkedID", fbLinkedID);*/
-                startActivity(intent);
+                    startActivity(intent);
+                }
 
             }
         }

@@ -114,31 +114,34 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, Weight.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forWeight", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forWeight", true);
+                    startActivity(in);
+                }
             }
         });
         heightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Intent in = new Intent(MyHealth.this, Height.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forHeight", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forHeight", true);
+                    startActivity(in);
+                }
             }
         });
         allergyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Allergy.class);
-                in.putExtra("id", id);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, Allergy.class);
+                    in.putExtra("id", id);
+                    startActivity(in);
+                }
             }
         });
 
@@ -146,11 +149,12 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BmiActivity.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forBmi", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forBmi", true);
+                    startActivity(in);
+                }
             }
         });
 
@@ -159,20 +163,23 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BpActivity.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forBp", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forBp", true);
+                    startActivity(in);
+                }
             }
         });
 
         mVaccineContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyHealth.this, VaccineActivity.class);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                startActivity(intent);
+                if(isSessionExist()) {
+                    Intent intent = new Intent(MyHealth.this, VaccineActivity.class);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    startActivity(intent);
+                }
             }
         });
 

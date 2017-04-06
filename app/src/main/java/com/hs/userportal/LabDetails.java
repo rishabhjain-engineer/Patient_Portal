@@ -59,8 +59,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class LabDetails extends ActionBarActivity {
+public class LabDetails extends BaseActivity {
 
     private String id, caseid;
     private byte[] result = null;
@@ -153,7 +154,9 @@ public class LabDetails extends ActionBarActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(LabDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         }else {
-            new Authentication().execute();
+            if(isSessionExist()){
+                new BackgroundProcess().execute();
+            }
         }
         lvcode.setOnItemClickListener(new OnItemClickListener() {
 
@@ -596,90 +599,6 @@ public class LabDetails extends ActionBarActivity {
                             }
                         });
                 e.printStackTrace();
-            }
-
-        }
-    }
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(LabDetails.this);
-            progress.setCancelable(false);
-            progress.setMessage("Loading...");
-            progress.setIndeterminate(true);
-            LabDetails.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-                if(progress !=null) {
-                    progress.dismiss();
-                    progress =null;
-                }
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(
-                            LabDetails.this).create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-
-                                    SharedPreferences sharedpreferences = getSharedPreferences(
-                                            "MyPrefs", MODE_PRIVATE);
-                                    Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    finish();
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left);
-
-                                }
-                            });
-                    dialog.show();
-
-                } else {
-                    new BackgroundProcess().execute();
-
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
             }
 
         }

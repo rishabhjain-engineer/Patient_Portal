@@ -255,7 +255,7 @@ public class ReportFragment extends Fragment {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new ReportFragment.Authentication().execute();
+            new ReportFragment.BackgroundProcess().execute();
         }
         past_visits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -478,77 +478,6 @@ public class ReportFragment extends Fragment {
         super.onResume();
         if (Helper.authentication_flag == true) {
             mActivity.finish();
-        }
-    }
-
-    private class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(mActivity);
-            progress.setCancelable(false);
-            progress.setMessage("Loading...");
-            progress.setIndeterminate(true);
-            progress.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-                progress.dismiss();
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-
-                                    SharedPreferences sharedpreferences = mActivity.getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    Helper.authentication_flag = true;
-                                    mActivity.finish();
-                                }
-                            });
-                    dialog.show();
-
-                } else {
-                    new ReportFragment.BackgroundProcess().execute();
-
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
         }
     }
 
