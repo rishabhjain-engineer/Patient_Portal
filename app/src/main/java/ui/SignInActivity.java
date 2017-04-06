@@ -217,7 +217,7 @@ public class SignInActivity extends BaseActivity {
                                                 } else if (decesionString.equalsIgnoreCase("4")) {
                                                     facebookDecesionAlertDialog(messageString, false);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    if(array .length >= 4){
+                                                    if(array .length >= 3){
                                                         mUserName = array[2];
                                                         facebookDecesionAlertDialog(messageString, true);
                                                     }else{
@@ -957,7 +957,7 @@ public class SignInActivity extends BaseActivity {
         finish();
     }
 
-    private void facebookDecesionAlertDialog(String message, final boolean isToLogin) {
+    private void facebookDecesionAlertDialog(String message, final boolean logInUserFacebook) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
@@ -975,8 +975,8 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                if (isToLogin) {
-                    new NewLogInAsync(false).execute();
+                if (logInUserFacebook) {
+                    new LogInUserFacebook().execute();
                 } else {
                     goToSignUpPage();
                 }
@@ -1043,5 +1043,92 @@ public class SignInActivity extends BaseActivity {
             finish();
         }
 
+    }
+
+    private class LogInUserFacebook extends AsyncTask<Void, Void, String> {
+        private ProgressDialog progress;
+        String buildNo;
+        boolean isToTakeFromEditbox;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isToShowSignInErrorMessage = false;
+            buildNo = Build.VERSION.RELEASE;
+            progress = new ProgressDialog(SignInActivity.this);
+            progress.setCancelable(false);
+            progress.setTitle("Logging in...");
+            progress.setMessage("Please wait...");
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String dAsString = "";
+            loginApiSendData = new JSONObject();
+            try {
+                loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("applicationType", "Mobile");
+                loginApiSendData.put("browserType", buildNo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
+            if (loginApiReceivedData != null) {
+                dAsString = loginApiReceivedData.optString("d");
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(dAsString);
+                    JSONArray tableArray = jsonObject.optJSONArray("Table");
+                    if (tableArray != null) {
+                        JSONObject innerJsonObject = tableArray.optJSONObject(0);
+                        mUserId = innerJsonObject.optString("UserId");
+                        mPatientCode = innerJsonObject.optString("PatientCode");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
+                        mRoleName = innerJsonObject.optString("RoleName");
+                        mFirstName = innerJsonObject.optString("FirstName");
+                        mMiddleName = innerJsonObject.optString("MiddleName");
+                        mVersionNumber = innerJsonObject.optString("versionNo");
+                        mLastName = innerJsonObject.optString("LastName");
+                        mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                        mContactNo = innerJsonObject.optString("ContactNo");
+                        mTerms = innerJsonObject.optBoolean("Terms");
+                    } else {
+                        isToShowSignInErrorMessage = true;
+                    }
+                } catch (JSONException e) {
+                    isToShowSignInErrorMessage = true;
+                    e.printStackTrace();
+                }
+            }
+            return dAsString;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progress.dismiss();
+
+            if (loginApiReceivedData == null) {
+                showAlertMessage("An error occured, please try again.");
+            } else {
+                if (isToShowSignInErrorMessage) {
+                    showAlertMessage(result);
+                } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                    goToDashBoardPage();
+                } else {
+                    if (TextUtils.isEmpty(mContactNo)) {
+                        updateContactAlert();
+                    }
+                    if (mTerms) {
+                        sendrequestForDesclaimer();
+                    }
+                }
+            }
+
+        }
     }
 }
