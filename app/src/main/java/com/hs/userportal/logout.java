@@ -73,6 +73,7 @@ import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import ui.GraphHandlerActivity;
+import ui.GraphHandlerWebViewActivity;
 import ui.ProfileContainerActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
@@ -159,6 +160,7 @@ public class logout extends Activity implements View.OnClickListener {
         mAccessTokenTracker.startTracking();
         mprofileTracker.startTracking();
         setContentView(R.layout.dashboard);
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ID);
         mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
         inializeobj();
         new GetUserGradeAsync().execute();
@@ -2153,10 +2155,11 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             progress.dismiss();
             if (isToLoadData) {
-                Intent intent = new Intent(logout.this, GraphHandlerActivity.class);
+                Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                intent.putExtra("path", mPathOfGlobalIndex + id);
                 startActivityForResult(intent, 2);
             }else{
-                
+
             }
         }
 
