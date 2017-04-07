@@ -416,7 +416,7 @@ public class logout extends Activity implements View.OnClickListener {
 
 
             // getId() returns this view's identifier.
-            if (v.getId() == R.id.update_profile) {
+          /*  if (v.getId() == R.id.update_profile) {
                 // setText() sets the string value of the TextView
                 Intent intent = new Intent(getApplicationContext(), ProfileContainerActivity.class);
                 intent.putExtra("id", id);
@@ -427,7 +427,7 @@ public class logout extends Activity implements View.OnClickListener {
                 intent.putExtra("fbLinkedID", fbLinkedID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            } else if (v.getId() == R.id.lab_records) {
+            } else*/ if (v.getId() == R.id.lab_records) {
                 if (subArrayList != null) {
                     if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
@@ -1261,6 +1261,17 @@ public class logout extends Activity implements View.OnClickListener {
                 startActivity(intentTour);
 
                 return true;*/
+
+            case R.id.my_profile:
+                Intent intentProfile = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                intentProfile.putExtra("id", id);
+                intentProfile.putExtra("pass", passw);
+                intentProfile.putExtra("pic", pic);
+                intentProfile.putExtra("picname", picname);
+                intentProfile.putExtra("fbLinked", fbLinked);
+                intentProfile.putExtra("fbLinkedID", fbLinkedID);
+                startActivity(intentProfile);
+                return true;
 
             case R.id.action_contact:
                 Intent intentContact = new Intent(getApplicationContext(), Help.class);
