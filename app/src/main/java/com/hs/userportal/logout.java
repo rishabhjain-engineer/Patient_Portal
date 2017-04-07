@@ -93,7 +93,7 @@ public class logout extends Activity implements View.OnClickListener {
     private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health, mInitialTextViewContainer , mScoreTextViewContainer;
     private LinearLayout linearLayout2, menu, mHomepageQuizContaner;
     private ImageButton editimg, menuimgbtn;
-    private ImageView user_pic;
+    private ImageView user_pic, mHomePageVitalsImageView;
     private TextView marq, username, noti_count, patient_id;
     private ProgressBar imageProgress;
     private String PH;
@@ -102,7 +102,7 @@ public class logout extends Activity implements View.OnClickListener {
     private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private final int PIC_CROP = 3;
-    private TextView emv, smsv, fbName, members;
+    private TextView emv, smsv, fbName, members, mScoreUpperTextView , mScoreLowerTextView;
     private Bitmap output = null;
     private static int noti = 0;
     private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
@@ -200,6 +200,9 @@ public class logout extends Activity implements View.OnClickListener {
         mHomepageQuizContaner = (LinearLayout) findViewById(R.id.quiz_container);
         mInitialTextViewContainer = (RelativeLayout) findViewById(R.id.initial_textview_container);
         mScoreTextViewContainer = (RelativeLayout) findViewById(R.id.score_textview_container);
+        mHomePageVitalsImageView = (ImageView) findViewById(R.id.image_health);
+        mScoreUpperTextView = (TextView) findViewById(R.id.uppertv);
+        mScoreLowerTextView = (TextView) findViewById(R.id.middletv);
 
         menuimgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2089,6 +2092,7 @@ public class logout extends Activity implements View.OnClickListener {
     }
 
     private String height, weight, bgroup, mBp;
+    private boolean isShowRedVitalsImage ;
 
     private class MyHealthAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
@@ -2107,6 +2111,9 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
+            if(isShowRedVitalsImage){
+                mHomePageVitalsImageView.setImageResource(R.drawable.homepage_vital_red);
+            }
         }
 
         @Override
@@ -2126,9 +2133,7 @@ public class logout extends Activity implements View.OnClickListener {
                     mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
                     if (!TextUtils.isEmpty(alergyString) || !TextUtils.isEmpty(bgroup) || !TextUtils.isEmpty(height) || !TextUtils.isEmpty(weight) || !TextUtils.isEmpty(mBp)) {
-                        //set background
-                    } else {
-                        //set background
+                        isShowRedVitalsImage = true ;
                     }
                 }
             } catch (JSONException e) {

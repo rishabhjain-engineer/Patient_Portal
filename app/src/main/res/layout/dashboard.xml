@@ -11,25 +11,29 @@
         android:layout_alignParentTop="true"
         android:background="@color/white">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/scion_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="Scion"
             android:textColor="@color/home_title_scion"
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/sciontra_text"
+            android:id="@+id/tra_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@+id/scion_text"
-            android:text="tra"
+            android:text="Tra"
             android:textColor="@color/home_title_tra"
             android:textSize="30sp" />
+    </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/menu"
