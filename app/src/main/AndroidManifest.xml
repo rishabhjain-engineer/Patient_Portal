@@ -62,7 +62,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
         <activity
             android:name="com.hs.userportal.SplashScreen"
@@ -115,8 +115,7 @@
         <activity
             android:name="com.hs.userportal.update"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <!-- <activity
              android:name=".ViewOrderFiles"
@@ -450,6 +449,10 @@
 
         <activity
             android:name="ui.ProfileContainerActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.GraphHandlerActivity"
             android:screenOrientation="portrait" />
 
 

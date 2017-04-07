@@ -72,6 +72,7 @@ import java.util.List;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
+import ui.GraphHandlerActivity;
 import ui.ProfileContainerActivity;
 import ui.QuestionireActivity;
 import utils.AppConstant;
@@ -159,6 +160,7 @@ public class logout extends Activity implements View.OnClickListener {
         setContentView(R.layout.dashboard);
         mImageLoader = MyVolleySingleton.getInstance(logout.this).getImageLoader();
         inializeobj();
+        new GetUserGradeAsync().execute();
     }
 
     public void inializeobj() {
@@ -1572,7 +1574,6 @@ public class logout extends Activity implements View.OnClickListener {
         // TODO Auto-generated method stub
         super.onResume();
         new MyHealthAsync().execute();
-        new GetUserGradeAsync().execute();
         id = privatery_id;
         findFamily();
         if (Helper.authentication_flag == true) {
@@ -2153,6 +2154,8 @@ public class logout extends Activity implements View.OnClickListener {
         }
     }
 
+    private boolean isToLoadData;
+
     private class GetUserGradeAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
@@ -2164,25 +2167,34 @@ public class logout extends Activity implements View.OnClickListener {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
+            isToLoadData = false;
             progress.show();
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
+            if (isToLoadData) {
+                Intent intent = new Intent(logout.this, GraphHandlerActivity.class);
+                startActivityForResult(intent, 2);
+            }
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             JSONObject sendData1 = new JSONObject();
             try {
-                sendData1.put("UserId", id);
+                sendData1.put("PatientId", id);
                 receiveData1 = service.getUserGrade(sendData1);
-                String data = receiveData1.getString("d");
+                String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
-                JSONArray jsonArray = cut.getJSONArray("Table");
-                for (int i = 0; i < jsonArray.length(); i++) {
-
+                JSONArray jsonArray = cut.optJSONArray("Table");
+                if (jsonArray != null) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(0);
+                    String path = jsonObject.optString("Path");
+                    if (!TextUtils.isEmpty(path) && path.contains("globalhealthindex")) {
+                        isToLoadData = true;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
