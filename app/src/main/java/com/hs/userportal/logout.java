@@ -90,7 +90,7 @@ import com.facebook.model.GraphUser;*/
  */
 public class logout extends Activity implements View.OnClickListener {
 
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health, mInitialTextViewContainer , mScoreTextViewContainer;
+    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health, mInitialTextViewContainer, mScoreTextViewContainer;
     private LinearLayout linearLayout2, menu, mHomepageQuizContaner;
     private ImageButton editimg, menuimgbtn;
     private ImageView user_pic, mHomePageVitalsImageView;
@@ -102,7 +102,7 @@ public class logout extends Activity implements View.OnClickListener {
     private String user, passw, name, img, path, fbLinked = "false", fbLinkedID, authentication = "";
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private final int PIC_CROP = 3;
-    private TextView emv, smsv, fbName, members, mScoreUpperTextView , mScoreLowerTextView;
+    private TextView emv, smsv, fbName, members, mScoreUpperTextView, mScoreLowerTextView;
     private Bitmap output = null;
     private static int noti = 0;
     private JSONObject sendData, receiveData, sendDataFb, receiveDataFb, receiveFbImageSave, receiveDataFbLink, receiveDataUnLink, receiveDataList, receiveDataList2;
@@ -203,6 +203,15 @@ public class logout extends Activity implements View.OnClickListener {
         mHomePageVitalsImageView = (ImageView) findViewById(R.id.image_health);
         mScoreUpperTextView = (TextView) findViewById(R.id.uppertv);
         mScoreLowerTextView = (TextView) findViewById(R.id.middletv);
+
+        mInitialTextViewContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                intent.putExtra("path", mPathOfGlobalIndex + id);
+                startActivityForResult(intent, 2);
+            }
+        });
 
         menuimgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1702,7 +1711,7 @@ public class logout extends Activity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_OK && requestCode == 2) {
-
+            new GetUserGradeAsync().execute();
         }
     }
 
@@ -2092,7 +2101,7 @@ public class logout extends Activity implements View.OnClickListener {
     }
 
     private String height, weight, bgroup, mBp;
-    private boolean isShowRedVitalsImage ;
+    private boolean isShowRedVitalsImage;
 
     private class MyHealthAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
@@ -2111,7 +2120,7 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
-            if(isShowRedVitalsImage){
+            if (isShowRedVitalsImage) {
                 mHomePageVitalsImageView.setImageResource(R.drawable.homepage_vital_red);
             }
         }
@@ -2133,7 +2142,7 @@ public class logout extends Activity implements View.OnClickListener {
                     mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
                     if (!TextUtils.isEmpty(alergyString) || !TextUtils.isEmpty(bgroup) || !TextUtils.isEmpty(height) || !TextUtils.isEmpty(weight) || !TextUtils.isEmpty(mBp)) {
-                        isShowRedVitalsImage = true ;
+                        isShowRedVitalsImage = true;
                     }
                 }
             } catch (JSONException e) {
@@ -2165,11 +2174,16 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             progress.dismiss();
             if (isToLoadData) {
-                Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
                 intent.putExtra("path", mPathOfGlobalIndex + id);
-                startActivityForResult(intent, 2);
-            }else{
-
+                startActivityForResult(intent, 2);*/
+                mInitialTextViewContainer.setVisibility(View.VISIBLE);
+                mScoreTextViewContainer.setVisibility(View.GONE);
+            } else {
+                mInitialTextViewContainer.setVisibility(View.GONE);
+                mScoreTextViewContainer.setVisibility(View.VISIBLE);
+                mScoreUpperTextView.setText(mScore);
+                mScoreLowerTextView.setText(mFact);
             }
         }
 
@@ -2178,6 +2192,7 @@ public class logout extends Activity implements View.OnClickListener {
             JSONObject sendData1 = new JSONObject();
             try {
                 sendData1.put("PatientId", id);
+               // sendData1.put("PatientId", "442454B7-7CEA-48B7-8472-DBE7D7DC0D93");
                 receiveData1 = service.getUserGrade(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
