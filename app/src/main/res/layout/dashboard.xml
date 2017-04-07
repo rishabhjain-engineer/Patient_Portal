@@ -341,11 +341,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="10dp"
                             android:padding="10dp"
                             android:textAllCaps="true"
                             android:textColor="@color/white"
-                            android:textSize="24sp"
+                            android:textSize="21sp"
                             android:textStyle="bold"/>
 
 
@@ -355,7 +355,7 @@
                             android:layout_below="@+id/uppertv"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:padding="10dp"
+                            android:padding="2dp"
                             android:gravity="center"
                             android:layout_marginTop="2dp"
                             android:textColor="@color/white"
@@ -435,6 +435,7 @@
                             android:layout_width="@dimen/home_content_view_image_width"
                             android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
+                            android:background="@drawable/homepage_vital_green"
                             android:clickable="false" />
 
                         <TextView
