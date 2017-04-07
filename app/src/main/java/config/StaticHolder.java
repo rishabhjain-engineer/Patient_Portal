@@ -12,11 +12,11 @@ import java.util.HashMap;
 
 public class StaticHolder {
 
-    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
-    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-     public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
