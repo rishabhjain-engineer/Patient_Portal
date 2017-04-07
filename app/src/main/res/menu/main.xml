@@ -21,6 +21,13 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Take Tour"/>-->
+
+    <item
+        android:id="@+id/my_profile"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="My Profile"/>
+
     <item
         android:id="@+id/action_help"
         android:orderInCategory="100"
