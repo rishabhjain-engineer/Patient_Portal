@@ -5,6 +5,8 @@ import com.hs.userportal.Filevault;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import fragment.RepositoryFragment;
+
 /**
  * Created by ashish on 2/15/2016.
  */
@@ -17,7 +19,7 @@ public class NavFolder {
     public NavFolder(String folder_name, String hash_key) {
         this.folder_name = folder_name;
         this.hash_key = hash_key;
-        navlist = Filevault.originalVaultlist;
+        navlist = RepositoryFragment.originalVaultlist;
 
     }
 

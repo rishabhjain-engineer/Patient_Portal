@@ -1,6 +1,9 @@
 package ui;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,13 +20,24 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.hs.userportal.Helper;
 import com.hs.userportal.R;
 import com.hs.userportal.changepass;
 import com.hs.userportal.update;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import config.StaticHolder;
 import utils.PreferenceHelper;
 
 /**
@@ -37,11 +51,13 @@ public class BaseActivity extends AppCompatActivity {
     protected static final String PREFERENCE_FILE_NAME = "patient_pref_file";
     protected SharedPreferences mAddGraphDetailSharedPreferences = null;
     protected SharedPreferences.Editor mEditor =null ;
+    private RequestQueue mRequestQueue;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRequestQueue = Volley.newRequestQueue(this);
         mPreferenceHelper = PreferenceHelper.getInstance();
         mAddGraphDetailSharedPreferences = getSharedPreferences(PREFERENCE_FILE_NAME,0);
     }
@@ -86,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void showAlertMessage(String message) {
+    public void showAlertMessage(String message) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
@@ -137,6 +153,65 @@ public class BaseActivity extends AppCompatActivity {
         else
             return false;
 
+    }
+
+    boolean result;
+
+    public boolean isSessionExist() {
+      /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonObjectToSend = new JSONObject();
+        try {
+            jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObjectToSend, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                String d = jsonObject.optString("d");
+                if (d.contains("true")) {
+                    result = true;
+                } else {
+                    showSessionExpiredDialog();
+                    result = false;
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                showSessionExpiredDialog();
+                result = false;
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
+        return result;*/
+        return true;
+    }
+
+    private void showSessionExpiredDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setTitle("Session timed out!");
+        dialog.setMessage("Session expired. Please login again.");
+        dialog.setCancelable(false);
+        dialog.setButton("OK",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
+                        SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.clear();
+                        editor.commit();
+                        dialog.dismiss();
+                        Helper.authentication_flag = true;
+                        Intent intent = new Intent(BaseActivity.this, SignInActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+        dialog.show();
     }
 
 }

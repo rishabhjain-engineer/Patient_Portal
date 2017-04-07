@@ -197,7 +197,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             }
 
         });
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if(isSessionExist()){
+            new HealthCommonActivity.BackgroundProcess().execute();
+        }
     }
 
     @Override

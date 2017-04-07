@@ -16,10 +16,10 @@ public class StaticHolder {
     public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
     //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
-   //  public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
-    // public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
+    //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
+    //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
 
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
@@ -295,8 +295,8 @@ public class StaticHolder {
             case CheckLabrangefrom_area:
                 url = BASE_URL + "CheckLabrangefrom_area";
                 break;
-            case IsUserAuthenticated:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/IsUserAuthenticated";
+            case AuthenticateUserSession:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/AuthenticateUserSession";
                 break;
             case agreeTermsCondition:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/agreeTermsCondition";
@@ -437,7 +437,7 @@ public class StaticHolder {
                 break;
 
             case InsertIntoPatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails";
+                url = BASE_URL + "InsertIntoPatientVaccineDetails";
                 break;
 
             case GetLatestVersionInfo:
@@ -453,6 +453,9 @@ public class StaticHolder {
 
             case NewSignUpByPatientFacebook :
                 url = BASE_URL + "NewSignUpByPatientFacebook";
+
+            case LogInUser_facebook :
+                url = BASE_URL + "LogInUser_facebook";
                 break;
 
 
@@ -486,7 +489,7 @@ public class StaticHolder {
     }
 
     public enum Services_static {
-        LogIn,NewLogIn, IsUserAuthenticated, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
+        LogIn,NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
         LogOutIOS, ChangePasswordIOS, Register, GetUserDisclaimer, FacebookLinked, FacebookLoginMobile,
         FacebookUnLinked, GetUserDeatils, ForgotPassword, NeedHelp, CheckEmailIdIsExistMobile,
         PatientDisclaimer, EmailIdExistFacebook, GetUserCodeFromEmail, SignUpByPatient,
@@ -510,7 +513,7 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient, NewSignUpByPatientFacebook
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient, LogInUser_facebook, NewSignUpByPatientFacebook
     }
 
 }

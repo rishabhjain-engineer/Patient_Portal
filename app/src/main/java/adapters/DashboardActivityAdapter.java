@@ -24,18 +24,18 @@ public class DashboardActivityAdapter extends BaseAdapter {
     private List<String> mList = new ArrayList<>();
     private List<Integer> mImageList = new ArrayList<>();
 
-    public DashboardActivityAdapter(DashBoardActivity dashBoardActivity) {
+    public DashboardActivityAdapter(Activity dashBoardActivity) {
         mActivity = dashBoardActivity;
 
-        mList.add("Vital 1");
-        mList.add("Vital 2");
+        mList.add("Health Card");
+        mList.add("Vitals");
         mList.add("Discounts");
-        mList.add("Coach");
+        mList.add("Health Coach");
         mList.add("Alerts");
         mList.add("");
 
-        mImageList.add(R.drawable.vital1_144);
-        mImageList.add(R.drawable.vital2_144);
+        mImageList.add(R.drawable.health_card);
+        mImageList.add(R.drawable.vitals);
         mImageList.add(R.drawable.discounts_144);
         mImageList.add(R.drawable.coach_144);
         mImageList.add(R.drawable.alerts_144);

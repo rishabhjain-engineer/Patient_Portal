@@ -212,8 +212,10 @@ public class ReportStatus extends BaseActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(ReportStatus.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-
-            new Authentication().execute();
+            if(isSessionExist()){
+                mTask = new graphprocess();
+                mTask.execute();
+            }
         }
         bgraph.setOnClickListener(new OnClickListener() {
 
@@ -1570,84 +1572,6 @@ public class ReportStatus extends BaseActivity {
             finish();
         }
     }
-
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(ReportStatus.this)
-                            .create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-
-                                    SharedPreferences sharedpreferences = getSharedPreferences(
-                                            "MyPrefs", MODE_PRIVATE);
-                                    Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    Helper.authentication_flag = true;
-                                    finish();
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left);
-
-                                }
-                            });
-                    dialog.show();
-
-                } else {
-
-                    mTask = new graphprocess();
-                    mTask.execute();
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
-        }
-    }
-
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {

@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import config.StaticHolder;
+import utils.PreferenceHelper;
 
 public class Services {
     /* Variables declaration */
@@ -128,19 +129,23 @@ public class Services {
     }
 
     public JSONObject IsUserAuthenticated(JSONObject sendData) {
-
-		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/
-        //StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
-        //String url = sttc_holdr.request_Url();
+       /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonObjectToSend = new JSONObject();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+        try {
+            jsonObjectToSend.put("SessionId", preferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("d", "true");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //JSONObject abc = common(sendData, url);
+        //JSONObject jsonObject = common(sendData, url);
         return jsonObject;
-
     }
 
     public JSONObject AgreeService(JSONObject sendData) {
@@ -1265,8 +1270,8 @@ public class Services {
 
     }
 
-    public JSONObject NewSignUpByPatientFacebook(JSONObject sendData) {
-        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.NewSignUpByPatientFacebook);
+    public JSONObject LogInUser_facebook(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebook);
         String url = staticHolder.request_Url();
         JSONObject jsonObjectResponse = LogIn(sendData, url);
         return jsonObjectResponse;

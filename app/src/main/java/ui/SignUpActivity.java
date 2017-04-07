@@ -74,10 +74,10 @@ public class SignUpActivity extends BaseActivity {
     private Button mSignUpBtn, mSignUpContinueBtn;
     private boolean mShowUserNameUI = false, mUserNameAvailable = true, permitToNextSignUpPage = false, mSignUpThroughFacebook = false;
     private CallbackManager mCallbackManager;
-    private String mVersionNo, mTermsAndCondition;
+    private String mVersionNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID;
     private EditText mSignUpNameEt, mSignUpContactNoEt, mSignUpPasswordEt, mSignUpUserNameEt;
     private static EditText mSignUpDateOfBirth;
-    private static int mYear, mMonth, mDay, mPatientBussinessFlag;
+    private static int mYear, mMonth, mDay;
     private JSONObject mSendData;
     private JsonObjectRequest mJsonObjectRequest;
     private LinearLayout mSignUpFbContainer, mSignUpSecondPageContainer, mSignUpFirstPageContainer, mSignUpDateOfBirthContainer;
@@ -94,8 +94,6 @@ public class SignUpActivity extends BaseActivity {
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!$%@#£€*?&]{8,16}$";
     private TextView mSignInTv;
     private String mUserName, mPassWord;
-
-
     public static String userID;
 
     @Override
@@ -356,7 +354,8 @@ public class SignUpActivity extends BaseActivity {
                                                 JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                                 mUserID = innerJsonObject.optString("UserId");
                                                 mPatientCode = innerJsonObject.optString("PatientCode");
-                                                mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                                mSessionID = innerJsonObject.optString("SessionID");
                                                 mRoleName = innerJsonObject.optString("RoleName");
                                                 mFirstName = innerJsonObject.optString("FirstName");
                                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -399,9 +398,8 @@ public class SignUpActivity extends BaseActivity {
                                                     // NewSignUpByPatientFacebook api call
                                                     newSignUpByPatientFacebookApiCall(jsonObjectForNewSignUpByPatientFacebook);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    if(array .length >= 4){
+                                                    if(array .length >= 3){
                                                         mUserName = array[2];
-                                                        mPassWord = array[3];
                                                         facebookDecesionAlertDialog(messageString, true);
                                                     }else{
                                                         showAlertMessage("An error occured, please try again.");
@@ -577,7 +575,8 @@ public class SignUpActivity extends BaseActivity {
                         JSONObject innerJsonObject = jsonArray.optJSONObject(0);
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
-                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mPatientBussinessDateTime = innerJsonObject.optString("PatientBussinessDateTime");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
@@ -651,26 +650,6 @@ public class SignUpActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
-        } else {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
-        }
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserID);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
-        if (mShowUserNameUI) {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
-        } else {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpContactNoEt.getEditableText().toString());
-        }
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
-        Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -910,7 +889,8 @@ public class SignUpActivity extends BaseActivity {
                                 JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                 mUserID = innerJsonObject.optString("UserId");
                                 mPatientCode = innerJsonObject.optString("PatientCode");
-                                mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                mSessionID = innerJsonObject.optString("SessionID");
                                 mRoleName = innerJsonObject.optString("RoleName");
                                 mFirstName = innerJsonObject.optString("FirstName");
                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -957,7 +937,7 @@ public class SignUpActivity extends BaseActivity {
 
     JSONObject loginApiSendData, loginApiReceivedData;
      private boolean loginTerms;
-    private class NewLogInAsync extends AsyncTask<Void, Void, String> {
+    private class LogInUserFacebook extends AsyncTask<Void, Void, String> {
         private ProgressDialog progress;
         String buildNo;
         boolean isToTakeFromEditbox;
@@ -980,15 +960,14 @@ public class SignUpActivity extends BaseActivity {
             String dAsString = "";
             loginApiSendData = new JSONObject();
             try {
-                loginApiSendData.put("UserName", mUserName);
-                loginApiSendData.put("Password", mPassWord);
+                loginApiSendData.put("username", mUserName);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            loginApiReceivedData = mServices.NewLogInApi(loginApiSendData);
+            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
             if (loginApiReceivedData != null) {
                 dAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;
@@ -999,7 +978,8 @@ public class SignUpActivity extends BaseActivity {
                         JSONObject innerJsonObject = tableArray.optJSONObject(0);
                         mUserID = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
-                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -1063,7 +1043,7 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isToLogin) {
-                    new SignUpActivity.NewLogInAsync().execute();
+                    new SignUpActivity.LogInUserFacebook().execute();
                 }
                 dialog.dismiss();
             }
@@ -1078,6 +1058,7 @@ public class SignUpActivity extends BaseActivity {
 
         dialog.show();
     }
+
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         private JSONObject logoutReceivedJsonObject;
@@ -1119,6 +1100,29 @@ public class SignUpActivity extends BaseActivity {
             finish();
         }
 
+    }
+
+    private void goToDashBoardPage() {
+        if(!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")){
+            String array[] = mPatientBussinessFlag.split("\\|");
+            String message = array[1];
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
+        }else{
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+        }
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
+        if (mShowUserNameUI) {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpUserNameEt.getEditableText().toString());
+        } else {
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSignUpContactNoEt.getEditableText().toString());
+        }
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
+        Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

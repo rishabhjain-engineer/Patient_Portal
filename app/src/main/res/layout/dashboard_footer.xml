@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/footer_dashboard_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/dashboard_inactive" />
 
         <TextView
@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
+            android:textSize="@dimen/footer_text_size"
             android:text="Dashboard"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
@@ -46,8 +47,8 @@
 
         <ImageView
             android:id="@+id/footer_reports_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/reports_inactive" />
 
         <TextView
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Reports"
+            android:textSize="@dimen/footer_text_size"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
 
@@ -71,8 +73,8 @@
 
         <ImageView
             android:id="@+id/footer_repository_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/repository_inactive" />
 
         <TextView
@@ -81,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Repository"
+            android:textSize="@dimen/footer_text_size"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
 
@@ -96,8 +99,8 @@
 
         <ImageView
             android:id="@+id/footer_family_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/family_inactive" />
 
         <TextView
@@ -106,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Family"
+            android:textSize="@dimen/footer_text_size"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
 
@@ -121,8 +125,8 @@
 
         <ImageView
             android:id="@+id/footer_account_imageview"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
             android:src="@drawable/account_inactive" />
 
         <TextView
@@ -131,6 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Account"
+            android:textSize="@dimen/footer_text_size"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
 
