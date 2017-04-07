@@ -710,11 +710,11 @@ public class logout extends Activity implements View.OnClickListener {
                 fbSubArray = slice.getJSONArray("Table");
                 if (fbSubArray.getJSONObject(0).getString("FacebookId").equals("")
                         || fbSubArray.getJSONObject(0).getString("FacebookId").equals("null")) {
-                    facebooklink.setVisibility(View.VISIBLE); //TODO commented by spartans  ; to show fb link change visibility ;
+                    facebooklink.setVisibility(View.GONE); //TODO commented by spartans  ; to show fb link change visibility ;
                     fbLinked = "false";
 
                 } else {
-                    facebooklink.setVisibility(View.VISIBLE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
+                    facebooklink.setVisibility(View.GONE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
                     unlinkmenu = 1;
                     System.out.println("Un-link = " + unlinkmenu);
                     fbLinked = "true";
@@ -914,7 +914,7 @@ public class logout extends Activity implements View.OnClickListener {
                                     marq.setText(
                                             "Reports for case " + casecode + " dated " + dated + " are now available.");
                                     marq.setBackgroundColor(Color.parseColor("#4180AB"));
-                                    linearLayout2.setVisibility(View.GONE); //do visible for marquee
+                                    linearLayout2.setVisibility(View.GONE); //do visible for marquee ayaz
 
                                 } else {
                                     if (pos > 0) {
@@ -925,14 +925,14 @@ public class logout extends Activity implements View.OnClickListener {
                                         marq.setText("Reports for case " + casecode + " dated " + dated
                                                 + " are now partially available.");
                                         marq.setBackgroundColor(Color.parseColor("#ff4500"));
-                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee
+                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee ayaz
                                     } else {
 
                                         marqueeStringSet.add("Result awaited for case " + casecode + " dated " + dated);
 
                                         marq.setText("Result awaited for case " + casecode + " dated " + dated);
                                         marq.setBackgroundColor(Color.parseColor("#ff4500"));
-                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee
+                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee ayaz
                                     }
 
                                 }
@@ -1353,7 +1353,7 @@ public class logout extends Activity implements View.OnClickListener {
             super.onPostExecute(result);
             try {
                 if (receiveDataUnLink.get("d").equals("UnLinked Successfully")) {
-                    facebooklink.setVisibility(View.VISIBLE); //TODO set visible : SPARTANS
+                    facebooklink.setVisibility(View.GONE); //TODO set visible : SPARTANS
                     unlinkmenu = 0;
                     fbLinked = "false";
                 }
@@ -1775,7 +1775,7 @@ public class logout extends Activity implements View.OnClickListener {
             progress.dismiss();
             try {
                 if (receiveDataFbLink.get("d").equals("Successfully Linked")) {
-                    facebooklink.setVisibility(View.VISIBLE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
+                    facebooklink.setVisibility(View.GONE);  //TODO visiblity changed by SPARTANS ( ADDITIONALY )
                     unlinkmenu = 1;
                     fbLinked = "true";
                     System.out.println("Un-link = " + unlinkmenu);
