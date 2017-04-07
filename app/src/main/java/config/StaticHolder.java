@@ -12,11 +12,11 @@ import java.util.HashMap;
 
 public class StaticHolder {
 
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
-    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+     public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
@@ -118,7 +118,7 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                 url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
                 //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
                 //url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
@@ -411,19 +411,18 @@ public class StaticHolder {
                 url = BASE_URL + "GetQuizData";
                 break;
             case GetVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
             case UpdatePatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                //https://api.healthscion.com/WebServices/LabService.asmx/
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
 
             case InsertIntoPatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
+                url = BASE_URL + "InsertIntoPatientVaccineDetails";
+                break;
 
-                //url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
+            case GetUserGrade:
+                url = BASE_URL + "GetUserGrade";
                 break;
 
             default:
@@ -479,7 +478,7 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails
+        Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails, GetUserGrade
     }
 
 }

@@ -1301,4 +1301,11 @@ public class Services {
 
     }
 
+    public JSONObject getUserGrade(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserGrade);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
 }

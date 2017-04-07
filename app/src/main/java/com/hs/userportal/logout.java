@@ -22,9 +22,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -139,8 +141,6 @@ public class logout extends Activity implements View.OnClickListener {
 
     protected void onCreate(Bundle savedInBundle) {
         super.onCreate(savedInBundle);
-       /* uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInBundle);*/
         mCallbackManager = CallbackManager.Factory.create();
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -172,7 +172,7 @@ public class logout extends Activity implements View.OnClickListener {
         my_family = (RelativeLayout) findViewById(R.id.my_family);
         my_health = (RelativeLayout) findViewById(R.id.my_health);
         if (!new MainActivity().userID.equalsIgnoreCase("")) {
-          facebookPic = new MainActivity().userID;
+            facebookPic = new MainActivity().userID;
         } else {
             facebookPic = new Register().userID;
         }
@@ -223,15 +223,15 @@ public class logout extends Activity implements View.OnClickListener {
             public void onClick(View v) {
 
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(logout.this,"No Internet Connection",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(logout.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), MyHealth.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("show_blood", "yes");
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
-                else {
-                Intent intent = new Intent(getApplicationContext(), MyHealth.class);
-                intent.putExtra("id", id);
-                intent.putExtra("show_blood", "yes");
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }}
+            }
         });
        /* user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,9 +297,9 @@ public class logout extends Activity implements View.OnClickListener {
                 } else {
                     if (subArrayList != null) {
                         if (id != null && subArrayList.length() > 0) {
-                            if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                            if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                                 showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                            }else{
+                            } else {
                                 Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
                                 intent.putExtra("id", id);
                                 update.verify = "0";
@@ -358,11 +358,11 @@ public class logout extends Activity implements View.OnClickListener {
         passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
         name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FN);
 
-        Log.i("logout", "id: "+id);
-        Log.i("logout", "PH: "+PH);
-        Log.i("logout", "user: "+user);
-        Log.i("logout", "passw: "+passw);
-        Log.i("logout", "name: "+name);
+        Log.i("logout", "id: " + id);
+        Log.i("logout", "PH: " + PH);
+        Log.i("logout", "user: " + user);
+        Log.i("logout", "passw: " + passw);
+        Log.i("logout", "name: " + name);
 
         Helper.resend_name = name;
         username.setText(name);
@@ -400,8 +400,8 @@ public class logout extends Activity implements View.OnClickListener {
         }
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(logout.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
             new Authentication().execute();
         }
     }
@@ -410,9 +410,8 @@ public class logout extends Activity implements View.OnClickListener {
     public void onClick(View v) { // Parameter v stands for the view that was clicked.
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(this,"No Internet Connection",Toast.LENGTH_SHORT).show();
-        }
-        else {
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+        } else {
 
 
             // getId() returns this view's identifier.
@@ -427,9 +426,10 @@ public class logout extends Activity implements View.OnClickListener {
                 intent.putExtra("fbLinkedID", fbLinkedID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            } else*/ if (v.getId() == R.id.lab_records) {
+            } else*/
+            if (v.getId() == R.id.lab_records) {
                 if (subArrayList != null) {
-                    if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                    if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                         showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                     } else if (id != null && subArrayList.length() > 0) {
                         Intent intent = new Intent(getApplicationContext(), lablistdetails.class);
@@ -508,6 +508,7 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
         }
+
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -792,7 +793,7 @@ public class logout extends Activity implements View.OnClickListener {
                             } else {
                                 bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + new Register().userID + "/picture?type=large").getContent());
                             }*/
-                            bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" +facebookPic+ "/picture?type=large").getContent());
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL("https://graph.facebook.com/" + facebookPic + "/picture?type=large").getContent());
 
                             output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(output);
@@ -847,7 +848,7 @@ public class logout extends Activity implements View.OnClickListener {
 
                         try {
                             String dataList = receiveDataList.optString("d");// {"Table":[]}
-                            if(!TextUtils.isEmpty(dataList)){
+                            if (!TextUtils.isEmpty(dataList)) {
                                 JSONObject cut = new JSONObject(dataList);
                                 subArrayList = cut.getJSONArray("Table");
                                 String caseid = subArrayList.getJSONObject(0).getString("CaseId");
@@ -872,7 +873,7 @@ public class logout extends Activity implements View.OnClickListener {
                                     ispublished.add(subArray1.getJSONObject(i).getString("IsPublish"));
                                 }
                             }
-                            
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1406,8 +1407,8 @@ public class logout extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
-        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
         messageTextView.setText("Are you sure you want to Logout?");
         okBTN.setOnClickListener(new View.OnClickListener() {
@@ -1555,7 +1556,7 @@ public class logout extends Activity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         // uiHelper.onDestroy();
-       finish();
+        finish();
         output = null;
         update.verify = "0";
     }
@@ -1570,6 +1571,8 @@ public class logout extends Activity implements View.OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        new MyHealthAsync().execute();
+        new GetUserGradeAsync().execute();
         id = privatery_id;
         findFamily();
         if (Helper.authentication_flag == true) {
@@ -1581,10 +1584,11 @@ public class logout extends Activity implements View.OnClickListener {
         this.registerReceiver(this.mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(logout.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else {
-        //uiHelper.onResume();
-        new AuthenticationfromresumeAsyncTask().execute();}
+            Toast.makeText(logout.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            //uiHelper.onResume();
+            new AuthenticationfromresumeAsyncTask().execute();
+        }
 
         if (update.verify.equals("1")) {
             try {
@@ -1966,13 +1970,13 @@ public class logout extends Activity implements View.OnClickListener {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.i("GetMember", "url: "+url);
-        Log.i("GetMember", "data to Send: "+data);
+        Log.i("GetMember", "url: " + url);
+        Log.i("GetMember", "data to Send: " + data);
         family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("GetMember", "Received Data: "+response);
+                    Log.i("GetMember", "Received Data: " + response);
                     String data = response.getString("d");
                     JSONObject j = new JSONObject(data);
                     family_arr = j.getJSONArray("Table");
@@ -2045,17 +2049,17 @@ public class logout extends Activity implements View.OnClickListener {
         @Override
         public void onSuccess(LoginResult loginResult) {
             GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            // JSON of FB ID as response.
-                            try {
-                                userID = object.getString("id");
-                                new FbLinkAsync().execute();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    });
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                    // JSON of FB ID as response.
+                    try {
+                        userID = object.getString("id");
+                        new FbLinkAsync().execute();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,last_name,first_name,name,email,gender,birthday");
             request.setParameters(parameters);
@@ -2080,8 +2084,8 @@ public class logout extends Activity implements View.OnClickListener {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
-        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         stayButton.setVisibility(View.GONE);
 
         TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
@@ -2096,5 +2100,95 @@ public class logout extends Activity implements View.OnClickListener {
         });
 
         dialog.show();
+    }
+
+    private String height, weight, bgroup, mBp;
+
+    private class MyHealthAsync extends AsyncTask<Void, Void, Void> {
+        ProgressDialog progress;
+        JSONObject receiveData1;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(logout.this);
+            progress.setCancelable(false);
+            progress.setMessage("Loading...");
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            progress.dismiss();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+                sendData1.put("UserId", id);
+                receiveData1 = service.getpatientHistoryDetails(sendData1);
+                String data = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.getJSONArray("Table");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    bgroup = obj.optString("BloodGroup");
+                    height = obj.optString("height");
+                    weight = obj.optString("weight");
+                    mBp = obj.optString("BP");
+                    String alergyString = obj.getString("allergiesName");
+                    if (!TextUtils.isEmpty(alergyString) || !TextUtils.isEmpty(bgroup) || !TextUtils.isEmpty(height) || !TextUtils.isEmpty(weight) || !TextUtils.isEmpty(mBp)) {
+                        //set background
+                    } else {
+                        //set background
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                progress.dismiss();
+            }
+            return null;
+        }
+    }
+
+    private class GetUserGradeAsync extends AsyncTask<Void, Void, Void> {
+        ProgressDialog progress;
+        JSONObject receiveData1;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(logout.this);
+            progress.setCancelable(false);
+            progress.setMessage("Loading...");
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            progress.dismiss();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+                sendData1.put("UserId", id);
+                receiveData1 = service.getUserGrade(sendData1);
+                String data = receiveData1.getString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.getJSONArray("Table");
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                progress.dismiss();
+            }
+            return null;
+        }
     }
 }
