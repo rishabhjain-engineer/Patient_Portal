@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -207,9 +208,11 @@ public class logout extends Activity implements View.OnClickListener {
         mInitialTextViewContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
                 intent.putExtra("path", mPathOfGlobalIndex + id);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, 2);*/
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mPathOfGlobalIndex + id));
+                startActivity(browserIntent);
             }
         });
 
@@ -1594,6 +1597,7 @@ public class logout extends Activity implements View.OnClickListener {
         // TODO Auto-generated method stub
         super.onResume();
         new MyHealthAsync().execute();
+        new GetUserGradeAsync().execute();
         id = privatery_id;
         findFamily();
         if (Helper.authentication_flag == true) {
@@ -1711,7 +1715,6 @@ public class logout extends Activity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_OK && requestCode == 2) {
-            new GetUserGradeAsync().execute();
         }
     }
 
