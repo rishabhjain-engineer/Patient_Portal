@@ -3,7 +3,9 @@ package ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 
 import com.hs.userportal.R;
 
@@ -24,6 +26,13 @@ public class GraphHandlerWebViewActivity extends BaseActivity {
         String path = intent.getStringExtra("path");
         WebView webView = (WebView) findViewById(R.id.graph_handler_web_view);
         webView.loadUrl(path);
+        Button button = (Button) findViewById(R.id.close);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+            }
+        });
 
     }
 }
