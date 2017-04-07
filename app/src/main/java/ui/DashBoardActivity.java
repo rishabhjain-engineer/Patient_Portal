@@ -89,6 +89,7 @@ public class DashBoardActivity extends BaseActivity {
     private ImageView mFooterDashBoardImageView, mFooterReportImageView, mFooterRepositoryImageView, mFooterFamilyImageView, mFooterAccountImageView;
     private Services mServices;
     public static String notiem = "no", notisms = "no";
+    private Fragment mRepositoryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,9 +201,9 @@ public class DashBoardActivity extends BaseActivity {
                     mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
                     mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
                     mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-                    Fragment newFragment = new RepositoryFragment();
+                    mRepositoryFragment = new RepositoryFragment();
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.replace(R.id.fragment_container, mRepositoryFragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -440,4 +441,8 @@ public class DashBoardActivity extends BaseActivity {
                 });
         dialog.show();
     }*/
+
+    public Fragment getFragment() {
+        return mRepositoryFragment;
+    }
 }

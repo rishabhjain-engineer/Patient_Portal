@@ -197,10 +197,6 @@ public class ReportFragment extends Fragment {
         Bundle bundle = getArguments();
         mIsComingFromMyFamilyClass = bundle.getBoolean("fromFamilyClass", false);
 
-        if (select_member_lab.getVisibility() == View.VISIBLE) {
-            select_member_lab.setText(Member_Name);
-        }
-
         if (mIsComingFromMyFamilyClass) {
             id = bundle.getString("id");
             Member_Name = bundle.getString("Member_Name");
@@ -210,6 +206,11 @@ public class ReportFragment extends Fragment {
             id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
             Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
         }
+
+        if (select_member_lab.getVisibility() == View.VISIBLE) {
+            select_member_lab.setText(Member_Name);
+        }
+
         //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
         if (family != null) {
             if (check_fill == 0) {

@@ -122,8 +122,9 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(mActivity, "MyFamily", "").execute(); }
-         LoadFamilyMembers();
+            //new Authentication(mActivity, "MyFamily", "").execute();
+            LoadFamilyMembers();
+        }
         family_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -182,7 +183,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                             JSONObject json_obj = family_arr.getJSONObject(i);
                             hmap = new HashMap<String, String>();
                             hmap.put("FirstName", json_obj.getString("FirstName"));
-                            hmap.put("PatientBussinessFlag", json_obj.getString("PatientBussinessFlag"));
+                            hmap.put("PatientBussinessFlag", json_obj.optString("PatientBussinessFlag"));
                             hmap.put("PatientCode", json_obj.getString("PatientCode"));
                             hmap.put("LastName", json_obj.getString("LastName"));
                             hmap.put("ContactNo", json_obj.getString("ContactNo"));
