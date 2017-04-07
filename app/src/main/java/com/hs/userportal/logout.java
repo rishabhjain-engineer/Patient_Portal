@@ -134,6 +134,7 @@ public class logout extends Activity implements View.OnClickListener {
     private ProfileTracker mprofileTracker = null;
     private String facebookPic;
     private PreferenceHelper mPreferenceHelper = PreferenceHelper.getInstance();
+    private String mScore, mFact, mPathOfGlobalIndex;
 
 
     public static String image_parse;
@@ -1690,32 +1691,9 @@ public class logout extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-      /*  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_OK && requestCode == 2) {
 
-        Session session = Session.getActiveSession();
-        if (session != null && (session.isOpened()) || (session.isClosed())) {
-            // onSessionStateChange(session, session.getState(), null);
-            Request.newMeRequest(session, new Request.GraphUserCallback() {
-
-                // callback after Graph API response with
-                // user
-                // object
-
-                @Override
-                public void onCompleted(GraphUser user, com.facebook.Response response) {
-                    // TODO Auto-generated method stub
-                    if (user != null) {
-
-                        userID = user.getId();
-                        // String name = user.getName();
-                        System.out.println(userID);
-                        new fbLinkAsync().execute();
-                    }
-                }
-            }).executeAsync();
-        }*/
-
+        }
     }
 
     /* private void onSessionStateChange(Session session, SessionState state, Exception exception) {
@@ -2177,6 +2155,8 @@ public class logout extends Activity implements View.OnClickListener {
             if (isToLoadData) {
                 Intent intent = new Intent(logout.this, GraphHandlerActivity.class);
                 startActivityForResult(intent, 2);
+            }else{
+                
             }
         }
 
@@ -2191,8 +2171,10 @@ public class logout extends Activity implements View.OnClickListener {
                 JSONArray jsonArray = cut.optJSONArray("Table");
                 if (jsonArray != null) {
                     JSONObject jsonObject = jsonArray.optJSONObject(0);
-                    String path = jsonObject.optString("Path");
-                    if (!TextUtils.isEmpty(path) && path.contains("globalhealthindex")) {
+                    mPathOfGlobalIndex = jsonObject.optString("Path");
+                    mScore = jsonObject.optString("Score");
+                    mFact = jsonObject.optString("Fact");
+                    if (!TextUtils.isEmpty(mPathOfGlobalIndex) && mPathOfGlobalIndex.contains("globalhealthindex")) {
                         isToLoadData = true;
                     }
                 }
@@ -2203,4 +2185,6 @@ public class logout extends Activity implements View.OnClickListener {
             return null;
         }
     }
+
+
 }
