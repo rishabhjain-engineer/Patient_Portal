@@ -2104,7 +2104,7 @@ public class logout extends Activity implements View.OnClickListener {
     }
 
     private String height, weight, bgroup, mBp;
-    private boolean isShowRedVitalsImage;
+    private boolean isShowGreenVitalsImage;
 
     private class MyHealthAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
@@ -2123,7 +2123,9 @@ public class logout extends Activity implements View.OnClickListener {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
-            if (isShowRedVitalsImage) {
+            if (isShowGreenVitalsImage) {
+                mHomePageVitalsImageView.setImageResource(0);
+            }else {
                 mHomePageVitalsImageView.setImageResource(R.drawable.homepage_vital_red);
             }
         }
@@ -2145,7 +2147,7 @@ public class logout extends Activity implements View.OnClickListener {
                     mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
                     if (!TextUtils.isEmpty(alergyString) || !TextUtils.isEmpty(bgroup) || !TextUtils.isEmpty(height) || !TextUtils.isEmpty(weight) || !TextUtils.isEmpty(mBp)) {
-                        isShowRedVitalsImage = true;
+                        isShowGreenVitalsImage = true;
                     }
                 }
             } catch (JSONException e) {
