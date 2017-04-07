@@ -2831,6 +2831,7 @@ public class RepositoryFragment extends Fragment {
     }
 
     private void startBackgroundprocess() {
+
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
@@ -2993,6 +2994,7 @@ public class RepositoryFragment extends Fragment {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         s3jr.setRetryPolicy(policy1);
         req.add(s3jr);
+
 
     }
 

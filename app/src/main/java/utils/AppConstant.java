@@ -13,6 +13,7 @@ public class AppConstant {
     public static String[] mDurationModeArray = {"Daily", "Weekly", "Monthly", "Quarterly", "Semi-Annually", "Annually"};
     public static String[] mDateModeArray = {"exactly", "monthly", "yearly"};
     public static ArrayList<HashMap<String, String>> mFamilyMembersList = new ArrayList<>();
+    public static final String AMAZON_URL = "https://files.healthscion.com/";
 
     public static String ID = "";
 
