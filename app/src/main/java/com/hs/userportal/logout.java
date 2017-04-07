@@ -699,7 +699,7 @@ public class logout extends Activity implements View.OnClickListener {
             String fbData;
             try {
                 if (noti != 0) {
-                    noti_count.setVisibility(View.VISIBLE);
+                    noti_count.setVisibility(View.GONE); //Do visible ayaz
                     System.out.println(noti + "notification count");
                     noti_count.setText(String.valueOf(noti));
                 } else {
@@ -914,7 +914,7 @@ public class logout extends Activity implements View.OnClickListener {
                                     marq.setText(
                                             "Reports for case " + casecode + " dated " + dated + " are now available.");
                                     marq.setBackgroundColor(Color.parseColor("#4180AB"));
-                                    linearLayout2.setVisibility(View.VISIBLE);
+                                    linearLayout2.setVisibility(View.GONE); //do visible for marquee
 
                                 } else {
                                     if (pos > 0) {
@@ -925,14 +925,14 @@ public class logout extends Activity implements View.OnClickListener {
                                         marq.setText("Reports for case " + casecode + " dated " + dated
                                                 + " are now partially available.");
                                         marq.setBackgroundColor(Color.parseColor("#ff4500"));
-                                        linearLayout2.setVisibility(View.VISIBLE);
+                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee
                                     } else {
 
                                         marqueeStringSet.add("Result awaited for case " + casecode + " dated " + dated);
 
                                         marq.setText("Result awaited for case " + casecode + " dated " + dated);
                                         marq.setBackgroundColor(Color.parseColor("#ff4500"));
-                                        linearLayout2.setVisibility(View.VISIBLE);
+                                        linearLayout2.setVisibility(View.GONE); //do visible for marquee
                                     }
 
                                 }
