@@ -528,9 +528,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     AppConstant.FN = fnln + " " + lastname;*/
 
 
-                  /*  if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                  if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -557,7 +557,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-               //     }
+                   }
                     // finish();
                 } else {
 
@@ -821,9 +821,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         onBackPressed();
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     } else {
-                        /*if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                        if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {*/
+                        } else {
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -835,7 +835,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             startActivity(intent);
 
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    //    }
+                      }
                         //finish();
                     }
                 } else {
@@ -1135,9 +1135,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_LONG).show();
                         onBackPressed();
                     } else {
-                    /*    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                       if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                             openQuestionirePage();
-                        } else {*/
+                        } else {
                             Intent intent = new Intent(getApplicationContext(), logout.class);
                             intent.putExtra("id", cop);
                             intent.putExtra("PH", PH);
@@ -1149,7 +1149,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             //finish();
-                      //  }
+                       }
 
                     }
                 }else if(!isToHitAgreeServiceApi){
@@ -1227,9 +1227,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
             if (sharedpreferences.contains(pass) || sharedpreferences.contains("pass")) {
                 // new Authentication().execute();
-             /*   if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+              if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                     openQuestionirePage();
-                } else {*/
+                } else {
                     Intent i = new Intent(MainActivity.this, logout.class);
 
                     Services.hoja = cd;
@@ -1249,7 +1249,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     // finish();
-                //}
+                }
             }
         } else {
             showAlertMessage("Internet connection is required to run this application.");
@@ -1885,9 +1885,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
-                 /*   if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                   if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -1913,7 +1913,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                             // TODO Auto-generated catch block
                             ex.printStackTrace();
                         }*/
-                   // }
+                   }
                     //finish();
 
                 } else {
@@ -1945,9 +1945,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, uPassword);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FN, fnln + " " + lastname);
 
-                /*    if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
+                   if (!mPreferenceHelper.getBoolen(PreferenceHelper.PreferenceKey.IS_ALL_QUESTION_ASKED)) {
                         openQuestionirePage();
-                    } else {*/
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), logout.class);
                         intent.putExtra("id", cop);
                         intent.putExtra("PH", PH);
@@ -1958,7 +1958,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                         Helper.authentication_flag = false;
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                 //   }
+                   }
 
 
                     //finish();
@@ -2227,7 +2227,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressDialog.dismiss();
-            Log.d("QuestionireFragment", "onPostExecute in MainActivity");
+         /*   Log.d("QuestionireFragment", "onPostExecute in MainActivity");
             if (QuestionireParser.getQuestionDetailListStatus1().size() > 0) {
                 Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  QuestionireActivity");
                 Intent intentWalk = new Intent(MainActivity.this, QuestionireActivity.class);
@@ -2240,7 +2240,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
                 Intent intent = new Intent(MainActivity.this, logout.class);
                 startActivity(intent);
-            }
+            }*/
+
+            Log.w("QuestionireFragment", "onPostExecute of MainActivity opening  logout");
+            Intent intent = new Intent(MainActivity.this, logout.class);
+            startActivity(intent);
 
         }
     }
