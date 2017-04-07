@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
+import utils.PreferenceHelper;
 
 
 public class changepass extends BaseActivity {
@@ -64,7 +65,7 @@ public class changepass extends BaseActivity {
         setupActionBar();
         service = new Services(changepass.this);
         Intent i = getIntent();
-        id = i.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         old = (EditText) findViewById(R.id.etSubject);
         pass = (EditText) findViewById(R.id.etContact);
         cpass = (EditText) findViewById(R.id.editText4);

@@ -1040,8 +1040,10 @@ public class update extends BaseActivity {
 
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
-                if(!TextUtils.isEmpty(mOccupation) || !mOccupation.equalsIgnoreCase("null")){
+                if(!TextUtils.isEmpty(mOccupation) && !mOccupation.equalsIgnoreCase("null")){
                     mOccupationEditText.setText(mOccupation);
+                }else{
+                    mOccupationEditText.setText("");
                 }
                 fn.setText(FirstName);
 
