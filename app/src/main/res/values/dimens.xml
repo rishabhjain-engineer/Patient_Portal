@@ -12,5 +12,11 @@
     <dimen name="feed_item_margin">10dp</dimen>
     <dimen name="feed_item_padding_top_bottom">20dp</dimen>
     <dimen name="feed_item_padding_left_right">15dp</dimen>
+    
+    <dimen name="home_main_content_height">180dp</dimen>
+    <dimen name="home_seprator_horizontal_height">1dp</dimen>
+    <dimen name="home_seprator_vertical_width">0.25dp</dimen>
+    <dimen name= "home_content_view_image_height">80dp</dimen>
+    <dimen name= "home_content_view_image_width">80dp</dimen>
 
 </resources>

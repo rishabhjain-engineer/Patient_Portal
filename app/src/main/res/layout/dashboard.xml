@@ -7,17 +7,29 @@
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_alignParentTop="true"
-        android:background="@color/green_header_login">
+        android:background="@color/white">
+
+
+        <TextView
+            android:id="@+id/scion_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Scion"
+            android:textColor="@color/home_title_scion"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/sciontra_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Sciontra"
-            android:textSize="20dp" />
+            android:layout_toRightOf="@+id/scion_text"
+            android:text="tra"
+            android:textColor="@color/home_title_tra"
+            android:textSize="30sp" />
 
         <LinearLayout
             android:id="@+id/menu"
@@ -31,10 +43,10 @@
 
             <ImageButton
                 android:id="@+id/menuimgbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_menu"
+                android:background="@drawable/homepage_topmenu"
                 android:clickable="true" />
         </LinearLayout>
 
@@ -189,11 +201,12 @@
 
 
     <LinearLayout
+        android:id="@+id/homepage_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/patient_id"
         android:layout_below="@+id/linearLayout2"
-        android:layout_margin="10dp"
+        android:layout_margin="0dp"
         android:background="#ffffff"
         android:orientation="vertical">
 
@@ -202,11 +215,11 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_above="@+id/patient_id"
                 android:layout_below="@+id/linearLayout2"
-                android:layout_margin="10dp"
+                android:layout_margin="0dp"
                 android:background="#ffffff"
                 android:orientation="vertical">
 
@@ -258,16 +271,100 @@
                     android:background="#80808080"></View>
 
                 <LinearLayout
-                    android:id="@+id/quiz_contaoiner"
+                    android:id="@+id/quiz_container"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="@color/Yellow"
-                    android:orientation="vertical"></LinearLayout>
+                    android:layout_height="@dimen/home_main_content_height"
+                    android:background="@drawable/homepage_dynamicview"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/initial_textview_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/uppertextview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="30dp"
+                            android:text="So you think you take good"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/middletextview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/uppertextview"
+                            android:layout_centerHorizontal="true"
+                            android:text="care of your health ? "
+                            android:textColor="@color/white"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/lowertextview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/middletextview"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="15dp"
+                            android:text="Let's see if you do"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:textSize="22sp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_below="@+id/middletextview"
+                            android:layout_marginTop="22dp"
+                            android:layout_toRightOf="@+id/lowertextview"
+                            android:clickable="false"
+                            android:background="@drawable/homepage_dv_rightarrow" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/score_textview_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/uppertv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="30dp"
+                            android:text=""
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:textSize="24sp"
+                            android:textStyle="bold"/>
+
+
+                        <TextView
+                            android:id="@+id/middletv"
+                            android:layout_width="match_parent"
+                            android:layout_below="@+id/uppertv"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="30dp"
+                            android:text=""
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="normal"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="@dimen/home_main_content_height"
+                    android:background="@color/light_gray"
                     android:orientation="horizontal">
 
                     <RelativeLayout
@@ -282,10 +379,11 @@
 
                         <ImageButton
                             android:id="@+id/report_image_view"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/home_content_view_image_width"
+                            android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/reportdash" />
+                            android:background="@drawable/homepage_reports"
+                            android:clickable="false" />
 
                         <TextView
                             android:id="@+id/report_test"
@@ -293,10 +391,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/report_image_view"
                             android:layout_centerHorizontal="true"
-                            android:text="My Reports"
-                            android:textColor="@color/text_color_blue"
+                            android:layout_marginTop="10dp"
+                            android:text="Reports"
+                            android:textColor="@color/home_content_text"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="normal" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -312,8 +411,8 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:background="@color/blue" />
+                        android:layout_weight="0.1"
+                        android:background="@color/home_seprator" />
 
                     <RelativeLayout
                         android:id="@+id/my_health"
@@ -327,10 +426,11 @@
 
                         <ImageButton
                             android:id="@+id/image_health"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/home_content_view_image_width"
+                            android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/healthdash" />
+                            android:background="@drawable/homepage_vital_red"
+                            android:clickable="false" />
 
                         <TextView
                             android:id="@+id/health_text"
@@ -338,10 +438,10 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/image_health"
                             android:layout_centerHorizontal="true"
-                            android:text="My Health"
-                            android:textColor="@color/text_color_blue"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:layout_marginTop="10dp"
+                            android:text="Vitals"
+                            android:textColor="@color/home_content_text"
+                            android:textSize="16sp" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -389,14 +489,15 @@
                 </RelativeLayout>
 
                 <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.25dp"
-                    android:background="@color/blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/home_seprator_horizontal_height"
+                    android:background="@color/home_seprator"
                     android:visibility="visible"></View>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="@dimen/home_main_content_height"
+                    android:background="@color/light_gray"
                     android:orientation="horizontal">
 
                     <RelativeLayout
@@ -409,10 +510,11 @@
 
                         <ImageButton
                             android:id="@+id/family_image_view"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/home_content_view_image_width"
+                            android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/familydash" />
+                            android:background="@drawable/homepage_family"
+                            android:clickable="false" />
 
                         <TextView
                             android:id="@+id/family_text_view"
@@ -420,10 +522,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/family_image_view"
                             android:layout_centerHorizontal="true"
-                            android:text="My Family"
-                            android:textColor="@color/text_color_blue"
+                            android:layout_marginTop="10dp"
+                            android:text="Family"
+                            android:textColor="@color/home_content_text"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="normal" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -439,8 +542,8 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:background="@color/blue" />
+                        android:layout_weight="0.1"
+                        android:background="@color/home_seprator" />
 
                     <RelativeLayout
                         android:id="@+id/file_vault"
@@ -454,11 +557,12 @@
 
                         <ImageButton
                             android:id="@+id/repository_iv"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/home_content_view_image_width"
+                            android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="5dp"
-                            android:background="@drawable/filedash" />
+                            android:background="@drawable/homepage_repository"
+                            android:clickable="false" />
 
                         <TextView
                             android:id="@+id/repository_tv"
@@ -466,10 +570,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/repository_iv"
                             android:layout_centerHorizontal="true"
-                            android:text="My Repository"
-                            android:textColor="@color/text_color_blue"
+                            android:layout_marginTop="10dp"
+                            android:text="Repository"
+                            android:textColor="@color/home_content_text"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="normal" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -647,8 +752,19 @@
                 </HorizontalScrollView>
             </LinearLayout>
         </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_seprator_horizontal_height"
+            android:background="@color/home_seprator"
+            android:visibility="visible"></View>
     </LinearLayout>
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:background="@color/blue" />
 
     <TextView
         android:id="@+id/patient_id"
