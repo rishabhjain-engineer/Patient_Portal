@@ -286,7 +286,7 @@
                         android:id="@+id/initial_textview_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/uppertextview"
@@ -317,8 +317,8 @@
                             android:layout_marginTop="15dp"
                             android:text="Let's see if you do"
                             android:textColor="@color/white"
-                            android:textStyle="bold"
-                            android:textSize="22sp" />
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="18dp"
@@ -326,23 +326,23 @@
                             android:layout_below="@+id/middletextview"
                             android:layout_marginTop="22dp"
                             android:layout_toRightOf="@+id/lowertextview"
-                            android:clickable="false"
-                            android:background="@drawable/homepage_dv_rightarrow" />
+                            android:background="@drawable/homepage_dv_rightarrow"
+                            android:clickable="false" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/score_textview_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <TextView
                             android:id="@+id/uppertv"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="30dp"
-                            android:text=""
+                            android:gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:padding="10dp"
                             android:textAllCaps="true"
                             android:textColor="@color/white"
                             android:textSize="24sp"
@@ -355,8 +355,9 @@
                             android:layout_below="@+id/uppertv"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="30dp"
-                            android:text=""
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="normal"/>
@@ -434,7 +435,6 @@
                             android:layout_width="@dimen/home_content_view_image_width"
                             android:layout_height="@dimen/home_content_view_image_height"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/homepage_vital_red"
                             android:clickable="false" />
 
                         <TextView
