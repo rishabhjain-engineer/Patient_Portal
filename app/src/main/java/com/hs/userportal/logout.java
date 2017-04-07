@@ -90,8 +90,8 @@ import com.facebook.model.GraphUser;*/
  */
 public class logout extends Activity implements View.OnClickListener {
 
-    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health;
-    private LinearLayout linearLayout2, menu;
+    private RelativeLayout update_profile, lab_records, find_labs, file_vault, order_history, packages, facebooklink, my_family, my_health, mInitialTextViewContainer , mScoreTextViewContainer;
+    private LinearLayout linearLayout2, menu, mHomepageQuizContaner;
     private ImageButton editimg, menuimgbtn;
     private ImageView user_pic;
     private TextView marq, username, noti_count, patient_id;
@@ -196,6 +196,11 @@ public class logout extends Activity implements View.OnClickListener {
         noti_count.setVisibility(View.GONE);
         patient_id = (TextView) findViewById(R.id.patient_id);
         members = (TextView) findViewById(R.id.members);
+
+        mHomepageQuizContaner = (LinearLayout) findViewById(R.id.quiz_container);
+        mInitialTextViewContainer = (RelativeLayout) findViewById(R.id.initial_textview_container);
+        mScoreTextViewContainer = (RelativeLayout) findViewById(R.id.score_textview_container);
+
         menuimgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
