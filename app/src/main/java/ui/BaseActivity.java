@@ -158,7 +158,7 @@ public class BaseActivity extends AppCompatActivity {
     boolean result;
 
     public boolean isSessionExist() {
-       /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+      /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
         String url = sttc_holdr.request_Url();
         JSONObject jsonObjectToSend = new JSONObject();
         try {

@@ -97,7 +97,7 @@ public class DashBoardActivity extends BaseActivity {
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  Sciontra" + "</font>"));
+        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
         //mActionBar.hide();
         mActionBar.setDisplayHomeAsUpEnabled(false);
         mServices = new Services(this);
@@ -151,7 +151,7 @@ public class DashBoardActivity extends BaseActivity {
                 //mActionBar.hide();
                 if (isSessionExist()) {
                     mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-                    mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  Sciontra" + "</font>"));
+                    mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
                     mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
                     mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
                     mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);

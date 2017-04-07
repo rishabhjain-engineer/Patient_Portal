@@ -28,7 +28,7 @@ public class DashboardActivityAdapter extends BaseAdapter {
         mActivity = dashBoardActivity;
 
         mList.add("Health Card");
-        mList.add("Vitals   ");
+        mList.add("Vitals");
         mList.add("Discounts");
         mList.add("Health Coach");
         mList.add("Alerts");

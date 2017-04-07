@@ -410,7 +410,6 @@
 
         <activity
             android:name="ui.HealthCommonActivity"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize" />
 
         <activity
