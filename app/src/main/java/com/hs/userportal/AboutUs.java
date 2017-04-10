@@ -119,7 +119,9 @@ public class AboutUs extends BaseActivity {
 
 		});
 
-	}
+		isSessionExist();
+
+	}//end of Oncreate
 
 	@Override
 	public void onBackPressed() {

@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -121,28 +122,23 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(mActivity, "MyFamily", "").execute(); }
-         LoadFamilyMembers();
+            //new Authentication(mActivity, "MyFamily", "").execute();
+            LoadFamilyMembers();
+        }
         family_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String HM = family_object.get(position).get("HM");
                 if (family_object.get(position).get("IsApproved").equals("true") && HM.equals("2")) {
-                    /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
-                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
-                    }else{*/
                     String memberName = family_object.get(position).get("FirstName") + " " + family_object.get(position).get("LastName");
-                    ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
-                   /* Intent i = new Intent(mActivity, lablistdetails.class);
-                    DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
-                    i.putExtra("id", id);
-
-                    i.putExtra("fromFamilyClass" , true) ;
-                    i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
-                            + family_object.get(position).get("LastName"));
-                    i.putExtra("family",  family_object);
-                    startActivity(i);*/
-                    //}
+                    String patientBussinessFlag = family_object.get(position).get("PatientBussinessFlag");
+                    if(patientBussinessFlag.contains("|")){
+                        String array[] = patientBussinessFlag.split("\\|");
+                        String message = array[1];
+                        showSubScriptionDialog(message);
+                    }else{
+                        ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
+                    }
                 } else {
                     //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
                 }
@@ -187,6 +183,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                             JSONObject json_obj = family_arr.getJSONObject(i);
                             hmap = new HashMap<String, String>();
                             hmap.put("FirstName", json_obj.getString("FirstName"));
+                            hmap.put("PatientBussinessFlag", json_obj.optString("PatientBussinessFlag"));
                             hmap.put("PatientCode", json_obj.getString("PatientCode"));
                             hmap.put("LastName", json_obj.getString("LastName"));
                             hmap.put("ContactNo", json_obj.getString("ContactNo"));

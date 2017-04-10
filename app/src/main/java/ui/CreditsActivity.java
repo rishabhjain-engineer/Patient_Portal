@@ -18,5 +18,6 @@ public class CreditsActivity extends BaseActivity{
         setContentView(R.layout.activity_credits);
         setupActionBar();
         mActionBar.setTitle("Credits");
+        isSessionExist();
     }
 }

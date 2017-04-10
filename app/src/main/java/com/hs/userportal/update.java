@@ -100,6 +100,7 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.SignInActivity;
 import utils.PreferenceHelper;
 import utils.Utility;
 
@@ -151,7 +152,7 @@ public class update extends BaseActivity {
     private String nationid;
     private ImageView dp, dpchange;
     private byte[] byteArray;
-    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
+    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path, mPreviousNumber;
     private String email_varification, mobile_varification;
     private String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private ArrayAdapter<String> adapter1;
@@ -187,12 +188,14 @@ public class update extends BaseActivity {
     public static Bitmap bitmap;
     public static Uri Imguri;
     public static Context mcontext;
+    private RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         mActionBar.setTitle("Basic");
+        mRequestQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();
@@ -549,7 +552,9 @@ public class update extends BaseActivity {
                         } else {
                             new VerifyEmail().execute();
                         }
-                    } else {
+                    } else if (!mPreviousNumber.equalsIgnoreCase(cont.getText().toString())) {
+                        checkContactNoExistAPI();
+                    }  else{
                         new submitchange().execute();
                     }
                 }
@@ -796,6 +801,46 @@ public class update extends BaseActivity {
         });
     }
 
+    private void checkContactNoExistAPI() {
+        final String contactnumber = cont.getText().toString();
+        if (TextUtils.isEmpty(contactnumber)) {
+            Toast.makeText(getApplicationContext(), "Please fill valid Mobile Number", Toast.LENGTH_SHORT).show();
+        }else if(mPreviousNumber.equalsIgnoreCase(cont.getText().toString())){
+            new submitchange().execute(); //if we are coming from email api this case is necessary
+        }else{
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("ContactNo",contactnumber);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            StaticHolder sttc_holdr = new StaticHolder(update.this, StaticHolder.Services_static.CheckContactNoExist);
+            String url = sttc_holdr.request_Url();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                    try {
+                        String result = jsonObject.getString("d");
+                        if (result.equalsIgnoreCase("username") || TextUtils.isEmpty(result)) {
+                            new submitchange().execute();
+                        } else{
+                            showAlertMessage(result);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Rishabh", "create account volley error :=" + volleyError);
+                }
+            });
+            mRequestQueue.add(jsonObjectRequest);
+        }
+    }
+
     class submitchange extends AsyncTask<Void, Void, Void> {
         String Salutation, FirstName, MiddleName, LastName, UserNameAlias, Sex, BloodGroup,
                 DOB, HusbandName, FatherName, Email, ContactNo, NationId, message;
@@ -825,6 +870,7 @@ public class update extends BaseActivity {
             FatherName = father.getText().toString().trim();
             Email = em.getText().toString().trim();
             ContactNo = cont.getText().toString().trim();
+            mPreviousNumber = ContactNo;
             for (int i = 0; i < countrylist.size(); i++) {
                 if (nationality.getText().toString().trim().equals(countrylist.get(i))) {
                     NationId = countryids.get(i);
@@ -952,6 +998,7 @@ public class update extends BaseActivity {
                     FatherName = commonarray.getJSONObject(m).getString("FatherName");
                     Email = commonarray.getJSONObject(m).getString("Email");
                     ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
+                    mPreviousNumber = ContactNo;
                     Nationality = commonarray.getJSONObject(m).getString("Nationality");
                     age = commonarray.getJSONObject(m).getString("age");
                     nation_id = commonarray.getJSONObject(m).getString("NationId");
@@ -993,8 +1040,11 @@ public class update extends BaseActivity {
 
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
-                mOccupationEditText.setText(mOccupation);
-
+                if(!TextUtils.isEmpty(mOccupation) && !mOccupation.equalsIgnoreCase("null")){
+                    mOccupationEditText.setText(mOccupation);
+                }else{
+                    mOccupationEditText.setText("");
+                }
                 fn.setText(FirstName);
 
                 ln.setText(LastName);
@@ -1872,7 +1922,7 @@ public class update extends BaseActivity {
             if (isEmailAlreadyVerified) {
                 emailAlreadyRegistered();
             } else {
-                new submitchange().execute();
+               checkContactNoExistAPI();
             }
         }
     }

@@ -2,10 +2,12 @@ package ui;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -33,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -67,7 +70,6 @@ import fragment.DashboardFragment;
 import fragment.FamilyFragment;
 import fragment.ReportFragment;
 import fragment.RepositoryFragment;
-import fragment.RepositoryFreshFragment;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -87,6 +89,7 @@ public class DashBoardActivity extends BaseActivity {
     private ImageView mFooterDashBoardImageView, mFooterReportImageView, mFooterRepositoryImageView, mFooterFamilyImageView, mFooterAccountImageView;
     private Services mServices;
     public static String notiem = "no", notisms = "no";
+    private Fragment mRepositoryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +98,7 @@ public class DashBoardActivity extends BaseActivity {
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">"+ "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "  + "  Sciontra" + "</font>"));
+        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
         //mActionBar.hide();
         mActionBar.setDisplayHomeAsUpEnabled(false);
         mServices = new Services(this);
@@ -147,90 +150,99 @@ public class DashBoardActivity extends BaseActivity {
             Intent intent = null;
             if (viewId == R.id.footer_dashboard_container) {
                 //mActionBar.hide();
-                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-                mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">"+ "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "  + "  Sciontra" + "</font>"));
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
-                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
-                mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-                mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-                Fragment newFragment = new DashboardFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-
+                if (isSessionExist()) {
+                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+                    mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
+                    mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                    mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                    mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                    mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                    mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                    Fragment newFragment = new DashboardFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             } else if (viewId == R.id.footer_reports_container) {
 
                 if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
                     showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
                 } else {
                     //mActionBar.show();
-                    mActionBar.setTitle("Reports");
-                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-                    mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-                    mFooterReportImageView.setImageResource(R.drawable.reports_active);
-                    mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
-                    mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-                    mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("fromFamilyClass", false);
-                    Fragment newFragment = new ReportFragment();
-                    newFragment.setArguments(bundle);
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, newFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+                    if (isSessionExist()) {
+                        mActionBar.setTitle("Reports");
+                        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+                        mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                        mFooterReportImageView.setImageResource(R.drawable.reports_active);
+                        mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                        mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                        mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("fromFamilyClass", false);
+                        Fragment newFragment = new ReportFragment();
+                        newFragment.setArguments(bundle);
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, newFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
                 }
 
             } else if (viewId == R.id.footer_repository_container) {
                 /*intent = new Intent(DashBoardActivity.this, Filevault.class);
                 startActivity(intent);*/
-               // mActionBar.show();
-                mActionBar.setTitle("Repository");
-                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-                mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
-                mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-                mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-                Fragment newFragment = new RepositoryFreshFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                // mActionBar.show();
+                if (isSessionExist()) {
+                    mActionBar.setTitle("Repository");
+                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+                    mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                    mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                    mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
+                    mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                    mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                    mRepositoryFragment = new RepositoryFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, mRepositoryFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             } else if (viewId == R.id.footer_family_container) {
              /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
                 //mActionBar.show();
-                mActionBar.setTitle("Family");
-                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
-                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
-                mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-                Fragment newFragment = new FamilyFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if (isSessionExist()) {
+                    mActionBar.setTitle("Family");
+                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+                    mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                    mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                    mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                    mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                    mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+                    Fragment newFragment = new FamilyFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             } else if (viewId == R.id.footer_account_container) {
                /* intent = new Intent(DashBoardActivity.this, AccountActivity.class);
                 startActivity(intent);*/
-                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-               // mActionBar.show();
-                mActionBar.setTitle("Account");
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-                mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-                mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
-                mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-                mFooterAccountImageView.setImageResource(R.drawable.account_active);
-                Fragment newFragment = new AccountFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if (isSessionExist()) {
+                    mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+                    // mActionBar.show();
+                    mActionBar.setTitle("Account");
+                    mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+                    mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+                    mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+                    mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+                    mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                    Fragment newFragment = new AccountFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, newFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         }
     };
@@ -291,6 +303,7 @@ public class DashBoardActivity extends BaseActivity {
                                 hmap.put("DateOfReport", "");
                             }
                             hmap.put("Image", json_obj.getString("Image"));
+                            hmap.put("PatientBussinessFlag", json_obj.optString("PatientBussinessFlag"));
                             hmap.put("Age", json_obj.getString("Age"));
                             hmap.put("RelationName", json_obj.getString("RelationName"));
                             hmap.put("HM", json_obj.getString("HM"));
@@ -320,7 +333,7 @@ public class DashBoardActivity extends BaseActivity {
         request.add(family);
     }
 
-    protected void showSubScriptionDialog(String message) {
+    private void showSubScriptionDialog(String message) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
@@ -350,7 +363,7 @@ public class DashBoardActivity extends BaseActivity {
         finish();
     }
 
-    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId){
+    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
         //mActionBar.show();
         mActionBar.setTitle("Reports");
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
@@ -360,15 +373,76 @@ public class DashBoardActivity extends BaseActivity {
         mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
         mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
         Bundle bundle = new Bundle();
-        bundle.putString("id",userId);
-        bundle.putBoolean("fromFamilyClass",true);
+        bundle.putString("id", userId);
+        bundle.putBoolean("fromFamilyClass", true);
         bundle.putString("Member_Name", name);
-        bundle.putSerializable("family",family_object);
+        bundle.putSerializable("family", family_object);
         Fragment newFragment = new ReportFragment();
         newFragment.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+   /* boolean result;
+    public boolean isSessionExist() {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonObjectToSend = new JSONObject();
+        try {
+            jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObjectToSend, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                String d = jsonObject.optString("d");
+                if (d.equalsIgnoreCase("true")) {
+                    result = true;
+                } else {
+                    showSessionExpiredDialog();
+                    result = false;
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                showSessionExpiredDialog();
+                result = false;
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
+        return result;
+    }*/
+
+ /*   private void showSessionExpiredDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setTitle("Session timed out!");
+        dialog.setMessage("Session expired. Please login again.");
+        dialog.setCancelable(false);
+        dialog.setButton("OK",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
+                        SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.clear();
+                        editor.commit();
+                        dialog.dismiss();
+                        Helper.authentication_flag = true;
+                        Intent intent = new Intent(DashBoardActivity.this, SignInActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+        dialog.show();
+    }*/
+
+    public Fragment getFragment() {
+        return mRepositoryFragment;
     }
 }

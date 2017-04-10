@@ -81,15 +81,13 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mRoleName, mDisclaimerType, mMiddleName;
-    private int mPatientBussinessFlag;
+    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mRoleName, mDisclaimerType, mMiddleName;
+    private String mDAsString, mUserName = "", mPassWord = "";
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
     private CallbackManager callbackManager = null;
     private LoginButton fbLoginButton;
-    private String mDAsString;
-    String mUserName = "", mPassWord = "";
     private String mFbUserName;
 
     @Override
@@ -176,7 +174,8 @@ public class SignInActivity extends BaseActivity {
                                                 JSONObject innerJsonObject = tableArray.optJSONObject(0);
                                                 mUserId = innerJsonObject.optString("UserId");
                                                 mPatientCode = innerJsonObject.optString("PatientCode");
-                                                mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                                                mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                                                mSessionID = innerJsonObject.optString("SessionID");
                                                 mRoleName = innerJsonObject.optString("RoleName");
                                                 mFirstName = innerJsonObject.optString("FirstName");
                                                 mMiddleName = innerJsonObject.optString("MiddleName");
@@ -218,9 +217,8 @@ public class SignInActivity extends BaseActivity {
                                                 } else if (decesionString.equalsIgnoreCase("4")) {
                                                     facebookDecesionAlertDialog(messageString, false);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    if(array .length >= 4){
+                                                    if(array .length >= 3){
                                                         mUserName = array[2];
-                                                        mPassWord = array[3];
                                                         facebookDecesionAlertDialog(messageString, true);
                                                     }else{
                                                         showAlertMessage("An error occured, please try again.");
@@ -414,7 +412,8 @@ public class SignInActivity extends BaseActivity {
                         JSONObject innerJsonObject = tableArray.optJSONObject(0);
                         mUserId = innerJsonObject.optString("UserId");
                         mPatientCode = innerJsonObject.optString("PatientCode");
-                        mPatientBussinessFlag = innerJsonObject.optInt("PatientBussinessFlag");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
                         mRoleName = innerJsonObject.optString("RoleName");
                         mFirstName = innerJsonObject.optString("FirstName");
                         mMiddleName = innerJsonObject.optString("MiddleName");
@@ -606,7 +605,7 @@ public class SignInActivity extends BaseActivity {
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
                     Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
                 } else {
-                    updateContactApi(mobileNumber);
+                    checkContactNoExistAPI(mobileNumber);
                 }
             }
 
@@ -620,6 +619,41 @@ public class SignInActivity extends BaseActivity {
             }
         });
         updateContactDialog.show();
+    }
+
+
+    private void checkContactNoExistAPI(final String contactNumber) {
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("ContactNo",contactNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.CheckContactNoExist);
+        String url = sttc_holdr.request_Url();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+                try {
+                    String result = jsonObject.getString("d");
+                    if (result.equalsIgnoreCase("username") || TextUtils.isEmpty(result)) {
+                        updateContactApi(contactNumber);
+                    } else{
+                       showAlertMessage(result);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh", "create account volley error :=" + volleyError);
+            }
+        });
+        mRequestQueue.add(jsonObjectRequest);
     }
 
     private void updateContactApi(String contactnumber) {
@@ -896,11 +930,15 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if (mPatientBussinessFlag == 2 || mPatientBussinessFlag == 3) {
-            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, "App usage is available on payment of subscription fee.");
-        } else {
+        if(!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")){
+            String array[] = mPatientBussinessFlag.split("\\|");
+            String message = array[1];
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
+        }else{
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
@@ -919,7 +957,7 @@ public class SignInActivity extends BaseActivity {
         finish();
     }
 
-    private void facebookDecesionAlertDialog(String message, final boolean isToLogin) {
+    private void facebookDecesionAlertDialog(String message, final boolean logInUserFacebook) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
@@ -937,8 +975,8 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                if (isToLogin) {
-                    new NewLogInAsync(false).execute();
+                if (logInUserFacebook) {
+                    new LogInUserFacebook().execute();
                 } else {
                     goToSignUpPage();
                 }
@@ -1005,5 +1043,92 @@ public class SignInActivity extends BaseActivity {
             finish();
         }
 
+    }
+
+    private class LogInUserFacebook extends AsyncTask<Void, Void, String> {
+        private ProgressDialog progress;
+        String buildNo;
+        boolean isToTakeFromEditbox;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isToShowSignInErrorMessage = false;
+            buildNo = Build.VERSION.RELEASE;
+            progress = new ProgressDialog(SignInActivity.this);
+            progress.setCancelable(false);
+            progress.setTitle("Logging in...");
+            progress.setMessage("Please wait...");
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String dAsString = "";
+            loginApiSendData = new JSONObject();
+            try {
+                loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("applicationType", "Mobile");
+                loginApiSendData.put("browserType", buildNo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
+            if (loginApiReceivedData != null) {
+                dAsString = loginApiReceivedData.optString("d");
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(dAsString);
+                    JSONArray tableArray = jsonObject.optJSONArray("Table");
+                    if (tableArray != null) {
+                        JSONObject innerJsonObject = tableArray.optJSONObject(0);
+                        mUserId = innerJsonObject.optString("UserId");
+                        mPatientCode = innerJsonObject.optString("PatientCode");
+                        mPatientBussinessFlag = innerJsonObject.optString("PatientBussinessFlag");
+                        mSessionID = innerJsonObject.optString("SessionID");
+                        mRoleName = innerJsonObject.optString("RoleName");
+                        mFirstName = innerJsonObject.optString("FirstName");
+                        mMiddleName = innerJsonObject.optString("MiddleName");
+                        mVersionNumber = innerJsonObject.optString("versionNo");
+                        mLastName = innerJsonObject.optString("LastName");
+                        mDisclaimerType = innerJsonObject.optString("disclaimerType");
+                        mContactNo = innerJsonObject.optString("ContactNo");
+                        mTerms = innerJsonObject.optBoolean("Terms");
+                    } else {
+                        isToShowSignInErrorMessage = true;
+                    }
+                } catch (JSONException e) {
+                    isToShowSignInErrorMessage = true;
+                    e.printStackTrace();
+                }
+            }
+            return dAsString;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progress.dismiss();
+
+            if (loginApiReceivedData == null) {
+                showAlertMessage("An error occured, please try again.");
+            } else {
+                if (isToShowSignInErrorMessage) {
+                    showAlertMessage(result);
+                } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
+                    goToDashBoardPage();
+                } else {
+                    if (TextUtils.isEmpty(mContactNo)) {
+                        updateContactAlert();
+                    }
+                    if (mTerms) {
+                        sendrequestForDesclaimer();
+                    }
+                }
+            }
+
+        }
     }
 }

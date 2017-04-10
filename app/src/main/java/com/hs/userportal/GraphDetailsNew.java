@@ -217,8 +217,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
 
     private void setData(){
-         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         graphDetailValueAndDateList.clear();
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
@@ -226,8 +226,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             for (int i=0 ; i < chartValues.size(); i++) {
 
                 String dateInString = chartDates.get(i);
-                String dateArray[] = dateInString.split(" ");
-                dateInString = dateArray[0];
+                //String dateArray[] = dateInString.split(" ");
+                //dateInString = dateArray[0];
                 String chartValueInString = chartValues.get(i);
                 String caseCode = chartValues.get(i);
                 mDateList.add(dateInString);
@@ -636,7 +636,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             mToDate = data.getStringExtra("toDate");
             mIsToAddMaxMinValue = false;
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             Date date1 = null, date2 = null;
 
             try {
@@ -772,7 +773,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 try {
                     String first = list.get(i).getDate();
                     String second = list.get(j).getDate();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     Date date1 = simpleDateFormat.parse(first);
                     Date date2 = simpleDateFormat.parse(second);
 

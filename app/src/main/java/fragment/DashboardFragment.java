@@ -30,11 +30,12 @@ import ui.DashBoardActivity;
  * Created by android1 on 3/4/17.
  */
 
-public class DashboardFragment extends Fragment{
+public class DashboardFragment extends Fragment {
     private DynamicGridView mDaDynamicGridView;
     private List<String> mList = new ArrayList<>();
     private GridView mGridView;
     private Activity mActivity;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,15 +61,25 @@ public class DashboardFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (position == 0) {
-                    goToHealth(position);
+                    if (((BaseActivity) mActivity).isSessionExist()) {
+                        goToHealth(position);
+                    }
                 } else if (position == 1) {
-                    goToHealth(position);
+                    if (((BaseActivity) mActivity).isSessionExist()) {
+                        goToHealth(position);
+                    }
                 } else if (position == 2) {
-                    ((BaseActivity)mActivity).showAlertMessage("Comming Soon");
+                    if (((BaseActivity) mActivity).isSessionExist()) {
+                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
+                    }
                 } else if (position == 3) {
-                    ((BaseActivity)mActivity).showAlertMessage("Comming Soon");
+                    if (((BaseActivity) mActivity).isSessionExist()) {
+                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
+                    }
                 } else if (position == 4) {
-                    ((BaseActivity)mActivity).showAlertMessage("Comming Soon");
+                    if (((BaseActivity) mActivity).isSessionExist()) {
+                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
+                    }
                 }
             }
         });

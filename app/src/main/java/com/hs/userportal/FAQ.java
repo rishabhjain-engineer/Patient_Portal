@@ -72,7 +72,9 @@ public class FAQ extends BaseActivity {
             }
         }));
         link = "file:///android_asset/faq.html";
-        supportView.loadUrl(link);
+        if(isSessionExist()){
+            supportView.loadUrl(link);
+        }
     }
 
     @Override
