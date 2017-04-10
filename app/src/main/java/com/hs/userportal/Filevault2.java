@@ -31,6 +31,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -79,9 +81,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import adapters.Folder_adapter;
 import adapters.Vault_adapter;
@@ -129,7 +134,7 @@ public class Filevault2 extends BaseActivity {
     private Activity activity = Filevault2.this;
     private static Menu menu_toggle;
     private ArrayList<String> imageId = new ArrayList<String>();
-    private String imageIdsToBeSent = "";
+    private String imageIdsToBeSent = "", mCurrentPhotoPath = null;
     private static RequestQueue queue;
     private RequestQueue queue2;
     private RequestQueue queue3;
@@ -140,7 +145,7 @@ public class Filevault2 extends BaseActivity {
     private GridView gridView;
     private String[] rem_dup_folder;
     private boolean check_load;
-    private int check = 0;
+    private int check = 0, MY_PERMISSIONS_REQUEST =1;;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
@@ -181,7 +186,7 @@ public class Filevault2 extends BaseActivity {
     private Helper mhelper;
     private String[] path_back_nav = new String[thumbImage.size()];
     private boolean path_cleared = false;
-    private boolean start_navigate = false;
+    private boolean start_navigate = false, mPermissionGranted, mIsSdkLessThanM = true;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
     private static final int REQUEST_CAMERA = 0;
@@ -314,6 +319,7 @@ public class Filevault2 extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        askRunTimePermissions() ;
                         chooseimage();
 
                     }
@@ -2998,10 +3004,28 @@ public class Filevault2 extends BaseActivity {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PICK_FROM_CAMERA) {
 
-                Uri selectedImageUri = Imguri;
+                File imageFile = null ;
+                Uri selectedImageUri;
+
+                if(mIsSdkLessThanM == true){
+                    selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+
+                }else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                }
+
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-                File imageFile = new File(path);
+
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -3154,7 +3178,11 @@ public class Filevault2 extends BaseActivity {
                                 break;
 
                             case 1:
-                                checkCameraPermission();
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                /* // Intent takePictureIntent = new
                                 // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // if
@@ -4644,6 +4672,7 @@ public class Filevault2 extends BaseActivity {
     }
 
     private void takePhoto() {
+        mIsSdkLessThanM = true ;
         File photo = null;
         Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -4658,11 +4687,18 @@ public class Filevault2 extends BaseActivity {
         }
     }
 
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+            startCamera() ;
+        }else {
+            takePhoto();
+        }
+    }
     /**
      * Method to check permission
      */
-    void checkCameraPermission() {
+  /*  void checkCameraPermission() {
         boolean isGranted;
         if (ActivityCompat.checkSelfPermission(Filevault2.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // Camera permission has not been granted.
@@ -4670,7 +4706,7 @@ public class Filevault2 extends BaseActivity {
         } else {
             takePhoto();
         }
-    }
+    }*/
 
     /**
      * Method to request permission for camera
@@ -4682,7 +4718,7 @@ public class Filevault2 extends BaseActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA) {
+        /*if (requestCode == REQUEST_CAMERA) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for camera permission.
 
@@ -4694,6 +4730,70 @@ public class Filevault2 extends BaseActivity {
                 //Permission not granted
                 Toast.makeText(Filevault2.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
             }
+        }*/
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mPermissionGranted = true ;
+                Log.e("Rishabh", "Permissions are Granted .");
+            } else {
+                mPermissionGranted = false ;
+                Log.e("Rishabh", "Permissions are not granted .");
+            }
         }
+    }
+
+    void askRunTimePermissions() {
+
+        int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
+        }
+
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false ;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(Filevault2.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }
