@@ -27,18 +27,16 @@ public class DashboardActivityAdapter extends BaseAdapter {
     public DashboardActivityAdapter(Activity dashBoardActivity) {
         mActivity = dashBoardActivity;
 
-        mList.add("Health Card");
+        mList.add("Reports");
         mList.add("Vitals");
-        mList.add("Discounts");
-        mList.add("Health Coach");
-        mList.add("Alerts");
+        mList.add("Family");
+        mList.add("Repository");
         mList.add("");
 
-        mImageList.add(R.drawable.health_card);
-        mImageList.add(R.drawable.vitals);
-        mImageList.add(R.drawable.discounts_144);
-        mImageList.add(R.drawable.coach_144);
-        mImageList.add(R.drawable.alerts_144);
+        mImageList.add(R.drawable.homepage_reports);
+        mImageList.add(R.drawable.homepage_vital_green);
+        mImageList.add(R.drawable.homepage_family);
+        mImageList.add(R.drawable.homepage_repository);
         mImageList.add(R.drawable.whitebackground);
     }
 
