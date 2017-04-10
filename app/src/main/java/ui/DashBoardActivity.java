@@ -1,69 +1,37 @@
 package ui;
 
-import android.accounts.Account;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Filevault;
-import com.hs.userportal.Helper;
-import com.hs.userportal.MyFamily;
-import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.lablistdetails;
-import com.hs.userportal.logout;
-import com.hs.userportal.update;
 
-import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import adapters.DashboardActivityAdapter;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
@@ -71,7 +39,6 @@ import fragment.FamilyFragment;
 import fragment.ReportFragment;
 import fragment.RepositoryFragment;
 import fragment.VitalFragment;
-import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 

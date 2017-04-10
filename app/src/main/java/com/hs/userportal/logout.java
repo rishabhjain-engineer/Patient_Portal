@@ -455,10 +455,10 @@ public class logout extends Activity implements View.OnClickListener {
 
             } else if (v.getId() == R.id.file_vault) {
                 // setText() sets the string value of the TextView
-                Intent intent = new Intent(logout.this, Filevault.class);
-                intent.putExtra("id", id);
-                update.verify = "0";
-                startActivity(intent);
+    //            Intent intent = new Intent(logout.this, Filevault.class);
+    //            intent.putExtra("id", id);
+   //             update.verify = "0";
+   //             startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else if (v.getId() == R.id.order_history) {
                 // setText() sets the string value of the TextView

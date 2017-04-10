@@ -174,8 +174,8 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
                 intent = new Intent(MyFamily.this , lablistdetails.class);                      // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_repository_container){
-                intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
-                startActivity(intent);
+        //        intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
+         //       startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
                 intent = new Intent(MyFamily.this , AccountActivity.class);                                // TODO check intent class ..
                 startActivity(intent);
