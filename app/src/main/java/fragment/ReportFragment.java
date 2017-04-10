@@ -196,7 +196,6 @@ public class ReportFragment extends Fragment {
 
         Bundle bundle = getArguments();
         mIsComingFromMyFamilyClass = bundle.getBoolean("fromFamilyClass", false);
-
         if (mIsComingFromMyFamilyClass) {
             id = bundle.getString("id");
             Member_Name = bundle.getString("Member_Name");

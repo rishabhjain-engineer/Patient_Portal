@@ -51,7 +51,7 @@ public class DashboardFragment extends Fragment {
     private RelativeLayout mInitialTextViewContainer, mScoreTextViewContainer;
     private LinearLayout mHomepageQuizContaner;
     private TextView mScoreUpperTextView, mScoreLowerTextView;
-    private ImageView mHomePageVitalsImageView;
+    private ImageView mHomePageVitalsImageView, mMenuButton;
     private String mScore, mFact, mPathOfGlobalIndex, mUserId;
     private Services service;
     private PreferenceHelper mPreferenceHelper;
@@ -67,6 +67,7 @@ public class DashboardFragment extends Fragment {
         mScoreTextViewContainer = (RelativeLayout) view.findViewById(R.id.score_textview_container);
         mScoreUpperTextView = (TextView) view.findViewById(R.id.uppertv);
         mScoreLowerTextView = (TextView) view.findViewById(R.id.middletv);
+        mMenuButton = (ImageView) view.findViewById(R.id.menuimgbtn);
         return view;
     }
 
@@ -90,26 +91,21 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (position == 0) {
-                    if (((BaseActivity) mActivity).isSessionExist()) {
-                        goToHealth(position);
-                    }
+                    ((DashBoardActivity)mActivity).openReportFragment();
                 } else if (position == 1) {
-                    if (((BaseActivity) mActivity).isSessionExist()) {
-                        goToHealth(position);
-                    }
+                    ((DashBoardActivity)mActivity).openVitalFragment();
                 } else if (position == 2) {
-                    if (((BaseActivity) mActivity).isSessionExist()) {
-                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
-                    }
+                    ((DashBoardActivity)mActivity).openFamilyFragment();
                 } else if (position == 3) {
-                    if (((BaseActivity) mActivity).isSessionExist()) {
-                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
-                    }
-                } else if (position == 4) {
-                    if (((BaseActivity) mActivity).isSessionExist()) {
-                        ((BaseActivity) mActivity).showAlertMessage("Comming Soon");
-                    }
+                    ((DashBoardActivity)mActivity).openRepositoryFragment();
                 }
+            }
+        });
+
+        mMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DashBoardActivity)mActivity).openAccountFragment();
             }
         });
     }
