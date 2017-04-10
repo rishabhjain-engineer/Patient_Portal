@@ -26,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Filevault;
 import com.hs.userportal.Filevault2;
 import com.hs.userportal.LocationClass;
 import com.hs.userportal.MapLabDetails;
@@ -47,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import fragment.RepositoryFragment;
 import ui.SignInActivity;
 
 /**
@@ -211,7 +211,7 @@ public class QuestionReportPageService extends IntentService {
 
                                     Toast.makeText(getApplicationContext(), response.getString("d"), Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
-                                        Filevault.Imguri = null;
+                                        RepositoryFragment.Imguri = null;                                                            // Todo Filevault.class replaced bu Repository fragment
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {

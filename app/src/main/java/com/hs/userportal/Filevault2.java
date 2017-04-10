@@ -87,6 +87,7 @@ import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
+import fragment.RepositoryFragment;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
@@ -714,9 +715,9 @@ public class Filevault2 extends BaseActivity {
                 // Toast.LENGTH_SHORT).show();
                 // }
 
-                Intent intent = new Intent(getApplicationContext(), Filevault.class);
+                /*Intent intent = new Intent(getApplicationContext(), Filevault.class);               // TODO change FILEVAULT class  to Repository Fragment
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
+                startActivity(intent);*/
                 finish();
                 return true;
 
@@ -1348,7 +1349,7 @@ public class Filevault2 extends BaseActivity {
                                                             .show();
                                                     // S3Objects.clear();
                                                     pd.dismiss();
-                                                    Filevault.refresh();
+                                                    RepositoryFragment.refresh();
 
                                                     handler.postDelayed(new Runnable() {
                                                         @Override
@@ -1618,7 +1619,7 @@ public class Filevault2 extends BaseActivity {
                                                     .show();
                                             toggle_move = false;
                                             // S3Objects.clear();
-                                            Filevault.refresh();
+                                            RepositoryFragment.refresh();
 
                                             handler.postDelayed(new Runnable() {
                                                 @Override
@@ -3433,7 +3434,7 @@ public class Filevault2 extends BaseActivity {
                                 } else if (packagedata.equalsIgnoreCase("Added")) {
                                     progress.dismiss();
                                     Toast.makeText(getApplicationContext(), "Folder created successfully.", Toast.LENGTH_LONG).show();
-                                    Filevault.refresh();
+                                    RepositoryFragment.refresh();
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -3685,7 +3686,7 @@ public class Filevault2 extends BaseActivity {
                     }
                     pd.dismiss();
                     //  S3Objects.clear();
-                    Filevault.refresh();
+                    RepositoryFragment.refresh();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -3847,7 +3848,7 @@ public class Filevault2 extends BaseActivity {
             Folder_Clicked_folder = "Root";
             folder_root.setEnabled(false);
             if (mhelper.main_S3Objects.size() == 0) {
-                ((Filevault) Filevault.file_vaultcontxt).foldername();
+     //           ((RepositoryFragment) RepositoryFragment.file_vaultcontxt).foldername();     // TODO replace filevault class to repository fragment
             }
             S3Objects_folder = new ArrayList<HashMap<String, String>>();
             S3Objects_folder.addAll(mhelper.main_S3Objects);
@@ -4085,7 +4086,7 @@ public class Filevault2 extends BaseActivity {
                             if (HashKey.equalsIgnoreCase("Personal2") || HashKey
                                     .equalsIgnoreCase("Personal1")) {
                                 HashKey = "Personal3";
-                                ((Filevault) Filevault.file_vaultcontxt).foldername();
+             //                   ((Filevault) RepositoryFragment.file_vaultcontxt).foldername();   // TODO replace filevault class to repository fragment
                                 if (mhelper.main_S3Objects.size() == 0) {
                                     folder_list.setVisibility(View.GONE);
                                     empty_text.setVisibility(View.VISIBLE);
@@ -4203,7 +4204,7 @@ public class Filevault2 extends BaseActivity {
                     folder_root.setEnabled(true);
                 } else if (path_back_nav.length == 1 && !(folder_vault2_path.size() > 1)) {
                     if (mhelper.main_S3Objects.size() == 0) {
-                        ((Filevault) Filevault.file_vaultcontxt).foldername();
+   //                     ((Filevault) Filevault.file_vaultcontxt).foldername();  // TODO replace filevault class to repository fragment
                     }
                     if (mhelper.main_S3Objects.size() == 0) {
                         folder_list.setVisibility(View.GONE);
@@ -4287,7 +4288,7 @@ public class Filevault2 extends BaseActivity {
                     } else if (folderpath_size == 1) {
                         //Folder_Clicked_folder = folder_vault2_path.get(folderpath_size-1);
                         if (mhelper.main_S3Objects.size() == 0) {
-                            ((Filevault) Filevault.file_vaultcontxt).foldername();
+       //                     ((Filevault) Filevault.file_vaultcontxt).foldername();  // // TODO replace filevault class to repository fragment
                         }
                         if (mhelper.main_S3Objects.size() == 0) {
                             folder_list.setVisibility(View.GONE);

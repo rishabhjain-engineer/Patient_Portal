@@ -224,7 +224,7 @@ public class UploadService extends IntentService {
                                     if (response.getString("d").equalsIgnoreCase("success")) {
 
                                         RepositoryFragment.refresh();
-                                        Filevault.Imguri = null;
+                                        RepositoryFragment.Imguri = null;
                                            /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
                                             photo.delete();*/
 

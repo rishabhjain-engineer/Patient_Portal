@@ -41,7 +41,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.hs.userportal.AboutUs;
 import com.hs.userportal.FAQ;
-import com.hs.userportal.Filevault;
 import com.hs.userportal.Help;
 import com.hs.userportal.MyFamily;
 import com.hs.userportal.MyVolleySingleton;
@@ -50,8 +49,6 @@ import com.hs.userportal.R;
 import com.hs.userportal.Services;
 import com.hs.userportal.changepass;
 import com.hs.userportal.lablistdetails;
-import com.hs.userportal.logout;
-import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,8 +59,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import networkmngr.ConnectionDetector;
 import utils.AppConstant;
@@ -176,8 +171,8 @@ public class AccountActivity extends BaseActivity {
 
                 startActivity(intent);
             }else if (viewId == R.id.footer_repository_container) {
-                intent = new Intent(AccountActivity.this, Filevault.class);
-                startActivity(intent);
+            /*    intent = new Intent(AccountActivity.this, Filevault.class);                       // TODO filevault.class deleted in replace of REPOSITORY FRAGMENT
+                startActivity(intent);*/
             } else if (viewId == R.id.footer_family_container) {
                 intent = new Intent(AccountActivity.this, MyFamily.class);
 

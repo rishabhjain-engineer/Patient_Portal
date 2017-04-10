@@ -497,8 +497,8 @@ public class lablistdetails extends BaseActivity {
                 intent = new Intent(lablistdetails.this , MyFamily.class);                      // TODO check intent class ..
                 startActivity(intent);
             }else if(viewId == R.id.footer_repository_container){
-                intent = new Intent(lablistdetails.this , Filevault.class);                               // TODO check intent class ..
-                startActivity(intent);
+      //          intent = new Intent(lablistdetails.this , Filevault.class);                               // TODO check intent class ..
+       //         startActivity(intent);
             }else if(viewId == R.id.footer_account_container){
                 intent = new Intent(lablistdetails.this , AccountActivity.class);                                // TODO check intent class ..
                 startActivity(intent);

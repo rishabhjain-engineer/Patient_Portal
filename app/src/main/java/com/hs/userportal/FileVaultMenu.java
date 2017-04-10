@@ -63,9 +63,9 @@ public class FileVaultMenu extends ActionBarActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                Intent intent = new Intent(getApplicationContext(), Filevault.class);
+            /*    Intent intent = new Intent(getApplicationContext(), Filevault.class);             // TODO replace filevault class with repository fragment
                 intent.putExtra("id", id);
-                startActivity(intent);
+                startActivity(intent);*/
 
             }
         });
