@@ -97,10 +97,10 @@ public class DashBoardActivity extends BaseActivity {
         setContentView(R.layout.activity_dashboard);
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
-        //mActionBar.hide();
-        mActionBar.setDisplayHomeAsUpEnabled(false);
+        //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+       // mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
+        mActionBar.hide();
+       // mActionBar.setDisplayHomeAsUpEnabled(false);
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
        /* PH = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PH);
@@ -141,6 +141,11 @@ public class DashBoardActivity extends BaseActivity {
         transaction.commit();
 
         findFamily();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
