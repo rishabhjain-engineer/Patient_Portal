@@ -17,5 +17,11 @@
     <dimen name="sign_in_sign_up_margin">40dp</dimen>
     <dimen name="footer_image_height">30dp</dimen>
     <dimen name="footer_text_size">12dp</dimen>
+    <dimen name="home_main_content_height">193dp</dimen>
+    <dimen name="home_seprator_horizontal_height">1dp</dimen>
+    <dimen name="home_seprator_vertical_width">0.25dp</dimen>
+    <dimen name= "home_content_view_image_height">80dp</dimen>
+    <dimen name= "home_content_view_image_width">80dp</dimen>
+
 
 </resources>
