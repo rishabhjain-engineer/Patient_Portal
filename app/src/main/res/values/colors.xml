@@ -111,5 +111,10 @@
     <color name="dashboard_devider">#dedede</color>
     <color name="dashboard_header_color">#0f9347</color>
 
+    <color name="home_title_tra">#0f9347</color>
+    <color name="home_title_scion">#6c6c6c</color>
+    <color name="home_content_text">#9fa1a2</color>
+    <color name="home_seprator">#dedede</color>
+
 
 </resources>
