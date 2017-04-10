@@ -5,14 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -26,10 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
-import com.hs.userportal.Education;
-import com.hs.userportal.Helper;
 import com.hs.userportal.ImageActivity;
-import com.hs.userportal.MyVolleySingleton;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
 
@@ -37,11 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import adapters.Repository_Adapter;
-import adapters.Vault_adapter;
 import config.StaticHolder;
 import utils.AppConstant;
 import utils.PreferenceHelper;

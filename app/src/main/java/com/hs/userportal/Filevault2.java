@@ -91,6 +91,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
 import utils.NavFolder;
+import utils.PreferenceHelper;
 
 /**
  * Created by ashish on 2/15/2016.
@@ -144,13 +145,13 @@ public class Filevault2 extends BaseActivity {
     private byte[] byteArray;
     private static boolean view_list = false;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey, Folder_Clicked_folder;
+    private String list_operation, Folder_Clicked, HashKey, Folder_Clicked_folder;
     private static Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
     private String path_folder = "";
     private String first_timefolderclicked = "";
-    private String hash_keyvalue;
+    private String hash_keyvalue, patientId;
     private static String view_show;
     private static ArrayList<String> folder_path = new ArrayList<String>();
     private NotificationHandler nHandler;
@@ -197,7 +198,8 @@ public class Filevault2 extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
         setupActionBar();
-
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mhelper = new Helper();
         Intent i = getIntent();
         mContext = Filevault2.this;
@@ -240,12 +242,12 @@ public class Filevault2 extends BaseActivity {
 
         sendData = new JSONObject();
         service = new Services(Filevault2.this);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
+     /*   sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        patientId = sharedPreferences.getString("ke", "");*/
         warning_msg = (TextView) findViewById(R.id.warning_msg);
         path_indicator = (TextView) findViewById(R.id.path_indicator);
         try {
-            sendData.put("PatientId", id);
+            sendData.put("PatientId", patientId);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -480,6 +482,7 @@ public class Filevault2 extends BaseActivity {
                         // Log.e("Viewer not installed on your device.", e.getMessage());
                     }
                 } else {
+                    Log.e("Rishabh"  , "Opening jpg image ");
                     Intent i = new Intent(Filevault2.this, ExpandImage.class);
                     String removeonejpg = thumbImage.get(position).get("Personal3");
                     if (thumbImage.get(position).get("Personal3").endsWith(".jpg")) {
@@ -496,17 +499,21 @@ public class Filevault2 extends BaseActivity {
     } else {
         i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/" + image_url);
     }*/
+                        Log.e("Rishabh" ,"Image name := "+image_name ) ;
                         if (thumbImage.get(position).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                            Log.e("Rishabh" ,"loop 1") ;
                             image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         } else if (thumbImage.get(position).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                            Log.e("Rishabh" ,"loop 2 ") ;
                             image_url = path_buffer.toString() + "/" + thumbImage.get(position).get("Personal3").replace("_thumb", "");
+                            Log.e("Rishabh ", "image url := "+image_url) ;
                         } else {
+                            Log.e("Rishabh" ,"loop 3 ") ;
                             image_url = patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         }
                         i.putExtra("image", "https://files.healthscion.com/" + image_url.replaceAll(" ", "%20"));
                         i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                         startActivity(i);
-
                     }
                 }
             }
@@ -589,6 +596,7 @@ public class Filevault2 extends BaseActivity {
                 } else if (!view_list) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
+                    Log.e("Rishabh", "vault adapter called from HOME section of onOptionsMenuItem");
                     vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     toggle_move = false;
@@ -1735,6 +1743,7 @@ public class Filevault2 extends BaseActivity {
                     } else {
                         list_header.setVisibility(View.VISIBLE);
                         list_header2.setVisibility(View.GONE);
+                        Log.e("Rishabh", "On Option Item Selected ; by default listview calling adapter : #1738");
                         vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, path_buffer.toString());
                         vault_list.setAdapter(vault_adapter);
                         vault_list.setVisibility(View.VISIBLE);
@@ -3196,6 +3205,7 @@ public class Filevault2 extends BaseActivity {
         } else if (!view_list) {
             list_header.setVisibility(View.VISIBLE);
             list_header2.setVisibility(View.GONE);
+            Log.e("Rishabh", "Vault adapter callled from onBackPressed :");
             vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, "");
             vault_list.setAdapter(vault_adapter);
             toggle_move = false;
@@ -3226,8 +3236,10 @@ public class Filevault2 extends BaseActivity {
             @Override
             public void run() {
                 if (S3Objects.size() == 0) {
+                    Log.e("Rishabh", "Start Background Process .. ");
                     startBackgroundprocess();
                 } else {
+                    Log.e("Rishabh", "Show data called .. ");
                     Show_Data(S3Objects);
                 }
             }
@@ -3276,6 +3288,7 @@ public class Filevault2 extends BaseActivity {
         thumbnailsselection = new boolean[thumbImage.size()];
         imageAdapter = new ImageAdapter();
         gridView.setAdapter(imageAdapter);
+        Log.e("Rishabh", "vault adapter called from Show_Data :");
         vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, path_buffer.toString());
         vault_list.setAdapter(vault_adapter);
         list_header.setVisibility(View.VISIBLE);
@@ -3392,6 +3405,11 @@ public class Filevault2 extends BaseActivity {
                         sendData.put("FolderName", folder);
                         sendData.put("Path", path_buffer.toString());
                         sendData.put("patientId", patientId);
+
+                        Log.e("Rishabh", "Folder Name := "+folder.length());
+                        Log.e("Rishabh", "Folder path := "+path_buffer.toString());
+                        Log.e("Rishabh", "patient id := "+patientId);
+
                     } catch (JSONException EX) {
                         EX.printStackTrace();
                     }
@@ -3405,6 +3423,7 @@ public class Filevault2 extends BaseActivity {
 
                             try {
                                 String packagedata = response.getString("d");
+                                Log.e("Rishabh", "response of create folder := "+packagedata );
                                 if (packagedata.equalsIgnoreCase("Error")) {
                                     progress.dismiss();
                                     Toast.makeText(getApplicationContext(), "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
@@ -3437,7 +3456,7 @@ public class Filevault2 extends BaseActivity {
                                             startActivity(i);
 
                                             finish();*/
-
+                                            Log.e("Rishabh", "start background process called from show dialog");
                                             startBackgroundprocess();
 
                                             /*S3Objects.clear();
@@ -3683,6 +3702,7 @@ public class Filevault2 extends BaseActivity {
                             }
                             startActivity(i);
                             finish();*/
+                            Log.e("Rishabh", "start background process called from move to folder");
                             startBackgroundprocess();
 
                         }
@@ -3743,6 +3763,7 @@ public class Filevault2 extends BaseActivity {
                 }
                 mContext.startActivity(i);
                 ((Filevault2) mContext).finish();*/
+                Log.e("Rishabh", "start background process called from refresh class");
                 ((Filevault2) mContext).startBackgroundprocess();
             }
         }, 1000);
@@ -4604,7 +4625,8 @@ public class Filevault2 extends BaseActivity {
         if (Helper.authentication_flag == true) {
             finish();
         } else {
-            startBackgroundprocess();
+            Log.e("Rishabh", "Start Background Process called from onResume() ");
+          //  startBackgroundprocess();
         }
         super.onResume();
     }

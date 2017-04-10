@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import fragment.RepositoryFragment;
 import ui.SignInActivity;
 
 public class UploadService extends IntentService {
@@ -222,7 +223,7 @@ public class UploadService extends IntentService {
                                             Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
 
-                                        Filevault.refresh();
+                                        RepositoryFragment.refresh();
                                         Filevault.Imguri = null;
                                            /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
                                             photo.delete();*/

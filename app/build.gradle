@@ -54,6 +54,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-nearby:8.4.0'*/
     compile 'dev.dworks.libs:astickyheader:0.1.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.facebook.android:facebook-android-sdk:4.15.0'

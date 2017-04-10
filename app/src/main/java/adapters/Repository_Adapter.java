@@ -1,8 +1,6 @@
 package adapters;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +17,7 @@ import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import ui.BaseActivity;
 import utils.AppConstant;
 
 /**

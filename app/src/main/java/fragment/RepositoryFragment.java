@@ -991,7 +991,7 @@ public class RepositoryFragment extends Fragment {
         return path;
     }
 
-    static void refresh() {
+    public static void refresh() {
 
         //   thumbImage.clear();
         imageName.clear();
