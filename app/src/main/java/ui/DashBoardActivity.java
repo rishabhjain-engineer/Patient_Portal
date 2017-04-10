@@ -58,7 +58,6 @@ public class DashBoardActivity extends BaseActivity {
     private Services mServices;
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
-    private boolean mIsHomePageOpen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +65,10 @@ public class DashBoardActivity extends BaseActivity {
         setContentView(R.layout.activity_dashboard);
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
         // mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
-        mActionBar.hide();
-        mIsHomePageOpen = true;
+        //mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
@@ -240,11 +239,7 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mIsHomePageOpen) {
-            finish();
-        } else {
-            openDashBoardFragment();
-        }
+        finish();
     }
 
     public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
@@ -274,8 +269,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openDashBoardFragment() {
-        mIsHomePageOpen = true;
-        mActionBar.hide();
+        ;
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
@@ -294,8 +288,6 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openVitalFragment() {
-        mActionBar.show();
-        mIsHomePageOpen = false;
         mFooterContainer.setVisibility(View.VISIBLE);
         if (isSessionExist()) {
             mActionBar.setTitle("Vitals");
@@ -314,8 +306,6 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openReportFragment() {
-        mActionBar.show();
-        mIsHomePageOpen = false;
         mFooterContainer.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
@@ -343,8 +333,6 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
-        mActionBar.show();
-        mIsHomePageOpen = false;
         mFooterContainer.setVisibility(View.VISIBLE);
  /*intent = new Intent(DashBoardActivity.this, Filevault.class);
                 startActivity(intent);*/
@@ -366,8 +354,6 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openFamilyFragment() {
-        mActionBar.show();
-        mIsHomePageOpen = false;
         mFooterContainer.setVisibility(View.VISIBLE);
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
@@ -389,8 +375,6 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openAccountFragment() {
-        mActionBar.show();
-        mIsHomePageOpen = false;
         mFooterContainer.setVisibility(View.VISIBLE);
         if (isSessionExist()) {
             mActionBar.show();
