@@ -145,7 +145,7 @@ public class Filevault2 extends BaseActivity {
     private GridView gridView;
     private String[] rem_dup_folder;
     private boolean check_load;
-    private int check = 0, MY_PERMISSIONS_REQUEST =1;;
+    private int check = 0, MY_PERMISSIONS_REQUEST =1;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
