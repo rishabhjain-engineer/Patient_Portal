@@ -31,6 +31,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -68,6 +70,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.BuildConfig;
 import com.hs.userportal.ExpandImage;
 import com.hs.userportal.Filevault2;
 import com.hs.userportal.Helper;
@@ -86,9 +89,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import adapters.Folder_adapter;
 import adapters.Vault_adapter;
@@ -152,14 +158,14 @@ public class RepositoryFragment extends Fragment {
     private int ipos = 0;
     private Services service;
     private GridView gridView;
-    private int check = 0;
+    private int check = 0, MY_PERMISSIONS_REQUEST =1;
     private int check_grid = 0;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
-    private boolean view_list = false;
+    private boolean view_list = false, mIsSdkLessThanM = true , mPermissionGranted;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey;
+    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath=null;
     private Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
@@ -383,6 +389,7 @@ public class RepositoryFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        askRunTimePermissions() ;
                         chooseimage();
 
                     }
@@ -1069,10 +1076,29 @@ public class RepositoryFragment extends Fragment {
             }
             if (requestCode == PICK_FROM_CAMERA) {
 
-                Uri selectedImageUri = Imguri;
+                File imageFile = null ;
+                Uri selectedImageUri;
+
+                if(mIsSdkLessThanM == true){
+                    selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+
+                }else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                }
+
+             //   Uri selectedImageUri = Imguri;
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-                File imageFile = new File(path);
+            //    File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -2624,7 +2650,11 @@ public class RepositoryFragment extends Fragment {
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                 break;
                             case 1:
-                                checkCameraPermission();
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                /* File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -2825,7 +2855,7 @@ public class RepositoryFragment extends Fragment {
     }
 
     private void startBackgroundprocess() {
-
+        originalVaultlist.clear();
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
@@ -2858,6 +2888,7 @@ public class RepositoryFragment extends Fragment {
                     HashMap<String, String> hmap;
                     HashMap<String, String> hmap_details;
                     S3Objects = new ArrayList<HashMap<String, String>>();
+                    S3Objects.clear();
                     for (int i = 0; i < S3Objects_arr.length(); i++) {
                         JSONObject json_obj = S3Objects_arr.getJSONObject(i);
                         hmap_details = new HashMap<String, String>();
@@ -2869,7 +2900,7 @@ public class RepositoryFragment extends Fragment {
 
                         String[] key_split = Folder.split("/");
                         hmap = new HashMap<String, String>();
-
+                        hmap.clear();
                         for (int k = 2; k < key_split.length; k++) {
 
                             if (!key_split[k].contains(".PNG") && !key_split[k].contains(".jpg") && !key_split[k].contains(".xls")
@@ -3820,14 +3851,19 @@ public class RepositoryFragment extends Fragment {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() {
-        boolean isGranted;
+    void checkCameraPermission() throws IOException{
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startCamera() ;
+        }else {
+            takePhoto();
+        }
+       /* boolean isGranted;
         if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // Camera permission has not been granted.
             requestCameraPermission();
         } else {
             takePhoto();
-        }
+        }*/
     }
 
     /**
@@ -3840,7 +3876,7 @@ public class RepositoryFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA) {
+        /*if (requestCode == REQUEST_CAMERA) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for camera permission.
 
@@ -3852,6 +3888,71 @@ public class RepositoryFragment extends Fragment {
                 //Permission not granted
                 Toast.makeText(mActivity, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
             }
+        }*/
+
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mPermissionGranted = true ;
+                Log.e("Rishabh", "Permissions are Granted .");
+            } else {
+                mPermissionGranted = false ;
+                Log.e("Rishabh", "Permissions are not granted .");
+            }
         }
+    }
+
+    void askRunTimePermissions() {
+
+        int permissionCAMERA = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
+        int storagePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(mActivity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
+        }
+
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false ;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }

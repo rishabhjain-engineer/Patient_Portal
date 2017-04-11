@@ -125,7 +125,7 @@ public class Authentication extends AsyncTask<Void, Void, Void> {
                 } else if (activityname.equals("Filevault") && whichbtn.equals("")) {
         //            ((Filevault) context).createLockFolder();
                 } else if (activityname.equals("Filevault2") && whichbtn.equals("")) {
-                    ((Filevault2) context).startBackgroundprocess();
+         //           ((Filevault2) context).startBackgroundprocess();
                 } else if (activityname.equals("MyFamily") && whichbtn.equals("")) {
                     ((MyFamily) context).LoadFamilyMembers();
                 } else if (activityname.equalsIgnoreCase("ReportRecords") && whichbtn.equals("")) {
