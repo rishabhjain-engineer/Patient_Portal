@@ -92,6 +92,7 @@ public class DashBoardActivity extends BaseActivity {
         mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
 
         mDashBoardTv = (TextView) findViewById(R.id.footer_dashboard_textview);
+        mDashBoardTv.setTextColor(greenColor);
         mReportTv = (TextView) findViewById(R.id.footer_reports_textview);
         mRepositoryTv = (TextView) findViewById(R.id.footer_repository_textview);
         mFamilyTv = (TextView) findViewById(R.id.footer_family_textview);
