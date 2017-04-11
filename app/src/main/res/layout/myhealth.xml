@@ -5,6 +5,8 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <include layout="@layout/common_header" />
+
     <LinearLayout
         android:id="@+id/bgHeader"
         android:layout_width="match_parent"

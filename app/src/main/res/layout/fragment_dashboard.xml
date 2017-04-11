@@ -9,7 +9,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_alignParentTop="true"
         android:background="@color/white">
 
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:text="Scion"
                 android:textColor="@color/home_title_scion"
-                android:textSize="30sp" />
+                android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/tra_text"
@@ -126,8 +126,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="18sp"

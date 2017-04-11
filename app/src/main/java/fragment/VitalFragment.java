@@ -77,6 +77,8 @@ public class VitalFragment extends Fragment{
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         service = new Services(mActivity);
+        TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
+        hederTitle.setText("Vitals");
         mBpTvValue = (TextView) view.findViewById(R.id.bp_tv);
         mBmiTvValue = (TextView) view.findViewById(R.id.bmi_tv_2);
         heighttxt_id = (TextView) view.findViewById(R.id.heighttxt_id);
