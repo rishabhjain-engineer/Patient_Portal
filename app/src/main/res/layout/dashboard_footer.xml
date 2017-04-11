@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:textSize="@dimen/footer_text_size"
-            android:text="Dashboard"
+            android:text="Home"
             android:textColor="@color/dashboard_footer_textcolor" />
     </LinearLayout>
 
