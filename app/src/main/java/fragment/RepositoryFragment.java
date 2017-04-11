@@ -2825,7 +2825,7 @@ public class RepositoryFragment extends Fragment {
     }
 
     private void startBackgroundprocess() {
-
+        originalVaultlist.clear();
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
@@ -2858,6 +2858,7 @@ public class RepositoryFragment extends Fragment {
                     HashMap<String, String> hmap;
                     HashMap<String, String> hmap_details;
                     S3Objects = new ArrayList<HashMap<String, String>>();
+                    S3Objects.clear();
                     for (int i = 0; i < S3Objects_arr.length(); i++) {
                         JSONObject json_obj = S3Objects_arr.getJSONObject(i);
                         hmap_details = new HashMap<String, String>();
@@ -2869,7 +2870,7 @@ public class RepositoryFragment extends Fragment {
 
                         String[] key_split = Folder.split("/");
                         hmap = new HashMap<String, String>();
-
+                        hmap.clear();
                         for (int k = 2; k < key_split.length; k++) {
 
                             if (!key_split[k].contains(".PNG") && !key_split[k].contains(".jpg") && !key_split[k].contains(".xls")

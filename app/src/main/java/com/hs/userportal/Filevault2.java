@@ -331,7 +331,7 @@ public class Filevault2 extends BaseActivity {
             Toast.makeText(Filevault2.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
        /* if(!check_load){*/
-            new Authentication(Filevault2.this, "Filevault2", "").execute();
+ //           new Authentication(Filevault2.this, "Filevault2", "").execute();
         }
 
 
@@ -3226,6 +3226,8 @@ public class Filevault2 extends BaseActivity {
             folder_path.remove(folder_path.size() - 1);
         }*/
         if (!toggle_move) {
+            thumbImage.clear();
+            vault_list.setAdapter(null);
             if (mhelper.folder_path.size() != 0) {
                 mhelper.folder_path.remove(mhelper.folder_path.size() - 1);
             }
@@ -3234,7 +3236,6 @@ public class Filevault2 extends BaseActivity {
         } else if (!view_list) {
             list_header.setVisibility(View.VISIBLE);
             list_header2.setVisibility(View.GONE);
-            Log.e("Rishabh", "Vault adapter callled from onBackPressed :");
             vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, "");
             vault_list.setAdapter(vault_adapter);
             toggle_move = false;
@@ -3258,17 +3259,13 @@ public class Filevault2 extends BaseActivity {
     public void startBackgroundprocess() {
         S3Objects = new ArrayList<HashMap<String, String>>();
         S3Objects.clear();
-        thumbImage.clear();
         S3Objects = new NavFolder(Folder_Clicked, getIntent().getStringExtra("hash_keyvalue")).onFolderClickListener();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (S3Objects.size() == 0) {
-                    Log.e("Rishabh", "Start Background Process .. ");
                     startBackgroundprocess();
                 } else {
-                    Log.e("Rishabh", "Show data called .. ");
                     Show_Data(S3Objects);
                 }
             }
@@ -3276,6 +3273,7 @@ public class Filevault2 extends BaseActivity {
     }
 
     public void Show_Data(ArrayList<HashMap<String, String>> list) {
+        thumbImage.clear();
         HashMap<String, String> hmap1;
         String duplicate_folder = "";
         for (int i = 0; i < list.size(); i++) {
@@ -3317,7 +3315,6 @@ public class Filevault2 extends BaseActivity {
         thumbnailsselection = new boolean[thumbImage.size()];
         imageAdapter = new ImageAdapter();
         gridView.setAdapter(imageAdapter);
-        Log.e("Rishabh", "vault adapter called from Show_Data :");
         vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, path_buffer.toString());
         vault_list.setAdapter(vault_adapter);
         list_header.setVisibility(View.VISIBLE);
@@ -4655,7 +4652,7 @@ public class Filevault2 extends BaseActivity {
             finish();
         } else {
             Log.e("Rishabh", "Start Background Process called from onResume() ");
-          //  startBackgroundprocess();
+            startBackgroundprocess();
         }
         super.onResume();
     }
