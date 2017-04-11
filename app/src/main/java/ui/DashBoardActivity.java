@@ -66,8 +66,9 @@ public class DashBoardActivity extends BaseActivity {
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(false);
-        //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        // mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+        //mActionBar.setTitle(Html.fromHtml("<h2>Title</h2><br><p>Description here</p>"));
+        mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
         //mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
@@ -273,7 +274,7 @@ public class DashBoardActivity extends BaseActivity {
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-            mActionBar.setTitle(Html.fromHtml("<font color=\"#0f9347\">" + "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "  ScionTra" + "</font>"));
+            mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
             mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);

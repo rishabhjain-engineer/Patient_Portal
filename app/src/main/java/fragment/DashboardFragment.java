@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,6 +58,7 @@ public class DashboardFragment extends Fragment {
     private String mScore, mFact, mPathOfGlobalIndex, mUserId;
     private Services service;
     private PreferenceHelper mPreferenceHelper;
+    private Menu menu1;
 
 
     @Nullable
@@ -79,6 +83,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         service = new Services(mActivity);
@@ -108,6 +113,30 @@ public class DashboardFragment extends Fragment {
                 ((DashBoardActivity)mActivity).openAccountFragment();
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mActivity.getMenuInflater().inflate(R.menu.home_menu, menu);
+        menu1 = menu;
+
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                return true;
+
+            case R.id.add:
+                ((DashBoardActivity)mActivity).openAccountFragment();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     protected void goToHealth(int position) {
