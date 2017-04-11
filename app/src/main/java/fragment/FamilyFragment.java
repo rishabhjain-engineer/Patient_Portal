@@ -105,6 +105,8 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.myfamily, null);
+        TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
+        hederTitle.setText("Family");
         mActivity = getActivity();
         family_list = (ListView) view.findViewById(R.id.family_list);
         empty_msg = (TextView) view.findViewById(R.id.empty_msg);
@@ -145,6 +147,14 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
             }
         });
         setHasOptionsMenu(true);
+        ImageView imageView = (ImageView) view.findViewById(R.id.add_image);
+        imageView.setVisibility(View.VISIBLE);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showdialog();
+            }
+        });
         return view;
     }
 

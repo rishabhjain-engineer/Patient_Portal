@@ -73,7 +73,7 @@ public class DashBoardActivity extends BaseActivity {
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
         //mActionBar.setTitle(Html.fromHtml("<h2>Title</h2><br><p>Description here</p>"));
         mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
-        //mActionBar.hide();
+        mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
@@ -92,6 +92,7 @@ public class DashBoardActivity extends BaseActivity {
         mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
 
         mDashBoardTv = (TextView) findViewById(R.id.footer_dashboard_textview);
+        mDashBoardTv.setTextColor(greenColor);
         mReportTv = (TextView) findViewById(R.id.footer_reports_textview);
         mRepositoryTv = (TextView) findViewById(R.id.footer_repository_textview);
         mFamilyTv = (TextView) findViewById(R.id.footer_family_textview);
