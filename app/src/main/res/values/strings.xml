@@ -17,7 +17,7 @@
     <string name="app_id_old">608699132624495</string>
     <string name="app_id">318942061855338</string>
 
-     <!--126834477650763-->
+    <!--126834477650763-->
     <string name="file_vault">File Vault</string>
     <string name="labs_loc">Labs Near You</string>
     <string name="s3_access_key">AKIAIUG673POSGFZTX4A</string>
@@ -58,5 +58,5 @@
     <string name="sign_in">&#160;Sign in</string>
     <string name="let_started_text">Let\'s get you started in few clicks.</string>
     <string name="already_have_an_account">Already have an account?</string>
-    <string name="credit_text">Health icon by Jamison Wieser from the Noun Project.\nHealth report by rekanice from the Noun Project.</string>
+    <string name="credit_text">Health (Reports) Icon by rekanice from the Noun Project.\nWeight scale (Vitals) Icon by Eucalyp from the Noun Project.\nFamily Icon by Rauan from the Noun Project.\nFolder (Repository) Icon by Setyo Ari Wibowo from the Noun Project.</string>
 </resources>
