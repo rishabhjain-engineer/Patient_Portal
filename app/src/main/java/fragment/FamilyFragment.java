@@ -142,7 +142,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                         ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
                     }
                 } else {
-                    //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
+                    showalert("You don't have permission to view their report.");
                 }
             }
         });
