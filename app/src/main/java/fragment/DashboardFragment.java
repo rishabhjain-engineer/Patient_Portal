@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,6 +58,8 @@ public class DashboardFragment extends Fragment {
     private String mScore, mFact, mPathOfGlobalIndex, mUserId;
     private Services service;
     private PreferenceHelper mPreferenceHelper;
+    private Menu menu1;
+    private DashboardActivityAdapter mDashboardActivityAdapter;
 
 
     @Nullable
@@ -79,25 +84,26 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         service = new Services(mActivity);
         mUserId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
 
-        DashboardActivityAdapter dashboardActivityAdapter = new DashboardActivityAdapter(mActivity);
-        mGridView.setAdapter(dashboardActivityAdapter);
+        mDashboardActivityAdapter = new DashboardActivityAdapter(mActivity);
+        mGridView.setAdapter(mDashboardActivityAdapter);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (position == 0) {
-                    ((DashBoardActivity)mActivity).openReportFragment();
+                    ((DashBoardActivity) mActivity).openReportFragment();
                 } else if (position == 1) {
-                    ((DashBoardActivity)mActivity).openVitalFragment();
+                    ((DashBoardActivity) mActivity).openVitalFragment();
                 } else if (position == 2) {
-                    ((DashBoardActivity)mActivity).openFamilyFragment();
+                    ((DashBoardActivity) mActivity).openFamilyFragment();
                 } else if (position == 3) {
-                    ((DashBoardActivity)mActivity).openRepositoryFragment();
+                    ((DashBoardActivity) mActivity).openRepositoryFragment();
                 }
             }
         });
@@ -105,9 +111,33 @@ public class DashboardFragment extends Fragment {
         mMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((DashBoardActivity)mActivity).openAccountFragment();
+                ((DashBoardActivity) mActivity).openAccountFragment();
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mActivity.getMenuInflater().inflate(R.menu.home_menu, menu);
+        menu1 = menu;
+
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                return true;
+
+            case R.id.add:
+                ((DashBoardActivity) mActivity).openAccountFragment();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     protected void goToHealth(int position) {
@@ -130,6 +160,7 @@ public class DashboardFragment extends Fragment {
 
     private String height, weight, bgroup, mBp;
     private boolean isShowGreenVitalsImage;
+
     private class MyHealthAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
@@ -147,10 +178,13 @@ public class DashboardFragment extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             progress.dismiss();
-            if (isShowGreenVitalsImage) {
-                //mHomePageVitalsImageView.setImageResource(0);
-            }else {
-                //mHomePageVitalsImageView.setImageResource(R.drawable.homepage_vital_red);
+            if (mDashboardActivityAdapter != null) {
+                if (isShowGreenVitalsImage) {
+                    mDashboardActivityAdapter.setFlagForImage(true);
+                } else {
+                    mDashboardActivityAdapter.setFlagForImage(false);
+                }
+                mDashboardActivityAdapter.notifyDataSetChanged();
             }
         }
 
@@ -170,7 +204,7 @@ public class DashboardFragment extends Fragment {
                     weight = obj.optString("weight");
                     mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
-                    if (!TextUtils.isEmpty(alergyString) || !TextUtils.isEmpty(bgroup) || !TextUtils.isEmpty(height) || !TextUtils.isEmpty(weight) || !TextUtils.isEmpty(mBp)) {
+                    if (!TextUtils.isEmpty(alergyString) && !TextUtils.isEmpty(bgroup) && !TextUtils.isEmpty(height) && !TextUtils.isEmpty(weight) && !TextUtils.isEmpty(mBp)) {
                         isShowGreenVitalsImage = true;
                     }
                 }
@@ -183,6 +217,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private boolean isToLoadData;
+
     private class GetUserGradeAsync extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;

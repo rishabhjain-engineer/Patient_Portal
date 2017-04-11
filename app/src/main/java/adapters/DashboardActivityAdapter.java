@@ -72,7 +72,23 @@ public class DashboardActivityAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.name.setText(mList.get(position));
-        holder.image.setImageResource(mImageList.get(position));
+        if (position == 1) {
+            if (isShowGreenVitalsImage) {
+                holder.image.setImageResource(mImageList.get(position));
+            } else {
+                holder.image.setImageResource(R.drawable.homepage_vital_red);
+            }
+        } else {
+            holder.image.setImageResource(mImageList.get(position));
+        }
+
+
         return convertView;
+    }
+
+    private boolean isShowGreenVitalsImage;
+
+    public void setFlagForImage(boolean value) {
+        isShowGreenVitalsImage = value;
     }
 }
