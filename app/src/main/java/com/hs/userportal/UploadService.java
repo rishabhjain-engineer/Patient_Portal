@@ -44,6 +44,7 @@ import java.util.Map;
 import config.StaticHolder;
 import fragment.RepositoryFragment;
 import ui.SignInActivity;
+import utils.PreferenceHelper;
 
 public class UploadService extends IntentService {
 
@@ -67,6 +68,7 @@ public class UploadService extends IntentService {
     private final Handler handler = new Handler();
     private String fname, afterDecode, uplodfrm;
     private String add_path, exhistimg, stringcheck;
+    protected PreferenceHelper mPreferenceHelper;
 
     public UploadService() {
         super("simpl3r-example-upload");
@@ -86,8 +88,10 @@ public class UploadService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
+       /* SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        patientId = sharedPreferences.getString("ke", "");*/
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");

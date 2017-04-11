@@ -1,5 +1,7 @@
 package utils;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,8 +25,11 @@ public class NavFolder {
 
     public ArrayList<HashMap<String, String>> onFolderClickListener() {
         data_objects = new ArrayList<HashMap<String, String>>();
+        data_objects.clear();
         HashMap<String, String> hmap;
+
         int firsttimeval = 0;
+
         for (int i = 0; i < navlist.size(); i++) {
             int hashsize = navlist.get(i).size();
             String[] split = hash_key.split("Personal");
@@ -34,8 +39,10 @@ public class NavFolder {
             if (navlist.get(i).get(hash_key) != null) {
                 if (haskeynumber < hashsize && navlist.get(i).get(hash_key).equals(folder_name)) {
                     hmap = new HashMap<String, String>();
+                    hmap.clear();
                     if (firsttimeval == 0) {
                         hmap = new HashMap<String, String>();
+                        hmap.clear();
                         int number = haskeynumber + 1;
                         hmap.put("folder_name", navlist.get(i).get("Personal" + number));
                         hmap.put("hash_keyvalue", "Personal" + number);
@@ -53,6 +60,7 @@ public class NavFolder {
                         if (check == false) {
                             int number = haskeynumber + 1;
                             hmap = new HashMap<String, String>();
+                            hmap.clear();
                             hmap.put("folder_name", navlist.get(i).get("Personal" + number));
                             hmap.put("hash_keyvalue", "Personal" + number);
                             hmap.put("LastModified", navlist.get(i).get("LastModified"));
