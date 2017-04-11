@@ -204,7 +204,8 @@ public class DashboardFragment extends Fragment {
                     weight = obj.optString("weight");
                     mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
-                    if (!TextUtils.isEmpty(alergyString) && !TextUtils.isEmpty(bgroup) && !TextUtils.isEmpty(height) && !TextUtils.isEmpty(weight) && !TextUtils.isEmpty(mBp)) {
+                    if (!TextUtils.isEmpty(alergyString) && !TextUtils.isEmpty(bgroup) && !TextUtils.isEmpty(height) && !TextUtils.isEmpty(weight) && !TextUtils.isEmpty(mBp) &&
+                            alergyString.equalsIgnoreCase("null") && bgroup.equalsIgnoreCase("null") && height.equalsIgnoreCase("null") && weight.equalsIgnoreCase("null") && mBp.equalsIgnoreCase("null")) {
                         isShowGreenVitalsImage = true;
                     }
                 }
