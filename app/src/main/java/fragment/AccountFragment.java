@@ -89,6 +89,8 @@ public class AccountFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, null);
+        TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
+        hederTitle.setText("Accounts");
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);

@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -136,6 +137,8 @@ public class ReportFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.lablists, null);
+        TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
+        hederTitle.setText("Reports");
         mActivity = getActivity();
         family.clear();
         static_family.clear();
