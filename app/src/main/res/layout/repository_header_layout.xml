@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="65dp"
     android:background="@color/header_color"
     android:padding="10dp">
 
@@ -12,16 +12,27 @@
         android:layout_height="wrap_content"
         android:text="Repository"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="21sp"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:id="@+id/repository_backbutton_imageview"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/backarrow"
+        android:visibility="gone"/>
 
 
     <ImageView
         android:id="@+id/repository_grid_imageview"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
         android:background="@drawable/ic_grid"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
@@ -37,28 +48,31 @@
 
         <ImageView
             android:id="@+id/repository_save_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/repository_header_icon_width"
+            android:layout_height="@dimen/repository_header_icon_height"
+            android:layout_marginRight="4dp"
             android:background="@drawable/ic_save"/>
 
         <ImageView
             android:id="@+id/repository_delete_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/repository_header_icon_width"
+            android:layout_height="@dimen/repository_header_icon_height"
+            android:layout_marginRight="4dp"
             android:background="@drawable/del_icon"/>
 
         <ImageView
             android:id="@+id/repository_move_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/repository_header_icon_width"
+            android:layout_height="@dimen/repository_header_icon_height"
+            android:layout_marginRight="4dp"
             android:background="@drawable/ic_exchngfolder"/>
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/repository_selectall_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/repository_header_icon_width"
+        android:layout_height="@dimen/repository_header_icon_height"
         android:layout_marginRight="12dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/middle_options_container"

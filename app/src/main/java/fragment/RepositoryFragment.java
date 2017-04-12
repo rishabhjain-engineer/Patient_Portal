@@ -159,14 +159,14 @@ public class RepositoryFragment extends Fragment {
     private int ipos = 0;
     private Services service;
     private GridView gridView;
-    private int check = 0, MY_PERMISSIONS_REQUEST =1;
+    private int check = 0, MY_PERMISSIONS_REQUEST = 1;
     private int check_grid = 0;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
-    private boolean view_list = false, mIsSdkLessThanM = true , mPermissionGranted;
+    private boolean view_list = false, mIsSdkLessThanM = true, mPermissionGranted;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath=null;
+    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath = null;
     private Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
@@ -184,12 +184,12 @@ public class RepositoryFragment extends Fragment {
     private int checkdialog = 0;
     private Folder_adapter folder_adapter;
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
-    private TextView warning_msg;
+    private TextView warning_msg, mHeaderRepositoryTitle;
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
     private EditText mSearchBarEditText;
-    private LinearLayout mHeaderMiddleImageViewContainer ;
+    private LinearLayout mHeaderMiddleImageViewContainer;
 
     public static Context file_vaultcontxt;
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
@@ -198,7 +198,7 @@ public class RepositoryFragment extends Fragment {
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
 
-    private ImageView mHeaderGridImageView , mHeaderSaveImageView , mHeaderDeleteImageView , mHeaderMoveImageView , mHeaderSelectAllImageView ;
+    private ImageView mHeaderGridImageView, mHeaderSaveImageView, mHeaderDeleteImageView, mHeaderMoveImageView, mHeaderSelectAllImageView, mHeaderBackButtonImageView;
     //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
 
     /*@Override
@@ -238,6 +238,10 @@ public class RepositoryFragment extends Fragment {
         mHeaderDeleteImageView = (ImageView) view.findViewById(R.id.repository_delete_imageview);
         mHeaderMoveImageView = (ImageView) view.findViewById(R.id.repository_move_imageview);
         mHeaderSelectAllImageView = (ImageView) view.findViewById(R.id.repository_selectall_imageview);
+        mHeaderBackButtonImageView = (ImageView) view.findViewById(R.id.repository_backbutton_imageview);
+
+
+        mHeaderRepositoryTitle = (TextView) view.findViewById(R.id.repository_title);
 
         mHeaderMiddleImageViewContainer = (LinearLayout) view.findViewById(R.id.middle_options_container);
 
@@ -246,7 +250,7 @@ public class RepositoryFragment extends Fragment {
         mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
         mHeaderMoveImageView.setOnClickListener(mOnClickListener);
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
-
+        mHeaderBackButtonImageView.setOnClickListener(mOnClickListener);
 
 
         sendData = new JSONObject();
@@ -409,7 +413,7 @@ public class RepositoryFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        askRunTimePermissions() ;
+                        askRunTimePermissions();
                         chooseimage();
 
                     }
@@ -584,23 +588,29 @@ public class RepositoryFragment extends Fragment {
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int viewId = view.getId() ;
+            int viewId = view.getId();
 
-            if(viewId == R.id.repository_grid_imageview){
+            if (viewId == R.id.repository_grid_imageview) {
                 changeGridViewToListView();
-            }
-            else if(viewId == R.id.repository_selectall_imageview){
+            } else if (viewId == R.id.repository_selectall_imageview) {
                 mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                mHeaderRepositoryTitle.setVisibility(View.GONE);
+                mHeaderBackButtonImageView.setVisibility(View.VISIBLE);
                 selectAll();
-            }
-            else if(viewId == R.id.repository_delete_imageview){
+            } else if (viewId == R.id.repository_delete_imageview) {
                 deleteFile();
-            }
-            else if(viewId == R.id.repository_move_imageview){
+            } else if (viewId == R.id.repository_move_imageview) {
                 moveFile();
-            }
-            else if(viewId == R.id.repository_save_imageview){
+            } else if (viewId == R.id.repository_save_imageview) {
                 saveFile();
+            } else if (viewId == R.id.repository_backbutton_imageview) {
+
+                headerBackButton();                                                                     // ActionBar Back Home Button
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                mHeaderRepositoryTitle.setVisibility(View.VISIBLE);
+                mHeaderBackButtonImageView.setVisibility(View.GONE);
+
+
             }
         }
     };
@@ -1120,29 +1130,29 @@ public class RepositoryFragment extends Fragment {
             }
             if (requestCode == PICK_FROM_CAMERA) {
 
-                File imageFile = null ;
+                File imageFile = null;
                 Uri selectedImageUri;
 
-                if(mIsSdkLessThanM == true){
+                if (mIsSdkLessThanM == true) {
                     selectedImageUri = Imguri;
                     imageFile = new File(selectedImageUri.getPath());
                     Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
 
-                }else {
+                } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     selectedImageUri = imageUri;
                     imageFile = new File(imageUri.getPath());
                     Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
                 }
 
-             //   Uri selectedImageUri = Imguri;
+                //   Uri selectedImageUri = Imguri;
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-            //    File imageFile = new File(path);
+                //    File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -2597,12 +2607,47 @@ public class RepositoryFragment extends Fragment {
 
         }
     }
+
+    private void headerBackButton() {
+        if (!toggle_move) {
+          /*  super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        } else if (!view_list) {
+            list_header.setVisibility(View.VISIBLE);
+            list_header2.setVisibility(View.GONE);
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+            vault_list.setAdapter(vault_adapter);
+            toggle_move = false;
+            check_para = 0;
+            select_times = 0;
+            menu_toggle.findItem(R.id.action_delete).setVisible(false);
+            menu_toggle.findItem(R.id.save).setVisible(false);
+            menu_toggle.findItem(R.id.action_move).setVisible(false);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
+            thumbnailsselection = new boolean[thumbImage.size()];
+        } else {
+           /* super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        }
+
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.delete, menu);
         menu_toggle = menu;
         menu_toggle.findItem(R.id.action_home).setVisible(false);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @SuppressWarnings("deprecation")
@@ -2612,8 +2657,8 @@ public class RepositoryFragment extends Fragment {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                if (!toggle_move) {
-          /*  super.onBackPressed();*/
+            /*    if (!toggle_move) {
+          *//*  super.onBackPressed();*//*
                     Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
@@ -2634,7 +2679,7 @@ public class RepositoryFragment extends Fragment {
                     menu_toggle.findItem(R.id.action_home).setVisible(false);
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
-           /* super.onBackPressed();*/
+           *//* super.onBackPressed();*//*
                     Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
@@ -2643,7 +2688,7 @@ public class RepositoryFragment extends Fragment {
                     mActivity.finish();
                 }
                 return true;
-
+*/
             case R.id.select_all:
 
                 /*if (select_times != 0 && !view_list) {
@@ -5282,10 +5327,10 @@ public class RepositoryFragment extends Fragment {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() throws IOException{
+    void checkCameraPermission() throws IOException {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startCamera() ;
-        }else {
+            startCamera();
+        } else {
             takePhoto();
         }
        /* boolean isGranted;
@@ -5324,10 +5369,10 @@ public class RepositoryFragment extends Fragment {
         if (requestCode == MY_PERMISSIONS_REQUEST) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mPermissionGranted = true ;
+                mPermissionGranted = true;
                 Log.e("Rishabh", "Permissions are Granted .");
             } else {
-                mPermissionGranted = false ;
+                mPermissionGranted = false;
                 Log.e("Rishabh", "Permissions are not granted .");
             }
         }
@@ -5355,7 +5400,7 @@ public class RepositoryFragment extends Fragment {
     }
 
     void startCamera() throws IOException {
-        mIsSdkLessThanM = false ;
+        mIsSdkLessThanM = false;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
             File photoFile = null;
