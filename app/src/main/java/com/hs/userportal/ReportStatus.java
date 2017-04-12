@@ -1327,7 +1327,10 @@ public class ReportStatus extends BaseActivity {
             });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData,"Report Status");
-            int lenghtOfFile = result.length;
+            int lenghtOfFile = 1;
+            if(result != null){
+                lenghtOfFile = result.length;
+            }
             String temp = null;
             try {
                 temp = new String(result, "UTF-8");
