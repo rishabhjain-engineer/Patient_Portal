@@ -69,10 +69,10 @@ public class DashBoardActivity extends BaseActivity {
         greenColor = getResources().getColor(R.color.home_title_tra);
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
-        mActionBar.setDisplayHomeAsUpEnabled(false);
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+        //mActionBar.setDisplayHomeAsUpEnabled(false);
+        //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
         //mActionBar.setTitle(Html.fromHtml("<h2>Title</h2><br><p>Description here</p>"));
-        mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
+        // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
         mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
@@ -256,8 +256,8 @@ public class DashBoardActivity extends BaseActivity {
 
     public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
         //mActionBar.show();
-        mActionBar.setTitle("Reports");
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+        // mActionBar.setTitle("Reports");
+        //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
         mFooterReportImageView.setImageResource(R.drawable.reports_active);
         mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -281,20 +281,10 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openDashBoardFragment() {
-        mDashBoardTv.setTextColor(greenColor);
-        mReportTv.setTextColor(grayColor);
-        mRepositoryTv.setTextColor(grayColor);
-        mFamilyTv.setTextColor(grayColor);
-        mAccountTv.setTextColor(grayColor);
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-            mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
-            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
-            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-            mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
-            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+            //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+            // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
             Fragment newFragment = new DashboardFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, newFragment);
@@ -304,17 +294,17 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openVitalFragment() {
-        mFooterContainer.setVisibility(View.VISIBLE);
         if (isSessionExist()) {
-            mDashBoardTv.setTextColor(greenColor);
+            mFooterContainer.setVisibility(View.VISIBLE);
+            Log.d("ayaz", "inside if");
+            mDashBoardTv.setTextColor(grayColor);
             mReportTv.setTextColor(grayColor);
             mRepositoryTv.setTextColor(grayColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(grayColor);
-
-            mActionBar.setTitle("Vitals");
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
-            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+            //mActionBar.setTitle("Vitals");
+            // mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
             mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
@@ -325,22 +315,23 @@ public class DashBoardActivity extends BaseActivity {
             transaction.addToBackStack(null);
             transaction.commit();
         }
+        Log.d("ayaz", "out of if");
     }
 
     public void openReportFragment() {
-        mFooterContainer.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
         } else {
             //mActionBar.show();
             if (isSessionExist()) {
+                mFooterContainer.setVisibility(View.VISIBLE);
                 mDashBoardTv.setTextColor(grayColor);
                 mReportTv.setTextColor(greenColor);
                 mRepositoryTv.setTextColor(grayColor);
                 mFamilyTv.setTextColor(grayColor);
                 mAccountTv.setTextColor(grayColor);
-                mActionBar.setTitle("Reports");
-                mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+                //mActionBar.setTitle("Reports");
+                //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
                 mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
                 mFooterReportImageView.setImageResource(R.drawable.reports_active);
                 mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -360,18 +351,18 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
-        mFooterContainer.setVisibility(View.VISIBLE);
  /*intent = new Intent(DashBoardActivity.this, Filevault.class);
                 startActivity(intent);*/
         // mActionBar.show();
         if (isSessionExist()) {
+            mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
             mReportTv.setTextColor(grayColor);
             mRepositoryTv.setTextColor(greenColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(grayColor);
-            mActionBar.setTitle("Repository");
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            //mActionBar.setTitle("Repository");
+            //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
             mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
@@ -386,18 +377,18 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openFamilyFragment() {
-        mFooterContainer.setVisibility(View.VISIBLE);
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
         //mActionBar.show();
         if (isSessionExist()) {
+            mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
             mReportTv.setTextColor(grayColor);
             mRepositoryTv.setTextColor(grayColor);
             mFamilyTv.setTextColor(greenColor);
             mAccountTv.setTextColor(grayColor);
-            mActionBar.setTitle("Family");
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            // mActionBar.setTitle("Family");
+            // mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
             mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
@@ -412,16 +403,16 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openAccountFragment() {
-        mFooterContainer.setVisibility(View.VISIBLE);
         if (isSessionExist()) {
+            mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
             mReportTv.setTextColor(grayColor);
             mRepositoryTv.setTextColor(grayColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(greenColor);
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             // mActionBar.show();
-            mActionBar.setTitle("Account");
+            //mActionBar.setTitle("Account");
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
             mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);

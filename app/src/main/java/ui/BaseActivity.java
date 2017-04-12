@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -157,9 +158,10 @@ public class BaseActivity extends AppCompatActivity {
 
     boolean result;
 
-    public boolean isSessionExist() {
-      /*StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+    public synchronized boolean isSessionExist() {
+      StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
         String url = sttc_holdr.request_Url();
+        Log.d("ayaz", "Url"+url);
         JSONObject jsonObjectToSend = new JSONObject();
         try {
             jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
@@ -170,6 +172,7 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 String d = jsonObject.optString("d");
+                Log.d("ayaz", "Responnse: "+ d);
                 if (d.contains("true")) {
                     result = true;
                 } else {
@@ -180,13 +183,15 @@ public class BaseActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                Log.d("ayaz", "Error: ");
                 showSessionExpiredDialog();
                 result = false;
             }
         });
         mRequestQueue.add(jsonObjectRequest);
-        return result;*/
-        return true;
+        Log.d("ayaz", "returning result"+result);
+        return result;
+        //return true;
     }
 
     private void showSessionExpiredDialog() {
