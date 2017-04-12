@@ -53,6 +53,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -158,14 +159,14 @@ public class RepositoryFragment extends Fragment {
     private int ipos = 0;
     private Services service;
     private GridView gridView;
-    private int check = 0, MY_PERMISSIONS_REQUEST =1;
+    private int check = 0, MY_PERMISSIONS_REQUEST = 1;
     private int check_grid = 0;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
-    private boolean view_list = false, mIsSdkLessThanM = true , mPermissionGranted;
+    private boolean view_list = false, mIsSdkLessThanM = true, mPermissionGranted;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath=null;
+    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath = null;
     private Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
@@ -183,11 +184,12 @@ public class RepositoryFragment extends Fragment {
     private int checkdialog = 0;
     private Folder_adapter folder_adapter;
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
-    private TextView warning_msg;
+    private TextView warning_msg, mHeaderRepositoryTitle;
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
     private EditText mSearchBarEditText;
+    private LinearLayout mHeaderMiddleImageViewContainer;
 
     public static Context file_vaultcontxt;
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
@@ -195,6 +197,8 @@ public class RepositoryFragment extends Fragment {
     public static Uri Imguri;
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
+
+    private ImageView mHeaderGridImageView, mHeaderSaveImageView, mHeaderDeleteImageView, mHeaderMoveImageView, mHeaderSelectAllImageView, mHeaderBackButtonImageView;
     //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
 
     /*@Override
@@ -228,6 +232,26 @@ public class RepositoryFragment extends Fragment {
         bar = (ProgressBar) view.findViewById(R.id.pg);
 
         mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
+
+        mHeaderGridImageView = (ImageView) view.findViewById(R.id.repository_grid_imageview);
+        mHeaderSaveImageView = (ImageView) view.findViewById(R.id.repository_save_imageview);
+        mHeaderDeleteImageView = (ImageView) view.findViewById(R.id.repository_delete_imageview);
+        mHeaderMoveImageView = (ImageView) view.findViewById(R.id.repository_move_imageview);
+        mHeaderSelectAllImageView = (ImageView) view.findViewById(R.id.repository_selectall_imageview);
+        mHeaderBackButtonImageView = (ImageView) view.findViewById(R.id.repository_backbutton_imageview);
+
+
+        mHeaderRepositoryTitle = (TextView) view.findViewById(R.id.repository_title);
+
+        mHeaderMiddleImageViewContainer = (LinearLayout) view.findViewById(R.id.middle_options_container);
+
+        mHeaderGridImageView.setOnClickListener(mOnClickListener);
+        mHeaderSaveImageView.setOnClickListener(mOnClickListener);
+        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
+        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
+        mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
+        mHeaderBackButtonImageView.setOnClickListener(mOnClickListener);
+
 
         sendData = new JSONObject();
         service = new Services(mActivity);
@@ -389,7 +413,7 @@ public class RepositoryFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        askRunTimePermissions() ;
+                        askRunTimePermissions();
                         chooseimage();
 
                     }
@@ -560,6 +584,36 @@ public class RepositoryFragment extends Fragment {
         setHasOptionsMenu(true);
         return view;
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int viewId = view.getId();
+
+            if (viewId == R.id.repository_grid_imageview) {
+                changeGridViewToListView();
+            } else if (viewId == R.id.repository_selectall_imageview) {
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                mHeaderRepositoryTitle.setVisibility(View.GONE);
+                mHeaderBackButtonImageView.setVisibility(View.VISIBLE);
+                selectAll();
+            } else if (viewId == R.id.repository_delete_imageview) {
+                deleteFile();
+            } else if (viewId == R.id.repository_move_imageview) {
+                moveFile();
+            } else if (viewId == R.id.repository_save_imageview) {
+                saveFile();
+            } else if (viewId == R.id.repository_backbutton_imageview) {
+
+                headerBackButton();                                                                     // ActionBar Back Home Button
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                mHeaderRepositoryTitle.setVisibility(View.VISIBLE);
+                mHeaderBackButtonImageView.setVisibility(View.GONE);
+
+
+            }
+        }
+    };
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);
@@ -1076,29 +1130,29 @@ public class RepositoryFragment extends Fragment {
             }
             if (requestCode == PICK_FROM_CAMERA) {
 
-                File imageFile = null ;
+                File imageFile = null;
                 Uri selectedImageUri;
 
-                if(mIsSdkLessThanM == true){
+                if (mIsSdkLessThanM == true) {
                     selectedImageUri = Imguri;
                     imageFile = new File(selectedImageUri.getPath());
                     Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
 
-                }else {
+                } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     selectedImageUri = imageUri;
                     imageFile = new File(imageUri.getPath());
                     Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
                 }
 
-             //   Uri selectedImageUri = Imguri;
+                //   Uri selectedImageUri = Imguri;
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-            //    File imageFile = new File(path);
+                //    File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -1165,13 +1219,1435 @@ public class RepositoryFragment extends Fragment {
         menu_toggle = menu;
         return true;
     }*/
+    private void selectAll() {
+        if (select_times != 0 && !view_list) {
+            if (check % 2 == 0) {
+
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                    thumbnailsselection[i] = true;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                    menu_toggle.findItem(R.id.save).setVisible(true);
+                    menu_toggle.findItem(R.id.action_move).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                    thumbnailsselection[i] = false;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                    menu_toggle.findItem(R.id.save).setVisible(false);
+                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            }
+            check++;
+        } else if (view_list) {
+            if (check_grid % 2 == 0) {
+
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    thumbnailsselection[i] = true;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                    menu_toggle.findItem(R.id.save).setVisible(true);
+                    menu_toggle.findItem(R.id.action_move).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    thumbnailsselection[i] = false;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                    menu_toggle.findItem(R.id.save).setVisible(false);
+                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            }
+            check_grid++;
+        }
+        select_times = 1;
+        toggle_move = true;
+        check_para = 1;
+        imageAdapter = new RepositoryFragment.ImageAdapter();
+        gridView.setAdapter(imageAdapter);
+        if (!view_list) {
+            vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+            vault_list.setAdapter(vault_delete_adapter);
+                  /*  vault_delete_adapter.notifyDataSetChanged();*/
+            list_header2.setVisibility(View.VISIBLE);
+            list_header.setVisibility(View.GONE);
+            menu_toggle.findItem(R.id.action_delete).setVisible(true);
+            menu_toggle.findItem(R.id.save).setVisible(true);
+            menu_toggle.findItem(R.id.action_move).setVisible(true);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
+        }
+    }
+
+    private void deleteFile() {
+        checkdialog = 0;
+        toggle_move = false;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+        } /*else if (toggle_move && checkdialog == 0) {
+                    list_header.setVisibility(View.VISIBLE);
+                    list_header2.setVisibility(View.GONE);
+                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_list.setAdapter(vault_adapter);
+                    thumbnailsselection = new boolean[thumbImage.size()];
+                    toggle_move = false;
+                }*/ else if (!view_list) {
+            if (!view_list /*&& !toggle_move*/ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                toggle_move = true;
+                //  vault_delete_adapter.notifyDataSetChanged();
+                //checkdialog = 0;
+                if (checkdialog == 1) {
+
+                    final Dialog dialog = new Dialog(mActivity);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.unsaved_alert_dialog);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                    TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                    titleTv.setText("Delete");
+                    TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                    TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+
+                    messageTv.setText("Are you sure you want to delete the selected file(s)?");
+
+                    stayButton.setText("Cancel");
+                    stayButton.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            check_para = 0;
+                            select_times = 0;
+                        }
+                    });
+
+                    toggle_move = true;
+                    okBTN.setVisibility(View.VISIBLE);
+                    okBTN.setText("OK");
+                    okBTN.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            pd = new ProgressDialog(mActivity);
+                            pd.setMessage("Deleting .....");
+                            pd.show();
+                            toggle_move = false;
+                            JSONArray array = new JSONArray();
+                            check_para = 0;
+                            select_times = 0;
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+                                JSONObject imageobject = new JSONObject();
+                                if (thumbnailsselection[i]) {
+                                    try {
+                                        //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                        if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                                !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                                && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "1");
+                                            imageobject.put("ThumbFile", "");
+                                            imageobject.put("Status", "");
+                                        } else {
+                                            if (thumbImage.get(i).get("Personal3").contains(".png")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else {
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("ThumbFile", "");
+                                                imageobject.put("Status", "");
+                                            }
+
+                                        }
+
+                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*/
+                                    } catch (JSONException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+                                    array.put(imageobject);
+                                }
+
+
+                            }
+
+
+                            System.out.println(array);
+
+                            queue2 = Volley.newRequestQueue(mActivity);
+
+                            sendData = new JSONObject();
+                            try {
+                                sendData.put("ObjectList", array);
+                                sendData.put("UserId", patientId);
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+                            StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
+                            String url = sttc_holdr.request_Url();
+                            jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println(response);
+
+                                    try {
+                                        Toast.makeText(mActivity, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                                .show();
+                                        //  S3Objects.clear();
+                                        pd.dismiss();
+                                        refresh();
+                                    } catch (Exception e) {
+                                        // TODO Auto-generated catch
+                                        // block
+                                        e.printStackTrace();
+                                    }
+
+                                    // queue.add(jr);
+
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    pd.dismiss();
+                                    Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });/* {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> headers = new HashMap<String, String>();
+                                        headers.put("Cookie", Services.hoja);
+                                        return headers;
+                                    }
+                                };*/
+                            queue2.add(jr2);
+                            dialog.dismiss();
+                        }
+
+                    });
+
+                    dialog.show();
+                } else {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            int checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Delete");
+                dialog.setMessage("Are you sure you want to delete the selected file(s)?");
+
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                vault_list.setAdapter(vault_adapter);
+                                vault_list.setSelection(position_scroll);
+                                imageAdapter = new ImageAdapter();
+                                gridView.setAdapter(imageAdapter);
+                                thumbnailsselection = new boolean[thumbImage.size()];
+                                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                menu_toggle.findItem(R.id.save).setVisible(false);
+                                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                        dialog.dismiss();
+                        //toggle_move = false;
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        JSONArray array = new JSONArray();
+                        pd = new ProgressDialog(mActivity);
+                        pd.setMessage("Deleting .....");
+                        pd.show();
+                        toggle_move = false;
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+                            JSONObject imageobject = new JSONObject();
+                            if (thumbnailsselection[i]) {
+
+                                try {
+                                    //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+
+                                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                        } else {
+                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                        }
+                                        imageobject.put("Type", "1");
+                                        imageobject.put("ThumbFile", "");
+                                        imageobject.put("Status", "");
+                                    } else {
+                                        if (thumbImage.get(i).get("Personal3").contains(".png")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else {
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("ThumbFile", "");
+                                            imageobject.put("Status", "");
+                                        }
+                                    }
+
+                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*/
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                array.put(imageobject);
+                            }
+
+                        }
+
+                        System.out.println(array);
+
+                        queue2 = Volley.newRequestQueue(mActivity);
+
+                        sendData = new JSONObject();
+                        try {
+                            sendData.put("ObjectList", array);
+                            sendData.put("UserId", patientId);
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+                        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
+                        String url = sttc_holdr.request_Url();
+                        jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                System.out.println(response);
+
+                                try {
+                                    Toast.makeText(mActivity, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                            .show();
+                                    // S3Objects.clear();
+                                    pd.dismiss();
+                                    refresh();
+
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch
+                                    // block
+                                    e.printStackTrace();
+                                }
+
+                                // queue.add(jr);
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                pd.dismiss();
+                                Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        queue2.add(jr2);
+
+
+                    }
+                });
+                dialog.show();
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void changeGridViewToListView() {
+        if (!view_list) {
+            check_grid = 0;
+            show_menu = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    show_menu = 1;
+                    check_grid = 1;
+                    break;
+                }
+            }
+            if (show_menu == 1) {
+                menu_toggle.findItem(R.id.action_move).setVisible(true);
+                menu_toggle.findItem(R.id.save).setVisible(true);
+                menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            } else {
+                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                menu_toggle.findItem(R.id.save).setVisible(false);
+                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            }
+            gridView.setVisibility(View.VISIBLE);
+            imageAdapter.notifyDataSetChanged();
+                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
+                    vault_list.setAdapter(vault_adapter);*/
+            list_header.setVisibility(View.GONE);
+            list_header2.setVisibility(View.GONE);
+            vault_list.setVisibility(View.GONE);
+            menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_list);
+            view_list = true;
+            refresh_vault1 = true;
+            check_view = "Grid";
+        } else {
+            check = 0;
+            show_menu1 = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    show_menu1 = 1;
+                    check = 1;
+                    break;
+                }
+            }
+            if (show_menu1 == 1) {
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                menu_toggle.findItem(R.id.action_move).setVisible(true);
+                menu_toggle.findItem(R.id.save).setVisible(true);
+                menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_list.setVisibility(View.VISIBLE);
+                gridView.setVisibility(View.GONE);
+            } else {
+                list_header.setVisibility(View.VISIBLE);
+                list_header2.setVisibility(View.GONE);
+                vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+                vault_list.setAdapter(vault_adapter);
+                vault_list.setSelection(position_scroll);
+                vault_list.setVisibility(View.VISIBLE);
+                gridView.setVisibility(View.GONE);
+                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                menu_toggle.findItem(R.id.save).setVisible(false);
+                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            }
+                    /*list_header.setVisibility(View.VISIBLE);
+                    list_header2.setVisibility(View.GONE);
+                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_list.setAdapter(vault_adapter);
+                    vault_list.setVisibility(View.VISIBLE);
+                    gridView.setVisibility(View.GONE);
+                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*/
+            menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);
+            view_list = false;
+            refresh_vault1 = false;
+            check_view = "List";
+        }
+
+    }
+
+    private void moveFile() {
+        checkdialog = 0;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please Select file(s).", Toast.LENGTH_SHORT).show();
+        } /*else if (*//*toggle_move &&*//* checkdialog == 0) {
+                    list_header.setVisibility(View.VISIBLE);
+                    list_header2.setVisibility(View.GONE);
+                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_list.setAdapter(vault_adapter);
+                    thumbnailsselection = new boolean[thumbImage.size()];
+                   // toggle_move = false;
+                }*/ else if (!view_list) {
+            if (!view_list/* && !toggle_move*/ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                toggle_move = true;
+                //  vault_delete_adapter.notifyDataSetChanged();
+                checkdialog = 0;
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        checkdialog = 1;
+                        //  toggle_move = false;
+                        break;
+                    }
+                }
+                if (checkdialog == 1) {
+
+                    AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                    dialog.setTitle("Move");
+                    dialog.setMessage("Are you sure you want to move the selected file(s)?");
+
+                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int id) {
+                                   /* list_header.setVisibility(View.VISIBLE);
+                                    list_header2.setVisibility(View.GONE);
+                                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                    vault_list.setAdapter(vault_adapter);
+                                    vault_list.setSelection(position_scroll);
+                                    imageAdapter = new ImageAdapter();
+                                    gridView.setAdapter(imageAdapter);
+                                    thumbnailsselection = new boolean[thumbImage.size()];
+                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                    menu_toggle.findItem(R.id.save).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                            dialog.dismiss();
+                            check_para = 0;
+                            select_times = 0;
+                            //  toggle_move = false;
+
+                        }
+                    });
+
+                    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alias_thumbImage_folder.clear();
+                            rem_dup_folder = new String[thumbImage.size()];
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+                                if (thumbnailsselection[i]) {
+
+                                    //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(i).get("Personal3").contains(".jpg")
+                                            && !thumbImage.get(i).get("Personal3").contains(".JPG") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                        rem_dup_folder[i] = thumbImage.get(i).get("Personal3");
+                                    }
+                                }
+                            }
+                            check_para = 0;
+                            select_times = 0;
+                            moveFolder1 = foldername();
+                                /*JSONArray array = new JSONArray();
+
+                                for (int i = 0; i < thumbnailsselection.length; i++) {
+                                    JSONObject imageobject = new JSONObject();
+                                    if (thumbnailsselection[i]) {
+                                        try {
+                                            //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                            if (!thumbImage.get(i).get("FileVault2").contains(".PNG") && !thumbImage.get(i).get("FileVault2").contains(".png") &&
+                                                    !thumbImage.get(i).get("FileVault2").contains(".jpg") && !thumbImage.get(i).get("FileVault2").contains(".pdf")
+                                                    && !thumbImage.get(i).get("FileVault2").contains(".xls") && !thumbImage.get(i).get("FileVault2").contains(".doc")) {
+                                                imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                imageobject.put("Type", "1");
+                                                imageobject.put("ThumbFile", "");
+                                                imageobject.put("Status", "");
+                                            } else {
+                                                if (thumbImage.get(i).get("FileVault2").contains(".png")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.png", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".PNG")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.PNG", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".jpg")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.jpg", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".JPG")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.JPG", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", "");
+                                                    imageobject.put("Status", "");
+                                                }
+                                            }
+
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*//*
+                                        } catch (JSONException e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
+                                        array.put(imageobject);
+                                    }
+
+
+                                }
+
+
+                                System.out.println(array);
+
+                                queue2 = Volley.newRequestQueue(Filevault.this);
+
+                                sendData = new JSONObject();
+                                try {
+                                    sendData.put("ObjectList", array);
+                                    sendData.put("UserId", patientId);
+                                    sendData.put("NewPath","");
+                                    sendData.put("AbsolutePath","");
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+                                StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.MoveObject);
+                                String url = sttc_holdr.request_Url();
+                                jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        System.out.println(response);
+
+                                        try {
+                                            Toast.makeText(Filevault.this," Items Deleted", Toast.LENGTH_SHORT)
+                                                    .show();
+                                            //  S3Objects.clear();
+                                            finish();
+                                            startActivity(getIntent());
+                                        } catch (Exception e) {
+                                            // TODO Auto-generated catch
+                                            // block
+                                            e.printStackTrace();
+                                        }
+
+                                        // queue.add(jr);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });*//* {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> headers = new HashMap<String, String>();
+                                        headers.put("Cookie", Services.hoja);
+                                        return headers;
+                                    }
+                                };*//*
+                                queue2.add(jr2);*/
+                            if (rem_dup_folder != null/* && !rem_dup_folder.equalsIgnoreCase("")*/) {
+                                for (int r = 0; r < moveFolder1.size(); r++) {
+                                    for (int l = 0; l < rem_dup_folder.length; l++) {
+                                        if (moveFolder1.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
+                                            moveFolder1.remove(r);
+                                        }
+                                    }
+
+                                }
+                            }
+                            alias_thumbImage_folder.addAll(moveFolder1);
+                                /*String[] stockArr = new String[moveFolder1.size()];
+                                stockArr = moveFolder1.toArray(stockArr);*/
+                                /*AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+                                builder.setTitle("Make your selection");
+                                builder.setItems(stockArr, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int item) {
+                                        //Toast.makeText(Filevault.this,folder_move.get(item).toString(),Toast.LENGTH_SHORT).show();
+                                        move_to_folder(moveFolder1.get(item).toString());
+                                    }
+                                });
+                                AlertDialog alert = builder.create();
+                                alert.show();*/
+
+                            final Dialog move_dialog = new Dialog(mActivity);
+                            move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            //setting custom layout to dialog
+                            move_dialog.setContentView(R.layout.move_folderlist);
+                            ListView folder_list = (ListView) move_dialog.findViewById(R.id.folder_list);
+                            Button move_btn = (Button) move_dialog.findViewById(R.id.move_btn);
+                            final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
+                            folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                            folder_root.setEnabled(false);
+                            folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, "");
+                            folder_list.setAdapter(folder_adapter);
+                            folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    if (!thumbImage.get(position).get("Personal3").contains(".PNG") && !thumbImage.get(position).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(position).get("Personal3").contains(".jpg") && !thumbImage.get(position).get("Personal3").contains(".JPG")
+                                            && !thumbImage.get(position).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")) {
+                                        Folder_Clicked = moveFolder1.get(position).get("folder_name");
+                                        HashKey = moveFolder1.get(position).get("hash_keyvalue");
+                                        nextdialog();
+                                        move_dialog.dismiss();
+                                    }
+                                }
+                            });
+                            move_btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
+                                        Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(final DialogInterface arg0) {
+                                    //folder_path.clear();
+                                }
+                            });
+
+                            move_dialog.show();
+                        }
+                    });
+                    dialog.show();
+                } else
+
+                {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Move");
+                dialog.setMessage("Are you sure you want to move the selected file(s) or Folder(s)?");
+
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                vault_list.setAdapter(vault_adapter);
+                                vault_list.setSelection(position_scroll);
+                                imageAdapter = new ImageAdapter();
+                                gridView.setAdapter(imageAdapter);
+                                thumbnailsselection = new boolean[thumbImage.size()];
+                                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                menu_toggle.findItem(R.id.save).setVisible(false);
+                                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                        dialog.dismiss();
+                        //toggle_move = false;
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alias_thumbImage_folder.clear();
+                        rem_dup_folder = new String[thumbImage.size()];
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+                            if (thumbnailsselection[i]) {
+
+                                //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                        !thumbImage.get(i).get("Personal3").contains(".jpg")
+                                        && !thumbImage.get(i).get("Personal3").contains(".JPG") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                        && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                    rem_dup_folder[i] = thumbImage.get(i).get("Personal3");
+                                }
+                            }
+                        }
+                        moveFolder2 = foldername();
+
+                               /* JSONArray array = new JSONArray();
+
+                                for (int i = 0; i < thumbnailsselection.length; i++) {
+                                    JSONObject imageobject = new JSONObject();
+                                    if (thumbnailsselection[i]) {
+
+                                        try {
+                                            //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+
+                                            if (!thumbImage.get(i).get("FileVault2").contains(".PNG") && !thumbImage.get(i).get("FileVault2").contains(".png") &&
+                                                    !thumbImage.get(i).get("FileVault2").contains(".jpg") && !thumbImage.get(i).get("FileVault2").contains(".pdf")
+                                                    && !thumbImage.get(i).get("FileVault2").contains(".xls") && !thumbImage.get(i).get("FileVault2").contains(".doc")) {
+                                                imageobject.put("Key", patientId + "/FileVault/"  + thumbImage.get(i).get("FileVault2"));
+                                                imageobject.put("Type", "1");
+                                                imageobject.put("ThumbFile", "");
+                                                imageobject.put("Status", "");
+                                            } else {
+                                                if (thumbImage.get(i).get("FileVault2").contains(".png")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.png", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".PNG")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.PNG", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".jpg")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.jpg", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else if (thumbImage.get(i).get("FileVault2").contains(".JPG")) {
+                                                    String thumbimg = thumbImage.get(i).get("FileVault2").replaceAll("\\.JPG", "_thumb.png");
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                    imageobject.put("Status", "");
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/" + thumbImage.get(i).get("FileVault2"));
+                                                    imageobject.put("Type", "0");
+                                                    imageobject.put("ThumbFile", "");
+                                                    imageobject.put("Status", "");
+                                                }
+                                            }
+
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*//*
+                                        } catch (Exception e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
+                                        array.put(imageobject);
+                                    }
+
+                                }
+
+                                System.out.println(array);
+
+                                queue2 = Volley.newRequestQueue(Filevault.this);
+
+                                sendData = new JSONObject();
+                                try {
+                                    sendData.put("ObjectList", array);
+                                    sendData.put("UserId", patientId);
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+                                StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
+                                String url = sttc_holdr.request_Url();
+                                jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        System.out.println(response);
+
+                                        try {
+                                            Toast.makeText(Filevault.this, " Items Deleted", Toast.LENGTH_SHORT)
+                                                    .show();
+                                            // S3Objects.clear();
+                                            finish();
+                                            startActivity(getIntent());
+
+                                        } catch (Exception e) {
+                                            // TODO Auto-generated catch
+                                            // block
+                                            e.printStackTrace();
+                                        }
+
+                                        // queue.add(jr);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                queue2.add(jr2);
+*/
+                        if (rem_dup_folder != null /*&& !rem_dup_folder.equalsIgnoreCase("")*/) {
+                            for (int r = 0; r < moveFolder2.size(); r++) {
+                                for (int l = 0; l < rem_dup_folder.length; l++) {
+                                    if (moveFolder2.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
+                                        moveFolder2.remove(r);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        alias_thumbImage_folder.addAll(moveFolder2);
+                               /* String[] stockArr = new String[moveFolder2.size()];
+                                stockArr = moveFolder2.toArray(stockArr);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+                                builder.setTitle("Make your selection");
+                                builder.setItems(stockArr, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int item) {
+                                        move_to_folder(moveFolder2.get(item).toString());
+                                    }
+                                });
+                                AlertDialog alert = builder.create();
+                                alert.show();*/
+                        final Dialog move_dialog = new Dialog(mActivity);
+                        move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        //setting custom layout to dialog
+                        move_dialog.setContentView(R.layout.move_folderlist);
+                        Button move_btn = (Button) move_dialog.findViewById(R.id.move_btn);
+                        ListView folder_list = (ListView) move_dialog.findViewById(R.id.folder_list);
+                        final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
+                        folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        folder_root.setEnabled(false);
+                        folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, "");
+                        folder_list.setAdapter(folder_adapter);
+                        folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                if (!thumbImage.get(position).get("Personal3").contains(".PNG") && !thumbImage.get(position).get("Personal3").contains(".png") &&
+                                        !thumbImage.get(position).get("Personal3").contains(".jpg") && !thumbImage.get(position).get("Personal3").contains(".JPG")
+                                        && !thumbImage.get(position).get("Personal3").contains(".pdf")
+                                        && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")) {
+                                    Folder_Clicked = moveFolder2.get(position).get("folder_name");
+                                    HashKey = moveFolder2.get(position).get("hash_keyvalue");
+                                    nextdialog();
+                                    move_dialog.dismiss();
+                                }
+                            }
+                        });
+                        move_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
+                                    Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(final DialogInterface arg0) {
+                                // folder_path.clear();
+                            }
+                        });
+                        move_dialog.show();
+                    }
+                });
+                dialog.show();
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void saveFile() {
+        checkdialog = 0;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+        } else if (toggle_move && checkdialog == 0) {
+            list_header.setVisibility(View.VISIBLE);
+            list_header2.setVisibility(View.GONE);
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+            vault_list.setAdapter(vault_adapter);
+            vault_list.setSelection(position_scroll);
+            thumbnailsselection = new boolean[thumbImage.size()];
+            toggle_move = false;
+        } else if (!view_list) {
+            if (!view_list /*&& !toggle_move */ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                vault_delete_adapter.notifyDataSetChanged();
+                list_header2.setVisibility(View.VISIBLE);
+                list_header.setVisibility(View.GONE);
+                toggle_move = true;
+                checkdialog = 0;
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        checkdialog = 1;
+                        //toggle_move = false;
+                        break;
+                    }
+                }
+
+                if (checkdialog == 1) {
+
+                    AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                    dialog.setTitle("Save");
+                    dialog.setMessage("Are you sure you want to save the selected file(s)?");
+
+                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int id) {
+                                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                    vault_list.setAdapter(vault_adapter);
+                                    vault_list.setSelection(position_scroll);
+                                    thumbnailsselection = new boolean[thumbImage.size()];
+                                    imageAdapter = new ImageAdapter();
+                                    gridView.setAdapter(imageAdapter);
+                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                    menu_toggle.findItem(R.id.save).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                            dialog.dismiss();
+                            check_para = 0;
+                                    /*toggle_move = false;*/
+
+                        }
+                    });
+
+                    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ipos = 0;
+                            toggle_move = false;
+                            Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                            check_para = 0;
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+
+
+                                if (thumbnailsselection[i]) {
+
+                                    ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
+                                            new Response.Listener<Bitmap>() {
+
+                                                @Override
+                                                public void onResponse(Bitmap response) {
+                                                    String fname = "";
+
+                                                    ipos++;
+                                                    final Bitmap newbitMap = response;
+
+                                                    if (newbitMap != null) {
+                                                        Calendar cal = Calendar.getInstance();
+                                                        File myDir = new File(path);
+                                                        myDir.mkdirs();
+                                                        fname = "Image-" + String.valueOf(cal.getTimeInMillis()) + ".jpg";
+                                                        File file = new File(myDir, fname);
+                                                        if (file.exists())
+                                                            file.delete();
+                                                        try {
+                                                            FileOutputStream out = new FileOutputStream(file);
+                                                            newbitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                                                            out.flush();
+                                                            out.close();
+
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                        if (Build.VERSION.SDK_INT >= 19) {
+                                                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                                                            File f = new File(path, fname);
+                                                            Uri contentUri = Uri.fromFile(f);
+                                                            mediaScanIntent.setData(contentUri);
+                                                            mActivity.sendBroadcast(mediaScanIntent);
+                                                        } else {
+                                                            mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                    + Environment.getExternalStorageDirectory())));
+                                                        }
+
+                                                    }
+
+                                                    nHandler.createSimpleNotification(mActivity, ipos, fname);
+
+                                                }
+                                            }, 0, 0, null, null);
+
+                                    queue3.add(ir);
+
+                                }
+
+                            }
+
+                        }
+                    });
+                    dialog.show();
+
+                } else {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Save");
+                dialog.setMessage("Are you sure you want to save the selected file(s)?");
+
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                vault_list.setAdapter(vault_adapter);
+                                vault_list.setSelection(position_scroll);
+                                thumbnailsselection = new boolean[thumbImage.size()];
+                                imageAdapter = new ImageAdapter();
+                                gridView.setAdapter(imageAdapter);
+                                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                menu_toggle.findItem(R.id.save).setVisible(false);
+                                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                        dialog.dismiss();
+                        // toggle_move = false;
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ipos = 0;
+                        toggle_move = false;
+                        Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                            if (thumbnailsselection[i]) {
+
+                                ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
+                                        new Response.Listener<Bitmap>() {
+
+                                            @Override
+                                            public void onResponse(Bitmap response) {
+                                                String fname = "";
+
+                                                ipos++;
+                                                final Bitmap newbitMap = response;
+
+                                                if (newbitMap != null) {
+                                                    Calendar cal = Calendar.getInstance();
+                                                    File myDir = new File(path);
+                                                    myDir.mkdirs();
+                                                    fname = "Image-" + String.valueOf(cal.getTimeInMillis()) + ".jpg";
+                                                    File file = new File(myDir, fname);
+                                                    if (file.exists())
+                                                        file.delete();
+                                                    try {
+                                                        FileOutputStream out = new FileOutputStream(file);
+                                                        newbitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                                                        out.flush();
+                                                        out.close();
+
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    if (Build.VERSION.SDK_INT >= 19) {
+                                                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                                                        File f = new File(path, fname);
+                                                        Uri contentUri = Uri.fromFile(f);
+                                                        mediaScanIntent.setData(contentUri);
+                                                        mActivity.sendBroadcast(mediaScanIntent);
+                                                    } else {
+                                                        mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                + Environment.getExternalStorageDirectory())));
+                                                    }
+
+                                                }
+
+                                                nHandler.createSimpleNotification(mActivity, ipos, fname);
+
+                                            }
+                                        }, 0, 0, null, null);
+
+                                queue3.add(ir);
+
+                            }
+
+                        }
+
+                    }
+                });
+                dialog.show();
+
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    private void headerBackButton() {
+        if (!toggle_move) {
+          /*  super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        } else if (!view_list) {
+            list_header.setVisibility(View.VISIBLE);
+            list_header2.setVisibility(View.GONE);
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+            vault_list.setAdapter(vault_adapter);
+            toggle_move = false;
+            check_para = 0;
+            select_times = 0;
+            menu_toggle.findItem(R.id.action_delete).setVisible(false);
+            menu_toggle.findItem(R.id.save).setVisible(false);
+            menu_toggle.findItem(R.id.action_move).setVisible(false);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
+            thumbnailsselection = new boolean[thumbImage.size()];
+        } else {
+           /* super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        }
+
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.delete, menu);
         menu_toggle = menu;
         menu_toggle.findItem(R.id.action_home).setVisible(false);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @SuppressWarnings("deprecation")
@@ -1181,8 +2657,8 @@ public class RepositoryFragment extends Fragment {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                if (!toggle_move) {
-          /*  super.onBackPressed();*/
+            /*    if (!toggle_move) {
+          *//*  super.onBackPressed();*//*
                     Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
@@ -1203,7 +2679,7 @@ public class RepositoryFragment extends Fragment {
                     menu_toggle.findItem(R.id.action_home).setVisible(false);
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
-           /* super.onBackPressed();*/
+           *//* super.onBackPressed();*//*
                     Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
@@ -1212,10 +2688,10 @@ public class RepositoryFragment extends Fragment {
                     mActivity.finish();
                 }
                 return true;
-
+*/
             case R.id.select_all:
 
-                if (select_times != 0 && !view_list) {
+                /*if (select_times != 0 && !view_list) {
                     if (check % 2 == 0) {
 
                         for (int i = 0; i < thumbnailsselection.length; i++) {
@@ -1266,7 +2742,7 @@ public class RepositoryFragment extends Fragment {
                 if (!view_list) {
                     vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                     vault_list.setAdapter(vault_delete_adapter);
-                  /*  vault_delete_adapter.notifyDataSetChanged();*/
+                  *//*  vault_delete_adapter.notifyDataSetChanged();*//*
                     list_header2.setVisibility(View.VISIBLE);
                     list_header.setVisibility(View.GONE);
                     menu_toggle.findItem(R.id.action_delete).setVisible(true);
@@ -1274,7 +2750,7 @@ public class RepositoryFragment extends Fragment {
                     menu_toggle.findItem(R.id.action_move).setVisible(true);
                     menu_toggle.findItem(R.id.action_home).setVisible(false);
                 }
-                return true;
+                return true;*/
 
             case R.id.action_home:
                 // try {
@@ -1302,7 +2778,7 @@ public class RepositoryFragment extends Fragment {
                 return true;
 
             case R.id.save:
-                checkdialog = 0;
+                /*checkdialog = 0;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
                         checkdialog = 1;
@@ -1321,7 +2797,7 @@ public class RepositoryFragment extends Fragment {
                     thumbnailsselection = new boolean[thumbImage.size()];
                     toggle_move = false;
                 } else if (!view_list) {
-                    if (!view_list /*&& !toggle_move */ || checkdialog == 1) {
+                    if (!view_list *//*&& !toggle_move *//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
@@ -1352,7 +2828,7 @@ public class RepositoryFragment extends Fragment {
                             dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int id) {
-                                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                   *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                     vault_list.setAdapter(vault_adapter);
                                     vault_list.setSelection(position_scroll);
                                     thumbnailsselection = new boolean[thumbImage.size()];
@@ -1361,10 +2837,10 @@ public class RepositoryFragment extends Fragment {
                                     menu_toggle.findItem(R.id.action_move).setVisible(false);
                                     menu_toggle.findItem(R.id.save).setVisible(false);
                                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                     dialog.dismiss();
                                     check_para = 0;
-                                    /*toggle_move = false;*/
+                                    *//*toggle_move = false;*//*
 
                                 }
                             });
@@ -1461,7 +2937,7 @@ public class RepositoryFragment extends Fragment {
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 thumbnailsselection = new boolean[thumbImage.size()];
@@ -1470,7 +2946,7 @@ public class RepositoryFragment extends Fragment {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 // toggle_move = false;
 
@@ -1551,10 +3027,10 @@ public class RepositoryFragment extends Fragment {
                     }
 
                 }
-                return true;
+                return true;*/
 
             case R.id.action_delete:
-                checkdialog = 0;
+               /* checkdialog = 0;
                 toggle_move = false;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
@@ -1565,15 +3041,15 @@ public class RepositoryFragment extends Fragment {
                 }
                 if (toggle_move && check_para == 1) {
                     Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
-                } /*else if (toggle_move && checkdialog == 0) {
+                } *//*else if (toggle_move && checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     thumbnailsselection = new boolean[thumbImage.size()];
                     toggle_move = false;
-                }*/ else if (!view_list) {
-                    if (!view_list /*&& !toggle_move*/ || checkdialog == 1) {
+                }*//* else if (!view_list) {
+                    if (!view_list *//*&& !toggle_move*//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
@@ -1738,9 +3214,9 @@ public class RepositoryFragment extends Fragment {
 
                                                 }
 
-                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*/
+                                            System.out.println(i);*//*
                                             } catch (JSONException e) {
                                                 // TODO Auto-generated catch block
                                                 e.printStackTrace();
@@ -1765,7 +3241,7 @@ public class RepositoryFragment extends Fragment {
                                         e.printStackTrace();
                                     }
 
-				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
                                     StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                     String url = sttc_holdr.request_Url();
                                     jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -1794,14 +3270,14 @@ public class RepositoryFragment extends Fragment {
                                             pd.dismiss();
                                             Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
                                         }
-                                    });/* {
+                                    });*//* {
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> headers = new HashMap<String, String>();
                                         headers.put("Cookie", Services.hoja);
                                         return headers;
                                     }
-                                };*/
+                                };*//*
                                     queue2.add(jr2);
                                     dialog.dismiss();
                                 }
@@ -1831,7 +3307,7 @@ public class RepositoryFragment extends Fragment {
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 imageAdapter = new ImageAdapter();
@@ -1840,7 +3316,7 @@ public class RepositoryFragment extends Fragment {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 //toggle_move = false;
 
@@ -1968,9 +3444,9 @@ public class RepositoryFragment extends Fragment {
                                                 }
                                             }
 
-                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*/
+                                            System.out.println(i);*//*
                                         } catch (Exception e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -1993,7 +3469,7 @@ public class RepositoryFragment extends Fragment {
                                     e.printStackTrace();
                                 }
 
-				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
                                 StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2033,11 +3509,11 @@ public class RepositoryFragment extends Fragment {
                     } else {
                         Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
                 return true;
 
             case R.id.action_listview:
-                if (!view_list) {
+                /*if (!view_list) {
                     check_grid = 0;
                     show_menu = 0;
                     for (int i = 0; i < thumbnailsselection.length; i++) {
@@ -2060,8 +3536,8 @@ public class RepositoryFragment extends Fragment {
                     }
                     gridView.setVisibility(View.VISIBLE);
                     imageAdapter.notifyDataSetChanged();
-                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
-                    vault_list.setAdapter(vault_adapter);*/
+                   *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
+                    vault_list.setAdapter(vault_adapter);*//*
                     list_header.setVisibility(View.GONE);
                     list_header2.setVisibility(View.GONE);
                     vault_list.setVisibility(View.GONE);
@@ -2104,23 +3580,23 @@ public class RepositoryFragment extends Fragment {
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
-                    /*list_header.setVisibility(View.VISIBLE);
+                    *//*list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     vault_list.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.GONE);
-                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*/
+                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*//*
                     menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);
                     view_list = false;
                     refresh_vault1 = false;
                     check_view = "List";
                 }
-
+*/
                 return true;
 
             case R.id.action_move:
-                checkdialog = 0;
+                /*checkdialog = 0;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
                         checkdialog = 1;
@@ -2130,15 +3606,15 @@ public class RepositoryFragment extends Fragment {
                 }
                 if (toggle_move && check_para == 1) {
                     Toast.makeText(mActivity, "Please Select file(s).", Toast.LENGTH_SHORT).show();
-                } /*else if (*//*toggle_move &&*//* checkdialog == 0) {
+                } *//*else if (*//**//*toggle_move &&*//**//* checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     thumbnailsselection = new boolean[thumbImage.size()];
                    // toggle_move = false;
-                }*/ else if (!view_list) {
-                    if (!view_list/* && !toggle_move*/ || checkdialog == 1) {
+                }*//* else if (!view_list) {
+                    if (!view_list*//* && !toggle_move*//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
@@ -2168,7 +3644,7 @@ public class RepositoryFragment extends Fragment {
                             dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int id) {
-                                   /* list_header.setVisibility(View.VISIBLE);
+                                   *//* list_header.setVisibility(View.VISIBLE);
                                     list_header2.setVisibility(View.GONE);
                                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                     vault_list.setAdapter(vault_adapter);
@@ -2179,7 +3655,7 @@ public class RepositoryFragment extends Fragment {
                                     menu_toggle.findItem(R.id.action_move).setVisible(false);
                                     menu_toggle.findItem(R.id.save).setVisible(false);
                                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
@@ -2209,7 +3685,7 @@ public class RepositoryFragment extends Fragment {
                                     check_para = 0;
                                     select_times = 0;
                                     moveFolder1 = foldername();
-                                /*JSONArray array = new JSONArray();
+                                *//*JSONArray array = new JSONArray();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
                                     JSONObject imageobject = new JSONObject();
@@ -2256,9 +3732,9 @@ public class RepositoryFragment extends Fragment {
                                                 }
                                             }
 
-                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//**//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*//*
+                                            System.out.println(i);*//**//*
                                         } catch (JSONException e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -2285,7 +3761,7 @@ public class RepositoryFragment extends Fragment {
                                     e.printStackTrace();
                                 }
 
-				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+				*//**//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//**//*
                                 StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.MoveObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2313,16 +3789,16 @@ public class RepositoryFragment extends Fragment {
                                     public void onErrorResponse(VolleyError error) {
                                         Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
-                                });*//* {
+                                });*//**//* {
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> headers = new HashMap<String, String>();
                                         headers.put("Cookie", Services.hoja);
                                         return headers;
                                     }
-                                };*//*
-                                queue2.add(jr2);*/
-                                    if (rem_dup_folder != null/* && !rem_dup_folder.equalsIgnoreCase("")*/) {
+                                };*//**//*
+                                queue2.add(jr2);*//*
+                                    if (rem_dup_folder != null*//* && !rem_dup_folder.equalsIgnoreCase("")*//*) {
                                         for (int r = 0; r < moveFolder1.size(); r++) {
                                             for (int l = 0; l < rem_dup_folder.length; l++) {
                                                 if (moveFolder1.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
@@ -2333,9 +3809,9 @@ public class RepositoryFragment extends Fragment {
                                         }
                                     }
                                     alias_thumbImage_folder.addAll(moveFolder1);
-                                /*String[] stockArr = new String[moveFolder1.size()];
-                                stockArr = moveFolder1.toArray(stockArr);*/
-                                /*AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+                                *//*String[] stockArr = new String[moveFolder1.size()];
+                                stockArr = moveFolder1.toArray(stockArr);*//*
+                                *//*AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
                                 builder.setTitle("Make your selection");
                                 builder.setItems(stockArr, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int item) {
@@ -2344,7 +3820,7 @@ public class RepositoryFragment extends Fragment {
                                     }
                                 });
                                 AlertDialog alert = builder.create();
-                                alert.show();*/
+                                alert.show();*//*
 
                                     final Dialog move_dialog = new Dialog(mActivity);
                                     move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -2414,7 +3890,7 @@ public class RepositoryFragment extends Fragment {
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 imageAdapter = new ImageAdapter();
@@ -2423,7 +3899,7 @@ public class RepositoryFragment extends Fragment {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 //toggle_move = false;
 
@@ -2450,7 +3926,7 @@ public class RepositoryFragment extends Fragment {
                                 }
                                 moveFolder2 = foldername();
 
-                               /* JSONArray array = new JSONArray();
+                               *//* JSONArray array = new JSONArray();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
                                     JSONObject imageobject = new JSONObject();
@@ -2499,9 +3975,9 @@ public class RepositoryFragment extends Fragment {
                                                 }
                                             }
 
-                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//**//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*//*
+                                            System.out.println(i);*//**//*
                                         } catch (Exception e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -2524,7 +4000,7 @@ public class RepositoryFragment extends Fragment {
                                     e.printStackTrace();
                                 }
 
-				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+				*//**//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//**//*
                                 StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2555,8 +4031,8 @@ public class RepositoryFragment extends Fragment {
                                     }
                                 });
                                 queue2.add(jr2);
-*/
-                                if (rem_dup_folder != null /*&& !rem_dup_folder.equalsIgnoreCase("")*/) {
+*//*
+                                if (rem_dup_folder != null *//*&& !rem_dup_folder.equalsIgnoreCase("")*//*) {
                                     for (int r = 0; r < moveFolder2.size(); r++) {
                                         for (int l = 0; l < rem_dup_folder.length; l++) {
                                             if (moveFolder2.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
@@ -2567,7 +4043,7 @@ public class RepositoryFragment extends Fragment {
                                     }
                                 }
                                 alias_thumbImage_folder.addAll(moveFolder2);
-                               /* String[] stockArr = new String[moveFolder2.size()];
+                               *//* String[] stockArr = new String[moveFolder2.size()];
                                 stockArr = moveFolder2.toArray(stockArr);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
                                 builder.setTitle("Make your selection");
@@ -2577,7 +4053,7 @@ public class RepositoryFragment extends Fragment {
                                     }
                                 });
                                 AlertDialog alert = builder.create();
-                                alert.show();*/
+                                alert.show();*//*
                                 final Dialog move_dialog = new Dialog(mActivity);
                                 move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 //setting custom layout to dialog
@@ -2628,7 +4104,7 @@ public class RepositoryFragment extends Fragment {
                 }
 
                 return true;
-
+*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -3851,10 +5327,10 @@ public class RepositoryFragment extends Fragment {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() throws IOException{
+    void checkCameraPermission() throws IOException {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startCamera() ;
-        }else {
+            startCamera();
+        } else {
             takePhoto();
         }
        /* boolean isGranted;
@@ -3893,10 +5369,10 @@ public class RepositoryFragment extends Fragment {
         if (requestCode == MY_PERMISSIONS_REQUEST) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mPermissionGranted = true ;
+                mPermissionGranted = true;
                 Log.e("Rishabh", "Permissions are Granted .");
             } else {
-                mPermissionGranted = false ;
+                mPermissionGranted = false;
                 Log.e("Rishabh", "Permissions are not granted .");
             }
         }
@@ -3924,7 +5400,7 @@ public class RepositoryFragment extends Fragment {
     }
 
     void startCamera() throws IOException {
-        mIsSdkLessThanM = false ;
+        mIsSdkLessThanM = false;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
             File photoFile = null;
