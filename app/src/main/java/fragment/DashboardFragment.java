@@ -3,7 +3,9 @@ package fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -112,6 +114,24 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ((DashBoardActivity) mActivity).openAccountFragment();
+            }
+        });
+
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+        final String userId = preferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        mInitialTextViewContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                intent.putExtra("path", mPathOfGlobalIndex + id);
+                startActivityForResult(intent, 2);*/
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mPathOfGlobalIndex + userId));
+                    startActivity(browserIntent);
+                } catch (ActivityNotFoundException ex) {
+                    Toast.makeText(mActivity, "Please install chrome", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
