@@ -110,6 +110,7 @@ public class SignInActivity extends BaseActivity {
             if (data != null && data.equalsIgnoreCase("logout")) {
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, null);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
                 LoginManager.getInstance().logOut();
             }
         }
