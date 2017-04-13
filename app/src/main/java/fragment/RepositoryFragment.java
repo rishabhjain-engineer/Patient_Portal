@@ -116,6 +116,8 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 public class RepositoryFragment extends Fragment {
 
     private ImageLoader mImageLoader;
+    private Helper mhelper;
+    private String first_timefolderclicked = "";
     private ByteArrayOutputStream byteArrayOutputStream;
     private NetworkImageView mNetworkImageView;
     private JSONObject sendData, receiveData;
@@ -260,16 +262,13 @@ public class RepositoryFragment extends Fragment {
 
         askRunTimePermissions();
 
-        Log.e("Rishabh", "Lol Huehuehuehue on create");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            Log.e("Rishabh", "Lol Huehuehuehue create folder");
             //new Authentication(mActivity, "Filevault", "").execute();
             createLockFolder();
         }
-        Log.e("Rishabh", "Lol Huehuehuehue after create folder");
 
         mSearchBarEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -287,104 +286,6 @@ public class RepositoryFragment extends Fragment {
 
             }
         });
-       /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-                System.out.println(response);
-                thumbImage.clear();
-                imageName.clear();
-                vault_data = new ArrayList<HashMap<String, String>>();
-                try {
-                    String imageData = response.getString("d");
-                    JSONObject cut = new JSONObject(imageData);
-                    subArrayImage = cut.getJSONArray("Table");
-                    HashMap<String, String> hmap;
-                    for (int i = 0; i < subArrayImage.length(); i++) {
-                        hmap = new HashMap<String, String>();
-                        imageNamewithpdf.add(subArrayImage.getJSONObject(i).getString("ImageName"));
-                        imageName.add(subArrayImage.getJSONObject(i).getString("Image"));
-                        thumbImage.add(subArrayImage.getJSONObject(i).getString("ThumbImage"));
-                        hmap.put("ImageId", subArrayImage.getJSONObject(i).getString("ImageId"));
-                        hmap.put("ImageName", subArrayImage.getJSONObject(i).getString("ImageName"));
-                        hmap.put("ThumbImage", subArrayImage.getJSONObject(i).getString("ThumbImage"));
-                        hmap.put("TimeStamp", subArrayImage.getJSONObject(i).getString("TimeStamp"));
-                        hmap.put("Image", subArrayImage.getJSONObject(i).getString("Image"));
-                        vault_data.add(hmap);
-                    }
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                mImageLoader = MyVolleySingleton.getInstance(Filevault.this).getImageLoader();
-                count = subArrayImage.length();
-                thumbnailsselection = new boolean[count];
-                imageAdapter = new ImageAdapter();
-                gridView.setAdapter(imageAdapter);
-                vault_adapter = new Vault_adapter(Filevault.this, vault_data, false);
-                vault_list.setAdapter(vault_adapter);
-                if (view_list) {
-                    list_header.setVisibility(View.VISIBLE);
-                    list_header2.setVisibility(View.GONE);
-                }
-                vault_adapter.notifyDataSetChanged();
-                progress.dismiss();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                System.out.println("GetPatientFilesNew: " + error);
-                progress.dismiss();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Cookie", Services.hoja);
-                return headers;
-            }
-        };
-        queue.add(jr);*/
-
-		/*url =  Services.init+"Patient/loadVaultMobile";*/
-       /* StaticHolder sttc_holdr1 = new StaticHolder(Filevault.this, StaticHolder.Services_static.loadVaultMobile);
-        String url1 = sttc_holdr1.request_Url();
-        StringRequest myReq = new StringRequest(Method.POST, url1, createloadVaultSuccessListener(),
-                createloadVaultErrorListener()) {
-
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("PatientId", id);
-
-                return params;
-            }
-
-            ;
-        };
-        queue.add(myReq);*/
-
-		/*url = Services.init+"Patient/getDistinctTags";*/
-      /*  StaticHolder sttc_holdr2 = new StaticHolder(Filevault.this, StaticHolder.Services_static.getDistinctTags);
-        String url2 = sttc_holdr2.request_Url();
-        StringRequest myReq1 = new StringRequest(Method.POST, url2, createDistinctTagsSuccessListener(),
-                createDistinctTagsErrorListener()) {
-
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("PatientId", id);
-                params.put("NewTag", "false");
-                params.put("tagId", "");
-
-                return params;
-            }
-
-            ;
-        };
-        queue.add(myReq1);*/
 
         upload.setOnClickListener(new View.OnClickListener() {
 
@@ -425,7 +326,6 @@ public class RepositoryFragment extends Fragment {
 
             }
         });
-
 
         vault_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -686,8 +586,11 @@ public class RepositoryFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
-                        Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+
+                        uploadGalleryFile(mObtainedUriFromDashboard);
                     }
+                    Log.e("Rishabh", "Root folder on move button");
+                    move_dialog.dismiss();
                 }
             });
             move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -696,19 +599,8 @@ public class RepositoryFragment extends Fragment {
                     //folder_path.clear();
                 }
             });
-
             move_dialog.show();
 
-
-
-
-          // moveFile();
-
-
-
-
-
-         //   uploadGalleryFile(mObtainedUriFromDashboard);
         }else {
             mMultipleUriFromDashboard = mBundleFromGallery.getParcelableArrayList("multipleUri");
             int length = mMultipleUriFromDashboard.size();
@@ -4149,17 +4041,14 @@ public class RepositoryFragment extends Fragment {
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "Lol Huehuehuehue start background process");
                 startBackgroundprocess();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Rishabh", "Lol Huehuehuehue error"+error);
             }
         });
         req.add(lock_folder);
-        Log.e("Rishabh", "Lol Huehuehuehue in create folder @ end");
     }
 
     private void startBackgroundprocess() {
@@ -4183,14 +4072,11 @@ public class RepositoryFragment extends Fragment {
             s3data.put("Key", "");
             s3data.put("patientId", patientId);
         } catch (Exception ex) {
-            Log.e("Rishabh", "ex error := "+ex);
             ex.printStackTrace();
         }
-        Log.e("Rishabh", "LOL");
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "Lol Huehuehuehue in start background process");
                 try {
                     String data = response.optString("d");
                     Log.e("Rishabh", "data := "+data);
@@ -4250,7 +4136,6 @@ public class RepositoryFragment extends Fragment {
                     }
 
                     firsttime_fileShow(originalVaultlist);
-                    Log.e("Rishabh", "Lol Huehuehuehue after firsttime  file show");
                     HashMap<String, String> hmap1;
                     for (int i = 0; i < S3Objects.size(); i++) {
                         String check = S3Objects.get(i).get("folder_name");
@@ -4269,7 +4154,6 @@ public class RepositoryFragment extends Fragment {
                     }
                     new Helper().sortHashList(thumbImage, "Personal3");
                     thumbnailsselection = new boolean[thumbImage.size()];
-                    Log.e("Rishabh", "thumbnail size inside := "+thumbnailsselection.length);
                     imageAdapter = new RepositoryFragment.ImageAdapter();
                     gridView.setAdapter(imageAdapter);
                     vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
@@ -4320,7 +4204,6 @@ public class RepositoryFragment extends Fragment {
                     }
                 } catch (JSONException je) {
                     je.printStackTrace();
-                    Log.e("Rishabh", " je error := "+je);
                 }
 
                 getBundleData();
@@ -4329,7 +4212,6 @@ public class RepositoryFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 pd.dismiss();
-                Log.e("Rishabh", "error := "+error);
             }
         });
         int socketTimeout1 = 50000;
@@ -4337,10 +4219,6 @@ public class RepositoryFragment extends Fragment {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         s3jr.setRetryPolicy(policy1);
         req.add(s3jr);
-//        Log.e("Rishabh", "thumbnail size := "+thumbnailsselection.length);
-
-
-
     }
 
     private void getBundleData(){
@@ -4808,7 +4686,7 @@ public class RepositoryFragment extends Fragment {
                         for (int k = 0; k < folder_path.size(); k++) {
                             buffer.append(folder_path.get(k) + "/");
                         }
-                        Log.v("buffer", buffer.toString());
+                        Log.e("Rishabh", "buffer  :== "+buffer.toString());
                         //String path_finder = first_timefolderclicked + "/" + buffer;
                         String[] make_path = buffer.toString().split("/");
                         StringBuffer path_buffer = new StringBuffer();
@@ -4819,7 +4697,7 @@ public class RepositoryFragment extends Fragment {
                                 path_buffer.append(make_path[i] + "/");
                             }
                         }
-                        Log.v("buffer_upload", path_buffer.toString());
+                        Log.e("Rishabh","buffer_upload  :== "+path_buffer.toString());
                         folder_list.setVisibility(View.VISIBLE);
                         empty_text.setVisibility(View.GONE);
                         folder_adapter = new Folder_adapter(mActivity, dialog_folder, patientId, path_buffer.toString());
@@ -4890,7 +4768,7 @@ public class RepositoryFragment extends Fragment {
                                 for (int k = 0; k < folder_path.size(); k++) {
                                     buffer.append(folder_path.get(k) + "/");
                                 }
-                                Log.v("buffer", buffer.toString());
+                                Log.e("Rishabh", "buffer inside directory :=  "+buffer.toString());
                                 //String path_finder = first_timefolderclicked + "/" + buffer;
                                 String[] make_path = buffer.toString().split("/");
                                 StringBuffer path_buffer = new StringBuffer();
@@ -4901,7 +4779,7 @@ public class RepositoryFragment extends Fragment {
                                         path_buffer.append(make_path[i] + "/");
                                     }
                                 }
-                                Log.v("buffer_upload", path_buffer.toString());
+                                Log.e("Rishabh","buffer_upload  inside directory := "+path_buffer.toString());
 
                                 if (dialog_folder.size() == 0) {
                                     folder_list.setVisibility(View.GONE);
@@ -4921,15 +4799,7 @@ public class RepositoryFragment extends Fragment {
         folder_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  if (folder_path.size() == 1) {
-                    folder_list.setVisibility(View.VISIBLE);
-                    empty_text.setVisibility(View.GONE);
-                    if (moveFolder1.size() == 0) {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder2);
-                    } else {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder1);
-                    }
-                } else {*/
+
                 String path_string = folder_root.getText().toString().trim();
                 if (folder_path.size() == 1) {
                     folder_list.setVisibility(View.VISIBLE);
@@ -4938,7 +4808,7 @@ public class RepositoryFragment extends Fragment {
                     for (int k = 0; k < folder_path.size(); k++) {
                         buffer.append(folder_path.get(k) + "/");
                     }
-                    Log.v("buffer", buffer.toString());
+                    Log.e("Rishabh", "buffer folder root :=  "+buffer.toString());
                     //String path_finder = first_timefolderclicked + "/" + buffer;
                     String[] make_path = buffer.toString().split("/");
                     StringBuffer path_buffer = new StringBuffer();
@@ -4949,7 +4819,7 @@ public class RepositoryFragment extends Fragment {
                             path_buffer.append(make_path[i] + "/");
                         }
                     }
-                    Log.v("buffer_upload", path_buffer.toString());
+                    Log.e("Rishabh","buffer_upload  folder root :== "+path_buffer.toString());
                     if (moveFolder1.size() == 0) {
                         folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, path_buffer.toString());
                     } else {
@@ -5022,7 +4892,7 @@ public class RepositoryFragment extends Fragment {
             public void onClick(View v) {
                 String check_root = folder_root.getText().toString().trim();
                 if (check_root.equalsIgnoreCase("Root")) {
-                    Toast.makeText(mActivity, "Unable to move folder on same path.Please Select a destination folder to move.", Toast.LENGTH_SHORT).show();
+                   uploadGalleryFile(mObtainedUriFromDashboard);
                 } else {
                     if (folder_path.size() == 1) {
                         move_to_folder(folder_path.get(0));
@@ -5033,7 +4903,7 @@ public class RepositoryFragment extends Fragment {
                         for (int k = 0; k < folder_path.size(); k++) {
                             buffer.append(folder_path.get(k) + "/");
                         }
-                        Log.v("buffer", buffer.toString());
+                        Log.e("buffer", buffer.toString());
                       /*  String path_finder = first_timefolderclicked + "/" + buffer;
                         File imageFile = new File(path);*/
                         String[] make_path = buffer.toString().split("/");
@@ -5045,13 +4915,95 @@ public class RepositoryFragment extends Fragment {
                                 path_buffer.append(make_path[k] + "/");
                             }
                         }
-                        Log.v("buffer_upload", path_buffer.toString());
+                        Log.e("Rishabh", "buffer move button :=  "+buffer.toString());
                         move_to_folder(path_buffer.toString());
                         move_dialog.dismiss();
                         folder_path.clear();
                     }
                 }
+                Log.e("Rishabh", "Inside folder := ");
+                Uri selectedImageUri = mObtainedUriFromDashboard;
 
+                String path = getPathFromContentUri(selectedImageUri);
+                System.out.println(path);
+                StringBuffer buffer = new StringBuffer();
+                for (int k = 0; k < mhelper.folder_path.size(); k++) {
+                    buffer.append(mhelper.folder_path.get(k) + "/");
+                }
+                Log.e("Rishabh","buffer"+buffer.toString());
+              /*  show_dialog(buffer.toString());*/
+                String path_finder = Folder_Clicked + "/" + buffer;
+                Log.e("Rishabh", "path finder := "+path_finder);
+                File imageFile = new File(path);
+                String[] make_path = path_finder.toString().split("/");
+                StringBuffer path_buffer = new StringBuffer();
+                for (int i = 0; i < make_path.length; i++) {
+                    if (i == make_path.length - 1) {
+                        path_buffer.append(make_path[i]);
+                    } else {
+                        path_buffer.append(make_path[i] + "/");
+                    }
+                }
+                Log.e("Rishabh", "path buffer := "+path_buffer.toString());
+                long check = ((imageFile.length() / 1024));
+                String splitfo_lenthcheck[] = path.split("/");
+                int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+                if (check < 10000 && filenamelength < 99) {
+
+                    String splitstr[];
+                    String chosenimg = "";
+                    String stringcheck = "", exhistimg = "false";
+                    int leangth = 0;
+                    if (path.contains("/")) {
+                        splitstr = path.split("/");
+                        chosenimg = splitstr[splitstr.length - 1];
+                    }
+                    for (int i = 0; i < thumbImage.size(); i++) {
+                        String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
+                        if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
+                            if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+
+                                stringcheck = listsplitstr[listsplitstr.length - 1];
+                                leangth = listsplitstr[listsplitstr.length - 1].length();
+                                exhistimg = "true";
+                            }
+
+                        }
+                    }
+
+                    Intent intent = new Intent(mActivity, UploadService.class);
+                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    intent.putExtra("add_path", path_buffer.toString());
+                    intent.putExtra("exhistimg", exhistimg);
+                    intent.putExtra("stringcheck", stringcheck);
+                    mActivity.startService(intent);
+
+                    System.out.println("After Service");
+
+                    String tempPath = getPath(selectedImageUri, mActivity);
+                    Bitmap bm;
+                    BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+                    btmapOptions.inSampleSize = 4;
+                    bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+                    // vault_adapter.notifyDataSetChanged();
+                    if (bm != null) {
+
+                        System.out.println("in onactivity");
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                        byteArray = byteArrayOutputStream.toByteArray();
+
+                        pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        picname = "b.jpg";
+                        pic = "data:image/jpeg;base64," + pic;
+
+                    }
+
+                } else {
+
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
     }

@@ -2905,7 +2905,7 @@ public class Filevault2 extends BaseActivity {
                 for (int k = 0; k < mhelper.folder_path.size(); k++) {
                     buffer.append(mhelper.folder_path.get(k) + "/");
                 }
-                Log.v("buffer", buffer.toString());
+                Log.e("Rishabh","buffer"+buffer.toString());
               /*  show_dialog(buffer.toString());*/
                 String path_finder = first_timefolderclicked + "/" + buffer;
                 File imageFile = new File(path);
@@ -2918,7 +2918,7 @@ public class Filevault2 extends BaseActivity {
                         path_buffer.append(make_path[i] + "/");
                     }
                 }
-                Log.v("buffer_upload", path_buffer.toString());
+                Log.e("Rishabh", "path buffer := "+path_buffer.toString());
                 long check = ((imageFile.length() / 1024));
                 String splitfo_lenthcheck[] = path.split("/");
                 int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
