@@ -531,6 +531,7 @@ public class VitalFragment extends Fragment{
                     bgroup = obj.getString("BloodGroup");
                     height = obj.getString("height");
                     weight = obj.getString("weight");
+                    mBp = obj.optString("BP");
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
                         allergy_no = 0;

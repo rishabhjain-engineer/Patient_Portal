@@ -19,10 +19,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Ravi on 31/03/15.
- */
-
 public class MyNotificationManager {
 
     public static final int ID_BIG_NOTIFICATION = 234;
