@@ -6,7 +6,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,61 +73,128 @@ public class DashBoardActivity extends BaseActivity {
         greenColor = getResources().getColor(R.color.home_title_tra);
         mPreferenceHelper = PreferenceHelper.getInstance();
         setupActionBar();
-        //mActionBar.setDisplayHomeAsUpEnabled(false);
-        //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        //mActionBar.setTitle(Html.fromHtml("<h2>Title</h2><br><p>Description here</p>"));
-        // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
+        initializeObjects();
         mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
-        mFooterContainer.setVisibility(View.GONE);
 
+        Intent intentFromGallery = getIntent();
+        String action = intentFromGallery.getAction();
+        String type = intentFromGallery.getType();
+
+        if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
+
+            // Perform intent operation ; user loggedin into sciontra app ;
+            Log.e("Rishabh", "User is logged in");
+            if (Intent.ACTION_SEND.equals(action) && type != null) {
+                if ("text/plain".equals(type)) {
+                    handleSendText(intentFromGallery); // Handle text being sent
+                } else if (type.startsWith("image/")) {
+                    Log.e("Rishabh", "Intent Received of Image type. ");
+                    handleSendImage(intentFromGallery); // Handle single image being sent
+                }
+            } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+                if (type.startsWith("image/")) {
+                    handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
+                }
+            } else {
+                Log.e("Rishabh", "Other intent");
+                // Handle other intents, such as being started from the home screen
+                mFooterContainer.setVisibility(View.GONE);
+                mDashBoardTv.setTextColor(greenColor);
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                Fragment newFragment = new DashboardFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                findFamily();
+                String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
+                if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
+                    openReportFragment();
+                }
+            }
+
+        } else if (TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
+            // User is not logged in ; Ask him to log-in
+            Log.e("Rishabh", "User is not logged in");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                    startActivity(intentMain);
+                    finish();
+                }
+            }, 100);
+        }
+    }
+
+
+    private void initializeObjects() {
+        mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
         mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
         mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
         mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
         mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
         mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
-
         mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
         mFooterReportImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
         mFooterRepositoryImageView = (ImageView) findViewById(R.id.footer_repository_imageview);
         mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
         mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
-
         mDashBoardTv = (TextView) findViewById(R.id.footer_dashboard_textview);
-        mDashBoardTv.setTextColor(greenColor);
         mReportTv = (TextView) findViewById(R.id.footer_reports_textview);
         mRepositoryTv = (TextView) findViewById(R.id.footer_repository_textview);
         mFamilyTv = (TextView) findViewById(R.id.footer_family_textview);
         mAccountTv = (TextView) findViewById(R.id.footer_account_textview);
-
-        mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
 
         mFooterDashBoard.setOnClickListener(mOnClickListener);
         mFooterReports.setOnClickListener(mOnClickListener);
         mFooterRepository.setOnClickListener(mOnClickListener);
         mFooterFamily.setOnClickListener(mOnClickListener);
         mFooterAccount.setOnClickListener(mOnClickListener);
+    }
 
-        Fragment newFragment = new DashboardFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            // Update UI to reflect text being shared
+        }
+    }
 
-        findFamily();
+    void handleSendImage(Intent intent) {
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            // Update UI to reflect image being shared
+            Log.e("Rishabh", "imageURI through gallery := " + imageUri.getPath());
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("uri", imageUri);
+            mRepositoryFragment = new RepositoryFragment();
+            mRepositoryFragment.setArguments(bundle);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, mRepositoryFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            Log.e("Rishabh", "data sent");
+            mFooterContainer.setVisibility(View.VISIBLE);
+            mDashBoardTv.setTextColor(grayColor);
+            mReportTv.setTextColor(grayColor);
+            mRepositoryTv.setTextColor(greenColor);
+            mFamilyTv.setTextColor(grayColor);
+            mAccountTv.setTextColor(grayColor);
+            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+            mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
+            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+        }
+    }
 
-      /*  Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if(extras != null){
-            if(extras.containsKey("report")) {
-                openReportFragment();
-            }
-        }*/
-        String quote = (String)getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
-        if(!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")){
-            openReportFragment();
+    void handleSendMultipleImages(Intent intent) {
+        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (imageUris != null) {
+            // Update UI to reflect multiple images being shared
+
         }
     }
 
