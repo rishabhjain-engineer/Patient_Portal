@@ -70,4 +70,7 @@ dependencies {
     compile project(':Simpl3r')
     compile project(':MPChartLib')
     compile project(':dynamicgrid')
+    compile 'com.google.firebase:firebase-core:10.2.0'
+    compile 'com.google.firebase:firebase-messaging:10.2.0'
 }
+apply plugin: 'com.google.gms.google-services'

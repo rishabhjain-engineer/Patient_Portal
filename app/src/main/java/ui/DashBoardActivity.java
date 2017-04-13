@@ -3,6 +3,7 @@ package ui;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import base.MyFirebaseMessagingService;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
@@ -113,6 +115,18 @@ public class DashBoardActivity extends BaseActivity {
         transaction.commit();
 
         findFamily();
+
+      /*  Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if(extras != null){
+            if(extras.containsKey("report")) {
+                openReportFragment();
+            }
+        }*/
+        String quote = (String)getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
+        if(!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")){
+            openReportFragment();
+        }
     }
 
     @Override
@@ -255,14 +269,20 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
-        //mActionBar.show();
-        // mActionBar.setTitle("Reports");
+        mFooterContainer.setVisibility(View.VISIBLE);
+        mDashBoardTv.setTextColor(grayColor);
+        mReportTv.setTextColor(greenColor);
+        mRepositoryTv.setTextColor(grayColor);
+        mFamilyTv.setTextColor(grayColor);
+        mAccountTv.setTextColor(grayColor);
+        //mActionBar.setTitle("Reports");
         //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
         mFooterReportImageView.setImageResource(R.drawable.reports_active);
         mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
         mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
         mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+
         Bundle bundle = new Bundle();
         bundle.putString("id", userId);
         bundle.putBoolean("fromFamilyClass", true);

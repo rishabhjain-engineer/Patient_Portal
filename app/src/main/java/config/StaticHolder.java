@@ -433,7 +433,7 @@ public class StaticHolder {
                 url = BASE_URL + "GetVaccineDetails";
                 break;
             case UpdatePatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails";
+                url = BASE_URL + "UpdatePatientVaccineDetails";
                 break;
 
             case InsertIntoPatientVaccineDetails:
