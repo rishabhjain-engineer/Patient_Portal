@@ -65,6 +65,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import utils.AppConstant;
@@ -111,7 +112,9 @@ public class SignInActivity extends BaseActivity {
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND, "false");
                 LoginManager.getInstance().logOut();
+                new UserDeviceAsyncTask().execute();
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

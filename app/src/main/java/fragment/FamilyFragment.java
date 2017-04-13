@@ -92,7 +92,6 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     private ArrayList<HashMap<String, String>> sorted_list;
     //  private ArrayList<HashMap<String, String>> members = new ArrayList<>();
     private Services service;
-    private Menu menu1;
     private String check_userids = "";
     private DataHolder[] dataholderlist;
     private int k = 0;
@@ -101,6 +100,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
     private int check_commas =0;
     Bundle mbundle = new Bundle();
     private Activity mActivity;
+    private ImageView mAddImageView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -146,10 +146,9 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                 }
             }
         });
-        setHasOptionsMenu(true);
-        ImageView imageView = (ImageView) view.findViewById(R.id.add_image);
-        imageView.setVisibility(View.VISIBLE);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        mAddImageView = (ImageView) view.findViewById(R.id.add_image);
+        mAddImageView.setVisibility(View.VISIBLE);
+        mAddImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showdialog();
@@ -184,7 +183,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     if (family_arr.length() == 0) {
                         empty_msg.setVisibility(View.VISIBLE);
                         family_list.setVisibility(View.GONE);
-                        menu1.findItem(R.id.add).setVisible(true);
+                        mAddImageView.setVisibility(View.VISIBLE);
                     } else {
                         empty_msg.setVisibility(View.GONE);
                         family_list.setVisibility(View.VISIBLE);
@@ -249,7 +248,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                         for (int n = 0; n < family_object.size(); n++) {
                             if (family_object.get(n).get("HM").equalsIgnoreCase("1") /*&&
                                     family_object.get(n).get("IsApproved").equalsIgnoreCase("true")*/) {
-                                menu1.findItem(R.id.add).setVisible(false);
+                                mAddImageView.setVisibility(View.GONE);
                               /*  DataHolder[] dataholderlist = new DataHolder[listholder.size()];
                                 for (int i = 0; i < listholder.size(); i++) {
                                     dataholderlist[i] = listholder.get(i);
@@ -269,7 +268,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
 
                             } else {
                                 loadtestData(User_ID);
-                                menu1.findItem(R.id.add).setVisible(true);
+                                mAddImageView.setVisibility(View.VISIBLE);
                             }
                         }
 
@@ -294,32 +293,6 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
         });
         request.add(family);
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        mActivity.getMenuInflater().inflate(R.menu.weightmenu, menu);
-        menu1 = menu;
-
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-
-                return true;
-
-            case R.id.add:
-                showdialog();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     public void showdialog() {
         final Dialog overlay_dialog = new Dialog(mActivity);

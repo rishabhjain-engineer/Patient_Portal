@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import base.MyFirebaseMessagingService;
+import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
@@ -84,6 +85,9 @@ public class DashBoardActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
+            if (mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND).equalsIgnoreCase("false")) {
+                new UserDeviceAsyncTask().execute();
+            }
             // Perform intent operation ; user loggedin into sciontra app ;
             Log.e("Rishabh", "User is logged in");
             if (Intent.ACTION_SEND.equals(action) && type != null) {

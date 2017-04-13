@@ -1285,4 +1285,11 @@ public class Services {
         return abc;
     }
 
+    public JSONObject saveUserDevice(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.SaveUserDevice);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
 }
