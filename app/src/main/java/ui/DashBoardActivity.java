@@ -269,14 +269,20 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
-        //mActionBar.show();
-        // mActionBar.setTitle("Reports");
+        mFooterContainer.setVisibility(View.VISIBLE);
+        mDashBoardTv.setTextColor(grayColor);
+        mReportTv.setTextColor(greenColor);
+        mRepositoryTv.setTextColor(grayColor);
+        mFamilyTv.setTextColor(grayColor);
+        mAccountTv.setTextColor(grayColor);
+        //mActionBar.setTitle("Reports");
         //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
         mFooterReportImageView.setImageResource(R.drawable.reports_active);
         mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
         mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
         mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+
         Bundle bundle = new Bundle();
         bundle.putString("id", userId);
         bundle.putBoolean("fromFamilyClass", true);
