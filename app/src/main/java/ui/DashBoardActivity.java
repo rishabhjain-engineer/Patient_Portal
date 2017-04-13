@@ -166,9 +166,10 @@ public class DashBoardActivity extends BaseActivity {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             // Update UI to reflect image being shared
-            Log.e("Rishabh", "imageURI through gallery := " + imageUri.getPath());
+            Log.e("Rishabh", "Single imageURI from gallery := " + imageUri.getPath());
             Bundle bundle = new Bundle();
             bundle.putParcelable("uri", imageUri);
+            bundle.putString("totaluri", "single");
             mRepositoryFragment = new RepositoryFragment();
             mRepositoryFragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -194,7 +195,28 @@ public class DashBoardActivity extends BaseActivity {
         ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
         if (imageUris != null) {
             // Update UI to reflect multiple images being shared
-
+            Log.e("Rishabh", "Multiple URIs from Gallery := " + imageUris.size());
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("multipleUri", imageUris);
+            bundle.putString("totaluri", "multiple");
+            mRepositoryFragment = new RepositoryFragment();
+            mRepositoryFragment.setArguments(bundle);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, mRepositoryFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            Log.e("Rishabh", "data sent");
+            mFooterContainer.setVisibility(View.VISIBLE);
+            mDashBoardTv.setTextColor(grayColor);
+            mReportTv.setTextColor(grayColor);
+            mRepositoryTv.setTextColor(greenColor);
+            mFamilyTv.setTextColor(grayColor);
+            mAccountTv.setTextColor(grayColor);
+            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+            mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
+            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
         }
     }
 

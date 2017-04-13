@@ -34,6 +34,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -180,7 +181,7 @@ public class RepositoryFragment extends Fragment {
     private static final int REQUEST_CAMERA = 0;
     private static boolean refresh_vault1 = true;
     private String[] rem_dup_folder;
-    private String check_view = "";
+    private String check_view = "", mBundleTotalUri;
     private int checkdialog = 0;
     private Folder_adapter folder_adapter;
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
@@ -199,7 +200,7 @@ public class RepositoryFragment extends Fragment {
     private PreferenceHelper mPreferenceHelper;
     private Bundle mBundleFromGallery;
     private Uri mObtainedUriFromDashboard, mGalleryUploadUri;
-
+    private ArrayList<Uri> mMultipleUriFromDashboard = new ArrayList<>();
     private ImageView mHeaderGridImageView, mHeaderSaveImageView, mHeaderDeleteImageView, mHeaderMoveImageView, mHeaderSelectAllImageView, mHeaderBackButtonImageView;
     //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
 
@@ -624,8 +625,22 @@ public class RepositoryFragment extends Fragment {
     };
 
     private void getBundleFromGallery() {
-        mObtainedUriFromDashboard = mBundleFromGallery.getParcelable("uri");
-        uploadGalleryFile(mObtainedUriFromDashboard);
+
+        mBundleTotalUri = mBundleFromGallery.getString("totaluri");
+        Log.e("Rishabh", " no of uri := "+mBundleTotalUri);
+        if(!TextUtils.isEmpty(mBundleTotalUri) && mBundleTotalUri.contains("single")){
+            mObtainedUriFromDashboard = mBundleFromGallery.getParcelable("uri");
+            uploadGalleryFile(mObtainedUriFromDashboard);
+        }else {
+            mMultipleUriFromDashboard = mBundleFromGallery.getParcelableArrayList("multipleUri");
+            int length = mMultipleUriFromDashboard.size();
+            Log.e("Rishabh","Total number of URIs from gallery received  := "+length);
+            for(int i=0 ; i<length ; i++) {
+                Log.e("Rishabh", "Single Uri := "+mMultipleUriFromDashboard.get(i).getPath());
+                Uri singleUriFile = mMultipleUriFromDashboard.get(i);
+                uploadGalleryFile(singleUriFile);
+            }
+        }
     }
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
