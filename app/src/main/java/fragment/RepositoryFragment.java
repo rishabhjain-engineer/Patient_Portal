@@ -197,6 +197,8 @@ public class RepositoryFragment extends Fragment {
     public static Uri Imguri;
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
+    private Bundle mBundleFromGallery;
+    private Uri mObtainedUriFromDashboard, mGalleryUploadUri;
 
     private ImageView mHeaderGridImageView, mHeaderSaveImageView, mHeaderDeleteImageView, mHeaderMoveImageView, mHeaderSelectAllImageView, mHeaderBackButtonImageView;
     //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
@@ -230,19 +232,15 @@ public class RepositoryFragment extends Fragment {
         list_header = (RelativeLayout) view.findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) view.findViewById(R.id.list_header2);
         bar = (ProgressBar) view.findViewById(R.id.pg);
-
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
-
         mHeaderGridImageView = (ImageView) view.findViewById(R.id.repository_grid_imageview);
         mHeaderSaveImageView = (ImageView) view.findViewById(R.id.repository_save_imageview);
         mHeaderDeleteImageView = (ImageView) view.findViewById(R.id.repository_delete_imageview);
         mHeaderMoveImageView = (ImageView) view.findViewById(R.id.repository_move_imageview);
         mHeaderSelectAllImageView = (ImageView) view.findViewById(R.id.repository_selectall_imageview);
         mHeaderBackButtonImageView = (ImageView) view.findViewById(R.id.repository_backbutton_imageview);
-
-
         mHeaderRepositoryTitle = (TextView) view.findViewById(R.id.repository_title);
-
         mHeaderMiddleImageViewContainer = (LinearLayout) view.findViewById(R.id.middle_options_container);
 
         mHeaderGridImageView.setOnClickListener(mOnClickListener);
@@ -259,6 +257,13 @@ public class RepositoryFragment extends Fragment {
         warning_msg = (TextView) view.findViewById(R.id.warning_msg);
         //refresh_vault1 = view_list;
 
+        askRunTimePermissions();
+
+        mBundleFromGallery = this.getArguments();
+
+        if(mBundleFromGallery != null ) {
+            getBundleFromGallery();
+        }
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -546,6 +551,9 @@ public class RepositoryFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> av, View v, int pos, long id) {
                 vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                 vault_list.setAdapter(vault_delete_adapter);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                mHeaderRepositoryTitle.setVisibility(View.GONE);
+                mHeaderBackButtonImageView.setVisibility(View.VISIBLE);
                   /*  vault_delete_adapter.notifyDataSetChanged();*/
                 list_header2.setVisibility(View.VISIBLE);
                 list_header.setVisibility(View.GONE);
@@ -614,6 +622,11 @@ public class RepositoryFragment extends Fragment {
             }
         }
     };
+
+    private void getBundleFromGallery() {
+        mObtainedUriFromDashboard = mBundleFromGallery.getParcelable("uri");
+        uploadGalleryFile(mObtainedUriFromDashboard);
+    }
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);
@@ -1063,7 +1076,8 @@ public class RepositoryFragment extends Fragment {
         try {
             if (requestCode == PICK_FROM_GALLERY) {
                 Uri selectedImageUri = data.getData();
-                String path = getPathFromContentUri(selectedImageUri);
+                uploadGalleryFile(selectedImageUri);
+               /* String path = getPathFromContentUri(selectedImageUri);
 
                 File imageFile = new File(path);
                 String path1 = imageFile.getAbsolutePath();
@@ -1125,7 +1139,7 @@ public class RepositoryFragment extends Fragment {
 
                     Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
-                }
+                }*/
 
             }
             if (requestCode == PICK_FROM_CAMERA) {
@@ -5431,4 +5445,78 @@ public class RepositoryFragment extends Fragment {
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
+
+    private void uploadGalleryFile(Uri obtainUri) {
+
+        mGalleryUploadUri = obtainUri;
+
+        Log.e("Rishabh", "picked from gallery URI PATH :=  " + mGalleryUploadUri.getPath());
+        String path = getPathFromContentUri(mGalleryUploadUri);
+        Log.e("Rishabh", "path      := " + path);
+        File imageFile = new File(path);
+        String path1 = imageFile.getAbsolutePath();
+        String splitfo_lenthcheck[] = path1.split("/");
+        int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+        long check = ((imageFile.length() / 1024));
+        if (check < 10000 && filenamelength < 99) {
+            String splitstr[];
+            String chosenimg = "";
+            String stringcheck = "", exhistimg = "false";
+            int leangth = 0;
+            if (path.contains("/")) {
+                splitstr = path.split("/");
+                chosenimg = splitstr[splitstr.length - 1];
+            }
+            for (int i = 0; i < thumbImage.size(); i++) {
+                String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
+                if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
+                    if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+
+                        stringcheck = listsplitstr[listsplitstr.length - 1];
+                        leangth = listsplitstr[listsplitstr.length - 1].length();
+                        exhistimg = "true";
+                    }
+
+                }
+            }
+            Intent intent = new Intent(mActivity, UploadService.class);
+            intent.putExtra(UploadService.ARG_FILE_PATH, path);
+            intent.putExtra("add_path", "");
+            intent.putExtra(UploadService.uploadfrom, "");
+            intent.putExtra("exhistimg", exhistimg);
+            intent.putExtra("stringcheck", stringcheck);
+            mActivity.startService(intent);
+
+            System.out.println("After Service");
+
+            String tempPath = getPath(mGalleryUploadUri, mActivity);
+            Bitmap bm;
+            BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+            btmapOptions.inSampleSize = 4;
+            bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+            // vault_adapter.notifyDataSetChanged();
+            if (bm != null) {
+
+                System.out.println("in onactivity");
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                byteArray = byteArrayOutputStream.toByteArray();
+
+                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                picname = "b.jpg";
+                pic = "data:image/jpeg;base64," + pic;
+                //  vault_adapter.notifyDataSetChanged();
+
+            }
+
+        } else {
+
+            Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+        }
+
+
+        ///////////////////////////////////////////////
+    }
+
 }
