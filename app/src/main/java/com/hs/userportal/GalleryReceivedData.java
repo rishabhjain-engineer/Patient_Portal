@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +46,7 @@ import utils.PreferenceHelper;
 
 public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
-    private ListView list;
+    private RecyclerView list;
     private Directory mDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;

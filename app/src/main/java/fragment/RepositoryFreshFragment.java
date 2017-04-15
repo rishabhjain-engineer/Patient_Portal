@@ -2,10 +2,14 @@ package fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,9 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -40,6 +44,7 @@ import config.StaticHolder;
 import utils.AppConstant;
 import utils.DirectoryUtility;
 import utils.PreferenceHelper;
+import utils.RepositoryGridAdapter;
 
 /**
  * Created by rishabh on 6/4/17.
@@ -47,7 +52,7 @@ import utils.PreferenceHelper;
 
 public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction {
 
-    private ListView list;
+    private RecyclerView list;
     private Directory mDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;
@@ -61,9 +66,16 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private Handler mHandler;
     private PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
-    private EditText mSearchEditText ;
+    private EditText mSearchEditText;
 
     private RelativeLayout toolbar;
+    private TextView toolbarTitle;
+    private ImageView toolbarBackButton;
+    private ImageView showGridLayout;
+
+    private ProgressDialog progressDialog;
+    private int listMode = 0; //0=list, 1=grid
+
 
     @Nullable
     @Override
@@ -75,10 +87,34 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         //toolbar
         toolbar = (RelativeLayout) view.findViewById(R.id.repository_toolbar);
+        toolbarTitle = (TextView) view.findViewById(R.id.repository_title);
+        toolbarBackButton = (ImageView) view.findViewById(R.id.repository_backbutton_imageview);
+        showGridLayout = (ImageView) view.findViewById(R.id.repository_grid_imageview);
+        toolbarTitle.setText("Repository");
+        toolbarBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
 
+        showGridLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listMode == 0){
+                    listMode = 1;
+                } else {
+                    listMode = 0;
+                }
+                setListAdapter(mDirectory);
+            }
+        });
 
-
-        list = (ListView) view.findViewById(R.id.list);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        list = (RecyclerView) view.findViewById(R.id.list);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSearchEditText = (EditText) view.findViewById(R.id.et_searchbar);
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,7 +129,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.toString().equals("")){
+                if (editable.toString().equals("")) {
                     mRepositoryAdapter = new RepositoryAdapter(getActivity(), mDirectory, RepositoryFreshFragment.this);
                     list.setAdapter(mRepositoryAdapter);
                 } else {
@@ -106,6 +142,16 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         createLockFolder();
 
         return view;
+    }
+
+    private void setListAdapter(Directory directory) {
+        if (listMode == 0) {
+            list.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            list.setAdapter(new RepositoryGridAdapter(getActivity(), directory, RepositoryFreshFragment.this));
+        } else {
+            list.setLayoutManager(new LinearLayoutManager(getActivity()));
+            list.setAdapter(new RepositoryAdapter(getActivity(), directory, RepositoryFreshFragment.this));
+        }
     }
 
     public void startCreatingDirectoryStructure() {
@@ -124,23 +170,26 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         array_folders.put("Insurance");
         array_folders.put("Bills");
         array_folders.put("Reports");
-        Log.e("Rishabh", "Patient id := "+patientId);
+        Log.e("Rishabh", "Patient id := " + patientId);
         try {
             data.put("list", array_folders);
             data.put("patientId", patientId);
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  := "+response);
+                Log.e("Rishabh", "reposnse  := " + response);
                 startCreatingDirectoryStructure();
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
             }
         });
         req.add(lock_folder);
@@ -158,7 +207,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         queue = Volley.newRequestQueue(mActivity);
         queue3 = Volley.newRequestQueue(mActivity);
         req = Volley.newRequestQueue(mActivity);
-       // mImageLoader = MyVolleySingleton.getInstance(mActivity).getImageLoader();
+        // mImageLoader = MyVolleySingleton.getInstance(mActivity).getImageLoader();
         StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
@@ -171,7 +220,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  load data  := "+response);
+                progressDialog.dismiss();
+                Log.e("Rishabh", "reposnse  load data  := " + response);
                 try {
                     String data = response.optString("d");
                     JSONObject d = new JSONObject(data);
@@ -206,7 +256,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                progressDialog.dismiss();
             }
         });
         int socketTimeout1 = 50000;
@@ -217,10 +267,30 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     @Override
-    public void onDirectoryTouched(Directory directory) {
-        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, this);
-        list.setAdapter(mRepositoryAdapter);
-        Log.e("RISHABH", directory.getDirectoryPath());
+    public void onDirectoryTouched(final Directory directory) {
+        setListAdapter(directory);
+        if (directory.getParentDirectory() == null) {
+            toolbarTitle.setText("Repository");
+            toolbarBackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().finish();
+                }
+            });
+        } else {
+            toolbarTitle.setText(directory.getDirectoryName());
+            toolbarBackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setListAdapter(directory.getParentDirectory());
+                    if (directory.getParentDirectory() == null) {
+                        toolbarTitle.setText("Repository");
+                    } else {
+                        toolbarTitle.setText(directory.getParentDirectory().getDirectoryName());
+                    }
+                }
+            });
+        }
     }
 
     @Override

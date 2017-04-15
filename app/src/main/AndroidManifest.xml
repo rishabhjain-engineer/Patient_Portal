@@ -501,6 +501,11 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ImageActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
         <service android:name="com.hs.userportal.UploadProfileService" />
 
         <activity

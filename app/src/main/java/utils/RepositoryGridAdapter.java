@@ -1,4 +1,4 @@
-package adapters;
+package utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,20 +18,20 @@ import com.hs.userportal.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.AppConstant;
+import adapters.RepositoryAdapter;
 
 /**
- * Created by rishabh on 6/4/17.
+ * Created by ravimathpal on 15/04/17.
  */
 
-public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.ViewHolder> {
+public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAdapter.ViewHolder> {
 
     private Directory directory;
     private List<Object> listOfObjects;
     private Context context;
-    private onDirectoryAction listener;
+    private RepositoryAdapter.onDirectoryAction listener;
 
-    public RepositoryAdapter(Activity context, Directory directory, onDirectoryAction listener) {
+    public RepositoryGridAdapter(Activity context, Directory directory, RepositoryAdapter.onDirectoryAction listener) {
         this.directory = directory;
         this.context = context;
         this.listener = listener;
@@ -56,7 +56,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.repository_singlerow_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.repository_singlerow_grid_layout, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
 
