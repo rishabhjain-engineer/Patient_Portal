@@ -108,15 +108,20 @@ public class Directory {
         return null;
     }
 
-    public String getDirectoryPath(){
-        return getSubDirectoryNames() + directoryName;
+    public String getDirectoryPathThroughSearch(){
+        return getParentDirectoryPath() + directoryName;
     }
 
-    private String getSubDirectoryNames() {
+    public String getDirectoryPath(){
+        String path = getDirectoryPathThroughSearch();
+        return path.substring(path.indexOf("/") + 1);
+    }
+
+    private String getParentDirectoryPath() {
         if(parentDirectory == null){
             return "";
         } else {
-            return parentDirectory.getDirectoryPath() + "/";
+            return parentDirectory.getDirectoryPathThroughSearch() + "/";
         }
     }
 
@@ -138,6 +143,17 @@ public class Directory {
         Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
         Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
 
+    }
+
+    public boolean searchFolderName(String folderName) {
+
+        for (Directory directory:listOfDirectories) {
+            if(directory.getDirectoryName().equalsIgnoreCase(folderName)) {
+                return true;
+            }
+        }
+
+        return false ;
     }
 
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,7 +61,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ImageView mCreateNewFolderImageView ;
     private Directory mDirectory;
     private RepositoryAdapter mRepositoryAdapter;
-    private Activity mActivity;
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
     private JsonObjectRequest lock_folder;
@@ -73,12 +73,13 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private static String patientId = null;
     private EditText mSearchEditText;
     private Helper mhelper;
-
+    private ImageView toolbarBackButton;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.filevault2);
+        setContentView(R.layout.gallery_received_data);
         setupActionBar();
         mActionBar.hide();
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -123,7 +124,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     }
 
     private void initObject() {
+        toolbarBackButton = (ImageView) findViewById(R.id.toolbar_back_button);
+        toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.directory_share_listview);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMoveButton = (Button) findViewById(R.id.directory_share_move_btn);
         mCreateNewFolderImageView = (ImageView) findViewById(R.id.add_new_folder);
 
@@ -176,7 +181,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     public void createNewFolder() {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
-        final Dialog overlay_dialog = new Dialog(mActivity);
+        final Dialog overlay_dialog = new Dialog(GalleryReceivedData.this);
         overlay_dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);//SOFT_INPUT_STATE_ALWAYS_HIDDEN
         overlay_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         overlay_dialog.setCanceledOnTouchOutside(true);
@@ -186,7 +191,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         path.setVisibility(View.GONE);
         final EditText folder_name = (EditText) overlay_dialog.findViewById(R.id.folder_name);
         //opening keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) mActivity.getSystemService(INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(folder_name.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
         //
         folder_name.requestFocus();
@@ -200,14 +205,14 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog progress = new ProgressDialog(mActivity);
+                final ProgressDialog progress = new ProgressDialog(GalleryReceivedData.this);
 
                 progress.setCancelable(false);
                 //progress.setTitle("Logging in...");
                 progress.setMessage("Please wait...");
                 progress.setIndeterminate(true);
 
-                String folder = folder_name.getText().toString();
+                final String folder = folder_name.getText().toString();
                 if (folder_name_exists(folder.trim())) {
                     folder_name.setError("A folder already exists with this name.");
                 } else if (folder != "" && (!folder.equals(""))) {
@@ -216,12 +221,13 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     JSONObject sendData = new JSONObject();
                     try {
                         sendData.put("FolderName", folder);
-                        sendData.put("Path", "");
+                        Directory directory = mRepositoryAdapter.getDirectory();
+                        sendData.put("Path", directory.getDirectoryPath());
                         sendData.put("patientId", patientId);
                     } catch (JSONException EX) {
                         EX.printStackTrace();
                     }
-                    StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.CreateFolder);
+                    StaticHolder sttc_holdr = new StaticHolder(GalleryReceivedData.this, StaticHolder.Services_static.CreateFolder);
                     String url = sttc_holdr.request_Url();
                     JsonObjectRequest jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                         @Override
@@ -233,14 +239,17 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                                 String packagedata = response.getString("d");
                                 if (packagedata.equalsIgnoreCase("Error")) {
                                     progress.dismiss();
-                                    Toast.makeText(mActivity, "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GalleryReceivedData.this, "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
                                 } else if (packagedata.equalsIgnoreCase("Folder exist")) {
                                     progress.dismiss();
-                                    Toast.makeText(mActivity, "A folder already exists with this name.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GalleryReceivedData.this, "A folder already exists with this name.", Toast.LENGTH_SHORT).show();
                                 } else if (packagedata.equalsIgnoreCase("Added")) {
                                     progress.dismiss();
-                                    Toast.makeText(mActivity, "Folder created successfully.", Toast.LENGTH_LONG).show();
-                                    refresh();
+                                    Toast.makeText(GalleryReceivedData.this, "Folder created successfully.", Toast.LENGTH_LONG).show();
+                                    Directory directory = new Directory(folder);
+                                    mRepositoryAdapter.getDirectory().addDirectory(directory);
+                                    mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), GalleryReceivedData.this);
+                                    mRecyclerView.setAdapter(mRepositoryAdapter);
                                 }
 
 
@@ -254,7 +263,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         public void onErrorResponse(VolleyError error) {
                             progress.dismiss();
                             overlay_dialog.dismiss();
-                            Toast.makeText(mActivity, "Server Connectivity Error, Try Later.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GalleryReceivedData.this, "Server Connectivity Error, Try Later.", Toast.LENGTH_SHORT).show();
 
                         }
                     }) {
@@ -267,6 +276,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             }
         });
         overlay_dialog.show();
+    }
+
+    private boolean folder_name_exists(String trim) {
+
+        Directory directory = mRepositoryAdapter.getDirectory();
+        return directory.searchFolderName(trim);
     }
 
     private void createLockFolder() {
@@ -360,6 +375,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 //                    mRepositoryAdapter.notifyDataSetChanged();
                     mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, mDirectory, GalleryReceivedData.this);
                     mRecyclerView.setAdapter(mRepositoryAdapter);
+                    setBackButtonPress(mDirectory);
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -383,13 +399,36 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     public void onDirectoryTouched(Directory directory) {
         mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory, this);
         mRecyclerView.setAdapter(mRepositoryAdapter);
+        setBackButtonPress(directory);
     }
 
     @Override
     public void onImageTouched(DirectoryFile file) {
-        Intent i = new Intent(mActivity, ImageActivity.class);
+        Intent i = new Intent(GalleryReceivedData.this, ImageActivity.class);
         i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
         startActivity(i);
+    }
+
+    void setBackButtonPress(final Directory directory){
+        if(directory.getParentDirectory() == null){
+            toolbarTitle.setText("Repository");
+            toolbarBackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        } else {
+            toolbarTitle.setText(directory.getDirectoryName());
+            toolbarBackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory.getParentDirectory(), GalleryReceivedData.this);
+                    mRecyclerView.setAdapter(mRepositoryAdapter);
+                    setBackButtonPress(directory.getParentDirectory());
+                }
+            });
+        }
     }
 
     // TODO end of Main class
