@@ -42,6 +42,7 @@ import fragment.DashboardFragment;
 import fragment.FamilyFragment;
 import fragment.ReportFragment;
 import fragment.RepositoryFragment;
+import fragment.RepositoryFreshFragment;
 import fragment.VitalFragment;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -479,7 +480,7 @@ public class DashBoardActivity extends BaseActivity {
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-            mRepositoryFragment = new RepositoryFragment();
+            mRepositoryFragment = new RepositoryFreshFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, mRepositoryFragment);
             transaction.addToBackStack(null);

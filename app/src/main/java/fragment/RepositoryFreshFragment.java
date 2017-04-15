@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +48,14 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
     private Activity mActivity;
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
+    private JsonObjectRequest lock_folder;
     private static RequestQueue req;
     private JsonObjectRequest jr2, jr3, jr4;
     private static JsonObjectRequest s3jr;
     private NotificationHandler nHandler;
+    private Handler mHandler;
     private PreferenceHelper mPreferenceHelper;
-    private static String id = null;
+    private static String patientId = null;
     private EditText mSearchEditText ;
 
 
@@ -61,36 +65,13 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
         View view = inflater.inflate(R.layout.repository_fragment_layout, null);
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
-        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         list = (ListView) view.findViewById(R.id.list);
         mSearchEditText = (EditText) view.findViewById(R.id.et_searchbar);
-        startCreatingDirectoryStructure();
+        createLockFolder();
 
 
-        mRepositoryAdapter = new Repository_Adapter(mActivity, mDirectory, this);
-        list.setAdapter(mRepositoryAdapter);
 
-
-       /* mSearchEditText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                // When user changed the Text
-              mRepositoryAdapter.getFilter().filter(cs);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-        });*/
 
 
         return view;
@@ -99,16 +80,46 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
     public void startCreatingDirectoryStructure() {
 
         mDirectory = new Directory("Home");
-        mRepositoryAdapter = new Repository_Adapter(mActivity, mDirectory, this);
-        list.setAdapter(mRepositoryAdapter);
         loadData();
     }
 
+    public void createLockFolder() {
+        req = Volley.newRequestQueue(mActivity);
+        mHandler = new Handler();
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.CreateLockFolder);
+        String url = sttc_holdr.request_Url();
+        JSONObject data = new JSONObject();
+        JSONArray array_folders = new JSONArray();
+        array_folders.put("Prescription");
+        array_folders.put("Insurance");
+        array_folders.put("Bills");
+        array_folders.put("Reports");
+        Log.e("Rishabh", "Patient id := "+patientId);
+        try {
+            data.put("list", array_folders);
+            data.put("patientId", patientId);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("Rishabh", "reposnse  := "+response);
+                startCreatingDirectoryStructure();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        req.add(lock_folder);
+    }
 
     private void loadData() {
         sendData = new JSONObject();
         try {
-            sendData.put("PatientId", id);
+            sendData.put("PatientId", patientId);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -123,26 +134,25 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
         JSONObject s3data = new JSONObject();
         try {
             s3data.put("Key", "");
-            s3data.put("patientId", id);
+            s3data.put("patientId", patientId);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                Log.e("Rishabh", "reposnse  load data  := "+response);
                 try {
                     String data = response.optString("d");
                     JSONObject d = new JSONObject(data);
+
                     JSONArray s3 = d.getJSONArray("S3Objects");
 
                     for (int i = 0; i < s3.length(); i++) {
                         JSONObject object = s3.getJSONObject(i);
                         //ignoring useless data and thumbs
                         //thumbs are manually set in setKey method of directoryfile
-                        if (object.getString("Key").contains("ZurekaTempPatientConfig"))
-                            continue;
-                        else if (object.getString("Key").contains("_thumb."))
+                        if (object.getString("Key").contains("_thumb."))
                             continue;
 
                         DirectoryFile file = new DirectoryFile();
@@ -155,7 +165,7 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
                         addObject(mDirectory, file, file.getPath());
                     }
 
-                    mRepositoryAdapter.notifyDataSetChanged();
+//                    mRepositoryAdapter.notifyDataSetChanged();
                     mRepositoryAdapter = new Repository_Adapter(mActivity, mDirectory, RepositoryFreshFragment.this);
                     list.setAdapter(mRepositoryAdapter);
 
@@ -216,13 +226,17 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
             }
         } else {
             //if it is a folder, then add new folder object in current directory recursively
-            if (directory.hasDirectory(name)) {
-                addObject(directory.getDirectory(name), file, removeOneDirectory(path));
+            if(name.equals("ZurekaTempPatientConfig")){
+
             } else {
-                Directory newDirectory = new Directory(name);
-                directory.addDirectory(newDirectory);
-                String newPath = removeOneDirectory(path);
-                addObject(newDirectory, file, newPath);
+                if (directory.hasDirectory(name)) {
+                    addObject(directory.getDirectory(name), file, removeOneDirectory(path));
+                } else {
+                    Directory newDirectory = new Directory(name);
+                    directory.addDirectory(newDirectory);
+                    String newPath = removeOneDirectory(path);
+                    addObject(newDirectory, file, newPath);
+                }
             }
         }
     }
