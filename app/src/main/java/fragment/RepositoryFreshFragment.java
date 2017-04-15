@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import adapters.RepositoryAdapter;
 import config.StaticHolder;
 import utils.AppConstant;
+import utils.DirectoryUtility;
 import utils.PreferenceHelper;
 
 /**
@@ -156,13 +157,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             continue;
 
                         DirectoryFile file = new DirectoryFile();
-                        file.setName(getFileName(object.getString("Key")));
+                        file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
                         file.setLastModified(object.getString("LastModified"));
                         file.setSize(object.getDouble("Size"));
-                        file.setPath(removeExtra(object.getString("Key")));
+                        file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
@@ -184,78 +185,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         s3jr.setRetryPolicy(policy1);
         req.add(s3jr);
-    }
-
-    private String getFileName(String key) {
-        if(key.contains("ZurekaTempPatientConfig")){
-            return "ZurekaTempPatientConfig";
-        } else {
-            //this method just gets the name of file
-            String[] split = key.split("/");
-            return split[split.length - 1];
-        }
-    }
-
-    private String removeExtra(String path) {
-//        this method removes junk from front
-        String[] splitted = path.split("/");
-        String reducedString = "";
-        for (int i = 3; i < splitted.length; i++) {
-            reducedString = reducedString + splitted[i];
-            if (i != splitted.length - 1) {
-                reducedString = reducedString + "/";
-            }
-        }
-        return reducedString;
-    }
-
-    private String removeOneDirectory(String path) {
-        //this method trims the path to one directory short
-        String newString = path.substring(path.indexOf("/", 0) + 1);
-        return newString;
-    }
-
-    private void addObject(Directory directory, DirectoryFile file, String path) {
-        //recursive method to set file in directory
-        String name;
-        if (path.contains("/")) {
-            name = path.substring(0, path.indexOf("/", 0));
-        } else {
-            name = path;
-        }
-
-        if (isFile(name)) {
-            if (!directory.hasFile(name)) {
-                directory.addFile(file);
-            }
-        } else {
-            //if it is a folder, then add new folder object in current directory recursively
-            if(name.equals("ZurekaTempPatientConfig")){
-
-            } else {
-                if (directory.hasDirectory(name)) {
-                    addObject(directory.getDirectory(name), file, removeOneDirectory(path));
-                } else {
-                    Directory newDirectory = new Directory(name);
-                    directory.addDirectory(newDirectory);
-                    String newPath = removeOneDirectory(path);
-                    addObject(newDirectory, file, newPath);
-                }
-            }
-        }
-    }
-
-    private boolean isFile(String s) {
-//        to check if string is a valid file name.. be sure not to include / in string
-        s.toLowerCase();
-        if (s.endsWith(".jpg")
-                || s.endsWith(".png")
-                || s.endsWith(".pdf")
-                || s.endsWith(".xlx")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override

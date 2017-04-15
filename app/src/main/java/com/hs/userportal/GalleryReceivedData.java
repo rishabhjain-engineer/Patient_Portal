@@ -23,24 +23,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import adapters.Repository_Adapter;
+import adapters.RepositoryAdapter;
 import config.StaticHolder;
-import fragment.RepositoryFreshFragment;
 import ui.BaseActivity;
 import utils.AppConstant;
+import utils.DirectoryUtility;
 import utils.PreferenceHelper;
-
-import static com.hs.userportal.Helper.list;
 
 /**
  * Created by Rishabh on 15/04/17.
  */
 
-public class GalleryReceivedData extends BaseActivity implements Repository_Adapter.onDirectoryAction{
+public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
     private ListView list;
     private Directory mDirectory;
-    private Repository_Adapter mRepositoryAdapter;
+    private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
@@ -52,7 +50,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
     private Handler mHandler;
     private PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
-    private EditText mSearchEditText ;
+    private EditText mSearchEditText;
     private Helper mhelper;
 
 
@@ -63,7 +61,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
         setupActionBar();
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        Log.e("Rishabh", "Patient id := "+patientId);
+        Log.e("Rishabh", "Patient id := " + patientId);
         mhelper = new Helper();
 
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -72,7 +70,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
 
             createLockFolder();
 
-        }else {
+        } else {
             // user not logged into the app. dont allow to upload file segement here .
             showAlertMessage("Login to ScionTra application first. ");
             finish();
@@ -92,7 +90,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
         array_folders.put("Insurance");
         array_folders.put("Bills");
         array_folders.put("Reports");
-        Log.e("Rishabh", "Patient id := "+patientId);
+        Log.e("Rishabh", "Patient id := " + patientId);
         try {
             data.put("list", array_folders);
             data.put("patientId", patientId);
@@ -102,7 +100,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  := "+response);
+                Log.e("Rishabh", "reposnse  := " + response);
                 startCreatingDirectoryStructure();
 
             }
@@ -145,7 +143,7 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  load data  := "+response);
+                Log.e("Rishabh", "reposnse  load data  := " + response);
                 try {
                     String data = response.optString("d");
                     JSONObject d = new JSONObject(data);
@@ -160,17 +158,17 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
                             continue;
 
                         DirectoryFile file = new DirectoryFile();
-                        file.setName(getFileName(object.getString("Key")));
+                        file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
                         file.setLastModified(object.getString("LastModified"));
                         file.setSize(object.getDouble("Size"));
-                        file.setPath(removeExtra(object.getString("Key")));
+                        file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter = new Repository_Adapter(GalleryReceivedData.this, mDirectory, GalleryReceivedData.this);
+                    mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, mDirectory, GalleryReceivedData.this);
                     list.setAdapter(mRepositoryAdapter);
 
                 } catch (JSONException je) {
@@ -191,77 +189,9 @@ public class GalleryReceivedData extends BaseActivity implements Repository_Adap
     }
 
 
-    private String getFileName(String key) {
-        //this method just gets the name of file
-        String[] split = key.split("/");
-        return split[split.length - 1];
-    }
-
-    private String removeExtra(String path) {
-//        this method removes junk from front
-        String[] splitted = path.split("/");
-        String reducedString = "";
-        for (int i = 3; i < splitted.length; i++) {
-            reducedString = reducedString + splitted[i];
-            if (i != splitted.length - 1) {
-                reducedString = reducedString + "/";
-            }
-        }
-        return reducedString;
-    }
-
-    private String removeOneDirectory(String path) {
-        //this method trims the path to one directory short
-        String newString = path.substring(path.indexOf("/", 0) + 1);
-        return newString;
-    }
-
-    private void addObject(Directory directory, DirectoryFile file, String path) {
-        //recursive method to set file in directory
-        String name;
-        if (path.contains("/")) {
-            name = path.substring(0, path.indexOf("/", 0));
-        } else {
-            name = path;
-        }
-
-        if (isFile(name)) {
-            if (!directory.hasFile(name)) {
-                directory.addFile(file);
-            }
-        } else {
-            //if it is a folder, then add new folder object in current directory recursively
-            if(name.equals("ZurekaTempPatientConfig")){
-
-            } else {
-                if (directory.hasDirectory(name)) {
-                    addObject(directory.getDirectory(name), file, removeOneDirectory(path));
-                } else {
-                    Directory newDirectory = new Directory(name);
-                    directory.addDirectory(newDirectory);
-                    String newPath = removeOneDirectory(path);
-                    addObject(newDirectory, file, newPath);
-                }
-            }
-        }
-    }
-
-    private boolean isFile(String s) {
-//        to check if string is a valid file name.. be sure not to include / in string
-        s.toLowerCase();
-        if (s.endsWith(".jpg")
-                || s.endsWith(".png")
-                || s.endsWith(".pdf")
-                || s.endsWith(".xlx")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public void onDirectoryTouched(Directory directory) {
-        mRepositoryAdapter = new Repository_Adapter(GalleryReceivedData.this, directory, this);
+        mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory, this);
         list.setAdapter(mRepositoryAdapter);
     }
 
