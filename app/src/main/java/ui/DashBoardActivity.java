@@ -480,7 +480,7 @@ public class DashBoardActivity extends BaseActivity {
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-            mRepositoryFragment = new RepositoryFreshFragment();
+            mRepositoryFragment = new RepositoryFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, mRepositoryFragment);
             transaction.addToBackStack(null);
