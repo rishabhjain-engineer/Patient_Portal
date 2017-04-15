@@ -1,8 +1,10 @@
 package com.hs.userportal;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +14,15 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -133,7 +140,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             if(viewId == R.id.directory_share_move_btn){
 
             }else if(viewId == R.id.add_new_folder) {
-                
+                createNewFolder();
             }
         }
     };
@@ -165,6 +172,101 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             bundle.putParcelableArrayList("multipleUri", imageUris);
             bundle.putString("totaluri", "multiple");
         }
+    }
+
+    public void createNewFolder() {
+        // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
+        final Dialog overlay_dialog = new Dialog(mActivity);
+        overlay_dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);//SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        overlay_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        overlay_dialog.setCanceledOnTouchOutside(true);
+        overlay_dialog.setContentView(R.layout.create_folderdialog);
+        Button btn_continue = (Button) overlay_dialog.findViewById(R.id.create_btn);
+        TextView path = (TextView) overlay_dialog.findViewById(R.id.path);
+        path.setVisibility(View.GONE);
+        final EditText folder_name = (EditText) overlay_dialog.findViewById(R.id.folder_name);
+        //opening keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) mActivity.getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(folder_name.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        //
+        folder_name.requestFocus();
+        Button canceltxt = (Button) overlay_dialog.findViewById(R.id.cancel);
+        canceltxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                overlay_dialog.dismiss();
+            }
+        });
+        btn_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog progress = new ProgressDialog(mActivity);
+
+                progress.setCancelable(false);
+                //progress.setTitle("Logging in...");
+                progress.setMessage("Please wait...");
+                progress.setIndeterminate(true);
+
+                String folder = folder_name.getText().toString();
+                if (folder_name_exists(folder.trim())) {
+                    folder_name.setError("A folder already exists with this name.");
+                } else if (folder != "" && (!folder.equals(""))) {
+                    overlay_dialog.dismiss();
+                    progress.show();
+                    JSONObject sendData = new JSONObject();
+                    try {
+                        sendData.put("FolderName", folder);
+                        sendData.put("Path", "");
+                        sendData.put("patientId", patientId);
+                    } catch (JSONException EX) {
+                        EX.printStackTrace();
+                    }
+                    StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.CreateFolder);
+                    String url = sttc_holdr.request_Url();
+                    JsonObjectRequest jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            // System.out.println(response);
+
+                            try {
+                                String packagedata = response.getString("d");
+                                if (packagedata.equalsIgnoreCase("Error")) {
+                                    progress.dismiss();
+                                    Toast.makeText(mActivity, "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
+                                } else if (packagedata.equalsIgnoreCase("Folder exist")) {
+                                    progress.dismiss();
+                                    Toast.makeText(mActivity, "A folder already exists with this name.", Toast.LENGTH_SHORT).show();
+                                } else if (packagedata.equalsIgnoreCase("Added")) {
+                                    progress.dismiss();
+                                    Toast.makeText(mActivity, "Folder created successfully.", Toast.LENGTH_LONG).show();
+                                    refresh();
+                                }
+
+
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progress.dismiss();
+                            overlay_dialog.dismiss();
+                            Toast.makeText(mActivity, "Server Connectivity Error, Try Later.", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }) {
+                    };
+                    queue.add(jr);
+                } else {
+                    folder_name.setError("Enter correct folder name");
+                    // Toast.makeText(getApplicationContext(), "Enter valid Mobile number", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        overlay_dialog.show();
     }
 
     private void createLockFolder() {
