@@ -29,17 +29,14 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
     private Directory directory;
     private List<Object> listOfObjects;
     private Context context;
-    private RepositoryAdapter.onDirectoryAction listener;
+    private onDirectoryAction listener;
 
-    public RepositoryGridAdapter(Activity context, Directory directory, RepositoryAdapter.onDirectoryAction listener) {
+    public RepositoryGridAdapter(Activity context, Directory directory, onDirectoryAction listener) {
         this.directory = directory;
         this.context = context;
         this.listener = listener;
         listOfObjects = new ArrayList<>();
 
-        if (directory.getParentDirectory() != null) {
-            listOfObjects.add(0);
-        }
         if (!directory.listOfDirectories.isEmpty()) {
             for (Directory d : directory.getListOfDirectories()) {
                 listOfObjects.add(d);
@@ -65,19 +62,7 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        if (listOfObjects.get(position) instanceof Integer) {
-            holder.image.setImageResource(R.drawable.ic_folder);
-            holder.name.setText("...");
-            holder.lastModified.setText("--");
-            holder.size.setText("--");
-            holder.row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDirectoryTouched(directory.getParentDirectory());
-                }
-            });
-
-        } else if (listOfObjects.get(position) instanceof Directory) {
+        if (listOfObjects.get(position) instanceof Directory) {
             if (((Directory) listOfObjects.get(position)).isLocked()) {
                 holder.image.setImageResource(R.drawable.ic_folder_protected);
             } else {
@@ -130,6 +115,10 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
 
             row = (LinearLayout) itemView.findViewById(R.id.row);
         }
+    }
+
+    public Directory getDirectory(){
+        return directory;
     }
 
     public interface onDirectoryAction {

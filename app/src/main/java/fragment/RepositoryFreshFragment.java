@@ -50,10 +50,11 @@ import utils.RepositoryGridAdapter;
  * Created by rishabh on 6/4/17.
  */
 
-public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction {
+public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction {
 
     private RecyclerView list;
     private Directory mDirectory;
+    private Directory currentDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;
     private JSONObject sendData, receiveData;
@@ -94,19 +95,20 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         toolbarBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                setBackButtonPress(mDirectory);
             }
         });
 
         showGridLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Directory directory;
                 if(listMode == 0){
                     listMode = 1;
                 } else {
                     listMode = 0;
                 }
-                setListAdapter(mDirectory);
+                setListAdapter(currentDirectory);
             }
         });
 
@@ -130,12 +132,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().equals("")) {
-                    mRepositoryAdapter = new RepositoryAdapter(getActivity(), mDirectory, RepositoryFreshFragment.this);
-                    list.setAdapter(mRepositoryAdapter);
-                } else {
-                    mRepositoryAdapter = new RepositoryAdapter(getActivity(), DirectoryUtility.searchDirectory(mDirectory, editable.toString()), RepositoryFreshFragment.this);
-                    list.setAdapter(mRepositoryAdapter);
+                    currentDirectory = mDirectory;
+                    setListAdapter(mDirectory);
 
+                } else {
+                    Directory searchedDirectory = DirectoryUtility.searchDirectory(mDirectory, editable.toString());
+                    currentDirectory = searchedDirectory;
+                    setListAdapter(searchedDirectory);
                 }
             }
         });
@@ -145,7 +148,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void setListAdapter(Directory directory) {
-        if (listMode == 0) {
+        if (listMode == 1) {
             list.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             list.setAdapter(new RepositoryGridAdapter(getActivity(), directory, RepositoryFreshFragment.this));
         } else {
@@ -246,8 +249,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter = new RepositoryAdapter(mActivity, mDirectory, RepositoryFreshFragment.this);
-                    list.setAdapter(mRepositoryAdapter);
+                    currentDirectory = mDirectory;
+                    setListAdapter(currentDirectory);
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -267,9 +270,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     @Override
-    public void onDirectoryTouched(final Directory directory) {
-        setListAdapter(directory);
-        if (directory.getParentDirectory() == null) {
+    public void onDirectoryTouched(Directory directory) {
+        currentDirectory = directory;
+        setListAdapter(currentDirectory);
+        setBackButtonPress(currentDirectory);
+    }
+
+    void setBackButtonPress(final Directory directory){
+        if(directory.getParentDirectory() == null){
             toolbarTitle.setText("Repository");
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -283,11 +291,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 @Override
                 public void onClick(View view) {
                     setListAdapter(directory.getParentDirectory());
-                    if (directory.getParentDirectory() == null) {
-                        toolbarTitle.setText("Repository");
-                    } else {
-                        toolbarTitle.setText(directory.getParentDirectory().getDirectoryName());
-                    }
+                    setBackButtonPress(directory.getParentDirectory());
                 }
             });
         }

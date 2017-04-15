@@ -37,9 +37,6 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
         this.listener = listener;
         listOfObjects = new ArrayList<>();
 
-        if (directory.getParentDirectory() != null) {
-            listOfObjects.add(0);
-        }
         if (!directory.listOfDirectories.isEmpty()) {
             for (Directory d : directory.getListOfDirectories()) {
                 listOfObjects.add(d);
@@ -65,19 +62,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        if (listOfObjects.get(position) instanceof Integer) {
-            holder.image.setImageResource(R.drawable.ic_folder);
-            holder.name.setText("...");
-            holder.lastModified.setText("--");
-            holder.size.setText("--");
-            holder.row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDirectoryTouched(directory.getParentDirectory());
-                }
-            });
-
-        } else if (listOfObjects.get(position) instanceof Directory) {
+        if (listOfObjects.get(position) instanceof Directory) {
             if (((Directory) listOfObjects.get(position)).isLocked()) {
                 holder.image.setImageResource(R.drawable.ic_folder_protected);
             } else {
@@ -136,6 +121,10 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
         void onDirectoryTouched(Directory directory);
 
         void onImageTouched(DirectoryFile file);
+    }
+
+    public Directory getDirectory(){
+        return directory;
     }
 
 }
