@@ -12,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -46,7 +48,9 @@ import utils.PreferenceHelper;
 
 public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
-    private RecyclerView list;
+    private RecyclerView mRecyclerView;
+    private Button mMoveButton ;
+    private ImageView mCreateNewFolderImageView ;
     private Directory mDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;
@@ -69,11 +73,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
         setupActionBar();
+        mActionBar.hide();
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         Log.e("Rishabh", "Patient id := " + patientId);
         mhelper = new Helper();
-
+        initObject();
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
@@ -109,6 +114,29 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
         // TODO end of onCreate method
     }
+
+    private void initObject() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.directory_share_listview);
+        mMoveButton = (Button) findViewById(R.id.directory_share_move_btn);
+        mCreateNewFolderImageView = (ImageView) findViewById(R.id.add_new_folder);
+
+        mMoveButton.setOnClickListener(mOnClickListener);
+        mCreateNewFolderImageView.setOnClickListener(mOnClickListener);
+    }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            int viewId = v.getId();
+
+            if(viewId == R.id.directory_share_move_btn){
+
+            }else if(viewId == R.id.add_new_folder) {
+                
+            }
+        }
+    };
 
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -229,7 +257,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
                     mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, mDirectory, GalleryReceivedData.this);
-                    list.setAdapter(mRepositoryAdapter);
+                    mRecyclerView.setAdapter(mRepositoryAdapter);
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -252,7 +280,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     @Override
     public void onDirectoryTouched(Directory directory) {
         mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory, this);
-        list.setAdapter(mRepositoryAdapter);
+        mRecyclerView.setAdapter(mRepositoryAdapter);
     }
 
     @Override
