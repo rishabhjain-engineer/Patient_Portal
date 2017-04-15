@@ -1,12 +1,16 @@
 package com.hs.userportal;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -23,8 +27,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import adapters.RepositoryAdapter;
+import base.MyFirebaseMessagingService;
 import config.StaticHolder;
+import fragment.DashboardFragment;
+import fragment.RepositoryFragment;
 import ui.BaseActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
@@ -64,11 +73,32 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Log.e("Rishabh", "Patient id := " + patientId);
         mhelper = new Helper();
 
+        Intent intentFromGallery = getIntent();
+        String action = intentFromGallery.getAction();
+        String type = intentFromGallery.getType();
+
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
             // Check if user is logged in .
 
             createLockFolder();
+
+            if (Intent.ACTION_SEND.equals(action) && type != null) {
+                if ("text/plain".equals(type)) {
+                    handleSendText(intentFromGallery); // Handle text being sent
+                } else if (type.startsWith("image/")) {
+                    Log.e("Rishabh", "Intent Received of Image type. ");
+                    handleSendImage(intentFromGallery); // Handle single image being sent
+                }
+            } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+                if (type.startsWith("image/")) {
+                    handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
+                }
+            } else {
+                Log.e("Rishabh", "Other intent");
+                // Handle other intents, such as being started from the home screen
+
+            }
 
         } else {
             // user not logged into the app. dont allow to upload file segement here .
@@ -77,6 +107,35 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
 
         // TODO end of onCreate method
+    }
+
+    void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            // Update UI to reflect text being shared
+        }
+    }
+
+    void handleSendImage(Intent intent) {
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            // Update UI to reflect image being shared
+            Log.e("Rishabh", "Single imageURI from gallery := " + imageUri.getPath());
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("uri", imageUri);
+            bundle.putString("totaluri", "single");
+        }
+    }
+
+    void handleSendMultipleImages(Intent intent) {
+        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (imageUris != null) {
+            // Update UI to reflect multiple images being shared
+            Log.e("Rishabh", "Multiple URIs from Gallery := " + imageUris.size());
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("multipleUri", imageUris);
+            bundle.putString("totaluri", "multiple");
+        }
     }
 
     private void createLockFolder() {
@@ -118,7 +177,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         loadData();
     }
 
-    private void loadData() {
+    private void loadData()   {
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
