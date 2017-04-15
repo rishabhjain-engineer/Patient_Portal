@@ -31,7 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import adapters.Repository_Adapter;
+import adapters.RepositoryAdapter;
 import config.StaticHolder;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -40,11 +40,11 @@ import utils.PreferenceHelper;
  * Created by rishabh on 6/4/17.
  */
 
-public class RepositoryFreshFragment extends Fragment implements Repository_Adapter.onDirectoryAction {
+public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction {
 
     private ListView list;
     private Directory mDirectory;
-    private Repository_Adapter mRepositoryAdapter;
+    private RepositoryAdapter mRepositoryAdapter;
     private Activity mActivity;
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
@@ -166,7 +166,7 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter = new Repository_Adapter(mActivity, mDirectory, RepositoryFreshFragment.this);
+                    mRepositoryAdapter = new RepositoryAdapter(mActivity, mDirectory, RepositoryFreshFragment.this);
                     list.setAdapter(mRepositoryAdapter);
 
                 } catch (JSONException je) {
@@ -187,9 +187,13 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
     }
 
     private String getFileName(String key) {
-        //this method just gets the name of file
-        String[] split = key.split("/");
-        return split[split.length - 1];
+        if(key.contains("ZurekaTempPatientConfig")){
+            return "ZurekaTempPatientConfig";
+        } else {
+            //this method just gets the name of file
+            String[] split = key.split("/");
+            return split[split.length - 1];
+        }
     }
 
     private String removeExtra(String path) {
@@ -256,7 +260,7 @@ public class RepositoryFreshFragment extends Fragment implements Repository_Adap
 
     @Override
     public void onDirectoryTouched(Directory directory) {
-        mRepositoryAdapter = new Repository_Adapter(mActivity, directory, this);
+        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, this);
         list.setAdapter(mRepositoryAdapter);
     }
 

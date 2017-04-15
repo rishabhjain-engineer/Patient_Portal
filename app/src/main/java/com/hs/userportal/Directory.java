@@ -11,6 +11,7 @@ public class Directory {
 
     private String directoryName ;
     private Directory parentDirectory = null;
+    private boolean isLocked = false;
 
     public List<Directory> listOfDirectories ;
     public List<DirectoryFile> listOfDirectoryFiles ;
@@ -19,6 +20,14 @@ public class Directory {
         directoryName = directoryname ;
         listOfDirectories = new ArrayList<>() ;
         listOfDirectoryFiles = new ArrayList<>() ;
+        if(directoryname.equals("Bills")
+                || directoryname.equals("Insurance")
+                || directoryname.equals("Prescription")
+                || directoryname.equals("Reports")){
+            if(parentDirectory == null){
+                setLocked(true);
+            }
+        }
     }
 
     public String getDirectoryName() {
@@ -27,6 +36,15 @@ public class Directory {
 
     public void setdirectoryName(String mDirectoryName) {
         this.directoryName = mDirectoryName;
+
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     public Directory getParentDirectory() {

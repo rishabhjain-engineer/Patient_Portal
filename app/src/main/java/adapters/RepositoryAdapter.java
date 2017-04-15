@@ -24,7 +24,7 @@ import utils.AppConstant;
  * Created by rishabh on 6/4/17.
  */
 
-public class Repository_Adapter extends BaseAdapter {
+public class RepositoryAdapter extends BaseAdapter {
 
     private Directory directoryAdapter;
     private List<Object> listOfObjects;
@@ -32,7 +32,7 @@ public class Repository_Adapter extends BaseAdapter {
     private Activity context;
     private onDirectoryAction listener;
 
-    public Repository_Adapter(Activity context, Directory directory, onDirectoryAction listener) {
+    public RepositoryAdapter(Activity context, Directory directory, onDirectoryAction listener) {
         this.directoryAdapter = directory;
         this.context = context;
         this.listener = listener;
@@ -76,7 +76,7 @@ public class Repository_Adapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.repository_singlerow_layout, parent, false);
             holder = new ViewHolder();
-            holder. name = (TextView) convertView.findViewById(R.id.name);
+            holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.lastModified = (TextView) convertView.findViewById(R.id.lastModified);
             holder.size = (TextView) convertView.findViewById(R.id.size);
             holder.image = (ImageView) convertView.findViewById(R.id.image);
@@ -98,7 +98,11 @@ public class Repository_Adapter extends BaseAdapter {
             });
 
         } else if (listOfObjects.get(position) instanceof Directory) {
-            holder.image.setImageResource(R.drawable.ic_folder);
+            if (((Directory) listOfObjects.get(position)).isLocked()) {
+                holder.image.setImageResource(R.drawable.ic_folder_protected);
+            } else {
+                holder.image.setImageResource(R.drawable.ic_folder);
+            }
             holder.name.setText(((Directory) listOfObjects.get(position)).getDirectoryName());
             holder.lastModified.setText("--");
             holder.size.setText("--");

@@ -36,8 +36,13 @@ public class DirectoryFile {
 
     public void setKey(String key) {
         this.key = key;
-        String[] thumbs = key.split("\\.");
-        thumb = thumbs[0] + "_thumb." + thumbs[1];
+        if(key.contains("ZurekaTempPatientConfig")){
+
+        } else {
+            String[] thumbs = key.split("\\.");
+            thumb = thumbs[0] + "_thumb." + thumbs[1];
+        }
+
     }
 
     public String getLastModified() {
