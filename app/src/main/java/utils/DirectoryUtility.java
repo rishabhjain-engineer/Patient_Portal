@@ -9,6 +9,8 @@ import com.hs.userportal.DirectoryFile;
 
 public class DirectoryUtility {
 
+    private Directory searchedResults = new Directory("SearchDirectory");
+
     public static void addObject(Directory directory, DirectoryFile file, String path) {
         //recursive method to set file in directory
         String name;
@@ -24,7 +26,7 @@ public class DirectoryUtility {
             }
         } else {
             //if it is a folder, then add new folder object in current directory recursively
-            if(name.equals("ZurekaTempPatientConfig")){
+            if (name.equals("ZurekaTempPatientConfig")) {
 
             } else {
                 if (directory.hasDirectory(name)) {
@@ -52,7 +54,7 @@ public class DirectoryUtility {
         }
     }
 
-    public static  String removeOneDirectory(String path) {
+    public static String removeOneDirectory(String path) {
         //this method trims the path to one directory short
         String newString = path.substring(path.indexOf("/", 0) + 1);
         return newString;
@@ -72,7 +74,7 @@ public class DirectoryUtility {
     }
 
     public static String getFileName(String key) {
-        if(key.contains("ZurekaTempPatientConfig")){
+        if (key.contains("ZurekaTempPatientConfig")) {
             return "ZurekaTempPatientConfig";
         } else {
             //this method just gets the name of file
@@ -81,6 +83,15 @@ public class DirectoryUtility {
         }
     }
 
+    public static Directory searchDirectory(Directory homeDirectory, String searchedItem) {
+
+        Directory searchedResults = new Directory("SearchResults");
+
+        homeDirectory.search(searchedResults, searchedItem);
+
+        return searchedResults;
+
+    }
 
 
 }

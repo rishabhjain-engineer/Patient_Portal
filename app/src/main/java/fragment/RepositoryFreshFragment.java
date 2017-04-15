@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -59,6 +63,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private static String patientId = null;
     private EditText mSearchEditText ;
 
+    private RelativeLayout toolbar;
 
     @Nullable
     @Override
@@ -67,20 +72,44 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+
+        //toolbar
+        toolbar = (RelativeLayout) view.findViewById(R.id.repository_toolbar);
+
+
+
         list = (ListView) view.findViewById(R.id.list);
         mSearchEditText = (EditText) view.findViewById(R.id.et_searchbar);
+        mSearchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().equals("")){
+                    mRepositoryAdapter = new RepositoryAdapter(getActivity(), mDirectory, RepositoryFreshFragment.this);
+                    list.setAdapter(mRepositoryAdapter);
+                } else {
+                    mRepositoryAdapter = new RepositoryAdapter(getActivity(), DirectoryUtility.searchDirectory(mDirectory, editable.toString()), RepositoryFreshFragment.this);
+                    list.setAdapter(mRepositoryAdapter);
+
+                }
+            }
+        });
         createLockFolder();
-
-
-
-
 
         return view;
     }
 
     public void startCreatingDirectoryStructure() {
-
-        mDirectory = new Directory("Home");
+        mDirectory = new Directory("Personal");
         loadData();
     }
 
@@ -191,6 +220,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     public void onDirectoryTouched(Directory directory) {
         mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, this);
         list.setAdapter(mRepositoryAdapter);
+        Log.e("RISHABH", directory.getDirectoryPath());
     }
 
     @Override
@@ -199,5 +229,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
         startActivity(i);
     }
+
 
 }

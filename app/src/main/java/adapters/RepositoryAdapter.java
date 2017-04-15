@@ -26,28 +26,28 @@ import utils.AppConstant;
 
 public class RepositoryAdapter extends BaseAdapter {
 
-    private Directory directoryAdapter;
+    private Directory directory;
     private List<Object> listOfObjects;
     private ArrayList<Object> arraylist;
     private Activity context;
     private onDirectoryAction listener;
 
     public RepositoryAdapter(Activity context, Directory directory, onDirectoryAction listener) {
-        this.directoryAdapter = directory;
+        this.directory = directory;
         this.context = context;
         this.listener = listener;
         listOfObjects = new ArrayList<>();
 
-        if (directoryAdapter.getParentDirectory() != null) {
+        if (this.directory.getParentDirectory() != null) {
             listOfObjects.add(0);
         }
-        if (!directoryAdapter.listOfDirectories.isEmpty()) {
-            for (Directory d : directoryAdapter.getListOfDirectories()) {
+        if (!this.directory.listOfDirectories.isEmpty()) {
+            for (Directory d : this.directory.getListOfDirectories()) {
                 listOfObjects.add(d);
             }
         }
-        if (!directoryAdapter.getListOfDirectoryFiles().isEmpty()) {
-            for (DirectoryFile file : directoryAdapter.getListOfDirectoryFiles()) {
+        if (!this.directory.getListOfDirectoryFiles().isEmpty()) {
+            for (DirectoryFile file : this.directory.getListOfDirectoryFiles()) {
                 listOfObjects.add(file);
             }
         }
@@ -93,7 +93,7 @@ public class RepositoryAdapter extends BaseAdapter {
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onDirectoryTouched(directoryAdapter.getParentDirectory());
+                    listener.onDirectoryTouched(directory.getParentDirectory());
                 }
             });
 
@@ -135,6 +135,10 @@ public class RepositoryAdapter extends BaseAdapter {
         TextView name, lastModified, size;
         ImageView image;
         LinearLayout row;
+    }
+
+    public Directory getParentDirectory(){
+        return directory.getParentDirectory();
     }
 
     public interface onDirectoryAction {

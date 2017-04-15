@@ -1,5 +1,7 @@
 package com.hs.userportal;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,4 +107,37 @@ public class Directory {
         }
         return null;
     }
+
+    public String getDirectoryPath(){
+        return getSubDirectoryNames() + directoryName;
+    }
+
+    private String getSubDirectoryNames() {
+        if(parentDirectory == null){
+            return "";
+        } else {
+            return parentDirectory.getDirectoryPath() + "/";
+        }
+    }
+
+    public void search(Directory directory, String searchedItem){
+
+        for(DirectoryFile file: listOfDirectoryFiles){
+            if(file.getName().toLowerCase().contains(searchedItem.toLowerCase())){
+                directory.addFile(file);
+            }
+        }
+
+        for(Directory searchDirectory : listOfDirectories){
+            if(searchDirectory.getDirectoryName().toLowerCase().contains(searchedItem.toLowerCase())){
+                directory.addDirectory(searchDirectory);
+            }
+            searchDirectory.search(directory, searchedItem);
+        }
+
+        Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
+        Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
+
+    }
+
 }
