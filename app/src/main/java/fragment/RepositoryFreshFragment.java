@@ -217,8 +217,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                     @Override
                     public void onFolderCreated(Directory directory) {
-                        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, mActivity.getApplicationContext());
-                        mRecyclerView.setAdapter(mRepositoryAdapter);
+                        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
+                        list.setAdapter(mRepositoryAdapter);
                         setBackButtonPress(directory);
                     }
                 });
