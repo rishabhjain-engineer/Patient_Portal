@@ -79,7 +79,7 @@ public class DashBoardActivity extends BaseActivity {
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
 
-        Intent intentFromGallery = getIntent();
+       /* Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
 
@@ -127,11 +127,11 @@ public class DashBoardActivity extends BaseActivity {
                     finish();
                 }
             }, 100);
-        }
+        }*/
     }
 
 
-    private void initializeObjects() {
+   private void initializeObjects() {
         mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
         mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
         mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);

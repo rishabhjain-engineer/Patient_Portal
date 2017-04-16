@@ -3,7 +3,15 @@ package utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.support.v7.widget.RecyclerView;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,34 +22,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.Directory;
-import com.hs.userportal.GalleryReceivedData;
 import com.hs.userportal.R;
+import com.hs.userportal.UploadService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import adapters.RepositoryAdapter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
 import config.StaticHolder;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.hs.userportal.LocationClass.patientId;
+import static com.hs.userportal.R.id.thumbImage;
 
 /**
  * Created by Rishabh on 16/04/17.
  */
 
 public class RepositoryUtils {
-
-
-    private RepositoryAdapter mRepositoryAdapter;
-    private RecyclerView mRecyclerView;
-    private RequestQueue queue, queue3;
 
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
@@ -138,6 +143,98 @@ public class RepositoryUtils {
             }
         });
         overlay_dialog.show();
+    }
+
+    /*public void uploadFile(Uri fileUri, Activity activity, Directory directory) {
+
+        Log.e("Rishabh", "picked from gallery URI PATH :=  " + fileUri.getPath());
+        String path = getPathFromContentUri(fileUri, activity);
+        Log.e("Rishabh", "path      := " + path);
+        File imageFile = new File(path);
+        String path1 = imageFile.getAbsolutePath();
+        String splitfo_lenthcheck[] = path1.split("/");
+        int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+        long check = ((imageFile.length() / 1024));
+        if (check < 10000 && filenamelength < 99) {
+            String splitstr[];
+            String chosenimg = "";
+            String stringcheck = "", exhistimg = "false";
+            int leangth = 0;
+            if (path.contains("/")) {
+                splitstr = path.split("/");
+                chosenimg = splitstr[splitstr.length - 1];
+            }
+            if(directory.hasFile(imageFile.getName()){
+                exhistimg = "true";
+            }
+            for (int i = 0; i < thumbImage.size(); i++) {
+                String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
+                if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
+                    if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+
+                        stringcheck = listsplitstr[listsplitstr.length - 1];
+                        leangth = listsplitstr[listsplitstr.length - 1].length();
+                        exhistimg = "true";
+                    }
+
+                }
+            }
+            Intent intent = new Intent(activity, UploadService.class);
+            intent.putExtra(UploadService.ARG_FILE_PATH, path);
+            intent.putExtra("add_path", "");
+            intent.putExtra(UploadService.uploadfrom, "");
+            intent.putExtra("exhistimg", exhistimg);
+            intent.putExtra("stringcheck", stringcheck);
+            activity.startService(intent);
+
+            System.out.println("After Service");
+
+            String tempPath = getPath(fileUri, activity);
+            Bitmap bm;
+            BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+            btmapOptions.inSampleSize = 4;
+            bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+            // vault_adapter.notifyDataSetChanged();
+            if (bm != null) {
+
+                System.out.println("in onactivity");
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                byteArray = byteArrayOutputStream.toByteArray();
+
+                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                picname = "b.jpg";
+                pic = "data:image/jpeg;base64," + pic;
+                //  vault_adapter.notifyDataSetChanged();
+
+            }
+
+        } else {
+
+            Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+        }
+
+    }*/
+
+    private static String getPathFromContentUri(Uri uri, Activity activity) {
+        String path = uri.getPath();
+        if (uri.toString().startsWith("content://")) {
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            ContentResolver cr = activity.getContentResolver();
+            Cursor cursor = cr.query(uri, projection, null, null, null);
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        path = cursor.getString(0);
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+
+        }
+        return path;
     }
 
     private static boolean folder_name_exists(String trim, Directory directory) {
