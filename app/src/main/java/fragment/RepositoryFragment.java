@@ -1061,8 +1061,7 @@ public class RepositoryFragment extends Fragment {
         try {
             if (requestCode == PICK_FROM_GALLERY) {
                 Uri selectedImageUri = data.getData();
-                uploadGalleryFile(selectedImageUri);
-               /* String path = getPathFromContentUri(selectedImageUri);
+                String path = getPathFromContentUri(selectedImageUri);
 
                 File imageFile = new File(path);
                 String path1 = imageFile.getAbsolutePath();
@@ -1085,6 +1084,9 @@ public class RepositoryFragment extends Fragment {
 
                                 stringcheck = listsplitstr[listsplitstr.length - 1];
                                 leangth = listsplitstr[listsplitstr.length - 1].length();
+
+                                Log.e("gharse","string check := "+stringcheck);
+                                Log.e("gharse", "lenght :="+leangth);
                                 exhistimg = "true";
                             }
 
@@ -1124,7 +1126,7 @@ public class RepositoryFragment extends Fragment {
 
                     Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
-                }*/
+                }
 
             }
             if (requestCode == PICK_FROM_CAMERA) {
@@ -5242,7 +5244,6 @@ public class RepositoryFragment extends Fragment {
 
         Log.e("Rishabh", "picked from gallery URI PATH :=  " + mGalleryUploadUri.getPath());
         String path = getPathFromContentUri(mGalleryUploadUri);
-        Log.e("Rishabh", "path      := " + path);
         File imageFile = new File(path);
         String path1 = imageFile.getAbsolutePath();
         String splitfo_lenthcheck[] = path1.split("/");
@@ -5263,7 +5264,10 @@ public class RepositoryFragment extends Fragment {
                     if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
 
                         stringcheck = listsplitstr[listsplitstr.length - 1];
+
                         leangth = listsplitstr[listsplitstr.length - 1].length();
+                        Log.e("Rishabh", "stringcheck := "+stringcheck);
+                        Log.e("Rishabh", "length := "+leangth);
                         exhistimg = "true";
                     }
 
@@ -5271,7 +5275,6 @@ public class RepositoryFragment extends Fragment {
             }
             Intent intent = new Intent(mActivity, UploadService.class);
             intent.putExtra(UploadService.ARG_FILE_PATH, path);
-            intent.putExtra("add_path", "");
             intent.putExtra(UploadService.uploadfrom, "");
             intent.putExtra("exhistimg", exhistimg);
             intent.putExtra("stringcheck", stringcheck);

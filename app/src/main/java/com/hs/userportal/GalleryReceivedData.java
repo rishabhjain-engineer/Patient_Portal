@@ -6,11 +6,14 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -82,6 +85,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ImageView toolbarBackButton;
     private TextView toolbarTitle;
     private int MY_PERMISSIONS_REQUEST=3;
+    private Uri mSingleImageUri;
+    private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,7 +156,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             int viewId = v.getId();
 
             if(viewId == R.id.directory_share_move_btn){
-
+                moveFile() ;
             }else if(viewId == R.id.add_new_folder) {
                 RepositoryUtils.createNewFolder(GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                     @Override
@@ -173,30 +178,50 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     }
 
     void handleSendImage(Intent intent) {
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
+        mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (mSingleImageUri != null) {
             // Update UI to reflect image being shared
-            Log.e("Rishabh", "Single imageURI from gallery := " + imageUri.getPath());
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("uri", imageUri);
-            bundle.putString("totaluri", "single");
+            Log.e("Rishabh", "Single imageURI from gallery := " + mSingleImageUri.getPath());
+           
         }
     }
 
     void handleSendMultipleImages(Intent intent) {
-        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        if (imageUris != null) {
+        mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (mMultipleImageUris != null) {
             // Update UI to reflect multiple images being shared
-            Log.e("Rishabh", "Multiple URIs from Gallery := " + imageUris.size());
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("multipleUri", imageUris);
-            bundle.putString("totaluri", "multiple");
+            Log.e("Rishabh", "Multiple URIs from Gallery := " + mMultipleImageUris.size());
+           
         }
     }
 
+    
+    private void moveFile() {
+
+        String imagePath = getPathFromContentUri(mSingleImageUri);
 
 
+    }
 
+    private String getPathFromContentUri(Uri uri) {
+        String path = uri.getPath();
+        if (uri.toString().startsWith("content://")) {
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            ContentResolver cr = getContentResolver();
+            Cursor cursor = cr.query(uri, projection, null, null, null);
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        path = cursor.getString(0);
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+
+        }
+        return path;
+    }
 
     private void createLockFolder() {
         req = Volley.newRequestQueue(this);

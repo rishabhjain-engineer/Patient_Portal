@@ -78,6 +78,19 @@ public class DashBoardActivity extends BaseActivity {
         mActionBar.hide();
         mServices = new Services(this);
         id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        mFooterContainer.setVisibility(View.GONE);
+        mDashBoardTv.setTextColor(greenColor);
+        mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+        Fragment newFragment = new DashboardFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        findFamily();
+        String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
+        if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
+            openReportFragment();
+        }
 
        /* Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
@@ -101,19 +114,7 @@ public class DashBoardActivity extends BaseActivity {
             } else {
                 Log.e("Rishabh", "Other intent");
                 // Handle other intents, such as being started from the home screen
-                mFooterContainer.setVisibility(View.GONE);
-                mDashBoardTv.setTextColor(greenColor);
-                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
-                Fragment newFragment = new DashboardFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-                findFamily();
-                String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
-                if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
-                    openReportFragment();
-                }
+
             }
 
         } else if (TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -481,7 +482,7 @@ public class DashBoardActivity extends BaseActivity {
             mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-            mRepositoryFragment = new RepositoryFreshFragment();
+            mRepositoryFragment = new RepositoryFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, mRepositoryFragment);
             transaction.addToBackStack(null);
