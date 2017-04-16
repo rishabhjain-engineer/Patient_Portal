@@ -114,7 +114,7 @@ public class UploadService extends IntentService {
 
             //new code
             path = patientId + "/" + "FileVault/Personal/";
-            
+
             //old code
             /*if (uplodfrm.equalsIgnoreCase("notfilevault")) {
                 path = patientId + "/" + "FileVault/Personal/Prescription/";

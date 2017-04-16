@@ -1,19 +1,14 @@
 package com.hs.userportal;
 
-import android.*;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,15 +17,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -45,14 +35,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import adapters.RepositoryAdapter;
-import base.MyFirebaseMessagingService;
 import config.StaticHolder;
-import fragment.DashboardFragment;
-import fragment.RepositoryFragment;
 import ui.BaseActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
@@ -66,8 +61,8 @@ import utils.RepositoryUtils;
 public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
     private RecyclerView mRecyclerView;
-    private Button mMoveButton ;
-    private ImageView mCreateNewFolderImageView ;
+    private Button mMoveButton;
+    private ImageView mCreateNewFolderImageView;
     private Directory mDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private JSONObject sendData, receiveData;
@@ -84,7 +79,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private Helper mhelper;
     private ImageView toolbarBackButton;
     private TextView toolbarTitle;
-    private int MY_PERMISSIONS_REQUEST=3;
+    private int MY_PERMISSIONS_REQUEST = 3;
     private Uri mSingleImageUri;
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
 
@@ -159,9 +154,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             int viewId = v.getId();
 
-            if(viewId == R.id.directory_share_move_btn){
-                moveFile() ;
-            }else if(viewId == R.id.add_new_folder) {
+            if (viewId == R.id.directory_share_move_btn) {
+                moveFile();
+            } else if (viewId == R.id.add_new_folder) {
                 RepositoryUtils.createNewFolder(GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                     @Override
                     public void onFolderCreated(Directory directory) {
@@ -186,7 +181,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         if (mSingleImageUri != null) {
             // Update UI to reflect image being shared
             Log.e("Rishabh", "Single imageURI from gallery := " + mSingleImageUri.getPath());
-           
+
         }
     }
 
@@ -195,16 +190,51 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         if (mMultipleImageUris != null) {
             // Update UI to reflect multiple images being shared
             Log.e("Rishabh", "Multiple URIs from Gallery := " + mMultipleImageUris.size());
-           
+
         }
     }
 
-    
-    private void moveFile() {
 
-        RepositoryUtils.uploadFile(mSingleImageUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+    private void moveFile() throws FileNotFoundException {
+
+        //new code -> saves recieved bitmap as file
+        Uri selectedImageUri = mSingleImageUri;
+        InputStream is = null;
+        if (selectedImageUri.getAuthority() != null) {
+            is = getContentResolver().openInputStream(selectedImageUri);
+            Bitmap bmp = BitmapFactory.decodeStream(is);
+            if (bmp != null) {
+                File downloadedFile;
+                try {
+                    downloadedFile = createImageFile();
+                    OutputStream outStream = new FileOutputStream(downloadedFile);
+                    //compressing image to 80 percent quality to reduce size
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+                    outStream.flush();
+                    outStream.close();
+
+                    Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                    RepositoryUtils.uploadFile(downloadedFileUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
 
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        return image;
     }
 
     private void createLockFolder() {
@@ -246,7 +276,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         loadData();
     }
 
-    private void loadData()   {
+    private void loadData() {
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
@@ -332,8 +362,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         startActivity(i);
     }
 
-    void setBackButtonPress(final Directory directory){
-        if(directory.getParentDirectory() == null){
+    void setBackButtonPress(final Directory directory) {
+        if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override

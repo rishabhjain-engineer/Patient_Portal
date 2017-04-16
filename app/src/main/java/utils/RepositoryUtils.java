@@ -147,6 +147,7 @@ public class RepositoryUtils {
 
     public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom) {
 
+
         Log.e("Rishabh", "picked from gallery URI PATH :=  " + fileUri.getPath());
         String path = getPathFromContentUri(fileUri, activity);
         Log.e("Rishabh", "path      := " + path);
@@ -166,8 +167,9 @@ public class RepositoryUtils {
             }
             if(directory.hasFile(imageFile.getName())){
                 exhistimg = "true";
-                stringcheck = imageFile.getName();
+
             }
+            stringcheck = imageFile.getName();
             /*for (int i = 0; i < thumbImage.size(); i++) {
                 String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
                 if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
@@ -180,6 +182,7 @@ public class RepositoryUtils {
 
                 }
             }*/
+            Log.e("RAVI", directory.getDirectoryPath());
             Intent intent = new Intent(activity, UploadService.class);
             intent.putExtra(UploadService.ARG_FILE_PATH, path);
             intent.putExtra("add_path", directory.getDirectoryPath());
@@ -188,7 +191,7 @@ public class RepositoryUtils {
             intent.putExtra("stringcheck", stringcheck);
             activity.startService(intent);
 
-            System.out.println("After Service");
+           /* System.out.println("After Service");
 
             String tempPath = getPath(fileUri, activity);
             Bitmap bm;
@@ -208,7 +211,7 @@ public class RepositoryUtils {
                 pic = "data:image/jpeg;base64," + pic;
                 //  vault_adapter.notifyDataSetChanged();
 
-            }
+            }*/
 
         } else {
 

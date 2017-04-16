@@ -11,22 +11,22 @@ import java.util.List;
 
 public class Directory {
 
-    private String directoryName ;
+    private String directoryName;
     private Directory parentDirectory = null;
     private boolean isLocked = false;
 
-    public List<Directory> listOfDirectories ;
-    public List<DirectoryFile> listOfDirectoryFiles ;
+    public List<Directory> listOfDirectories;
+    public List<DirectoryFile> listOfDirectoryFiles;
 
-    public Directory (String directoryname) {
-        directoryName = directoryname ;
-        listOfDirectories = new ArrayList<>() ;
-        listOfDirectoryFiles = new ArrayList<>() ;
-        if(directoryname.equals("Bills")
+    public Directory(String directoryname) {
+        directoryName = directoryname;
+        listOfDirectories = new ArrayList<>();
+        listOfDirectoryFiles = new ArrayList<>();
+        if (directoryname.equals("Bills")
                 || directoryname.equals("Insurance")
                 || directoryname.equals("Prescription")
-                || directoryname.equals("Reports")){
-            if(parentDirectory == null){
+                || directoryname.equals("Reports")) {
+            if (parentDirectory == null) {
                 setLocked(true);
             }
         }
@@ -72,6 +72,7 @@ public class Directory {
     public void setListOfDirectoryFiles(List<DirectoryFile> mListOfDirectoryFiles) {
         this.listOfDirectoryFiles = mListOfDirectoryFiles;
     }
+
     public void addDirectory(Directory directory) {
         directory.setParentDirectory(this);
         listOfDirectories.add(directory);
@@ -108,33 +109,36 @@ public class Directory {
         return null;
     }
 
-    public String getDirectoryPathThroughSearch(){
+    public String getDirectoryPathThroughSearch() {
         return getParentDirectoryPath() + directoryName;
     }
 
-    public String getDirectoryPath(){
+    public String getDirectoryPath() {
         String path = getDirectoryPathThroughSearch();
-        return path.substring(path.indexOf("/") + 1);
+        if (path.contains("/"))
+            return path.substring(path.indexOf("/") + 1);
+        else
+            return "";
     }
 
     private String getParentDirectoryPath() {
-        if(parentDirectory == null){
+        if (parentDirectory == null) {
             return "";
         } else {
             return parentDirectory.getDirectoryPathThroughSearch() + "/";
         }
     }
 
-    public void search(Directory directory, String searchedItem){
+    public void search(Directory directory, String searchedItem) {
 
-        for(DirectoryFile file: listOfDirectoryFiles){
-            if(file.getName().toLowerCase().contains(searchedItem.toLowerCase())){
+        for (DirectoryFile file : listOfDirectoryFiles) {
+            if (file.getName().toLowerCase().contains(searchedItem.toLowerCase())) {
                 directory.addFile(file);
             }
         }
 
-        for(Directory searchDirectory : listOfDirectories){
-            if(searchDirectory.getDirectoryName().toLowerCase().contains(searchedItem.toLowerCase())){
+        for (Directory searchDirectory : listOfDirectories) {
+            if (searchDirectory.getDirectoryName().toLowerCase().contains(searchedItem.toLowerCase())) {
                 directory.addDirectory(searchDirectory);
             }
             searchDirectory.search(directory, searchedItem);
@@ -147,13 +151,13 @@ public class Directory {
 
     public boolean searchFolderName(String folderName) {
 
-        for (Directory directory:listOfDirectories) {
-            if(directory.getDirectoryName().equalsIgnoreCase(folderName)) {
+        for (Directory directory : listOfDirectories) {
+            if (directory.getDirectoryName().equalsIgnoreCase(folderName)) {
                 return true;
             }
         }
 
-        return false ;
+        return false;
     }
 
 }

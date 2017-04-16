@@ -9,6 +9,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -58,7 +60,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,7 +123,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.repository_fragment_layout, null);
+        mView = inflater.inflate(R.layout.repository_fragment_layout, container, false);
         mActivity = getActivity();
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
@@ -255,7 +261,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public void startCreatingDirectoryStructure() {
-        mDirectory = new Directory("Personal");
         loadData();
     }
 
@@ -283,6 +288,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("Rishabh", "reposnse  := " + response);
+                mDirectory = new Directory("Personal");
                 startCreatingDirectoryStructure();
 
             }
@@ -529,8 +535,41 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             if (requestCode == PICK_FROM_GALLERY) {
+
+                //new code saves recieved bitmap as file
                 Uri selectedImageUri = data.getData();
-                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                InputStream is = null;
+                if (selectedImageUri.getAuthority() != null) {
+                    is = getActivity().getContentResolver().openInputStream(selectedImageUri);
+                    Bitmap bmp = BitmapFactory.decodeStream(is);
+                    if (bmp != null) {
+                        File downloadedFile;
+                        try {
+                            downloadedFile = createImageFile();
+                            OutputStream outStream = new FileOutputStream(downloadedFile);
+                            //compressing image to 80 percent quality to reduce size
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+                            outStream.flush();
+                            outStream.close();
+
+                            Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                            RepositoryUtils.uploadFile(downloadedFileUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                // old code -> this used to work for files that are on phone itself,
+                // but fails for files from cloud
+                // example -> try an image that google photos first downloads and then sends in onactivityresult
+                // the result uri will be like ---- content://com.google.android.apps.photos.content....
+                // this uri is not like a uri for camera file that exists on device,
+                // so better download any type of file into a temp file and then give the uri for the temp file
+                // this way file can be from any type of source (drive, dropbox) and will always work
+                /*Uri selectedImageUri = data.getData();
+                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
             }
             if (requestCode == PICK_FROM_CAMERA) {
                 File imageFile = null;
