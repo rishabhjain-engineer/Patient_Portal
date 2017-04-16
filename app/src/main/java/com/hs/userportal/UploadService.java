@@ -43,6 +43,7 @@ import java.util.Map;
 
 import config.StaticHolder;
 import fragment.RepositoryFragment;
+import fragment.RepositoryFreshFragment;
 import ui.SignInActivity;
 import utils.PreferenceHelper;
 
@@ -55,6 +56,8 @@ public class UploadService extends IntentService {
     public static final String PERCENT_EXTRA = "percent";
     public static final String MSG_EXTRA = "msg";
     public static final String uploadfrom = "uploadfrom";
+    public static final String REPOSITORY = "Repository";
+    public static final String GALLERY = "Gallery";
 
 
     private JSONObject sendData;
@@ -108,11 +111,16 @@ public class UploadService extends IntentService {
         String s3BucketName = getString(R.string.s3_bucket);
         final String path;
         if (add_path.equalsIgnoreCase("")) {
-            if (uplodfrm.equalsIgnoreCase("notfilevault")) {
+
+            //new code
+            path = patientId + "/" + "FileVault/Personal/";
+            
+            //old code
+            /*if (uplodfrm.equalsIgnoreCase("notfilevault")) {
                 path = patientId + "/" + "FileVault/Personal/Prescription/";
             } else {
                 path = patientId + "/" + "FileVault/Personal/";
-            }
+            }*/
         } else {
             path = patientId + "/" + "FileVault/Personal/" + add_path + "/";
         }
@@ -212,8 +220,20 @@ public class UploadService extends IntentService {
                             System.out.println(response);
                             try {
 
+                                if (response.getString("d").equalsIgnoreCase("success")) {
 
-                                if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
+                                    //new code
+                                    if (uplodfrm.equals(REPOSITORY)) {
+                                        RepositoryFreshFragment.refresh();
+                                    } else if (uplodfrm.equals(GALLERY)) {
+                                        GalleryReceivedData.completedUpload();
+                                    }
+
+                                }
+
+                                //oldcode
+
+                                /*if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
                                     LocationClass.pic = null;
                                     MapLabDetails.pic_maplab = null;
                                     uploadPrescriptionMail();
@@ -227,10 +247,13 @@ public class UploadService extends IntentService {
                                             Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
 
+
+
+                                        //old code
                                         RepositoryFragment.refresh();
                                         RepositoryFragment.Imguri = null;
-                                           /* File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                            photo.delete();*/
+//                                            File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+//                                            photo.delete();
 
                                         handler.postDelayed(new Runnable() {
                                             @Override
@@ -250,7 +273,7 @@ public class UploadService extends IntentService {
                                                 Toast.LENGTH_SHORT).show();
                                     }
 
-                                }
+                                }*/
 
 
                             } catch (JSONException e) {

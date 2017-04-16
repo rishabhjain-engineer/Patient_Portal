@@ -48,10 +48,10 @@ import com.android.volley.toolbox.Volley;
 import com.hs.userportal.BuildConfig;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
-import com.hs.userportal.GalleryReceivedData;
 import com.hs.userportal.ImageActivity;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
+import com.hs.userportal.UploadService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +95,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
     private EditText mSearchEditText;
-    private Button mUploadFileButton ;
+    private Button mUploadFileButton;
     private RelativeLayout toolbar;
     private TextView toolbarTitle;
     private ImageView toolbarBackButton;
@@ -107,9 +107,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private int PICK_FROM_GALLERY = 1;
     private Uri Imguri;
     private String mCurrentPhotoPath = null;
-    private boolean mIsSdkLessThanM=true;
-    private int MY_PERMISSIONS_REQUEST=3;
+    private boolean mIsSdkLessThanM = true;
+    private int MY_PERMISSIONS_REQUEST = 3;
     private boolean mPermissionGranted;
+
+    private static RepositoryFreshFragment repositoryFreshFragment;
 
 
     @Nullable
@@ -123,13 +125,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
 
+        repositoryFreshFragment = this;
+
 
         createLockFolder();
 
         return mView;
     }
 
-    private void initObject(){
+    private void initObject() {
         toolbar = (RelativeLayout) mView.findViewById(R.id.repository_toolbar);
         toolbarTitle = (TextView) mView.findViewById(R.id.repository_title);
         toolbarBackButton = (ImageView) mView.findViewById(R.id.repository_backbutton_imageview);
@@ -177,13 +181,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         public void onClick(View v) {
 
             int viewId = v.getId();
-            if(viewId == R.id.upload){
+            if (viewId == R.id.upload) {
                 uploadFile();
-            }else if(viewId == R.id.repository_backbutton_imageview){
+            } else if (viewId == R.id.repository_backbutton_imageview) {
                 setBackButtonPress(mDirectory);
-            }else if(viewId == R.id.repository_grid_imageview){
+            } else if (viewId == R.id.repository_grid_imageview) {
                 Directory directory;
-                if(listMode == 0){
+                if (listMode == 0) {
                     listMode = 1;
                 } else {
                     listMode = 0;
@@ -193,7 +197,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     };
 
-    private void uploadFile(){
+    private void uploadFile() {
         final Dialog dialog = new Dialog(mActivity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.uploadfile_alertbox);
@@ -369,8 +373,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         setBackButtonPress(currentDirectory);
     }
 
-    void setBackButtonPress(final Directory directory){
-        if(directory.getParentDirectory() == null){
+    void setBackButtonPress(final Directory directory) {
+        if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -521,5 +525,34 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            if (requestCode == PICK_FROM_GALLERY) {
+                Uri selectedImageUri = data.getData();
+                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+            }
+            if (requestCode == PICK_FROM_CAMERA) {
+                File imageFile = null;
+                Uri selectedImageUri;
 
+                if (mIsSdkLessThanM == true) {
+                    selectedImageUri = Imguri;
+
+                } else {
+                    selectedImageUri = Uri.parse(mCurrentPhotoPath);
+                }
+
+                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+
+            }
+            super.onActivityResult(requestCode, resultCode, data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void refresh() {
+        repositoryFreshFragment.startCreatingDirectoryStructure();
+    }
 }

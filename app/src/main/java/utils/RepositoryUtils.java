@@ -145,7 +145,7 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    /*public void uploadFile(Uri fileUri, Activity activity, Directory directory) {
+    public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom) {
 
         Log.e("Rishabh", "picked from gallery URI PATH :=  " + fileUri.getPath());
         String path = getPathFromContentUri(fileUri, activity);
@@ -164,10 +164,11 @@ public class RepositoryUtils {
                 splitstr = path.split("/");
                 chosenimg = splitstr[splitstr.length - 1];
             }
-            if(directory.hasFile(imageFile.getName()){
+            if(directory.hasFile(imageFile.getName())){
                 exhistimg = "true";
+                stringcheck = imageFile.getName();
             }
-            for (int i = 0; i < thumbImage.size(); i++) {
+            /*for (int i = 0; i < thumbImage.size(); i++) {
                 String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
                 if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
                     if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
@@ -178,11 +179,11 @@ public class RepositoryUtils {
                     }
 
                 }
-            }
+            }*/
             Intent intent = new Intent(activity, UploadService.class);
             intent.putExtra(UploadService.ARG_FILE_PATH, path);
-            intent.putExtra("add_path", "");
-            intent.putExtra(UploadService.uploadfrom, "");
+            intent.putExtra("add_path", directory.getDirectoryPath());
+            intent.putExtra(UploadService.uploadfrom, uploadFrom);
             intent.putExtra("exhistimg", exhistimg);
             intent.putExtra("stringcheck", stringcheck);
             activity.startService(intent);
@@ -198,12 +199,12 @@ public class RepositoryUtils {
             if (bm != null) {
 
                 System.out.println("in onactivity");
-                byteArrayOutputStream = new ByteArrayOutputStream();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-                byteArray = byteArrayOutputStream.toByteArray();
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                picname = "b.jpg";
+                String pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                String picname = "b.jpg";
                 pic = "data:image/jpeg;base64," + pic;
                 //  vault_adapter.notifyDataSetChanged();
 
@@ -211,11 +212,21 @@ public class RepositoryUtils {
 
         } else {
 
-            Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
         }
 
-    }*/
+    }
+
+    public static String getPath(Uri uri, Activity activity) {
+
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+
+    }
 
     private static String getPathFromContentUri(Uri uri, Activity activity) {
         String path = uri.getPath();

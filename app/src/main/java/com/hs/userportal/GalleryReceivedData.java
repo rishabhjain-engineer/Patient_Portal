@@ -88,6 +88,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private Uri mSingleImageUri;
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
 
+    private static Activity mActivity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +105,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
+
+        mActivity = this;
 
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
@@ -198,29 +202,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     
     private void moveFile() {
 
-        String imagePath = getPathFromContentUri(mSingleImageUri);
+        RepositoryUtils.uploadFile(mSingleImageUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
 
 
-    }
-
-    private String getPathFromContentUri(Uri uri) {
-        String path = uri.getPath();
-        if (uri.toString().startsWith("content://")) {
-            String[] projection = {MediaStore.MediaColumns.DATA};
-            ContentResolver cr = getContentResolver();
-            Cursor cursor = cr.query(uri, projection, null, null, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.moveToFirst()) {
-                        path = cursor.getString(0);
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-
-        }
-        return path;
     }
 
     private void createLockFolder() {
@@ -389,6 +373,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             ActivityCompat.requestPermissions(GalleryReceivedData.this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
         }
 
+    }
+
+    public static void completedUpload() {
+        mActivity.finish();
     }
 
     // TODO end of Main class
