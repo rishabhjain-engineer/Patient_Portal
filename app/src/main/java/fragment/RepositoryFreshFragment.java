@@ -60,7 +60,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +88,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private Directory mDirectory;
     private Directory currentDirectory;
     private RepositoryAdapter mRepositoryAdapter;
+    private RepositoryGridAdapter mRepositoryGridAdapter;
     private Activity mActivity;
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
@@ -224,14 +224,26 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 // creating new folder
 
-                RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
-                    @Override
-                    public void onFolderCreated(Directory directory) {
-                        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
-                        list.setAdapter(mRepositoryAdapter);
-                        setBackButtonPress(directory);
-                    }
-                });
+                if (listMode == 0) {
+                    RepositoryUtils.createNewFolder(mActivity, mRepositoryGridAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
+                        @Override
+                        public void onFolderCreated(Directory directory) {
+                            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
+                            list.setAdapter(mRepositoryAdapter);
+                            setBackButtonPress(directory);
+                        }
+                    });
+                } else {
+                    RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
+                        @Override
+                        public void onFolderCreated(Directory directory) {
+                            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
+                            list.setAdapter(mRepositoryAdapter);
+                            setBackButtonPress(directory);
+                        }
+                    });
+                }
+
 
             }
         });
@@ -252,11 +264,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private void setListAdapter(Directory directory) {
         if (listMode == 1) {
+            mRepositoryGridAdapter = new RepositoryGridAdapter(mActivity, directory, RepositoryFreshFragment.this);
             list.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-            list.setAdapter(new RepositoryGridAdapter(getActivity(), directory, RepositoryFreshFragment.this));
+            list.setAdapter(mRepositoryGridAdapter);
         } else {
+            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
             list.setLayoutManager(new LinearLayoutManager(getActivity()));
-            list.setAdapter(new RepositoryAdapter(getActivity(), directory, RepositoryFreshFragment.this));
+            list.setAdapter(mRepositoryAdapter);
         }
     }
 

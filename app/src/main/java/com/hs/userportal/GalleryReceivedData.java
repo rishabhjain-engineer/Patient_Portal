@@ -155,7 +155,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             int viewId = v.getId();
 
             if (viewId == R.id.directory_share_move_btn) {
-                moveFile();
+                try {
+                    moveFile();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             } else if (viewId == R.id.add_new_folder) {
                 RepositoryUtils.createNewFolder(GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                     @Override
