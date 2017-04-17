@@ -93,7 +93,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mActionBar.hide();
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        Log.e("Rishabh", "Patient id := " + patientId);
         mhelper = new Helper();
         initObject();
         askRunTimePermissions();
@@ -113,7 +112,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 if ("text/plain".equals(type)) {
                     handleSendText(intentFromGallery); // Handle text being sent
                 } else if (type.startsWith("image/")) {
-                    Log.e("Rishabh", "Intent Received of Image type. ");
                     handleSendImage(intentFromGallery); // Handle single image being sent
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
@@ -121,7 +119,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
                 }
             } else {
-                Log.e("Rishabh", "Other intent");
                 // Handle other intents, such as being started from the home screen
 
             }
@@ -176,25 +173,18 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
-            // Update UI to reflect text being shared
         }
     }
 
     void handleSendImage(Intent intent) {
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (mSingleImageUri != null) {
-            // Update UI to reflect image being shared
-            Log.e("Rishabh", "Single imageURI from gallery := " + mSingleImageUri.getPath());
-
         }
     }
 
     void handleSendMultipleImages(Intent intent) {
         mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
         if (mMultipleImageUris != null) {
-            // Update UI to reflect multiple images being shared
-            Log.e("Rishabh", "Multiple URIs from Gallery := " + mMultipleImageUris.size());
-
         }
     }
 
@@ -225,8 +215,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 }
             }
         }
-
-
     }
 
     private File createImageFile() throws IOException {
@@ -252,7 +240,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         array_folders.put("Insurance");
         array_folders.put("Bills");
         array_folders.put("Reports");
-        Log.e("Rishabh", "Patient id := " + patientId);
         try {
             data.put("list", array_folders);
             data.put("patientId", patientId);
@@ -262,7 +249,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  := " + response);
                 startCreatingDirectoryStructure();
 
             }
@@ -305,7 +291,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  load data  := " + response);
                 try {
                     String data = response.optString("d");
                     JSONObject d = new JSONObject(data);
@@ -351,6 +336,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         req.add(s3jr);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0);
+    }
 
     @Override
     public void onDirectoryTouched(Directory directory) {

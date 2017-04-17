@@ -224,7 +224,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 // creating new folder
 
-                if (listMode == 0) {
+                if (listMode == 1) {
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryGridAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
@@ -289,7 +289,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         array_folders.put("Insurance");
         array_folders.put("Bills");
         array_folders.put("Reports");
-        Log.e("Rishabh", "Patient id := " + patientId);
         try {
             data.put("list", array_folders);
             data.put("patientId", patientId);
@@ -301,7 +300,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Rishabh", "reposnse  := " + response);
                 mDirectory = new Directory("Personal");
                 startCreatingDirectoryStructure();
 
@@ -341,7 +339,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onResponse(JSONObject response) {
                 progressDialog.dismiss();
-                Log.e("Rishabh", "reposnse  load data  := " + response);
                 try {
                     String data = response.optString("d");
                     JSONObject d = new JSONObject(data);
@@ -489,10 +486,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mPermissionGranted = true;
-                Log.e("Rishabh", "Permissions are Granted .");
             } else {
                 mPermissionGranted = false;
-                Log.e("Rishabh", "Permissions are not granted .");
             }
         }
     }
@@ -505,7 +500,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.e("Rishabh ", "IO Exception := " + ex);
                 // Error occurred while creating the File
                 return;
             }

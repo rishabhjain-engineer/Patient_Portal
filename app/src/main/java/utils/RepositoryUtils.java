@@ -6,11 +6,8 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -33,14 +30,11 @@ import com.hs.userportal.UploadService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import config.StaticHolder;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static com.hs.userportal.LocationClass.patientId;
-import static com.hs.userportal.R.id.thumbImage;
 
 /**
  * Created by Rishabh on 16/04/17.
@@ -48,8 +42,13 @@ import static com.hs.userportal.R.id.thumbImage;
 
 public class RepositoryUtils {
 
+    private static PreferenceHelper mPreferenceHelper;
+    private static String patientId = null;
+
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         final Dialog overlay_dialog = new Dialog(activity);
         overlay_dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);//SOFT_INPUT_STATE_ALWAYS_HIDDEN
         overlay_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -88,6 +87,7 @@ public class RepositoryUtils {
                     overlay_dialog.dismiss();
                     progress.show();
                     JSONObject sendData = new JSONObject();
+                    String imageFilePathInFolder = directory.getDirectoryPath();
                     try {
                         sendData.put("FolderName", folder);
                         sendData.put("Path", directory.getDirectoryPath());
@@ -148,9 +148,7 @@ public class RepositoryUtils {
     public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom) {
 
 
-        Log.e("Rishabh", "picked from gallery URI PATH :=  " + fileUri.getPath());
         String path = getPathFromContentUri(fileUri, activity);
-        Log.e("Rishabh", "path      := " + path);
         File imageFile = new File(path);
         String path1 = imageFile.getAbsolutePath();
         String splitfo_lenthcheck[] = path1.split("/");
@@ -165,7 +163,7 @@ public class RepositoryUtils {
                 splitstr = path.split("/");
                 chosenimg = splitstr[splitstr.length - 1];
             }
-            if(directory.hasFile(imageFile.getName())){
+            if (directory.hasFile(imageFile.getName())) {
                 exhistimg = "true";
 
             }
@@ -182,7 +180,6 @@ public class RepositoryUtils {
 
                 }
             }*/
-            Log.e("RAVI", directory.getDirectoryPath());
             Intent intent = new Intent(activity, UploadService.class);
             intent.putExtra(UploadService.ARG_FILE_PATH, path);
             intent.putExtra("add_path", directory.getDirectoryPath());
@@ -218,6 +215,7 @@ public class RepositoryUtils {
             Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
         }
+
 
     }
 
