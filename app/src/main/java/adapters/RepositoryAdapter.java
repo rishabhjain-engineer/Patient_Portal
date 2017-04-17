@@ -101,6 +101,8 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
                 @Override
                 public boolean onLongClick(View view) {
                     listener.onItemLongClicked(position);
+                    if (!((Directory) listOfObjects.get(position).getObject()).isLocked())
+                        listOfObjects.get(position).setSelected(true);
                     return true;
                 }
             });

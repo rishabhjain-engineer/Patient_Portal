@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -161,6 +162,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         showGridLayout.setOnClickListener(mOnClickListener);
         toolbarBackButton.setOnClickListener(mOnClickListener);
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
+        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -226,7 +228,30 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     };
 
     private void deleteFile() {
+        List<SelectableObject> selectedObjects = new ArrayList<>();
+        for (SelectableObject object : displayedDirectory) {
+            if (object.isSelected()) {
+                selectedObjects.add(object);
+            }
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Deleting... Please Wait");
+        progressDialog.show();
+        RepositoryUtils.deleteObjects(selectedObjects, patientId, getActivity(), new RepositoryUtils.OnDeleteCompletion() {
+            @Override
+            public void onSuccessfullyDeleted() {
+                progressDialog.dismiss();
+                Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
+                loadData();
+            }
 
+            @Override
+            public void onFailure() {
+                progressDialog.dismiss();
+                Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void moveFile() {
@@ -291,16 +316,30 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private void setListAdapter(Directory directory) {
         parseDirectory(directory);
         if (listMode == 1) {
-            mRepositoryGridAdapter = new RepositoryGridAdapter(mActivity, directory, displayedDirectory,RepositoryFreshFragment.this);
+            mRepositoryGridAdapter = new RepositoryGridAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this);
             mRepositoryGridAdapter.setSelectionMode(false);
+            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+            toolbarTitle.setVisibility(View.VISIBLE);
+            if (directory.getParentDirectory() == null) {
+                toolbarBackButton.setVisibility(View.GONE);
+            } else {
+                toolbarBackButton.setVisibility(View.VISIBLE);
+            }
             list.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             list.setAdapter(mRepositoryGridAdapter);
 
         } else {
             mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this);
             mRepositoryAdapter.setSelectionMode(false);
+            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+            toolbarTitle.setVisibility(View.VISIBLE);
             list.setLayoutManager(new LinearLayoutManager(getActivity()));
             list.setAdapter(mRepositoryAdapter);
+            if (directory.getParentDirectory() == null) {
+                toolbarBackButton.setVisibility(View.GONE);
+            } else {
+                toolbarBackButton.setVisibility(View.VISIBLE);
+            }
         }
 
         setBackButtonPress(directory);
@@ -346,6 +385,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void loadData() {
+        mDirectory = new Directory("Personal");
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
@@ -429,8 +469,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(listMode == 0){
-                        if(mRepositoryAdapter.isInSelectionMode()){
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
@@ -439,7 +479,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         } else {
                             getActivity().finish();
                         }
-                    } else if(listMode == 1){
+                    } else if (listMode == 1) {
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
@@ -457,8 +497,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(listMode == 0){
-                        if(mRepositoryAdapter.isInSelectionMode()){
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
@@ -467,7 +507,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             setListAdapter(directory.getParentDirectory());
                             setBackButtonPress(directory.getParentDirectory());
                         }
-                    } else if(listMode == 1){
+                    } else if (listMode == 1) {
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
@@ -488,7 +528,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private void unselectAll() {
 
-        for(SelectableObject recycled: displayedDirectory){
+        for (SelectableObject recycled : displayedDirectory) {
             recycled.setSelected(false);
         }
 
@@ -496,9 +536,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private void selectAll() {
 
-        for(SelectableObject recycled: displayedDirectory){
-            if(recycled.getObject() instanceof  Directory){
-                if(((Directory) recycled.getObject()).isLocked()){
+        for (SelectableObject recycled : displayedDirectory) {
+            if (recycled.getObject() instanceof Directory) {
+                if (((Directory) recycled.getObject()).isLocked()) {
                     recycled.setSelected(false);
                 } else {
                     recycled.setSelected(true);
@@ -546,6 +586,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 });
         builder.show();
+
 
     }
 
@@ -712,7 +753,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 mRepositoryAdapter.setSelectionMode(false);
                 mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                 toolbarTitle.setVisibility(View.VISIBLE);
-                if(mRepositoryAdapter.getDirectory().getParentDirectory() == null){
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
                     toolbarBackButton.setVisibility(View.GONE);
                 } else {
                     toolbarBackButton.setVisibility(View.VISIBLE);
@@ -731,7 +772,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                 toolbarTitle.setVisibility(View.VISIBLE);
-                if(mRepositoryAdapter.getDirectory().getParentDirectory() == null){
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
                     toolbarBackButton.setVisibility(View.GONE);
                 } else {
                     toolbarBackButton.setVisibility(View.VISIBLE);
@@ -747,8 +788,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     }
 
-    public void parseDirectory(Directory directory){
-        displayedDirectory = new ArrayList<>();
+    public void parseDirectory(Directory directory) {
+        displayedDirectory.clear();
         if (!directory.listOfDirectories.isEmpty()) {
             for (Directory d : directory.getListOfDirectories()) {
                 displayedDirectory.add(new SelectableObject(d, false));
