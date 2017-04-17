@@ -36,6 +36,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -103,11 +104,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private EditText mSearchEditText;
     private Button mUploadFileButton;
     private RelativeLayout toolbar;
-    private TextView toolbarTitle;
+    private TextView toolbarTitle, mHeaderTitleTextView;
     private ImageView toolbarBackButton;
-    private ImageView showGridLayout;
+    private ImageView showGridLayout ,mHeaderDeleteImageView , mHeaderSelectAllImageView , mHeaderMoveImageView;
     private View mView;
-
+    private LinearLayout mHeaderMiddleImageViewContainer ;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
     private int PICK_FROM_GALLERY = 1;
@@ -149,11 +150,16 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSearchEditText = (EditText) mView.findViewById(R.id.et_searchbar);
+        mHeaderDeleteImageView = (ImageView) mView.findViewById(R.id.repository_delete_imageview);
+        mHeaderSelectAllImageView = (ImageView) mView.findViewById(R.id.repository_selectall_imageview);
+        mHeaderMoveImageView = (ImageView) mView.findViewById(R.id.repository_move_imageview);
+        mHeaderMiddleImageViewContainer = (LinearLayout) mView.findViewById(R.id.middle_options_container);
         toolbarTitle.setText("Repository");
 
         mUploadFileButton.setOnClickListener(mOnClickListener);
         showGridLayout.setOnClickListener(mOnClickListener);
         toolbarBackButton.setOnClickListener(mOnClickListener);
+        mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -199,10 +205,23 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     listMode = 0;
                 }
                 setListAdapter(currentDirectory);
+            } else if (viewId == R.id.repository_selectall_imageview) {
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+            }  else if(viewId == R.id.repository_delete_imageview){
+                deleteFile();
+            }else if(viewId == R.id.repository_move_imageview){
+                moveFile();
             }
         }
     };
 
+    private void deleteFile(){
+
+    }
+
+    private void moveFile() {
+
+    }
     private void uploadFile() {
         final Dialog dialog = new Dialog(mActivity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -393,6 +412,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     void setBackButtonPress(final Directory directory) {
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
+            toolbarBackButton.setVisibility(View.GONE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -401,6 +421,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             });
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
+            toolbarBackButton.setVisibility(View.VISIBLE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -538,6 +559,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             startActivityForResult(intent1, PICK_FROM_CAMERA);
         }
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -8,13 +8,13 @@
 
     <ImageView
         android:id="@+id/repository_backbutton_imageview"
-        android:layout_width="23dp"
-        android:layout_height="23dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:background="@drawable/backarrow"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/repository_title"
@@ -23,8 +23,8 @@
         android:layout_marginLeft="16dp"
         android:text="Repository"
         android:textColor="@color/white"
-        android:textSize="21sp"
-        android:textStyle="bold"
+        android:textSize="19sp"
+        android:textStyle="normal"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/repository_backbutton_imageview"
         android:layout_toEndOf="@+id/repository_backbutton_imageview"
@@ -52,6 +52,7 @@
             android:layout_width="@dimen/repository_header_icon_width"
             android:layout_height="@dimen/repository_header_icon_height"
             android:layout_marginRight="4dp"
+            android:visibility="gone"
             android:background="@drawable/ic_save" />
 
         <ImageView
