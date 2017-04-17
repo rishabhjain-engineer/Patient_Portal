@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -65,6 +66,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
 import utils.AppConstant;
@@ -111,7 +113,9 @@ public class SignInActivity extends BaseActivity {
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
+                mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND, "false");
                 LoginManager.getInstance().logOut();
+                new UserDeviceAsyncTask().execute();
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -139,6 +143,14 @@ public class SignInActivity extends BaseActivity {
     private void onClickLogin() {
         fbLoginButton.performClick();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(SignInActivity.this).areNotificationsEnabled()) {
+            showNotificationAlertMessage();
+        }
     }
 
     /**
@@ -205,7 +217,7 @@ public class SignInActivity extends BaseActivity {
                                         }
 
                                         if (isToShowSignInErrorMessage) {
-                                            if(response != null){
+                                            if (response != null) {
                                                 String array[] = mDAsString.split("\\|");
                                                 String decesionString = "";
                                                 String messageString = "";
@@ -218,14 +230,14 @@ public class SignInActivity extends BaseActivity {
                                                 } else if (decesionString.equalsIgnoreCase("4")) {
                                                     facebookDecesionAlertDialog(messageString, false);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    if(array .length >= 3){
+                                                    if (array.length >= 3) {
                                                         mUserName = array[2];
                                                         facebookDecesionAlertDialog(messageString, true);
-                                                    }else{
+                                                    } else {
                                                         showAlertMessage("An error occured, please try again.");
                                                     }
                                                 }
-                                            }else{
+                                            } else {
                                                 showAlertMessage("An error occured, please try again.");
                                             }
 
@@ -627,7 +639,7 @@ public class SignInActivity extends BaseActivity {
 
         JSONObject sendData = new JSONObject();
         try {
-            sendData.put("ContactNo",contactNumber);
+            sendData.put("ContactNo", contactNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -641,8 +653,8 @@ public class SignInActivity extends BaseActivity {
                     String result = jsonObject.getString("d");
                     if (result.equalsIgnoreCase("username") || TextUtils.isEmpty(result)) {
                         updateContactApi(contactNumber);
-                    } else{
-                       showAlertMessage(result);
+                    } else {
+                        showAlertMessage(result);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -931,11 +943,11 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if(!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")){
+        if (!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")) {
             String array[] = mPatientBussinessFlag.split("\\|");
             String message = array[1];
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
-        }else{
+        } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
@@ -998,14 +1010,15 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(termsAndConditionDialog != null && termsAndConditionDialog.isShowing()){
-            new SignInActivity.LogoutAsync().execute() ;
+        if (termsAndConditionDialog != null && termsAndConditionDialog.isShowing()) {
+            new SignInActivity.LogoutAsync().execute();
         }
     }
 
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         private JSONObject logoutReceivedJsonObject;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

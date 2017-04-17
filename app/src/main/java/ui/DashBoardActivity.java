@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import base.MyFirebaseMessagingService;
+import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
@@ -84,6 +87,9 @@ public class DashBoardActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
+            if (mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND).equalsIgnoreCase("false")) {
+                new UserDeviceAsyncTask().execute();
+            }
             // Perform intent operation ; user loggedin into sciontra app ;
             Log.e("Rishabh", "User is logged in");
             if (Intent.ACTION_SEND.equals(action) && type != null) {
@@ -110,9 +116,9 @@ public class DashBoardActivity extends BaseActivity {
                 transaction.commit();
                 findFamily();
                 String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
-                if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
+              /*  if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
                     openReportFragment();
-                }
+                }*/
             }
 
         } else if (TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -201,6 +207,9 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(DashBoardActivity.this).areNotificationsEnabled()) {
+            showNotificationAlertMessage();
+        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {

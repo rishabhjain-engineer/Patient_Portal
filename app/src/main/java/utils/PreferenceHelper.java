@@ -50,6 +50,10 @@ public class PreferenceHelper {
 
         SESSION_ID("null"),
 
+        DEVICE_TOKEN("null"),
+
+        ON_DASH_BOARD_DEVICE_TKEN_SEND("false"),
+
         TO_DATE("null");
 
         private String defaultValue;

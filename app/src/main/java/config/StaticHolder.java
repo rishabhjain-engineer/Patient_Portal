@@ -462,6 +462,10 @@ public class StaticHolder {
                 url = BASE_URL + "GetUserGrade";
                 break;
 
+            case SaveUserDevice :
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "SaveUserDevice";
+                break;
+
 
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
@@ -517,7 +521,7 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient, LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient, LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice
     }
 
 }
