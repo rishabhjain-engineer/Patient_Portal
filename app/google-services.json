@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "563236415457",
-    "firebase_url": "https://patientapp-f9ac6.firebaseio.com",
-    "project_id": "patientapp-f9ac6",
-    "storage_bucket": "patientapp-f9ac6.appspot.com"
+    "project_number": "98457536324",
+    "firebase_url": "https://sciontra-7d28c.firebaseio.com",
+    "project_id": "sciontra-7d28c",
+    "storage_bucket": "sciontra-7d28c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:563236415457:android:f9f4518723decaf1",
+        "mobilesdk_app_id": "1:98457536324:android:f9f4518723decaf1",
         "android_client_info": {
           "package_name": "com.hs.userportal"
         }
       },
       "oauth_client": [
         {
-          "client_id": "563236415457-82nvn7vbs54d67u4faaie4cma65sm65j.apps.googleusercontent.com",
+          "client_id": "98457536324-7vstfk625sdetutfe1gd3nljdl4i2od3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCykD2h9Hp-qkDD_-yStEQwEBCddewQH38"
+          "current_key": "AIzaSyBP5c8aE628yHsSD-gZa1-VQLZmEE2CEYI"
         }
       ],
       "services": {
