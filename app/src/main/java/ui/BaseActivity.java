@@ -227,7 +227,7 @@ public class BaseActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
-        okBTN.setText("Setting");
+        okBTN.setText("Settings");
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         stayButton.setText("Cancel");
 
