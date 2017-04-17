@@ -1,39 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <LinearLayout
-        android:id="@+id/ll_search_container"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="0dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageview_searchbar_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/action_search" />
+        <include
+            layout="@layout/repository_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/et_searchbar"
+
+        <LinearLayout
+            android:id="@+id/ll_search_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="05dp"
-            android:ems="100"
-            android:hint="Search your files .."
-            android:inputType="textAutoComplete" />
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="0dp">
+
+            <ImageView
+                android:id="@+id/imageview_searchbar_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/action_search" />
+
+            <EditText
+                android:id="@+id/et_searchbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="05dp"
+                android:ems="100"
+                android:hint="Search your files .."
+                android:inputType="textAutoComplete" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_weight="1"
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-</LinearLayout>
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/addfile_button" />
+
+</FrameLayout>

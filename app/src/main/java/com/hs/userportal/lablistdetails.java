@@ -1038,7 +1038,6 @@ public class lablistdetails extends BaseActivity {
                 blg.setText("");
                 bal.setText("");*/
                 Toast.makeText(getApplicationContext(), "No cases.", Toast.LENGTH_SHORT).show();
-                Log.e("Rishabh", "JSONException error messgae := "+e);
                 //  buttonbar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
