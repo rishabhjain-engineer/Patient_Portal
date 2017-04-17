@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ui.DashBoardActivity;
+import ui.SignInActivity;
+import utils.PreferenceHelper;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -57,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static final String INTENT_KEY = "THE_QUOTE";
     public void sendNotification(String title, String randomQuote) {
-        Intent showFullQuoteIntent = new Intent(this, DashBoardActivity.class);
+       /* Intent showFullQuoteIntent = new Intent(this, DashBoardActivity.class);
         //showFullQuoteIntent.putExtra(INTENT_KEY, "report");
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -66,12 +69,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.ic)
                 .setContentTitle(title)
                 .setContentText(randomQuote)
+                .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
+        notificationManager.notify(0, notification);*/
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+        String sessionId = preferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID);
+        Intent intent = null;
+        if(TextUtils.isEmpty(sessionId)){
+            intent = new Intent(this, SignInActivity.class);
+        }else{
+            intent = new Intent(this, DashBoardActivity.class);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic)
+                .setContentTitle(title)
+                .setContentText(randomQuote)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
     private void sendNotification1(String messageBody) {
