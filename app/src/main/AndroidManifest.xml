@@ -542,7 +542,7 @@
              notification message. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
+            android:resource="@color/text_color_blue" />
         <!-- [END fcm_default_icon] -->
         <!-- [START firebase_service] -->
         <service android:name="base.MyFirebaseMessagingService">

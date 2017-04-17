@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -114,9 +116,9 @@ public class DashBoardActivity extends BaseActivity {
                 transaction.commit();
                 findFamily();
                 String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
-                if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
+              /*  if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
                     openReportFragment();
-                }
+                }*/
             }
 
         } else if (TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -205,6 +207,9 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(DashBoardActivity.this).areNotificationsEnabled()) {
+            showNotificationAlertMessage();
+        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {

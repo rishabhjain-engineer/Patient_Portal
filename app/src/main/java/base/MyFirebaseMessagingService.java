@@ -58,18 +58,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String INTENT_KEY = "THE_QUOTE";
     public void sendNotification(String title, String randomQuote) {
         Intent showFullQuoteIntent = new Intent(this, DashBoardActivity.class);
-        showFullQuoteIntent.putExtra(INTENT_KEY, "report");
+        //showFullQuoteIntent.putExtra(INTENT_KEY, "report");
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification = new NotificationCompat.Builder(this)
-                .setTicker(randomQuote)
                 .setSmallIcon(R.drawable.ic)
                 .setContentTitle(title)
                 .setContentText(randomQuote)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
                 .build();
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
     }
