@@ -72,6 +72,7 @@ import java.util.Date;
 import java.util.List;
 
 import adapters.RepositoryAdapter;
+import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import utils.AppConstant;
 import utils.DirectoryUtility;
@@ -121,6 +122,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<SelectableObject> displayedDirectory;
 
     private static RepositoryFreshFragment repositoryFreshFragment;
+    private RepositoryDialogAdapter dialogAdapter;
 
 
     @Nullable
@@ -163,6 +165,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         toolbarBackButton.setOnClickListener(mOnClickListener);
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
         mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
+        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -256,6 +259,44 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private void moveFile() {
 
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.move_folderlist_recycler);
+
+        final TextView backText = (TextView) dialog.findViewById(R.id.folder_root);
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.folder_list);
+        Button moveButton = (Button) dialog.findViewById(R.id.move_btn);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        setDialogAdapter(backText, recyclerView, mDirectory);
+
+        dialog.show();
+
+
+    }
+
+    private void setDialogAdapter(final TextView backText, final RecyclerView recyclerView, Directory mDirectory) {
+
+        dialogAdapter = new RepositoryDialogAdapter(mDirectory, new RepositoryDialogAdapter.onDirectorySelected() {
+            @Override
+            public void onDirectorySelected(Directory directory) {
+                setDialogAdapter(backText, recyclerView, directory);
+            }
+        });
+        recyclerView.setAdapter(dialogAdapter);
+        if (dialogAdapter.getDirectory().getParentDirectory() == null) {
+            backText.setText("");
+        } else {
+            backText.setText(dialogAdapter.getDirectory().getDirectoryName());
+            backText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory());
+                }
+            });
+
+        }
     }
 
     private void uploadFile() {
