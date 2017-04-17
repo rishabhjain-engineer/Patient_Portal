@@ -82,8 +82,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private int MY_PERMISSIONS_REQUEST = 3;
     private Uri mSingleImageUri;
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
+    private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
+    private int numberOfUri ;
 
     private static Activity mActivity;
+    private boolean mIsSingleUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,7 +156,19 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             if (viewId == R.id.directory_share_move_btn) {
                 try {
-                    moveFile();
+                    if(mIsSingleUri){
+                        numberOfUri = 1;
+                        moveFile(mSingleImageUri,numberOfUri);
+                        Log.e("Rishabh", "uri count :=  "+numberOfUri );
+                    }else{
+                        numberOfUri = mMultipleImageUris.size();
+                        for(int i=0 ; i<mMultipleImageUris.size(); i++) {
+                            Uri sendsingleUri =  mMultipleImageUris.get(i);
+                            moveFile(sendsingleUri, numberOfUri);
+                            numberOfUri = numberOfUri-1;
+                            Log.e("Rishabh", "uri count :=  "+numberOfUri );
+                        }
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -177,22 +192,24 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     }
 
     void handleSendImage(Intent intent) {
+        mIsSingleUri = true;
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (mSingleImageUri != null) {
         }
     }
 
     void handleSendMultipleImages(Intent intent) {
+        mIsSingleUri = false;
         mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
         if (mMultipleImageUris != null) {
         }
     }
 
 
-    private void moveFile() throws FileNotFoundException {
+    private void moveFile(Uri getUri, int totalUri) throws FileNotFoundException {
 
         //new code -> saves recieved bitmap as file
-        Uri selectedImageUri = mSingleImageUri;
+        Uri selectedImageUri = getUri;
         InputStream is = null;
         if (selectedImageUri.getAuthority() != null) {
             is = getContentResolver().openInputStream(selectedImageUri);
@@ -208,7 +225,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     outStream.close();
 
                     Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                    RepositoryUtils.uploadFile(downloadedFileUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+                    RepositoryUtils.uploadFile(downloadedFileUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY, totalUri);
 
                 } catch (Exception e) {
                     e.printStackTrace();

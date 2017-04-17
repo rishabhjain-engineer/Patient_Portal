@@ -563,10 +563,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int noOfUri = 1 ;
         try {
             if (requestCode == PICK_FROM_GALLERY) {
 
                 //new code saves recieved bitmap as file
+
                 Uri selectedImageUri = data.getData();
                 InputStream is = null;
                 if (selectedImageUri.getAuthority() != null) {
@@ -583,7 +585,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             outStream.close();
 
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                            RepositoryUtils.uploadFile(downloadedFileUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                            RepositoryUtils.uploadFile(downloadedFileUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -612,7 +614,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
                 }
 
-                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
 
             }
             super.onActivityResult(requestCode, resultCode, data);
