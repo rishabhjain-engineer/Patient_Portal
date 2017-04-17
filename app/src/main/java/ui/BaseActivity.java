@@ -218,4 +218,46 @@ public class BaseActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
+    protected void showNotificationAlertMessage() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        okBTN.setText("Setting");
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        stayButton.setText("Cancel");
+
+        TextView titleTextView = (TextView) dialog.findViewById(R.id.title);
+        titleTextView.setText("Notication Alert!");
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText("Notications for this app are disabled. Please enable from settings to stay updated.");
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intent = new Intent();
+                intent.setClassName("com.android.settings", "com.android.settings.Settings$AppNotificationSettingsActivity");
+                intent.putExtra("app_package", getPackageName());
+                intent.putExtra("app_uid", getApplicationInfo().uid);
+                startActivity(intent);
+            }
+        });
+
+        stayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
 }

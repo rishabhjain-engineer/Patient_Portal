@@ -40,18 +40,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
         // [END_EXCLUDE]
 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            JSONObject jsonObject = new JSONObject(remoteMessage.getData());
+            String title = jsonObject.optString("contentTitle");
+            String message = jsonObject.optString("message");
+            String tickerText = jsonObject.optString("tickerText");
+            sendNotification(title, message);
         }
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             //sendNotification(remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            sendNotification("Sciontra", remoteMessage.getNotification().getBody());
         }
     }
+
+    public static final String INTENT_KEY = "THE_QUOTE";
+    public void sendNotification(String title, String randomQuote) {
+        Intent showFullQuoteIntent = new Intent(this, DashBoardActivity.class);
+        //showFullQuoteIntent.putExtra(INTENT_KEY, "report");
+        int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic)
+                .setContentTitle(title)
+                .setContentText(randomQuote)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
+    }
+
     private void sendNotification1(String messageBody) {
         Intent intent = new Intent(this, DashBoardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -78,23 +100,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("report", "report");
         mNotificationManager.showSmallNotification("message", message, intent);
-    }
-
-    public static final String INTENT_KEY = "THE_QUOTE";
-    public void sendNotification(String randomQuote) {
-        Intent showFullQuoteIntent = new Intent(this, DashBoardActivity.class);
-        showFullQuoteIntent.putExtra(INTENT_KEY, "report");
-        int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setTicker(randomQuote)
-                .setSmallIcon(android.R.drawable.ic_menu_view)
-                .setContentTitle(randomQuote)
-                .setContentText(randomQuote)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
     }
 }

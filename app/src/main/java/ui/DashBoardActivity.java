@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import base.MyFirebaseMessagingService;
+import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;
@@ -92,43 +95,7 @@ public class DashBoardActivity extends BaseActivity {
             openReportFragment();
         }
 
-       /* Intent intentFromGallery = getIntent();
-        String action = intentFromGallery.getAction();
-        String type = intentFromGallery.getType();
 
-        if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
-
-            // Perform intent operation ; user loggedin into sciontra app ;
-            Log.e("Rishabh", "User is logged in");
-            if (Intent.ACTION_SEND.equals(action) && type != null) {
-                if ("text/plain".equals(type)) {
-                    handleSendText(intentFromGallery); // Handle text being sent
-                } else if (type.startsWith("image/")) {
-                    Log.e("Rishabh", "Intent Received of Image type. ");
-                    handleSendImage(intentFromGallery); // Handle single image being sent
-                }
-            } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-                if (type.startsWith("image/")) {
-                    handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
-                }
-            } else {
-                Log.e("Rishabh", "Other intent");
-                // Handle other intents, such as being started from the home screen
-
-            }
-
-        } else if (TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
-            // User is not logged in ; Ask him to log-in
-            Log.e("Rishabh", "User is not logged in");
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
-                    startActivity(intentMain);
-                    finish();
-                }
-            }, 100);
-        }*/
     }
 
 
@@ -157,74 +124,14 @@ public class DashBoardActivity extends BaseActivity {
         mFooterAccount.setOnClickListener(mOnClickListener);
     }
 
-    void handleSendText(Intent intent) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            // Update UI to reflect text being shared
-        }
-    }
 
-    void handleSendImage(Intent intent) {
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            // Update UI to reflect image being shared
-            Log.e("Rishabh", "Single imageURI from gallery := " + imageUri.getPath());
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("uri", imageUri);
-            bundle.putString("totaluri", "single");
-            mRepositoryFragment = new RepositoryFragment();
-            mRepositoryFragment.setArguments(bundle);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mRepositoryFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-            Log.e("Rishabh", "data sent");
-            mFooterContainer.setVisibility(View.VISIBLE);
-            mDashBoardTv.setTextColor(grayColor);
-            mReportTv.setTextColor(grayColor);
-            mRepositoryTv.setTextColor(greenColor);
-            mFamilyTv.setTextColor(grayColor);
-            mAccountTv.setTextColor(grayColor);
-            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-            mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
-            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-        }
-    }
-
-    void handleSendMultipleImages(Intent intent) {
-        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        if (imageUris != null) {
-            // Update UI to reflect multiple images being shared
-            Log.e("Rishabh", "Multiple URIs from Gallery := " + imageUris.size());
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("multipleUri", imageUris);
-            bundle.putString("totaluri", "multiple");
-            mRepositoryFragment = new RepositoryFragment();
-            mRepositoryFragment.setArguments(bundle);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mRepositoryFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-            Log.e("Rishabh", "data sent");
-            mFooterContainer.setVisibility(View.VISIBLE);
-            mDashBoardTv.setTextColor(grayColor);
-            mReportTv.setTextColor(grayColor);
-            mRepositoryTv.setTextColor(greenColor);
-            mFamilyTv.setTextColor(grayColor);
-            mAccountTv.setTextColor(grayColor);
-            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
-            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
-            mFooterRepositoryImageView.setImageResource(R.drawable.repository_active);
-            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
-            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
-        }
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(DashBoardActivity.this).areNotificationsEnabled()) {
+            showNotificationAlertMessage();
+        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -465,9 +372,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
- /*intent = new Intent(DashBoardActivity.this, Filevault.class);
-                startActivity(intent);*/
-        // mActionBar.show();
+
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
