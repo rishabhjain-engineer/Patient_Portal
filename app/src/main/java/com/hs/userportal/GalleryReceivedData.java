@@ -83,7 +83,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private Uri mSingleImageUri;
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
-    private int numberOfUri ;
+    private int numberOfUri;
+
+    private List<SelectableObject> displayedDirectory;
 
     private static Activity mActivity;
     private boolean mIsSingleUri;
@@ -104,6 +106,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         String type = intentFromGallery.getType();
 
         mActivity = this;
+
+        displayedDirectory = new ArrayList<>();
 
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
@@ -156,17 +160,17 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             if (viewId == R.id.directory_share_move_btn) {
                 try {
-                    if(mIsSingleUri){
+                    if (mIsSingleUri) {
                         numberOfUri = 1;
-                        moveFile(mSingleImageUri,numberOfUri);
-                        Log.e("Rishabh", "uri count :=  "+numberOfUri );
-                    }else{
+                        moveFile(mSingleImageUri, numberOfUri);
+                        Log.e("Rishabh", "uri count :=  " + numberOfUri);
+                    } else {
                         numberOfUri = mMultipleImageUris.size();
-                        for(int i=0 ; i<mMultipleImageUris.size(); i++) {
-                            Uri sendsingleUri =  mMultipleImageUris.get(i);
+                        for (int i = 0; i < mMultipleImageUris.size(); i++) {
+                            Uri sendsingleUri = mMultipleImageUris.get(i);
                             moveFile(sendsingleUri, numberOfUri);
-                            numberOfUri = numberOfUri-1;
-                            Log.e("Rishabh", "uri count :=  "+numberOfUri );
+                            numberOfUri = numberOfUri - 1;
+                            Log.e("Rishabh", "uri count :=  " + numberOfUri);
                         }
                     }
                 } catch (FileNotFoundException e) {
@@ -176,14 +180,37 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 RepositoryUtils.createNewFolder(GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                     @Override
                     public void onFolderCreated(Directory directory) {
-                        mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory, GalleryReceivedData.this);
-                        mRecyclerView.setAdapter(mRepositoryAdapter);
+                        setListAdapter(directory);
                         setBackButtonPress(directory);
                     }
                 });
             }
         }
     };
+
+    private void setListAdapter(Directory directory) {
+        parseDirectory(directory);
+        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, GalleryReceivedData.this);
+        mRepositoryAdapter.setSelectionMode(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mRepositoryAdapter);
+
+        setBackButtonPress(directory);
+    }
+
+    public void parseDirectory(Directory directory) {
+        displayedDirectory = new ArrayList<>();
+        if (!directory.listOfDirectories.isEmpty()) {
+            for (Directory d : directory.getListOfDirectories()) {
+                displayedDirectory.add(new SelectableObject(d, false));
+            }
+        }
+        if (!directory.getListOfDirectoryFiles().isEmpty()) {
+            for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
+                displayedDirectory.add(new SelectableObject(file, false));
+            }
+        }
+    }
 
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -332,8 +359,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, mDirectory, GalleryReceivedData.this);
-                    mRecyclerView.setAdapter(mRepositoryAdapter);
+                    setListAdapter(mDirectory);
                     setBackButtonPress(mDirectory);
 
                 } catch (JSONException je) {
@@ -361,8 +387,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     @Override
     public void onDirectoryTouched(Directory directory) {
-        mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory, this);
-        mRecyclerView.setAdapter(mRepositoryAdapter);
+        setListAdapter(directory);
         setBackButtonPress(directory);
     }
 
@@ -387,8 +412,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mRepositoryAdapter = new RepositoryAdapter(GalleryReceivedData.this, directory.getParentDirectory(), GalleryReceivedData.this);
-                    mRecyclerView.setAdapter(mRepositoryAdapter);
+                    setListAdapter(directory.getParentDirectory());
                     setBackButtonPress(directory.getParentDirectory());
                 }
             });
@@ -418,6 +442,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     public static void completedUpload() {
         mActivity.finish();
+    }
+
+    @Override
+    public void onItemLongClicked(int position) {
+
     }
 
     // TODO end of Main class
