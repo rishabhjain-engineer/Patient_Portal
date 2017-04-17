@@ -219,7 +219,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void showNotificationAlertMessage() {
+    public void showNotificationAlertMessage() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);

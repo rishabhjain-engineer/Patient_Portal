@@ -129,9 +129,6 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(DashBoardActivity.this).areNotificationsEnabled()) {
-            showNotificationAlertMessage();
-        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {

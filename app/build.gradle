@@ -72,5 +72,6 @@ dependencies {
     compile project(':dynamicgrid')
     compile 'com.google.firebase:firebase-core:10.2.0'
     compile 'com.google.firebase:firebase-messaging:10.2.0'
+    compile 'com.android.support:recyclerview-v7:24.1.1'
 }
 apply plugin: 'com.google.gms.google-services'
