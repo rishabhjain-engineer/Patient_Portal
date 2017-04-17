@@ -455,10 +455,12 @@
         <activity
             android:name="ui.SignInActivity"
             android:configChanges="orientation|screenSize"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <activity
             android:name="ui.DashBoardActivity"
+            android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
 
@@ -546,14 +548,14 @@
         <!-- [START fcm_default_icon] -->
         <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
              See README(https://goo.gl/l4GJaQ) for more. -->
-        <meta-data
+        <!--<meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic" />
+            android:resource="@drawable/ic" />-->
         <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more. -->
-        <meta-data
+       <!-- <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/text_color_blue" />
+            android:resource="@color/text_color_blue" />-->
         <!-- [END fcm_default_icon] -->
         <!-- [START firebase_service] -->
         <service android:name="base.MyFirebaseMessagingService">
