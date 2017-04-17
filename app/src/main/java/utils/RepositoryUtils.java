@@ -145,9 +145,9 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom) {
+    public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom, int totalUri) {
 
-
+        Log.e("Rishabh", "uri count := UTILS "+totalUri );
         String path = getPathFromContentUri(fileUri, activity);
         File imageFile = new File(path);
         String path1 = imageFile.getAbsolutePath();
@@ -186,6 +186,7 @@ public class RepositoryUtils {
             intent.putExtra(UploadService.uploadfrom, uploadFrom);
             intent.putExtra("exhistimg", exhistimg);
             intent.putExtra("stringcheck", stringcheck);
+            intent.putExtra("numberofuri",totalUri );
             activity.startService(intent);
 
            /* System.out.println("After Service");

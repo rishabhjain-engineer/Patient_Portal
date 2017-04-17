@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -71,6 +72,7 @@ public class UploadService extends IntentService {
     private final Handler handler = new Handler();
     private String fname, afterDecode, uplodfrm;
     private String add_path, exhistimg, stringcheck;
+    private int mTotalNumberUriReceived ;
     protected PreferenceHelper mPreferenceHelper;
 
     public UploadService() {
@@ -98,6 +100,7 @@ public class UploadService extends IntentService {
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");
+        mTotalNumberUriReceived = intent.getIntExtra("numberofuri",1);
         try {
             exhistimg = intent.getStringExtra("exhistimg");
             stringcheck = intent.getStringExtra("stringcheck");
@@ -106,6 +109,7 @@ public class UploadService extends IntentService {
             exhistimg = "";
             stringcheck = "";
         }
+        Log.e("Rishabh", "URI COUNT UPLOAD SERVICE := "+mTotalNumberUriReceived);
         File fileToUpload = new File(filePath);
         final String s3ObjectKey = md5(filePath);
         String s3BucketName = getString(R.string.s3_bucket);
@@ -225,8 +229,11 @@ public class UploadService extends IntentService {
                                     //new code
                                     if (uplodfrm.equals(REPOSITORY)) {
                                         RepositoryFreshFragment.refresh();
-                                    } else if (uplodfrm.equals(GALLERY)) {
+                                    } else if (uplodfrm.equals(GALLERY)  && mTotalNumberUriReceived == 1 ) {
                                         GalleryReceivedData.completedUpload();
+                                    }else if(uplodfrm.equals(GALLERY)) {
+                                                                Log.e("Rishabh", "ayaz sir said it is thread ; ");
+                                        return;
                                     }
 
                                 }
