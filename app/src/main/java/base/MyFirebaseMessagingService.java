@@ -22,6 +22,8 @@ import com.hs.userportal.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import ui.DashBoardActivity;
 import ui.SignInActivity;
 import utils.PreferenceHelper;
@@ -85,9 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent = new Intent(this, DashBoardActivity.class);
         }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -99,7 +99,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        int uniqueInteger = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        notificationManager.notify(uniqueInteger/* ID of notification */, notificationBuilder.build());
+
+        //////////////////////////////////
+       /* Intent notificationIntent = new Intent(context, YOUR_ACTIVITY.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentIntent(intent)
+                .setPriority(PRIORITY_HIGH) //private static final PRIORITY_HIGH = 5;
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());*/
     }
 
     private void sendNotification1(String messageBody) {
