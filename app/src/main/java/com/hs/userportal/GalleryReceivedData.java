@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import adapters.RepositoryAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
@@ -84,7 +86,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
     private int numberOfUri;
-    private boolean isFromGallery ;
+    private boolean isFromGallery;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -100,7 +102,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mhelper = new Helper();
-        isFromGallery = true ;
+        isFromGallery = true;
         initObject();
         askRunTimePermissions();
         Intent intentFromGallery = getIntent();
@@ -114,8 +116,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
 
             // Check if user is logged in .
-
-            createLockFolder();
+            if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                Toast.makeText(this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            } else {
+                createLockFolder();
+            }
 
             if (Intent.ACTION_SEND.equals(action) && type != null) {
                 if ("text/plain".equals(type)) {
@@ -137,7 +142,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
           /*  showAlertMessage("Login to ScionTra first. ");*/
             mMoveButton.setVisibility(View.GONE);
             mActionBar.hide();
-            Intent i = new Intent(this,Transparent.class);
+            Intent i = new Intent(this, Transparent.class);
             startActivity(i);
         }
 
@@ -195,7 +200,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void setListAdapter(Directory directory) {
         parseDirectory(directory);
-        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, GalleryReceivedData.this ,isFromGallery);
+        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, GalleryReceivedData.this, isFromGallery);
         mRepositoryAdapter.setSelectionMode(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRepositoryAdapter);
@@ -312,7 +317,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     public void startCreatingDirectoryStructure() {
 
         mDirectory = new Directory("Home");
-        loadData();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            loadData();
+        }
     }
 
     private void loadData() {
