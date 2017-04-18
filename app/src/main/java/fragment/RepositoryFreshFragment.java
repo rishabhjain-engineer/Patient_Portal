@@ -118,7 +118,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private String mCurrentPhotoPath = null;
     private boolean mIsSdkLessThanM = true;
     private int MY_PERMISSIONS_REQUEST = 3;
-    private boolean mPermissionGranted;
+    private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
 
     private static RepositoryFreshFragment repositoryFreshFragment;
@@ -370,7 +370,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             list.setAdapter(mRepositoryGridAdapter);
 
         } else {
-            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this);
+            isFromGallery=false;
+            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this,isFromGallery);
             mRepositoryAdapter.setSelectionMode(false);
             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
             toolbarTitle.setVisibility(View.VISIBLE);

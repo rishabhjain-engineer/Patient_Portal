@@ -31,13 +31,14 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
     private List<SelectableObject> listOfObjects;
     private Context context;
     private onDirectoryAction listener;
-    private boolean selectionMode = false;
+    private boolean selectionMode = false, mCalledFromGallery ;
 
-    public RepositoryAdapter(Activity context, Directory directory, List<SelectableObject> listOfObjects, onDirectoryAction listener) {
+    public RepositoryAdapter(Activity context, Directory directory, List<SelectableObject> listOfObjects, onDirectoryAction listener, boolean fromGallery) {
         this.context = context;
         this.directory = directory;
         this.listener = listener;
         this.listOfObjects = listOfObjects;
+        mCalledFromGallery = fromGallery ;
 
     }
 
@@ -72,8 +73,14 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
                 holder.image.setImageResource(R.drawable.ic_folder);
             }
             holder.name.setText(((Directory) listOfObjects.get(position).getObject()).getDirectoryName());
-            holder.lastModified.setText("--");
-            holder.size.setText("--");
+            if(mCalledFromGallery){
+                holder.lastModified.setVisibility(View.GONE);
+                holder.size.setVisibility(View.GONE);
+            }else{
+                holder.lastModified.setText("--");
+                holder.size.setText("--");
+            }
+
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -113,8 +120,14 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
                     .crossFade()
                     .into(holder.image);
             holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
-            holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().substring(0, 10));
-            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize() / 1000) + " kb");
+            if(mCalledFromGallery){
+                holder.lastModified.setVisibility(View.GONE);
+                holder.size.setVisibility(View.GONE);
+            }else{
+                holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().substring(0, 10));
+                holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize() / 1000) + " kb");
+            }
+
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
