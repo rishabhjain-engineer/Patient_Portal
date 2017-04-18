@@ -143,7 +143,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mRequestQueue = Volley.newRequestQueue(this);
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             //new Authentication(HealthCommonActivity.this, "healthCommon", "").execute();
         }
@@ -189,7 +189,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
-                            deleteWeight();
+                            if(NetworkChangeListener.getNetworkStatus().isConnected()){
+                                deleteWeight();
+                            }else{
+                                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     dialog.show();
@@ -198,7 +202,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         });
         if(isSessionExist()){
-            new HealthCommonActivity.BackgroundProcess().execute();
+            if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            } else {
+                new HealthCommonActivity.BackgroundProcess().execute();
+            }
         }
     }
 
@@ -220,7 +228,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     protected void onRestart() {
         super.onRestart();
         Log.i("ayaz", "onRestart");
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            new HealthCommonActivity.BackgroundProcess().execute();
+        }
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
@@ -626,7 +638,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
                         //startActivity(getIntent());
-                        new HealthCommonActivity.BackgroundProcess().execute();
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            new HealthCommonActivity.BackgroundProcess().execute();
+                        }
+
                     } else {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -648,7 +665,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     }
 
     public void startBackgroundprocess() {
-        //new BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            //new BackgroundProcess().execute();
+        }
+
     }
 
     @Override
