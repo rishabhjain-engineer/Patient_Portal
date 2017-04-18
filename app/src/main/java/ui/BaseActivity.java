@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.Helper;
 import com.hs.userportal.R;
 import com.hs.userportal.changepass;
@@ -39,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import config.StaticHolder;
+import utils.NetworkChangeListener;
 import utils.PreferenceHelper;
 
 /**
@@ -158,39 +161,45 @@ public class BaseActivity extends AppCompatActivity {
 
     boolean result = true;
     public synchronized boolean isSessionExist() {
-      StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
-        String url = sttc_holdr.request_Url();
-        Log.d("ayaz", "Url"+url);
-        JSONObject jsonObjectToSend = new JSONObject();
-        try {
-            jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObjectToSend, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                String d = jsonObject.optString("d");
-                Log.d("ayaz", "Responnse: "+ d);
-                if (d.contains("true")) {
-                    result = true;
-                } else {
+        if(!NetworkChangeListener.getNetworkStatus().isConnected()){
+            Toast.makeText(AppAplication.getAppContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
+            return true;
+        }else {
+
+            StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+            String url = sttc_holdr.request_Url();
+            Log.d("ayaz", "Url" + url);
+            JSONObject jsonObjectToSend = new JSONObject();
+            try {
+                jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObjectToSend, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    String d = jsonObject.optString("d");
+                    Log.d("ayaz", "Responnse: " + d);
+                    if (d.contains("true")) {
+                        result = true;
+                    } else {
+                        showSessionExpiredDialog();
+                        result = false;
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.d("ayaz", "Error: ");
                     showSessionExpiredDialog();
                     result = false;
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.d("ayaz", "Error: ");
-                showSessionExpiredDialog();
-                result = false;
-            }
-        });
-        mRequestQueue.add(jsonObjectRequest);
-        Log.d("ayaz", "returning result"+result);
-        return result;
-        //return true;
+            });
+            mRequestQueue.add(jsonObjectRequest);
+            Log.d("ayaz", "returning result" + result);
+            return result;
+            //return true;
+        }
     }
 
     private void showSessionExpiredDialog() {

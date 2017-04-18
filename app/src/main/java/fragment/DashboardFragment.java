@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
@@ -176,10 +177,15 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new MyHealthAsync().execute();
-        new GetUserGradeAsync().execute();
+
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            new MyHealthAsync().execute();
+            new GetUserGradeAsync().execute();
+        }else{
+            Toast.makeText(AppAplication.getAppContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
+        }
         if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(mActivity).areNotificationsEnabled()) {
-            ((BaseActivity)mActivity).showNotificationAlertMessage();
+            ((BaseActivity) mActivity).showNotificationAlertMessage();
         }
     }
 
