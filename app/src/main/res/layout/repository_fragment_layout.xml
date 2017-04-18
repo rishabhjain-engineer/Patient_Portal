@@ -73,7 +73,6 @@
                 android:layout_height="wrap_content"
                 android:text="Last Modified"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:textColor="@color/black_header"/>
 
             <TextView
@@ -82,7 +81,6 @@
                 android:layout_height="wrap_content"
                 android:text="Size"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:textColor="@color/black_header"/>
 
         </LinearLayout>

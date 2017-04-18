@@ -5,29 +5,31 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/directory_share_header"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:paddingRight="10dp"
         android:background="@color/header_color"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/toolbar_back_button"
-            android:padding="16dp"
             android:src="@drawable/backarrow"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize" />
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="ScionTra"
+            android:layout_centerInParent="true"
             android:textSize="20sp"
             android:gravity="center"
+            android:layout_gravity="center"
             android:textColor="@color/white"/>
 
 
@@ -36,8 +38,11 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/add_test"/>
-    </LinearLayout>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/directory_share_listview"

@@ -84,6 +84,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
     private int numberOfUri;
+    private boolean isFromGallery ;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -99,6 +100,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mhelper = new Helper();
+        isFromGallery = true ;
         initObject();
         askRunTimePermissions();
         Intent intentFromGallery = getIntent();
@@ -190,7 +192,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void setListAdapter(Directory directory) {
         parseDirectory(directory);
-        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, GalleryReceivedData.this);
+        mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, GalleryReceivedData.this ,isFromGallery);
         mRepositoryAdapter.setSelectionMode(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRepositoryAdapter);
@@ -401,6 +403,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     void setBackButtonPress(final Directory directory) {
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
+            toolbarBackButton.setVisibility(View.GONE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -409,6 +412,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             });
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
+            toolbarBackButton.setVisibility(View.VISIBLE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
