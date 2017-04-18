@@ -125,11 +125,14 @@ public class ReportRecords extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
-                Intent i = new Intent(getApplicationContext(),
-                        ImageGridActivity.class);
-                i.putExtra("caseid", case_id);
-                startActivity(i);
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent i = new Intent(getApplicationContext(),
+                            ImageGridActivity.class);
+                    i.putExtra("caseid", case_id);
+                    startActivity(i);
+                }
             }
         });
         viewReportLinear_id.setOnClickListener(new View.OnClickListener() {
@@ -173,18 +176,23 @@ public class ReportRecords extends BaseActivity {
                     if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
                             && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
-                        Intent intent = new Intent(getApplicationContext(), ReportStatus.class);
-                        intent.putExtra("index", position);
-                        intent.putExtra("array", subArray1.toString());
-                        intent.putExtra("USER_ID", id);
-                        try {
-                            intent.putExtra("code", subArray1.getJSONObject(0).getString("PatientCode"));
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), ReportStatus.class);
+                            intent.putExtra("index", position);
+                            intent.putExtra("array", subArray1.toString());
+                            intent.putExtra("USER_ID", id);
+                            try {
+                                intent.putExtra("code", subArray1.getJSONObject(0).getString("PatientCode"));
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     } else if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")
                             && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {

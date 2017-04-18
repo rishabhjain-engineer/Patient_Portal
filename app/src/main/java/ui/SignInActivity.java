@@ -69,6 +69,7 @@ import java.util.Date;
 import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -114,8 +115,12 @@ public class SignInActivity extends BaseActivity {
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
                 mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND, "false");
-                LoginManager.getInstance().logOut();
-                new UserDeviceAsyncTask().execute();
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    LoginManager.getInstance().logOut();
+                    new UserDeviceAsyncTask().execute();
+                } else {
+                    Toast.makeText(SignInActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
