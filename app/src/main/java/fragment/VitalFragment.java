@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.Allergy;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.Authentication;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
@@ -58,7 +59,7 @@ import utils.PreferenceHelper;
  * Created by ayaz on 10/4/17.
  */
 
-public class VitalFragment extends Fragment{
+public class VitalFragment extends Fragment {
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
     private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
@@ -70,6 +71,7 @@ public class VitalFragment extends Fragment{
     private ProgressDialog progress;
     private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private int allergy_no = 0;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -124,11 +126,15 @@ public class VitalFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, Weight.class);
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent in = new Intent(mActivity, HealthCommonActivity.class);
-                    in.putExtra("id", id);
-                    in.putExtra("forWeight", true);
-                    startActivity(in);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forWeight", true);
+                        startActivity(in);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -136,21 +142,31 @@ public class VitalFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 // Intent in = new Intent(MyHealth.this, Height.class);
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent in = new Intent(mActivity, HealthCommonActivity.class);
-                    in.putExtra("id", id);
-                    in.putExtra("forHeight", true);
-                    startActivity(in);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forHeight", true);
+                        startActivity(in);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
         allergyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent in = new Intent(mActivity, Allergy.class);
-                    in.putExtra("id", id);
-                    startActivity(in);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, Allergy.class);
+                        in.putExtra("id", id);
+                        startActivity(in);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
@@ -159,11 +175,15 @@ public class VitalFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BmiActivity.class);
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent in = new Intent(mActivity, HealthCommonActivity.class);
-                    in.putExtra("id", id);
-                    in.putExtra("forBmi", true);
-                    startActivity(in);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forBmi", true);
+                        startActivity(in);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -173,11 +193,16 @@ public class VitalFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BpActivity.class);
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent in = new Intent(mActivity, HealthCommonActivity.class);
-                    in.putExtra("id", id);
-                    in.putExtra("forBp", true);
-                    startActivity(in);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forBp", true);
+                        startActivity(in);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
@@ -185,9 +210,14 @@ public class VitalFragment extends Fragment{
         mVaccineContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(((BaseActivity)mActivity).isSessionExist()) {
-                    Intent intent = new Intent(mActivity, VaccineActivity.class);
-                    startActivity(intent);
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent intent = new Intent(mActivity, VaccineActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
@@ -222,7 +252,11 @@ public class VitalFragment extends Fragment{
     }
 
     public void onRestart() {
-        new VitalFragment.BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new VitalFragment.BackgroundProcess().execute();
+        }
     }
 
     public void showdialog() {
@@ -351,7 +385,12 @@ public class VitalFragment extends Fragment{
     }
 
     public void startBackgroundProcess() {
-        new VitalFragment.BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new VitalFragment.BackgroundProcess().execute();
+        }
+
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
@@ -456,7 +495,11 @@ public class VitalFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        new VitalFragment.BackgroundProcessResume().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            new VitalFragment.BackgroundProcessResume().execute();
+        }
     }
 
     class BackgroundProcessResume extends AsyncTask<Void, Void, Void> {
