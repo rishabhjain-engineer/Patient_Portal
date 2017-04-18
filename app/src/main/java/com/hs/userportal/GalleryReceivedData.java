@@ -134,8 +134,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
         } else {
             // user not logged into the app. dont allow to upload file segement here .
-            showAlertMessage("Login to ScionTra first. ");
-            finish();
+          /*  showAlertMessage("Login to ScionTra first. ");*/
+            mMoveButton.setVisibility(View.GONE);
+            mActionBar.hide();
+            Intent i = new Intent(this,Transparent.class);
+            startActivity(i);
         }
 
         // TODO end of onCreate method
