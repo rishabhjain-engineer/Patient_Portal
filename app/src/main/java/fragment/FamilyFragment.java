@@ -392,7 +392,11 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                     Toast.makeText(mActivity, "Please enter relation.", Toast.LENGTH_SHORT).show();
                 } else {
                     overlay_dialog.dismiss();
-                    sendrequest(ph_code, relation, repeat);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        sendrequest(ph_code, relation, repeat);
+                    }
                 }
             }
         });

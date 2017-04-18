@@ -10,9 +10,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -609,7 +611,15 @@ public class ReportRecords extends BaseActivity {
 
                     Intent i = new Intent();
                     i.setAction(Intent.ACTION_VIEW);
-                    Uri uri = Uri.fromFile(fileReport);
+
+                    ///////
+                    Uri uri = null;
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        uri = Uri.fromFile(fileReport);
+                    } else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }
+                    /////
                     i.setDataAndType(uri, "application/pdf");
                     startActivity(i);
 
