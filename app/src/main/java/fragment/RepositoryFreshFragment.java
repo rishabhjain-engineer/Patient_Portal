@@ -28,7 +28,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -54,6 +54,7 @@ import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.ImageActivity;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
+import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
 
 import org.json.JSONArray;
@@ -71,6 +72,7 @@ import java.util.Date;
 import java.util.List;
 
 import adapters.RepositoryAdapter;
+import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import utils.AppConstant;
 import utils.DirectoryUtility;
@@ -106,9 +108,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private RelativeLayout toolbar;
     private TextView toolbarTitle, mHeaderTitleTextView;
     private ImageView toolbarBackButton;
-    private ImageView showGridLayout ,mHeaderDeleteImageView , mHeaderSelectAllImageView , mHeaderMoveImageView;
+    private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
     private View mView;
-    private LinearLayout mHeaderMiddleImageViewContainer ;
+    private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
     private int PICK_FROM_GALLERY = 1;
@@ -117,8 +119,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private boolean mIsSdkLessThanM = true;
     private int MY_PERMISSIONS_REQUEST = 3;
     private boolean mPermissionGranted;
+    private List<SelectableObject> displayedDirectory;
 
     private static RepositoryFreshFragment repositoryFreshFragment;
+    private RepositoryDialogAdapter dialogAdapter;
 
 
     @Nullable
@@ -131,8 +135,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         initObject();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
-
         repositoryFreshFragment = this;
+        displayedDirectory = new ArrayList<>();
 
 
         createLockFolder();
@@ -160,6 +164,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         showGridLayout.setOnClickListener(mOnClickListener);
         toolbarBackButton.setOnClickListener(mOnClickListener);
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
+        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
+        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -206,22 +212,93 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
                 setListAdapter(currentDirectory);
             } else if (viewId == R.id.repository_selectall_imageview) {
+                if (listMode == 0) {
+                    selectAll();
+                    mRepositoryAdapter.notifyDataSetChanged();
+                    mRepositoryAdapter.setSelectionMode(true);
+                } else {
+                    selectAll();
+                    mRepositoryGridAdapter.notifyDataSetChanged();
+                    mRepositoryAdapter.setSelectionMode(true);
+                }
                 mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
-            }  else if(viewId == R.id.repository_delete_imageview){
+            } else if (viewId == R.id.repository_delete_imageview) {
                 deleteFile();
-            }else if(viewId == R.id.repository_move_imageview){
+            } else if (viewId == R.id.repository_move_imageview) {
                 moveFile();
             }
         }
     };
 
-    private void deleteFile(){
+    private void deleteFile() {
+        List<SelectableObject> selectedObjects = new ArrayList<>();
+        for (SelectableObject object : displayedDirectory) {
+            if (object.isSelected()) {
+                selectedObjects.add(object);
+            }
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Deleting... Please Wait");
+        progressDialog.show();
+        RepositoryUtils.deleteObjects(selectedObjects, patientId, getActivity(), new RepositoryUtils.OnDeleteCompletion() {
+            @Override
+            public void onSuccessfullyDeleted() {
+                progressDialog.dismiss();
+                Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
+                loadData();
+            }
 
+            @Override
+            public void onFailure() {
+                progressDialog.dismiss();
+                Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void moveFile() {
 
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.move_folderlist_recycler);
+
+        final TextView backText = (TextView) dialog.findViewById(R.id.folder_root);
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.folder_list);
+        Button moveButton = (Button) dialog.findViewById(R.id.move_btn);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        setDialogAdapter(backText, recyclerView, mDirectory);
+
+        dialog.show();
+
+
     }
+
+    private void setDialogAdapter(final TextView backText, final RecyclerView recyclerView, Directory mDirectory) {
+
+        dialogAdapter = new RepositoryDialogAdapter(mDirectory, new RepositoryDialogAdapter.onDirectorySelected() {
+            @Override
+            public void onDirectorySelected(Directory directory) {
+                setDialogAdapter(backText, recyclerView, directory);
+            }
+        });
+        recyclerView.setAdapter(dialogAdapter);
+        if (dialogAdapter.getDirectory().getParentDirectory() == null) {
+            backText.setText("");
+        } else {
+            backText.setText(dialogAdapter.getDirectory().getDirectoryName());
+            backText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory());
+                }
+            });
+
+        }
+    }
+
     private void uploadFile() {
         final Dialog dialog = new Dialog(mActivity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -247,18 +324,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryGridAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
-                            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
-                            list.setAdapter(mRepositoryAdapter);
-                            setBackButtonPress(directory);
+                            setListAdapter(directory);
                         }
                     });
                 } else {
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
-                            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
-                            list.setAdapter(mRepositoryAdapter);
-                            setBackButtonPress(directory);
+                            setListAdapter(directory);
                         }
                     });
                 }
@@ -282,15 +355,35 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
 
     private void setListAdapter(Directory directory) {
+        parseDirectory(directory);
         if (listMode == 1) {
-            mRepositoryGridAdapter = new RepositoryGridAdapter(mActivity, directory, RepositoryFreshFragment.this);
+            mRepositoryGridAdapter = new RepositoryGridAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this);
+            mRepositoryGridAdapter.setSelectionMode(false);
+            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+            toolbarTitle.setVisibility(View.VISIBLE);
+            if (directory.getParentDirectory() == null) {
+                toolbarBackButton.setVisibility(View.GONE);
+            } else {
+                toolbarBackButton.setVisibility(View.VISIBLE);
+            }
             list.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             list.setAdapter(mRepositoryGridAdapter);
+
         } else {
-            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, RepositoryFreshFragment.this);
+            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this);
+            mRepositoryAdapter.setSelectionMode(false);
+            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+            toolbarTitle.setVisibility(View.VISIBLE);
             list.setLayoutManager(new LinearLayoutManager(getActivity()));
             list.setAdapter(mRepositoryAdapter);
+            if (directory.getParentDirectory() == null) {
+                toolbarBackButton.setVisibility(View.GONE);
+            } else {
+                toolbarBackButton.setVisibility(View.VISIBLE);
+            }
         }
+
+        setBackButtonPress(directory);
     }
 
     public void startCreatingDirectoryStructure() {
@@ -333,6 +426,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void loadData() {
+        mDirectory = new Directory("Personal");
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
@@ -410,26 +504,91 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     void setBackButtonPress(final Directory directory) {
+
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
-            toolbarBackButton.setVisibility(View.GONE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getActivity().finish();
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+
+                        } else {
+                            getActivity().finish();
+                        }
+                    } else if (listMode == 1) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            getActivity().finish();
+                        }
+                    }
+
                 }
             });
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
-            toolbarBackButton.setVisibility(View.VISIBLE);
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setListAdapter(directory.getParentDirectory());
-                    setBackButtonPress(directory.getParentDirectory());
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                        }
+                    } else if (listMode == 1) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                        }
+                    }
                 }
             });
+
+
         }
+
+    }
+
+    private void unselectAll() {
+
+        for (SelectableObject recycled : displayedDirectory) {
+            recycled.setSelected(false);
+        }
+
+    }
+
+    private void selectAll() {
+
+        for (SelectableObject recycled : displayedDirectory) {
+            if (recycled.getObject() instanceof Directory) {
+                if (((Directory) recycled.getObject()).isLocked()) {
+                    recycled.setSelected(false);
+                } else {
+                    recycled.setSelected(true);
+                }
+            } else {
+                recycled.setSelected(true);
+            }
+        }
+
     }
 
     @Override
@@ -468,6 +627,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 });
         builder.show();
+
 
     }
 
@@ -563,7 +723,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int noOfUri = 1 ;
+        int noOfUri = 1;
         try {
             if (requestCode == PICK_FROM_GALLERY) {
 
@@ -625,5 +785,61 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     public static void refresh() {
         repositoryFreshFragment.startCreatingDirectoryStructure();
+    }
+
+    @Override
+    public void onItemLongClicked(int position) {
+        if (listMode == 0) {
+            if (mRepositoryAdapter.isInSelectionMode()) {
+                mRepositoryAdapter.setSelectionMode(false);
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                toolbarTitle.setVisibility(View.VISIBLE);
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                mRepositoryAdapter.setSelectionMode(true);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                toolbarTitle.setVisibility(View.GONE);
+                toolbarBackButton.setVisibility(View.VISIBLE);
+                setBackButtonPress(mRepositoryAdapter.getDirectory());
+
+            }
+        } else if (listMode == 1) {
+            if (mRepositoryGridAdapter.isInSelectionMode()) {
+                mRepositoryGridAdapter.setSelectionMode(false);
+
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                toolbarTitle.setVisibility(View.VISIBLE);
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                mRepositoryGridAdapter.setSelectionMode(true);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                toolbarTitle.setVisibility(View.GONE);
+                toolbarBackButton.setVisibility(View.VISIBLE);
+                setBackButtonPress(mRepositoryGridAdapter.getDirectory());
+            }
+        }
+
+    }
+
+    public void parseDirectory(Directory directory) {
+        displayedDirectory.clear();
+        if (!directory.listOfDirectories.isEmpty()) {
+            for (Directory d : directory.getListOfDirectories()) {
+                displayedDirectory.add(new SelectableObject(d, false));
+            }
+        }
+        if (!directory.getListOfDirectoryFiles().isEmpty()) {
+            for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
+                displayedDirectory.add(new SelectableObject(file, false));
+            }
+        }
     }
 }

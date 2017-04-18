@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,8 +15,8 @@ import com.bumptech.glide.Glide;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.R;
+import com.hs.userportal.SelectableObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import utils.AppConstant;
@@ -27,27 +28,29 @@ import utils.AppConstant;
 public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.ViewHolder> {
 
     private Directory directory;
-    private List<Object> listOfObjects;
+    private List<SelectableObject> listOfObjects;
     private Context context;
     private onDirectoryAction listener;
+    private boolean selectionMode = false;
 
-    public RepositoryAdapter(Activity context, Directory directory, onDirectoryAction listener) {
-        this.directory = directory;
+    public RepositoryAdapter(Activity context, Directory directory, List<SelectableObject> listOfObjects, onDirectoryAction listener) {
         this.context = context;
+        this.directory = directory;
         this.listener = listener;
-        listOfObjects = new ArrayList<>();
+        this.listOfObjects = listOfObjects;
 
-        if (!directory.listOfDirectories.isEmpty()) {
-            for (Directory d : directory.getListOfDirectories()) {
-                listOfObjects.add(d);
-            }
-        }
-        if (!directory.getListOfDirectoryFiles().isEmpty()) {
-            for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
-                listOfObjects.add(file);
-            }
-        }
+    }
 
+    public void setSelectionMode(boolean selectionMode) {
+        this.selectionMode = selectionMode;
+        notifyDataSetChanged();
+    }
+
+    public void selectAll() {
+        for (SelectableObject recycled : listOfObjects) {
+            recycled.setSelected(true);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -60,38 +63,96 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        if (listOfObjects.get(position) instanceof Directory) {
-            if (((Directory) listOfObjects.get(position)).isLocked()) {
+        if (listOfObjects.get(position).getObject() instanceof Directory) {
+            if (((Directory) listOfObjects.get(position).getObject()).isLocked()) {
                 holder.image.setImageResource(R.drawable.ic_folder_protected);
             } else {
                 holder.image.setImageResource(R.drawable.ic_folder);
             }
-            holder.name.setText(((Directory) listOfObjects.get(position)).getDirectoryName());
+            holder.name.setText(((Directory) listOfObjects.get(position).getObject()).getDirectoryName());
             holder.lastModified.setText("--");
             holder.size.setText("--");
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onDirectoryTouched((Directory) listOfObjects.get(position));
+                    if (selectionMode) {
+                        if (!((Directory) listOfObjects.get(position).getObject()).isLocked()) {
+                            if (holder.checkBox.isChecked()) {
+                                holder.checkBox.setChecked(false);
+                                listOfObjects.get(position).setSelected(false);
+                            } else {
+                                holder.checkBox.setChecked(true);
+                                listOfObjects.get(position).setSelected(true);
+                            }
+                        } else {
+                            holder.checkBox.setChecked(false);
+                            listOfObjects.get(position).setSelected(false);
+                        }
+
+
+                    } else {
+                        listener.onDirectoryTouched((Directory) listOfObjects.get(position).getObject());
+                    }
+                }
+            });
+            holder.row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onItemLongClicked(position);
+                    if (!((Directory) listOfObjects.get(position).getObject()).isLocked())
+                        listOfObjects.get(position).setSelected(true);
+                    return true;
                 }
             });
 
-        } else if (listOfObjects.get(position) instanceof DirectoryFile) {
+        } else if (listOfObjects.get(position).getObject() instanceof DirectoryFile) {
             Glide.with(context)
-                    .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position)).getThumb())
+                    .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
                     .crossFade()
                     .into(holder.image);
-            holder.name.setText(((DirectoryFile) listOfObjects.get(position)).getName());
-            holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position)).getLastModified().substring(0, 10));
-            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position)).getSize() / 1000) + " kb");
+            holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
+            holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().substring(0, 10));
+            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize() / 1000) + " kb");
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onImageTouched((DirectoryFile) listOfObjects.get(position));
+                    if (selectionMode) {
+                        if (holder.checkBox.isChecked()) {
+                            holder.checkBox.setChecked(false);
+                            listOfObjects.get(position).setSelected(false);
+                        } else {
+                            holder.checkBox.setChecked(true);
+                            listOfObjects.get(position).setSelected(true);
+                        }
+                    } else {
+                        listener.onImageTouched((DirectoryFile) listOfObjects.get(position).getObject());
+                    }
+
                 }
             });
+            holder.row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onItemLongClicked(position);
+                    listOfObjects.get(position).setSelected(true);
+                    return true;
+                }
+            });
+        }
+
+
+        if (selectionMode) {
+            holder.checkBox.setVisibility(View.VISIBLE);
+            if (listOfObjects.get(position).isSelected()) {
+                holder.checkBox.setChecked(true);
+            } else {
+                holder.checkBox.setChecked(false);
+            }
+        } else {
+            holder.checkBox.setVisibility(View.GONE);
+            listOfObjects.get(position).setSelected(false);
         }
     }
 
@@ -105,6 +166,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
         private TextView name, lastModified, size;
         private ImageView image;
         private LinearLayout row;
+        private CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -114,6 +176,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
             image = (ImageView) itemView.findViewById(R.id.image);
 
             row = (LinearLayout) itemView.findViewById(R.id.row);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         }
     }
 
@@ -121,10 +184,17 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
         void onDirectoryTouched(Directory directory);
 
         void onImageTouched(DirectoryFile file);
+
+        void onItemLongClicked(int position);
     }
 
-    public Directory getDirectory(){
+
+    public Directory getDirectory() {
         return directory;
+    }
+
+    public boolean isInSelectionMode() {
+        return selectionMode;
     }
 
 }

@@ -19,18 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.Directory;
+import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.R;
+import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 
 import config.StaticHolder;
 
@@ -147,7 +153,7 @@ public class RepositoryUtils {
 
     public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom, int totalUri) {
 
-        Log.e("Rishabh", "uri count := UTILS "+totalUri );
+        Log.e("Rishabh", "uri count := UTILS " + totalUri);
         String path = getPathFromContentUri(fileUri, activity);
         File imageFile = new File(path);
         String path1 = imageFile.getAbsolutePath();
@@ -186,7 +192,7 @@ public class RepositoryUtils {
             intent.putExtra(UploadService.uploadfrom, uploadFrom);
             intent.putExtra("exhistimg", exhistimg);
             intent.putExtra("stringcheck", stringcheck);
-            intent.putExtra("numberofuri",totalUri );
+            intent.putExtra("numberofuri", totalUri);
             activity.startService(intent);
 
            /* System.out.println("After Service");
@@ -255,6 +261,72 @@ public class RepositoryUtils {
     }
 
     public interface onActionComplete {
-        public void onFolderCreated(Directory directory);
+        void onFolderCreated(Directory directory);
     }
+
+    public static void deleteObjects(List<SelectableObject> listOfSelectedObjects, String patientId, final Activity mActivity, final OnDeleteCompletion listener) {
+        JSONArray array = new JSONArray();
+
+        for (SelectableObject object : listOfSelectedObjects) {
+            JSONObject imageobject = new JSONObject();
+            if (object.getObject() instanceof Directory) {
+                try {
+                    imageobject.put("Type", "1");
+                    imageobject.put("Key", patientId + "/FileVault/Personal/" + ((Directory) object.getObject()).getDirectoryPath());
+                    imageobject.put("ThumbFile", "");
+                    imageobject.put("Status", "");
+                    array.put(imageobject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if (object.getObject() instanceof DirectoryFile) {
+                try {
+                    imageobject.put("Type", "0");
+                    imageobject.put("Key", ((DirectoryFile) object.getObject()).getKey());
+                    imageobject.put("ThumbFile", ((DirectoryFile) object.getObject()).getThumb());
+                    imageobject.put("Status", "");
+                    array.put(imageobject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        System.out.println(array);
+        RequestQueue queue2 = Volley.newRequestQueue(mActivity);
+
+        JSONObject sendData = new JSONObject();
+        try {
+            sendData.put("ObjectList", array);
+            sendData.put("UserId", patientId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
+        String url = sttc_holdr.request_Url();
+        JsonRequest jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                listener.onSuccessfullyDeleted();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onFailure();
+            }
+        });
+        queue2.add(jr2);
+
+    }
+
+    public interface OnDeleteCompletion {
+        void onSuccessfullyDeleted();
+
+        void onFailure();
+    }
+
 }
