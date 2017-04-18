@@ -135,9 +135,12 @@ public class ReportRecords extends BaseActivity {
         viewReportLinear_id.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
-                viewReportLinear_id.setClickable(false);
-                new pdfprocess().execute();
+            public void onClick(View v) {viewReportLinear_id.setClickable(false);
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    new pdfprocess().execute();
+                }
             }
         });
         spinner_action.setOnClickListener(new View.OnClickListener() {

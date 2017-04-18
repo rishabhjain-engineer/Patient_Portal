@@ -162,7 +162,7 @@ public class BaseActivity extends AppCompatActivity {
     boolean result = true;
     public synchronized boolean isSessionExist() {
         if(!NetworkChangeListener.getNetworkStatus().isConnected()){
-            Toast.makeText(AppAplication.getAppContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
+            //Toast.makeText(AppAplication.getAppContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
             return true;
         }else {
 
