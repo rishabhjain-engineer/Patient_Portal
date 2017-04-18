@@ -161,10 +161,14 @@ public class OrderDetails extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (checknull == 0) {
-                    Intent in = new Intent(OrderDetails.this, Invoice.class);
-                    in.putExtra("order_id", OrderId);
-                    startActivity(in);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(OrderDetails.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent in = new Intent(OrderDetails.this, Invoice.class);
+                        in.putExtra("order_id", OrderId);
+                        startActivity(in);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
                 }
             }
         });
@@ -589,7 +593,7 @@ public class OrderDetails extends BaseActivity {
         }
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(OrderDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OrderDetails.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(OrderDetails.this, "Common", "onresume").execute();
         }
@@ -643,14 +647,18 @@ public class OrderDetails extends BaseActivity {
                                 if (OrderFilesUrl.equalsIgnoreCase(null) || OrderFilesUrl.equalsIgnoreCase("null")) {
                                     Toast.makeText(OrderDetails.this, "Reports aren’t available yet. Please check back later.", Toast.LENGTH_LONG).show();
                                 } else {
-                                    Intent in = new Intent(OrderDetails.this, ViewOrderReport.class);
-                                    in.putExtra("order_id", OrderId);
-                                    in.putExtra("lab_name", LabName);
-                                    in.putExtra("OrderDate", OrderDate);
-                                    in.putExtra("Order_address", address);
-                                    in.putExtra("TestName", TestName);
-                                    startActivity(in);
-                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                        Toast.makeText(OrderDetails.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Intent in = new Intent(OrderDetails.this, ViewOrderReport.class);
+                                        in.putExtra("order_id", OrderId);
+                                        in.putExtra("lab_name", LabName);
+                                        in.putExtra("OrderDate", OrderDate);
+                                        in.putExtra("Order_address", address);
+                                        in.putExtra("TestName", TestName);
+                                        startActivity(in);
+                                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                                    }
                                 }
 
                                 //  {"d":"{\"Table\":[{\"UserId\":\"1b7a9845-b7a3-465a-815a-5de6a933b009\",\"OrderId\":\"O1500002782\",\"OrderDateTime\":\"2015-11-19T12:46:11.453\",\"OrderAmount\":9200.0000,\"OrderDiscount\":3473.0000,\"OrderBillingAmount\":5727.0000,\"BillingAddress\":\"B-12, (Laxmi Nagar, New Delhi, India)\",\"PromoCodeId\":\"61b083eb-f41b-4e16-a6ab-db14089386a2\",\"PromoCodeDiscount\":595.0000,\

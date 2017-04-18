@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 import java.util.Random;
 
+import fragment.VitalFragment;
+import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import utils.PreferenceHelper;
 
@@ -138,9 +140,11 @@ public class Help extends BaseActivity {
 				}
 
 				else {
-
-					new SendMail().execute();
-	
+					if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+						Toast.makeText(Help.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+					} else {
+						new SendMail().execute();
+					}
 				}
 			}
 

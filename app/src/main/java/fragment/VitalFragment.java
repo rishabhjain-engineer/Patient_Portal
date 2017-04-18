@@ -110,7 +110,7 @@ public class VitalFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(mActivity, "MyHealth", "").execute();
         }
@@ -133,7 +133,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("forWeight", true);
                         startActivity(in);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -149,7 +149,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("forHeight", true);
                         startActivity(in);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -164,7 +164,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("id", id);
                         startActivity(in);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -182,7 +182,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("forBmi", true);
                         startActivity(in);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -200,7 +200,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("forBp", true);
                         startActivity(in);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -215,7 +215,7 @@ public class VitalFragment extends Fragment {
                         Intent intent = new Intent(mActivity, VaccineActivity.class);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -253,7 +253,7 @@ public class VitalFragment extends Fragment {
 
     public void onRestart() {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new VitalFragment.BackgroundProcess().execute();
         }
@@ -386,7 +386,7 @@ public class VitalFragment extends Fragment {
 
     public void startBackgroundProcess() {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new VitalFragment.BackgroundProcess().execute();
         }
@@ -496,7 +496,7 @@ public class VitalFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new VitalFragment.BackgroundProcessResume().execute();
         }

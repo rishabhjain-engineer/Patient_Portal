@@ -59,8 +59,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.StaticHolder;
+import fragment.VitalFragment;
 import info.hoang8f.android.segmented.SegmentedGroup;
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -656,7 +658,11 @@ public class SignUpActivity extends BaseActivity {
     public void onBackPressed() {
         //   super.onBackPressed();
         if(termsAndConditionDialog != null && termsAndConditionDialog.isShowing()){
-            new LogoutAsync().execute() ;
+            if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                Toast.makeText(SignUpActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            } else {
+                new LogoutAsync().execute() ;
+            }
         }
         if (permitToNextSignUpPage) {                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
             mSignUpFirstPageContainer.setVisibility(View.VISIBLE);
@@ -1043,7 +1049,11 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isToLogin) {
-                    new SignUpActivity.LogInUserFacebook().execute();
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(SignUpActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        new SignUpActivity.LogInUserFacebook().execute();
+                    }
                 }
                 dialog.dismiss();
             }
