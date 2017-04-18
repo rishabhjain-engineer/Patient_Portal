@@ -64,6 +64,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 import ui.AccountActivity;
 import ui.BaseActivity;
 import ui.CreditsActivity;
@@ -76,15 +77,16 @@ import utils.PreferenceHelper;
  * Created by android1 on 3/4/17.
  */
 
-public class AccountFragment extends Fragment{
+public class AccountFragment extends Fragment {
     private Services mServices;
-    private LinearLayout mFooterDashBoard, mFooterReports, mRepository,  mFooterFamily;
+    private LinearLayout mFooterDashBoard, mFooterReports, mRepository, mFooterFamily;
     private ImageLoader mImageLoader;
     private CallbackManager mCallbackManager = null;
     private String facebookPic, userID, id, name;
     private String pic = "", picname = "", thumbpic = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -113,44 +115,71 @@ public class AccountFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
                     //Profile
-                    Intent intent = new Intent(mActivity, ProfileContainerActivity.class);
-                    intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
-                    intent.putExtra("pass", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS));
-                    intent.putExtra("pic", pic);
-                    intent.putExtra("picname", picname);
-                    //intent.putExtra("fbLinked", fbLinked);
-                    //intent.putExtra("fbLinkedID", fbLinkedID);
-                    startActivity(intent);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(mActivity, ProfileContainerActivity.class);
+                        intent.putExtra("id", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+                        intent.putExtra("pass", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS));
+                        intent.putExtra("pic", pic);
+                        intent.putExtra("picname", picname);
+                        //intent.putExtra("fbLinked", fbLinked);
+                        //intent.putExtra("fbLinkedID", fbLinkedID);
+                        startActivity(intent);
+                    }
                 } else if (position == 1) {
                     //FAQ
-                    Intent intent = new Intent(mActivity, FAQ.class);
-                    startActivity(intent);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(mActivity, FAQ.class);
+                        startActivity(intent);
+                    }
                 } else if (position == 2) {
                     //Feedback
-                    Intent intentContact = new Intent(mActivity, Help.class);
-                    intentContact.putExtra("id", id);
-                    startActivity(intentContact);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intentContact = new Intent(mActivity, Help.class);
+                        intentContact.putExtra("id", id);
+                        startActivity(intentContact);
+                    }
+
                 } else if (position == 3) {
                     //About
                     Intent intentAbout = new Intent(mActivity, AboutUs.class);
                     intentAbout.putExtra("from", "dash");
                     startActivity(intentAbout);
+
                 } else if (position == 4) {
                     //Password
-                    Intent change = new Intent(mActivity, changepass.class);
-                    change.putExtra("id", id);
-                    startActivity(change);
-                }  else if (position == 5) {
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent change = new Intent(mActivity, changepass.class);
+                        change.putExtra("id", id);
+                        startActivity(change);
+                    }
+                } else if (position == 5) {
                     //Terms
-                    Intent termsAndCondition = new Intent(mActivity, PrivacyPolicy.class);
-                    startActivity(termsAndCondition);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent termsAndCondition = new Intent(mActivity, PrivacyPolicy.class);
+                        startActivity(termsAndCondition);
+                    }
                 } else if (position == 6) {
                     //Credits
                     Intent termsAndCondition = new Intent(mActivity, CreditsActivity.class);
                     startActivity(termsAndCondition);
+
                 } else if (position == 7) {
                     //logout
-                    logout();
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        logout();
+                    }
                 }
             }
 
@@ -164,6 +193,7 @@ public class AccountFragment extends Fragment{
     }
 
     private AlertDialog alert;
+
     private void logout() {
         alert = new AlertDialog.Builder(mActivity).create();
         alert.setTitle("Message");
@@ -264,6 +294,7 @@ public class AccountFragment extends Fragment{
 
     private Dialog fbDialog;
     private JSONObject receiveDataFbLink;
+
     private class FbLinkAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -335,7 +366,8 @@ public class AccountFragment extends Fragment{
                     btnAccept.setOnClickListener(new View.OnClickListener() {
 
                         @Override
-                        public void onClick(View v) {new AccountFragment.FbImagePull().execute();
+                        public void onClick(View v) {
+                            new AccountFragment.FbImagePull().execute();
                             progress.dismiss();
                         }
                     });
@@ -348,7 +380,7 @@ public class AccountFragment extends Fragment{
                     });
                     fbDialog.show();
                 } else {
-                    ((BaseActivity)mActivity).showAlertMessage("Your Facebook account is already linked with some other Healthscion account!");
+                    ((BaseActivity) mActivity).showAlertMessage("Your Facebook account is already linked with some other Healthscion account!");
                 }
 
             } catch (JSONException e) {
@@ -360,6 +392,7 @@ public class AccountFragment extends Fragment{
     }
 
     JSONObject receiveFbImageSave;
+
     private class FbImagePull extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
