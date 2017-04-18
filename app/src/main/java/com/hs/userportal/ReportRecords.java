@@ -85,7 +85,7 @@ public class ReportRecords extends BaseActivity {
         getExtras();
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(ReportRecords.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ReportRecords.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(ReportRecords.this, "ReportRecords", "").execute();
         }
@@ -137,7 +137,7 @@ public class ReportRecords extends BaseActivity {
             @Override
             public void onClick(View v) {viewReportLinear_id.setClickable(false);
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
                     new pdfprocess().execute();
                 }
@@ -267,7 +267,11 @@ public class ReportRecords extends BaseActivity {
     }
 
     public void startBackgroundProcess() {
-        new BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(ReportRecords.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            new BackgroundProcess().execute();
+        }
     }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {

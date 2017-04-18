@@ -589,7 +589,7 @@ public class OrderDetails extends BaseActivity {
         }
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(OrderDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OrderDetails.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new Authentication(OrderDetails.this, "Common", "onresume").execute();
         }
