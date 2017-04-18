@@ -104,7 +104,7 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
                     .into(holder.image);
             holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
             holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().substring(0, 10));
-            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize() / 1000) + " kb");
+            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize()) + " kb");
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
