@@ -125,7 +125,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
                 holder.size.setVisibility(View.GONE);
             }else{
                 holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().substring(0, 10));
-                holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize() / 1000) + " kb");
+                holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize()) + " kb");
             }
 
             holder.row.setOnClickListener(new View.OnClickListener() {

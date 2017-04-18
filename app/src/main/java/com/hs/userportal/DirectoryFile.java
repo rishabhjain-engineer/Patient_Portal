@@ -1,5 +1,9 @@
 package com.hs.userportal;
 
+import android.util.Log;
+
+import java.text.DecimalFormat;
+
 /**
  * Created by rishabh on 6/4/17.
  */
@@ -9,7 +13,7 @@ public class DirectoryFile {
     private String key;
     private String path;
     private String lastModified;
-    private double size;
+    private double size,roundOff;
     private String thumb;
     private String name;
 
@@ -54,11 +58,13 @@ public class DirectoryFile {
     }
 
     public double getSize() {
-        return size;
+        return roundOff;
     }
 
     public void setSize(double size) {
         this.size = size;
+        double sizeinKb = size/1000;
+        roundOff = Math.round(sizeinKb * 100.0) / 100.0;
     }
 
     public String getThumb() {
