@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import base.MyFirebaseMessagingService;
-import base.UserDeviceAsyncTask;
 import config.StaticHolder;
 import fragment.AccountFragment;
 import fragment.DashboardFragment;

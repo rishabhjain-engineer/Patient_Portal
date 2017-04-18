@@ -4,10 +4,13 @@ package base;
  * Created by ayaz on 12/4/17.
  */
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.hs.userportal.AppAplication;
 
+import networkmngr.NetworkChangeListener;
 import utils.PreferenceHelper;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
@@ -44,6 +47,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private void sendRegistrationToServer(String token) {
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         preferenceHelper.setString(PreferenceHelper.PreferenceKey.DEVICE_TOKEN, token);
-        new UserDeviceAsyncTask().execute();
+        if(NetworkChangeListener.getNetworkStatus().isConnected()){
+            new UserDeviceAsyncTask().execute();
+        }else{
+            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

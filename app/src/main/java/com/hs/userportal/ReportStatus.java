@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Set;
 
 import adapters.Report_Adapter;
+import fragment.VitalFragment;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.DashBoardActivity;
@@ -71,7 +72,8 @@ import utils.NestedListHelper1;
 public class ReportStatus extends BaseActivity {
 
     private BufferedReader reader;
-    private TextView advice, /*refer,*/dob, sample, profname, history_text, pdf_text;
+    private TextView advice, /*refer,*/
+            dob, sample, profname, history_text, pdf_text;
     private Button breport;
     private LinearLayout bgraph, bpdf;
     private String patientId;
@@ -99,7 +101,7 @@ public class ReportStatus extends BaseActivity {
     private int index, singlechartposition;
     private String phcode;
     private String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null, RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
-    private int iscomment=0;
+    private int iscomment = 0;
 
 
     public static ProgressBar progress_bar;
@@ -189,14 +191,13 @@ public class ReportStatus extends BaseActivity {
                     .equals("null")) {
                 breport.setVisibility(View.GONE);
                 // bpdf.setVisibility(View.GONE);
-              //  bgraph.setVisibility(View.GONE);
+                //  bgraph.setVisibility(View.GONE);
                 history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
 
             }
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -204,24 +205,30 @@ public class ReportStatus extends BaseActivity {
 
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                new pdfprocess().execute();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    new pdfprocess().execute();
+                }
             }
         });
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(ReportStatus.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            if(isSessionExist()){
+            if (isSessionExist()) {
                 mTask = new graphprocess();
-                mTask.execute();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mTask.execute();
+                }
             }
         }
         bgraph.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
 
                 int currentapiVersion = Build.VERSION.SDK_INT;
                 int count = 0;
@@ -388,8 +395,8 @@ public class ReportStatus extends BaseActivity {
                                                                 .getString("ResultValue"),
                                                         tempObject
                                                                 .getString("CriticalLow"),
-                                                        RangeFrom=  tempObject.getString("RangeFrom"),
-                                                        RangeTo= tempObject.getString("RangeTo"),
+                                                        RangeFrom = tempObject.getString("RangeFrom"),
+                                                        RangeTo = tempObject.getString("RangeTo"),
                                                         tempObject
                                                                 .getString("CriticalHigh"));
                                             }
@@ -431,7 +438,7 @@ public class ReportStatus extends BaseActivity {
                                         intent.putExtra("chart_type", "line");
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
                                         intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
-                                        if(chartNames.size()!=0)
+                                        if (chartNames.size() != 0)
                                             intent.putExtra("chartNames",
                                                     chartNames.get(0));
                                         else
@@ -441,23 +448,23 @@ public class ReportStatus extends BaseActivity {
                                                 (ArrayList<String>) intentcase);
                                         intent.putStringArrayListExtra("caseIds",
                                                 (ArrayList<String>) intentcaseId);
-                                        if(RangeFrom==null || RangeFrom.equals(null)){
-                                            RangeFrom="";
+                                        if (RangeFrom == null || RangeFrom.equals(null)) {
+                                            RangeFrom = "";
                                         }
-                                        if(RangeTo==null || RangeTo.equals(null)){
-                                            RangeTo="";
+                                        if (RangeTo == null || RangeTo.equals(null)) {
+                                            RangeTo = "";
                                         }
-                                        if(UnitCode==null || UnitCode.equals(null)){
-                                            UnitCode="";
+                                        if (UnitCode == null || UnitCode.equals(null)) {
+                                            UnitCode = "";
                                         }
-                                        if(ResultValue==null || ResultValue.equals(null)){
-                                            ResultValue="";
+                                        if (ResultValue == null || ResultValue.equals(null)) {
+                                            ResultValue = "";
                                         }
-                                        if(criticalhigh==null || criticalhigh.equals(null)){
-                                            criticalhigh="";
+                                        if (criticalhigh == null || criticalhigh.equals(null)) {
+                                            criticalhigh = "";
                                         }
-                                        if(criticallow==null || criticallow.equals(null)){
-                                            criticallow="";
+                                        if (criticallow == null || criticallow.equals(null)) {
+                                            criticallow = "";
                                         }
                                         intent.putExtra("RangeFrom", RangeFrom);
                                         intent.putExtra("RangeTo", RangeTo);
@@ -729,7 +736,7 @@ public class ReportStatus extends BaseActivity {
                                         GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
-                                if(chartNames.size()!=0)
+                                if (chartNames.size() != 0)
                                     intent.putExtra("chartNames",
                                             chartNames.get(0));
                                 else
@@ -746,9 +753,9 @@ public class ReportStatus extends BaseActivity {
                                         (ArrayList<String>) intentcaseId);
                                 intent.putExtra("RangeFrom", "");
                                 intent.putExtra("RangeTo", "");
-                                intent.putExtra("UnitCode","");
+                                intent.putExtra("UnitCode", "");
                                 intent.putExtra("ResultValue", "");
-                                intent.putExtra("CriticalHigh","");
+                                intent.putExtra("CriticalHigh", "");
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
@@ -965,15 +972,15 @@ public class ReportStatus extends BaseActivity {
                 for (int i = 0; i < reportarray.length(); i++) {
                     try {
                         if (reportarray.getJSONObject(i).getString("ResultType").equalsIgnoreCase("Comment")) {
-                            iscomment=1;
+                            iscomment = 1;
                         }
                     } catch (JSONException jse) {
                         jse.printStackTrace();
                     }
                 }
-                if(iscomment!=1) {
+                if (iscomment != 1) {
                     NestedListHelper.setListViewHeightBasedOnChildren(list_view);
-                }else{
+                } else {
                     NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
                 }
                 list_view.setVisibility(View.VISIBLE);
@@ -1227,7 +1234,7 @@ public class ReportStatus extends BaseActivity {
             }
 
             if (j == results.length()) {
-              //  bgraph.setVisibility(View.GONE);
+                //  bgraph.setVisibility(View.GONE);
                 history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
@@ -1261,7 +1268,7 @@ public class ReportStatus extends BaseActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            int count ;
+            int count;
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
@@ -1326,9 +1333,9 @@ public class ReportStatus extends BaseActivity {
                 }
             });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(sendData,"Report Status");
+            result = service.pdf(sendData, "Report Status");
             int lenghtOfFile = 1;
-            if(result != null){
+            if (result != null) {
                 lenghtOfFile = result.length;
             }
             String temp = null;
@@ -1611,7 +1618,7 @@ public class ReportStatus extends BaseActivity {
     };
 
     public void callSingleGraph(int position) {
-        String result_type="";
+        String result_type = "";
         try {
             chartValues.clear();
             intentcase.clear();
@@ -1666,7 +1673,7 @@ public class ReportStatus extends BaseActivity {
         intentcase.add(casecode);
         piechartvalue.add(resultvalue);
         chartNames.add(description);
-        if(result_type.equalsIgnoreCase("Words")) {
+        if (result_type.equalsIgnoreCase("Words")) {
             int i = 0;
             List<String> uniquepie = new ArrayList<String>();
             float[] uniqueval = new float[100];
@@ -1741,7 +1748,7 @@ public class ReportStatus extends BaseActivity {
             intent1.putExtra("chartNames", chartNames.get(0));
             intent1.putExtra("from_activity", "grouptest");
             startActivity(intent1);
-        }else{
+        } else {
             Intent intent = new Intent(
                     ReportStatus.this,
                     GraphDetails.class);
@@ -1760,7 +1767,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("ResultValue", ResultValue);
             intent.putExtra("CriticalHigh", criticalhigh);
             intent.putExtra("CriticalLow", criticallow);
-            intent.putExtra("ActionTitle",description);
+            intent.putExtra("ActionTitle", description);
             startActivity(intent);
         }
     }
