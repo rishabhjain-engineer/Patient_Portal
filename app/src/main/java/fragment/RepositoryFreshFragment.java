@@ -74,6 +74,7 @@ import java.util.List;
 import adapters.RepositoryAdapter;
 import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
+import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.DirectoryUtility;
 import utils.PreferenceHelper;
@@ -138,8 +139,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         repositoryFreshFragment = this;
         displayedDirectory = new ArrayList<>();
 
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            createLockFolder();
+        }
 
-        createLockFolder();
 
         return mView;
     }
@@ -200,7 +205,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             int viewId = v.getId();
             if (viewId == R.id.upload) {
-                uploadFile();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadFile();
+                }
+
             } else if (viewId == R.id.repository_backbutton_imageview) {
                 setBackButtonPress(mDirectory);
             } else if (viewId == R.id.repository_grid_imageview) {
@@ -223,9 +233,20 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
                 mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
             } else if (viewId == R.id.repository_delete_imageview) {
-                deleteFile();
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    deleteFile();
+                }
+
             } else if (viewId == R.id.repository_move_imageview) {
-                moveFile();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    moveFile();
+                }
+
             }
         }
     };
