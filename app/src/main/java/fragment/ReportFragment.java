@@ -1,5 +1,7 @@
 package fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,12 +13,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -133,6 +142,14 @@ public class ReportFragment extends Fragment {
     private PreferenceHelper mPreferenceHelper;
     boolean mIsComingFromMyFamilyClass;
 
+
+    private static final int PERMISSION_CALLBACK_CONSTANT = 101;
+    private static final int REQUEST_PERMISSION_SETTING = 102;
+    private SharedPreferences permissionStatus;
+    private boolean sentToSettings = false;
+    private int mItemClickedPosition = -1;
+
+    @TargetApi(Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -263,69 +280,64 @@ public class ReportFragment extends Fragment {
         past_visits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-                // TODO Auto-generated method stub
-
-                if (pastVisitArray.get(arg2).get("TYPE").equalsIgnoreCase("ZUREKA")) {
-                    Intent i = new Intent(mActivity, OrderDetails.class);
-                    i.putExtra("OrderId", pastVisitArray.get(arg2).get("OrderId"));
-                    i.putExtra("OrderDate", pastVisitArray.get(arg2).get("TimeStamp"));
-                    i.putExtra("LabName", pastVisitArray.get(arg2).get("CentreName"));
-                    i.putExtra("Address", pastVisitArray.get(arg2).get("BillingAddress"));
-                    try {
-
-                        i.putExtra("GrandTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
-                        i.putExtra("SubTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderActualAmount"))));
-                        i.putExtra("Discount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderDiscount"))));
-                        if (!pastVisitArray.get(arg2).get("PromoCodeDiscount").equals("null") && pastVisitArray.get(arg2).get("PromoCodeDiscount") != null) {
-                            double bilingamnt = Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")) -
-                                    Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"));
-                            i.putExtra("YourPrice", (int) Math.round(bilingamnt));
-                            i.putExtra("promo_codeDiscount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"))));
-
-                        } else if (!pastVisitArray.get(arg2).get("DiscountInPercentage").equals("null") && pastVisitArray.get(arg2).get("DiscountInPercentage") != null) {
-                            double bilingamnt = (Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))) *
-                                    (1 - ((int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage")))) / 100);
-                            i.putExtra("YourPrice", (int) Math.round(bilingamnt));
-                            i.putExtra("promo_codeDiscount", (int) Math.round((Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
-                                    * (Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage"))) / 100));
-                        } else {
-                            i.putExtra("YourPrice", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
-                            i.putExtra("promo_codeDiscount", 0);
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                mItemClickedPosition = position;
+                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                        //Show Information about why you need the permission
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        builder.setTitle("Need Storage Permission");
+                        builder.setMessage("This app needs phone permission.");
+                        builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        builder.show();
+                    } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,false)) {
+                        //Previously Permission Request was cancelled with 'Dont Ask Again',
+                        // Redirect to Settings after showing Information about why you need the permission
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        builder.setTitle("Need Storage Permission");
+                        builder.setMessage("This app needs storage permission.");
+                        builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                sentToSettings = true;
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                                intent.setData(uri);
+                                startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                                Toast.makeText(getActivity(), "Go to Permissions to Grant Phone", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        builder.show();
+                    }  else {
+                        //just request the permission
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
                     }
-                    i.putExtra("TestName", pastVisitArray.get(arg2).get("TestName"));
-                    i.putExtra("perTextActualPrice_str", pastVisitArray.get(arg2).get("perTextActualPrice_str"));
-                    i.putExtra("OrderStatus", pastVisitArray.get(arg2).get("OrderStatus"));
-                    i.putExtra("SamplePickupstatus", pastVisitArray.get(arg2).get("SamplePickupstatus"));
-                    i.putExtra("scroll_position", String.valueOf(arg2));
-                    startActivity(i);
+
+                    SharedPreferences.Editor editor = permissionStatus.edit();
+                    editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,true);
+                    editor.commit();
                 } else {
-                    String idsent;
-                    idsent = pastVisitArray.get(arg2).get("CaseId");
-
-                    System.out.println("arg=" + arg2);
-                    check = 0;
-                    caseid = idsent;
-                    case_code = null;
-                    Intent i = new Intent(mActivity, ReportRecords.class);
-                    i.putExtra("caseId", caseid);
-                    i.putExtra("id", id);
-                    startActivity(i);
+                  proceedAfterPermission(position);
                 }
-                //  slidingMenu.toggle();
-                //  new BackgroundProcess().execute();
-
-                // Intent intt = new Intent(getApplicationContext(),
-                // lablistdetails.class);
-                // intt.putExtra("caseid", idsent);
-                // intt.putExtra("id", id);
-                // startActivity(intt);
-
             }
         });
 
@@ -467,6 +479,7 @@ public class ReportFragment extends Fragment {
             }
         });
         setHasOptionsMenu(true);
+        permissionStatus = getActivity().getSharedPreferences("permissionStatus",getActivity().MODE_PRIVATE);
         return view;
     }
 
@@ -474,14 +487,6 @@ public class ReportFragment extends Fragment {
     public void onPause() {
         super.onPause();
         progress.dismiss();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Helper.authentication_flag == true) {
-            mActivity.finish();
-        }
     }
 
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
@@ -1231,4 +1236,131 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == PERMISSION_CALLBACK_CONSTANT){
+            //check if all permissions are granted
+            boolean allgranted = false;
+            for(int i=0;i<grantResults.length;i++){
+                if(grantResults[i]==PackageManager.PERMISSION_GRANTED){
+                    allgranted = true;
+                } else {
+                    allgranted = false;
+                    break;
+                }
+            }
+
+            if(allgranted){
+                //proceedAfterPermission(mItemClickedPosition);
+            } else if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Need Storage Permission");
+                builder.setMessage("This app needs phone permission.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                Toast.makeText(getActivity(),"Unable to get Permission",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PERMISSION_SETTING) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                //Got Permission
+                //proceedAfterPermission(mItemClickedPosition);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Helper.authentication_flag == true) {
+            mActivity.finish();
+        }
+        if (sentToSettings) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                //Got Permission
+                //proceedAfterPermission(mItemClickedPosition);
+            }
+        }
+    }
+
+    private void proceedAfterPermission(int arg2) {
+        if (pastVisitArray.get(arg2).get("TYPE").equalsIgnoreCase("ZUREKA")) {
+            Intent i = new Intent(mActivity, OrderDetails.class);
+            i.putExtra("OrderId", pastVisitArray.get(arg2).get("OrderId"));
+            i.putExtra("OrderDate", pastVisitArray.get(arg2).get("TimeStamp"));
+            i.putExtra("LabName", pastVisitArray.get(arg2).get("CentreName"));
+            i.putExtra("Address", pastVisitArray.get(arg2).get("BillingAddress"));
+            try {
+
+                i.putExtra("GrandTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
+                i.putExtra("SubTotal", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderActualAmount"))));
+                i.putExtra("Discount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderDiscount"))));
+                if (!pastVisitArray.get(arg2).get("PromoCodeDiscount").equals("null") && pastVisitArray.get(arg2).get("PromoCodeDiscount") != null) {
+                    double bilingamnt = Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")) -
+                            Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"));
+                    i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                    i.putExtra("promo_codeDiscount", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("PromoCodeDiscount"))));
+
+                } else if (!pastVisitArray.get(arg2).get("DiscountInPercentage").equals("null") && pastVisitArray.get(arg2).get("DiscountInPercentage") != null) {
+                    double bilingamnt = (Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))) *
+                            (1 - ((int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage")))) / 100);
+                    i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                    i.putExtra("promo_codeDiscount", (int) Math.round((Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
+                            * (Double.parseDouble(pastVisitArray.get(arg2).get("DiscountInPercentage"))) / 100));
+                } else {
+                    i.putExtra("YourPrice", (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount"))));
+                    i.putExtra("promo_codeDiscount", 0);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            i.putExtra("TestName", pastVisitArray.get(arg2).get("TestName"));
+            i.putExtra("perTextActualPrice_str", pastVisitArray.get(arg2).get("perTextActualPrice_str"));
+            i.putExtra("OrderStatus", pastVisitArray.get(arg2).get("OrderStatus"));
+            i.putExtra("SamplePickupstatus", pastVisitArray.get(arg2).get("SamplePickupstatus"));
+            i.putExtra("scroll_position", String.valueOf(arg2));
+            startActivity(i);
+        } else {
+            String idsent;
+            idsent = pastVisitArray.get(arg2).get("CaseId");
+
+            System.out.println("arg=" + arg2);
+            check = 0;
+            caseid = idsent;
+            case_code = null;
+            Intent i = new Intent(mActivity, ReportRecords.class);
+            i.putExtra("caseId", caseid);
+            i.putExtra("id", id);
+            startActivity(i);
+        }
+        //  slidingMenu.toggle();
+        //  new BackgroundProcess().execute();
+
+        // Intent intt = new Intent(getApplicationContext(),
+        // lablistdetails.class);
+        // intt.putExtra("caseid", idsent);
+        // intt.putExtra("id", id);
+        // startActivity(intt);
+    }
 }

@@ -47,7 +47,10 @@ public class UserDeviceAsyncTask extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         Services service = new Services(AppAplication.getAppContext());
         receiveData1 = service.saveUserDevice(dataToSend);
-        String data = receiveData1.optString("d");
+        String data = "";
+        if(receiveData1 != null){
+            data = receiveData1.optString("d");
+        }
         if(!TextUtils.isEmpty(data) && data.contains("success") && !TextUtils.isEmpty(userId)){
             preferenceHelper.setString(PreferenceHelper.PreferenceKey.ON_DASH_BOARD_DEVICE_TKEN_SEND, "true");
         }
