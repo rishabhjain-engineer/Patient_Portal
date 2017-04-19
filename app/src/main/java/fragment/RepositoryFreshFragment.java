@@ -280,6 +280,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private void moveFile() {
 
+        final List<SelectableObject> selectedObjects = new ArrayList<>();
+        final List<String> fullOldPath = new ArrayList<>();
+        for (SelectableObject object : displayedDirectory) {
+            if (object.isSelected()) {
+                selectedObjects.add(object);
+                fullOldPath.add (  ((DirectoryFile) object.getObject()).getKey()  )   ;
+            }
+        }
+
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.move_folderlist_recycler);
@@ -291,9 +300,16 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setDialogAdapter(backText, recyclerView, mDirectory);
-
         dialog.show();
 
+
+
+        moveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RepositoryUtils.moveObject(selectedObjects , patientId , mActivity, fullOldPath);
+            }
+        });
 
     }
 
@@ -306,6 +322,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
         });
         recyclerView.setAdapter(dialogAdapter);
+
         if (dialogAdapter.getDirectory().getParentDirectory() == null) {
             backText.setText("");
         } else {

@@ -109,7 +109,6 @@ public class UploadService extends IntentService {
             exhistimg = "";
             stringcheck = "";
         }
-        Log.e("Rishabh", "URI COUNT UPLOAD SERVICE := "+mTotalNumberUriReceived);
         File fileToUpload = new File(filePath);
         final String s3ObjectKey = md5(filePath);
         String s3BucketName = getString(R.string.s3_bucket);
@@ -229,10 +228,15 @@ public class UploadService extends IntentService {
                                     //new code
                                     if (uplodfrm.equals(REPOSITORY)) {
                                         RepositoryFreshFragment.refresh();
+                                        Toast.makeText(getApplicationContext(),
+                                                response.getString("d"),
+                                                Toast.LENGTH_SHORT).show();
                                     } else if (uplodfrm.equals(GALLERY)  && mTotalNumberUriReceived == 1 ) {
                                         GalleryReceivedData.completedUpload();
+                                        Toast.makeText(getApplicationContext(),
+                                                response.getString("d"),
+                                                Toast.LENGTH_SHORT).show();
                                     }else if(uplodfrm.equals(GALLERY)) {
-                                                                Log.e("Rishabh", "ayaz sir said it is thread ; ");
                                         return;
                                     }
 
