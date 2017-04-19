@@ -1062,14 +1062,14 @@ public class Services {
     }
 
     public byte[] pdf(JSONObject sendData, String actName) {
-        if(actName.equalsIgnoreCase("ReportRecords")) {
+       /* if(actName.equalsIgnoreCase("ReportRecords")) {
             ReportRecords.progress_bar.setProgress(7);
             ReportRecords.progress_bar.setSecondaryProgress(10);
-        }
-        if(actName.equalsIgnoreCase("Report Status")) {
+        }*/
+        /*if(actName.equalsIgnoreCase("Report Status")) {
             ReportStatus.progress_bar.setProgress(11);
             ReportStatus.progress_bar.setSecondaryProgress(13);
-        }
+        }*/
         byte[] fileContents = null;
         //url =  "https://l141702.cloudchowk.com/LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetpatienttestReportAndroid);
@@ -1104,14 +1104,14 @@ public class Services {
             String[] byteValues = p.substring(1, p.length() - 1).split(",");
             byte[] bytes = new byte[byteValues.length];
             Log.i("byteValues", byteValues.toString());
-            if(actName.equalsIgnoreCase("ReportRecords")) {
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
                 ReportRecords.progress_bar.setProgress(11);
                 ReportRecords.progress_bar.setSecondaryProgress(13);
-            }
-            if(actName.equalsIgnoreCase("Report Status")) {
+            }*/
+            /*if(actName.equalsIgnoreCase("Report Status")) {
                 ReportStatus.progress_bar.setProgress(14);
                 ReportStatus.progress_bar.setSecondaryProgress(14);
-            }
+            }*/
             for (int i = 0, len = bytes.length; i < len; i++) {
                 bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
             }
@@ -1120,10 +1120,10 @@ public class Services {
 
             fileContents = bytes;
             Log.v("contents!!", fileContents.toString());
-            if(actName.equalsIgnoreCase("ReportRecords")) {
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
                 ReportRecords.progress_bar.setProgress(14);
                 ReportRecords.progress_bar.setSecondaryProgress(14);
-            }
+            }*/
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -1138,10 +1138,10 @@ public class Services {
             }
             ReportStatus.progress = null;
         }
-        if(actName.equalsIgnoreCase("Report Status")) {
+       /* if(actName.equalsIgnoreCase("Report Status")) {
             ReportStatus.progress_bar.setProgress(15);
             ReportStatus.progress_bar.setSecondaryProgress(15);
-        }
+        }*/
         return fileContents;
     }
 

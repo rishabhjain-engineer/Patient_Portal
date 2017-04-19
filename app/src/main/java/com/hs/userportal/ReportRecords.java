@@ -80,7 +80,7 @@ public class ReportRecords extends BaseActivity {
     private String mShaowDetailAction;   /* 0 - show test details, 1 - show popup message and then show test details,  2 - show popup message and then do nothing*/
 
 
-    public static ProgressBar progress_bar;
+    //public static ProgressBar progress_bar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +119,9 @@ public class ReportRecords extends BaseActivity {
         viewReportLinear_id = (RelativeLayout) findViewById(R.id.viewReportLinear_id);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
         spinner_action = (TextView) findViewById(R.id.spinner_action);
-        progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
+        /*progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
         progress_bar.setProgress(0);
-        progress_bar.setSecondaryProgress(2);
+        progress_bar.setSecondaryProgress(2);*/
         spinner_action.setTypeface(tf);
         test_list = (ListView) findViewById(R.id.test_list);
         test_list.setFocusable(false);
@@ -469,12 +469,18 @@ public class ReportRecords extends BaseActivity {
         }
     }
 
+    private ProgressDialog mProgressDialog;
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progress_bar.setVisibility(View.VISIBLE);
-            progress_bar.setProgress(0);
+            mProgressDialog = new ProgressDialog(ReportRecords.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+           /* progress_bar.setVisibility(View.VISIBLE);
+            progress_bar.setProgress(0);*/
         }
 
         @Override
@@ -483,12 +489,12 @@ public class ReportRecords extends BaseActivity {
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
-            ReportRecords.this.runOnUiThread(new Runnable() {
+           /* ReportRecords.this.runOnUiThread(new Runnable() {
                 public void run() {
                     progress_bar.setProgress(2);
                     progress_bar.setSecondaryProgress(3);
                 }
-            });
+            });*/
 
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -525,12 +531,12 @@ public class ReportRecords extends BaseActivity {
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfarray);
                 sendData.put("UserId", id);
-                ReportRecords.this.runOnUiThread(new Runnable() {
+              /*  ReportRecords.this.runOnUiThread(new Runnable() {
                     public void run() {
                         progress_bar.setProgress(3);
                         progress_bar.setSecondaryProgress(4);
                     }
-                });
+                });*/
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -542,12 +548,12 @@ public class ReportRecords extends BaseActivity {
                 // TODO Auto-generated catch block
                 e2.printStackTrace();
             }
-            ReportRecords.this.runOnUiThread(new Runnable() {
+            /*ReportRecords.this.runOnUiThread(new Runnable() {
                 public void run() {
                     progress_bar.setProgress(5);
                     progress_bar.setSecondaryProgress(6);
                 }
-            });
+            });*/
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData, "ReportRecords");
             if (result != null) {
@@ -589,11 +595,14 @@ public class ReportRecords extends BaseActivity {
         protected void onPostExecute(Void aaa) {
             // TODO Auto-generated method stub
             super.onPostExecute(aaa);
+            if(mProgressDialog != null && mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
             viewReportLinear_id.setClickable(true);
             if(result != null){
                 try {
                     //  progress.dismiss();
-                    progress_bar.setVisibility(View.GONE);
+                   // progress_bar.setVisibility(View.GONE);
                     File sdCard = Environment.getExternalStorageDirectory();
                     File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
@@ -678,10 +687,10 @@ public class ReportRecords extends BaseActivity {
          */
         protected void onProgressUpdate(String... progress) {
             // setting progress percentage
-            progress_bar.setIndeterminate(false);
+         /*   progress_bar.setIndeterminate(false);
             progress_bar.setMax(100);
             progress_bar.setProgress(Integer.parseInt(progress[0]));
-            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);
+            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);*/
         }
 
     }

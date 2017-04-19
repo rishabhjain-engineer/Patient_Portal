@@ -531,12 +531,12 @@ public class LabDetails extends BaseActivity {
         @Override
         protected void onPostExecute(Void abc) {
             super.onPostExecute(abc);
+            if(progress!=null && progress.isShowing()) {
+                progress.dismiss();
+                progress = null;
+            }
             if(result != null){
                 try {
-                    if(progress!=null) {
-                        progress.dismiss();
-                        progress = null;
-                    }
                     File sdCard = Environment.getExternalStorageDirectory();
                     File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
