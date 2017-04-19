@@ -309,6 +309,7 @@ public class Services {
 
     public JSONObject common(JSONObject sendData, String url) {
         // System.out.println("hahahahahahahahahahaha");
+        Log.e("Url: ", url);
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
