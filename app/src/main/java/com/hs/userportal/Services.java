@@ -1125,19 +1125,14 @@ public class Services {
                 ReportRecords.progress_bar.setSecondaryProgress(14);
             }
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NumberFormatException ex) {
-           // Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
             if(ReportStatus.progress != null){
                 ReportStatus.progress.dismiss();
             }
