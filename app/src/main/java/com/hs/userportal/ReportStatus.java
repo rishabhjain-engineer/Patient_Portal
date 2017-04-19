@@ -1251,7 +1251,7 @@ public class ReportStatus extends BaseActivity {
             bpdf.setClickable(false);
             mProgressDialog = new ProgressDialog(ReportStatus.this);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Getting Vaccine Detail...");
+            mProgressDialog.setMessage("Loading...");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
         }
