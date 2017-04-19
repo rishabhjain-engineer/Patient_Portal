@@ -1359,8 +1359,8 @@ public class ReportStatus extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(Void aaa) {
+            super.onPostExecute(aaa);
             progress_bar.setVisibility(View.GONE);
             if(result != null){
                 try {

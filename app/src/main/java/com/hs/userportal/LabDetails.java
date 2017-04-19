@@ -530,8 +530,8 @@ public class LabDetails extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(Void abc) {
+            super.onPostExecute(abc);
             if(result != null){
                 try {
                     if(progress!=null) {

@@ -586,9 +586,9 @@ public class ReportRecords extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Void aaa) {
             // TODO Auto-generated method stub
-            super.onPostExecute(result);
+            super.onPostExecute(aaa);
             viewReportLinear_id.setClickable(true);
             if(result != null){
                 try {
