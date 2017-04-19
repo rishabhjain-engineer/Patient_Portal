@@ -1253,7 +1253,7 @@ public class ReportFragment extends Fragment {
             }
 
             if(allgranted){
-                proceedAfterPermission(mItemClickedPosition);
+                //proceedAfterPermission(mItemClickedPosition);
             } else if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                 builder.setTitle("Need Storage Permission");
@@ -1284,7 +1284,7 @@ public class ReportFragment extends Fragment {
         if (requestCode == REQUEST_PERMISSION_SETTING) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 //Got Permission
-                proceedAfterPermission(mItemClickedPosition);
+                //proceedAfterPermission(mItemClickedPosition);
             }
         }
     }
@@ -1298,7 +1298,7 @@ public class ReportFragment extends Fragment {
         if (sentToSettings) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 //Got Permission
-                proceedAfterPermission(mItemClickedPosition);
+                //proceedAfterPermission(mItemClickedPosition);
             }
         }
     }
