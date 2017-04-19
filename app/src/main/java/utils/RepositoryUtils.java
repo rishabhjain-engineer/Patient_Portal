@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import config.StaticHolder;
@@ -266,7 +267,6 @@ public class RepositoryUtils {
 
     public static void deleteObjects(List<SelectableObject> listOfSelectedObjects, String patientId, final Activity mActivity, final OnDeleteCompletion listener) {
         JSONArray array = new JSONArray();
-
         for (SelectableObject object : listOfSelectedObjects) {
             JSONObject imageobject = new JSONObject();
             if (object.getObject() instanceof Directory) {
@@ -276,7 +276,6 @@ public class RepositoryUtils {
                     imageobject.put("ThumbFile", "");
                     imageobject.put("Status", "");
                     array.put(imageobject);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -287,13 +286,11 @@ public class RepositoryUtils {
                     imageobject.put("ThumbFile", ((DirectoryFile) object.getObject()).getThumb());
                     imageobject.put("Status", "");
                     array.put(imageobject);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
-
         System.out.println(array);
         RequestQueue queue2 = Volley.newRequestQueue(mActivity);
 
@@ -320,13 +317,61 @@ public class RepositoryUtils {
             }
         });
         queue2.add(jr2);
-
     }
 
-    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, List<String> oldPath){
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId ,Activity mActivity, Directory oldDirectory , Directory newDirectory){
+        String absolutePath = patientId + "/FileVault/" +"Personal/"+ oldDirectory.getDirectoryPath() ;
+        String newPath = patientId + "/FileVault/" +"Personal/"+ newDirectory.getDirectoryPath();
+
+        List<SelectableObject> selectedObjects = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray();
+        for(SelectableObject object : listOfSelectedObjects) {
+            if(object.getObject() instanceof DirectoryFile){
+              String fullImagepath =  ((DirectoryFile)object.getObject()).getKey();
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Key", fullImagepath);
+                    jsonObject.put("Status", "");
+                    jsonObject.put("ThumbFile", "");
+                    jsonObject.put("Type", "0");
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        JSONObject sendMoveJsonObject = new JSONObject() ;
+        try {
+            sendMoveJsonObject.put("AbsolutePath", absolutePath);
+            sendMoveJsonObject.put("NewPath", newPath);
+            sendMoveJsonObject.put("UserId", patientId);
+            sendMoveJsonObject.put("ObjectList", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestQueue queue2 = Volley.newRequestQueue(mActivity);
 
 
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.MoveObject);
+        String url = sttc_holdr.request_Url();
+        JsonRequest jr2 = new JsonObjectRequest(Request.Method.POST, url, sendMoveJsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                Log.e("Rishabh","movefile response := "+response);
 
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //listener.onFailure();
+                Log.e("Rishabh", "error := "+error);
+            }
+        });
+        queue2.add(jr2);
     }
 
     public interface OnDeleteCompletion {
