@@ -582,10 +582,6 @@ public class ReportRecords extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-            // System.out.println(sendData);
-            //
-            // receiveData = service.pdfreport(sendData);
-
             return null;
         }
 
@@ -594,26 +590,27 @@ public class ReportRecords extends BaseActivity {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
             viewReportLinear_id.setClickable(true);
-            try {
-                //  progress.dismiss();
-                progress_bar.setVisibility(View.GONE);
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+            if(result != null){
+                try {
+                    //  progress.dismiss();
+                    progress_bar.setVisibility(View.GONE);
+                    File sdCard = Environment.getExternalStorageDirectory();
+                    File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
-                File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
+                    File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
 
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("application/pdf");
-                List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    PackageManager packageManager = getPackageManager();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setType("application/pdf");
+                    List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-                if (list.size() > 0 && fileReport.isFile()) {
-                    Log.v("post", "execute");
+                    if (list.size() > 0 && fileReport.isFile()) {
+                        Log.v("post", "execute");
 
-                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                    ///////
-                    Uri uri = null;
-                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                        ///////
+                        Uri uri = null;
+                        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                         Method m = null;
                         try {
                             m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
@@ -629,49 +626,51 @@ public class ReportRecords extends BaseActivity {
                     /*} else {
                         uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
                     }*/
-                    /////
-                    objIntent.setDataAndType(uri, "application/pdf");
-                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(objIntent);//Staring the pdf viewer
-                } else if (!fileReport.isFile()) {
-                    Log.v("ERROR!!!!", "OOPS2");
-                } else if (list.size() <= 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(
+                        /////
+                        objIntent.setDataAndType(uri, "application/pdf");
+                        objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(objIntent);//Staring the pdf viewer
+                    } else if (!fileReport.isFile()) {
+                        Log.v("ERROR!!!!", "OOPS2");
+                    } else if (list.size() <= 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                ReportRecords.this);
+                        dialog.setTitle("PDF Reader not found");
+                        dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                                + fileReport.getAbsolutePath());
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        dialog.dismiss();
+                                    }
+                                });
+                        dialog.show();
+                    }
+
+                } catch (OutOfMemoryError e) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(
                             ReportRecords.this);
-                    dialog.setTitle("PDF Reader not found");
-                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
-                            + fileReport.getAbsolutePath());
-                    dialog.setCancelable(false);
-                    dialog.setPositiveButton("OK",
+                    dlg.setTitle("Not enough memory");
+                    dlg.setMessage("There is not enough memory on this device.");
+                    dlg.setPositiveButton("Ok",
                             new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    // TODO Auto-generated method stub
-                                    dialog.dismiss();
+                                    ReportRecords.this.finish();
                                 }
                             });
-                    dialog.show();
+                    e.printStackTrace();
                 }
-
-            } catch (OutOfMemoryError e) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(
-                        ReportRecords.this);
-                dlg.setTitle("Not enough memory");
-                dlg.setMessage("There is not enough memory on this device.");
-                dlg.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                ReportRecords.this.finish();
-                            }
-                        });
-                e.printStackTrace();
+            }else{
+                Toast.makeText(ReportRecords.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
-
         }
 
         /**
