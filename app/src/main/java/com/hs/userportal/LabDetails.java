@@ -202,8 +202,7 @@ public class LabDetails extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
+                all.setClickable(false);
                 new pdfprocess().execute();
 
             }
@@ -629,6 +628,7 @@ public class LabDetails extends BaseActivity {
             }else{
                 Toast.makeText(LabDetails.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
+            all.setClickable(true);
         }
     }
 

@@ -1252,6 +1252,7 @@ public class ReportStatus extends BaseActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            bpdf.setClickable(false);
             progress_bar.setVisibility(View.VISIBLE);
             progress_bar.setProgress(0);
         }
@@ -1445,6 +1446,7 @@ public class ReportStatus extends BaseActivity {
             }else{
                 Toast.makeText(ReportStatus.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
+            bpdf.setClickable(true);
         }
 
         /**
