@@ -323,6 +323,12 @@ public class RepositoryUtils {
 
     }
 
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, List<String> oldPath){
+
+
+
+    }
+
     public interface OnDeleteCompletion {
         void onSuccessfullyDeleted();
 
