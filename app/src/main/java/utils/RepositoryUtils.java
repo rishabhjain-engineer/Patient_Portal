@@ -319,11 +319,11 @@ public class RepositoryUtils {
         queue2.add(jr2);
     }
 
-    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId ,Activity mActivity, Directory oldDirectory , Directory newDirectory){
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId ,Activity mActivity, Directory oldDirectory , Directory newDirectory, final OnMoveCompletion listener){
         String absolutePath = patientId + "/FileVault/" +"Personal/"+ oldDirectory.getDirectoryPath() ;
         String newPath = patientId + "/FileVault/" +"Personal/"+ newDirectory.getDirectoryPath();
-
-        List<SelectableObject> selectedObjects = new ArrayList<>();
+        Log.e("Rishabh", "old path "+absolutePath);
+        Log.e("Rishabh", "New path "+newPath);
         JSONArray jsonArray = new JSONArray();
         for(SelectableObject object : listOfSelectedObjects) {
             if(object.getObject() instanceof DirectoryFile){
@@ -332,7 +332,7 @@ public class RepositoryUtils {
                 try {
                     jsonObject.put("Key", fullImagepath);
                     jsonObject.put("Status", "");
-                    jsonObject.put("ThumbFile", "");
+                    jsonObject.put("ThumbFile", ((DirectoryFile)object.getObject()).getThumb());
                     jsonObject.put("Type", "0");
                     jsonArray.put(jsonObject);
                 } catch (JSONException e) {
@@ -340,7 +340,6 @@ public class RepositoryUtils {
                 }
             }
         }
-
         JSONObject sendMoveJsonObject = new JSONObject() ;
         try {
             sendMoveJsonObject.put("AbsolutePath", absolutePath);
@@ -350,24 +349,19 @@ public class RepositoryUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         RequestQueue queue2 = Volley.newRequestQueue(mActivity);
-
-
         StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.MoveObject);
         String url = sttc_holdr.request_Url();
         JsonRequest jr2 = new JsonObjectRequest(Request.Method.POST, url, sendMoveJsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 System.out.println(response);
-                Log.e("Rishabh","movefile response := "+response);
-
-
+                listener.onSuccessfullMove() ;
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //listener.onFailure();
+                listener.onFailure();
                 Log.e("Rishabh", "error := "+error);
             }
         });
@@ -378,6 +372,12 @@ public class RepositoryUtils {
         void onSuccessfullyDeleted();
 
         void onFailure();
+    }
+
+    public interface  OnMoveCompletion {
+
+        void onSuccessfullMove();
+        void onFailure() ;
     }
 
 }

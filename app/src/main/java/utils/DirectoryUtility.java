@@ -1,5 +1,7 @@
 package utils;
 
+import android.util.Log;
+
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 
@@ -78,6 +80,7 @@ public class DirectoryUtility {
             return "ZurekaTempPatientConfig";
         } else {
             //this method just gets the name of file
+            Log.e("Rishabh Jain", "All files := "+key);
             String[] split = key.split("/");
             return split[split.length - 1];
         }

@@ -282,18 +282,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private void moveFile() {
 
         final List<SelectableObject> selectedObjects = new ArrayList<>();
-        final List<String> fullOldPath = new ArrayList<>();
         for (SelectableObject object : displayedDirectory) {
             if (object.isSelected()) {
                 selectedObjects.add(object);
             }
         }
 
-
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.move_folderlist_recycler);
-
         final TextView backText = (TextView) dialog.findViewById(R.id.folder_root);
         RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.folder_list);
         Button moveButton = (Button) dialog.findViewById(R.id.move_btn);
@@ -309,9 +306,32 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 dialog.dismiss();
 
                 if(listMode == 1){
-                    RepositoryUtils.moveObject(selectedObjects , patientId ,mActivity,  mRepositoryGridAdapter.getDirectory() , dialogAdapter.getDirectory());
+                    RepositoryUtils.moveObject(selectedObjects , patientId ,mActivity,  mRepositoryGridAdapter.getDirectory() , dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
+                        @Override
+                        public void onSuccessfullMove() {
+                            Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
+                            loadData();
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }else {
-                    RepositoryUtils.moveObject(selectedObjects , patientId ,  mActivity, mRepositoryAdapter.getDirectory() , dialogAdapter.getDirectory());
+                    RepositoryUtils.moveObject(selectedObjects, patientId, mActivity, mRepositoryAdapter.getDirectory(), dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
+                        @Override
+                        public void onSuccessfullMove() {
+                            Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
+                            loadData();
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
             }
