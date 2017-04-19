@@ -52,6 +52,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1442,12 +1444,30 @@ public class ReportStatus extends BaseActivity {
 
                 if (list.size() > 0 && fileReport.isFile()) {
                     Log.v("post", "execute");
-
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_VIEW);
-                    Uri uri = Uri.fromFile(fileReport);
-                    i.setDataAndType(uri, "application/pdf");
-                    startActivity(i);
+                    
+                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                    ///////
+                    Uri uri = null;
+                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    Method m = null;
+                    try {
+                        m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    uri = Uri.fromFile(fileReport);
+                    /*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*/
+                    /////
+                    objIntent.setDataAndType(uri, "application/pdf");
+                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(objIntent);//Staring the pdf viewer
 
                 } else if (!fileReport.isFile()) {
                     Log.v("ERROR!!!!", "OOPS2");
