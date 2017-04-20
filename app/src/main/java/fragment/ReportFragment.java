@@ -1228,9 +1228,6 @@ public class ReportFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Helper.authentication_flag == true) {
-            mActivity.finish();
-        }
         if (sentToSettings) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 //Got Permission
