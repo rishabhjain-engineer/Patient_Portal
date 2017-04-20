@@ -46,6 +46,8 @@ import fragment.ReportFragment;
 import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
 import fragment.VitalFragment;
+import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -88,7 +90,9 @@ public class DashBoardActivity extends BaseActivity {
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        findFamily();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            findFamily();
+        }
         String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();

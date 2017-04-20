@@ -197,9 +197,7 @@ public class changepass extends BaseActivity {
                 finish();
                 return true;
             case R.id.action_home:
-                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
+                finish();
                 return true;
 
             default:
