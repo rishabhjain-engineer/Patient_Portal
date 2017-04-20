@@ -169,20 +169,24 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             int viewId = v.getId();
 
             if (viewId == R.id.directory_share_move_btn) {
-                try {
+               /* try {
                     if (mIsSingleUri) {
                         numberOfUri = 1;
                         moveFile(mSingleImageUri, numberOfUri);
-                        Log.e("Rishabh", "uri count :=  " + numberOfUri);
                     } else {
                         numberOfUri = mMultipleImageUris.size();
                         for (int i = 0; i < mMultipleImageUris.size(); i++) {
                             Uri sendsingleUri = mMultipleImageUris.get(i);
                             moveFile(sendsingleUri, numberOfUri);
                             numberOfUri = numberOfUri - 1;
-                            Log.e("Rishabh", "uri count :=  " + numberOfUri);
                         }
+
                     }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }*/
+                try {
+                    moveFile(mMultipleImageUris);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -232,6 +236,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mIsSingleUri = true;
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (mSingleImageUri != null) {
+
+            mMultipleImageUris.add(mSingleImageUri);
         }
     }
 
@@ -243,32 +249,34 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     }
 
 
-    private void moveFile(Uri getUri, int totalUri) throws FileNotFoundException {
+    private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
         //new code -> saves recieved bitmap as file
-        Uri selectedImageUri = getUri;
+        ArrayList<Uri> selectedImageUri = new ArrayList<>();
         InputStream is = null;
-        if (selectedImageUri.getAuthority() != null) {
-            is = getContentResolver().openInputStream(selectedImageUri);
-            Bitmap bmp = BitmapFactory.decodeStream(is);
-            if (bmp != null) {
-                File downloadedFile;
-                try {
-                    downloadedFile = createImageFile();
-                    OutputStream outStream = new FileOutputStream(downloadedFile);
-                    //compressing image to 80 percent quality to reduce size
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-                    outStream.flush();
-                    outStream.close();
-
-                    Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                    RepositoryUtils.uploadFile(downloadedFileUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY, totalUri);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+        for(int i=0; i<getUri.size(); i++ ) {
+            Uri testSingleUri = getUri.get(i);
+            if (testSingleUri.getAuthority() != null) {
+                is = getContentResolver().openInputStream(testSingleUri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+                if (bmp != null) {
+                    File downloadedFile;
+                    try {
+                        downloadedFile = createImageFile();
+                        OutputStream outStream = new FileOutputStream(downloadedFile);
+                        //compressing image to 80 percent quality to reduce size
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+                        outStream.flush();
+                        outStream.close();
+                        Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                        selectedImageUri.add(downloadedFileUri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+        RepositoryUtils.uploadFile(selectedImageUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
     private File createImageFile() throws IOException {

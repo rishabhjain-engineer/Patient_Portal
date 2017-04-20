@@ -30,6 +30,7 @@ import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.R;
 import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.UploadUri;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +52,7 @@ public class RepositoryUtils {
 
     private static PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
-
+    private static UploadUri mUploadUriObject ;
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -152,10 +153,53 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom, int totalUri) {
+    public static void  uploadFile(ArrayList<Uri> fileUri, Activity activity, Directory directory, String uploadFrom) {
 
-        Log.e("Rishabh", "uri count := UTILS " + totalUri);
-        String path = getPathFromContentUri(fileUri, activity);
+
+
+        ArrayList<String> testImagePath = new ArrayList<>();
+        for(int i = 0 ;i <fileUri.size();i++) {
+
+            Log.e("Rishabh", "URIs := " + fileUri.get(i).getPath());
+
+            mUploadUriObject = new UploadUri(fileUri.get(i));
+        }
+
+        
+
+
+
+            String path = getPathFromContentUri(mUploadUriObject.getmUri(), activity);
+            File imageFile = new File(path);
+            String path1 = imageFile.getAbsolutePath();
+            String splitfo_lenthcheck[] = path1.split("/");
+            int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+            long check = ((imageFile.length() / 1024));
+            if (check < 10000 && filenamelength < 99) {
+                String splitstr[];
+                String chosenimg = "";
+                String stringcheck = "", exhistimg = "false";
+                int leangth = 0;
+                if (path.contains("/")) {
+                    splitstr = path.split("/");
+                    chosenimg = splitstr[splitstr.length - 1];
+                }
+                if (directory.hasFile(imageFile.getName())) {
+                    exhistimg = "true";
+
+                }
+                stringcheck = imageFile.getName();
+                testImagePath.add(path);
+
+            } else {
+
+                Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+            }
+
+
+
+      /*  String path = getPathFromContentUri(fileUri.get(i), activity);
         File imageFile = new File(path);
         String path1 = imageFile.getAbsolutePath();
         String splitfo_lenthcheck[] = path1.split("/");
@@ -175,57 +219,20 @@ public class RepositoryUtils {
 
             }
             stringcheck = imageFile.getName();
-            /*for (int i = 0; i < thumbImage.size(); i++) {
-                String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
-                if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
-                    if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
-
-                        stringcheck = listsplitstr[listsplitstr.length - 1];
-                        leangth = listsplitstr[listsplitstr.length - 1].length();
-                        exhistimg = "true";
-                    }
-
-                }
-            }*/
-            Intent intent = new Intent(activity, UploadService.class);
-            intent.putExtra(UploadService.ARG_FILE_PATH, path);
-            intent.putExtra("add_path", directory.getDirectoryPath());
-            intent.putExtra(UploadService.uploadfrom, uploadFrom);
-            intent.putExtra("exhistimg", exhistimg);
-            intent.putExtra("stringcheck", stringcheck);
-            intent.putExtra("numberofuri", totalUri);
-            activity.startService(intent);
-
-           /* System.out.println("After Service");
-
-            String tempPath = getPath(fileUri, activity);
-            Bitmap bm;
-            BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
-            btmapOptions.inSampleSize = 4;
-            bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
-            // vault_adapter.notifyDataSetChanged();
-            if (bm != null) {
-
-                System.out.println("in onactivity");
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-                String pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                String picname = "b.jpg";
-                pic = "data:image/jpeg;base64," + pic;
-                //  vault_adapter.notifyDataSetChanged();
-
-            }*/
+            testImagePath.add(path);
 
         } else {
 
             Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
+        }*/
+
+
+
+
         }
 
 
-    }
 
     public static String getPath(Uri uri, Activity activity) {
 
