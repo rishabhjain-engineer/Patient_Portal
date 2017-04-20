@@ -2,6 +2,7 @@ package com.hs.userportal;
 
 import android.net.Uri;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -12,17 +13,40 @@ public class UploadUri {
 
     private Uri mUri ;
     private ArrayList<Uri> listOfUriPath= new ArrayList();
-    private String mPath, mImageName  ;
-    private boolean isExistingImage ;
-
-
+    private String mPath, mImageName  , mImagePath;
+    private String isExistingImage ;
+    private File mFile ;
 
 
     public UploadUri(Uri getUri){
-
         mUri = getUri ;
+    }
+
+
+    public void setImageName(String imageName) {
+        mImageName =imageName  ;
+    }
+
+    public String getImageName () {
+        return mImageName ;
+    }
+
+    public String isExistingImage() {
+        return isExistingImage;
+    }
+
+    public void setExistingImage(String existingImage) {
+        isExistingImage = existingImage;
+    }
+
+    public void setImageFile(File file){
+        mFile = file ;
 
     }
+    public File getImageFile(){
+        return mFile ;
+    }
+
 
     public Uri getmUri() {
         return mUri;
@@ -30,6 +54,14 @@ public class UploadUri {
 
     public void setmUri(Uri mUri) {
         this.mUri = mUri;
+    }
+
+    public void setImagePath(String imagePath) {
+        mImagePath = imagePath ;
+    }
+
+    public String getImagePath(){
+        return mImagePath;
     }
 }
 

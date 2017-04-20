@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.app.Fragment;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -40,6 +41,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import config.StaticHolder;
@@ -47,6 +49,7 @@ import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
 import ui.SignInActivity;
 import utils.PreferenceHelper;
+import utils.RepositoryUtils;
 
 public class UploadService extends IntentService {
 
@@ -74,6 +77,9 @@ public class UploadService extends IntentService {
     private String add_path, exhistimg, stringcheck;
     private int mTotalNumberUriReceived ;
     protected PreferenceHelper mPreferenceHelper;
+    private List<UploadUri> mUploadUriObjects;
+    private String s3ObjectKey;
+    private File fileToUpload ;
 
     public UploadService() {
         super("simpl3r-example-upload");
@@ -93,76 +99,72 @@ public class UploadService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-       /* SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");*/
+
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        String filePath = intent.getStringExtra(ARG_FILE_PATH);
+
+        String path=null;
+        String filePath = null;
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");
-        mTotalNumberUriReceived = intent.getIntExtra("numberofuri",1);
-        try {
-            exhistimg = intent.getStringExtra("exhistimg");
-            stringcheck = intent.getStringExtra("stringcheck");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exhistimg = "";
-            stringcheck = "";
-        }
-        File fileToUpload = new File(filePath);
-        final String s3ObjectKey = md5(filePath);
-        String s3BucketName = getString(R.string.s3_bucket);
-        final String path;
-        if (add_path.equalsIgnoreCase("")) {
 
-            //new code
-            path = patientId + "/" + "FileVault/Personal/";
+        mUploadUriObjects = RepositoryUtils.getUploadUriObjectList();
 
-            //old code
-            /*if (uplodfrm.equalsIgnoreCase("notfilevault")) {
-                path = patientId + "/" + "FileVault/Personal/Prescription/";
-            } else {
+        for(int i=0 ; i< mUploadUriObjects.size() ; i++) {
+
+            fileToUpload = mUploadUriObjects.get(i).getImageFile() ;
+            stringcheck = mUploadUriObjects.get(i).getImageName() ;
+            exhistimg = mUploadUriObjects.get(i).isExistingImage();
+            filePath = mUploadUriObjects.get(i).getImagePath();
+
+            s3ObjectKey = md5(filePath);
+            String s3BucketName = getString(R.string.s3_bucket);
+
+            if (add_path.equalsIgnoreCase("")) {
                 path = patientId + "/" + "FileVault/Personal/";
-            }*/
-        } else {
-            path = patientId + "/" + "FileVault/Personal/" + add_path + "/";
-        }
 
-        final String msg = "Uploading " + s3ObjectKey + "...";
-
-        // create a new uploader for this file
-        String splt[] = filePath.split("/");
-        String imagename = splt[splt.length - 1];
-        Calendar cal = Calendar.getInstance();
-
-        if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
-            fname = imagename;
-        } else {
-            if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
-                fname = stringcheck.substring(0, stringcheck.length() - 4)
-                        + "_1.jpg";
             } else {
-                fname = imagename.substring(0, imagename.length() - 4)
-                        + ".jpg";
+                path = patientId + "/" + "FileVault/Personal/" + add_path + "/";
             }
+
+            final String msg = "Uploading " + s3ObjectKey + "...";
+
+            // create a new uploader for this file
+            String splt[] = filePath.split("/");
+            String imagename = splt[splt.length - 1];
+            Calendar cal = Calendar.getInstance();
+
+            if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
+                fname = imagename;
+            } else {
+                if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
+                    fname = stringcheck.substring(0, stringcheck.length() - 4)
+                            + "_1.jpg";
+                } else {
+                    fname = imagename.substring(0, imagename.length() - 4)
+                            + ".jpg";
+                }
+            }
+            uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
+            // listen for progress updates and broadcast/notify them appropriately
+            uploader.setProgressListener(new UploadProgressListener() {
+                @Override
+                public void progressChanged(ProgressEvent progressEvent,
+                                            long bytesUploaded, int percentUploaded) {
+
+                    Notification notification = buildNotification(msg, percentUploaded);
+                    nm.notify(NOTIFY_ID_UPLOAD, notification);
+                    broadcastState(s3ObjectKey, percentUploaded, msg);
+                }
+            });
+
+            // broadcast/notify that our upload is starting
+            Notification notification = buildNotification(msg, 0);
+            nm.notify(NOTIFY_ID_UPLOAD, notification);
+            broadcastState(s3ObjectKey, 0, msg);
         }
-        uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
-        // listen for progress updates and broadcast/notify them appropriately
-        uploader.setProgressListener(new UploadProgressListener() {
-            @Override
-            public void progressChanged(ProgressEvent progressEvent,
-                                        long bytesUploaded, int percentUploaded) {
 
-                Notification notification = buildNotification(msg, percentUploaded);
-                nm.notify(NOTIFY_ID_UPLOAD, notification);
-                broadcastState(s3ObjectKey, percentUploaded, msg);
-            }
-        });
 
-        // broadcast/notify that our upload is starting
-        Notification notification = buildNotification(msg, 0);
-        nm.notify(NOTIFY_ID_UPLOAD, notification);
-        broadcastState(s3ObjectKey, 0, msg);
 
         try {
             String s3Location = uploader.start(); // initiate the upload
@@ -187,33 +189,18 @@ public class UploadService extends IntentService {
 
 
             sendData = new JSONObject();
-           /* if (LocationClass.pic != null) {
-                sendData.put("File", LocationClass.pic);
-            } else if (MapLabDetails.pic_maplab != null) {
-                sendData.put("File", MapLabDetails.pic_maplab);
-
-            } else if (Filevault.pic != null) {
-                sendData.put("File", Filevault.pic);
-            }*/
 
             sendData.put("PatientId", patientId);
             sendData.put("ImageName", file_name[len - 1]);
             sendData.put("ImageUrl", afterDecode);
             sendData.put("Path", path);
-            //sendData.put("File", Filevault.pic);
-           /* sendData.put("FileUrl", afterDecode);*/
-            /*sendData.put("FileName", fname);*/
-
 
             System.out.println(sendData);
 
             queue1 = Volley.newRequestQueue(this);
-            /*String url1 = Services.init
-                    + "/PatientModule/PatientService.asmx/PatientFileVaultNew";*/
-            // https://patient.cloudchowk.com:8081/WebServices/LabService.asmx/
+
             String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
-           /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.PatientFileVaultNew);
-            String url = sttc_holdr.request_Url();*/
+
             jr1 = new JsonObjectRequest(
                     Request.Method.POST, url1, sendData,
                     new Response.Listener<JSONObject>() {
@@ -231,13 +218,11 @@ public class UploadService extends IntentService {
                                         Toast.makeText(getApplicationContext(),
                                                 response.getString("d"),
                                                 Toast.LENGTH_SHORT).show();
-                                    } else if (uplodfrm.equals(GALLERY)  && mTotalNumberUriReceived == 1 ) {
+                                    } else if (uplodfrm.equals(GALLERY)  ) {
                                         GalleryReceivedData.completedUpload();
                                         Toast.makeText(getApplicationContext(),
                                                 response.getString("d"),
                                                 Toast.LENGTH_SHORT).show();
-                                    }else if(uplodfrm.equals(GALLERY)) {
-                                        return;
                                     }
 
                                 }
