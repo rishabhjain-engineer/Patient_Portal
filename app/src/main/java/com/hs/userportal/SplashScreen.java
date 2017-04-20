@@ -66,10 +66,6 @@ public class SplashScreen extends BaseActivity {
         packageHome_list = new ArrayList<HashMap<String, String>>();
         queue = Volley.newRequestQueue(this);
         sendData = new JSONObject();
-        ConnectionDetector con = new ConnectionDetector(SplashScreen.this);
-        if (!con.isConnectingToInternet()) {
-            Toast.makeText(getApplicationContext(), "No internet connection.Please connect to internet.", Toast.LENGTH_LONG).show();
-        }
         if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
             Intent intent = new Intent(this, DashBoardActivity.class);
             startActivity(intent);
