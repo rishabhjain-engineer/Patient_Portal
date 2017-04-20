@@ -320,10 +320,21 @@ public class RepositoryUtils {
     }
 
     public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId ,Activity mActivity, Directory oldDirectory , Directory newDirectory, final OnMoveCompletion listener){
-        String absolutePath = patientId + "/FileVault/" +"Personal/"+ oldDirectory.getDirectoryPath() ;
-        String newPath = patientId + "/FileVault/" +"Personal/"+ newDirectory.getDirectoryPath();
-        Log.e("Rishabh", "old path "+absolutePath);
-        Log.e("Rishabh", "New path "+newPath);
+        String absolutePath  ;
+        String newPath ;
+
+        if(!oldDirectory.getDirectoryPath().equals("")){
+            absolutePath = patientId + "/FileVault/"+"Personal/"+oldDirectory.getDirectoryPath();
+        }else {
+            absolutePath = patientId + "/FileVault/"+"Personal";
+        }
+
+        if(!newDirectory.getDirectoryPath().equals("")) {
+            newPath = patientId + "/FileVault/"+"Personal/"+newDirectory.getDirectoryPath();
+        }else {
+            newPath = patientId + "/FileVault/"+"Personal";
+        }
+
         JSONArray jsonArray = new JSONArray();
         for(SelectableObject object : listOfSelectedObjects) {
             if(object.getObject() instanceof DirectoryFile){
