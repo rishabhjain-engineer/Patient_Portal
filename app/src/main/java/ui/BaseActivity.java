@@ -223,6 +223,7 @@ public class BaseActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("from logout", "logout");
                         startActivity(intent);
+                        dialog.dismiss();
                         finish();
                     }
                 });
