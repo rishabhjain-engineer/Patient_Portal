@@ -106,7 +106,6 @@ public class ReportStatus extends BaseActivity {
     private int iscomment = 0;
 
 
-    public static ProgressBar progress_bar;
     public static ProgressDialog progress;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -136,10 +135,6 @@ public class ReportStatus extends BaseActivity {
         list_view = (ListView) findViewById(R.id.list_view);
         list_view.setFocusable(false);
         bgraph = (LinearLayout) findViewById(R.id.bGraph);
-        progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
-        progress_bar.setProgress(0);
-        progress_bar.setSecondaryProgress(2);
-        progress_bar.setMax(100);
         misc = new MiscellaneousTasks(ReportStatus.this);
         Intent z = getIntent();
         index = z.getIntExtra("index", 10);
@@ -1248,13 +1243,17 @@ public class ReportStatus extends BaseActivity {
 
     }
 
+    private ProgressDialog mProgressDialog;
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             bpdf.setClickable(false);
-            progress_bar.setVisibility(View.VISIBLE);
-            progress_bar.setProgress(0);
+            mProgressDialog = new ProgressDialog(ReportStatus.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
         }
 
         @Override
@@ -1263,12 +1262,6 @@ public class ReportStatus extends BaseActivity {
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
-            ReportStatus.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress_bar.setProgress(2);
-                    progress_bar.setSecondaryProgress(3);
-                }
-            });
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -1296,12 +1289,6 @@ public class ReportStatus extends BaseActivity {
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfdata);
                 sendData.put("UserId", patientId);
-                ReportStatus.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        progress_bar.setProgress(6);
-                        progress_bar.setSecondaryProgress(7);
-                    }
-                });
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -1313,12 +1300,6 @@ public class ReportStatus extends BaseActivity {
                 // TODO Auto-generated catch block
                 e2.printStackTrace();
             }
-            ReportStatus.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress_bar.setProgress(9);
-                    progress_bar.setSecondaryProgress(10);
-                }
-            });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData, "Report Status");
             int lenghtOfFile = 1;
@@ -1362,7 +1343,9 @@ public class ReportStatus extends BaseActivity {
         @Override
         protected void onPostExecute(Void aaa) {
             super.onPostExecute(aaa);
-            progress_bar.setVisibility(View.GONE);
+            if(mProgressDialog != null && mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
             if(result != null){
                 try {
 
@@ -1448,18 +1431,6 @@ public class ReportStatus extends BaseActivity {
             }
             bpdf.setClickable(true);
         }
-
-        /**
-         * Updating progress bar
-         */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            progress_bar.setIndeterminate(false);
-            progress_bar.setMax(100);
-            progress_bar.setProgress(Integer.parseInt(progress[0]));
-            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);
-        }
-
     }
 
     @Override
