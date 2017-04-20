@@ -178,7 +178,7 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+        if (NetworkChangeListener.getNetworkStatus().isConnected() && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
             new MyHealthAsync().execute();
             new GetUserGradeAsync().execute();
         }else{
@@ -267,7 +267,9 @@ public class DashboardFragment extends Fragment {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
             if (isToLoadData) {
                 /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
                 intent.putExtra("path", mPathOfGlobalIndex + id);
