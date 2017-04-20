@@ -135,14 +135,49 @@ public class DashBoardActivity extends BaseActivity {
         public void onClick(View v) {
             int viewId = v.getId();
             if (viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoard.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterDashBoard.setClickable(true);
+                    }
+                }, 2000);
                 openDashBoardFragment();
             } else if (viewId == R.id.footer_reports_container) {
+                mFooterReports.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterReports.setClickable(true);
+                    }
+                }, 2000);
                 openReportFragment();
             } else if (viewId == R.id.footer_repository_container) {
+                mFooterRepository.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterRepository.setClickable(true);
+                    }
+                }, 2000);
                 openRepositoryFragment();
             } else if (viewId == R.id.footer_family_container) {
+                mFooterFamily.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterFamily.setClickable(true);
+                    }
+                }, 2000);
                 openFamilyFragment();
             } else if (viewId == R.id.footer_account_container) {
+                mFooterAccount.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterAccount.setClickable(true);
+                    }
+                }, 2000);
                 openAccountFragment();
             }
         }

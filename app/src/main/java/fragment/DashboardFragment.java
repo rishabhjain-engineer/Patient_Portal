@@ -203,7 +203,9 @@ public class DashboardFragment extends Fragment {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            progress.show();
+            if (mActivity != null && mActivity.getCurrentFocus() != null) {
+                progress.show();
+            }
         }
 
         protected void onPostExecute(Void result) {
@@ -262,7 +264,9 @@ public class DashboardFragment extends Fragment {
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
             isToLoadData = false;
-            progress.show();
+            if (mActivity != null && mActivity.getCurrentFocus() != null) {
+                progress.show();
+            }
         }
 
         protected void onPostExecute(Void result) {
