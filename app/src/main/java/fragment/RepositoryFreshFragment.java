@@ -790,7 +790,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int noOfUri = 1;
+        ArrayList<Uri> uriList = new ArrayList<>();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
 
@@ -810,9 +810,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
                             outStream.flush();
                             outStream.close();
-
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-  //                          RepositoryUtils.uploadFile(downloadedFileUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
+                            uriList.add(downloadedFileUri);
+                            RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -831,17 +831,19 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
             }
             if (requestCode == PICK_FROM_CAMERA) {
+
                 File imageFile = null;
                 Uri selectedImageUri;
 
                 if (mIsSdkLessThanM == true) {
-                    selectedImageUri = Imguri;
+                   uriList.add(Imguri);
 
                 } else {
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
+                    uriList.add(selectedImageUri);
                 }
 
-      //          RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
+                RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
             super.onActivityResult(requestCode, resultCode, data);

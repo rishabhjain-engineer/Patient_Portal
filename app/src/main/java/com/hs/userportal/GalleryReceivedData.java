@@ -169,22 +169,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             int viewId = v.getId();
 
             if (viewId == R.id.directory_share_move_btn) {
-               /* try {
-                    if (mIsSingleUri) {
-                        numberOfUri = 1;
-                        moveFile(mSingleImageUri, numberOfUri);
-                    } else {
-                        numberOfUri = mMultipleImageUris.size();
-                        for (int i = 0; i < mMultipleImageUris.size(); i++) {
-                            Uri sendsingleUri = mMultipleImageUris.get(i);
-                            moveFile(sendsingleUri, numberOfUri);
-                            numberOfUri = numberOfUri - 1;
-                        }
-
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }*/
                 try {
                     moveFile(mMultipleImageUris);
                 } catch (FileNotFoundException e) {
@@ -254,7 +238,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         //new code -> saves recieved bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
         InputStream is = null;
-        for(int i=0; i<getUri.size(); i++ ) {
+        for (int i = 0; i < getUri.size(); i++) {
             Uri testSingleUri = getUri.get(i);
             if (testSingleUri.getAuthority() != null) {
                 is = getContentResolver().openInputStream(testSingleUri);

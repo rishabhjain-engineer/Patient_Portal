@@ -158,8 +158,6 @@ public class RepositoryUtils {
 
     public static void uploadFile(ArrayList<Uri> fileUri, Activity activity, Directory directory, String uploadFrom) {
 
-
-
         for (int i = 0; i < fileUri.size(); i++) {
             mUploadUriObject = new UploadUri(fileUri.get(i));
             String path = getPathFromContentUri(mUploadUriObject.getmUri(), activity);
@@ -181,7 +179,7 @@ public class RepositoryUtils {
                 }
                 if (directory.hasFile(imageFile.getName())) {
                     exhistimg = "true";
-                    mUploadUriObject.setExistingImage("true");
+                    mUploadUriObject.setExistingImage(exhistimg);
                 }
                 stringcheck = mUploadUriObject.getImageFile().getName();
                 mUploadUriObject.setImageName(stringcheck);
@@ -203,32 +201,6 @@ public class RepositoryUtils {
         intent.putExtra("add_path", directory.getDirectoryPath());
         activity.startService(intent);
 
-      /*  String path = getPathFromContentUri(fileUri.get(i), activity);
-        File imageFile = new File(path);
-        String path1 = imageFile.getAbsolutePath();
-        String splitfo_lenthcheck[] = path1.split("/");
-        int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
-        long check = ((imageFile.length() / 1024));
-        if (check < 10000 && filenamelength < 99) {
-            String splitstr[];
-            String chosenimg = "";
-            String stringcheck = "", exhistimg = "false";
-            int leangth = 0;
-            if (path.contains("/")) {
-                splitstr = path.split("/");
-                chosenimg = splitstr[splitstr.length - 1];
-            }
-            if (directory.hasFile(imageFile.getName())) {
-                exhistimg = "true";
-            }
-            stringcheck = imageFile.getName();
-            testImagePath.add(path);
-
-        } else {
-
-            Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
-
-        }*/
     }
 
     public static List<UploadUri> getUploadUriObjectList () {
@@ -333,9 +305,9 @@ public class RepositoryUtils {
         String newPath;
 
         if (!oldDirectory.getDirectoryPath().equals("")) {
-            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath();
+            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath()+"/";
         } else {
-            absolutePath = patientId + "/FileVault/" + "Personal";
+            absolutePath = patientId + "/FileVault/" + "Personal/";
         }
 
         if (!newDirectory.getDirectoryPath().equals("")) {
