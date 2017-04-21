@@ -104,8 +104,6 @@ public class DashBoardActivity extends BaseActivity {
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();
         }
-
-
     }
 
 

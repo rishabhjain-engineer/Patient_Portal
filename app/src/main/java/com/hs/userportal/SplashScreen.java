@@ -68,6 +68,7 @@ public class SplashScreen extends BaseActivity {
         sendData = new JSONObject();
         if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
             Intent intent = new Intent(this, DashBoardActivity.class);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             startActivity(intent);
             finish();
         }else{
@@ -100,6 +101,7 @@ public class SplashScreen extends BaseActivity {
 
                     Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
                     startActivity(intentMain);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     finish();
 
 
