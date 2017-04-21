@@ -586,7 +586,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         } else {
                             setListAdapter(directory.getParentDirectory());
                             setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
                         }
                     } else if (listMode == 1) {
                         if (mRepositoryAdapter.isInSelectionMode()) {
@@ -597,7 +596,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         } else {
                             setListAdapter(directory.getParentDirectory());
                             setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
                         }
                     }
                 }
