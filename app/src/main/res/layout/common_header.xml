@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/green_header_login">
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/header_color">
 
     <TextView
         android:id="@+id/header_title_tv"
@@ -11,7 +11,6 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:text="Ayaz"
         android:textColor="@color/white"
         android:textSize="20dp" />
 
@@ -19,10 +18,10 @@
         android:id="@+id/add_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:visibility="gone"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:src="@drawable/addplus" />
+        android:src="@drawable/addplus"
+        android:visibility="gone" />
 
 </RelativeLayout>
