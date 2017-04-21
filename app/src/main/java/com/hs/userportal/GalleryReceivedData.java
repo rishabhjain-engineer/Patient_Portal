@@ -220,7 +220,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mIsSingleUri = true;
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (mSingleImageUri != null) {
-
             mMultipleImageUris.add(mSingleImageUri);
         }
     }
