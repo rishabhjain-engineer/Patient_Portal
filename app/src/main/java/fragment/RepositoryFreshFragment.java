@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,6 +42,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -123,6 +132,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
 
+
+    private String accessKey;
+    private String secretKey;
+
+
     private static RepositoryFreshFragment repositoryFreshFragment;
     private RepositoryDialogAdapter dialogAdapter;
 
@@ -139,6 +153,18 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
         displayedDirectory = new ArrayList<>();
+        return mView;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
+
+        new getDataFromAmazon().execute();
+
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -147,7 +173,33 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
 
 
-        return mView;
+    }
+
+    public class getDataFromAmazon extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String s3BucketName = getString(R.string.s3_bucket);
+            String s = "Reports/";
+
+            AmazonS3Client s3Client = new AmazonS3Client(
+                    new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+
+            ListObjectsRequest lor = new ListObjectsRequest()
+                    .withBucketName(s3BucketName)
+                    .withPrefix(patientId + "/FileVault/" + "Personal/bills/");
+
+            lor.setDelimiter("/");
+            ObjectListing objectListing = s3Client.listObjects(lor);
+            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
+                System.out.println(summary.getKey());
+
+                Log.e("Rishabh", "Amazon all path := " + summary.getKey());
+            }
+
+            return null;
+        }
     }
 
     private void initObject() {
@@ -305,8 +357,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             public void onClick(View view) {
                 dialog.dismiss();
 
-                if(listMode == 1){
-                    RepositoryUtils.moveObject(selectedObjects , patientId ,mActivity,  mRepositoryGridAdapter.getDirectory() , dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
+                if (listMode == 1) {
+                    RepositoryUtils.moveObject(selectedObjects, patientId, mActivity, mRepositoryGridAdapter.getDirectory(), dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
                         @Override
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
@@ -319,7 +371,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         }
                     });
 
-                }else {
+                } else {
                     RepositoryUtils.moveObject(selectedObjects, patientId, mActivity, mRepositoryAdapter.getDirectory(), dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
                         @Override
                         public void onSuccessfullMove() {
@@ -434,8 +486,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             list.setAdapter(mRepositoryGridAdapter);
 
         } else {
-            isFromGallery=false;
-            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this,isFromGallery);
+            isFromGallery = false;
+            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this, isFromGallery);
             mRepositoryAdapter.setSelectionMode(false);
             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
             toolbarTitle.setVisibility(View.VISIBLE);
@@ -452,6 +504,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public void startCreatingDirectoryStructure() {
+
+
         loadData();
     }
 
@@ -628,8 +682,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 }
             });
-
-
         }
 
     }
@@ -836,7 +888,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 Uri selectedImageUri;
 
                 if (mIsSdkLessThanM == true) {
-                   uriList.add(Imguri);
+                    uriList.add(Imguri);
 
                 } else {
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
