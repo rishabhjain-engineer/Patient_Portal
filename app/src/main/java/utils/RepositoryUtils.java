@@ -323,14 +323,76 @@ public class RepositoryUtils {
 
     }
 
-    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, List<String> oldPath){
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, Directory oldDirectory, Directory newDirectory, final OnMoveCompletion listener){
 
+        String absolutePath;
+        String newPath;
 
+        if (!oldDirectory.getDirectoryPath().equals("")) {
+            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath()+"/";
+        } else {
+            absolutePath = patientId + "/FileVault/" + "Personal/";
+        }
+
+        if (!newDirectory.getDirectoryPath().equals("")) {
+            newPath = patientId + "/FileVault/" + "Personal/" + newDirectory.getDirectoryPath();
+        } else {
+            newPath = patientId + "/FileVault/" + "Personal";
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        for (SelectableObject object : listOfSelectedObjects) {
+            if (object.getObject() instanceof DirectoryFile) {
+                String fullImagepath = ((DirectoryFile) object.getObject()).getKey();
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Key", fullImagepath);
+                    jsonObject.put("Status", "");
+                    jsonObject.put("ThumbFile", ((DirectoryFile) object.getObject()).getThumb());
+                    jsonObject.put("Type", "0");
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        JSONObject sendMoveJsonObject = new JSONObject();
+        try {
+            sendMoveJsonObject.put("AbsolutePath", absolutePath);
+            sendMoveJsonObject.put("NewPath", newPath);
+            sendMoveJsonObject.put("UserId", patientId);
+            sendMoveJsonObject.put("ObjectList", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestQueue queue2 = Volley.newRequestQueue(mActivity);
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.MoveObject);
+        String url = sttc_holdr.request_Url();
+        JsonRequest jr2 = new JsonObjectRequest(Request.Method.POST, url, sendMoveJsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                listener.onSuccessfullMove();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onFailure();
+                Log.e("Rishabh", "error := " + error);
+            }
+        });
+        queue2.add(jr2);
 
     }
 
     public interface OnDeleteCompletion {
         void onSuccessfullyDeleted();
+
+        void onFailure();
+    }
+
+    public interface OnMoveCompletion {
+        void onSuccessfullMove();
 
         void onFailure();
     }
