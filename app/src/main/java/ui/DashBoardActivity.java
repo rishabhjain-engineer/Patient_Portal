@@ -3,6 +3,7 @@ package ui;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -68,7 +69,8 @@ public class DashBoardActivity extends BaseActivity {
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
-    int grayColor, greenColor;
+    private int grayColor, greenColor;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +93,17 @@ public class DashBoardActivity extends BaseActivity {
         transaction.addToBackStack(null);
         transaction.commit();
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
             findFamily();
         }
         String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();
         }
-
-
     }
 
 
@@ -257,7 +262,9 @@ public class DashBoardActivity extends BaseActivity {
                         String size = new DecimalFormat("00").format(s);
                         //members.setText(size);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException je) {
+                    mProgressDialog.dismiss();
                     je.printStackTrace();
                     onBackPressed();
                     Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
@@ -267,6 +274,7 @@ public class DashBoardActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 onBackPressed();
+                mProgressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
