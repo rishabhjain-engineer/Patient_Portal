@@ -220,7 +220,10 @@ public class BaseActivity extends AppCompatActivity {
                         dialog.dismiss();
                         Helper.authentication_flag = true;
                         Intent intent = new Intent(BaseActivity.this, SignInActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("from logout", "logout");
                         startActivity(intent);
+                        dialog.dismiss();
                         finish();
                     }
                 });

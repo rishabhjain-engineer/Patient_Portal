@@ -517,50 +517,7 @@ public class ReportFragment extends Fragment {
                 // images.setEnabled(true);
             }
 
-            // ////////////////////////////
             String dataList = "";
-           /* try {
-
-                casecode.clear();
-                dated.clear();
-                dataList = receiveDataList.getString("d");
-                JSONObject cut = new JSONObject(dataList);
-                subArrayList = cut.getJSONArray("Table");
-                for (int i = 0; i < subArrayList.length(); i++)
-
-                {
-
-                    casecode.add(subArrayList.getJSONObject(i).getString(
-                            "CaseCode"));
-                    caseidList.add(subArrayList.getJSONObject(i).getString(
-                            "CaseId"));
-                    dated.add(subArrayList.getJSONObject(i).getString(
-                            "TimeStamp"));
-
-                }
-
-            } catch (JSONException e) {
-
-                e.printStackTrace();
-            }
-
-            String[] from = new String[]{"rowid", "col_1"};
-            int[] to = new int[]{R.id.label, R.id.value};
-            fillMaps = new ArrayList<>();
-
-            for (int i = 0; i < subArrayList.length(); i++) {
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put("rowid", "" + casecode.get(i));
-                map.put("col_1", "" + dated.get(i));
-                fillMaps.add(map);
-            }*/
-
-           /* SimpleAdapter ad = new SimpleAdapter(lablistdetails.this, fillMaps,
-                    R.layout.row, from, to);*/
-            /*PastVisitAdapter past_adapt = new PastVisitAdapter(lablistdetails.this,fillMaps);
-         *//*   Parcelable state = past_visits.onSaveInstanceState();*//*
-            past_visits.setAdapter(past_adapt);*/
-
             if (past_adapt == null) {
                 past_adapt = new PastVisitAdapter(mActivity);
                 past_adapt.setData(pastVisitArray);
@@ -569,16 +526,6 @@ public class ReportFragment extends Fragment {
                 past_adapt.setData(pastVisitArray);
                 past_adapt.notifyDataSetChanged();
             }
-         /*   Parcelable state = past_visits.onSaveInstanceState();*/
-
-           /* past_visits.onRestoreInstanceState(state);*/
-          /*  past_adapt.notifyDataSetChanged();*/
-
-            // ///////////////////////////
-
-          /*  CustomList adapter = new CustomList(lablistdetails.this,
-                    description, sample, testcomplete, ispublished, labnumber,
-                    imageView);*/
             String data1;
             try {
                 sample.clear();
@@ -592,17 +539,6 @@ public class ReportFragment extends Fragment {
 
                 subArray1 = subArray.getJSONArray(0);
                 System.out.println(subArray1);
-/*
-                pat.setText(subArray1.getJSONObject(0)
-                        .getString("LocationName"));
-                nam.setText(subArray1.getJSONObject(0).getString("AdviseDate"));
-                // dob.setText(subArray.getJSONObject(0).getString("DOB"));
-                blg.setText(subArray1.getJSONObject(0).getString("CaseCode"));
-                if (!subArray1.getJSONObject(0).getString("ReferrerName").equalsIgnoreCase("null")) {
-                    tvreferral.setText(subArray1.getJSONObject(0).getString("ReferrerName"));
-                } else {
-                    tvreferral.setText("Self");
-                }*/
                 String discstring = subArray1.getJSONObject(0).getString(
                         "DiscountAmount");
                 // String discstring = Integer.toString(disc);
@@ -1292,9 +1228,6 @@ public class ReportFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Helper.authentication_flag == true) {
-            mActivity.finish();
-        }
         if (sentToSettings) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 //Got Permission

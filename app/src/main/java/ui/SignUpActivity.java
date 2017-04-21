@@ -1132,6 +1132,7 @@ public class SignUpActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         finish();
     }
 

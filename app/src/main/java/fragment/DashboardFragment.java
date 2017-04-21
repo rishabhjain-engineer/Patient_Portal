@@ -178,7 +178,7 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+        if (NetworkChangeListener.getNetworkStatus().isConnected() && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
             new MyHealthAsync().execute();
             new GetUserGradeAsync().execute();
         }else{
@@ -203,7 +203,9 @@ public class DashboardFragment extends Fragment {
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-            progress.show();
+            if (mActivity != null && mActivity.getCurrentFocus() != null) {
+                progress.show();
+            }
         }
 
         protected void onPostExecute(Void result) {
@@ -262,12 +264,16 @@ public class DashboardFragment extends Fragment {
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
             isToLoadData = false;
-            progress.show();
+            if (mActivity != null && mActivity.getCurrentFocus() != null) {
+                progress.show();
+            }
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            progress.dismiss();
+            if(progress != null && progress.isShowing()){
+                progress.dismiss();
+            }
             if (isToLoadData) {
                 /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
                 intent.putExtra("path", mPathOfGlobalIndex + id);

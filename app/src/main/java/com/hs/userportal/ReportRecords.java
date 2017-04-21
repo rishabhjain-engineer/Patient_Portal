@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -42,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +80,7 @@ public class ReportRecords extends BaseActivity {
     private String mShaowDetailAction;   /* 0 - show test details, 1 - show popup message and then show test details,  2 - show popup message and then do nothing*/
 
 
-    public static ProgressBar progress_bar;
+    //public static ProgressBar progress_bar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,9 +119,9 @@ public class ReportRecords extends BaseActivity {
         viewReportLinear_id = (RelativeLayout) findViewById(R.id.viewReportLinear_id);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "flaticon.ttf");
         spinner_action = (TextView) findViewById(R.id.spinner_action);
-        progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
+        /*progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
         progress_bar.setProgress(0);
-        progress_bar.setSecondaryProgress(2);
+        progress_bar.setSecondaryProgress(2);*/
         spinner_action.setTypeface(tf);
         test_list = (ListView) findViewById(R.id.test_list);
         test_list.setFocusable(false);
@@ -140,7 +143,8 @@ public class ReportRecords extends BaseActivity {
         viewReportLinear_id.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {viewReportLinear_id.setClickable(false);
+            public void onClick(View v) {
+                viewReportLinear_id.setClickable(false);
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -301,7 +305,7 @@ public class ReportRecords extends BaseActivity {
                 invoice.setClickable(false);
                 viewReportLinear_id.setClickable(false);
 
-               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+                // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 //viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_pdf, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
                 viewReports_text.setTextColor(Color.parseColor("#b2b2b2"));
@@ -309,7 +313,7 @@ public class ReportRecords extends BaseActivity {
                 invoice.setClickable(true);
                 viewReportLinear_id.setClickable(true);
                 //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
-               // viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
+                // viewReports_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.pdf1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
                 viewReports_text.setTextColor(Color.parseColor("#565656"));
             }
@@ -333,11 +337,11 @@ public class ReportRecords extends BaseActivity {
             your_price.setText(yourprice);
             if (image.size() == 0) {
                 invoice.setClickable(false);
-               //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
+                //viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_invoice, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#b2b2b2"));
             } else {
                 invoice.setClickable(true);
-               // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
+                // viewFiles_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.invoice1, 0, 0);
                 viewFiles_text.setTextColor(Color.parseColor("#565656"));
             }
             progress.dismiss();
@@ -465,12 +469,18 @@ public class ReportRecords extends BaseActivity {
         }
     }
 
+    private ProgressDialog mProgressDialog;
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progress_bar.setVisibility(View.VISIBLE);
-            progress_bar.setProgress(0);
+            mProgressDialog = new ProgressDialog(ReportRecords.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+           /* progress_bar.setVisibility(View.VISIBLE);
+            progress_bar.setProgress(0);*/
         }
 
         @Override
@@ -479,12 +489,12 @@ public class ReportRecords extends BaseActivity {
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
-            ReportRecords.this.runOnUiThread(new Runnable() {
+           /* ReportRecords.this.runOnUiThread(new Runnable() {
                 public void run() {
                     progress_bar.setProgress(2);
                     progress_bar.setSecondaryProgress(3);
                 }
-            });
+            });*/
 
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -521,12 +531,12 @@ public class ReportRecords extends BaseActivity {
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfarray);
                 sendData.put("UserId", id);
-                ReportRecords.this.runOnUiThread(new Runnable() {
+              /*  ReportRecords.this.runOnUiThread(new Runnable() {
                     public void run() {
                         progress_bar.setProgress(3);
                         progress_bar.setSecondaryProgress(4);
                     }
-                });
+                });*/
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -538,15 +548,15 @@ public class ReportRecords extends BaseActivity {
                 // TODO Auto-generated catch block
                 e2.printStackTrace();
             }
-            ReportRecords.this.runOnUiThread(new Runnable() {
+            /*ReportRecords.this.runOnUiThread(new Runnable() {
                 public void run() {
                     progress_bar.setProgress(5);
                     progress_bar.setSecondaryProgress(6);
                 }
-            });
+            });*/
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(sendData,"ReportRecords");
-            if(result != null){
+            result = service.pdf(sendData, "ReportRecords");
+            if (result != null) {
                 int lenghtOfFile = result.length;
                 String temp = null;
                 try {
@@ -578,90 +588,98 @@ public class ReportRecords extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-            // System.out.println(sendData);
-            //
-            // receiveData = service.pdfreport(sendData);
-
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Void aaa) {
             // TODO Auto-generated method stub
-            super.onPostExecute(result);
+            super.onPostExecute(aaa);
+            if(mProgressDialog != null && mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
             viewReportLinear_id.setClickable(true);
-            try {
-              //  progress.dismiss();
-                progress_bar.setVisibility(View.GONE);
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+            if(result != null){
+                try {
+                    //  progress.dismiss();
+                   // progress_bar.setVisibility(View.GONE);
+                    File sdCard = Environment.getExternalStorageDirectory();
+                    File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
-                File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
+                    File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
 
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("application/pdf");
+                    PackageManager packageManager = getPackageManager();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setType("application/pdf");
+                    List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-                @SuppressWarnings("rawtypes")
-                List list = packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
+                    if (list.size() > 0 && fileReport.isFile()) {
+                        Log.v("post", "execute");
 
-                if (list.size() > 0 && fileReport.isFile()) {
-                    Log.v("post", "execute");
-
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_VIEW);
-
-                    ///////
-                    Uri uri = null;
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                        ///////
+                        Uri uri = null;
+                        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Method m = null;
+                        try {
+                            m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                            m.invoke(null);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
                         uri = Uri.fromFile(fileReport);
-                    } else {
+                    /*} else {
                         uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
-                    }
-                    /////
-                    i.setDataAndType(uri, "application/pdf");
-                    startActivity(i);
+                    }*/
+                        /////
+                        objIntent.setDataAndType(uri, "application/pdf");
+                        objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(objIntent);//Staring the pdf viewer
+                    } else if (!fileReport.isFile()) {
+                        Log.v("ERROR!!!!", "OOPS2");
+                    } else if (list.size() <= 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                ReportRecords.this);
+                        dialog.setTitle("PDF Reader not found");
+                        dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                                + fileReport.getAbsolutePath());
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
 
-                } else if (!fileReport.isFile()) {
-                    Log.v("ERROR!!!!", "OOPS2");
-                } else if (list.size() <= 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        dialog.dismiss();
+                                    }
+                                });
+                        dialog.show();
+                    }
+
+                } catch (OutOfMemoryError e) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(
                             ReportRecords.this);
-                    dialog.setTitle("PDF Reader not found");
-                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
-                            + fileReport.getAbsolutePath());
-                    dialog.setCancelable(false);
-                    dialog.setPositiveButton("OK",
+                    dlg.setTitle("Not enough memory");
+                    dlg.setMessage("There is not enough memory on this device.");
+                    dlg.setPositiveButton("Ok",
                             new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    // TODO Auto-generated method stub
-                                    dialog.dismiss();
+                                    ReportRecords.this.finish();
                                 }
                             });
-                    dialog.show();
+                    e.printStackTrace();
                 }
-
-            } catch (OutOfMemoryError e) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(
-                        ReportRecords.this);
-                dlg.setTitle("Not enough memory");
-                dlg.setMessage("There is not enough memory on this device.");
-                dlg.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                ReportRecords.this.finish();
-                            }
-                        });
-                e.printStackTrace();
+            }else{
+                Toast.makeText(ReportRecords.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
-
         }
 
         /**
@@ -669,10 +687,10 @@ public class ReportRecords extends BaseActivity {
          */
         protected void onProgressUpdate(String... progress) {
             // setting progress percentage
-            progress_bar.setIndeterminate(false);
+         /*   progress_bar.setIndeterminate(false);
             progress_bar.setMax(100);
             progress_bar.setProgress(Integer.parseInt(progress[0]));
-            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);
+            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);*/
         }
 
     }
@@ -685,7 +703,7 @@ public class ReportRecords extends BaseActivity {
         }
     }
 
-    private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void>{
+    private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {

@@ -3,6 +3,7 @@ package ui;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -46,6 +47,8 @@ import fragment.ReportFragment;
 import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
 import fragment.VitalFragment;
+import networkmngr.ConnectionDetector;
+import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -66,7 +69,8 @@ public class DashBoardActivity extends BaseActivity {
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
-    int grayColor, greenColor;
+    private int grayColor, greenColor;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +92,18 @@ public class DashBoardActivity extends BaseActivity {
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        findFamily();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+            findFamily();
+        }
         String quote = (String) getIntent().getStringExtra(MyFirebaseMessagingService.INTENT_KEY);
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();
         }
-
-
     }
 
 
@@ -135,14 +144,49 @@ public class DashBoardActivity extends BaseActivity {
         public void onClick(View v) {
             int viewId = v.getId();
             if (viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoard.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterDashBoard.setClickable(true);
+                    }
+                }, 2000);
                 openDashBoardFragment();
             } else if (viewId == R.id.footer_reports_container) {
+                mFooterReports.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterReports.setClickable(true);
+                    }
+                }, 2000);
                 openReportFragment();
             } else if (viewId == R.id.footer_repository_container) {
+                mFooterRepository.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterRepository.setClickable(true);
+                    }
+                }, 2000);
                 openRepositoryFragment();
             } else if (viewId == R.id.footer_family_container) {
+                mFooterFamily.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterFamily.setClickable(true);
+                    }
+                }, 2000);
                 openFamilyFragment();
             } else if (viewId == R.id.footer_account_container) {
+                mFooterAccount.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFooterAccount.setClickable(true);
+                    }
+                }, 2000);
                 openAccountFragment();
             }
         }
@@ -218,7 +262,9 @@ public class DashBoardActivity extends BaseActivity {
                         String size = new DecimalFormat("00").format(s);
                         //members.setText(size);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException je) {
+                    mProgressDialog.dismiss();
                     je.printStackTrace();
                     onBackPressed();
                     Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
@@ -228,6 +274,7 @@ public class DashBoardActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 onBackPressed();
+                mProgressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });

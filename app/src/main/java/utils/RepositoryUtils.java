@@ -310,11 +310,26 @@ public class RepositoryUtils {
             absolutePath = patientId + "/FileVault/" + "Personal/";
         }
 
+
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, Directory oldDirectory, Directory newDirectory, final OnMoveCompletion listener){
+
+        String absolutePath;
+        String newPath;
+
+        if (!oldDirectory.getDirectoryPath().equals("")) {
+            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath()+"/";
+        } else {
+            absolutePath = patientId + "/FileVault/" + "Personal/";
+        }
+
+
         if (!newDirectory.getDirectoryPath().equals("")) {
             newPath = patientId + "/FileVault/" + "Personal/" + newDirectory.getDirectoryPath();
         } else {
             newPath = patientId + "/FileVault/" + "Personal";
         }
+
+
 
         JSONArray jsonArray = new JSONArray();
         for (SelectableObject object : listOfSelectedObjects) {
@@ -358,6 +373,9 @@ public class RepositoryUtils {
             }
         });
         queue2.add(jr2);
+
+
+
     }
 
     public interface OnDeleteCompletion {
@@ -367,6 +385,7 @@ public class RepositoryUtils {
     }
 
     public interface OnMoveCompletion {
+
 
         void onSuccessfullMove();
 

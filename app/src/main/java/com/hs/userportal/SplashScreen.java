@@ -66,12 +66,9 @@ public class SplashScreen extends BaseActivity {
         packageHome_list = new ArrayList<HashMap<String, String>>();
         queue = Volley.newRequestQueue(this);
         sendData = new JSONObject();
-        ConnectionDetector con = new ConnectionDetector(SplashScreen.this);
-        if (!con.isConnectingToInternet()) {
-            Toast.makeText(getApplicationContext(), "No internet connection.Please connect to internet.", Toast.LENGTH_LONG).show();
-        }
         if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
             Intent intent = new Intent(this, DashBoardActivity.class);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             startActivity(intent);
             finish();
         }else{
@@ -104,6 +101,7 @@ public class SplashScreen extends BaseActivity {
 
                     Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
                     startActivity(intentMain);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     finish();
 
 

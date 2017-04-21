@@ -800,9 +800,6 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
 
     @Override
     public void onResume() {
-        if (Helper.authentication_flag == true) {
-            mActivity.finish();
-        }
         super.onResume();
     }
 
