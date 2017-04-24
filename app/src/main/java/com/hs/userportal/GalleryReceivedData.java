@@ -356,11 +356,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         DirectoryFile file = new DirectoryFile();
                         file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
-                        file.setLastModified(object.getString("LastModified"));
-                        file.setSize(object.getDouble("Size"));
+//                        file.setLastModified(object.getString("LastModified"));
+//                        file.setSize(object.getDouble("Size"));
                         file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addFile(mDirectory, file, file.getPath());
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();

@@ -3,6 +3,7 @@ package com.hs.userportal;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,6 +14,8 @@ public class Directory {
 
     private String directoryName;
     private Directory parentDirectory = null;
+    private long size;
+    private Date lastModified;
     private boolean isLocked = false;
 
     public List<Directory> listOfDirectories;
@@ -30,6 +33,22 @@ public class Directory {
                 setLocked(true);
             }
         }
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     public String getDirectoryName() {
@@ -159,5 +178,19 @@ public class Directory {
 
         return false;
     }
+
+    public void clearDirectories() {
+        listOfDirectories.clear();
+    }
+
+    public void clearAllFiles() {
+        listOfDirectoryFiles.clear();
+    }
+
+    public void clearAll() {
+        clearDirectories();
+        clearAllFiles();
+    }
+
 
 }

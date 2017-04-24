@@ -130,7 +130,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
 
-
     private String accessKey;
     private String secretKey;
 
@@ -151,18 +150,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
         displayedDirectory = new ArrayList<>();
-        return mView;
-    }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-
-        super.onActivityCreated(savedInstanceState);
-
-
-        new getDataFromAmazon().execute();
-
+        mDirectory = new Directory("Personal");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -170,16 +159,26 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             createLockFolder();
         }
 
-
+        return mView;
     }
 
-    public class getDataFromAmazon extends AsyncTask<Void, Void, Void> {
+    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
 
+        Directory currentDirectory;
+
+        public GetDataFromAmazon(Directory currentDirectory) {
+            this.currentDirectory = currentDirectory;
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
             String s3BucketName = getString(R.string.s3_bucket);
-            String prefix = patientId + "/FileVault/Personal/Insurance/";
+            String prefix = "";
+            if (currentDirectory.getParentDirectory() == null) {
+                prefix = patientId + "/FileVault/Personal/";
+            } else {
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryName() + "/";
+            }
             String delimiter = "/";
 
             AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
@@ -192,16 +191,35 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             ObjectListing objectListing = s3Client.listObjects(lor);
             s3allData = objectListing.getCommonPrefixes();
 
+            currentDirectory.clearAll();
             for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
-                s3allData.add(summary.getKey());
+                if (summary.getKey().contains("_thumb")) {
+                    continue;
+                }
+                if (DirectoryUtility.isFile(summary.getKey())) {
+                    DirectoryFile file = new DirectoryFile();
+                    file.setKey(summary.getKey());
+                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
+                    file.setSize(summary.getSize());
+                    file.setLastModified(summary.getLastModified());
+                    file.setName(DirectoryUtility.getFileName(summary.getKey()));
+                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                }
             }
 
-            int totalkey = s3allData.size() ;
-            for(int i=0; i<totalkey ;i++) {
-                Log.e("Rishabh", "delimiter all data := "+s3allData.get(i));
+            for (String path : s3allData) {
+                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
+                DirectoryUtility.addFolder(currentDirectory, directory);
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setListAdapter(currentDirectory);
+            setBackButtonPress(currentDirectory);
         }
     }
 
@@ -534,8 +552,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                mDirectory = new Directory("Personal");
-                startCreatingDirectoryStructure();
+//                startCreatingDirectoryStructure();
+                progressDialog.dismiss();
+                new GetDataFromAmazon(mDirectory).execute();
 
             }
         }, new Response.ErrorListener() {
@@ -548,7 +567,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void loadData() {
-        mDirectory = new Directory("Personal");
+
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
@@ -590,11 +609,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         DirectoryFile file = new DirectoryFile();
                         file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
-                        file.setLastModified(object.getString("LastModified"));
-                        file.setSize(object.getDouble("Size"));
+//                        file.setLastModified(object.getString("LastModified"));
+//                        file.setSize(object.getDouble("Size"));
                         file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addFile(mDirectory, file, file.getPath());
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();
@@ -621,8 +640,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onDirectoryTouched(Directory directory) {
         currentDirectory = directory;
-        setListAdapter(currentDirectory);
-        setBackButtonPress(currentDirectory);
+        new GetDataFromAmazon(currentDirectory).execute();
+
     }
 
     void setBackButtonPress(final Directory directory) {
