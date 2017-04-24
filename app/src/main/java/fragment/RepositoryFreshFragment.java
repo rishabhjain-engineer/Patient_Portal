@@ -42,13 +42,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -131,6 +128,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private int MY_PERMISSIONS_REQUEST = 3;
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
+    private List<String> s3allData = new ArrayList<>();
 
 
     private String accessKey;
@@ -181,21 +179,26 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         @Override
         protected Void doInBackground(Void... voids) {
             String s3BucketName = getString(R.string.s3_bucket);
-            String s = "Reports/";
+            String prefix = patientId + "/FileVault/Personal/Insurance/";
+            String delimiter = "/";
 
-            AmazonS3Client s3Client = new AmazonS3Client(
-                    new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
 
             ListObjectsRequest lor = new ListObjectsRequest()
                     .withBucketName(s3BucketName)
-                    .withPrefix(patientId + "/FileVault/" + "Personal/bills/");
+                    .withPrefix(prefix)
+                    .withDelimiter(delimiter);
 
-            lor.setDelimiter("/");
             ObjectListing objectListing = s3Client.listObjects(lor);
-            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
-                System.out.println(summary.getKey());
+            s3allData = objectListing.getCommonPrefixes();
 
-                Log.e("Rishabh", "Amazon all path := " + summary.getKey());
+            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
+                s3allData.add(summary.getKey());
+            }
+
+            int totalkey = s3allData.size() ;
+            for(int i=0; i<totalkey ;i++) {
+                Log.e("Rishabh", "delimiter all data := "+s3allData.get(i));
             }
 
             return null;

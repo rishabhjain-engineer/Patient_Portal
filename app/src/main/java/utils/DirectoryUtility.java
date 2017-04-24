@@ -80,7 +80,7 @@ public class DirectoryUtility {
             return "ZurekaTempPatientConfig";
         } else {
             //this method just gets the name of file
-            Log.e("Rishabh Jain", "All files := "+key);
+         //   Log.e("Rishabh Jain", "All files := "+key);
             String[] split = key.split("/");
             return split[split.length - 1];
         }
