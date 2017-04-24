@@ -29,7 +29,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +96,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private static final int PICK_FROM_CAMERA = 2;
     private RecyclerView list;
     private Directory mDirectory;
+    private Directory searchableDirectory;
     private Directory currentDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private RepositoryGridAdapter mRepositoryGridAdapter;
@@ -152,6 +152,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         displayedDirectory = new ArrayList<>();
 
         mDirectory = new Directory("Personal");
+        searchableDirectory = new Directory("Personal");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -218,6 +219,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            progressDialog.dismiss();
             setListAdapter(currentDirectory);
             setBackButtonPress(currentDirectory);
         }
@@ -264,7 +266,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     setListAdapter(mDirectory);
 
                 } else {
-                    Directory searchedDirectory = DirectoryUtility.searchDirectory(mDirectory, editable.toString());
+                    Directory searchedDirectory = DirectoryUtility.searchDirectory(searchableDirectory, editable.toString());
                     currentDirectory = searchedDirectory;
                     setListAdapter(searchedDirectory);
                 }
@@ -525,8 +527,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public void startCreatingDirectoryStructure() {
-
-
         loadData();
     }
 
@@ -553,7 +553,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onResponse(JSONObject response) {
 //                startCreatingDirectoryStructure();
-                progressDialog.dismiss();
+                loadData();
                 new GetDataFromAmazon(mDirectory).execute();
 
             }
@@ -610,15 +610,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
 //                        file.setLastModified(object.getString("LastModified"));
-//                        file.setSize(object.getDouble("Size"));
+                        file.setSize(object.getLong("Size"));
                         file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                        DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
 
-//                    mRepositoryAdapter.notifyDataSetChanged();
-                    currentDirectory = mDirectory;
-                    setListAdapter(currentDirectory);
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -640,6 +637,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onDirectoryTouched(Directory directory) {
         currentDirectory = directory;
+        progressDialog.show();
         new GetDataFromAmazon(currentDirectory).execute();
 
     }
