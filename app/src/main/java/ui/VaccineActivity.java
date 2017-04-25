@@ -4,9 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -57,12 +63,6 @@ public class VaccineActivity extends BaseActivity {
         mListView = (ListView) findViewById(R.id.vaccine_list_view);
         mVaccineAdapter = new VaccineAdapter(this);
 
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-            sendrequest();
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-        }
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
@@ -87,6 +87,50 @@ public class VaccineActivity extends BaseActivity {
                 }
             }
         });
+
+        final EditText searchEditText = (EditText)findViewById(R.id.search_text);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchEditText.setCursorVisible(true);
+               /* List<CountryInfo> mCountryFilteredList = new ArrayList<CountryListActivity.CountryInfo>();
+                if(!TextUtils.isEmpty(s)){
+                    for(CountryInfo countryInfo : mCountryInfoList){
+                        if(countryInfo.getmCountryName().toLowerCase().startsWith(s.toString().toLowerCase())){
+                            mCountryFilteredList.add(countryInfo);
+                        }
+                    }
+                }else{
+                    mCountryFilteredList = mCountryInfoList;
+                }
+                mCountryListAdapter.setData(mCountryFilteredList);
+                mCountryListAdapter.notifyDataSetChanged();*/
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                searchEditText.setCursorVisible(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        searchEditText.setCursorVisible(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            sendrequest();
+        } else {
+            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     private ProgressDialog mProgressDialog;

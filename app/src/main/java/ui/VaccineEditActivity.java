@@ -41,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
@@ -55,7 +56,9 @@ public class VaccineEditActivity extends BaseActivity {
     private boolean mIsInsert;
     private String mVaccineNameId, mPatientVaccineId;
     private static EditText mDateEditText, mNoteEditText;
-    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+    //private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+    private List<String> monthArray = new ArrayList<String>();
+    private List<String> mYearsArray = new ArrayList<String>();
     private Spinner mFromMonthSpinner, mFromYearSpinner;
     private LinearLayout mExactDateContainerLl, mMonthYearContainer;
     private static int month1, year1, day1;
@@ -63,16 +66,32 @@ public class VaccineEditActivity extends BaseActivity {
     private static String mDateTosend = null;
     private String mFromMonth = "00", mFromYear;
     private boolean mIsExact = true;
+    private RadioGroup mRadioGroup;
 
     @Override
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vaccine_edit);
+        monthArray.add("01");
+        monthArray.add("02");
+        monthArray.add("03");
+        monthArray.add("04");
+        monthArray.add("05");
+        monthArray.add("06");
+        monthArray.add("07");
+        monthArray.add("08");
+        monthArray.add("09");
+        monthArray.add("10");
+        monthArray.add("11");
+        monthArray.add("12");
         setupActionBar();
 
+
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group) ;
         RadioButton radioButtonExact = (RadioButton) findViewById(R.id.exact);
-        radioButtonExact.setChecked(true);
+        RadioButton radioButtonMonthYear = (RadioButton) findViewById(R.id.month_year);
+        RadioButton radioButtonYear = (RadioButton) findViewById(R.id.year);
 
         mExactDateContainerLl = (LinearLayout) findViewById(R.id.exact_date_container);
         mMonthYearContainer = (LinearLayout) findViewById(R.id.month_year_container);
@@ -92,13 +111,12 @@ public class VaccineEditActivity extends BaseActivity {
         ArrayAdapter monthArrayAdapter = new ArrayAdapter(VaccineEditActivity.this, R.layout.spinner_appearence, monthArray);
         monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromMonthSpinner.setAdapter(monthArrayAdapter);
-        final ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 1900; i <= thisYear; i++) {
-            years.add(Integer.toString(i));
+            mYearsArray.add(Integer.toString(i));
         }
-        Collections.reverse(years);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
+        Collections.reverse(mYearsArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, mYearsArray);
         adapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromYearSpinner.setAdapter(adapter);
 
@@ -187,15 +205,26 @@ public class VaccineEditActivity extends BaseActivity {
         if (!TextUtils.isEmpty(date)) {
             if (date.contains("00/00/")) {
                 date = date.replace("00/00/", "");
-                //setDateLayout(2);
+                int position = mYearsArray.indexOf(date);
+                mFromYearSpinner.setSelection(position);
+                radioButtonYear.setChecked(true);
+                setDateLayout(2);
             } else if (date.contains("00/")) {
                 date = date.replace("00/", "");
-               // setDateLayout(1);
+                String [] splitDate = date.split("/");
+                mFromMonth = splitDate[0];
+                int position = monthArray.indexOf(mFromMonth);
+                mFromMonthSpinner.setSelection(position);
+                int position2 = mYearsArray.indexOf(splitDate[1]);
+                mFromYearSpinner.setSelection(position2);
+                radioButtonMonthYear.setChecked(true);
+                setDateLayout(1);
             }else{
-                //mDateEditText.setText(date);
+                mDateEditText.setText(date);
+                radioButtonExact.setChecked(true);
+                setDateLayout(0);
             }
             mDateTosend = date;
-            mDateEditText.setText(date);
         }
 
         if (!TextUtils.isEmpty(notes)) {
@@ -228,7 +257,7 @@ public class VaccineEditActivity extends BaseActivity {
         mFromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mFromMonth = monthArray[position];
+                mFromMonth = monthArray.get(position);
             }
 
             @Override
@@ -240,8 +269,7 @@ public class VaccineEditActivity extends BaseActivity {
         mFromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mFromMonth = "00";
-                mFromYear = years.get(position);
+                mFromYear = mYearsArray.get(position);
             }
 
             @Override
@@ -322,21 +350,17 @@ public class VaccineEditActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.exact:
                 if (checked) {
-                    mIsExact = true;
                     setDateLayout(0);
                     mDateTosend = mDateEditText.getEditableText().toString();
                 }
                 break;
             case R.id.month_year:
                 if (checked) {
-                    mIsExact = false;
                     setDateLayout(1);
                 }
                 break;
             case R.id.year:
                 if (checked) {
-                    mFromMonth = "00";
-                    mIsExact = false;
                     setDateLayout(2);
                 }
                 break;
@@ -345,12 +369,15 @@ public class VaccineEditActivity extends BaseActivity {
 
     private void setDateLayout(int position) {
         if (position == 0) {
+            mIsExact = true;
             mExactDateContainerLl.setVisibility(View.VISIBLE);
             mMonthYearContainer.setVisibility(View.GONE);
         } else {
+            mIsExact = false;
             mMonthYearContainer.setVisibility(View.VISIBLE);
             mExactDateContainerLl.setVisibility(View.GONE);
             if (position == 2) {
+                mFromMonth = "00";
                 mFromMonthSpinner.setVisibility(View.GONE);
             } else {
                 mFromMonthSpinner.setVisibility(View.VISIBLE);
