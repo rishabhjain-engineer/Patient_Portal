@@ -895,7 +895,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             outStream.close();
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
                             uriList.add(downloadedFileUri);
-                            RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                           // RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -926,7 +926,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     uriList.add(selectedImageUri);
                 }
 
-                RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+      //          RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
             super.onActivityResult(requestCode, resultCode, data);

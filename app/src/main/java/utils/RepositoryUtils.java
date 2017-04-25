@@ -156,14 +156,27 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(ArrayList<Uri> fileUri, Activity activity, Directory directory, String uploadFrom) {
+    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri,Activity activity, Directory directory, String uploadFrom) {
+
+
+
+
+
+
 
         for (int i = 0; i < fileUri.size(); i++) {
             mUploadUriObject = new UploadUri(fileUri.get(i));
+
+            mUploadUriObject.setmThumbUri(filethumbUri.get(i));
+            String thumbPath = getPathFromContentUri(filethumbUri.get(i) , activity) ;
+            File imageThumbFile = new File (thumbPath) ;
+            mUploadUriObject.setmThumbFile(imageThumbFile);
+
             String path = getPathFromContentUri(mUploadUriObject.getmUri(), activity);
             mUploadUriObject.setImagePath(path);
             File imageFile = new File(mUploadUriObject.getImagePath());
             mUploadUriObject.setImageFile(imageFile);
+
             String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
             String splitfo_lenthcheck[] = path1.split("/");
             int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
@@ -188,9 +201,9 @@ public class RepositoryUtils {
                 Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
             }
             mListOfUploadUri.add(mUploadUriObject);
-            Log.e("Model", " URI := "+mUploadUriObject.getmUri());
+           /* Log.e("Model", " URI := "+mUploadUriObject.getmUri());
             Log.e("Model", "Uri PAth := "+mUploadUriObject.getmUri().getPath());
-            Log.e("Model", "Image file name := "+mUploadUriObject.getImageName());
+            Log.e("Model", "Image file name := "+mUploadUriObject.getImageName());*/
 
         }
         Log.e("Model", "Directory path to place := "+directory.getDirectoryPath());

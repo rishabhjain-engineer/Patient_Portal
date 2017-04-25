@@ -32,6 +32,7 @@ import com.readystatesoftware.simpl3r.UploadIterruptedException;
 import com.readystatesoftware.simpl3r.Uploader;
 import com.readystatesoftware.simpl3r.Uploader.UploadProgressListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,13 +74,13 @@ public class UploadService extends IntentService {
     private JsonObjectRequest jr1, jr2;
     private NotificationManager nm;
     private final Handler handler = new Handler();
-    private String fname, afterDecode, uplodfrm;
+    private String fname, afterDecode, uplodfrm, fthumbname;
     private String add_path, exhistimg, stringcheck;
-    private int mTotalNumberUriReceived ;
+    private int mTotalNumberUriReceived;
     protected PreferenceHelper mPreferenceHelper;
     private List<UploadUri> mUploadUriObjects;
-    private String s3ObjectKey;
-    private File fileToUpload ;
+    private String s3ObjectKey, s3ObjectKeyThumb;
+    private File fileToUpload, fileToUploadThumb;
 
     public UploadService() {
         super("simpl3r-example-upload");
@@ -103,21 +104,25 @@ public class UploadService extends IntentService {
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
 
-        String path=null;
-        String filePath = null;
+        String path = null;
+        String filePath = null, fileThumbpath = null;
         uplodfrm = intent.getStringExtra(uploadfrom);
         add_path = intent.getStringExtra("add_path");
 
         mUploadUriObjects = RepositoryUtils.getUploadUriObjectList();
 
-        for(int i=0 ; i< mUploadUriObjects.size() ; i++) {
+        for (int i = 0; i < mUploadUriObjects.size(); i++) {
 
-            fileToUpload = mUploadUriObjects.get(i).getImageFile() ;
-            stringcheck = mUploadUriObjects.get(i).getImageName() ;
+            fileToUpload = mUploadUriObjects.get(i).getImageFile();
+            stringcheck = mUploadUriObjects.get(i).getImageName();
             exhistimg = mUploadUriObjects.get(i).isExistingImage();
             filePath = mUploadUriObjects.get(i).getImagePath();
 
+            fileThumbpath = mUploadUriObjects.get(i).getmThumbUri().getPath();           // equivalent to filepath
+            fileToUploadThumb = mUploadUriObjects.get(i).getmThumbFile();                 // equivalent to filetoupload
+
             s3ObjectKey = md5(filePath);
+            s3ObjectKeyThumb = md5(fileThumbpath);
             String s3BucketName = getString(R.string.s3_bucket);
 
             if (add_path.equalsIgnoreCase("")) {
@@ -136,40 +141,72 @@ public class UploadService extends IntentService {
 
             if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
                 fname = imagename;
+                fthumbname = mUploadUriObjects.get(i).getmThumbFile().getName();
             } else {
                 if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
                     fname = stringcheck.substring(0, stringcheck.length() - 4)
                             + "_1.jpg";
+
                 } else {
                     fname = imagename.substring(0, imagename.length() - 4)
                             + ".jpg";
+                    fthumbname = mUploadUriObjects.get(i).getmThumbFile().getName();
                 }
             }
-            uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
-            // listen for progress updates and broadcast/notify them appropriately
-            uploader.setProgressListener(new UploadProgressListener() {
-                @Override
-                public void progressChanged(ProgressEvent progressEvent,
-                                            long bytesUploaded, int percentUploaded) {
 
-                    Notification notification = buildNotification(msg, percentUploaded);
+
+            for (int j = 0; j < 2; j++) {
+                if (j == 0) {
+                    Log.e("Rishabh", "j value := " +j);
+                    uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
+                    // listen for progress updates and broadcast/notify them appropriately
+                    uploader.setProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void progressChanged(ProgressEvent progressEvent,
+                                                    long bytesUploaded, int percentUploaded) {
+
+                            Notification notification = buildNotification(msg, percentUploaded);
+                            nm.notify(NOTIFY_ID_UPLOAD, notification);
+                            broadcastState(s3ObjectKey, percentUploaded, msg);
+                        }
+                    });
+
+                    // broadcast/notify that our upload is starting
+                    Notification notification = buildNotification(msg, 0);
                     nm.notify(NOTIFY_ID_UPLOAD, notification);
-                    broadcastState(s3ObjectKey, percentUploaded, msg);
+                    broadcastState(s3ObjectKey, 0, msg);
+                } else {
+                    Log.e("Rishabh", "j value := " +j);
+                    uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
+                    // listen for progress updates and broadcast/notify them appropriately
+                    uploader.setProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void progressChanged(ProgressEvent progressEvent,
+                                                    long bytesUploaded, int percentUploaded) {
+
+                            Notification notification = buildNotification(msg, percentUploaded);
+                            nm.notify(NOTIFY_ID_UPLOAD, notification);
+                            broadcastState(s3ObjectKey, percentUploaded, msg);
+                        }
+                    });
+
+                    // broadcast/notify that our upload is starting
+                    Notification notification = buildNotification(msg, 0);
+                    nm.notify(NOTIFY_ID_UPLOAD, notification);
+                    broadcastState(s3ObjectKey, 0, msg);
                 }
-            });
+            }
 
-            // broadcast/notify that our upload is starting
-            Notification notification = buildNotification(msg, 0);
-            nm.notify(NOTIFY_ID_UPLOAD, notification);
-            broadcastState(s3ObjectKey, 0, msg);
+            Log.e("Rishabh", "main file := " + path + fname);
+            Log.e("RIshabh", "thumb file := " + path + fthumbname);
         }
-
 
 
         try {
             String s3Location = uploader.start(); // initiate the upload
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             System.out.println("File successfully uploaded to " + s3Location);
+            Log.e("Rishabh", "File successfully uploaded to " + s3Location);
             //
             String[] parts = s3Location.split("com/" + "");
             System.out.println(parts[1].trim());
@@ -188,18 +225,37 @@ public class UploadService extends IntentService {
             System.out.println("afterdecode " + afterDecode);
 
 
+
+
             sendData = new JSONObject();
 
-            sendData.put("PatientId", patientId);
+         /*   sendData.put("PatientId", patientId);
             sendData.put("ImageName", file_name[len - 1]);
             sendData.put("ImageUrl", afterDecode);
-            sendData.put("Path", path);
+            sendData.put("Path", path);*/
 
+            JSONArray jsonArray = new JSONArray();
+            for (int k = 0; k < mUploadUriObjects.size(); k++) {
+
+                Log.e("Rishabh", "image name := "+mUploadUriObjects.get(k).getImageFile().getName());
+                Log.e("Rishabh", "Image URl := "+path+mUploadUriObjects.get(k).getImageFile().getName());
+                Log.e("Rishabh", "image name := "+path+mUploadUriObjects.get(k).getmThumbFile().getName());
+
+                JSONObject innerjsonObject = new JSONObject();
+                innerjsonObject.put("ImageName", mUploadUriObjects.get(k).getImageFile().getName());
+                innerjsonObject.put("ImageUrl", path + mUploadUriObjects.get(k).getImageFile().getName());
+                innerjsonObject.put("ThumbPath", path + mUploadUriObjects.get(k).getmThumbFile().getName());
+                jsonArray.put(innerjsonObject);
+            }
+            sendData.put("imageDetails", jsonArray);
+            sendData.put("PatientId", patientId);
             System.out.println(sendData);
 
+            Log.e("Rishabh", "send data := "+sendData);
             queue1 = Volley.newRequestQueue(this);
 
-            String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+            //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+            String url1 = "http://192.168.1.11/WebServices/LabService.asmx/UploadImage_New";
 
             jr1 = new JsonObjectRequest(
                     Request.Method.POST, url1, sendData,
@@ -207,7 +263,7 @@ public class UploadService extends IntentService {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            System.out.println(response);
+                            Log.e("Rishabh", "response  " + response);
                             try {
 
                                 if (response.getString("d").equalsIgnoreCase("success")) {
@@ -218,7 +274,7 @@ public class UploadService extends IntentService {
                                         Toast.makeText(getApplicationContext(),
                                                 response.getString("d"),
                                                 Toast.LENGTH_SHORT).show();
-                                    } else if (uplodfrm.equals(GALLERY)  ) {
+                                    } else if (uplodfrm.equals(GALLERY)) {
                                         GalleryReceivedData.completedUpload();
                                         Toast.makeText(getApplicationContext(),
                                                 response.getString("d"),
@@ -274,6 +330,7 @@ public class UploadService extends IntentService {
 
                             } catch (JSONException e) {
                                 // TODO Auto-generated catch block
+                                Log.e("Rishabh", "response error " + e);
                                 e.printStackTrace();
                             }
 

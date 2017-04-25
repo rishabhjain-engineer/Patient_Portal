@@ -236,6 +236,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
         //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
+        ArrayList<Uri> ThumbUriList = new ArrayList<>() ;
         InputStream is = null;
         for (int i = 0; i < getUri.size(); i++) {
             Uri testSingleUri = getUri.get(i);
@@ -243,6 +244,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                File thumbFileCreated = createThumbFile(testSingleUri) ;
                 Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath()) ;
                 Log.e("Rishabh", "thumb_image uri := "+thumbImageUri.toString());
+                ThumbUriList.add(thumbImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -259,7 +261,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         outStream.flush();
                         outStream.close();
                         Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                        Log.e("Rishabh", "image uri := "+downloadedFileUri.toString());
+                        Log.e("Rishabh", "origin image uri := "+downloadedFileUri.toString());
                         selectedImageUri.add(downloadedFileUri);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -267,7 +269,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 }
             }
         }
-        RepositoryUtils.uploadFile(selectedImageUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList,GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
     private File createThumbFile(Uri singleUri) throws IOException {
@@ -313,9 +315,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        String mImageName="JPEG_" + timeStamp + "_"+"_thumb";
+        String mImageName="JPEG_" + timeStamp + "_";
         /*mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);*/
-        File thumb_image = File.createTempFile(mImageName,".jpg",mediaStorageDir);
+        File thumb_image = File.createTempFile(mImageName,"_thumb.jpg",mediaStorageDir);
         return thumb_image;
     }
 

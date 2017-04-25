@@ -11,11 +11,11 @@ import java.util.ArrayList;
 
 public class UploadUri {
 
-    private Uri mUri ;
+    private Uri mUri , mThumbUri;
     private ArrayList<Uri> listOfUriPath= new ArrayList();
     private String mPath, mImageName  , mImagePath;
     private String isExistingImage ;
-    private File mFile ;
+    private File mFile, mThumbFile ;
 
 
     public UploadUri(Uri getUri){
@@ -62,6 +62,23 @@ public class UploadUri {
 
     public String getImagePath(){
         return mImagePath;
+    }
+
+
+    public Uri getmThumbUri() {
+        return mThumbUri;
+    }
+
+    public void setmThumbUri(Uri mThumbUri) {
+        this.mThumbUri = mThumbUri;
+    }
+
+    public File getmThumbFile() {
+        return mThumbFile;
+    }
+
+    public void setmThumbFile(File mThumbFile) {
+        this.mThumbFile = mThumbFile;
     }
 }
 
