@@ -185,6 +185,15 @@ public class VaccineEditActivity extends BaseActivity {
         }
 
         if (!TextUtils.isEmpty(date)) {
+            if (date.contains("00/00/")) {
+                date = date.replace("00/00/", "");
+                //setDateLayout(2);
+            } else if (date.contains("00/")) {
+                date = date.replace("00/", "");
+               // setDateLayout(1);
+            }else{
+                //mDateEditText.setText(date);
+            }
             mDateTosend = date;
             mDateEditText.setText(date);
         }
@@ -197,7 +206,11 @@ public class VaccineEditActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    sendrequest();
+                    if(!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)){
+                        sendrequest();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "No fields can be empty.", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
                 }
@@ -227,6 +240,7 @@ public class VaccineEditActivity extends BaseActivity {
         mFromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromMonth = "00";
                 mFromYear = years.get(position);
             }
 

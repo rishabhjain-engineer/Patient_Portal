@@ -149,18 +149,35 @@ public class VaccineActivity extends BaseActivity {
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
+                        /**
+                         * This loop makes calculation asuming that for month, year or week AgeAt will not be null
+                         * There are 5 cases simple/rangewise in year, simple/rangewise in month , simple/rangewise in week , AgeAt = 0 (means At Birth) and Special Doses which are time independent
+                         */
                         for (int i = 0; i < mVaccineDetailsList.size(); i++) {
                             VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
                             if (vaccineDetails.getAgeAt() <= 0 && vaccineDetails.getAgeTo() <= 0) {
-                                String key = "a";
-                                if (mKeysList.contains(key)) {
-                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
-                                    vaccineDetailsList.add(vaccineDetails);
+                                if (vaccineDetails.getAgeAt() == 0) {
+                                    String key = "b";
+                                    if (mKeysList.contains(key)) {
+                                        List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                        vaccineDetailsList.add(vaccineDetails);
+                                    } else {
+                                        mKeysList.add(key);
+                                        List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                        vaccineDetailsList.add(vaccineDetails);
+                                        listHashMap.put(key, vaccineDetailsList);
+                                    }
                                 } else {
-                                    mKeysList.add(key);
-                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
-                                    vaccineDetailsList.add(vaccineDetails);
-                                    listHashMap.put(key, vaccineDetailsList);
+                                    String key = "a";
+                                    if (mKeysList.contains(key)) {
+                                        List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                        vaccineDetailsList.add(vaccineDetails);
+                                    } else {
+                                        mKeysList.add(key);
+                                        List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                        vaccineDetailsList.add(vaccineDetails);
+                                        listHashMap.put(key, vaccineDetailsList);
+                                    }
                                 }
                             } else {
                                 if (vaccineDetails.getAgeAt() % 365 == 0 || vaccineDetails.getAgeTo() % 365 == 0) {
@@ -257,10 +274,14 @@ public class VaccineActivity extends BaseActivity {
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
                                         vaccineDetailsObj.setHeaderString(subString + " Week");
+                                    } else if (key.contains("b")) {
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString("At Birth");
                                     } else {
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString("Time Independent");
+                                        vaccineDetailsObj.setHeaderString("Special Doses");
                                     }
                                 }
                                 if (isToAdd) {
