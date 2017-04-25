@@ -88,29 +88,37 @@ public class VaccineActivity extends BaseActivity {
             }
         });
 
-        final EditText searchEditText = (EditText)findViewById(R.id.search_text);
+        final EditText searchEditText = (EditText) findViewById(R.id.search_text);
+        searchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setCursorVisible(true);
+            }
+        });
+
         searchEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchEditText.setCursorVisible(true);
-               /* List<CountryInfo> mCountryFilteredList = new ArrayList<CountryListActivity.CountryInfo>();
-                if(!TextUtils.isEmpty(s)){
-                    for(CountryInfo countryInfo : mCountryInfoList){
-                        if(countryInfo.getmCountryName().toLowerCase().startsWith(s.toString().toLowerCase())){
-                            mCountryFilteredList.add(countryInfo);
+                List<VaccineDetails> vaccineDetailsFilteredList = new ArrayList<VaccineDetails>();
+                if (!TextUtils.isEmpty(s)) {
+                    for (VaccineDetails vaccineDetails : mFinalVaccineDetailsListToSend) {
+                        if (!vaccineDetails.isHeader() && vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                            vaccineDetailsFilteredList.add(vaccineDetails);
                         }
                     }
-                }else{
-                    mCountryFilteredList = mCountryInfoList;
+                } else {
+                    hideSoftKeyboard();
+                    searchEditText.setCursorVisible(false);
+                    vaccineDetailsFilteredList = mFinalVaccineDetailsListToSend;
                 }
-                mCountryListAdapter.setData(mCountryFilteredList);
-                mCountryListAdapter.notifyDataSetChanged();*/
+                mVaccineAdapter.setData(vaccineDetailsFilteredList);
+                mVaccineAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                searchEditText.setCursorVisible(true);
             }
 
             @Override
