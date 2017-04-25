@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,7 +38,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -108,13 +112,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
-
         mActivity = this;
-
         displayedDirectory = new ArrayList<>();
-
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
-
             // Check if user is logged in .
             if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                 Toast.makeText(this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -234,11 +234,18 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
-        //new code -> saves recieved bitmap as file
+        //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
         InputStream is = null;
         for (int i = 0; i < getUri.size(); i++) {
             Uri testSingleUri = getUri.get(i);
+            try {
+               File thumbFileCreated = createThumbFile(testSingleUri) ;
+                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath()) ;
+                Log.e("Rishabh", "thumb_image uri := "+thumbImageUri.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (testSingleUri.getAuthority() != null) {
                 is = getContentResolver().openInputStream(testSingleUri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
@@ -248,10 +255,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         downloadedFile = createImageFile();
                         OutputStream outStream = new FileOutputStream(downloadedFile);
                         //compressing image to 80 percent quality to reduce size
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                         outStream.flush();
                         outStream.close();
                         Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                        Log.e("Rishabh", "image uri := "+downloadedFileUri.toString());
                         selectedImageUri.add(downloadedFileUri);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -262,6 +270,90 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         RepositoryUtils.uploadFile(selectedImageUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
+    private File createThumbFile(Uri singleUri) throws IOException {
+
+        Bitmap bitmap = getThumbnail(singleUri);
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap,250,250);
+        File thumbFile = storeImage(ThumbImage) ;
+        return thumbFile ;
+    }
+
+    private File storeImage(Bitmap ThumbnailImage) throws IOException {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile == null) {
+            Log.e("Rishabh", "Error creating media file, check storage permissions: ");// e.getMessage());
+
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            ThumbnailImage.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            fos.close();
+            return pictureFile;
+
+        } catch (FileNotFoundException e) {
+            Log.e("Rishabh", "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e("Rishabh", "Error accessing file: " + e.getMessage());
+        }
+        return null;
+    }
+
+    private  File getOutputMediaFile() throws IOException {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        String mImageName="JPEG_" + timeStamp + "_"+"_thumb";
+        /*mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);*/
+        File thumb_image = File.createTempFile(mImageName,".jpg",mediaStorageDir);
+        return thumb_image;
+    }
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+        final int THUMBNAIL_SIZE = 250 ;
+        InputStream input = getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
+        input = this.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio){
+        int k = Integer.highestOneBit((int)Math.floor(ratio));
+        if(k==0) return 1;
+        else return k;
+    }
+
+
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -271,6 +363,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
+
         return image;
     }
 

@@ -344,6 +344,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 progressDialog.dismiss();
                 Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
                 loadData();
+                if(listMode == 1){
+                    new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                }else {
+                    new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                }
+
             }
 
             @Override
@@ -386,6 +392,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
                             loadData();
+                            if(listMode == 1){
+                                new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                            }else {
+                                new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                            }
                         }
 
                         @Override
