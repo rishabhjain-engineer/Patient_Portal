@@ -130,9 +130,7 @@ public class VaccineEditActivity extends BaseActivity {
         mNoteEditText = (EditText) findViewById(R.id.comment_edit_text);
         Button insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
 
-
         Intent intent = getIntent();
-
         String name = intent.getStringExtra("Name");
         String abbreviationName = intent.getStringExtra("VaccineName");
         String dose = intent.getStringExtra("Dose");
@@ -142,8 +140,8 @@ public class VaccineEditActivity extends BaseActivity {
         String comments = intent.getStringExtra("comment");
         String agAt = intent.getStringExtra("AgeAt");
         String ageTo = intent.getStringExtra("AgeTo");
-
         String date = intent.getStringExtra("VaccineDateTime");
+
         if (!TextUtils.isEmpty(date)) {
             String dateInArray[] = date.split(" ");
             String dateInArray2[] = dateInArray[0].split("-");
