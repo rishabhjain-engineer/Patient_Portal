@@ -165,11 +165,25 @@ public class RepositoryUtils {
             mUploadUriObject.setImageUri(fileUri.get(i));
             mUploadUriObject.setThumbUri(filethumbUri.get(i));
 
-            String imageStoredPath =  mUploadUriObject.getImageUri().getPath();
+
+            String imageStoredPath = getPathFromContentUri(mUploadUriObject.getImageUri(), activity);
+            mUploadUriObject.setImagePath(imageStoredPath);
+
             String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
 
-            File imageFile = new File (imageStoredPath) ;
+            File imageFile = new File(mUploadUriObject.getImagePath());
             mUploadUriObject.setImageFile(imageFile);
+
+
+
+
+           /* String imageStoredPath =  mUploadUriObject.getImageUri().getPath();
+            String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();*/
+
+           /* File imageFile = new File (imageStoredPath) ;
+            mUploadUriObject.setImageFile(imageFile);*/
+
+
             File imageThumbFile = new File (imageThumbStoredPath) ;
             mUploadUriObject.setThumbFile(imageThumbFile);
 

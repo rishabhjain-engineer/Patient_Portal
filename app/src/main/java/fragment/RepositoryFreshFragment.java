@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -68,6 +69,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -874,6 +876,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         ArrayList<Uri> uriList = new ArrayList<>();
+        ArrayList<Uri> ThumbUriList = new ArrayList<>();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
 
@@ -890,12 +893,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             downloadedFile = createImageFile();
                             OutputStream outStream = new FileOutputStream(downloadedFile);
                             //compressing image to 80 percent quality to reduce size
-                            bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                             outStream.flush();
                             outStream.close();
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
                             uriList.add(downloadedFileUri);
-                           // RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -903,6 +906,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 }
 
+                try {
+                    File thumbFileCreated = createThumbFile(selectedImageUri);
+                    Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
+                    ThumbUriList.add(thumbImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                RepositoryUtils.uploadFile(uriList, ThumbUriList,getActivity(), currentDirectory, UploadService.REPOSITORY);
                 // old code -> this used to work for files that are on phone itself,
                 // but fails for files from cloud
                 // example -> try an image that google photos first downloads and then sends in onactivityresult
@@ -920,13 +931,27 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 if (mIsSdkLessThanM == true) {
                     uriList.add(Imguri);
-
+                    try {
+                        File thumbFileCreated = createThumbFile(Imguri);
+                        Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
+                        ThumbUriList.add(thumbImageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
                     uriList.add(selectedImageUri);
+                    try {
+                        File thumbFileCreated = createThumbFile(selectedImageUri);
+                        Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
+                        ThumbUriList.add(thumbImageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-      //          RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+
+                RepositoryUtils.uploadFile(uriList,ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
             super.onActivityResult(requestCode, resultCode, data);
@@ -937,6 +962,87 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     public static void refresh() {
         repositoryFreshFragment.startCreatingDirectoryStructure();
+    }
+
+
+    private File createThumbFile(Uri singleUri) throws IOException {
+
+        Bitmap bitmap = getThumbnail(singleUri);
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap, 250, 250);
+        File thumbFile = storeImage(ThumbImage);
+        return thumbFile;
+    }
+
+    private File storeImage(Bitmap ThumbnailImage) throws IOException {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile == null) {
+
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            ThumbnailImage.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            fos.close();
+            return pictureFile;
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+        return null;
+    }
+
+    private File getOutputMediaFile() throws IOException {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
+        return mediaFile;
+    }
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
+        final int THUMBNAIL_SIZE = 250;
+        InputStream input = mActivity.getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
+        input = mActivity.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
     }
 
     @Override
