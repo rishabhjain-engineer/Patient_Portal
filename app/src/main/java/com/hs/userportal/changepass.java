@@ -185,6 +185,7 @@ public class changepass extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
+        menu.findItem(R.id.action_home).setVisible(false);
         return true;
     }
 

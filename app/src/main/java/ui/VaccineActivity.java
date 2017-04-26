@@ -4,9 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -57,12 +63,6 @@ public class VaccineActivity extends BaseActivity {
         mListView = (ListView) findViewById(R.id.vaccine_list_view);
         mVaccineAdapter = new VaccineAdapter(this);
 
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-            sendrequest();
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-        }
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
@@ -87,6 +87,58 @@ public class VaccineActivity extends BaseActivity {
                 }
             }
         });
+
+        final EditText searchEditText = (EditText) findViewById(R.id.search_text);
+        searchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setCursorVisible(true);
+            }
+        });
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchEditText.setCursorVisible(true);
+                List<VaccineDetails> vaccineDetailsFilteredList = new ArrayList<VaccineDetails>();
+                if (!TextUtils.isEmpty(s)) {
+                    for (VaccineDetails vaccineDetails : mFinalVaccineDetailsListToSend) {
+                        if (!vaccineDetails.isHeader() && vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                            vaccineDetailsFilteredList.add(vaccineDetails);
+                        }
+                    }
+                } else {
+                    hideSoftKeyboard();
+                    searchEditText.setCursorVisible(false);
+                    vaccineDetailsFilteredList = mFinalVaccineDetailsListToSend;
+                }
+                mVaccineAdapter.setData(vaccineDetailsFilteredList);
+                mVaccineAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        searchEditText.setCursorVisible(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            sendrequest();
+        } else {
+            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     private ProgressDialog mProgressDialog;
@@ -149,18 +201,35 @@ public class VaccineActivity extends BaseActivity {
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
+                        /**
+                         * This loop makes calculation asuming that for month, year or week AgeAt will not be null
+                         * There are 5 cases simple/rangewise in year, simple/rangewise in month , simple/rangewise in week , AgeAt = 0 (means At Birth) and Special Doses which are time independent
+                         */
                         for (int i = 0; i < mVaccineDetailsList.size(); i++) {
                             VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
                             if (vaccineDetails.getAgeAt() <= 0 && vaccineDetails.getAgeTo() <= 0) {
-                                String key = "a";
-                                if (mKeysList.contains(key)) {
-                                    List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
-                                    vaccineDetailsList.add(vaccineDetails);
+                                if (vaccineDetails.getAgeAt() == 0) {
+                                    String key = "b";
+                                    if (mKeysList.contains(key)) {
+                                        List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                        vaccineDetailsList.add(vaccineDetails);
+                                    } else {
+                                        mKeysList.add(key);
+                                        List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                        vaccineDetailsList.add(vaccineDetails);
+                                        listHashMap.put(key, vaccineDetailsList);
+                                    }
                                 } else {
-                                    mKeysList.add(key);
-                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
-                                    vaccineDetailsList.add(vaccineDetails);
-                                    listHashMap.put(key, vaccineDetailsList);
+                                    String key = "a";
+                                    if (mKeysList.contains(key)) {
+                                        List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);
+                                        vaccineDetailsList.add(vaccineDetails);
+                                    } else {
+                                        mKeysList.add(key);
+                                        List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                        vaccineDetailsList.add(vaccineDetails);
+                                        listHashMap.put(key, vaccineDetailsList);
+                                    }
                                 }
                             } else {
                                 if (vaccineDetails.getAgeAt() % 365 == 0 || vaccineDetails.getAgeTo() % 365 == 0) {
@@ -257,10 +326,14 @@ public class VaccineActivity extends BaseActivity {
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
                                         vaccineDetailsObj.setHeaderString(subString + " Week");
+                                    } else if (key.contains("b")) {
+                                        vaccineDetailsObj = new VaccineDetails();
+                                        vaccineDetailsObj.setHeader(true);
+                                        vaccineDetailsObj.setHeaderString("At Birth");
                                     } else {
                                         vaccineDetailsObj = new VaccineDetails();
                                         vaccineDetailsObj.setHeader(true);
-                                        vaccineDetailsObj.setHeaderString("Time Independent");
+                                        vaccineDetailsObj.setHeaderString("Special Doses");
                                     }
                                 }
                                 if (isToAdd) {
