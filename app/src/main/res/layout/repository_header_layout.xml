@@ -8,11 +8,13 @@
 
     <ImageView
         android:id="@+id/repository_backbutton_imageview"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:fitsSystemWindows="true"
         android:layout_marginLeft="10dp"
+        android:scaleType="center"
         android:background="@drawable/backarrow"
         android:visibility="gone" />
 

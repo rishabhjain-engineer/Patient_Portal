@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,12 +31,14 @@ import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.R;
 import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.UploadUri;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import config.StaticHolder;
@@ -50,6 +53,8 @@ public class RepositoryUtils {
 
     private static PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
+    private static UploadUri mUploadUriObject;
+    private static List<UploadUri> mListOfUploadUri = new ArrayList<>();
 
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
@@ -151,79 +156,60 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(Uri fileUri, Activity activity, Directory directory, String uploadFrom, int totalUri) {
+    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri,Activity activity, Directory directory, String uploadFrom) {
 
-        Log.e("Rishabh", "uri count := UTILS " + totalUri);
-        String path = getPathFromContentUri(fileUri, activity);
-        File imageFile = new File(path);
-        String path1 = imageFile.getAbsolutePath();
-        String splitfo_lenthcheck[] = path1.split("/");
-        int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
-        long check = ((imageFile.length() / 1024));
-        if (check < 10000 && filenamelength < 99) {
-            String splitstr[];
-            String chosenimg = "";
-            String stringcheck = "", exhistimg = "false";
-            int leangth = 0;
-            if (path.contains("/")) {
-                splitstr = path.split("/");
-                chosenimg = splitstr[splitstr.length - 1];
-            }
-            if (directory.hasFile(imageFile.getName())) {
-                exhistimg = "true";
+        for (int i = 0; i < fileUri.size(); i++) {
 
-            }
-            stringcheck = imageFile.getName();
-            /*for (int i = 0; i < thumbImage.size(); i++) {
-                String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
-                if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
-                    if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+            mUploadUriObject = new UploadUri(fileUri.get(i));
 
-                        stringcheck = listsplitstr[listsplitstr.length - 1];
-                        leangth = listsplitstr[listsplitstr.length - 1].length();
-                        exhistimg = "true";
-                    }
+            mUploadUriObject.setImageUri(fileUri.get(i));
+            mUploadUriObject.setThumbUri(filethumbUri.get(i));
 
+            String imageStoredPath =  mUploadUriObject.getImageUri().getPath();
+            String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
+
+            File imageFile = new File (imageStoredPath) ;
+            mUploadUriObject.setImageFile(imageFile);
+            File imageThumbFile = new File (imageThumbStoredPath) ;
+            mUploadUriObject.setThumbFile(imageThumbFile);
+
+            String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
+            String splitfo_lenthcheck[] = path1.split("/");
+            int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+            long check = ((imageFile.length() / 1024));
+            if (check < 10000 && filenamelength < 99) {
+                String splitstr[];
+                String chosenimg = "";
+                String stringcheck = "", exhistimg = "false";
+                int leangth = 0;
+                if (imageStoredPath.contains("/")) {
+                    splitstr = imageStoredPath.split("/");
+                    chosenimg = splitstr[splitstr.length - 1];
                 }
-            }*/
-            Intent intent = new Intent(activity, UploadService.class);
-            intent.putExtra(UploadService.ARG_FILE_PATH, path);
-            intent.putExtra("add_path", directory.getDirectoryPath());
-            intent.putExtra(UploadService.uploadfrom, uploadFrom);
-            intent.putExtra("exhistimg", exhistimg);
-            intent.putExtra("stringcheck", stringcheck);
-            intent.putExtra("numberofuri", totalUri);
-            activity.startService(intent);
+                if (directory.hasFile(imageFile.getName())) {
+                    exhistimg = "true";
+                    mUploadUriObject.setExistingImage(exhistimg);
+                }
+                stringcheck = mUploadUriObject.getImageFile().getName();
+                mUploadUriObject.setImageName(stringcheck);
 
-           /* System.out.println("After Service");
-
-            String tempPath = getPath(fileUri, activity);
-            Bitmap bm;
-            BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
-            btmapOptions.inSampleSize = 4;
-            bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
-            // vault_adapter.notifyDataSetChanged();
-            if (bm != null) {
-
-                System.out.println("in onactivity");
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-                String pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                String picname = "b.jpg";
-                pic = "data:image/jpeg;base64," + pic;
-                //  vault_adapter.notifyDataSetChanged();
-
-            }*/
-
-        } else {
-
-            Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+            }
+            mListOfUploadUri.add(mUploadUriObject);
 
         }
 
+        Intent intent = new Intent(activity, UploadService.class);
+        intent.putExtra(UploadService.uploadfrom, uploadFrom);
+        intent.putExtra("add_path", directory.getDirectoryPath());
+        activity.startService(intent);
 
+    }
+
+    public static List<UploadUri> getUploadUriObjectList () {
+
+        return mListOfUploadUri;
     }
 
     public static String getPath(Uri uri, Activity activity) {
@@ -266,7 +252,6 @@ public class RepositoryUtils {
 
     public static void deleteObjects(List<SelectableObject> listOfSelectedObjects, String patientId, final Activity mActivity, final OnDeleteCompletion listener) {
         JSONArray array = new JSONArray();
-
         for (SelectableObject object : listOfSelectedObjects) {
             JSONObject imageobject = new JSONObject();
             if (object.getObject() instanceof Directory) {
@@ -276,7 +261,6 @@ public class RepositoryUtils {
                     imageobject.put("ThumbFile", "");
                     imageobject.put("Status", "");
                     array.put(imageobject);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -287,13 +271,11 @@ public class RepositoryUtils {
                     imageobject.put("ThumbFile", ((DirectoryFile) object.getObject()).getThumb());
                     imageobject.put("Status", "");
                     array.put(imageobject);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
-
         System.out.println(array);
         RequestQueue queue2 = Volley.newRequestQueue(mActivity);
 
@@ -320,8 +302,10 @@ public class RepositoryUtils {
             }
         });
         queue2.add(jr2);
-
     }
+
+
+
 
     public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, Directory oldDirectory, Directory newDirectory, final OnMoveCompletion listener){
 
@@ -334,11 +318,14 @@ public class RepositoryUtils {
             absolutePath = patientId + "/FileVault/" + "Personal/";
         }
 
+
         if (!newDirectory.getDirectoryPath().equals("")) {
             newPath = patientId + "/FileVault/" + "Personal/" + newDirectory.getDirectoryPath();
         } else {
             newPath = patientId + "/FileVault/" + "Personal";
         }
+
+
 
         JSONArray jsonArray = new JSONArray();
         for (SelectableObject object : listOfSelectedObjects) {
@@ -383,6 +370,8 @@ public class RepositoryUtils {
         });
         queue2.add(jr2);
 
+
+
     }
 
     public interface OnDeleteCompletion {
@@ -392,6 +381,8 @@ public class RepositoryUtils {
     }
 
     public interface OnMoveCompletion {
+
+
         void onSuccessfullMove();
 
         void onFailure();

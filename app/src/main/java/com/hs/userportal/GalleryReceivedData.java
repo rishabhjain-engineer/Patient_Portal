@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,6 +87,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
     private int numberOfUri;
     private boolean isFromGallery;
+    private File mImage;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -108,13 +109,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
-
         mActivity = this;
-
         displayedDirectory = new ArrayList<>();
-
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
-
             // Check if user is logged in .
             if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                 Toast.makeText(this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -170,19 +167,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             if (viewId == R.id.directory_share_move_btn) {
                 try {
-                    if (mIsSingleUri) {
-                        numberOfUri = 1;
-                        moveFile(mSingleImageUri, numberOfUri);
-                        Log.e("Rishabh", "uri count :=  " + numberOfUri);
-                    } else {
-                        numberOfUri = mMultipleImageUris.size();
-                        for (int i = 0; i < mMultipleImageUris.size(); i++) {
-                            Uri sendsingleUri = mMultipleImageUris.get(i);
-                            moveFile(sendsingleUri, numberOfUri);
-                            numberOfUri = numberOfUri - 1;
-                            Log.e("Rishabh", "uri count :=  " + numberOfUri);
-                        }
-                    }
+                    moveFile(mMultipleImageUris);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -232,6 +217,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         mIsSingleUri = true;
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (mSingleImageUri != null) {
+            mMultipleImageUris.add(mSingleImageUri);
         }
     }
 
@@ -243,44 +229,140 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     }
 
 
-    private void moveFile(Uri getUri, int totalUri) throws FileNotFoundException {
+    private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
-        //new code -> saves recieved bitmap as file
-        Uri selectedImageUri = getUri;
+        //new code -> saves received bitmap as file
+        ArrayList<Uri> selectedImageUri = new ArrayList<>();
+        ArrayList<Uri> ThumbUriList = new ArrayList<>();
         InputStream is = null;
-        if (selectedImageUri.getAuthority() != null) {
-            is = getContentResolver().openInputStream(selectedImageUri);
-            Bitmap bmp = BitmapFactory.decodeStream(is);
-            if (bmp != null) {
-                File downloadedFile;
-                try {
-                    downloadedFile = createImageFile();
-                    OutputStream outStream = new FileOutputStream(downloadedFile);
-                    //compressing image to 80 percent quality to reduce size
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-                    outStream.flush();
-                    outStream.close();
+        for (int i = 0; i < getUri.size(); i++) {
+            Uri testSingleUri = getUri.get(i);
+            if (testSingleUri.getAuthority() != null) {
+                is = getContentResolver().openInputStream(testSingleUri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+                if (bmp != null) {
+                    File downloadedFile;
+                    try {
+                        downloadedFile = createImageFile();
+                        OutputStream outStream = new FileOutputStream(downloadedFile);
+                        //compressing image to 80 percent quality to reduce size
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                        outStream.flush();
+                        outStream.close();
+                        Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
 
-                    Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                    RepositoryUtils.uploadFile(downloadedFileUri, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY, totalUri);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        selectedImageUri.add(downloadedFileUri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            try {
+                File thumbFileCreated = createThumbFile(testSingleUri);
+                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
+                ThumbUriList.add(thumbImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
+        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
+
+    private File createThumbFile(Uri singleUri) throws IOException {
+
+        Bitmap bitmap = getThumbnail(singleUri);
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap, 250, 250);
+        File thumbFile = storeImage(ThumbImage);
+        return thumbFile;
+    }
+
+    private File storeImage(Bitmap ThumbnailImage) throws IOException {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile == null) {
+
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            ThumbnailImage.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            fos.close();
+            return pictureFile;
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+        return null;
+    }
+
+    private File getOutputMediaFile() throws IOException {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
+        return mediaFile;
+    }
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
+        final int THUMBNAIL_SIZE = 250;
+        InputStream input = getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true; //optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
+        input = this.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }
+
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return image;
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
+        //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+       /* mImage = File.createTempFile(
+                imageFileName,  *//* prefix *//*
+                ".jpg",         *//* suffix *//*
+                mediaStorageDir      *//* directory *//*
+        );*/
+        return mediaFile;
     }
 
     private void createLockFolder() {
@@ -365,11 +447,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         DirectoryFile file = new DirectoryFile();
                         file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
-                        file.setLastModified(object.getString("LastModified"));
-                        file.setSize(object.getDouble("Size"));
+//                        file.setLastModified(object.getString("LastModified"));
+//                        file.setSize(object.getDouble("Size"));
                         file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addFile(mDirectory, file, file.getPath());
                     }
 
 //                    mRepositoryAdapter.notifyDataSetChanged();

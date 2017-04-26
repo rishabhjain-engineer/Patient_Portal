@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,6 +41,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -90,6 +96,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private static final int PICK_FROM_CAMERA = 2;
     private RecyclerView list;
     private Directory mDirectory;
+    private Directory searchableDirectory;
     private Directory currentDirectory;
     private RepositoryAdapter mRepositoryAdapter;
     private RepositoryGridAdapter mRepositoryGridAdapter;
@@ -121,6 +128,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private int MY_PERMISSIONS_REQUEST = 3;
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
+    private List<String> s3allData = new ArrayList<>();
+
+    private String accessKey;
+    private String secretKey;
+
 
     private static RepositoryFreshFragment repositoryFreshFragment;
     private RepositoryDialogAdapter dialogAdapter;
@@ -139,14 +151,78 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         repositoryFreshFragment = this;
         displayedDirectory = new ArrayList<>();
 
+        mDirectory = new Directory("Personal");
+        searchableDirectory = new Directory("Personal");
+
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             createLockFolder();
         }
 
-
         return mView;
+    }
+
+    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
+
+        Directory currentDirectory;
+
+        public GetDataFromAmazon(Directory currentDirectory) {
+            this.currentDirectory = currentDirectory;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String s3BucketName = getString(R.string.s3_bucket);
+            String prefix = "";
+            if (currentDirectory.getParentDirectory() == null) {
+                prefix = patientId + "/FileVault/Personal/";
+            } else {
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryName() + "/";
+            }
+            String delimiter = "/";
+
+            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+
+            ListObjectsRequest lor = new ListObjectsRequest()
+                    .withBucketName(s3BucketName)
+                    .withPrefix(prefix)
+                    .withDelimiter(delimiter);
+
+            ObjectListing objectListing = s3Client.listObjects(lor);
+            s3allData = objectListing.getCommonPrefixes();
+
+            currentDirectory.clearAll();
+            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
+                if (summary.getKey().contains("_thumb")) {
+                    continue;
+                }
+                if (DirectoryUtility.isFile(summary.getKey())) {
+                    DirectoryFile file = new DirectoryFile();
+                    file.setKey(summary.getKey());
+                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
+                    file.setSize(summary.getSize());
+                    file.setLastModified(summary.getLastModified());
+                    file.setName(DirectoryUtility.getFileName(summary.getKey()));
+                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                }
+            }
+
+            for (String path : s3allData) {
+                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
+                DirectoryUtility.addFolder(currentDirectory, directory);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            setListAdapter(currentDirectory);
+            setBackButtonPress(currentDirectory);
+        }
     }
 
     private void initObject() {
@@ -190,7 +266,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     setListAdapter(mDirectory);
 
                 } else {
-                    Directory searchedDirectory = DirectoryUtility.searchDirectory(mDirectory, editable.toString());
+                    Directory searchedDirectory = DirectoryUtility.searchDirectory(searchableDirectory, editable.toString());
                     currentDirectory = searchedDirectory;
                     setListAdapter(searchedDirectory);
                 }
@@ -268,6 +344,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 progressDialog.dismiss();
                 Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
                 loadData();
+                if(listMode == 1){
+                    new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                }else {
+                    new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                }
+
             }
 
             @Override
@@ -304,12 +386,17 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             public void onClick(View view) {
                 dialog.dismiss();
 
-                if(listMode == 1){
-                    RepositoryUtils.moveObject(selectedObjects , patientId ,mActivity,  mRepositoryGridAdapter.getDirectory() , dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
+                if (listMode == 1) {
+                    RepositoryUtils.moveObject(selectedObjects, patientId, mActivity, mRepositoryGridAdapter.getDirectory(), dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
                         @Override
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
                             loadData();
+                            if(listMode == 1){
+                                new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                            }else {
+                                new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                            }
                         }
 
                         @Override
@@ -318,7 +405,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         }
                     });
 
-                }else {
+                } else {
                     RepositoryUtils.moveObject(selectedObjects, patientId, mActivity, mRepositoryAdapter.getDirectory(), dialogAdapter.getDirectory(), new RepositoryUtils.OnMoveCompletion() {
                         @Override
                         public void onSuccessfullMove() {
@@ -433,8 +520,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             list.setAdapter(mRepositoryGridAdapter);
 
         } else {
-            isFromGallery=false;
-            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this,isFromGallery);
+            isFromGallery = false;
+            mRepositoryAdapter = new RepositoryAdapter(mActivity, directory, displayedDirectory, RepositoryFreshFragment.this, isFromGallery);
             mRepositoryAdapter.setSelectionMode(false);
             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
             toolbarTitle.setVisibility(View.VISIBLE);
@@ -476,8 +563,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                mDirectory = new Directory("Personal");
-                startCreatingDirectoryStructure();
+//                startCreatingDirectoryStructure();
+                loadData();
+                new GetDataFromAmazon(mDirectory).execute();
 
             }
         }, new Response.ErrorListener() {
@@ -490,7 +578,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void loadData() {
-        mDirectory = new Directory("Personal");
+
         sendData = new JSONObject();
         try {
             sendData.put("PatientId", patientId);
@@ -532,16 +620,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         DirectoryFile file = new DirectoryFile();
                         file.setName(DirectoryUtility.getFileName(object.getString("Key")));
                         file.setKey(object.getString("Key"));
-                        file.setLastModified(object.getString("LastModified"));
-                        file.setSize(object.getDouble("Size"));
+//                        file.setLastModified(object.getString("LastModified"));
+                        file.setSize(object.getLong("Size"));
                         file.setPath(DirectoryUtility.removeExtra(object.getString("Key")));
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
-                        DirectoryUtility.addObject(mDirectory, file, file.getPath());
+                        DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
 
-//                    mRepositoryAdapter.notifyDataSetChanged();
-                    currentDirectory = mDirectory;
-                    setListAdapter(currentDirectory);
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -563,8 +648,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onDirectoryTouched(Directory directory) {
         currentDirectory = directory;
-        setListAdapter(currentDirectory);
-        setBackButtonPress(currentDirectory);
+        progressDialog.show();
+        new GetDataFromAmazon(currentDirectory).execute();
+
     }
 
     void setBackButtonPress(final Directory directory) {
@@ -627,8 +713,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 }
             });
-
-
         }
 
     }
@@ -789,7 +873,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int noOfUri = 1;
+        ArrayList<Uri> uriList = new ArrayList<>();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
 
@@ -809,9 +893,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             bmp.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
                             outStream.flush();
                             outStream.close();
-
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                            RepositoryUtils.uploadFile(downloadedFileUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
+                            uriList.add(downloadedFileUri);
+                           // RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -830,17 +914,19 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
             }
             if (requestCode == PICK_FROM_CAMERA) {
+
                 File imageFile = null;
                 Uri selectedImageUri;
 
                 if (mIsSdkLessThanM == true) {
-                    selectedImageUri = Imguri;
+                    uriList.add(Imguri);
 
                 } else {
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
+                    uriList.add(selectedImageUri);
                 }
 
-                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY, noOfUri);
+      //          RepositoryUtils.uploadFile(uriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
             super.onActivityResult(requestCode, resultCode, data);

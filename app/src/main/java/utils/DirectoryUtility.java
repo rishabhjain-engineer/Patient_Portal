@@ -11,7 +11,7 @@ public class DirectoryUtility {
 
     private Directory searchedResults = new Directory("SearchDirectory");
 
-    public static void addObject(Directory directory, DirectoryFile file, String path) {
+    public static void addFile(Directory directory, DirectoryFile file, String path) {
         //recursive method to set file in directory
         String name;
         if (path.contains("/")) {
@@ -30,15 +30,46 @@ public class DirectoryUtility {
 
             } else {
                 if (directory.hasDirectory(name)) {
-                    addObject(directory.getDirectory(name), file, removeOneDirectory(path));
+                    addFile(directory.getDirectory(name), file, removeOneDirectory(path));
                 } else {
                     Directory newDirectory = new Directory(name);
                     directory.addDirectory(newDirectory);
                     String newPath = removeOneDirectory(path);
-                    addObject(newDirectory, file, newPath);
+                    addFile(newDirectory, file, newPath);
                 }
             }
         }
+    }
+
+    public static void addFolder(Directory directory, Directory subDirectory) {
+        if (!directory.hasDirectory(subDirectory.getDirectoryName())) {
+            directory.addDirectory(subDirectory);
+        }
+    }
+
+    /*public static String getFolderName(String path) {
+        String name;
+        if (path.contains("/")) {
+            name = path.substring(0, path.indexOf("/", 0));
+        } else {
+            name = path;
+        }
+        Log.e("RAVI", "Folder Name: " + name);
+        return name;
+    }*/
+
+    public static String getFolderName(String path) {
+        String folderName = "";
+        String[] splittedPath = path.split("/");
+        for (int i = splittedPath.length - 1; i >= 0; i--) {
+            if (splittedPath[i].equals("")) {
+                continue;
+            } else {
+                folderName = splittedPath[i];
+                break;
+            }
+        }
+        return folderName;
     }
 
     public static boolean isFile(String s) {
@@ -78,6 +109,7 @@ public class DirectoryUtility {
             return "ZurekaTempPatientConfig";
         } else {
             //this method just gets the name of file
+            //   Log.e("Rishabh Jain", "All files := "+key);
             String[] split = key.split("/");
             return split[split.length - 1];
         }

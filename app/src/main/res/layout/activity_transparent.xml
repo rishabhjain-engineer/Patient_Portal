@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SignIn to ScionTra"
+        android:text="Sign in to ScionTra"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:gravity="center"
@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Signin to continue"
+        android:text="and sign in to continue"
         android:gravity="center"
         android:textSize="16sp"/>
 
