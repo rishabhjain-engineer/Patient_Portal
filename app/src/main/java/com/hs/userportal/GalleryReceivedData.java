@@ -320,6 +320,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
+        Log.e("Rishabh", "Thumb := "+mediaFile.getName());
         return mediaFile;
     }
 
@@ -370,6 +371,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 ".jpg",         *//* suffix *//*
                 mediaStorageDir      *//* directory *//*
         );*/
+
+        Log.e("Rishabh", "Image := "+mediaFile.getName());
         return mediaFile;
     }
 
