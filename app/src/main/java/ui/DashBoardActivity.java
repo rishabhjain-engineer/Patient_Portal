@@ -46,6 +46,7 @@ import fragment.FamilyFragment;
 import fragment.ReportFragment;
 import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
+import fragment.SchoolFragment;
 import fragment.VitalFragment;
 import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
@@ -107,7 +108,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
 
-   private void initializeObjects() {
+    private void initializeObjects() {
         mFooterContainer = (LinearLayout) findViewById(R.id.footer_container);
         mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
         mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
@@ -131,7 +132,6 @@ public class DashBoardActivity extends BaseActivity {
         mFooterFamily.setOnClickListener(mOnClickListener);
         mFooterAccount.setOnClickListener(mOnClickListener);
     }
-
 
 
     @Override
@@ -481,6 +481,30 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_active);
             Fragment newFragment = new AccountFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
+    public void openSchoolFragment() {
+
+        if (isSessionExist()) {
+            mFooterContainer.setVisibility(View.VISIBLE);
+            mDashBoardTv.setTextColor(grayColor);
+            mReportTv.setTextColor(grayColor);
+            mRepositoryTv.setTextColor(grayColor);
+            mFamilyTv.setTextColor(grayColor);
+            mAccountTv.setTextColor(grayColor);
+            //mActionBar.setTitle("Vitals");
+            // mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+            mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+            Fragment newFragment = new SchoolFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);

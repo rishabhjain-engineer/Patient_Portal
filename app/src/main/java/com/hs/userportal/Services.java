@@ -1288,4 +1288,18 @@ public class Services {
         return abc;
     }
 
+    public JSONObject getSchoolDoctorList(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetSchoolDoctorList);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
+    public JSONObject getSchoolStudentDetails(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getSchoolStudentDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
 }
