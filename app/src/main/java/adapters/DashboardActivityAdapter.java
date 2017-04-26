@@ -31,11 +31,13 @@ public class DashboardActivityAdapter extends BaseAdapter {
         mList.add("Vitals");
         mList.add("Family");
         mList.add("Repository");
+        mList.add("School");
 
         mImageList.add(R.drawable.homepage_reports);
         mImageList.add(R.drawable.homepage_vital_green);
         mImageList.add(R.drawable.homepage_family);
         mImageList.add(R.drawable.homepage_repository);
+        mImageList.add(R.drawable.ic);
     }
 
 

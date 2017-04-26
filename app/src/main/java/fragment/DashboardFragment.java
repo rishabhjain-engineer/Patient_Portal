@@ -109,6 +109,8 @@ public class DashboardFragment extends Fragment {
                     ((DashBoardActivity) mActivity).openFamilyFragment();
                 } else if (position == 3) {
                     ((DashBoardActivity) mActivity).openRepositoryFragment();
+                } else if (position == 4) {
+                    ((DashBoardActivity) mActivity).openSchoolFragment();
                 }
             }
         });
@@ -181,7 +183,7 @@ public class DashboardFragment extends Fragment {
         if (NetworkChangeListener.getNetworkStatus().isConnected() && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
             new MyHealthAsync().execute();
             new GetUserGradeAsync().execute();
-        }else{
+        } else {
             Toast.makeText(AppAplication.getAppContext(), "Please check your internet connection.", Toast.LENGTH_LONG).show();
         }
         if (Build.VERSION.SDK_INT >= 19 && !NotificationManagerCompat.from(mActivity).areNotificationsEnabled()) {
@@ -271,7 +273,7 @@ public class DashboardFragment extends Fragment {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            if(progress != null && progress.isShowing()){
+            if (progress != null && progress.isShowing()) {
                 progress.dismiss();
             }
             if (isToLoadData) {
