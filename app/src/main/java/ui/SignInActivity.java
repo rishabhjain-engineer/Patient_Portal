@@ -17,8 +17,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -73,6 +75,8 @@ import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+
+import android.provider.Settings.Secure;
 
 /**
  * Created by ayaz on 23/3/17.
@@ -416,6 +420,10 @@ public class SignInActivity extends BaseActivity {
                 loginApiSendData.put("Password", mPassWord);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
+                String android_id = Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                /*TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                telephonyManager.getDeviceId();*/
+                loginApiSendData.put("UserDeviceToken", android_id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
