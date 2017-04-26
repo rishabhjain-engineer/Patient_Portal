@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,7 @@ import java.util.Date;
 import config.StaticHolder;
 import utils.NetworkChangeListener;
 import utils.PreferenceHelper;
+import android.provider.Settings.Secure;
 
 /**
  * Created by android1 on 19/1/17.
@@ -168,10 +170,13 @@ public class BaseActivity extends AppCompatActivity {
 
             StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
             String url = sttc_holdr.request_Url();
-            Log.d("ayaz", "Url" + url);
             JSONObject jsonObjectToSend = new JSONObject();
             try {
                 jsonObjectToSend.put("SessionId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+                String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                /*TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                telephonyManager.getDeviceId();*/
+                jsonObjectToSend.put("UserDeviceToken", android_id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -179,7 +184,6 @@ public class BaseActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
                     String d = jsonObject.optString("d");
-                    Log.d("ayaz", "Responnse: " + d);
                     if (d.contains("true")) {
                         result = true;
                     } else {
@@ -196,7 +200,6 @@ public class BaseActivity extends AppCompatActivity {
                 }
             });
             mRequestQueue.add(jsonObjectRequest);
-            Log.d("ayaz", "returning result" + result);
             return result;
             //return true;
         }
