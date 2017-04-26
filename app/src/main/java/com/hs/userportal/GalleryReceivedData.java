@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -38,9 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -128,10 +125,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendText(intentFromGallery); // Handle text being sent
                 } else if (type.startsWith("image/")) {
                     handleSendImage(intentFromGallery); // Handle single image being sent
-                }else if("application/pdf".equals(type)){
-                    Log.e("Rishabh", "PDF File ") ;
-                }else if("application/x-excel".equals(type)){
-                    Log.e("Rishabh", "excel File ") ;
+                } else if ("application/pdf".equals(type)) {
+                    Log.e("Rishabh", "PDF File ");
+                } else if ("application/x-excel".equals(type)) {
+                    Log.e("Rishabh", "excel File ");
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
@@ -244,12 +241,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
         InputStream is = null;
         for (int i = 0; i < getUri.size(); i++) {
+            File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
             if (testSingleUri.getAuthority() != null) {
                 is = getContentResolver().openInputStream(testSingleUri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
                 if (bmp != null) {
-                    File downloadedFile;
                     try {
                         downloadedFile = createImageFile();
                         OutputStream outStream = new FileOutputStream(downloadedFile);
@@ -265,13 +262,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     }
                 }
             }
-            try {
-                File thumbFileCreated = createThumbFile(testSingleUri);
-                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
-                ThumbUriList.add(thumbImageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+            Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
+            ThumbUriList.add(thumbImageUri);
 
         }
         RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
@@ -320,7 +314,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        Log.e("Rishabh", "Thumb := "+mediaFile.getName());
+        Log.e("Rishabh", "Thumb := " + mediaFile.getName());
         return mediaFile;
     }
 
@@ -372,7 +366,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 mediaStorageDir      *//* directory *//*
         );*/
 
-        Log.e("Rishabh", "Image := "+mediaFile.getName());
+        Log.e("Rishabh", "Image := " + mediaFile.getName());
         return mediaFile;
     }
 

@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -181,8 +180,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (currentDirectory.getParentDirectory() == null) {
                 prefix = patientId + "/FileVault/Personal/";
             } else {
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryName() + "/";
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
             }
+            Log.e("RAVI", "Prefix is " + prefix);
             String delimiter = "/";
 
             AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
@@ -212,9 +212,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
 
             for (String path : s3allData) {
+                Log.e("RAVI", path);
                 Directory directory = new Directory(DirectoryUtility.getFolderName(path));
                 DirectoryUtility.addFolder(currentDirectory, directory);
             }
+
 
             return null;
         }
@@ -347,9 +349,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 progressDialog.dismiss();
                 Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
                 loadData();
-                if(listMode == 1){
+                if (listMode == 1) {
                     new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
-                }else {
+                } else {
                     new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
                 }
 
@@ -395,9 +397,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
                             loadData();
-                            if(listMode == 1){
+                            if (listMode == 1) {
                                 new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
-                            }else {
+                            } else {
                                 new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
                             }
                         }
@@ -414,9 +416,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
                             loadData();
-                            if(listMode == 1){
+                            if (listMode == 1) {
                                 new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
-                            }else {
+                            } else {
                                 new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
                             }
                         }
@@ -482,15 +484,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryGridAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
-                            new GetDataFromAmazon(directory).execute();
-                            setListAdapter(directory);
+                            new GetDataFromAmazon(directory.getParentDirectory()).execute();
+//                            setListAdapter(directory.getParentDirectory());
                         }
                     });
                 } else {
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
-                            new GetDataFromAmazon(directory).execute();
+                            new GetDataFromAmazon(directory.getParentDirectory()).execute();
                             setListAdapter(directory);
                         }
                     });
@@ -548,7 +550,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public void startCreatingDirectoryStructure() {
-        loadData();
+        mDirectory = new Directory("Personal");
+        searchableDirectory = new Directory("Personal");
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            createLockFolder();
+        }
+//        loadData();
     }
 
     public void createLockFolder() {
@@ -610,6 +620,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        Log.e("RAVI", s3data.toString());
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -855,7 +866,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
-       // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
         /*File image = File.createTempFile(
                 imageFileName,  *//* prefix *//*
@@ -864,7 +875,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         );*/
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
         mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
-        Log.e("Rishabh", "image := "+mediaFile.getName());
+        Log.e("Rishabh", "image := " + mediaFile.getName());
         return mediaFile;
     }
 
@@ -890,16 +901,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-
+                File downloadedFile = null;
                 //new code saves recieved bitmap as file
-
                 Uri selectedImageUri = data.getData();
                 InputStream is = null;
                 if (selectedImageUri.getAuthority() != null) {
                     is = getActivity().getContentResolver().openInputStream(selectedImageUri);
                     Bitmap bmp = BitmapFactory.decodeStream(is);
                     if (bmp != null) {
-                        File downloadedFile;
                         try {
                             downloadedFile = createImageFile();
                             OutputStream outStream = new FileOutputStream(downloadedFile);
@@ -917,14 +926,19 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 }
 
-                try {
-                    File thumbFileCreated = createThumbFile(selectedImageUri);
+                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                Uri thumbUri = Uri.parse(thumbnailFile.getAbsolutePath());
+                ThumbUriList.add(thumbUri);
+                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+
+                /*try {
+                    File thumbFileCreated = createThumbFile(downloadedFile);
                     Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
                     ThumbUriList.add(thumbImageUri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                RepositoryUtils.uploadFile(uriList, ThumbUriList,getActivity(), currentDirectory, UploadService.REPOSITORY);
+                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
                 // old code -> this used to work for files that are on phone itself,
                 // but fails for files from cloud
                 // example -> try an image that google photos first downloads and then sends in onactivityresult
@@ -937,7 +951,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
             if (requestCode == PICK_FROM_CAMERA) {
 
-                File imageFile = null;
+                File downloadedFile = null;
                 Uri selectedImageUri;
 
                 if (mIsSdkLessThanM == true) {
@@ -946,7 +960,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         is = getActivity().getContentResolver().openInputStream(Imguri);
                         Bitmap bmp = BitmapFactory.decodeStream(is);
                         if (bmp != null) {
-                            File downloadedFile;
+
                             try {
                                 downloadedFile = createImageFile();
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
@@ -963,48 +977,20 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             }
                         }
                     }
-                    try {
-                        File thumbFileCreated = createThumbFile(Imguri);
-                        Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
-                        ThumbUriList.add(thumbImageUri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+
+
                 } else {
-                    selectedImageUri = Uri.parse(mCurrentPhotoPath);
-                    InputStream is = null;
-                    if (selectedImageUri.getAuthority() != null) {
-                        is = getActivity().getContentResolver().openInputStream(selectedImageUri);
-                        Bitmap bmp = BitmapFactory.decodeStream(is);
-                        if (bmp != null) {
-                            File downloadedFile;
-                            try {
-                                downloadedFile = createImageFile();
-                                OutputStream outStream = new FileOutputStream(downloadedFile);
-                                //compressing image to 80 percent quality to reduce size
-                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                                outStream.flush();
-                                outStream.close();
-                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                                uriList.add(downloadedFileUri);
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    downloadedFile = new File(imageUri.getPath());
 
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    try {
-                        File thumbFileCreated = createThumbFile(selectedImageUri);
-                        Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
-                        ThumbUriList.add(thumbImageUri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
 
+                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
+                ThumbUriList.add(thumbImageUri);
 
-                RepositoryUtils.uploadFile(uriList,ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
             super.onActivityResult(requestCode, resultCode, data);
@@ -1014,19 +1000,20 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public static void refresh() {
+
         repositoryFreshFragment.startCreatingDirectoryStructure();
     }
 
 
-    private File createThumbFile(Uri singleUri) throws IOException {
+    /*private File createThumbFile(File file) throws IOException {
 
-        Bitmap bitmap = getThumbnail(singleUri);
+        Bitmap bitmap = getThumbnail(file);
         Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap, 250, 250);
         File thumbFile = storeImage(ThumbImage);
         return thumbFile;
-    }
+    }*/
 
-    private File storeImage(Bitmap ThumbnailImage) throws IOException {
+    /*private File storeImage(Bitmap ThumbnailImage) throws IOException {
         File pictureFile = getOutputMediaFile();
         if (pictureFile == null) {
 
@@ -1041,7 +1028,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         } catch (IOException e) {
         }
         return null;
-    }
+    }*/
 
     private File getOutputMediaFile() throws IOException {
         // To be safe, you should check that the SDCard is mounted
@@ -1061,7 +1048,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        Log.e("Rishabh", "THumb := "+mediaFile.getName());
+        Log.e("Rishabh", "THumb := " + mediaFile.getName());
         return mediaFile;
     }
 

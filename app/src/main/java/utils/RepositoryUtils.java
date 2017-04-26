@@ -6,7 +6,10 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +18,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +39,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import config.StaticHolder;
@@ -156,7 +164,7 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri,Activity activity, Directory directory, String uploadFrom) {
+    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri, Activity activity, Directory directory, String uploadFrom) {
 
         for (int i = 0; i < fileUri.size(); i++) {
 
@@ -175,16 +183,14 @@ public class RepositoryUtils {
             mUploadUriObject.setImageFile(imageFile);*/
 
 
+            String imageStoredPath = mUploadUriObject.getImageUri().getPath();
+            String imageThumbStoredPath = mUploadUriObject.getThumbUri().getPath();
 
-
-            String imageStoredPath =  mUploadUriObject.getImageUri().getPath();
-            String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
-
-            File imageFile = new File (imageStoredPath) ;
+            File imageFile = new File(imageStoredPath);
             mUploadUriObject.setImageFile(imageFile);
 
 
-            File imageThumbFile = new File (imageThumbStoredPath) ;
+            File imageThumbFile = new File(imageThumbStoredPath);
             mUploadUriObject.setThumbFile(imageThumbFile);
 
             String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
@@ -221,7 +227,7 @@ public class RepositoryUtils {
 
     }
 
-    public static List<UploadUri> getUploadUriObjectList () {
+    public static List<UploadUri> getUploadUriObjectList() {
 
         return mListOfUploadUri;
     }
@@ -254,6 +260,99 @@ public class RepositoryUtils {
 
         }
         return path;
+    }
+
+    public static File getThumbnailFile(File mainFile, Activity activity) {
+        Log.e("RAVI", "Main file : " + mainFile.getAbsolutePath());
+        File thumbnailFile = null;
+        try {
+            thumbnailFile = createImageFile(activity);
+            Bitmap bitmap = BitmapFactory.decodeFile(mainFile.getAbsolutePath());
+            Bitmap thumbBitmap = getThumbnailImage(bitmap);
+            FileOutputStream fos = new FileOutputStream(thumbnailFile);
+            thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+            fos.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String mainFileName = mainFile.getName();
+        //Ravi.jpg
+        String[] splitted = mainFileName.split("\\.");
+        //Ravi jpg
+        splitted[0] = splitted[0] + "_thumb";
+        String thumbnailFileName = splitted[0] + "." + "jpg";
+        File file = new File(thumbnailFile.getParent() + "/" + thumbnailFileName);
+        boolean renamedFile = thumbnailFile.renameTo(file);
+        Log.e("RAVI", "Thumb file : " + file.getAbsolutePath());
+
+        return file;
+    }
+
+    private static Bitmap getThumbnailImage(Bitmap bm) {
+
+        //maintaining min resolution of 150*150;
+
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+
+        Bitmap resizedBitmap;
+        Bitmap decoded;
+
+        if (width > 250 || height > 250) {
+
+            float aspectRatio;
+
+            //image is too big, resize and compress to 80% quality
+            if (width > height) {
+
+                aspectRatio = (float) width / (float) height;
+                width = 150;
+                height = (int) (width / aspectRatio);
+
+            } else {
+
+                aspectRatio = (float) height / (float) width;
+                height = 150;
+                width = (int) (height / aspectRatio);
+
+            }
+
+            resizedBitmap = Bitmap.createScaledBitmap(bm, width, height, false);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+            decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(bytes.toByteArray()));
+            bm.recycle();
+            resizedBitmap.recycle();
+
+        } else {
+
+            //image is small, just compress to 90% quality
+            resizedBitmap = bm;
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+            decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(bytes.toByteArray()));
+            bm.recycle();
+            resizedBitmap.recycle();
+
+        }
+
+        return decoded;
+
+    }
+
+    private static File createImageFile(Activity activity) throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        return image;
     }
 
     private static boolean folder_name_exists(String trim, Directory directory) {
@@ -319,15 +418,13 @@ public class RepositoryUtils {
     }
 
 
-
-
-    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId , final Activity mActivity, Directory oldDirectory, Directory newDirectory, final OnMoveCompletion listener){
+    public static void moveObject(List<SelectableObject> listOfSelectedObjects, String patientId, final Activity mActivity, Directory oldDirectory, Directory newDirectory, final OnMoveCompletion listener) {
 
         String absolutePath;
         String newPath;
 
         if (!oldDirectory.getDirectoryPath().equals("")) {
-            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath()+"/";
+            absolutePath = patientId + "/FileVault/" + "Personal/" + oldDirectory.getDirectoryPath() + "/";
         } else {
             absolutePath = patientId + "/FileVault/" + "Personal/";
         }
@@ -338,7 +435,6 @@ public class RepositoryUtils {
         } else {
             newPath = patientId + "/FileVault/" + "Personal";
         }
-
 
 
         JSONArray jsonArray = new JSONArray();
@@ -383,7 +479,6 @@ public class RepositoryUtils {
             }
         });
         queue2.add(jr2);
-
 
 
     }
