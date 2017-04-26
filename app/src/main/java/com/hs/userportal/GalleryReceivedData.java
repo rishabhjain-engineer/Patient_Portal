@@ -10,14 +10,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,9 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -284,7 +280,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private File storeImage(Bitmap ThumbnailImage) throws IOException {
         File pictureFile = getOutputMediaFile();
         if (pictureFile == null) {
-            Log.e("Rishabh", "Error creating media file, check storage permissions: ");// e.getMessage());
 
         }
         try {
@@ -294,9 +289,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             return pictureFile;
 
         } catch (FileNotFoundException e) {
-            Log.e("Rishabh", "File not found: " + e.getMessage());
         } catch (IOException e) {
-            Log.e("Rishabh", "Error accessing file: " + e.getMessage());
         }
         return null;
     }
@@ -316,10 +309,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        String mImageName = "JPEG_" + timeStamp + "_";
-        /*mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);*/
-        File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        return thumb_image;
+        String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
+        return mediaFile;
     }
 
     public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
@@ -359,18 +352,17 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
         //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
 
-
-        mImage = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                mediaStorageDir      /* directory */
-        );
-
-        return mImage;
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+       /* mImage = File.createTempFile(
+                imageFileName,  *//* prefix *//*
+                ".jpg",         *//* suffix *//*
+                mediaStorageDir      *//* directory *//*
+        );*/
+        return mediaFile;
     }
 
     private void createLockFolder() {
