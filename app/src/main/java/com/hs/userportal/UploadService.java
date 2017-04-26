@@ -114,16 +114,16 @@ public class UploadService extends IntentService {
         for (int i = 0; i < mUploadUriObjects.size(); i++) {
 
             fileToUpload = mUploadUriObjects.get(i).getImageFile();
-            stringcheck = mUploadUriObjects.get(i).getImageName();
+            stringcheck = mUploadUriObjects.get(i).getImageFile().getName();
             exhistimg = mUploadUriObjects.get(i).isExistingImage();
-            filePath = mUploadUriObjects.get(i).getImagePath();
+            filePath = mUploadUriObjects.get(i).getImageUri().getPath();
 
-            fileThumbpath = mUploadUriObjects.get(i).getmThumbUri().getPath();           // equivalent to filepath
-            fileToUploadThumb = mUploadUriObjects.get(i).getmThumbFile();                 // equivalent to filetoupload
+            fileThumbpath = mUploadUriObjects.get(i).getThumbUri().getPath();           // equivalent to filepath
+            fileToUploadThumb = mUploadUriObjects.get(i).getThumbFile();                 // equivalent to filetoupload
 
             s3ObjectKey = md5(filePath);
             s3ObjectKeyThumb = md5(fileThumbpath);
-            String s3BucketName = getString(R.string.s3_bucket);
+
 
             if (add_path.equalsIgnoreCase("")) {
                 path = patientId + "/" + "FileVault/Personal/";
@@ -131,9 +131,6 @@ public class UploadService extends IntentService {
             } else {
                 path = patientId + "/" + "FileVault/Personal/" + add_path + "/";
             }
-
-            final String msg = "Uploading " + s3ObjectKey + "...";
-
             // create a new uploader for this file
             String splt[] = filePath.split("/");
             String imagename = splt[splt.length - 1];
@@ -141,7 +138,7 @@ public class UploadService extends IntentService {
 
             if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
                 fname = imagename;
-                fthumbname = mUploadUriObjects.get(i).getmThumbFile().getName();
+                fthumbname = mUploadUriObjects.get(i).getThumbFile().getName();
             } else {
                 if (exhistimg != null && exhistimg != "" && exhistimg.equalsIgnoreCase("true")) {
                     fname = stringcheck.substring(0, stringcheck.length() - 4)
@@ -150,57 +147,125 @@ public class UploadService extends IntentService {
                 } else {
                     fname = imagename.substring(0, imagename.length() - 4)
                             + ".jpg";
-                    fthumbname = mUploadUriObjects.get(i).getmThumbFile().getName();
+                    fthumbname = mUploadUriObjects.get(i).getThumbFile().getName();
                 }
             }
 
+            sendOriginalImageToS3(s3ObjectKey , fileToUpload , path , fname);
+            sendThumbImageToS3(s3ObjectKeyThumb,fileToUploadThumb,path,fthumbname);
+        }
+        sendData = new JSONObject();
 
-            for (int j = 0; j < 2; j++) {
-                if (j == 0) {
-                    Log.e("Rishabh", "j value := " +j);
-                    uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
-                    // listen for progress updates and broadcast/notify them appropriately
-                    uploader.setProgressListener(new UploadProgressListener() {
-                        @Override
-                        public void progressChanged(ProgressEvent progressEvent,
-                                                    long bytesUploaded, int percentUploaded) {
+        JSONArray jsonArray = new JSONArray();
+        for (int k = 0; k < mUploadUriObjects.size(); k++) {
 
-                            Notification notification = buildNotification(msg, percentUploaded);
-                            nm.notify(NOTIFY_ID_UPLOAD, notification);
-                            broadcastState(s3ObjectKey, percentUploaded, msg);
-                        }
-                    });
+            JSONObject innerjsonObject = new JSONObject();
 
-                    // broadcast/notify that our upload is starting
-                    Notification notification = buildNotification(msg, 0);
-                    nm.notify(NOTIFY_ID_UPLOAD, notification);
-                    broadcastState(s3ObjectKey, 0, msg);
-                } else {
-                    Log.e("Rishabh", "j value := " +j);
-                    uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
-                    // listen for progress updates and broadcast/notify them appropriately
-                    uploader.setProgressListener(new UploadProgressListener() {
-                        @Override
-                        public void progressChanged(ProgressEvent progressEvent,
-                                                    long bytesUploaded, int percentUploaded) {
-
-                            Notification notification = buildNotification(msg, percentUploaded);
-                            nm.notify(NOTIFY_ID_UPLOAD, notification);
-                            broadcastState(s3ObjectKey, percentUploaded, msg);
-                        }
-                    });
-
-                    // broadcast/notify that our upload is starting
-                    Notification notification = buildNotification(msg, 0);
-                    nm.notify(NOTIFY_ID_UPLOAD, notification);
-                    broadcastState(s3ObjectKey, 0, msg);
-                }
+            try {
+                innerjsonObject.put("ImageName", mUploadUriObjects.get(k).getImageFile().getName());
+                innerjsonObject.put("ImageUrl", path + mUploadUriObjects.get(k).getImageFile().getName());
+                innerjsonObject.put("ThumbPath", path + mUploadUriObjects.get(k).getThumbFile().getName());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-            Log.e("Rishabh", "main file := " + path + fname);
-            Log.e("RIshabh", "thumb file := " + path + fthumbname);
+            jsonArray.put(innerjsonObject);
+        }
+        try {
+            sendData.put("imageDetails", jsonArray);
+            sendData.put("PatientId", patientId);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
+        System.out.println(sendData);
+
+        Log.e("Rishabh", "send data := "+sendData);
+        queue1 = Volley.newRequestQueue(this);
+
+        //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
+        String url1 = "http://192.168.1.11/WebServices/LabService.asmx/UploadImage_New";
+
+        jr1 = new JsonObjectRequest(
+                Request.Method.POST, url1, sendData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("Rishabh", "response  " + response);
+                        try {
+
+                            if (response.getString("d").equalsIgnoreCase("success")) {
+
+                                //new code
+                                if (uplodfrm.equals(REPOSITORY)) {
+                                    RepositoryFreshFragment.refresh();
+                                    Toast.makeText(getApplicationContext(),
+                                            response.getString("d"),
+                                            Toast.LENGTH_SHORT).show();
+                                } else if (uplodfrm.equals(GALLERY)) {
+                                    GalleryReceivedData.completedUpload();
+                                    Toast.makeText(getApplicationContext(),
+                                            response.getString("d"),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            Log.e("Rishabh", "response error " + e);
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("error in onactivity:"
+                        + error);
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders()
+                    throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Cookie", Services.hoja);
+                System.out
+                        .println("Services hoja:" + Services.hoja);
+                return headers;
+            }
+        };
+
+        jr1.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue1.add(jr1);
+
+
+        // todo end of handle intent ()
+    }
+
+
+    public void sendOriginalImageToS3(final String s3ObjectKey, File fileToUpload , String path , String fname) {
+
+        String s3BucketName = getString(R.string.s3_bucket);
+        final String msg = "Uploading " + s3ObjectKey + "...";
+
+        uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKey, fileToUpload, path, fname);
+        // listen for progress updates and broadcast/notify them appropriately
+        uploader.setProgressListener(new UploadProgressListener() {
+            @Override
+            public void progressChanged(ProgressEvent progressEvent,
+                                        long bytesUploaded, int percentUploaded) {
+
+                Notification notification = buildNotification(msg, percentUploaded);
+                nm.notify(NOTIFY_ID_UPLOAD, notification);
+                broadcastState(s3ObjectKey, percentUploaded, msg);
+            }
+        });
+
+        // broadcast/notify that our upload is starting
+        Notification notification = buildNotification(msg, 0);
+        nm.notify(NOTIFY_ID_UPLOAD, notification);
+        broadcastState(s3ObjectKey, 0, msg);
 
         try {
             String s3Location = uploader.start(); // initiate the upload
@@ -227,136 +292,6 @@ public class UploadService extends IntentService {
 
 
 
-            sendData = new JSONObject();
-
-         /*   sendData.put("PatientId", patientId);
-            sendData.put("ImageName", file_name[len - 1]);
-            sendData.put("ImageUrl", afterDecode);
-            sendData.put("Path", path);*/
-
-            JSONArray jsonArray = new JSONArray();
-            for (int k = 0; k < mUploadUriObjects.size(); k++) {
-
-                Log.e("Rishabh", "image name := "+mUploadUriObjects.get(k).getImageFile().getName());
-                Log.e("Rishabh", "Image URl := "+path+mUploadUriObjects.get(k).getImageFile().getName());
-                Log.e("Rishabh", "image name := "+path+mUploadUriObjects.get(k).getmThumbFile().getName());
-
-                JSONObject innerjsonObject = new JSONObject();
-                innerjsonObject.put("ImageName", mUploadUriObjects.get(k).getImageFile().getName());
-                innerjsonObject.put("ImageUrl", path + mUploadUriObjects.get(k).getImageFile().getName());
-                innerjsonObject.put("ThumbPath", path + mUploadUriObjects.get(k).getmThumbFile().getName());
-                jsonArray.put(innerjsonObject);
-            }
-            sendData.put("imageDetails", jsonArray);
-            sendData.put("PatientId", patientId);
-            System.out.println(sendData);
-
-            Log.e("Rishabh", "send data := "+sendData);
-            queue1 = Volley.newRequestQueue(this);
-
-            //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
-            String url1 = "http://192.168.1.11/WebServices/LabService.asmx/UploadImage_New";
-
-            jr1 = new JsonObjectRequest(
-                    Request.Method.POST, url1, sendData,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-
-                            Log.e("Rishabh", "response  " + response);
-                            try {
-
-                                if (response.getString("d").equalsIgnoreCase("success")) {
-
-                                    //new code
-                                    if (uplodfrm.equals(REPOSITORY)) {
-                                        RepositoryFreshFragment.refresh();
-                                        Toast.makeText(getApplicationContext(),
-                                                response.getString("d"),
-                                                Toast.LENGTH_SHORT).show();
-                                    } else if (uplodfrm.equals(GALLERY)) {
-                                        GalleryReceivedData.completedUpload();
-                                        Toast.makeText(getApplicationContext(),
-                                                response.getString("d"),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }
-
-                                //oldcode
-
-                                /*if (uplodfrm != null && uplodfrm.equalsIgnoreCase("notfilevault")) {
-                                    LocationClass.pic = null;
-                                    MapLabDetails.pic_maplab = null;
-                                    uploadPrescriptionMail();
-                                    Toast.makeText(getApplicationContext(),
-                                            response.getString("d"),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-
-                                    Toast.makeText(getApplicationContext(),
-                                            response.getString("d"),
-                                            Toast.LENGTH_SHORT).show();
-                                    if (response.getString("d").equalsIgnoreCase("success")) {
-
-
-
-                                        //old code
-                                        RepositoryFragment.refresh();
-                                        RepositoryFragment.Imguri = null;
-//                                            File photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-//                                            photo.delete();
-
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!add_path.equalsIgnoreCase("") || uplodfrm.equals("filevault2")) {
-                                                    Filevault2.refresh_filevault2();
-
-                                                } else {
-
-                                                }
-
-                                            }
-                                        }, 1000);
-                                    } else {
-                                        Toast.makeText(getApplicationContext(),
-                                                response.getString("d"),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }*/
-
-
-                            } catch (JSONException e) {
-                                // TODO Auto-generated catch block
-                                Log.e("Rishabh", "response error " + e);
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println("error in onactivity:"
-                            + error);
-
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders()
-                        throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<String, String>();
-                    headers.put("Cookie", Services.hoja);
-                    System.out
-                            .println("Services hoja:" + Services.hoja);
-                    return headers;
-                }
-            };
-
-            jr1.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            queue1.add(jr1);
 
 
         } catch (UploadIterruptedException uie) {
@@ -365,8 +300,61 @@ public class UploadService extends IntentService {
             e.printStackTrace();
             broadcastState(s3ObjectKey, -1, "Error: " + e.getMessage());
         }
+
+
+
+       // TODO end of a class .
     }
 
+    public void sendThumbImageToS3(final String s3ObjectKeyThumb, File fileToUploadThumb , String path , String fthumbname) {
+
+        String s3BucketName = getString(R.string.s3_bucket);
+        final String msg = "Uploading " + s3ObjectKeyThumb + "...";
+
+        uploader = new Uploader(this, s3Client, s3BucketName, s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
+        // listen for progress updates and broadcast/notify them appropriately
+        uploader.setProgressListener(new UploadProgressListener() {
+            @Override
+            public void progressChanged(ProgressEvent progressEvent,
+                                        long bytesUploaded, int percentUploaded) {
+
+                Notification notification = buildNotification(msg, percentUploaded);
+                nm.notify(NOTIFY_ID_UPLOAD, notification);
+                broadcastState(s3ObjectKey, percentUploaded, msg);
+            }
+        });
+
+        // broadcast/notify that our upload is starting
+        Notification notification = buildNotification(msg, 0);
+        nm.notify(NOTIFY_ID_UPLOAD, notification);
+        broadcastState(s3ObjectKey, 0, msg);
+
+        try {
+            String s3Location = uploader.start(); // initiate the upload
+            broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
+            System.out.println("File successfully uploaded to " + s3Location);
+            Log.e("Rishabh", "File successfully uploaded to " + s3Location);
+            //
+            String[] parts = s3Location.split("com/" + "");
+            System.out.println(parts[1].trim());
+            String sendurl = parts[1].trim();
+
+            afterDecode = URLDecoder.decode(sendurl, "UTF-8");//62181ffc-6f94-4b83-9334-395b8cb0960d/FileVault/251bc0e4-6fd0-4bf4-894c-c3bb99dde05e.jpg
+            String[] file_name = afterDecode.split("/");
+            int len = file_name.length;
+            if (afterDecode.endsWith(".jpg")) {
+                // afterDecode = afterDecode.substring(0, afterDecode.length() - 4);
+            }
+            System.out.println("afterdecode " + afterDecode);
+
+        } catch (UploadIterruptedException uie) {
+            broadcastState(s3ObjectKeyThumb, -1, "User interrupted");
+        } catch (Exception e) {
+            e.printStackTrace();
+            broadcastState(s3ObjectKeyThumb, -1, "Error: " + e.getMessage());
+        }
+        // TODO end of a class .
+    }
 
     protected void uploadPrescriptionMail() {
         // TODO Auto-generated method stub

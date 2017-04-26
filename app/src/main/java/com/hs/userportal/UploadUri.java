@@ -48,11 +48,11 @@ public class UploadUri {
     }
 
 
-    public Uri getmUri() {
+    public Uri getImageUri() {
         return mUri;
     }
 
-    public void setmUri(Uri mUri) {
+    public void setImageUri(Uri mUri) {
         this.mUri = mUri;
     }
 
@@ -65,19 +65,19 @@ public class UploadUri {
     }
 
 
-    public Uri getmThumbUri() {
+    public Uri getThumbUri() {
         return mThumbUri;
     }
 
-    public void setmThumbUri(Uri mThumbUri) {
+    public void setThumbUri(Uri mThumbUri) {
         this.mThumbUri = mThumbUri;
     }
 
-    public File getmThumbFile() {
+    public File getThumbFile() {
         return mThumbFile;
     }
 
-    public void setmThumbFile(File mThumbFile) {
+    public void setThumbFile(File mThumbFile) {
         this.mThumbFile = mThumbFile;
     }
 }

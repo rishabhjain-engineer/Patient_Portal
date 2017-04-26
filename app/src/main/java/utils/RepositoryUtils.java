@@ -158,24 +158,20 @@ public class RepositoryUtils {
 
     public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri,Activity activity, Directory directory, String uploadFrom) {
 
-
-
-
-
-
-
         for (int i = 0; i < fileUri.size(); i++) {
+
             mUploadUriObject = new UploadUri(fileUri.get(i));
 
-            mUploadUriObject.setmThumbUri(filethumbUri.get(i));
-            String thumbPath = getPathFromContentUri(filethumbUri.get(i) , activity) ;
-            File imageThumbFile = new File (thumbPath) ;
-            mUploadUriObject.setmThumbFile(imageThumbFile);
+            mUploadUriObject.setImageUri(fileUri.get(i));
+            mUploadUriObject.setThumbUri(filethumbUri.get(i));
 
-            String path = getPathFromContentUri(mUploadUriObject.getmUri(), activity);
-            mUploadUriObject.setImagePath(path);
-            File imageFile = new File(mUploadUriObject.getImagePath());
+            String imageStoredPath =  mUploadUriObject.getImageUri().getPath();
+            String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
+
+            File imageFile = new File (imageStoredPath) ;
             mUploadUriObject.setImageFile(imageFile);
+            File imageThumbFile = new File (imageThumbStoredPath) ;
+            mUploadUriObject.setThumbFile(imageThumbFile);
 
             String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
             String splitfo_lenthcheck[] = path1.split("/");
@@ -186,8 +182,8 @@ public class RepositoryUtils {
                 String chosenimg = "";
                 String stringcheck = "", exhistimg = "false";
                 int leangth = 0;
-                if (path.contains("/")) {
-                    splitstr = path.split("/");
+                if (imageStoredPath.contains("/")) {
+                    splitstr = imageStoredPath.split("/");
                     chosenimg = splitstr[splitstr.length - 1];
                 }
                 if (directory.hasFile(imageFile.getName())) {
@@ -201,13 +197,8 @@ public class RepositoryUtils {
                 Toast.makeText(activity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
             }
             mListOfUploadUri.add(mUploadUriObject);
-           /* Log.e("Model", " URI := "+mUploadUriObject.getmUri());
-            Log.e("Model", "Uri PAth := "+mUploadUriObject.getmUri().getPath());
-            Log.e("Model", "Image file name := "+mUploadUriObject.getImageName());*/
 
         }
-        Log.e("Model", "Directory path to place := "+directory.getDirectoryPath());
-
 
         Intent intent = new Intent(activity, UploadService.class);
         intent.putExtra(UploadService.uploadfrom, uploadFrom);

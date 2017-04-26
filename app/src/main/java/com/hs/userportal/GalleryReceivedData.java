@@ -91,6 +91,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
     private int numberOfUri;
     private boolean isFromGallery;
+    private File mImage;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -236,18 +237,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
         //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
-        ArrayList<Uri> ThumbUriList = new ArrayList<>() ;
+        ArrayList<Uri> ThumbUriList = new ArrayList<>();
         InputStream is = null;
         for (int i = 0; i < getUri.size(); i++) {
             Uri testSingleUri = getUri.get(i);
-            try {
-               File thumbFileCreated = createThumbFile(testSingleUri) ;
-                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath()) ;
-                Log.e("Rishabh", "thumb_image uri := "+thumbImageUri.toString());
-                ThumbUriList.add(thumbImageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             if (testSingleUri.getAuthority() != null) {
                 is = getContentResolver().openInputStream(testSingleUri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
@@ -261,23 +254,31 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                         outStream.flush();
                         outStream.close();
                         Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                        Log.e("Rishabh", "origin image uri := "+downloadedFileUri.toString());
+
                         selectedImageUri.add(downloadedFileUri);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
+            try {
+                File thumbFileCreated = createThumbFile(testSingleUri);
+                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
+                ThumbUriList.add(thumbImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
-        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList,GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
     private File createThumbFile(Uri singleUri) throws IOException {
 
         Bitmap bitmap = getThumbnail(singleUri);
-        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap,250,250);
-        File thumbFile = storeImage(ThumbImage) ;
-        return thumbFile ;
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap, 250, 250);
+        File thumbFile = storeImage(ThumbImage);
+        return thumbFile;
     }
 
     private File storeImage(Bitmap ThumbnailImage) throws IOException {
@@ -300,34 +301,34 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         return null;
     }
 
-    private  File getOutputMediaFile() throws IOException {
+    private File getOutputMediaFile() throws IOException {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 return null;
             }
         }
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        String mImageName="JPEG_" + timeStamp + "_";
+        String mImageName = "JPEG_" + timeStamp + "_";
         /*mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);*/
-        File thumb_image = File.createTempFile(mImageName,"_thumb.jpg",mediaStorageDir);
+        File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
         return thumb_image;
     }
 
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
-        final int THUMBNAIL_SIZE = 250 ;
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
+        final int THUMBNAIL_SIZE = 250;
         InputStream input = getContentResolver().openInputStream(uri);
 
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
 
@@ -342,16 +343,16 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
         bitmapOptions.inDither = true; //optional
-        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
         input = this.getContentResolver().openInputStream(uri);
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         input.close();
         return bitmap;
     }
 
-    private static int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
         else return k;
     }
 
@@ -359,14 +360,17 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
+        //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+
+
+        mImage = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
-                storageDir      /* directory */
+                mediaStorageDir      /* directory */
         );
 
-        return image;
+        return mImage;
     }
 
     private void createLockFolder() {
