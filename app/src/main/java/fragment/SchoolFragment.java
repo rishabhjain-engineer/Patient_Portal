@@ -3,11 +3,13 @@ package fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
+import com.hs.userportal.VaccineDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +35,9 @@ import adapters.SchoolFragmentAdapter;
 import config.StaticHolder;
 import models.Schools;
 import networkmngr.NetworkChangeListener;
+import ui.StudentsDetailActivity;
+import ui.VaccineActivity;
+import ui.VaccineEditActivity;
 import utils.PreferenceHelper;
 
 /**
@@ -67,6 +73,23 @@ public class SchoolFragment extends Fragment {
         } else {
             Toast.makeText(mActivity, "No Internet Connection", Toast.LENGTH_LONG).show();
         }
+
+        mSchoolListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
+
+                Schools selectedItem = (Schools) mSchoolListView.getItemAtPosition(position);
+
+                Intent intent = new Intent(mActivity, StudentsDetailActivity.class);
+                intent.putExtra("DateOfExamination", selectedItem.getDateOfExamination());
+                //intent.putExtra("DoctorName", selectedItem.getDoctorName());
+                //intent.putExtra("DoctorDesignation", selectedItem.getDoctorDesignation());
+                intent.putExtra("staffId", selectedItem.getStaffId());
+
+                startActivity(intent);
+
+            }
+        });
     }
 
     private ProgressDialog mProgressDialog;
@@ -110,9 +133,9 @@ public class SchoolFragment extends Fragment {
                             String date = jsonObject.optString("DateOfExamination");
                             String dateArray[] = date.split("T");
                             schools.setDateOfExamination(dateArray[0]);
-                            schools.setDateOfExamination(jsonObject.optString("DoctorName"));
-                            schools.setDateOfExamination(jsonObject.optString("DoctorDesignation"));
-                            schools.setDateOfExamination(jsonObject.optString("staffId"));
+                            schools.setDoctorName(jsonObject.optString("DoctorName"));
+                            schools.setDoctorDesignation(jsonObject.optString("DoctorDesignation"));
+                            schools.setStaffId(jsonObject.optString("staffId"));
                             mSchoolsList.add(schools);
                         }
                         mSchoolFragmentAdapter = new SchoolFragmentAdapter(mActivity, mSchoolsList);
