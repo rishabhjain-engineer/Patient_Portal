@@ -30,6 +30,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -413,6 +414,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         public void onSuccessfullMove() {
                             Toast.makeText(mActivity, "Items successfully Moved", Toast.LENGTH_SHORT).show();
                             loadData();
+                            if(listMode == 1){
+                                new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                            }else {
+                                new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                            }
                         }
 
                         @Override
@@ -476,6 +482,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryGridAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
+                            new GetDataFromAmazon(directory).execute();
                             setListAdapter(directory);
                         }
                     });
@@ -483,6 +490,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     RepositoryUtils.createNewFolder(mActivity, mRepositoryAdapter.getDirectory(), new RepositoryUtils.onActionComplete() {
                         @Override
                         public void onFolderCreated(Directory directory) {
+                            new GetDataFromAmazon(directory).execute();
                             setListAdapter(directory);
                         }
                     });
@@ -846,15 +854,18 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+       // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
+        /*File image = File.createTempFile(
+                imageFileName,  *//* prefix *//*
+                ".jpg",         *//* suffix *//*
+                storageDir      *//* directory *//*
+        );*/
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
+        Log.e("Rishabh", "image := "+mediaFile.getName());
+        return mediaFile;
     }
 
     private void takePhoto() {
@@ -1008,6 +1019,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
+        Log.e("Rishabh", "THumb := "+mediaFile.getName());
         return mediaFile;
     }
 
