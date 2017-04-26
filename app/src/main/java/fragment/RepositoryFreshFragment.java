@@ -941,7 +941,28 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 Uri selectedImageUri;
 
                 if (mIsSdkLessThanM == true) {
-                    uriList.add(Imguri);
+                    InputStream is = null;
+                    if (Imguri.getAuthority() != null) {
+                        is = getActivity().getContentResolver().openInputStream(Imguri);
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+                            File downloadedFile;
+                            try {
+                                downloadedFile = createImageFile();
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                //compressing image to 80 percent quality to reduce size
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                                uriList.add(downloadedFileUri);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     try {
                         File thumbFileCreated = createThumbFile(Imguri);
                         Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
@@ -951,7 +972,28 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 } else {
                     selectedImageUri = Uri.parse(mCurrentPhotoPath);
-                    uriList.add(selectedImageUri);
+                    InputStream is = null;
+                    if (selectedImageUri.getAuthority() != null) {
+                        is = getActivity().getContentResolver().openInputStream(selectedImageUri);
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+                            File downloadedFile;
+                            try {
+                                downloadedFile = createImageFile();
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                //compressing image to 80 percent quality to reduce size
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                                uriList.add(downloadedFileUri);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     try {
                         File thumbFileCreated = createThumbFile(selectedImageUri);
                         Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());

@@ -130,6 +130,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendImage(intentFromGallery); // Handle single image being sent
                 }else if("application/pdf".equals(type)){
                     Log.e("Rishabh", "PDF File ") ;
+                }else if("application/x-excel".equals(type)){
+                    Log.e("Rishabh", "excel File ") ;
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
