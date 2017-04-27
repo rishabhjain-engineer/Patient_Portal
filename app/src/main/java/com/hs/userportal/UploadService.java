@@ -151,8 +151,8 @@ public class UploadService extends IntentService {
                 }
             }
 
-            sendOriginalImageToS3(s3ObjectKey , fileToUpload , path , fname);
-            sendThumbImageToS3(s3ObjectKeyThumb,fileToUploadThumb,path,fthumbname);
+            sendOriginalImageToS3(s3ObjectKey, fileToUpload, path, fname);
+            sendThumbImageToS3(s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
         }
         sendData = new JSONObject();
 
@@ -160,7 +160,9 @@ public class UploadService extends IntentService {
         for (int k = 0; k < mUploadUriObjects.size(); k++) {
 
             JSONObject innerjsonObject = new JSONObject();
-
+            Log.e("Rishabh", "image name := " + mUploadUriObjects.get(k).getImageFile().getName());
+            Log.e("Rishabh", "ImageUrl := " + path + mUploadUriObjects.get(k).getImageFile().getName());
+            Log.e("Rishabh", "ThumbPath := " + path + mUploadUriObjects.get(k).getThumbFile().getName());
             try {
                 innerjsonObject.put("ImageName", mUploadUriObjects.get(k).getImageFile().getName());
                 innerjsonObject.put("ImageUrl", path + mUploadUriObjects.get(k).getImageFile().getName());
@@ -179,7 +181,7 @@ public class UploadService extends IntentService {
 
         System.out.println(sendData);
 
-        Log.e("Rishabh", "send data := "+sendData);
+        Log.e("Rishabh", "send data := " + sendData);
         queue1 = Volley.newRequestQueue(this);
 
         //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
@@ -244,7 +246,7 @@ public class UploadService extends IntentService {
     }
 
 
-    public void sendOriginalImageToS3(final String s3ObjectKey, File fileToUpload , String path , String fname) {
+    public void sendOriginalImageToS3(final String s3ObjectKey, File fileToUpload, String path, String fname) {
 
         String s3BucketName = getString(R.string.s3_bucket);
         final String msg = "Uploading " + s3ObjectKey + "...";
@@ -290,10 +292,6 @@ public class UploadService extends IntentService {
             System.out.println("afterdecode " + afterDecode);
 
 
-
-
-
-
         } catch (UploadIterruptedException uie) {
             broadcastState(s3ObjectKey, -1, "User interrupted");
         } catch (Exception e) {
@@ -302,11 +300,10 @@ public class UploadService extends IntentService {
         }
 
 
-
-       // TODO end of a class .
+        // TODO end of a class .
     }
 
-    public void sendThumbImageToS3(final String s3ObjectKeyThumb, File fileToUploadThumb , String path , String fthumbname) {
+    public void sendThumbImageToS3(final String s3ObjectKeyThumb, File fileToUploadThumb, String path, String fthumbname) {
 
         String s3BucketName = getString(R.string.s3_bucket);
         final String msg = "Uploading " + s3ObjectKeyThumb + "...";

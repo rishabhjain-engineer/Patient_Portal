@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -124,6 +125,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendText(intentFromGallery); // Handle text being sent
                 } else if (type.startsWith("image/")) {
                     handleSendImage(intentFromGallery); // Handle single image being sent
+                } else if ("application/pdf".equals(type)) {
+                    Log.e("Rishabh", "PDF File ");
+                } else if ("application/x-excel".equals(type)) {
+                    Log.e("Rishabh", "excel File ");
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
@@ -236,12 +241,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
         InputStream is = null;
         for (int i = 0; i < getUri.size(); i++) {
+            File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
             if (testSingleUri.getAuthority() != null) {
                 is = getContentResolver().openInputStream(testSingleUri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
                 if (bmp != null) {
-                    File downloadedFile;
                     try {
                         downloadedFile = createImageFile();
                         OutputStream outStream = new FileOutputStream(downloadedFile);
@@ -257,13 +262,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     }
                 }
             }
-            try {
-                File thumbFileCreated = createThumbFile(testSingleUri);
-                Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
-                ThumbUriList.add(thumbImageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+            Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
+            ThumbUriList.add(thumbImageUri);
 
         }
         RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
@@ -352,17 +354,16 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        String imageFileName = "JPEG_" + timeStamp + "_";
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
         //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
-       /* mImage = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                mediaStorageDir      *//* directory *//*
-        );*/
-        return mediaFile;
+        //File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+        mImage = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                mediaStorageDir
+        );
+        return mImage;
     }
 
     private void createLockFolder() {

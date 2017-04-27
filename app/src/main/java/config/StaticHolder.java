@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class StaticHolder {
 
 
- //   public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+   // public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
    // public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
