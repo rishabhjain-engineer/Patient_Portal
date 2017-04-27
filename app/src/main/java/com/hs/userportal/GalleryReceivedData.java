@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.List;
 
 import adapters.RepositoryAdapter;
+import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
@@ -63,6 +64,7 @@ import utils.RepositoryUtils;
 
 public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
+    private static List<File> listOfFiles = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private Button mMoveButton;
     private ImageView mCreateNewFolderImageView;
@@ -246,6 +248,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
+
         //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
@@ -260,6 +263,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
                 Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
                 selectedImageUri.add(testSingleUri);
+
+                listOfFiles.add(downloadedFile);
             }
 
             else {
@@ -277,6 +282,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
                             Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
                             selectedImageUri.add(downloadedFileUri);
+                            listOfFiles.add(downloadedFile);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -284,15 +290,26 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 }
             }
 
+            if(downloadedFile.getName().endsWith(".pdf")){
 
-            File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-            Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
-            ThumbUriList.add(thumbImageUri);
+            } else {
+                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
+                ThumbUriList.add(thumbImageUri);
+                listOfFiles.add(downloadedFile);
+                Log.e("Rishabh", "thumb uri := "+thumbImageUri.getPath());
 
-            Log.e("Rishabh", "thumb uri := "+thumbImageUri.getPath());
+            }
+
         }
 
-        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+        RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+//        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+    }
+
+    public static List<File> getUploadUriObjectList() {
+
+        return listOfFiles;
     }
 
     private File createThumbFile(Uri singleUri) throws IOException {

@@ -62,7 +62,7 @@ public class RepositoryUtils {
     private static PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
     private static UploadUri mUploadUriObject;
-    private static List<UploadUri> mListOfUploadUri = new ArrayList<>();
+    private static List<File> mListOfUploadUri = new ArrayList<>();
 
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
@@ -164,7 +164,8 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri, Activity activity, Directory directory, String uploadFrom) {
+
+    /*public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri, Activity activity, Directory directory, String uploadFrom) {
 
         for (int i = 0; i < fileUri.size(); i++) {
 
@@ -172,37 +173,32 @@ public class RepositoryUtils {
 
             mUploadUriObject.setImageUri(fileUri.get(i));
 
-            if(filethumbUri.get(i) != null ) {
+            if (filethumbUri.get(i) != null) {
                 mUploadUriObject.setThumbUri(filethumbUri.get(i));
                 String imageThumbStoredPath = mUploadUriObject.getThumbUri().getPath();
                 File imageThumbFile = new File(imageThumbStoredPath);
                 mUploadUriObject.setThumbFile(imageThumbFile);
-            }
-           else{
+            } else {
                 Log.e("Rishabh", "pdf file -- no thumbnail");
                 mUploadUriObject.setThumbUri(null);
                 mUploadUriObject.setThumbFile(null);
             }
 
 
-            /*String imageStoredPath = getPathFromContentUri(mUploadUriObject.getImageUri(), activity);
-            mUploadUriObject.setImagePath(imageStoredPath);*/
+            String imageStoredPath = getPathFromContentUri(mUploadUriObject.getImageUri(), activity);
+            mUploadUriObject.setImagePath(imageStoredPath);
 
             //String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
 
-            /*File imageFile = new File(mUploadUriObject.getImagePath());
-            mUploadUriObject.setImageFile(imageFile);*/
+            File imageFile = new File(mUploadUriObject.getImagePath());
+            mUploadUriObject.setImageFile(imageFile);
 
 
             String imageStoredPath = mUploadUriObject.getImageUri().getPath();
 
 
-
-
             File imageFile = new File(imageStoredPath);
             mUploadUriObject.setImageFile(imageFile);
-
-
 
 
             String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
@@ -238,8 +234,29 @@ public class RepositoryUtils {
         activity.startService(intent);
 
     }
+*/
+    public static void uploadFilesToS3(List<File> listOfFiles, Activity activity, Directory directory, String uploadFrom) {
 
-    public static List<UploadUri> getUploadUriObjectList() {
+//        String isExisting;
+//        String fileName;
+        /*for(File file : listOfFiles){
+            if(file.getName().contains("_thumb"))
+                continue;;
+
+            directory.hasFile(file.getName()){
+            }
+        }*/
+
+        mListOfUploadUri = listOfFiles;
+
+        Intent intent = new Intent(activity, UploadService.class);
+        intent.putExtra(UploadService.uploadfrom, uploadFrom);
+        intent.putExtra("add_path", directory.getDirectoryPath());
+        activity.startService(intent);
+
+    }
+
+    public static List<File> getUploadUriObjectList() {
 
         return mListOfUploadUri;
     }
@@ -282,7 +299,7 @@ public class RepositoryUtils {
         try {
             thumbnailFile = createImageFile(activity);
             Bitmap bitmap = BitmapFactory.decodeFile(mainFile.getAbsolutePath());
-            if(bitmap!=null){
+            if (bitmap != null) {
                 Bitmap thumbBitmap = getThumbnailImage(bitmap);
                 FileOutputStream fos = new FileOutputStream(thumbnailFile);
                 thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
@@ -295,30 +312,27 @@ public class RepositoryUtils {
         }
 
         String mainFileName = mainFile.getName();
-
-       /* String a = mainFileName.replaceAll("\\s","");
-
-        Log.e("Rishabh", "a = "+a);
-
-*/
-        File file=null;
+        File file = null;
         //Ravi.jpg
         String[] splitted = mainFileName.split("\\.");
         //Ravi jpg
-        splitted[0] = splitted[0] + "_thumb";
+        splitted[splitted.length - 2] = splitted[splitted.length - 2] + "_thumb";
 
-        if(mainFileName.contains("pdf")){
-            String thumbnailFileName="";
-            file = new File(thumbnailFileName);
-        }else{
-            String thumbnailFileName = splitted[0] + "." + "jpg";
-            file = new File(thumbnailFile.getParent() + "/" + thumbnailFileName);
-            boolean renamedFile = thumbnailFile.renameTo(file);
+        String thumbnailFileName = splitted[0] + "." + "jpg";
+        file = new File(thumbnailFile.getParent() + "/" + thumbnailFileName);
+        boolean renamedFile = thumbnailFile.renameTo(file);
 
-        }
+
         Log.e("RAVI", "Repository utils -- Thumb file : " + file.getAbsolutePath());
 
         return file;
+    }
+
+    public static String getThumbFileName(String fileName) {
+        String[] splitted = fileName.split("\\.");
+        splitted[splitted.length - 2] = splitted[splitted.length - 2] + "_thumb";
+
+        return splitted[ 0]+"." + "jpg";
     }
 
     private static Bitmap getThumbnailImage(Bitmap bm) {
