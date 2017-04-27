@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,6 +76,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -197,10 +201,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             currentDirectory.clearAll();
             for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
-                if (summary.getKey().contains("_thumb")) {
+                if (summary.getKey().contains("_thumb") ) {
                     continue;
                 }
-                if (DirectoryUtility.isFile(summary.getKey())) {
+                if (DirectoryUtility.isFile(summary.getKey()) ) {
                     DirectoryFile file = new DirectoryFile();
                     file.setKey(summary.getKey());
                     file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
@@ -619,7 +623,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.e("RAVI", s3data.toString());
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -763,9 +766,98 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onImageTouched(DirectoryFile file) {
-        Intent i = new Intent(mActivity, ImageActivity.class);
-        i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
-        startActivity(i);
+
+
+
+        if(file.getOtherExtension()){
+            if(file.getKey().contains("pdf")){
+                Log.e("Rishabh", "Opening pdf") ;
+               /* File filea = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+file.getName());
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(filea), "application/pdf");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);*/
+
+                String filepath = AppConstant.AMAZON_URL+ file.getKey();
+                Log.e("Rishabh", "filepath := "+filepath);
+
+                File filea = new File(AppConstant.AMAZON_URL+ file.getKey());
+
+
+                PackageManager packageManager = mActivity.getPackageManager();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("application/pdf");
+                List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+
+                    Log.v("post", "execute");
+
+                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                    ///////
+                    Uri uri = null;
+                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    Method m = null;
+                    try {
+                        m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    uri = Uri.fromFile(filea);
+                   /*} else {
+                       uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                   }*/
+                    /////
+                    objIntent.setDataAndType(uri, "application/pdf");
+                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    Log.e("Rishabh","Lol");
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               /* Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(Uri.fromFile(filea),"application/pdf");
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                Intent intent = Intent.createChooser(target, "Open File");
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    Log.e("Rishabh","Lol");
+                }
+*/
+            }
+        }else{
+            Intent i = new Intent(mActivity, ImageActivity.class);
+            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+            startActivity(i);
+        }
+
+
+
     }
 
     private void chooseimage() {

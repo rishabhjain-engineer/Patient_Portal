@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -118,13 +119,23 @@ public class UploadService extends IntentService {
             exhistimg = mUploadUriObjects.get(i).isExistingImage();
             filePath = mUploadUriObjects.get(i).getImageUri().getPath();
 
-            fileThumbpath = mUploadUriObjects.get(i).getThumbUri().getPath();           // equivalent to filepath
-            fileToUploadThumb = mUploadUriObjects.get(i).getThumbFile();                 // equivalent to filetoupload
+            if(mUploadUriObjects.get(i).getThumbUri().equals(null)){
+                fileThumbpath=null;
+                fileToUploadThumb=null;
+                Log.e("Rishabh", "no thumbfile created; its pdf");
+                s3ObjectKeyThumb = md5(fileThumbpath);
+            }else{
+                fileThumbpath = mUploadUriObjects.get(i).getThumbUri().getPath();           // equivalent to filepath
+                fileToUploadThumb = mUploadUriObjects.get(i).getThumbFile();                 // equivalent to filetoupload
+            }
+
+
 
             s3ObjectKey = md5(filePath);
-            s3ObjectKeyThumb = md5(fileThumbpath);
 
 
+            Log.e("Rishabh", "ThumbImage:= "+fileThumbpath);
+            Log.e("Rishabh", "pdf file := "+filePath);
             if (add_path.equalsIgnoreCase("")) {
                 path = patientId + "/" + "FileVault/Personal/";
 
@@ -150,11 +161,11 @@ public class UploadService extends IntentService {
                     fthumbname = mUploadUriObjects.get(i).getThumbFile().getName();
                 }
             }
-
-            sendOriginalImageToS3(s3ObjectKey, fileToUpload, path, fname);
-            sendThumbImageToS3(s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
+            Log.e("Rishabh", "ImageUrl := " + path + mUploadUriObjects.get(i).getImageFile().getName());
+          //  sendOriginalImageToS3(s3ObjectKey, fileToUpload, path, fname);
+           // sendThumbImageToS3(s3ObjectKeyThumb, fileToUploadThumb, path, fthumbname);
         }
-        sendData = new JSONObject();
+       /* sendData = new JSONObject();
 
         JSONArray jsonArray = new JSONArray();
         for (int k = 0; k < mUploadUriObjects.size(); k++) {
@@ -240,7 +251,7 @@ public class UploadService extends IntentService {
         jr1.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue1.add(jr1);
-
+*/
 
         // todo end of handle intent ()
     }

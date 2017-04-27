@@ -127,6 +127,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendImage(intentFromGallery); // Handle single image being sent
                 } else if ("application/pdf".equals(type)) {
                     Log.e("Rishabh", "PDF File ");
+                    handleSendPdf(intentFromGallery);
                 } else if ("application/x-excel".equals(type)) {
                     Log.e("Rishabh", "excel File ");
                 }
@@ -218,6 +219,15 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
     }
 
+    void handleSendPdf(Intent intent) {
+
+       Uri uriPDF = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Log.e("Rishabh", "pdf URI :=  "+ uriPDF.toString());
+        mMultipleImageUris.add(uriPDF);
+
+    }
+
+
     void handleSendImage(Intent intent) {
         mIsSingleUri = true;
         mSingleImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
@@ -243,31 +253,45 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         for (int i = 0; i < getUri.size(); i++) {
             File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
-            if (testSingleUri.getAuthority() != null) {
-                is = getContentResolver().openInputStream(testSingleUri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                if (bmp != null) {
-                    try {
-                        downloadedFile = createImageFile();
-                        OutputStream outStream = new FileOutputStream(downloadedFile);
-                        //compressing image to 80 percent quality to reduce size
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                        outStream.flush();
-                        outStream.close();
-                        Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
 
-                        selectedImageUri.add(downloadedFileUri);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if(testSingleUri.toString().contains("pdf")) {
+                downloadedFile = new File(testSingleUri.getPath());
+                Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
+                Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
+                Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
+                selectedImageUri.add(testSingleUri);
+            }
+
+            else {
+                if (testSingleUri.getAuthority() != null) {
+                    is = getContentResolver().openInputStream(testSingleUri);
+                    Bitmap bmp = BitmapFactory.decodeStream(is);
+                    if (bmp != null) {
+                        try {
+                            downloadedFile = createImageFile();
+                            OutputStream outStream = new FileOutputStream(downloadedFile);
+                            //compressing image to 80 percent quality to reduce size
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                            outStream.flush();
+                            outStream.close();
+                            Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                            Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
+                            selectedImageUri.add(downloadedFileUri);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+
 
             File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
             Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
             ThumbUriList.add(thumbImageUri);
 
+            Log.e("Rishabh", "thumb uri := "+thumbImageUri.getPath());
         }
+
         RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
