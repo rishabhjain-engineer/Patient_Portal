@@ -55,7 +55,7 @@ public class StudentsDetailActivity extends BaseActivity {
         //String DoctorDesignation = intent.getStringExtra("DoctorDesignation");
         mStaffId = intent.getStringExtra("staffId");
 
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+        if (NetworkChangeListener.getNetworkStatus().isConnected() && isSessionExist()) {
             sendrequest();
         } else {
             Toast.makeText(StudentsDetailActivity.this, "No Internet Connection", Toast.LENGTH_LONG).show();
