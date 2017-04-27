@@ -60,6 +60,7 @@ import com.android.volley.toolbox.Volley;
 import com.hs.userportal.BuildConfig;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
+import com.hs.userportal.FileDownloader;
 import com.hs.userportal.ImageActivity;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
@@ -201,10 +202,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             currentDirectory.clearAll();
             for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
-                if (summary.getKey().contains("_thumb") ) {
+                if (summary.getKey().contains("_thumb")) {
                     continue;
                 }
-                if (DirectoryUtility.isFile(summary.getKey()) ) {
+                if (DirectoryUtility.isFile(summary.getKey())) {
                     DirectoryFile file = new DirectoryFile();
                     file.setKey(summary.getKey());
                     file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
@@ -768,96 +769,70 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     public void onImageTouched(DirectoryFile file) {
 
 
-
-        if(file.getOtherExtension()){
-            if(file.getKey().contains("pdf")){
-                Log.e("Rishabh", "Opening pdf") ;
-               /* File filea = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+file.getName());
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(filea), "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);*/
-
-                String filepath = AppConstant.AMAZON_URL+ file.getKey();
-                Log.e("Rishabh", "filepath := "+filepath);
-
-                File filea = new File(AppConstant.AMAZON_URL+ file.getKey());
+        if (file.getOtherExtension()) {
+            if (file.getKey().contains("pdf")) {
+                Log.e("Rishabh", "Opening pdf");
 
 
-                PackageManager packageManager = mActivity.getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("application/pdf");
-                List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                String filepath = AppConstant.AMAZON_URL + file.getKey();
+                Log.e("Rishabh", "filepath := " + filepath);
+
+                new DownloadFile().execute(filepath, "health.pdf");
+
+                File pdfFile = new File(Environment.getExternalStorageDirectory() + "/HealthScion/" + "health.pdf");  // -> filename = maven.pdf
+
+                Uri uriPdf = null;
 
 
-                    Log.v("post", "execute");
+                uriPdf = Uri.fromFile(pdfFile);
+               // uriPdf = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
 
-                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                    ///////
-                    Uri uri = null;
-                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    Method m = null;
-                    try {
-                        m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
-                        m.invoke(null);
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    uri = Uri.fromFile(filea);
-                   /*} else {
-                       uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
-                   }*/
-                    /////
-                    objIntent.setDataAndType(uri, "application/pdf");
-                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(uriPdf, "application/pdf");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                objIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriPdf);
                 Intent i = Intent.createChooser(objIntent, "Open File");
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a PDF reader here, or something
-                    Log.e("Rishabh","Lol");
+                    Log.e("Rishabh", "Lol");
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-               /* Intent target = new Intent(Intent.ACTION_VIEW);
-                target.setDataAndType(Uri.fromFile(filea),"application/pdf");
-                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-                Intent intent = Intent.createChooser(target, "Open File");
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                    Log.e("Rishabh","Lol");
-                }
-*/
             }
-        }else{
+
+        } else {
             Intent i = new Intent(mActivity, ImageActivity.class);
             i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
             startActivity(i);
         }
 
 
+    }
 
+
+    private class DownloadFile extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String fileUrl = strings[0];   // -> http://maven.apache.org/maven-1.x/maven.pdf
+            String fileName = strings[1];  // -> maven.pdf
+            String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+            File folder = new File(extStorageDirectory, "HealthScion");
+            folder.mkdir();
+
+            File pdfFile = new File(folder, fileName);
+
+            try {
+                pdfFile.createNewFile();
+
+                //pdfFile = File.createTempFile(fileName,".pdf");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            FileDownloader.downloadFile(fileUrl, pdfFile);
+            return null;
+        }
     }
 
     private void chooseimage() {
@@ -944,6 +919,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
+                Log.e("Rishabh", "IO exception := "+ex);
                 return;
             }
             if (photoFile != null) {
@@ -957,14 +933,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
+         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
-                mediaStorageDir
+                storageDir
         );
-       // File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         Log.e("Rishabh", "image := " + image.getName());
         return image;

@@ -19,11 +19,12 @@ public class FileDownloader {
 
             URL url = new URL(fileUrl);
             HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-           // urlConnection.setRequestMethod("GET");
-        //    urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("GET");
+           urlConnection.setDoOutput(true);
             urlConnection.connect();
+            Log.e("Rishabh", "connected:") ;
             int length=urlConnection.getContentLength();
-            Log.e("lenth" ,""+urlConnection.getContentLength());
+            Log.e("length" ,""+urlConnection.getContentLength());
             InputStream inputStream = urlConnection.getInputStream();
             FileOutputStream fileOutputStream = new FileOutputStream(directory);
             int totalSize = urlConnection.getContentLength();
