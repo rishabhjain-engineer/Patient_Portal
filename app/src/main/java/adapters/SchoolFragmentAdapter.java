@@ -67,7 +67,9 @@ public class SchoolFragmentAdapter extends BaseAdapter {
         }
         Schools schools = mSchoolsList.get(position);
         holder.name.setText(schools.getDoctorName());
-        holder.date.setText(schools.getDateOfExamination());
+        String date = schools.getDateOfExamination();
+        String array[] = date.split("T");
+        holder.date.setText(array[0]);
         return convertView;
     }
 }

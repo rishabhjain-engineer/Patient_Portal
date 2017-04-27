@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.GraphDetailValueAndDate;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 import com.hs.userportal.VaccineDetails;
@@ -28,7 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import adapters.SchoolFragmentAdapter;
@@ -130,15 +134,14 @@ public class SchoolFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.optJSONObject(i);
                             Schools schools = new Schools();
-                            String date = jsonObject.optString("DateOfExamination");
-                            String dateArray[] = date.split("T");
-                            schools.setDateOfExamination(dateArray[0]);
+                            schools.setDateOfExamination(jsonObject.optString("DateOfExamination"));
                             schools.setDoctorName(jsonObject.optString("DoctorName"));
                             schools.setDoctorDesignation(jsonObject.optString("DoctorDesignation"));
                             schools.setStaffId(jsonObject.optString("staffId"));
                             mSchoolsList.add(schools);
                         }
-                        mSchoolFragmentAdapter = new SchoolFragmentAdapter(mActivity, mSchoolsList);
+                        List<Schools> sortedList = sortListByDate(mSchoolsList);
+                        mSchoolFragmentAdapter = new SchoolFragmentAdapter(mActivity, sortedList);
                         mSchoolListView.setAdapter(mSchoolFragmentAdapter);
                     }
 
@@ -155,5 +158,33 @@ public class SchoolFragment extends Fragment {
             }
         });
         mRequestQueue.add(jsonObjectRequest);
+    }
+
+    private List<Schools> sortListByDate(List<Schools> list) {
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i; j < list.size(); j++) {
+                try {
+                    String first = list.get(i).getDateOfExamination();
+                    String second = list.get(j).getDateOfExamination();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date date1 = simpleDateFormat.parse(first);
+                    Date date2 = simpleDateFormat.parse(second);
+
+                    if (date1.compareTo(date2) < 0) {
+                        Schools firstitem = list.get(i);
+                        Schools seconditem = list.get(j);
+                        //swap position first with second
+                        list.add(i, seconditem);
+                        list.add(j, firstitem);
+                        list.remove(i + 1);
+                        list.remove(j + 1);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 }
