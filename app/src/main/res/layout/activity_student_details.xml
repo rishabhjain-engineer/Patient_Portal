@@ -118,6 +118,109 @@
             android:textColor="@color/black" />
         ///////////////////
 
+
+        <TextView
+            android:id="@+id/dental_examination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Dental Examination"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/extra_oral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Extra Oral"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/intra_oral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Intra Oral"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tooth_cavity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Tooth Cavity"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/Plaque"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Plaque"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/gum_inflammation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Gum Inflammation"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/stains"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Stains"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tarter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Tarter"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/bad_breath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Bad Breath"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/gum_bleeding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Gum Bleeding"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/soft_tissue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="20dp"
+            android:text="Soft Tissue"
+            android:textColor="@color/black" />
+
+
         <TextView
             android:id="@+id/systametic_examination"
             android:layout_width="match_parent"
@@ -181,6 +284,83 @@
             android:paddingLeft="10dp"
             android:text="Eye Right"
             android:textColor="@color/black" />
+
+        //////////////////////////////////
+
+        <TextView
+            android:id="@+id/medical_officer_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Medical Officer Details"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/important_findings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Important Findings"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/date_of_examination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Date Of Examination"
+            android:textColor="@color/black" />
+
+
+        <TextView
+            android:id="@+id/doctor_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Doctor Name"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/doctor_designation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Doctor Designation"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Place"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Remarks"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/follow_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:paddingLeft="10dp"
+            android:text="Follow up"
+            android:textColor="@color/black" />
+
 
     </LinearLayout>
 </ScrollView>

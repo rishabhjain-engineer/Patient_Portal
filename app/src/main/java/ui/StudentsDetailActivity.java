@@ -39,6 +39,8 @@ public class StudentsDetailActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_details);
+        setupActionBar();
+        mActionBar.setTitle("Student Detail");
         Intent intent = getIntent();
         mDateOfExamination = intent.getStringExtra("DateOfExamination");
         //String DoctorName = intent.getStringExtra("DoctorName");
