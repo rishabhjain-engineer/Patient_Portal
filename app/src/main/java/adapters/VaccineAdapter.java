@@ -108,6 +108,8 @@ public class VaccineAdapter extends BaseAdapter {
             holder.acronyms.setText((vaccineNameWithDose));
             if(!TextUtils.isEmpty(vaccineDetails.getVaccineDateTime())){
                 holder.mTickedImagView.setVisibility(View.VISIBLE);
+            }else{
+                holder.mTickedImagView.setVisibility(View.GONE);
             }
             //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
         }
