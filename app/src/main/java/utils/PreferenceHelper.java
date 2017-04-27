@@ -54,6 +54,8 @@ public class PreferenceHelper {
 
         ON_DASH_BOARD_DEVICE_TKEN_SEND("false"),
 
+        PATIENT_BUSINESS_FLAG(""),
+
         TO_DATE("null");
 
         private String defaultValue;

@@ -111,8 +111,8 @@ public class SchoolFragment extends Fragment {
         JSONObject sendData = new JSONObject();
         try {
             String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            sendData.put("patientId", "97E9496B-8630-4D61-9F13-D7E95C0AD6A7");
-            //sendData.put("patientId", id);
+            //sendData.put("patientId", "97E9496B-8630-4D61-9F13-D7E95C0AD6A7");
+            sendData.put("patientId", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
