@@ -13,109 +13,186 @@
             android:id="@+id/general_examination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:text="General Examination"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="height"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="weight"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/allergy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="allergy"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/nails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="nails"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/hair"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Hair"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
 
         <TextView
             android:id="@+id/skin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Skin"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
 
         <TextView
             android:id="@+id/anemia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Anemia"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/ear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Ear"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
 
         <TextView
             android:id="@+id/nose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Nose"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
 
         <TextView
             android:id="@+id/throat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Throat"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
 
         <TextView
             android:id="@+id/neck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Neck"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
         ///////////////////
 
 
@@ -123,167 +200,274 @@
             android:id="@+id/dental_examination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:text="Dental Examination"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/extra_oral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Extra Oral"
             android:textColor="@color/black"
             android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/intra_oral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Intra Oral"
             android:textColor="@color/black"
             android:textSize="18dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/tooth_cavity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Tooth Cavity"
             android:textColor="@color/black" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
         <TextView
-            android:id="@+id/Plaque"
+            android:id="@+id/plaque"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Plaque"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/gum_inflammation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Gum Inflammation"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/stains"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Stains"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/tarter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Tarter"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/bad_breath"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Bad Breath"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/gum_bleeding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Gum Bleeding"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/soft_tissue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Soft Tissue"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
 
         <TextView
             android:id="@+id/systametic_examination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:text="Systametic Examination"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/respiratory_system"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Respiratory System"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/cardio_vascular_system"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Cardio Vascular System"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/abdomen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Abdomen"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/nervous_system"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Nervous System"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/eye_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Eye Left"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/eye_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Eye Right"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         //////////////////////////////////
 
@@ -291,29 +475,46 @@
             android:id="@+id/medical_officer_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:text="Medical Officer Details"
             android:textColor="@color/black"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/important_findings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Important Findings"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/date_of_examination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Date Of Examination"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
 
         <TextView
@@ -321,45 +522,75 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Doctor Name"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/doctor_designation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Doctor Designation"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/place"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Place"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/remarks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Remarks"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/follow_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vaccine_name_tv"
-            android:paddingLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="Follow up"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
 
     </LinearLayout>

@@ -89,8 +89,8 @@ public class SchoolFragment extends Fragment {
                 //intent.putExtra("DoctorName", selectedItem.getDoctorName());
                 //intent.putExtra("DoctorDesignation", selectedItem.getDoctorDesignation());
                 intent.putExtra("staffId", selectedItem.getStaffId());
-
                 startActivity(intent);
+                mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
             }
         });
