@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ui.DashBoardActivity;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 29/3/17.
@@ -31,13 +32,17 @@ public class DashboardActivityAdapter extends BaseAdapter {
         mList.add("Vitals");
         mList.add("Family");
         mList.add("Repository");
-        mList.add("School");
 
         mImageList.add(R.drawable.homepage_reports);
         mImageList.add(R.drawable.homepage_vital_green);
         mImageList.add(R.drawable.homepage_family);
         mImageList.add(R.drawable.homepage_repository);
-        mImageList.add(R.drawable.ic);
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+        if ("3".equalsIgnoreCase(preferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG))) {
+            mList.add("School");
+            mImageList.add(R.drawable.ic);
+        }
+
     }
 
 

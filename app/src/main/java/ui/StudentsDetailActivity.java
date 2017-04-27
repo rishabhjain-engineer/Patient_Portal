@@ -120,11 +120,10 @@ public class StudentsDetailActivity extends BaseActivity {
 
         JSONObject sendData = new JSONObject();
         try {
-            //sendData.put("doctorId", mStaffId);
-            //sendData.put("date", mDateOfExamination);
-
-            sendData.put("doctorId", "BE1720FB-0E57-4214-B76D-1153CCB0D357");
-            sendData.put("date", "2017-04-13");
+            sendData.put("doctorId", mStaffId);
+            sendData.put("date", mDateOfExamination);
+            //sendData.put("doctorId", "BE1720FB-0E57-4214-B76D-1153CCB0D357");
+           // sendData.put("date", "2017-04-13");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -144,7 +143,9 @@ public class StudentsDetailActivity extends BaseActivity {
                     JSONObject generalExaminationJsonObject = jsonArray.optJSONObject(0);
                     mGeHeightTv.setText(generalExaminationJsonObject.isNull("Height") ? "Height\n-" : "Height\n\n" + generalExaminationJsonObject.optString("Height") + "  (Feet.inch)");
                     mGeWeightTv.setText(generalExaminationJsonObject.isNull("Weight") ? "Weight\n-" : "Weight\n\n" + generalExaminationJsonObject.optString("Weight") + "  (Kg)");
-                    mGeAllergyTv.setText(generalExaminationJsonObject.isNull("Allergy") ? "Allergy\n-" : "Allergy\n\n" + generalExaminationJsonObject.optString("Allergy"));
+                    String allergy = generalExaminationJsonObject.optString("Allergy");
+                    allergy = allergy.replace(",", "\n");
+                    mGeAllergyTv.setText(generalExaminationJsonObject.isNull("Allergy") ? "Allergy\n-" : "Allergy\n\n" + allergy);
                     mGeNailsTv.setText(generalExaminationJsonObject.isNull("Nails") ? "Nails\n-" : "Nails\n\n" + generalExaminationJsonObject.optString("Nails"));
                     mGeHairsTv.setText(generalExaminationJsonObject.isNull("Hair") ? "Hair\n-" : "Hair\n\n" + generalExaminationJsonObject.optString("Hair"));
                     mGeSkinTv.setText(generalExaminationJsonObject.isNull("Skin") ? "Skin\n-" : "Skin\n\n" + generalExaminationJsonObject.optString("Skin"));
@@ -183,7 +184,12 @@ public class StudentsDetailActivity extends BaseActivity {
                     JSONArray modJsonArray = cut.optJSONArray("Medical Officer Details");
                     JSONObject medicalOfficerJsonObject = modJsonArray.optJSONObject(0);
                     mMedicalImportatntTv.setText(medicalOfficerJsonObject.isNull("Important Findings") ? "Important Findings\n-" : "Important Findings\n\n" + medicalOfficerJsonObject.optString("Important Findings"));
-                    mMedicalDoeTv.setText(medicalOfficerJsonObject.isNull("Date Of Examination") ? "Date Of Examination\n-" : "Date Of Examination\n\n" + medicalOfficerJsonObject.optString("Date Of Examination"));
+                    String date =  medicalOfficerJsonObject.optString("Date Of Examination");
+                    if(date.contains("/")){
+                        String array [] = date.split(" ");
+                        date = array[0];
+                    }
+                    mMedicalDoeTv.setText(medicalOfficerJsonObject.isNull("Date Of Examination") ? "Date Of Examination\n-" : "Date Of Examination\n\n" +date);
                     mMedicalDoctorNameTv.setText(medicalOfficerJsonObject.isNull("Doctor Name") ? "Doctor Name\n-" : "Doctor Name\n\n" + medicalOfficerJsonObject.optString("Doctor Name"));
                     mMedicalDoctorDesignationTv.setText(medicalOfficerJsonObject.isNull("Doctor Designation") ? "Doctor Designation\n-" : "Doctor Designation\n\n" + medicalOfficerJsonObject.optString("Doctor Designation"));
                     mMedicalPlaceTv.setText(medicalOfficerJsonObject.isNull("Place") ? "Place\n-" : "Place\n\n" + medicalOfficerJsonObject.optString("Place"));
