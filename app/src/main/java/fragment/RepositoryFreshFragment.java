@@ -212,7 +212,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
 
             for (String path : s3allData) {
-                Log.e("RAVI", path);
                 Directory directory = new Directory(DirectoryUtility.getFolderName(path));
                 DirectoryUtility.addFolder(currentDirectory, directory);
             }
@@ -865,18 +864,18 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        String imageFileName = "JPEG_" + timeStamp + "_";
         // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
-        /*File image = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                storageDir      *//* directory *//*
-        );*/
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
-        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
-        Log.e("Rishabh", "image := " + mediaFile.getName());
-        return mediaFile;
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                mediaStorageDir
+        );
+       // File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        Log.e("Rishabh", "image := " + image.getName());
+        return image;
     }
 
     private void takePhoto() {

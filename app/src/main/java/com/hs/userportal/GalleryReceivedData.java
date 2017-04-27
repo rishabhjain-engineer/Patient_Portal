@@ -314,7 +314,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        Log.e("Rishabh", "Thumb := " + mediaFile.getName());
         return mediaFile;
     }
 
@@ -355,19 +354,16 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        String imageFileName = "JPEG_" + timeStamp + "_";
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
         //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
-       /* mImage = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                mediaStorageDir      *//* directory *//*
-        );*/
-
-        Log.e("Rishabh", "Image := " + mediaFile.getName());
-        return mediaFile;
+        //File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
+        mImage = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                mediaStorageDir
+        );
+        return mImage;
     }
 
     private void createLockFolder() {
