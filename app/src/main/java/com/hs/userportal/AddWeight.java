@@ -479,8 +479,7 @@ public class AddWeight extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                finish();
                 return true;
 
             default:

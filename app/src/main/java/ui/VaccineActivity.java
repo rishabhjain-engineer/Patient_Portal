@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -68,7 +69,7 @@ public class VaccineActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
 
                 VaccineDetails selectedItem = (VaccineDetails) mListView.getItemAtPosition(position);
-                if (selectedItem.isHeader()) {
+                if (selectedItem.isHeader() && isSessionExist()) {
                 } else {
                     mIntent = new Intent(VaccineActivity.this, VaccineEditActivity.class);
                     mIntent.putExtra("Name", selectedItem.getVaccineName());
@@ -138,6 +139,19 @@ public class VaccineActivity extends BaseActivity {
             sendrequest();
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+               finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

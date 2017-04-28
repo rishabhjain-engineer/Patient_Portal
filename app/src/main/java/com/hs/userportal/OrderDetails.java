@@ -252,7 +252,7 @@ public class OrderDetails extends BaseActivity {
                             cancel_order();
                             reason_dialog.dismiss();
                         } else {
-                            Toast.makeText(OrderDetails.this,"Please Select atleast one reason for Cancelling the order.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OrderDetails.this, "Please Select atleast one reason for Cancelling the order.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -475,10 +475,8 @@ public class OrderDetails extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-
-
-              /*  super.onBackPressed();*/
-                onBackPressed();
+               /*  super.onBackPressed();*/
+                finish();
                /* overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
                 return true;
             default:
