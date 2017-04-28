@@ -120,7 +120,7 @@ public class changepass extends BaseActivity {
                         showAlertMessage("Password is not satisfying mentioned condition.");
                     } else {
                         mChangePassowrdBtn.setClickable(false);
-                        if(isSessionExist()){
+                        if (isSessionExist()) {
                             JSONObject sendData = new JSONObject();
                             try {
                                 sendData.put("UserId", id);
@@ -138,10 +138,11 @@ public class changepass extends BaseActivity {
                 }
             }
         });
-     isSessionExist();
+        isSessionExist();
     }
 
     private ProgressDialog mProgressDialog;
+
     private class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private JSONObject dataToSend, receiveChangPassData;
@@ -171,6 +172,10 @@ public class changepass extends BaseActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgressDialog.dismiss();
+            mChangePassowrdBtn.setClickable(true);
+            old.setText("");
+            pass.setText("");
+            cpass.setText("");
             String str = "Some Server Error";
             try {
                 str = receiveChangPassData.getString("d");
@@ -205,6 +210,7 @@ public class changepass extends BaseActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     /**
      * if password is valid returns true otherwise false
      *
@@ -219,4 +225,4 @@ public class changepass extends BaseActivity {
         return matcher.matches();
     }
 
- }
+}
