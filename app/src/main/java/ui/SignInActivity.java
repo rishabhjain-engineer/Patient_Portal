@@ -965,8 +965,10 @@ public class SignInActivity extends BaseActivity {
             String array[] = mPatientBussinessFlag.split("\\|");
             String message = array[1];
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, array[0]);
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, "");
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);

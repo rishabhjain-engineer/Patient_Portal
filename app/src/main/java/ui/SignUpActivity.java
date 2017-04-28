@@ -1116,8 +1116,10 @@ public class SignUpActivity extends BaseActivity {
         if(!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")){
             String array[] = mPatientBussinessFlag.split("\\|");
             String message = array[1];
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, array[0]);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
         }else{
+            mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, "");
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
