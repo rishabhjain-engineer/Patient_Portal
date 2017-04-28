@@ -98,10 +98,22 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
             });
 
         } else if (listOfObjects.get(position).getObject() instanceof DirectoryFile) {
-            Glide.with(context)
-                    .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
-                    .crossFade()
-                    .into(holder.image);
+            if(((DirectoryFile) listOfObjects.get(position).getObject()).getOtherExtension()){
+
+                if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("pdf"))){
+                    holder.image.setImageResource(R.drawable.pdf_ico);
+                }else if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("doc"))){
+                    holder.image.setImageResource(R.drawable.ic_doc);
+                }else if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("xls"))){
+                    holder.image.setImageResource(R.drawable.ic_excel);
+                }
+            }else {
+                Glide.with(context)
+                        .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
+                        .crossFade()
+                        .into(holder.image);
+            }
+
             holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
             if (((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified() != null) {
                 holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().toString());

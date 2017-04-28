@@ -1,5 +1,7 @@
 package com.hs.userportal;
 
+import android.util.Log;
+
 import java.util.Date;
 
 /**
@@ -14,7 +16,7 @@ public class DirectoryFile {
     private long size;
     private double roundOff;
     private String thumb;
-    private String name;
+    private String name, extensionType;
     private boolean notImage ;
 
     public String getName() {
@@ -41,8 +43,18 @@ public class DirectoryFile {
     public void setKey(String key) {
         this.key = key;
 
-        if(key.contains("pdf") ||key.contains("xls") || key.contains("xlsx") ) {
+        if(key.contains(".pdf") ||key.contains(".xls") || key.contains(".xlsx") || key.contains(".doc") || key.contains(".txt")|| key.contains(".docx")) {
             setOtherExtension(true) ;
+
+
+            // Mr.SAjat.doc
+            // mr sajat doc
+            // mrsajat doc
+            String[] splitted = key.split("\\.");
+            String ExtensionType = splitted[splitted.length-1];
+            Log.e("Rishabh", "Extension Type:= "+ExtensionType);
+            setExtensionType(ExtensionType);
+
         }
 
 
@@ -83,5 +95,13 @@ public class DirectoryFile {
 
     public boolean getOtherExtension(){
         return notImage;
+    }
+
+    public void setExtensionType(String extension){
+        extensionType = extension ;
+    }
+
+    public String getExtensionType(){
+        return extensionType;
     }
 }

@@ -117,7 +117,14 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
 
         } else if (listOfObjects.get(position).getObject() instanceof DirectoryFile) {
             if(((DirectoryFile) listOfObjects.get(position).getObject()).getOtherExtension()){
-                holder.image.setImageResource(R.drawable.ic);
+
+                if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("pdf"))){
+                    holder.image.setImageResource(R.drawable.pdf_ico);
+                }else if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("doc"))){
+                    holder.image.setImageResource(R.drawable.ic_doc);
+                }else if(( ((DirectoryFile) listOfObjects.get(position).getObject()).getExtensionType().endsWith("xls"))){
+                    holder.image.setImageResource(R.drawable.ic_excel);
+                }
             }else{
                 Glide.with(context)
                         .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
