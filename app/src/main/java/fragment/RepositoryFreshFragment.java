@@ -789,7 +789,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
 
         } else {
-            Intent i = new Intent(mActivity, ImageActivity.class);            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+            Intent i = new Intent(mActivity, ImageActivity.class);
+            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
             startActivity(i);
         }
 

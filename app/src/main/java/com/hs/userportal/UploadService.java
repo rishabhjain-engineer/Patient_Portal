@@ -291,7 +291,7 @@ public class UploadService extends IntentService {
                 Log.e("Rishabh", "ThumbPath := " + directoryPath + RepositoryUtils.getThumbFileName(listOfFiles.get(k).getName()));
                 try {
                     innerjsonObject.put("ImageName", listOfFiles.get(k).getName());
-                    innerjsonObject.put("ImageUrl", directoryPath + listOfFiles.get(k).getName());
+                    innerjsonObject.put("ImageUrl", imageFullPAthUrl);
                     innerjsonObject.put("ThumbPath", directoryPath + RepositoryUtils.getThumbFileName(listOfFiles.get(k).getName()));
                 } catch (JSONException e) {
                     e.printStackTrace();
