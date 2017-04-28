@@ -17,7 +17,7 @@ public class StaticHolder {
     public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
-    // public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
     //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
@@ -298,7 +298,7 @@ public class StaticHolder {
                 url = BASE_URL + "CheckLabrangefrom_area";
                 break;
             case AuthenticateUserSession:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/AuthenticateUserSession";
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/AuthenticateUserSessionNew";
                 break;
             case agreeTermsCondition:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/agreeTermsCondition";
@@ -447,7 +447,7 @@ public class StaticHolder {
                 break;
 
             case NewLogIn:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogIn";
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogin1";
                 break;
             case NewFacebookLogin:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";

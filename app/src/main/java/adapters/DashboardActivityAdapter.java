@@ -40,7 +40,7 @@ public class DashboardActivityAdapter extends BaseAdapter {
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         if ("3".equalsIgnoreCase(preferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG))) {
             mList.add("School");
-            mImageList.add(R.drawable.school_icon);
+            mImageList.add(R.drawable.ic);
         }
 
     }
