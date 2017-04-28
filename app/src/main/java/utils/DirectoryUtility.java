@@ -94,7 +94,10 @@ public class DirectoryUtility {
                 || s.endsWith(".tiff")
                 || s.endsWith(".mac")
                 || s.endsWith(".img")
-                || s.endsWith(".bmp")) {
+                || s.endsWith(".bmp")
+                || s.endsWith(".doc")
+                || s.endsWith(".txt")
+                || s.endsWith(".docx")) {
             return true;
         } else {
             return false;
