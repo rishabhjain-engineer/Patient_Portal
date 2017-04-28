@@ -555,17 +555,20 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         progress.dismiss();
                     }
                 } else {
-                    Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                    i.putExtra("id", mPatientId);
-                    if (mFromHeight) {
-                        i.putExtra("htype", "height");
-                    } else if (mFromWeight) {
-                        i.putExtra("htype", "weight");
-                    } else if (mFromBp) {
-                        i.putExtra("htype", "bp");
+                    if (isSessionExist()) {
+                        Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
+                        i.putExtra("id", mPatientId);
+                        if (mFromHeight) {
+                            i.putExtra("htype", "height");
+                        } else if (mFromWeight) {
+                            i.putExtra("htype", "weight");
+                        } else if (mFromBp) {
+                            i.putExtra("htype", "bp");
+                        }
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        finish();
                     }
-                    startActivity(i);
-                    finish();
                 }
             }
         }
@@ -601,6 +604,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     i.putExtra("htype", "bp");
                 }
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
 
             case R.id.option:

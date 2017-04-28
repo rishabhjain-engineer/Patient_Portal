@@ -57,6 +57,7 @@ public class Allergy extends BaseActivity {
         super.onCreate(avedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.allergy);
+        setupActionBar();
         listView = (ListView) findViewById(R.id.listView);
         add_allergy = (Button) findViewById(R.id.add_allergy);
         back_pic = (ImageButton) findViewById(R.id.back_pic);

@@ -132,6 +132,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("id", id);
                         in.putExtra("forWeight", true);
                         startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
@@ -148,6 +149,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("id", id);
                         in.putExtra("forHeight", true);
                         startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
@@ -163,6 +165,7 @@ public class VitalFragment extends Fragment {
                         Intent in = new Intent(mActivity, Allergy.class);
                         in.putExtra("id", id);
                         startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
@@ -181,6 +184,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("id", id);
                         in.putExtra("forBmi", true);
                         startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
@@ -199,6 +203,7 @@ public class VitalFragment extends Fragment {
                         in.putExtra("id", id);
                         in.putExtra("forBp", true);
                         startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
@@ -214,6 +219,7 @@ public class VitalFragment extends Fragment {
                     if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                         Intent intent = new Intent(mActivity, VaccineActivity.class);
                         startActivity(intent);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
