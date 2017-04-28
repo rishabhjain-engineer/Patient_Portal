@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ import java.util.Date;
 import java.util.List;
 
 import adapters.RepositoryAdapter;
+import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
@@ -63,6 +65,7 @@ import utils.RepositoryUtils;
 
 public class GalleryReceivedData extends BaseActivity implements RepositoryAdapter.onDirectoryAction {
 
+    private static List<File> listOfFiles = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private Button mMoveButton;
     private ImageView mCreateNewFolderImageView;
@@ -89,6 +92,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private int numberOfUri;
     private boolean isFromGallery;
     private File mImage;
+    private ProgressDialog mProgressDialog;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -110,6 +114,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
+        Log.e("Rishabh", "type = "+type);
         mActivity = this;
         displayedDirectory = new ArrayList<>();
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -127,12 +132,16 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendImage(intentFromGallery); // Handle single image being sent
                 } else if ("application/pdf".equals(type)) {
                     Log.e("Rishabh", "PDF File ");
+                    handleSendPdf(intentFromGallery);
                 } else if ("application/x-excel".equals(type)) {
                     Log.e("Rishabh", "excel File ");
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
                     handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
+                } else if("*/*".equalsIgnoreCase(type)){
+                    Log.e("Rishabh", "PDF MULTIPLE File ");
+                    handleSendPdfMultiple(intentFromGallery);
                 }
             } else {
                 // Handle other intents, such as being started from the home screen
@@ -212,11 +221,24 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
     }
 
+    void handleSendPdfMultiple(Intent intent){
+        mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+    }
+
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
         }
     }
+
+    void handleSendPdf(Intent intent) {
+
+       Uri uriPDF = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Log.e("Rishabh", "pdf URI :=  "+ uriPDF.toString());
+        mMultipleImageUris.add(uriPDF);
+
+    }
+
 
     void handleSendImage(Intent intent) {
         mIsSingleUri = true;
@@ -236,6 +258,13 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
+        listOfFiles.clear();
+
+        mProgressDialog = new ProgressDialog(mActivity);
+        mProgressDialog.setMessage("Uploading File ...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
         //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
@@ -243,32 +272,57 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         for (int i = 0; i < getUri.size(); i++) {
             File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
-            if (testSingleUri.getAuthority() != null) {
-                is = getContentResolver().openInputStream(testSingleUri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                if (bmp != null) {
-                    try {
-                        downloadedFile = createImageFile();
-                        OutputStream outStream = new FileOutputStream(downloadedFile);
-                        //compressing image to 80 percent quality to reduce size
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                        outStream.flush();
-                        outStream.close();
-                        Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
 
-                        selectedImageUri.add(downloadedFileUri);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if(testSingleUri.toString().contains("pdf")) {
+                downloadedFile = new File(testSingleUri.getPath());
+                Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
+                Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
+                Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
+                selectedImageUri.add(testSingleUri);
+
+                listOfFiles.add(downloadedFile);
+            }
+
+            else {
+                if (testSingleUri.getAuthority() != null) {
+                    is = getContentResolver().openInputStream(testSingleUri);
+                    Bitmap bmp = BitmapFactory.decodeStream(is);
+                    if (bmp != null) {
+                        try {
+                            downloadedFile = createImageFile();
+                            OutputStream outStream = new FileOutputStream(downloadedFile);
+                            //compressing image to 80 percent quality to reduce size
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                            outStream.flush();
+                            outStream.close();
+                            Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+                            Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
+                            selectedImageUri.add(downloadedFileUri);
+                            listOfFiles.add(downloadedFile);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
 
-            File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-            Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
-            ThumbUriList.add(thumbImageUri);
+            if(downloadedFile.getName().endsWith(".pdf")){
+
+            } else {
+                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                listOfFiles.add(thumbnailFile);
+            }
 
         }
-        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+
+        Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
+        RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+//        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
+    }
+
+    public static List<File> getUploadUriObjectList() {
+
+        return listOfFiles;
     }
 
     private File createThumbFile(Uri singleUri) throws IOException {
@@ -479,6 +533,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mProgressDialog.dismiss();
+        finish();
         System.exit(0);
     }
 

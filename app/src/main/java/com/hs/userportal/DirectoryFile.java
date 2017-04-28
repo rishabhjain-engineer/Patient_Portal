@@ -15,6 +15,7 @@ public class DirectoryFile {
     private double roundOff;
     private String thumb;
     private String name;
+    private boolean notImage ;
 
     public String getName() {
         return name;
@@ -39,6 +40,12 @@ public class DirectoryFile {
 
     public void setKey(String key) {
         this.key = key;
+
+        if(key.contains("pdf") ||key.contains("xls") || key.contains("xlsx") ) {
+            setOtherExtension(true) ;
+        }
+
+
         if (key.contains("ZurekaTempPatientConfig")) {
 
         } else {
@@ -68,5 +75,13 @@ public class DirectoryFile {
 
     public String getThumb() {
         return thumb;
+    }
+
+    public void setOtherExtension(boolean b){
+        notImage = b ;
+    }
+
+    public boolean getOtherExtension(){
+        return notImage;
     }
 }

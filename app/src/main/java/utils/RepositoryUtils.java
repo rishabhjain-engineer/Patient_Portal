@@ -62,7 +62,7 @@ public class RepositoryUtils {
     private static PreferenceHelper mPreferenceHelper;
     private static String patientId = null;
     private static UploadUri mUploadUriObject;
-    private static List<UploadUri> mListOfUploadUri = new ArrayList<>();
+    private static List<File> mListOfUploadUri = new ArrayList<>();
 
     public static void createNewFolder(final Activity activity, final Directory directory, final onActionComplete listener) {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
@@ -164,34 +164,42 @@ public class RepositoryUtils {
         overlay_dialog.show();
     }
 
-    public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri, Activity activity, Directory directory, String uploadFrom) {
+
+    /*public static void uploadFile(ArrayList<Uri> fileUri, ArrayList<Uri> filethumbUri, Activity activity, Directory directory, String uploadFrom) {
 
         for (int i = 0; i < fileUri.size(); i++) {
 
             mUploadUriObject = new UploadUri(fileUri.get(i));
 
             mUploadUriObject.setImageUri(fileUri.get(i));
-            mUploadUriObject.setThumbUri(filethumbUri.get(i));
+
+            if (filethumbUri.get(i) != null) {
+                mUploadUriObject.setThumbUri(filethumbUri.get(i));
+                String imageThumbStoredPath = mUploadUriObject.getThumbUri().getPath();
+                File imageThumbFile = new File(imageThumbStoredPath);
+                mUploadUriObject.setThumbFile(imageThumbFile);
+            } else {
+                Log.e("Rishabh", "pdf file -- no thumbnail");
+                mUploadUriObject.setThumbUri(null);
+                mUploadUriObject.setThumbFile(null);
+            }
 
 
-            /*String imageStoredPath = getPathFromContentUri(mUploadUriObject.getImageUri(), activity);
-            mUploadUriObject.setImagePath(imageStoredPath);*/
+            String imageStoredPath = getPathFromContentUri(mUploadUriObject.getImageUri(), activity);
+            mUploadUriObject.setImagePath(imageStoredPath);
 
             //String imageThumbStoredPath =  mUploadUriObject.getThumbUri().getPath();
 
-            /*File imageFile = new File(mUploadUriObject.getImagePath());
-            mUploadUriObject.setImageFile(imageFile);*/
+            File imageFile = new File(mUploadUriObject.getImagePath());
+            mUploadUriObject.setImageFile(imageFile);
 
 
             String imageStoredPath = mUploadUriObject.getImageUri().getPath();
-            String imageThumbStoredPath = mUploadUriObject.getThumbUri().getPath();
+
 
             File imageFile = new File(imageStoredPath);
             mUploadUriObject.setImageFile(imageFile);
 
-
-            File imageThumbFile = new File(imageThumbStoredPath);
-            mUploadUriObject.setThumbFile(imageThumbFile);
 
             String path1 = mUploadUriObject.getImageFile().getAbsolutePath();
             String splitfo_lenthcheck[] = path1.split("/");
@@ -226,8 +234,28 @@ public class RepositoryUtils {
         activity.startService(intent);
 
     }
+*/
+    public static void uploadFilesToS3(List<File> listOfFiles, Activity activity, Directory directory, String uploadFrom) {
 
-    public static List<UploadUri> getUploadUriObjectList() {
+//        String isExisting;
+//        String fileName;
+        /*for(File file : listOfFiles){
+            if(file.getName().contains("_thumb"))
+                continue;;
+
+            directory.hasFile(file.getName()){
+            }
+        }*/
+
+        mListOfUploadUri = listOfFiles;
+        Intent intent = new Intent(activity, UploadService.class);
+        intent.putExtra(UploadService.uploadfrom, uploadFrom);
+        intent.putExtra("add_path", directory.getDirectoryPath());
+        activity.startService(intent);
+
+    }
+
+    public static List<File> getUploadUriObjectList() {
 
         return mListOfUploadUri;
     }
@@ -263,31 +291,47 @@ public class RepositoryUtils {
     }
 
     public static File getThumbnailFile(File mainFile, Activity activity) {
-        Log.e("RAVI", "Main file : " + mainFile.getAbsolutePath());
+        Log.e("RAVI", "Repository utils -- Main file : " + mainFile.getAbsolutePath());
         File thumbnailFile = null;
+
+
         try {
             thumbnailFile = createImageFile(activity);
             Bitmap bitmap = BitmapFactory.decodeFile(mainFile.getAbsolutePath());
-            Bitmap thumbBitmap = getThumbnailImage(bitmap);
-            FileOutputStream fos = new FileOutputStream(thumbnailFile);
-            thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-            fos.flush();
+            if (bitmap != null) {
+                Bitmap thumbBitmap = getThumbnailImage(bitmap);
+                FileOutputStream fos = new FileOutputStream(thumbnailFile);
+                thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+                fos.flush();
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String mainFileName = mainFile.getName();
+        File file = null;
         //Ravi.jpg
         String[] splitted = mainFileName.split("\\.");
         //Ravi jpg
-        splitted[0] = splitted[0] + "_thumb";
+        splitted[splitted.length - 2] = splitted[splitted.length - 2] + "_thumb";
+
         String thumbnailFileName = splitted[0] + "." + "jpg";
-        File file = new File(thumbnailFile.getParent() + "/" + thumbnailFileName);
+        file = new File(thumbnailFile.getParent() + "/" + thumbnailFileName);
         boolean renamedFile = thumbnailFile.renameTo(file);
-        Log.e("RAVI", "Thumb file : " + file.getAbsolutePath());
+
+
+        Log.e("RAVI", "Repository utils -- Thumb file : " + file.getAbsolutePath());
 
         return file;
+    }
+
+    public static String getThumbFileName(String fileName) {
+        String[] splitted = fileName.split("\\.");
+        splitted[splitted.length - 2] = splitted[splitted.length - 2] + "_thumb";
+
+        return splitted[ 0]+"." + "jpg";
     }
 
     private static Bitmap getThumbnailImage(Bitmap bm) {
