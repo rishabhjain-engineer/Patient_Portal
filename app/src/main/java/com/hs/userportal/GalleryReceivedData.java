@@ -135,6 +135,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                     handleSendPdf(intentFromGallery);
                 } else if ("application/x-excel".equals(type)) {
                     Log.e("Rishabh", "excel File ");
+                }else if ("application/msword".equals(type)){
+                    handleMsWordFile(intentFromGallery);
                 }
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
@@ -142,6 +144,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 } else if("*/*".equalsIgnoreCase(type)){
                     Log.e("Rishabh", "PDF MULTIPLE File ");
                     handleSendPdfMultiple(intentFromGallery);
+                } else if("application/msword".equals(type)) {
+                    handleMsWordMultipleFile(intentFromGallery);
                 }
             } else {
                 // Handle other intents, such as being started from the home screen
@@ -221,12 +225,23 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
     }
 
+    void handleMsWordFile(Intent intent){
+        Uri uriMsWord = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Log.e("Rishabh", "MsWord URI :=  "+ uriMsWord.toString());
+        mMultipleImageUris.add(uriMsWord);
+    }
+
+    void handleMsWordMultipleFile(Intent intent){
+        mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+    }
+
     void handleSendPdfMultiple(Intent intent){
         mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
     }
 
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        Log.e("Rishabh", "shared text:= "+sharedText);
         if (sharedText != null) {
         }
     }
@@ -273,7 +288,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
 
-            if(testSingleUri.toString().contains("pdf")) {
+            if(testSingleUri.toString().contains("pdf") || testSingleUri.toString().contains("doc") || testSingleUri.toString().contains("xls")) {
                 downloadedFile = new File(testSingleUri.getPath());
                 Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
                 Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
@@ -306,7 +321,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 }
             }
 
-            if(downloadedFile.getName().endsWith(".pdf")){
+            if(downloadedFile.getName().endsWith(".pdf")|| downloadedFile.getName().endsWith(".doc")|| downloadedFile.getName().endsWith(".xls")){
 
             } else {
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
@@ -533,7 +548,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mProgressDialog.dismiss();
+
+            mProgressDialog.dismiss();
+
+
         finish();
         System.exit(0);
     }

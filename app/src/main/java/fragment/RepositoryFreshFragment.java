@@ -142,9 +142,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
 
-    private String accessKey;
-    private String secretKey;
-
 
     private static RepositoryFreshFragment repositoryFreshFragment;
     private RepositoryDialogAdapter dialogAdapter;
@@ -193,7 +190,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             } else {
                 prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
             }
-            Log.e("RAVI", "Prefix is " + prefix);
             String delimiter = "/";
 
             AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
@@ -774,16 +770,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onImageTouched(DirectoryFile file) {
 
+        askRunTimePermissions();
 
         if (file.getOtherExtension()) {
-            if (file.getKey().contains("pdf")) {
+            if (file.getKey().contains("pdf")  || file.getKey().contains("doc") || file.getKey().contains("xls") ) {
                 Log.e("Rishabh", "Opening pdf");
-
-
                 String filepath = AppConstant.AMAZON_URL + file.getKey();
                 Log.e("Rishabh", "filepath := " + filepath);
-
-//                new DownloadFile().execute(filepath, file.getName());
                 new FileDownloader(filepath).execute();
 
             }
@@ -875,16 +868,42 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             super.onPostExecute(saveFilePath);
             progressDialog.dismiss();
 
-            Intent objIntent = new Intent(Intent.ACTION_VIEW);
-            objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/pdf");
-            objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            Intent i = Intent.createChooser(objIntent, "Open File");
-            try {
-                startActivity(i);
-            } catch (ActivityNotFoundException e) {
-                // Instruct the user to install a PDF reader here, or something
-                Log.e("Rishabh", "Lol");
+            if(saveFilePath.endsWith("pdf")){
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/pdf");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    Log.e("Rishabh", "Lol");
+                }
+            }else if(saveFilePath.contains("doc")){
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/msword");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    Log.e("Rishabh", "Lol");
+                }
+            }else if(saveFilePath.contains("xls")){
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/x-excel");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    Log.e("Rishabh", "Lol");
+                }
             }
+
+
 
         }
     }

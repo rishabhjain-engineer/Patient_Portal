@@ -308,6 +308,7 @@ public class UploadService extends IntentService {
             System.out.println(sendData);
 
             Log.e("Rishabh", "send data := " + sendData);
+/*
             queue1 = Volley.newRequestQueue(this);
 
             //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
@@ -366,6 +367,7 @@ public class UploadService extends IntentService {
             jr1.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue1.add(jr1);
+*/
 
 
         } else {
