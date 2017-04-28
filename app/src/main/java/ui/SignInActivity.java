@@ -376,6 +376,7 @@ public class SignInActivity extends BaseActivity {
         } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, userName);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASSWORD, passWord);
+            hideSoftKeyboard();
             new SignInActivity.NewLogInAsync(true).execute();
         }
     }
