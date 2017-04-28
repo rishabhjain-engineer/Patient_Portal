@@ -238,7 +238,7 @@ public class RepositoryFragment extends Fragment {
         mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
         mHeaderGridImageView = (ImageView) view.findViewById(R.id.repository_grid_imageview);
-        mHeaderSaveImageView = (ImageView) view.findViewById(R.id.repository_save_imageview);
+   //     mHeaderSaveImageView = (ImageView) view.findViewById(R.id.repository_save_imageview);
         mHeaderDeleteImageView = (ImageView) view.findViewById(R.id.repository_delete_imageview);
         mHeaderMoveImageView = (ImageView) view.findViewById(R.id.repository_move_imageview);
         mHeaderSelectAllImageView = (ImageView) view.findViewById(R.id.repository_selectall_imageview);
@@ -247,7 +247,7 @@ public class RepositoryFragment extends Fragment {
         mHeaderMiddleImageViewContainer = (LinearLayout) view.findViewById(R.id.middle_options_container);
 
         mHeaderGridImageView.setOnClickListener(mOnClickListener);
-        mHeaderSaveImageView.setOnClickListener(mOnClickListener);
+      //  mHeaderSaveImageView.setOnClickListener(mOnClickListener);
         mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
         mHeaderMoveImageView.setOnClickListener(mOnClickListener);
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
@@ -507,9 +507,7 @@ public class RepositoryFragment extends Fragment {
                 deleteFile();
             } else if (viewId == R.id.repository_move_imageview) {
                 moveFile();
-            } else if (viewId == R.id.repository_save_imageview) {
-                saveFile();
-            } else if (viewId == R.id.repository_backbutton_imageview) {
+            }  else if (viewId == R.id.repository_backbutton_imageview) {
 
                 headerBackButton();                                                                     // ActionBar Back Home Button
                 mHeaderMiddleImageViewContainer.setVisibility(View.GONE);

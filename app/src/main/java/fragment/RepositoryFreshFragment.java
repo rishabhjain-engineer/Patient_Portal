@@ -307,7 +307,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 } else {
                     listMode = 0;
                 }
-                setListAdapter(currentDirectory);
+                setListAdapter(mRepositoryAdapter.getDirectory());
             } else if (viewId == R.id.repository_selectall_imageview) {
                 if (listMode == 0) {
                     selectAll();
@@ -774,9 +774,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         if (file.getOtherExtension()) {
             if (file.getKey().contains("pdf")  || file.getKey().contains("doc") || file.getKey().contains("xls") ) {
-                Log.e("Rishabh", "Opening pdf");
+   //             Log.e("Rishabh", "Opening pdf");
                 String filepath = AppConstant.AMAZON_URL + file.getKey();
-                Log.e("Rishabh", "filepath := " + filepath);
+ //               Log.e("Rishabh", "filepath := " + filepath);
                 new FileDownloader(filepath).execute();
 
             }
@@ -877,7 +877,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a PDF reader here, or something
-                    Log.e("Rishabh", "Lol");
+ //                   Log.e("Rishabh", "Lol");
                 }
             }else if(saveFilePath.contains("doc")){
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
@@ -887,19 +887,19 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                    Log.e("Rishabh", "Lol");
+                    // Instruct the user to install a ms-word reader here, or something
+  //                  Log.e("Rishabh", "Lol");
                 }
             }else if(saveFilePath.contains("xls")){
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/x-excel");
+                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/vnd.ms-excel");
                 objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Intent i = Intent.createChooser(objIntent, "Open File");
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                    Log.e("Rishabh", "Lol");
+                    // Instruct the user to install a X-excel reader here, or something
+  //                  Log.e("Rishabh", "Lol");
                 }
             }
 
@@ -1050,7 +1050,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                Log.e("Rishabh", "IO exception := "+ex);
+        //        Log.e("Rishabh", "IO exception := "+ex);
                 return;
             }
             if (photoFile != null) {
@@ -1071,7 +1071,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 storageDir
         );
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        Log.e("Rishabh", "image := " + image.getName());
+    //    Log.e("Rishabh", "image := " + image.getName());
         return image;
     }
 
@@ -1257,7 +1257,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        Log.e("Rishabh", "THumb := " + mediaFile.getName());
+ //       Log.e("Rishabh", "THumb := " + mediaFile.getName());
         return mediaFile;
     }
 

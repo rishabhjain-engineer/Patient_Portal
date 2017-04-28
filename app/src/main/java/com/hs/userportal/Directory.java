@@ -163,8 +163,8 @@ public class Directory {
             searchDirectory.search(directory, searchedItem);
         }
 
-        Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
-        Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
+      //  Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
+      //  Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
 
     }
 

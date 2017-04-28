@@ -109,7 +109,7 @@ public class UploadService extends IntentService {
 
         listofFilesToUpload = RepositoryUtils.getUploadUriObjectList();
 
-        Log.e("Rishabh", "list of files size in upload class := "+listofFilesToUpload.size());
+ //       Log.e("Rishabh", "list of files size in upload class := "+listofFilesToUpload.size());
 
         if (add_path.equalsIgnoreCase("")) {
             path = patientId + "/" + "FileVault/Personal/";
@@ -286,9 +286,9 @@ public class UploadService extends IntentService {
                     continue;
 
                 JSONObject innerjsonObject = new JSONObject();
-                Log.e("Rishabh", "image name := " + listOfFiles.get(k).getName());
-                Log.e("Rishabh", "ImageUrl := " + imageFullPAthUrl);
-                Log.e("Rishabh", "ThumbPath := " + directoryPath + RepositoryUtils.getThumbFileName(listOfFiles.get(k).getName()));
+ //               Log.e("Rishabh", "image name := " + listOfFiles.get(k).getName());
+ //               Log.e("Rishabh", "ImageUrl := " + imageFullPAthUrl);
+ //               Log.e("Rishabh", "ThumbPath := " + directoryPath + RepositoryUtils.getThumbFileName(listOfFiles.get(k).getName()));
                 try {
                     innerjsonObject.put("ImageName", listOfFiles.get(k).getName());
                     innerjsonObject.put("ImageUrl", imageFullPAthUrl);
@@ -307,8 +307,8 @@ public class UploadService extends IntentService {
 
             System.out.println(sendData);
 
-            Log.e("Rishabh", "send data := " + sendData);
-/*
+ //           Log.e("Rishabh", "send data := " + sendData);
+
             queue1 = Volley.newRequestQueue(this);
 
             //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
@@ -320,7 +320,7 @@ public class UploadService extends IntentService {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            Log.e("Rishabh", "response  " + response);
+   //                         Log.e("Rishabh", "response  " + response);
                             try {
 
                                 if (response.getString("d").equalsIgnoreCase("success")) {
@@ -341,7 +341,7 @@ public class UploadService extends IntentService {
 
                             } catch (JSONException e) {
                                 // TODO Auto-generated catch block
-                                Log.e("Rishabh", "response error " + e);
+ //                               Log.e("Rishabh", "response error " + e);
                                 e.printStackTrace();
                             }
                         }
@@ -367,7 +367,7 @@ public class UploadService extends IntentService {
             jr1.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue1.add(jr1);
-*/
+
 
 
         } else {
@@ -386,7 +386,7 @@ public class UploadService extends IntentService {
                     Notification notification = buildNotification(msg, percentUploaded);
                     nm.notify(NOTIFY_ID_UPLOAD, notification);
                     broadcastState(md5File, percentUploaded, msg);
-                    Log.e("RAVI", "Position "+ position + ", percent " + percentUploaded);
+ //                   Log.e("RAVI", "Position "+ position + ", percent " + percentUploaded);
 
                     if (percentUploaded == 100) {
                         int newPosition = position;
@@ -404,7 +404,7 @@ public class UploadService extends IntentService {
                 String s3Location = uploader.start(); // initiate the upload
                 broadcastState(md5File, -1, "File successfully uploaded to " + s3Location);
                 System.out.println("File successfully uploaded to " + s3Location);
-                Log.e("Rishabh", "File successfully uploaded to " + s3Location);
+ //               Log.e("Rishabh", "File successfully uploaded to " + s3Location);
                 //
                 String[] parts = s3Location.split("com/" + "");
                 System.out.println(parts[1].trim());
@@ -462,7 +462,7 @@ public class UploadService extends IntentService {
             String s3Location = uploader.start(); // initiate the upload
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             System.out.println("File successfully uploaded to " + s3Location);
-            Log.e("Rishabh", "File successfully uploaded to " + s3Location);
+ //           Log.e("Rishabh", "File successfully uploaded to " + s3Location);
             //
             String[] parts = s3Location.split("com/" + "");
             System.out.println(parts[1].trim());
@@ -527,7 +527,7 @@ public class UploadService extends IntentService {
             String s3Location = uploader.start(); // initiate the upload
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             System.out.println("File successfully uploaded to " + s3Location);
-            Log.e("Rishabh", "File successfully uploaded to " + s3Location);
+  //          Log.e("Rishabh", "File successfully uploaded to " + s3Location);
             //
             String[] parts = s3Location.split("com/" + "");
             System.out.println(parts[1].trim());
@@ -582,7 +582,7 @@ public class UploadService extends IntentService {
             String s3Location = uploader.start(); // initiate the upload
             broadcastState(s3ObjectKey, -1, "File successfully uploaded to " + s3Location);
             System.out.println("File successfully uploaded to " + s3Location);
-            Log.e("Rishabh", "File successfully uploaded to " + s3Location);
+ //           Log.e("Rishabh", "File successfully uploaded to " + s3Location);
             //
             String[] parts = s3Location.split("com/" + "");
             System.out.println(parts[1].trim());

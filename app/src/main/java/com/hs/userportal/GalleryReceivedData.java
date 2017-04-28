@@ -114,7 +114,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
-        Log.e("Rishabh", "type = "+type);
+    //    Log.e("Rishabh", "type = "+type);
         mActivity = this;
         displayedDirectory = new ArrayList<>();
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -131,10 +131,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 } else if (type.startsWith("image/")) {
                     handleSendImage(intentFromGallery); // Handle single image being sent
                 } else if ("application/pdf".equals(type)) {
-                    Log.e("Rishabh", "PDF File ");
+                   // Log.e("Rishabh", "PDF File ");
                     handleSendPdf(intentFromGallery);
-                } else if ("application/x-excel".equals(type)) {
-                    Log.e("Rishabh", "excel File ");
+                } else if ("application/vnd.ms-excel".equals(type)) {
+                  //  Log.e("Rishabh", "excel File ");
+                    handleSendExcel(intentFromGallery);
                 }else if ("application/msword".equals(type)){
                     handleMsWordFile(intentFromGallery);
                 }
@@ -142,10 +143,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 if (type.startsWith("image/")) {
                     handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
                 } else if("*/*".equalsIgnoreCase(type)){
-                    Log.e("Rishabh", "PDF MULTIPLE File ");
+                  //  Log.e("Rishabh", "PDF MULTIPLE File ");
                     handleSendPdfMultiple(intentFromGallery);
                 } else if("application/msword".equals(type)) {
                     handleMsWordMultipleFile(intentFromGallery);
+                }else if("application/vnd.ms-excel".equals(type)){
+                    handleSendMultipleExcel(intentFromGallery);
                 }
             } else {
                 // Handle other intents, such as being started from the home screen
@@ -225,9 +228,19 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
     }
 
+    void handleSendExcel(Intent intent){
+        Uri uriExcel = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+       // Log.e("Rishabh", "Excel URI :=  "+ uriExcel.toString());
+        mMultipleImageUris.add(uriExcel);
+    }
+
+    void handleSendMultipleExcel(Intent intent) {
+        mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+    }
+
     void handleMsWordFile(Intent intent){
         Uri uriMsWord = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        Log.e("Rishabh", "MsWord URI :=  "+ uriMsWord.toString());
+       // Log.e("Rishabh", "MsWord URI :=  "+ uriMsWord.toString());
         mMultipleImageUris.add(uriMsWord);
     }
 
@@ -241,7 +254,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        Log.e("Rishabh", "shared text:= "+sharedText);
+      //  Log.e("Rishabh", "shared text:= "+sharedText);
         if (sharedText != null) {
         }
     }
@@ -249,7 +262,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     void handleSendPdf(Intent intent) {
 
        Uri uriPDF = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        Log.e("Rishabh", "pdf URI :=  "+ uriPDF.toString());
+       // Log.e("Rishabh", "pdf URI :=  "+ uriPDF.toString());
         mMultipleImageUris.add(uriPDF);
 
     }
@@ -290,9 +303,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             if(testSingleUri.toString().contains("pdf") || testSingleUri.toString().contains("doc") || testSingleUri.toString().contains("xls")) {
                 downloadedFile = new File(testSingleUri.getPath());
-                Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
-                Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
-                Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
+               // Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
+               // Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
+               // Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
                 selectedImageUri.add(testSingleUri);
 
                 listOfFiles.add(downloadedFile);
@@ -311,7 +324,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                             outStream.flush();
                             outStream.close();
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                            Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
+                          //  Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
                             selectedImageUri.add(downloadedFileUri);
                             listOfFiles.add(downloadedFile);
                         } catch (Exception e) {
@@ -330,7 +343,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
         }
 
-        Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
+    //    Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
         RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
 //        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }

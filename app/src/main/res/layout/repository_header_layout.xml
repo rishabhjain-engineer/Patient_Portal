@@ -45,23 +45,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/repository_grid_imageview"
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/repository_save_imageview"
-            android:layout_width="@dimen/repository_header_icon_width"
-            android:layout_height="@dimen/repository_header_icon_height"
-            android:layout_marginRight="4dp"
-            android:visibility="gone"
-            android:background="@drawable/ic_save" />
 
         <ImageView
             android:id="@+id/repository_delete_imageview"
             android:layout_width="@dimen/repository_header_icon_width"
             android:layout_height="@dimen/repository_header_icon_height"
-            android:layout_marginRight="4dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/del_icon" />
 
         <ImageView
@@ -78,7 +72,7 @@
         android:layout_width="@dimen/repository_header_icon_width"
         android:layout_height="@dimen/repository_header_icon_height"
         android:layout_centerVertical="true"
-        android:layout_marginRight="12dp"
+        android:layout_marginRight="8dp"
         android:layout_toLeftOf="@+id/middle_options_container"
         android:background="@drawable/selectall" />
 
