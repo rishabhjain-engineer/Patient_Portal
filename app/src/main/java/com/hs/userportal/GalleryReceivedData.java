@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -91,6 +92,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private int numberOfUri;
     private boolean isFromGallery;
     private File mImage;
+    private ProgressDialog mProgressDialog;
 
     private List<SelectableObject> displayedDirectory;
 
@@ -112,6 +114,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         Intent intentFromGallery = getIntent();
         String action = intentFromGallery.getAction();
         String type = intentFromGallery.getType();
+        Log.e("Rishabh", "type = "+type);
         mActivity = this;
         displayedDirectory = new ArrayList<>();
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
@@ -136,6 +139,9 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                 if (type.startsWith("image/")) {
                     handleSendMultipleImages(intentFromGallery); // Handle multiple images being sent
+                } else if("*/*".equalsIgnoreCase(type)){
+                    Log.e("Rishabh", "PDF MULTIPLE File ");
+                    handleSendPdfMultiple(intentFromGallery);
                 }
             } else {
                 // Handle other intents, such as being started from the home screen
@@ -215,6 +221,10 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         }
     }
 
+    void handleSendPdfMultiple(Intent intent){
+        mMultipleImageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+    }
+
     void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
@@ -248,6 +258,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     private void moveFile(ArrayList<Uri> getUri) throws FileNotFoundException {
 
+        listOfFiles.clear();
+
+        mProgressDialog = new ProgressDialog(mActivity);
+        mProgressDialog.setMessage("Uploading File ...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
 
         //new code -> saves received bitmap as file
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
@@ -294,15 +310,12 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
             } else {
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
-                ThumbUriList.add(thumbImageUri);
-                listOfFiles.add(downloadedFile);
-                Log.e("Rishabh", "thumb uri := "+thumbImageUri.getPath());
-
+                listOfFiles.add(thumbnailFile);
             }
 
         }
 
+        Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
         RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
 //        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
@@ -520,6 +533,8 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mProgressDialog.dismiss();
+        finish();
         System.exit(0);
     }
 

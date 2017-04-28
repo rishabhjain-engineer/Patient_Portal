@@ -248,7 +248,6 @@ public class RepositoryUtils {
         }*/
 
         mListOfUploadUri = listOfFiles;
-
         Intent intent = new Intent(activity, UploadService.class);
         intent.putExtra(UploadService.uploadfrom, uploadFrom);
         intent.putExtra("add_path", directory.getDirectoryPath());

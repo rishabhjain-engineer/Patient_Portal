@@ -131,6 +131,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private View mView;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
+    private static ProgressDialog mProgressDialog;
     private int listMode = 0; //0=list, 1=grid
     private int PICK_FROM_GALLERY = 1;
     private Uri Imguri;
@@ -788,8 +789,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
 
         } else {
-            Intent i = new Intent(mActivity, ImageActivity.class);
-            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+            Intent i = new Intent(mActivity, ImageActivity.class);            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
             startActivity(i);
         }
 
@@ -1075,6 +1075,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        ArrayList<Uri> uriList = new ArrayList<>();
 //        ArrayList<Uri> ThumbUriList = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(mActivity);
+        mProgressDialog.setMessage("Uploading File ...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
@@ -1095,8 +1101,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                             outStream.flush();
                             outStream.close();
-//                            Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-//                            uriList.add(downloadedFileUri);
                             listOfFilesToUpload.add(downloadedFile);
 
                         } catch (Exception e) {
@@ -1184,6 +1188,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     public static void refresh() {
+        mProgressDialog.dismiss();
 
         repositoryFreshFragment.startCreatingDirectoryStructure();
     }

@@ -109,6 +109,8 @@ public class UploadService extends IntentService {
 
         listofFilesToUpload = RepositoryUtils.getUploadUriObjectList();
 
+        Log.e("Rishabh", "list of files size in upload class := "+listofFilesToUpload.size());
+
         if (add_path.equalsIgnoreCase("")) {
             path = patientId + "/" + "FileVault/Personal/";
 
@@ -271,12 +273,21 @@ public class UploadService extends IntentService {
             JSONArray jsonArray = new JSONArray();
             for (int k = 0; k < listOfFiles.size(); k++) {
 
+
+                // remove white space in Image URl :
+                String imageFullPAthUrl = directoryPath + listOfFiles.get(k).getName();
+
+                if(imageFullPAthUrl.contains(" ")){
+                    imageFullPAthUrl= imageFullPAthUrl.replace(" ", "%20");
+                }
+
+
                 if (listOfFiles.get(k).getName().contains("_thumb"))
                     continue;
 
                 JSONObject innerjsonObject = new JSONObject();
                 Log.e("Rishabh", "image name := " + listOfFiles.get(k).getName());
-                Log.e("Rishabh", "ImageUrl := " + directoryPath + listOfFiles.get(k).getName());
+                Log.e("Rishabh", "ImageUrl := " + imageFullPAthUrl);
                 Log.e("Rishabh", "ThumbPath := " + directoryPath + RepositoryUtils.getThumbFileName(listOfFiles.get(k).getName()));
                 try {
                     innerjsonObject.put("ImageName", listOfFiles.get(k).getName());
