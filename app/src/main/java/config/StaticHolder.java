@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class StaticHolder {
 
 
-   // public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-   // public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
-    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-    public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    // public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
     //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
@@ -54,17 +54,17 @@ public class StaticHolder {
         String url = null;
         switch (serviceName) {
 
-            case CheckContactNoExist :
+            case CheckContactNoExist:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckContactNoExist";
                 url = BASE_URL + "CheckContactNoExist";
                 break;
 
-            case CheckDupUserName :
+            case CheckDupUserName:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckDupUserName";
                 url = BASE_URL + "CheckDupUserName";
                 break;
 
-            case NewSignUpByPatient :
+            case NewSignUpByPatient:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/NewSignUpByPatient";
                 url = BASE_URL + "NewSignUpByPatient";
                 break;
@@ -139,7 +139,7 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                 url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
                 //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
                 //url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
@@ -453,26 +453,26 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
                 break;
 
-            case NewSignUpByPatientFacebook :
+            case NewSignUpByPatientFacebook:
                 url = BASE_URL + "NewSignUpByPatientFacebook";
 
-            case LogInUser_facebook :
+            case LogInUser_facebook:
                 url = BASE_URL + "LogInUser_facebook";
                 break;
 
-            case GetUserGrade :
+            case GetUserGrade:
                 url = BASE_URL + "GetUserGrade";
                 break;
 
-            case SaveUserDevice :
+            case SaveUserDevice:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "SaveUserDevice";
                 break;
 
-            case GetSchoolDoctorList :
+            case GetSchoolDoctorList:
                 url = BASE_URL + "GetSchoolDoctorList";
                 break;
 
-            case getSchoolStudentDetails :
+            case getSchoolStudentDetails:
                 url = BASE_URL + "getSchoolStudentDetails";
                 break;
 
@@ -506,7 +506,7 @@ public class StaticHolder {
     }
 
     public enum Services_static {
-        LogIn,NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
+        LogIn, NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
         LogOutIOS, ChangePasswordIOS, Register, GetUserDisclaimer, FacebookLinked, FacebookLoginMobile,
         FacebookUnLinked, GetUserDeatils, ForgotPassword, NeedHelp, CheckEmailIdIsExistMobile,
         PatientDisclaimer, EmailIdExistFacebook, GetUserCodeFromEmail, SignUpByPatient,
@@ -529,8 +529,8 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName,NewSignUpByPatient,
+        Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
         LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails
     }
 
