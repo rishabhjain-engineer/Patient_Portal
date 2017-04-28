@@ -136,14 +136,19 @@ public class GraphDetails extends BaseActivity {
                     bullet_indicator2.setVisibility(View.GONE);
                 }
             }
-            if (!RangeTo.contains(".")) {
-                if (Integer.parseInt(RangeTo) == Integer.parseInt(CriticalHigh)) {
-                    bullet_indicator1.setVisibility(View.GONE);
+
+            try{
+                if (!RangeTo.contains(".")) {
+                    if (Integer.parseInt(RangeTo) == Integer.parseInt(CriticalHigh)) {
+                        bullet_indicator1.setVisibility(View.GONE);
+                    }
+                } else {
+                    if (Float.parseFloat(RangeTo) == Float.parseFloat(CriticalHigh)) {
+                        bullet_indicator1.setVisibility(View.GONE);
+                    }
                 }
-            } else {
-                if (Float.parseFloat(RangeTo) == Float.parseFloat(CriticalHigh)) {
-                    bullet_indicator1.setVisibility(View.GONE);
-                }
+            }catch (NumberFormatException exc){
+
             }
             normal_txtval.setText("Normal Value: " + RangeFrom + "-" + RangeTo + " " + UnitCode);
             belownormal.setText("Critical Low:  " + CriticalLow + " " + UnitCode);
