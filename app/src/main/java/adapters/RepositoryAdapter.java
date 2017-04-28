@@ -116,10 +116,15 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
             });
 
         } else if (listOfObjects.get(position).getObject() instanceof DirectoryFile) {
-            Glide.with(context)
-                    .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
-                    .crossFade()
-                    .into(holder.image);
+            if(((DirectoryFile) listOfObjects.get(position).getObject()).getOtherExtension()){
+                holder.image.setImageResource(R.drawable.ic);
+            }else{
+                Glide.with(context)
+                        .load(AppConstant.AMAZON_URL + ((DirectoryFile) listOfObjects.get(position).getObject()).getThumb())
+                        .crossFade()
+                        .into(holder.image);
+            }
+
             holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
             if(mCalledFromGallery){
                 holder.name.setTextColor(Color.parseColor("#919499"));

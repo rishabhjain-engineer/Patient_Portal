@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,6 +60,7 @@ import com.android.volley.toolbox.Volley;
 import com.hs.userportal.BuildConfig;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
+import com.hs.userportal.FileDownloader;
 import com.hs.userportal.ImageActivity;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
@@ -74,6 +77,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,6 +102,8 @@ import utils.RepositoryUtils;
 
 public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction {
 
+
+    private List<File> listOfFilesToUpload;
     private static final int PICK_FROM_CAMERA = 2;
     private RecyclerView list;
     private Directory mDirectory;
@@ -122,6 +131,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private View mView;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
+    private static ProgressDialog mProgressDialog;
     private int listMode = 0; //0=list, 1=grid
     private int PICK_FROM_GALLERY = 1;
     private Uri Imguri;
@@ -152,6 +162,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
         displayedDirectory = new ArrayList<>();
+        listOfFilesToUpload = new ArrayList<>();
 
         mDirectory = new Directory("Personal");
         searchableDirectory = new Directory("Personal");
@@ -619,7 +630,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.e("RAVI", s3data.toString());
         s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -763,10 +773,178 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onImageTouched(DirectoryFile file) {
-        Intent i = new Intent(mActivity, ImageActivity.class);
-        i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
-        startActivity(i);
+
+
+        if (file.getOtherExtension()) {
+            if (file.getKey().contains("pdf")) {
+                Log.e("Rishabh", "Opening pdf");
+
+
+                String filepath = AppConstant.AMAZON_URL + file.getKey();
+                Log.e("Rishabh", "filepath := " + filepath);
+
+//                new DownloadFile().execute(filepath, file.getName());
+                new FileDownloader(filepath).execute();
+
+            }
+
+        } else {
+            Intent i = new Intent(mActivity, ImageActivity.class);            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+            startActivity(i);
+        }
+
+
     }
+
+    public class FileDownloader extends AsyncTask<Void, Void, String> {
+
+        final int BUFFER_SIZE = 4096;
+        private ProgressDialog progressDialog;
+        private String fileUrl = "", saveFilePath = "";
+
+        public FileDownloader(String fileUrl) {
+            this.fileUrl = fileUrl;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(mActivity);
+            progressDialog.setMessage("Loading File");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            //check read permission
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            try {
+                if (!(fileUrl.equals("")) || fileUrl != null) {
+                    URL url = new URL(fileUrl);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    int responseCode = httpURLConnection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        String filename = "";
+                        String disposition = httpURLConnection.getHeaderField("Content-Disposition");
+                        String contentType = httpURLConnection.getContentType();
+                        int contentLength = httpURLConnection.getContentLength();
+
+                        if (disposition != null) {
+                            int index = disposition.indexOf("filename=");
+                            if (index > 0) {
+                                filename = disposition.substring(index + 10, disposition.length() - 1);
+                            }
+                        } else {
+                            filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+                        }
+
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        saveFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString().trim() + File.separator + filename;
+
+                        FileOutputStream fileOutputStream = new FileOutputStream(saveFilePath);
+
+                        int byteReads = -1;
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        while ((byteReads = inputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, byteReads);
+                        }
+
+                        fileOutputStream.close();
+                        inputStream.close();
+
+                    } else {
+                        saveFilePath = "";
+                    }
+
+                    httpURLConnection.disconnect();
+                }
+
+            } catch (IOException e) {
+
+            }
+
+            return saveFilePath;
+        }
+
+        @Override
+        protected void onPostExecute(String saveFilePath) {
+            super.onPostExecute(saveFilePath);
+            progressDialog.dismiss();
+
+            Intent objIntent = new Intent(Intent.ACTION_VIEW);
+            objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/pdf");
+            objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent i = Intent.createChooser(objIntent, "Open File");
+            try {
+                startActivity(i);
+            } catch (ActivityNotFoundException e) {
+                // Instruct the user to install a PDF reader here, or something
+                Log.e("Rishabh", "Lol");
+            }
+
+        }
+    }
+
+
+    /*private class DownloadFile extends AsyncTask<String, Void, Void> {
+
+        File pdfFile;
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(mActivity);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Loading File");
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String fileUrl = strings[0];   // -> http://maven.apache.org/maven-1.x/maven.pdf
+            String fileName = strings[1];  // -> maven.pdf
+            String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+            File folder = new File(extStorageDirectory, "HealthScion");
+            folder.mkdir();
+
+            pdfFile = new File(folder, fileName);
+
+            try {
+                pdfFile.createNewFile();
+
+                //pdfFile = File.createTempFile(fileName,".pdf");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            FileDownloader.downloadFile(fileUrl, pdfFile);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            Uri uriPdf = null;
+            uriPdf = Uri.fromFile(pdfFile);
+            // uriPdf = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
+
+
+            Intent objIntent = new Intent(Intent.ACTION_VIEW);
+            objIntent.setDataAndType(uriPdf, "application/pdf");
+            objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent i = Intent.createChooser(objIntent, "Open File");
+            try {
+                startActivity(i);
+            } catch (ActivityNotFoundException e) {
+                // Instruct the user to install a PDF reader here, or something
+                Log.e("Rishabh", "Lol");
+            }
+        }
+    }*/
 
     private void chooseimage() {
 
@@ -852,10 +1030,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
+                Log.e("Rishabh", "IO exception := "+ex);
                 return;
             }
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                Uri photoURI = FileProvider.getUriForFile(mActivity, "com.hs.userportal.provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
             }
@@ -865,14 +1044,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        // File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
+         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
-                mediaStorageDir
+                storageDir
         );
-       // File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         Log.e("Rishabh", "image := " + image.getName());
         return image;
@@ -896,10 +1073,19 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ArrayList<Uri> uriList = new ArrayList<>();
-        ArrayList<Uri> ThumbUriList = new ArrayList<>();
+//        ArrayList<Uri> uriList = new ArrayList<>();
+//        ArrayList<Uri> ThumbUriList = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(mActivity);
+        mProgressDialog.setMessage("Uploading File ...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
+        listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
+
+
                 File downloadedFile = null;
                 //new code saves recieved bitmap as file
                 Uri selectedImageUri = data.getData();
@@ -915,9 +1101,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                             outStream.flush();
                             outStream.close();
-                            Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                            uriList.add(downloadedFileUri);
-
+                            listOfFilesToUpload.add(downloadedFile);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -926,9 +1110,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
 
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                Uri thumbUri = Uri.parse(thumbnailFile.getAbsolutePath());
-                ThumbUriList.add(thumbUri);
-                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+                listOfFilesToUpload.add(thumbnailFile);
+//                Uri thumbUri = Uri.parse(thumbnailFile.getAbsolutePath());
+//                ThumbUriList.add(thumbUri);
+//                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
                 /*try {
                     File thumbFileCreated = createThumbFile(downloadedFile);
@@ -967,9 +1152,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();
-                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-                                uriList.add(downloadedFileUri);
+//                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
+//                                uriList.add(downloadedFileUri);
 
+                                listOfFilesToUpload.add(downloadedFile);
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -982,23 +1168,27 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     selectedImageUri = imageUri;
                     downloadedFile = new File(imageUri.getPath());
+                    listOfFilesToUpload.add(downloadedFile);
 
                 }
 
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
-                ThumbUriList.add(thumbImageUri);
+                listOfFilesToUpload.add(thumbnailFile);
+//                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
+//                ThumbUriList.add(thumbImageUri);
 
-                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
+//                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
 
             }
-            super.onActivityResult(requestCode, resultCode, data);
+            RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
+//            super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void refresh() {
+        mProgressDialog.dismiss();
 
         repositoryFreshFragment.startCreatingDirectoryStructure();
     }

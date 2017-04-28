@@ -1,5 +1,7 @@
 package utils;
 
+import android.util.Log;
+
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 
@@ -78,7 +80,21 @@ public class DirectoryUtility {
         if (s.endsWith(".jpg")
                 || s.endsWith(".png")
                 || s.endsWith(".pdf")
-                || s.endsWith(".xlx")) {
+                || s.endsWith(".xlx")
+                || s.endsWith(".xlsx")
+                || s.endsWith(".gif")
+                || s.endsWith(".jpeg")
+                || s.endsWith(".xml")
+                || s.endsWith(".xlt")
+                || s.endsWith(".xlw")
+                || s.endsWith(".xlr")
+                || s.endsWith(".xla")
+                || s.endsWith(".xls")
+                || s.endsWith(".psd")
+                || s.endsWith(".tiff")
+                || s.endsWith(".mac")
+                || s.endsWith(".img")
+                || s.endsWith(".bmp")) {
             return true;
         } else {
             return false;
