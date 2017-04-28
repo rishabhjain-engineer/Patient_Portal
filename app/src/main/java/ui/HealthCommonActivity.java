@@ -123,7 +123,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
-            mListHeadingTv.setText("BMI");;
+            mListHeadingTv.setText("BMI");
+            ;
         }
 
         mWebView = (WebView) findViewById(R.id.weight_graphView);
@@ -189,9 +190,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
-                            if(NetworkChangeListener.getNetworkStatus().isConnected()){
+                            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                                 deleteWeight();
-                            }else{
+                            } else {
                                 Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -201,7 +202,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             }
 
         });
-        if(isSessionExist()){
+        if (isSessionExist()) {
             if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                 Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
             } else {
@@ -586,8 +587,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                super.onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                finish();
                 return true;
             case R.id.add:
                 Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
@@ -810,9 +810,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public boolean getUserInteractiveGuidline() {
-            if(mFromBp){
+            if (mFromBp) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }

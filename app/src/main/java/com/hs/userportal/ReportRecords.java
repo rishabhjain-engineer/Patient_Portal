@@ -273,7 +273,7 @@ public class ReportRecords extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -470,6 +470,7 @@ public class ReportRecords extends BaseActivity {
     }
 
     private ProgressDialog mProgressDialog;
+
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
@@ -595,14 +596,14 @@ public class ReportRecords extends BaseActivity {
         protected void onPostExecute(Void aaa) {
             // TODO Auto-generated method stub
             super.onPostExecute(aaa);
-            if(mProgressDialog != null && mProgressDialog.isShowing()){
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
             viewReportLinear_id.setClickable(true);
-            if(result != null){
+            if (result != null) {
                 try {
                     //  progress.dismiss();
-                   // progress_bar.setVisibility(View.GONE);
+                    // progress_bar.setVisibility(View.GONE);
                     File sdCard = Environment.getExternalStorageDirectory();
                     File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
@@ -677,7 +678,7 @@ public class ReportRecords extends BaseActivity {
                             });
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 Toast.makeText(ReportRecords.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
         }

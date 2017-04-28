@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,7 +32,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Allergy extends FragmentActivity {
+import ui.BaseActivity;
+
+public class Allergy extends BaseActivity {
 
     private TextView weighttxtid, heighttxt_id, alergytxtid;
     private ListView listView;
@@ -223,6 +226,18 @@ public class Allergy extends FragmentActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
@@ -263,7 +278,7 @@ public class Allergy extends FragmentActivity {
             } else {
                 try {
                     splitAllergies = weight_contentlists.get(0).get("allergiesName").split(",");
-                    Log.e("Rishabh" , "Split Allergies : ="+splitAllergies.toString()) ;
+                    Log.e("Rishabh", "Split Allergies : =" + splitAllergies.toString());
                     m_adapter = new ArrayAdapter<String>(Allergy.this, android.R.layout.simple_list_item_1, splitAllergies);
                     listView.setAdapter(m_adapter);
                 } catch (Exception e) {

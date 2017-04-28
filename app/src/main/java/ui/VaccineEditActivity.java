@@ -232,7 +232,7 @@ public class VaccineEditActivity extends BaseActivity {
         insertUpdateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                if (NetworkChangeListener.getNetworkStatus().isConnected() && isSessionExist()) {
                     if(!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)){
                         sendrequest();
                     }else{
