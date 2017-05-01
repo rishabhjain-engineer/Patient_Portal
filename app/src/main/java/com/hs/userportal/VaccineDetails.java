@@ -24,6 +24,7 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     private boolean header;
     private String headerString;
     private String doseFrequency;
+    private boolean isSpecialDose;
 
     public String getVaccineName() {
         return vaccineName;
@@ -141,6 +142,14 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
 
     public void setDoseFrequency(String doseFrequency) {
         this.doseFrequency = doseFrequency;
+    }
+
+    public boolean isSpecialDose() {
+        return isSpecialDose;
+    }
+
+    public void setSpecialDose(boolean specialDose) {
+        isSpecialDose = specialDose;
     }
 
   /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {

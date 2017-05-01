@@ -26,9 +26,12 @@ import ui.VaccineActivity;
 public class VaccineAdapter extends BaseAdapter {
     private Activity mActivity;
     private List<VaccineDetails> mVaccineDetailsesList = new ArrayList<VaccineDetails>();
+    private int grayColor, lightYeallowColor;
 
     public VaccineAdapter(VaccineActivity vaccineActivity) {
         mActivity = vaccineActivity;
+        grayColor = mActivity.getResources().getColor(R.color.gray);
+        lightYeallowColor = mActivity.getResources().getColor(R.color.LightYellow);
     }
 
     public void setVaccineDetailData(List<VaccineDetails> vaccineDetailDataList) {
@@ -49,8 +52,6 @@ public class VaccineAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
-
-
 
 
     private class ViewHolder {
@@ -86,6 +87,11 @@ public class VaccineAdapter extends BaseAdapter {
             holder.itemDetailContainer.setVisibility(View.GONE);
             holder.headerTv.setVisibility(View.VISIBLE);
             holder.headerTv.setText(vaccineDetails.getHeaderString());
+            if (vaccineDetails.isSpecialDose()) {
+                holder.headerTv.setBackgroundColor(lightYeallowColor);
+            } else {
+                holder.headerTv.setBackgroundColor(grayColor);
+            }
         } else {
             holder.itemDetailContainer.setVisibility(View.VISIBLE);
             holder.headerTv.setVisibility(View.GONE);
@@ -106,9 +112,9 @@ public class VaccineAdapter extends BaseAdapter {
                 vaccineNameWithDose = vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose();
             }
             holder.acronyms.setText((vaccineNameWithDose));
-            if(!TextUtils.isEmpty(vaccineDetails.getVaccineDateTime())){
+            if (!TextUtils.isEmpty(vaccineDetails.getVaccineDateTime())) {
                 holder.mTickedImagView.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.mTickedImagView.setVisibility(View.GONE);
             }
             //holder.date.setText((mVaccineDetailsesList.get(position).getAgeAt()) +"");
@@ -116,7 +122,7 @@ public class VaccineAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(List<VaccineDetails> vaccineDetailsList){
+    public void setData(List<VaccineDetails> vaccineDetailsList) {
         mVaccineDetailsesList = vaccineDetailsList;
     }
 }
