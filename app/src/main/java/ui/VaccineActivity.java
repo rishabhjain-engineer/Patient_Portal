@@ -136,8 +136,10 @@ public class VaccineActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (NetworkChangeListener.getNetworkStatus().isConnected() && AppConstant.isToRefereshVaccine) {
-            sendrequest();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            if (AppConstant.isToRefereshVaccine) {
+                sendrequest();
+            }
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
