@@ -136,8 +136,10 @@ public class VaccineActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (NetworkChangeListener.getNetworkStatus().isConnected() && AppConstant.isToRefereshVaccine) {
-            sendrequest();
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            if (AppConstant.isToRefereshVaccine) {
+                sendrequest();
+            }
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
@@ -212,6 +214,7 @@ public class VaccineActivity extends BaseActivity {
                             vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId") ? null : jsonObject.optString("PatientVaccineId"));
                             vaccineDetails.setDoseFrequency(jsonObject.isNull("DoseFrequency") ? null : jsonObject.optString("DoseFrequency"));
 
+                            vaccineDetails.setVaccineNameAndDose(vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose());
                             mVaccineDetailsList.add(vaccineDetails);
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());

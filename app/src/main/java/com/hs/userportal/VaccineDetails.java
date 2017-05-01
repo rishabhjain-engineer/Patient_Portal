@@ -8,7 +8,7 @@ import java.util.Comparator;
  * Created by ayaz on 6/3/17.
  */
 
-public class VaccineDetails implements Comparable<VaccineDetails>{
+public class VaccineDetails implements Comparable<VaccineDetails> {
 
     private String vaccineName;
     private String vaccineID;
@@ -25,6 +25,7 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     private String headerString;
     private String doseFrequency;
     private boolean isSpecialDose;
+    private String vaccineNameAndDose;
 
     public String getVaccineName() {
         return vaccineName;
@@ -116,8 +117,15 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
 
     @Override
     public int compareTo(VaccineDetails o) {
-        return this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
-
+        int value = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
+        if (value != 0) {
+            return value;
+        } else {
+            String s1 = this.getVaccineNameAndDose();
+            String s2 = o.getVaccineNameAndDose();
+            int sComp = s1.compareTo(s2);
+            return sComp;
+        }
     }
 
     public boolean isHeader() {
@@ -152,13 +160,21 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
         isSpecialDose = specialDose;
     }
 
-  /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
+    public String getVaccineNameAndDose() {
+        return vaccineNameAndDose;
+    }
+
+    public void setVaccineNameAndDose(String vaccineNameAndDose) {
+        this.vaccineNameAndDose = vaccineNameAndDose;
+    }
+
+    /*public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
 
         public int compare(VaccineDetails firstObject, VaccineDetails secondObject) {
 
             return (firstObject.getAgeAt() - secondObject.getAgeAt());
 
-           *//* if (flag == 0) {
+            if (flag == 0) {
                 if (firstObject.getLinkTo() == secondObject.getLinkTo()) {
                     flag = 0;                           //if both are null return 0
                 } else if (TextUtils.isEmpty(firstObject.getLinkTo()) || firstObject.getLinkTo().equalsIgnoreCase("null")) {
@@ -168,7 +184,7 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
                 } else {
                     flag = Integer.parseInt(firstObject.getLinkTo().trim()) - Integer.parseInt(secondObject.getLinkTo().trim());
                 }
-            }*//*
+            }
         }
     }*/
 }
