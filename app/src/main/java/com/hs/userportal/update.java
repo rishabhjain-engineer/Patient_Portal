@@ -315,60 +315,8 @@ public class update extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
-
                     askRunTimePermissions() ;
                     mIsSdkLessThanM = true ;
-                   /*  askRunTimePermissions() ;
-                    mIsSdkLessThanM = true ;
-                   //if (fbLinked.equals("true")) {
-                    -                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
-                        -                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        -                        builder.setTitle("Choose Image Source");
-                        -                        //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
-                                -                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
-                                        -                                new DialogInterface.OnClickListener() {
-                                            -
-                                                    -                                    @Override
-                                            -                                    public void onClick(DialogInterface dialog,
-                                                                                                     -                                                        int which) {
-                                                -                                        switch (which) {
-                                                    -                                            case 0:
-                                                        -                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                        -                                                try {
-                                                            -                                                    intent.putExtra("return-data", true);
-                                                            -                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                            -                                                } catch (ActivityNotFoundException e) {
-                                                            -                                                }
-                                                        -                                                break;
-                                                    -
-                                                            -                                            case 1:
-                                                        -
-                                                                -                                                File photo = null;
-                                                        -                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                        -                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                            -                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                            -                                                } else {
-                                                            -                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                            -                                                }
-                                                        -                                                if (photo != null) {
-                                                            -                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                            -                                                    Imguri = Uri.fromFile(photo);
-                                                            -                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                            -                                                }
-                                                        -                                                break;
-                                                    -                                            case 2:
-                                                        -                                                new fbImagePull().execute();
-                                                        -                                                break;
-                                                    -                                            default:
-                                                        -                                                break;
-                                                    -                                        }
-                                                -                                    }
-                                            -                                });
-                        -                        builder.show();
-                        -                    } else {
-
-                        //if (fbLinked.equals("true")) {*/
-                     if(mPermissionGranted) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
@@ -394,20 +342,6 @@ public class update extends BaseActivity {
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
-
-                                               /* File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-*/
                                                 break;
 
                                             case 2:
@@ -419,7 +353,7 @@ public class update extends BaseActivity {
                                     }
                                 });
                         builder.show();
-                    }
+
                 } else {
                     if (fbLinked.equals("true")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -834,7 +768,6 @@ public class update extends BaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Log.e("Rishabh", "create account volley error :=" + volleyError);
                 }
             });
             mRequestQueue.add(jsonObjectRequest);
@@ -1343,8 +1276,6 @@ public class update extends BaseActivity {
             servi.setRefresh(update.this);*/
             if (requestCode == PICK_FROM_GALLERY) {
 
-                Log.e("Rishabh ", "PICKED FROM GALLERY onActivityResult . ");
-
                 Uri selectedImageUri = data.getData();
 
                 String path = getPathFromContentUri(selectedImageUri);
@@ -1395,29 +1326,24 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
+
+
                 File imageFile = null ;
                 Uri selectedImageUri;
                 if(mIsSdkLessThanM == true){
                    selectedImageUri = Imguri;
                     imageFile = new File(selectedImageUri.getPath());
-                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
 
                 }else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     selectedImageUri = imageUri;
                     imageFile = new File(imageUri.getPath());
-                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
                 }
 
                 //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
                // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
 
-                Log.e("Rishabh" ,"onActivityResult Camera : Path of FILE := "+path) ;
                // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
@@ -2367,10 +2293,8 @@ public class update extends BaseActivity {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mPermissionGranted = true ;
-                Log.e("Rishabh", "Permissions are Granted .");
             } else {
                 mPermissionGranted = false ;
-                Log.e("Rishabh", "Permissions are not granted .");
             }
         }
     }
@@ -2383,12 +2307,11 @@ public class update extends BaseActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.e("Rishabh ", "IO Exception := " + ex);
                 // Error occurred while creating the File
                 return;
             }
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(update.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                Uri photoURI = FileProvider.getUriForFile(update.this,"com.hs.userportal.provider" , photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
             }
@@ -2398,7 +2321,7 @@ public class update extends BaseActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */

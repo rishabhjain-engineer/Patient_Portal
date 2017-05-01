@@ -389,7 +389,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setDialogAdapter(backText, recyclerView, mDirectory);
+        setDialogAdapter(backText, recyclerView, mDirectory, dialog);
         dialog.show();
 
         moveButton.setOnClickListener(new View.OnClickListener() {
@@ -441,24 +441,32 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     }
 
-    private void setDialogAdapter(final TextView backText, final RecyclerView recyclerView, Directory mDirectory) {
+    private void setDialogAdapter(final TextView backText, final RecyclerView recyclerView, Directory mDirectory, final Dialog dialog) {
+
 
         dialogAdapter = new RepositoryDialogAdapter(mDirectory, new RepositoryDialogAdapter.onDirectorySelected() {
             @Override
             public void onDirectorySelected(Directory directory) {
-                setDialogAdapter(backText, recyclerView, directory);
+                setDialogAdapter(backText, recyclerView, directory,dialog);
             }
         });
         recyclerView.setAdapter(dialogAdapter);
 
         if (dialogAdapter.getDirectory().getParentDirectory() == null) {
-            backText.setText("");
+            backText.setText("Root");
+            backText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
         } else {
             backText.setText(dialogAdapter.getDirectory().getDirectoryName());
             backText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory());
+                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory(),dialog);
                 }
             });
 
