@@ -39,6 +39,7 @@ import java.util.Map;
 import adapters.VaccineAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -135,7 +136,7 @@ public class VaccineActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+        if (NetworkChangeListener.getNetworkStatus().isConnected() && AppConstant.isToRefereshVaccine) {
             sendrequest();
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
