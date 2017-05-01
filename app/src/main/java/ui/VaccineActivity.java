@@ -212,6 +212,7 @@ public class VaccineActivity extends BaseActivity {
                             vaccineDetails.setPatientVaccineId(jsonObject.isNull("PatientVaccineId") ? null : jsonObject.optString("PatientVaccineId"));
                             vaccineDetails.setDoseFrequency(jsonObject.isNull("DoseFrequency") ? null : jsonObject.optString("DoseFrequency"));
 
+                            vaccineDetails.setVaccineNameAndDose(vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose());
                             mVaccineDetailsList.add(vaccineDetails);
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
