@@ -334,36 +334,64 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     };
 
     private void deleteFile() {
-        List<SelectableObject> selectedObjects = new ArrayList<>();
+        final List<SelectableObject> selectedObjects = new ArrayList<>();
         for (SelectableObject object : displayedDirectory) {
             if (object.isSelected()) {
                 selectedObjects.add(object);
             }
         }
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Deleting... Please Wait");
-        progressDialog.show();
-        RepositoryUtils.deleteObjects(selectedObjects, patientId, getActivity(), new RepositoryUtils.OnDeleteCompletion() {
-            @Override
-            public void onSuccessfullyDeleted() {
-                progressDialog.dismiss();
-                Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
-                loadData();
-                if (listMode == 1) {
-                    new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
-                } else {
-                    new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
-                }
 
-            }
 
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.delete_folderlist_confirmation);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.delete_cancel_btn);
+        dialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure() {
-                progressDialog.dismiss();
-                Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                dialog.dismiss();
+                unselectAll();
+                mRepositoryAdapter.setSelectionMode(false);
+                setListAdapter(mRepositoryAdapter.getDirectory());
             }
         });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Deleting... Please Wait");
+                progressDialog.show();
+                RepositoryUtils.deleteObjects(selectedObjects, patientId, getActivity(), new RepositoryUtils.OnDeleteCompletion() {
+                    @Override
+                    public void onSuccessfullyDeleted() {
+                        progressDialog.dismiss();
+                        Toast.makeText(mActivity, "Items successfully deleted", Toast.LENGTH_SHORT).show();
+                        loadData();
+                        if (listMode == 1) {
+                            new GetDataFromAmazon(mRepositoryGridAdapter.getDirectory()).execute();
+                        } else {
+                            new GetDataFromAmazon(mRepositoryAdapter.getDirectory()).execute();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        progressDialog.dismiss();
+                        Toast.makeText(mActivity, "Some error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
     }
 
     private void moveFile() {
@@ -453,8 +481,13 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    setListAdapter(mRepositoryAdapter.getDirectory());
                 }
             });
+
+
 
         } else {
             backText.setText(dialogAdapter.getDirectory().getDirectoryName());
