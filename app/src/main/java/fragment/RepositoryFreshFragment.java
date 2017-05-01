@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,7 +31,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,10 +56,8 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.BuildConfig;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
-import com.hs.userportal.FileDownloader;
 import com.hs.userportal.ImageActivity;
 import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
@@ -77,8 +74,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -447,7 +442,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         dialogAdapter = new RepositoryDialogAdapter(mDirectory, new RepositoryDialogAdapter.onDirectorySelected() {
             @Override
             public void onDirectorySelected(Directory directory) {
-                setDialogAdapter(backText, recyclerView, directory,dialog);
+                setDialogAdapter(backText, recyclerView, directory, dialog);
             }
         });
         recyclerView.setAdapter(dialogAdapter);
@@ -466,7 +461,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             backText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory(),dialog);
+                    setDialogAdapter(backText, recyclerView, dialogAdapter.getDirectory().getParentDirectory(), dialog);
                 }
             });
 
@@ -781,10 +776,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         askRunTimePermissions();
 
         if (file.getOtherExtension()) {
-            if (file.getKey().contains("pdf")  || file.getKey().contains("doc") || file.getKey().contains("xls") ) {
-   //             Log.e("Rishabh", "Opening pdf");
+            if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
+                //             Log.e("Rishabh", "Opening pdf");
                 String filepath = AppConstant.AMAZON_URL + file.getKey();
- //               Log.e("Rishabh", "filepath := " + filepath);
+                //               Log.e("Rishabh", "filepath := " + filepath);
                 new FileDownloader(filepath).execute();
 
             }
@@ -876,41 +871,40 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             super.onPostExecute(saveFilePath);
             progressDialog.dismiss();
 
-            if(saveFilePath.endsWith("pdf")){
+            if (saveFilePath.endsWith("pdf")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/pdf");
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/pdf");
                 objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Intent i = Intent.createChooser(objIntent, "Open File");
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a PDF reader here, or something
- //                   Log.e("Rishabh", "Lol");
+                    //                   Log.e("Rishabh", "Lol");
                 }
-            }else if(saveFilePath.contains("doc")){
+            } else if (saveFilePath.contains("doc")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/msword");
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/msword");
                 objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Intent i = Intent.createChooser(objIntent, "Open File");
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a ms-word reader here, or something
-  //                  Log.e("Rishabh", "Lol");
+                    //                  Log.e("Rishabh", "Lol");
                 }
-            }else if(saveFilePath.contains("xls")){
+            } else if (saveFilePath.contains("xls")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///"+saveFilePath), "application/vnd.ms-excel");
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/vnd.ms-excel");
                 objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Intent i = Intent.createChooser(objIntent, "Open File");
                 try {
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a X-excel reader here, or something
-  //                  Log.e("Rishabh", "Lol");
+                    //                  Log.e("Rishabh", "Lol");
                 }
             }
-
 
 
         }
@@ -987,6 +981,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             case 0:
                                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                 intent.setType("image/*");
+                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                                }
+
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                 break;
                             case 1:
@@ -1058,7 +1056,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-        //        Log.e("Rishabh", "IO exception := "+ex);
+                //        Log.e("Rishabh", "IO exception := "+ex);
                 return;
             }
             if (photoFile != null) {
@@ -1072,14 +1070,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
                 storageDir
         );
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-    //    Log.e("Rishabh", "image := " + image.getName());
+        //    Log.e("Rishabh", "image := " + image.getName());
         return image;
     }
 
@@ -1101,8 +1099,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        ArrayList<Uri> uriList = new ArrayList<>();
-//        ArrayList<Uri> ThumbUriList = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(mActivity);
         mProgressDialog.setMessage("Uploading File ...");
@@ -1112,33 +1108,36 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-
-
+                ArrayList<Uri> multipleUri = new ArrayList<>();
+                ClipData clipData = data.getClipData();
+                for (int i = 0; i < clipData.getItemCount(); i++) {
+                    multipleUri.add(clipData.getItemAt(i).getUri());
+                }
                 File downloadedFile = null;
                 //new code saves recieved bitmap as file
-                Uri selectedImageUri = data.getData();
-                InputStream is = null;
-                if (selectedImageUri.getAuthority() != null) {
-                    is = getActivity().getContentResolver().openInputStream(selectedImageUri);
-                    Bitmap bmp = BitmapFactory.decodeStream(is);
-                    if (bmp != null) {
-                        try {
-                            downloadedFile = createImageFile();
-                            OutputStream outStream = new FileOutputStream(downloadedFile);
-                            //compressing image to 80 percent quality to reduce size
-                            bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                            outStream.flush();
-                            outStream.close();
-                            listOfFilesToUpload.add(downloadedFile);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                Uri selectedImageUri;
+                for (int i = 0; i < multipleUri.size(); i++) {
+                    selectedImageUri = multipleUri.get(i);
+                    InputStream is = null;
+                    if (selectedImageUri.getAuthority() != null) {
+                        is = getActivity().getContentResolver().openInputStream(selectedImageUri);
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+                            try {
+                                downloadedFile = createImageFile();
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+                                listOfFilesToUpload.add(downloadedFile);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                    listOfFilesToUpload.add(thumbnailFile);
                 }
-
-                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                listOfFilesToUpload.add(thumbnailFile);
 //                Uri thumbUri = Uri.parse(thumbnailFile.getAbsolutePath());
 //                ThumbUriList.add(thumbUri);
 //                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
@@ -1265,7 +1264,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
- //       Log.e("Rishabh", "THumb := " + mediaFile.getName());
+        //       Log.e("Rishabh", "THumb := " + mediaFile.getName());
         return mediaFile;
     }
 
