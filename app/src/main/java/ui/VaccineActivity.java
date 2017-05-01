@@ -39,6 +39,7 @@ import java.util.Map;
 import adapters.VaccineAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -135,7 +136,7 @@ public class VaccineActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+        if (NetworkChangeListener.getNetworkStatus().isConnected() && AppConstant.isToRefereshVaccine) {
             sendrequest();
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
@@ -148,7 +149,7 @@ public class VaccineActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-               finish();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -263,6 +264,7 @@ public class VaccineActivity extends BaseActivity {
                                         vaccineDetailsList.add(vaccineDetails);
                                     } else {
                                         mKeysList.add(key);
+                                        ;
                                         List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
                                         vaccineDetailsList.add(vaccineDetails);
                                         listHashMap.put(key, vaccineDetailsList);
@@ -314,7 +316,37 @@ public class VaccineActivity extends BaseActivity {
                             }
                         }
 
-                        //Collections.sort(mKeysList, Collections.<String>reverseOrder());
+                        List<VaccineDetails> specialVaccineList = listHashMap.get("a"); // Special Doses LIst
+                        Map<String, List<VaccineDetails>> specialDoseHashMap = new HashMap<>();
+                        List<String> specialDoseKeyList = new ArrayList<>();
+
+                        for (VaccineDetails vaccineDetails : specialVaccineList) {
+                            String key = vaccineDetails.getVaccineName();
+                            if (specialDoseKeyList.contains(key)) {
+                                List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
+                                vaccineDetails.setSpecialDose(true);
+                                vaccineDetailsList.add(vaccineDetails);
+                            } else {
+                                specialDoseKeyList.add(key);
+                                List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                VaccineDetails vaccineDetailsObj = new VaccineDetails();
+                                vaccineDetailsObj.setHeader(true);
+                                vaccineDetailsObj.setSpecialDose(true);
+                                vaccineDetailsObj.setHeaderString(key);
+                                vaccineDetailsList.add(vaccineDetailsObj);
+                                vaccineDetailsList.add(vaccineDetails);
+                                specialDoseHashMap.put(key, vaccineDetailsList);
+                            }
+                        }
+
+                        Collections.sort(specialDoseKeyList);
+                        List<VaccineDetails> modifiedVaccineDetailses = new ArrayList<>();
+                        for (String key : specialDoseKeyList) {
+                            List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
+                            modifiedVaccineDetailses.addAll(vaccineDetailsList);
+                        }
+                        listHashMap.put("a", modifiedVaccineDetailses);
+                        /////////////////////////////
 
                         for (String key : mKeysList) {
                             List<VaccineDetails> vaccineDetailsList = listHashMap.get(key);

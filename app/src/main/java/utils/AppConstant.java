@@ -31,6 +31,5 @@ public class AppConstant {
     public static int BP_REQUEST_CODE = 1004;
     public static int CASECODE_REQUEST_CODE = 1005;
 
-
-
+    public static boolean isToRefereshVaccine = true;
 }

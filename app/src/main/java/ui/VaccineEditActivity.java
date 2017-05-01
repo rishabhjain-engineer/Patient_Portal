@@ -73,6 +73,7 @@ public class VaccineEditActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vaccine_edit);
+        AppConstant.isToRefereshVaccine = false;
         monthArray.add("01");
         monthArray.add("02");
         monthArray.add("03");
@@ -328,6 +329,7 @@ public class VaccineEditActivity extends BaseActivity {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
                     Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                    AppConstant.isToRefereshVaccine = true;
                 } else {
                     Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                 }
