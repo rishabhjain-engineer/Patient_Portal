@@ -8,10 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -40,6 +38,7 @@ import java.util.Map;
 
 import config.StaticHolder;
 import ui.SignInActivity;
+import utils.PreferenceHelper;
 
 public class UploadProfileService extends IntentService {
 
@@ -60,6 +59,7 @@ public class UploadProfileService extends IntentService {
     private NotificationManager nm;
     private final Handler handler = new Handler();
     private String fname, afterDecode, uplodfrm,oldimage,oldthumbimage;
+    protected PreferenceHelper mPreferenceHelper;
 
     public UploadProfileService() {
         super("simpl3r-example-upload");
@@ -78,8 +78,10 @@ public class UploadProfileService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
+       // SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+       // patientId = sharedPreferences.getString("ke", "");
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         oldimage=intent.getStringExtra("oldimage");
