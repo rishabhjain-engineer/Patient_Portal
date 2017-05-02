@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class StudentsDetailActivity extends BaseActivity {
     private TextView mExtraOralTv, mIntraToothCavityTv, mIntraPlaqueTv, mIntraGumTv, mIntraStainsTv, mIntraTarterTv, mIntraBadBreathTv, mIntraGumBleedingTv, mIntraSoftTissue;
     private TextView mSystameticRespiratoryTv, mSystameticCvsTv, mSystameticAbdomentTv, mSystameticNervousSTv, mSystameticEyeLeftTv, mSystameticEyeRightTv;
     private TextView mMedicalImportatntTv, mMedicalDoeTv, mMedicalDoctorNameTv, mMedicalDoctorDesignationTv, mMedicalPlaceTv, mMedicalRemarksTv, mMedicalFollowUpTv;
+    private LinearLayout mContainerLinearLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class StudentsDetailActivity extends BaseActivity {
 
     private void getId() {
 
+        mContainerLinearLayout = (LinearLayout) findViewById(R.id.container);
         mGeHeightTv = (TextView) findViewById(R.id.height);
         mGeWeightTv = (TextView) findViewById(R.id.weight);
         mGeAllergyTv = (TextView) findViewById(R.id.allergy);
@@ -123,7 +127,7 @@ public class StudentsDetailActivity extends BaseActivity {
             sendData.put("doctorId", mStaffId);
             sendData.put("date", mDateOfExamination);
             //sendData.put("doctorId", "BE1720FB-0E57-4214-B76D-1153CCB0D357");
-           // sendData.put("date", "2017-04-13");
+            // sendData.put("date", "2017-04-13");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,17 +188,19 @@ public class StudentsDetailActivity extends BaseActivity {
                     JSONArray modJsonArray = cut.optJSONArray("Medical Officer Details");
                     JSONObject medicalOfficerJsonObject = modJsonArray.optJSONObject(0);
                     mMedicalImportatntTv.setText(medicalOfficerJsonObject.isNull("Important Findings") ? "Important Findings\n-" : "Important Findings\n\n" + medicalOfficerJsonObject.optString("Important Findings"));
-                    String date =  medicalOfficerJsonObject.optString("Date Of Examination");
-                    if(date.contains("/")){
-                        String array [] = date.split(" ");
+                    String date = medicalOfficerJsonObject.optString("Date Of Examination");
+                    if (date.contains("/")) {
+                        String array[] = date.split(" ");
                         date = array[0];
                     }
-                    mMedicalDoeTv.setText(medicalOfficerJsonObject.isNull("Date Of Examination") ? "Date Of Examination\n-" : "Date Of Examination\n\n" +date);
+                    mMedicalDoeTv.setText(medicalOfficerJsonObject.isNull("Date Of Examination") ? "Date Of Examination\n-" : "Date Of Examination\n\n" + date);
                     mMedicalDoctorNameTv.setText(medicalOfficerJsonObject.isNull("Doctor Name") ? "Doctor Name\n-" : "Doctor Name\n\n" + medicalOfficerJsonObject.optString("Doctor Name"));
                     mMedicalDoctorDesignationTv.setText(medicalOfficerJsonObject.isNull("Doctor Designation") ? "Doctor Designation\n-" : "Doctor Designation\n\n" + medicalOfficerJsonObject.optString("Doctor Designation"));
                     mMedicalPlaceTv.setText(medicalOfficerJsonObject.isNull("Place") ? "Place\n-" : "Place\n\n" + medicalOfficerJsonObject.optString("Place"));
                     mMedicalRemarksTv.setText(medicalOfficerJsonObject.isNull("Remarks") ? "Remarks\n-" : "Remarks\n\n" + medicalOfficerJsonObject.optString("Remarks"));
                     mMedicalFollowUpTv.setText(medicalOfficerJsonObject.isNull("Follow up") ? "Follow up\n-" : "Follow up\n\n" + medicalOfficerJsonObject.optString("Follow up"));
+
+                    mContainerLinearLayout.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
