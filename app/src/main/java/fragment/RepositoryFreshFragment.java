@@ -31,6 +31,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +137,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
+    List<S3ObjectSummary> summaries = new ArrayList<>();
 
 
     private static RepositoryFreshFragment repositoryFreshFragment;
@@ -192,13 +194,26 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             ListObjectsRequest lor = new ListObjectsRequest()
                     .withBucketName(s3BucketName)
                     .withPrefix(prefix)
+                    .withMaxKeys(1000)
                     .withDelimiter(delimiter);
 
+            s3allData.clear();
+            summaries.clear();
             ObjectListing objectListing = s3Client.listObjects(lor);
-            s3allData = objectListing.getCommonPrefixes();
-
+            s3allData.addAll(objectListing.getCommonPrefixes());
+            summaries = objectListing.getObjectSummaries();
             currentDirectory.clearAll();
-            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
+
+            while (objectListing.isTruncated()) {
+                objectListing = s3Client.listNextBatchOfObjects (objectListing);
+               // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
+               // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
+                s3allData.addAll(objectListing.getCommonPrefixes());
+                summaries.addAll(objectListing.getObjectSummaries());
+            }
+
+
+            for (S3ObjectSummary summary : summaries) {
                 if (summary.getKey().contains("_thumb")) {
                     continue;
                 }
@@ -217,7 +232,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 Directory directory = new Directory(DirectoryUtility.getFolderName(path));
                 DirectoryUtility.addFolder(currentDirectory, directory);
             }
-
 
             return null;
         }
