@@ -47,6 +47,7 @@ import java.util.Map;
 import config.StaticHolder;
 import fragment.RepositoryFreshFragment;
 import ui.SignInActivity;
+import ui.VaccineActivity;
 import utils.PreferenceHelper;
 import utils.RepositoryUtils;
 
@@ -312,7 +313,10 @@ public class UploadService extends IntentService {
             queue1 = Volley.newRequestQueue(this);
 
             //   String url1 = "https://api.healthscion.com/WebServices/LabService.asmx/UploadImage";
-            String url1 = "http://192.168.1.11/WebServices/LabService.asmx/UploadImage_New";
+            //String url1 = "http://192.168.1.11/WebServices/LabService.asmx/UploadImage_New";
+            StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.UploadImage_New);
+            String url1 = staticHolder.request_Url();
+
 
             jr1 = new JsonObjectRequest(
                     Request.Method.POST, url1, sendData,

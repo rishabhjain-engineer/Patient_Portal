@@ -46,6 +46,7 @@ public class StaticHolder {
         this.context = activity;
     }
 
+
     public StaticHolder(Services_static serviceName) {
         this.serviceName = serviceName;
     }
@@ -476,6 +477,9 @@ public class StaticHolder {
                 url = BASE_URL + "getSchoolStudentDetails";
                 break;
 
+            case UploadImage_New:
+                url = BASE_URL + "UploadImage_New";
+                break;
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -531,7 +535,7 @@ public class StaticHolder {
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
-        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails
+        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New
     }
 
 }
