@@ -20,6 +20,7 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -141,6 +142,41 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mWebView.setInitialScale(1);
         mWebView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
 
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if (mFromBMI) {
+                    mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
+                    mListView.setAdapter(mMyHealthsAdapter);
+                    Weight.Utility.setListViewHeightBasedOnChildren(mListView);
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                    if (mIsBmiEmpty) {
+                        Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+
+                    if (mMyHealthsAdapter == null) {
+                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mListView.setAdapter(mMyHealthsAdapter);
+                    } else {
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mMyHealthsAdapter.notifyDataSetChanged();
+                    }
+                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                }
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    mListViewHeaderRl.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         mRequestQueue = Volley.newRequestQueue(this);
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -236,8 +272,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         }
     }
 
+    private ProgressDialog progress;
+
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
-        ProgressDialog progress;
         JSONObject receiveData1;
         boolean isDataAvailable = false;
 
@@ -524,36 +561,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (mFromBMI) {
-                setDateList(mDateList);
-                mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
-                mListView.setAdapter(mMyHealthsAdapter);
-                Weight.Utility.setListViewHeightBasedOnChildren(mListView);
-
                 mWebView.loadUrl("file:///android_asset/html/index.html");
-                if (progress != null && progress.isShowing()) {
-                    progress.dismiss();
-                }
-                if (mIsBmiEmpty) {
-                    Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
-                }
+                setDateList(mDateList);
             } else {
                 if (isDataAvailable) {
-                    setDateList(mDateList);
-                    if (mMyHealthsAdapter == null) {
-                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mListView.setAdapter(mMyHealthsAdapter);
-                    } else {
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mMyHealthsAdapter.notifyDataSetChanged();
-                    }
-
-                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
                     mWebView.loadUrl("file:///android_asset/html/index.html");
-
-                    if (progress != null && progress.isShowing()) {
-                        progress.dismiss();
-                    }
+                    setDateList(mDateList);
                 } else {
                     if (isSessionExist()) {
                         Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
