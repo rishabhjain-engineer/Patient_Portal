@@ -148,7 +148,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                 if (mFromBMI) {
                     mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
                     mListView.setAdapter(mMyHealthsAdapter);
-                    Weight.Utility.setListViewHeightBasedOnChildren(mListView);
                     if (progress != null && progress.isShowing()) {
                         progress.dismiss();
                     }
@@ -165,7 +164,6 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         mMyHealthsAdapter.setListData(mValuesAndDateList);
                         mMyHealthsAdapter.notifyDataSetChanged();
                     }
-                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
                     if (progress != null && progress.isShowing()) {
                         progress.dismiss();
                     }
