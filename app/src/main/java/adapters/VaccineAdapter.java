@@ -96,7 +96,10 @@ public class VaccineAdapter extends BaseAdapter {
             holder.itemDetailContainer.setVisibility(View.VISIBLE);
             holder.headerTv.setVisibility(View.GONE);
             if (!TextUtils.isEmpty(vaccineDetails.getVaccineName())) {
+                holder.name.setVisibility(View.VISIBLE);
                 holder.name.setText(vaccineDetails.getVaccineName());
+            }else {
+                holder.name.setVisibility(View.GONE);
             }
 
             //show Dose Next to vaccine Name, if Vaccine Name is empty then show dose only

@@ -2,13 +2,14 @@ package com.hs.userportal;
 
 import android.text.TextUtils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by ayaz on 6/3/17.
  */
 
-public class VaccineDetails implements Comparable<VaccineDetails> {
+public class VaccineDetails implements Serializable, Comparable<VaccineDetails> {
 
     private String vaccineName;
     private String vaccineID;
