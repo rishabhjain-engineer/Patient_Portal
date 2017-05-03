@@ -8,9 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingBottom="10dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:paddingBottom="10dp"
         android:paddingTop="15dp">
 
 
@@ -236,6 +236,12 @@
             android:background="@color/header_color"
             android:text="Update"
             android:textColor="@color/white" />
+
+        <ListView
+            android:id="@+id/vaccine_edit_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"></ListView>
 
     </LinearLayout>
 </ScrollView>

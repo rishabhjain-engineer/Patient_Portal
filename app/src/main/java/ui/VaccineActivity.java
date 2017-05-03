@@ -55,6 +55,8 @@ public class VaccineActivity extends BaseActivity {
     private Intent mIntent;
     private Map<String, List<VaccineDetails>> listHashMap = new HashMap<>();
     private List<String> mKeysList = new ArrayList<>();
+    private List<String> mListOfVaccineId = new ArrayList<>();
+    private HashMap<String, List<String>> mHashMap = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -215,7 +217,12 @@ public class VaccineActivity extends BaseActivity {
                             vaccineDetails.setDoseFrequency(jsonObject.isNull("DoseFrequency") ? null : jsonObject.optString("DoseFrequency"));
 
                             vaccineDetails.setVaccineNameAndDose(vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose());
-                            mVaccineDetailsList.add(vaccineDetails);
+
+                            if(!mListOfVaccineId.contains(vaccineDetails.getVaccineID())){
+                                mVaccineDetailsList.add(vaccineDetails); //Not show more than one time
+                            }
+                            if(mListOfVaccineId.contains())
+                            mListOfVaccineId.add(vaccineDetails.getVaccineID());
                         }
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
@@ -346,7 +353,11 @@ public class VaccineActivity extends BaseActivity {
                         List<VaccineDetails> modifiedVaccineDetailses = new ArrayList<>();
                         for (String key : specialDoseKeyList) {
                             List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
+                            if(vaccineDetailsList.size() == 2){
+                                vaccineDetailsList.remove(0);
+                            }
                             modifiedVaccineDetailses.addAll(vaccineDetailsList);
+
                         }
                         listHashMap.put("a", modifiedVaccineDetailses);
                         /////////////////////////////
