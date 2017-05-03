@@ -107,8 +107,6 @@ public class VaccineEditActivity extends BaseActivity {
         ArrayAdapter durationAdapter = new ArrayAdapter(VaccineEditActivity.this, R.layout.spinner_appearence, AppConstant.mDateModeArray);
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
 
-        setDateLayout(0);
-
         ArrayAdapter monthArrayAdapter = new ArrayAdapter(VaccineEditActivity.this, R.layout.spinner_appearence, monthArray);
         monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromMonthSpinner.setAdapter(monthArrayAdapter);
@@ -328,18 +326,23 @@ public class VaccineEditActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
-                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                    if(mIsInsert){
+                        Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                    }
                     AppConstant.isToRefereshVaccine = true;
                 } else {
-                    Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
                 }
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
         mRequestQueue.add(jsonObjectRequest);
