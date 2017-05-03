@@ -107,8 +107,6 @@ public class VaccineEditActivity extends BaseActivity {
         ArrayAdapter durationAdapter = new ArrayAdapter(VaccineEditActivity.this, R.layout.spinner_appearence, AppConstant.mDateModeArray);
         durationAdapter.setDropDownViewResource(R.layout.spinner_appearence);
 
-        setDateLayout(0);
-
         ArrayAdapter monthArrayAdapter = new ArrayAdapter(VaccineEditActivity.this, R.layout.spinner_appearence, monthArray);
         monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromMonthSpinner.setAdapter(monthArrayAdapter);
@@ -206,7 +204,6 @@ public class VaccineEditActivity extends BaseActivity {
                 date = date.replace("00/00/", "");
                 int position = mYearsArray.indexOf(date);
                 mFromYearSpinner.setSelection(position);
-                radioButtonYear.setChecked(true);
                 setDateLayout(2);
             } else if (date.contains("00/")) {
                 date = date.replace("00/", "");
@@ -216,14 +213,14 @@ public class VaccineEditActivity extends BaseActivity {
                 mFromMonthSpinner.setSelection(position);
                 int position2 = mYearsArray.indexOf(splitDate[1]);
                 mFromYearSpinner.setSelection(position2);
-                radioButtonMonthYear.setChecked(true);
                 setDateLayout(1);
             }else{
                 mDateEditText.setText(date);
-                radioButtonExact.setChecked(true);
                 setDateLayout(0);
             }
             mDateTosend = date;
+        }else{
+            setDateLayout(0);
         }
 
         if (!TextUtils.isEmpty(notes)) {
@@ -328,18 +325,23 @@ public class VaccineEditActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
-                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                    if(mIsInsert){
+                        Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                    }
                     AppConstant.isToRefereshVaccine = true;
                 } else {
-                    Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
                 }
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
         mRequestQueue.add(jsonObjectRequest);
@@ -372,6 +374,7 @@ public class VaccineEditActivity extends BaseActivity {
             mIsExact = true;
             mExactDateContainerLl.setVisibility(View.VISIBLE);
             mMonthYearContainer.setVisibility(View.GONE);
+            mRadioGroup.check((R.id.exact));
         } else {
             mIsExact = false;
             mMonthYearContainer.setVisibility(View.VISIBLE);
@@ -379,7 +382,9 @@ public class VaccineEditActivity extends BaseActivity {
             if (position == 2) {
                 mFromMonth = "00";
                 mFromMonthSpinner.setVisibility(View.GONE);
+                mRadioGroup.check((R.id.year));
             } else {
+                mRadioGroup.check((R.id.month_year));
                 mFromMonthSpinner.setVisibility(View.VISIBLE);
             }
         }

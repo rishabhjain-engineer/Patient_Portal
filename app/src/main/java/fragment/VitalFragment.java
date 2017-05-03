@@ -53,6 +53,7 @@ import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.HealthCommonActivity;
 import ui.VaccineActivity;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -217,6 +218,7 @@ public class VitalFragment extends Fragment {
             public void onClick(View v) {
                 if (((BaseActivity) mActivity).isSessionExist()) {
                     if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        AppConstant.isToRefereshVaccine = true;
                         Intent intent = new Intent(mActivity, VaccineActivity.class);
                         startActivity(intent);
                         mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
