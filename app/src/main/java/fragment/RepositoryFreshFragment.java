@@ -11,6 +11,7 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -86,6 +87,7 @@ import adapters.RepositoryAdapter;
 import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
 import utils.PreferenceHelper;
@@ -239,8 +241,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressDialog.dismiss();
             setListAdapter(currentDirectory);
+            progressDialog.dismiss();
             setBackButtonPress(currentDirectory);
         }
     }
@@ -525,9 +527,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         TextView title = (TextView) dialog.findViewById(R.id.title);
         TextView item1 = (TextView) dialog.findViewById(R.id.item1_tv);
         TextView item2 = (TextView) dialog.findViewById(R.id.item2_tv);
+
         title.setText("Insert Folder / File");
         item1.setText("Create Folder");
         item2.setText("Upload Files");
+
 
         item1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -567,8 +571,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             }
         });
-        dialog.show();
 
+        dialog.show();
     }
 
 
@@ -957,69 +961,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     }
 
-
-    /*private class DownloadFile extends AsyncTask<String, Void, Void> {
-
-        File pdfFile;
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(mActivity);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading File");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            String fileUrl = strings[0];   // -> http://maven.apache.org/maven-1.x/maven.pdf
-            String fileName = strings[1];  // -> maven.pdf
-            String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-            File folder = new File(extStorageDirectory, "HealthScion");
-            folder.mkdir();
-
-            pdfFile = new File(folder, fileName);
-
-            try {
-                pdfFile.createNewFile();
-
-                //pdfFile = File.createTempFile(fileName,".pdf");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            FileDownloader.downloadFile(fileUrl, pdfFile);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressDialog.dismiss();
-            Uri uriPdf = null;
-            uriPdf = Uri.fromFile(pdfFile);
-            // uriPdf = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
-
-
-            Intent objIntent = new Intent(Intent.ACTION_VIEW);
-            objIntent.setDataAndType(uriPdf, "application/pdf");
-            objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            Intent i = Intent.createChooser(objIntent, "Open File");
-            try {
-                startActivity(i);
-            } catch (ActivityNotFoundException e) {
-                // Instruct the user to install a PDF reader here, or something
-                Log.e("Rishabh", "Lol");
-            }
-        }
-    }*/
-
     private void chooseimage() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("Choose Image Source");
-        builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera"},
+        builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera", "Pick Latest Photo"},
                 new DialogInterface.OnClickListener() {
 
                     @Override
@@ -1031,7 +977,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                                 }
-
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                 break;
                             case 1:
@@ -1041,6 +986,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                     e.printStackTrace();
                                 }
                                 break;
+
+                            case 2:
+                                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+                                    pickLatestPhoto();
+                                }else{
+                                    ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
+                                }
+
 
                             default:
                                 break;
@@ -1141,6 +1094,62 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             Imguri = Uri.fromFile(photo);
             startActivityForResult(intent1, PICK_FROM_CAMERA);
         }
+    }
+
+
+    private void pickLatestPhoto(){
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.upload_latest_pick);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+
+
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            final Cursor cursor = getContext().getContentResolver()
+                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                            null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+// Put it in the image view
+            if (cursor.moveToFirst()) {
+                String imageLocation = cursor.getString(1);
+                File imageFile = new File(imageLocation);
+                if (imageFile.exists()) {   // TODO: is there a better way to do this?
+                    Bitmap bm = BitmapFactory.decodeFile(imageLocation);
+                    imageView.setImageBitmap(bm);
+                    Uri test = Uri.fromFile(imageFile);
+                    Log.e("Rishabh", "Test uri := "+test);
+                }
+            }
+        }
+
+        dialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
 
@@ -1248,14 +1257,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
                 listOfFilesToUpload.add(thumbnailFile);
-//                Uri thumbImageUri = Uri.parse(thumbnailFile.getAbsolutePath());
-//                ThumbUriList.add(thumbImageUri);
-
-//                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
-
             }
             RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
-//            super.onActivityResult(requestCode, resultCode, data);
+            //super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
             e.printStackTrace();
         }
