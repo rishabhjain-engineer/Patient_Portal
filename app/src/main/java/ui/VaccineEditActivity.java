@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -67,6 +70,8 @@ public class VaccineEditActivity extends BaseActivity {
     private String mFromMonth = "00", mFromYear;
     private boolean mIsExact = true;
     private RadioGroup mRadioGroup;
+    private ListView mLisListView;
+    private Button insertUpdateBtn;
 
     @Override
 
@@ -88,16 +93,12 @@ public class VaccineEditActivity extends BaseActivity {
         monthArray.add("12");
         setupActionBar();
 
-
-        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group) ;
-        RadioButton radioButtonExact = (RadioButton) findViewById(R.id.exact);
-        RadioButton radioButtonMonthYear = (RadioButton) findViewById(R.id.month_year);
-        RadioButton radioButtonYear = (RadioButton) findViewById(R.id.year);
-
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         mExactDateContainerLl = (LinearLayout) findViewById(R.id.exact_date_container);
         mMonthYearContainer = (LinearLayout) findViewById(R.id.month_year_container);
         mFromMonthSpinner = (Spinner) findViewById(R.id.from_month);
         mFromYearSpinner = (Spinner) findViewById(R.id.from_year);
+        mLisListView = (ListView) findViewById(R.id.vaccine_edit_list);
 
         mCalender = Calendar.getInstance();
         year1 = mCalender.get(Calendar.YEAR);
@@ -127,7 +128,7 @@ public class VaccineEditActivity extends BaseActivity {
         TextView commentTv = (TextView) findViewById(R.id.comments);
         mDateEditText = (EditText) findViewById(R.id.date_edit_text);
         mNoteEditText = (EditText) findViewById(R.id.comment_edit_text);
-        Button insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
+        insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("Name");
@@ -165,37 +166,37 @@ public class VaccineEditActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(name)) {
             nameTv.setText("Vaccine For: " + name);
-        }else{
+        } else {
             nameTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(abbreviationName)) {
             vaccineAbreviationTv.setText("Vaccine: " + abbreviationName);
-        }else{
+        } else {
             vaccineAbreviationTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(dose)) {
             doseTv.setText("Dose: " + dose);
-        }else{
+        } else {
             doseTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(doseType)) {
             doseTypeTv.setText("Dose Type: " + doseType);
-        }else{
+        } else {
             doseTypeTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(doseFrequency)) {
             doseFrequencyTv.setText("Dose Frequency: " + doseFrequency);
-        }else{
+        } else {
             doseFrequencyTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(comments)) {
             commentTv.setText("Comments: " + comments);
-        }else{
+        } else {
             commentTv.setVisibility(View.GONE);
         }
 
@@ -207,19 +208,19 @@ public class VaccineEditActivity extends BaseActivity {
                 setDateLayout(2);
             } else if (date.contains("00/")) {
                 date = date.replace("00/", "");
-                String [] splitDate = date.split("/");
+                String[] splitDate = date.split("/");
                 mFromMonth = splitDate[0];
                 int position = monthArray.indexOf(mFromMonth);
                 mFromMonthSpinner.setSelection(position);
                 int position2 = mYearsArray.indexOf(splitDate[1]);
                 mFromYearSpinner.setSelection(position2);
                 setDateLayout(1);
-            }else{
+            } else {
                 mDateEditText.setText(date);
                 setDateLayout(0);
             }
             mDateTosend = date;
-        }else{
+        } else {
             setDateLayout(0);
         }
 
@@ -231,9 +232,9 @@ public class VaccineEditActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (NetworkChangeListener.getNetworkStatus().isConnected() && isSessionExist()) {
-                    if(!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)){
+                    if (!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)) {
                         sendrequest();
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "No fields can be empty.", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -300,7 +301,7 @@ public class VaccineEditActivity extends BaseActivity {
                 sendData.put("VaccineNameID", mVaccineNameId);
                 sendData.put("VaccineDateTime", mDateTosend);
                 String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-               // sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+                // sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
                 sendData.put("PatientId", id);
                 sendData.put("Comments", mNoteEditText.getEditableText().toString());
 
@@ -325,9 +326,9 @@ public class VaccineEditActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
-                    if(mIsInsert){
+                    if (mIsInsert) {
                         Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
                     }
                     AppConstant.isToRefereshVaccine = true;
@@ -415,6 +416,28 @@ public class VaccineEditActivity extends BaseActivity {
             mDateTosend = formattedDayOfMonth + "/" + formattedMonth + "/" + year;
             mDateEditText.setText(mDateTosend);
 
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.add:
+                mActionBar.setTitle("Insert");
+                insertUpdateBtn.setText("Insert");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
