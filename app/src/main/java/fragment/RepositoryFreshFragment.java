@@ -242,8 +242,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             setListAdapter(currentDirectory);
-            progressDialog.dismiss();
             setBackButtonPress(currentDirectory);
+            progressDialog.dismiss();
+            loadData();
         }
     }
 
@@ -644,7 +645,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onResponse(JSONObject response) {
 //                startCreatingDirectoryStructure();
-                loadData();
+
                 new GetDataFromAmazon(mDirectory).execute();
 
             }
