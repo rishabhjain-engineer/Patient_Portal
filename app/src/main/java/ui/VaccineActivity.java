@@ -56,7 +56,7 @@ public class VaccineActivity extends BaseActivity {
     private Map<String, List<VaccineDetails>> listHashMap = new HashMap<>();
     private List<String> mKeysList = new ArrayList<>();
     private List<String> mListOfVaccineId = new ArrayList<>();
-    private HashMap<String, List<String>> mHashMap = new HashMap<>();
+    private Map<String, List<VaccineDetails>> mKeyHashList = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,12 +218,27 @@ public class VaccineActivity extends BaseActivity {
 
                             vaccineDetails.setVaccineNameAndDose(vaccineDetails.getVaccineNameInShort() + " - " + vaccineDetails.getVaccineDose());
 
-                            if(!mListOfVaccineId.contains(vaccineDetails.getVaccineID())){
+                            if (!mListOfVaccineId.contains(vaccineDetails.getVaccineID())) {
                                 mVaccineDetailsList.add(vaccineDetails); //Not show more than one time
                             }
-                            if(mListOfVaccineId.contains())
                             mListOfVaccineId.add(vaccineDetails.getVaccineID());
                         }
+
+                        for (VaccineDetails vaccineDetails : mVaccineDetailsList) {
+                            int occurrences = Collections.frequency(mVaccineDetailsList, vaccineDetails.getVaccineID());
+                            if (occurrences > 1) {
+                                if (mListOfVaccineId.contains(vaccineDetails.getVaccineID())) {
+                                    List<VaccineDetails> vaccineDetailsList = mKeyHashList.get(vaccineDetails.getVaccineID());
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    mKeyHashList.put(vaccineDetails.getVaccineID(), vaccineDetailsList);
+                                } else {
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    mKeyHashList.put(vaccineDetails.getVaccineID(), vaccineDetailsList);
+                                }
+                            }
+                        }
+
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
                         /**
@@ -353,8 +368,14 @@ public class VaccineActivity extends BaseActivity {
                         List<VaccineDetails> modifiedVaccineDetailses = new ArrayList<>();
                         for (String key : specialDoseKeyList) {
                             List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
-                            if(vaccineDetailsList.size() == 2){
+                            if (vaccineDetailsList.size() == 2) {
                                 vaccineDetailsList.remove(0);
+                            } else {
+                                for (VaccineDetails vaccineDetails : vaccineDetailsList) {
+                                    if (!vaccineDetails.isHeader()) {
+                                        vaccineDetails.setVaccineName("");
+                                    }
+                                }
                             }
                             modifiedVaccineDetailses.addAll(vaccineDetailsList);
 
