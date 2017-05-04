@@ -118,9 +118,12 @@ public class VaccineDetails implements Serializable, Comparable<VaccineDetails> 
 
     @Override
     public int compareTo(VaccineDetails o) {
-        int value = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
-        if (value != 0) {
-            return value;
+        int valueAgeAt = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
+        int valueAgeTo = this.getAgeTo() < o.getAgeTo() ? 1 : (this.getAgeTo() > o.getAgeTo() ? -1 : 0);
+        if (valueAgeAt != 0) {
+            return valueAgeAt;
+        } else if (valueAgeTo != 0) {
+            return valueAgeTo;
         } else {
             String s1 = this.getVaccineNameAndDose();
             String s2 = o.getVaccineNameAndDose();
