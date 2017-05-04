@@ -8,6 +8,7 @@
     android:paddingRight="8dp"
     android:paddingTop="5dp">
 
+
     <RelativeLayout
         android:id="@+id/item_detail_container"
         android:layout_width="match_parent"
@@ -36,21 +37,37 @@
             android:id="@+id/ticked_image_view"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:scaleType="centerInside"
-            android:src="@drawable/vaccine_ticked" />
+            android:src="@drawable/vaccine_ticked"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/header"
+    <LinearLayout
+        android:id="@+id/header_container"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/grey"
-        android:gravity="center"
-        android:textColor="@color/black" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/grey"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/header_special"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
 </LinearLayout>
