@@ -77,6 +77,7 @@ public class VaccineEditActivity extends BaseActivity {
     private int mListSize;
     private VaccineDetails mVaccineDetailsObj;
     private TextView nameTv, vaccineAbreviationTv, doseTv, doseTypeTv, doseFrequencyTv, commentTv;
+    private boolean isToshowAddButton;
 
     @Override
 
@@ -143,21 +144,19 @@ public class VaccineEditActivity extends BaseActivity {
         if (mListSize > 1) {
             List<String> dateList = new ArrayList<>();
             for (int i = 0; i < vaccineDetailList.size(); i++) {
-                if (i != 0) {
-                    VaccineDetails vaccineDetails = vaccineDetailList.get(i);
-                    String string = vaccineDetails.getVaccineDateTime();
-                    String arrayString[] = string.split(" ");
-                    String arra2String[] = arrayString[0].split("-");
-                    String date = "";
-                    if (arrayString[0].contains("-00-00")) {
-                        date = arra2String[0];
-                    } else if (arrayString[0].contains("-00")) {
-                        date = arra2String[1] + "/" + arra2String[0];
-                    } else {
-                        date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
-                    }
-                    dateList.add("Edited On : " + date);
+                VaccineDetails vaccineDetails = vaccineDetailList.get(i);
+                String string = vaccineDetails.getVaccineDateTime();
+                String arrayString[] = string.split(" ");
+                String arra2String[] = arrayString[0].split("-");
+                String date = "";
+                if (arrayString[0].contains("-00-00")) {
+                    date = arra2String[0];
+                } else if (arrayString[0].contains("-00")) {
+                    date = arra2String[1] + "/" + arra2String[0];
+                } else {
+                    date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
                 }
+                dateList.add("Edited On : " + date);
             }
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dateList);
             mLisListView.setAdapter(itemsAdapter);
@@ -165,7 +164,7 @@ public class VaccineEditActivity extends BaseActivity {
             mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
-                    mVaccineDetailsObj = vaccineDetailList.get(position + 1);
+                    mVaccineDetailsObj = vaccineDetailList.get(position);
                     setData();
                 }
             });
@@ -196,10 +195,12 @@ public class VaccineEditActivity extends BaseActivity {
         }
 
         if (TextUtils.isEmpty(mPatientVaccineId)) {
+            isToshowAddButton = false;
             mActionBar.setTitle("Insert");
             insertUpdateBtn.setText("Insert");
             mIsInsert = true;
         } else {
+            isToshowAddButton = true;
             mActionBar.setTitle("Update");
             insertUpdateBtn.setText("Update");
             mIsInsert = false;
@@ -462,7 +463,7 @@ public class VaccineEditActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.weightmenu, menu);
         MenuItem menuOpen = menu.findItem(R.id.add);
-        if (mListSize >= 2) {
+        if (mListSize >= 2 || isToshowAddButton) {
             menuOpen.setVisible(true);
         } else {
             menuOpen.setVisible(false);
@@ -478,9 +479,12 @@ public class VaccineEditActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.add:
+                setDateLayout(0);
                 mIsInsert = true;
                 mActionBar.setTitle("Insert");
                 insertUpdateBtn.setText("Insert");
+                mNoteEditText.setText("");
+                mDateEditText.setText("");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
