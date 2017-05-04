@@ -36,6 +36,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.AddGraphDetails;
 import com.hs.userportal.R;
+import com.hs.userportal.VaccineDetails;
 import com.hs.userportal.Work;
 
 import org.json.JSONException;
@@ -72,6 +73,9 @@ public class VaccineEditActivity extends BaseActivity {
     private RadioGroup mRadioGroup;
     private ListView mLisListView;
     private Button insertUpdateBtn;
+    private int mListSize;
+    private VaccineDetails mVaccineDetailsObj;
+    private TextView nameTv, vaccineAbreviationTv, doseTv, doseTypeTv, doseFrequencyTv, commentTv;
 
     @Override
 
@@ -120,27 +124,57 @@ public class VaccineEditActivity extends BaseActivity {
         adapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromYearSpinner.setAdapter(adapter);
 
-        TextView nameTv = (TextView) findViewById(R.id.name);
-        TextView vaccineAbreviationTv = (TextView) findViewById(R.id.vaccine_abreviation);
-        TextView doseTv = (TextView) findViewById(R.id.dose);
-        TextView doseTypeTv = (TextView) findViewById(R.id.dose_type);
-        TextView doseFrequencyTv = (TextView) findViewById(R.id.dose_frequency);
-        TextView commentTv = (TextView) findViewById(R.id.comments);
+        nameTv = (TextView) findViewById(R.id.name);
+        vaccineAbreviationTv = (TextView) findViewById(R.id.vaccine_abreviation);
+        doseTv = (TextView) findViewById(R.id.dose);
+        doseTypeTv = (TextView) findViewById(R.id.dose_type);
+        doseFrequencyTv = (TextView) findViewById(R.id.dose_frequency);
+        commentTv = (TextView) findViewById(R.id.comments);
         mDateEditText = (EditText) findViewById(R.id.date_edit_text);
         mNoteEditText = (EditText) findViewById(R.id.comment_edit_text);
         insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("Name");
-        String abbreviationName = intent.getStringExtra("VaccineName");
-        String dose = intent.getStringExtra("Dose");
-        String doseType = intent.getStringExtra("DoseType");
-        String notes = intent.getStringExtra("DoctorNotes");
-        String doseFrequency = intent.getStringExtra("doseFrequency");
-        String comments = intent.getStringExtra("comment");
-        String agAt = intent.getStringExtra("AgeAt");
-        String ageTo = intent.getStringExtra("AgeTo");
-        String date = intent.getStringExtra("VaccineDateTime");
+        Bundle bundle = intent.getBundleExtra("BUNDLE");
+        final ArrayList<VaccineDetails> vaccineDetailList = (ArrayList<VaccineDetails>) bundle.getSerializable("list");
+        mListSize = vaccineDetailList.size();
+        mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
+
+        if (mListSize > 1) {
+            List<String> dateList = new ArrayList<>();
+            for (VaccineDetails vaccineDetails : vaccineDetailList) {
+                String string = vaccineDetails.getVaccineDateTime();
+                String arrayString[] = string.split(" ");
+                String arra2String[] = arrayString[0].split("-");
+                String date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
+                dateList.add("Edited On : " + date);
+            }
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dateList);
+            mLisListView.setAdapter(itemsAdapter);
+
+            mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                    mVaccineDetailsObj = vaccineDetailList.get(position + 1);
+                    setData();
+                }
+            });
+        }
+        setData();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    private void setData() {
+        String name = mVaccineDetailsObj.getVaccineName();
+        String abbreviationName = mVaccineDetailsObj.getVaccineNameInShort();
+        String dose = mVaccineDetailsObj.getVaccineDose();
+        String doseType = mVaccineDetailsObj.getVaccineDoseType();
+        String notes = mVaccineDetailsObj.getDoctorNotes();
+        String doseFrequency = mVaccineDetailsObj.getDoseFrequency();
+        String comments = mVaccineDetailsObj.getVaccineComment();
+        String date = mVaccineDetailsObj.getVaccineDateTime();
+        mVaccineNameId = mVaccineDetailsObj.getVaccineID();
+        mPatientVaccineId = mVaccineDetailsObj.getPatientVaccineId();
 
         if (!TextUtils.isEmpty(date)) {
             String dateInArray[] = date.split(" ");
@@ -150,9 +184,6 @@ public class VaccineEditActivity extends BaseActivity {
                 mFromMonth = date;
             }
         }
-
-        mVaccineNameId = intent.getStringExtra("VaccineNameID");
-        mPatientVaccineId = intent.getStringExtra("PatientVaccineId");
 
         if (TextUtils.isEmpty(mPatientVaccineId)) {
             mActionBar.setTitle("Insert");
@@ -274,8 +305,6 @@ public class VaccineEditActivity extends BaseActivity {
 
             }
         });
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private ProgressDialog mProgressDialog;
@@ -422,6 +451,12 @@ public class VaccineEditActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.weightmenu, menu);
+        MenuItem menuOpen = menu.findItem(R.id.add);
+        if (mListSize >= 2) {
+            menuOpen.setVisible(true);
+        } else {
+            menuOpen.setVisible(false);
+        }
         return true;
     }
 
