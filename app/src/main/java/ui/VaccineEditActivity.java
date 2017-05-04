@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -58,7 +60,7 @@ import utils.Utility;
  */
 
 public class VaccineEditActivity extends BaseActivity {
-    private boolean mIsInsert;
+    private boolean mIsInsert = true;
     private String mVaccineNameId, mPatientVaccineId;
     private static EditText mDateEditText, mNoteEditText;
     //private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
@@ -77,7 +79,6 @@ public class VaccineEditActivity extends BaseActivity {
     private int mListSize;
     private VaccineDetails mVaccineDetailsObj;
     private TextView nameTv, vaccineAbreviationTv, doseTv, doseTypeTv, doseFrequencyTv, commentTv;
-    private boolean isToshowAddButton;
 
     @Override
 
@@ -140,7 +141,7 @@ public class VaccineEditActivity extends BaseActivity {
         Bundle bundle = intent.getBundleExtra("BUNDLE");
         final ArrayList<VaccineDetails> vaccineDetailList = (ArrayList<VaccineDetails>) bundle.getSerializable("list");
         mListSize = vaccineDetailList.size();
-        mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
+        //mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
         if (mListSize > 1) {
             List<String> dateList = new ArrayList<>();
             for (int i = 0; i < vaccineDetailList.size(); i++) {
@@ -156,7 +157,7 @@ public class VaccineEditActivity extends BaseActivity {
                 } else {
                     date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
                 }
-                dateList.add("Edited On : " + date);
+                dateList.add(date);
             }
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dateList);
             mLisListView.setAdapter(itemsAdapter);
@@ -164,13 +165,19 @@ public class VaccineEditActivity extends BaseActivity {
             mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                    mActionBar.setTitle("Update");
+                    insertUpdateBtn.setText("Update");
+                    mIsInsert = false;
                     mVaccineDetailsObj = vaccineDetailList.get(position);
                     setData();
                 }
             });
         }
-        setData();
+        //setData();
+        setDateLayout(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mActionBar.setTitle("Insert");
+        insertUpdateBtn.setText("Insert");
     }
 
     private void setData() {
@@ -192,18 +199,6 @@ public class VaccineEditActivity extends BaseActivity {
                 date = dateInArray2[2] + "/" + dateInArray2[1] + "/" + dateInArray2[0];
                 mFromMonth = date;
             }
-        }
-
-        if (TextUtils.isEmpty(mPatientVaccineId)) {
-            isToshowAddButton = false;
-            mActionBar.setTitle("Insert");
-            insertUpdateBtn.setText("Insert");
-            mIsInsert = true;
-        } else {
-            isToshowAddButton = true;
-            mActionBar.setTitle("Update");
-            insertUpdateBtn.setText("Update");
-            mIsInsert = false;
         }
 
         if (!TextUtils.isEmpty(name)) {
@@ -262,8 +257,6 @@ public class VaccineEditActivity extends BaseActivity {
                 setDateLayout(0);
             }
             mDateTosend = date;
-        } else {
-            setDateLayout(0);
         }
 
         if (!TextUtils.isEmpty(notes)) {
@@ -367,15 +360,16 @@ public class VaccineEditActivity extends BaseActivity {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
                     if (mIsInsert) {
-                        Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
+                        showAlertMessage("Record added successfully.");
                     } else {
-                        Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                        showAlertMessage("Record updated successfully.");
                     }
                     AppConstant.isToRefereshVaccine = true;
                 } else {
                     Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
                 }
-                finish();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -459,35 +453,28 @@ public class VaccineEditActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
-        MenuItem menuOpen = menu.findItem(R.id.add);
-        if (mListSize >= 2 || isToshowAddButton) {
-            menuOpen.setVisible(true);
-        } else {
-            menuOpen.setVisible(false);
-        }
-        return true;
-    }
+    public void showAlertMessage(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
                 finish();
-                return true;
-            case R.id.add:
-                setDateLayout(0);
-                mIsInsert = true;
-                mActionBar.setTitle("Insert");
-                insertUpdateBtn.setText("Insert");
-                mNoteEditText.setText("");
-                mDateEditText.setText("");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+            }
+        });
+        dialog.show();
     }
 }

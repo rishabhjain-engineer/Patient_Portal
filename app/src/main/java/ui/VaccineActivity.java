@@ -76,7 +76,7 @@ public class VaccineActivity extends BaseActivity {
                 } else {
                     Intent intent = new Intent(VaccineActivity.this, VaccineEditActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("listObject", (Serializable) selectedItem);
+                    //bundle.putSerializable("listObject", (Serializable) selectedItem);
                     List<VaccineDetails> vaccineDetailsList = mKeyHashList.get(selectedItem.getVaccineID());
                     bundle.putSerializable("list", (Serializable) vaccineDetailsList);
                     intent.putExtra("BUNDLE", bundle);

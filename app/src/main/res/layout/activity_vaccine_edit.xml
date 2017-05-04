@@ -17,6 +17,7 @@
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
+            android:text="Vaccine For: "
             android:layout_height="wrap_content"
             android:textColor="@color/black" />
 
@@ -25,24 +26,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:text="Vaccine: "
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/dose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Dose: "
             android:layout_marginTop="5dp"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/dose_type"
             android:layout_width="match_parent"
+            android:text="Dose Type: "
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/comments"
+            android:text="Comments: "
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -50,6 +55,7 @@
 
         <TextView
             android:id="@+id/dose_frequency"
+            android:text="Dose Frequency: "
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
