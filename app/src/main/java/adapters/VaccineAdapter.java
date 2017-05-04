@@ -61,6 +61,8 @@ public class VaccineAdapter extends BaseAdapter {
         RelativeLayout itemDetailContainer;
         TextView headerTv;
         ImageView mTickedImagView;
+        TextView mSpecialHeaderTv;
+        LinearLayout mHeaderContainer;
 
     }
 
@@ -76,6 +78,8 @@ public class VaccineAdapter extends BaseAdapter {
             holder.headerTv = (TextView) convertView.findViewById(R.id.header);
             holder.mTickedImagView = (ImageView) convertView.findViewById(R.id.ticked_image_view);
             //holder.date = (TextView) convertView.findViewById(R.id.vaccine_aget_at);
+            holder.mSpecialHeaderTv = (TextView) convertView.findViewById(R.id.header_special);
+            holder.mHeaderContainer = (LinearLayout) convertView.findViewById(R.id.header_container);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -85,20 +89,23 @@ public class VaccineAdapter extends BaseAdapter {
         holder.mTickedImagView.setTag(position);
         if (vaccineDetails.isHeader()) {
             holder.itemDetailContainer.setVisibility(View.GONE);
-            holder.headerTv.setVisibility(View.VISIBLE);
-            holder.headerTv.setText(vaccineDetails.getHeaderString());
+            holder.mHeaderContainer.setVisibility(View.VISIBLE);
             if (vaccineDetails.isSpecialDose()) {
-                holder.headerTv.setBackgroundColor(lightYeallowColor);
+                holder.headerTv.setVisibility(View.GONE);
+                holder.mSpecialHeaderTv.setVisibility(View.VISIBLE);
+                holder.mSpecialHeaderTv.setText(vaccineDetails.getHeaderString());
             } else {
-                holder.headerTv.setBackgroundColor(grayColor);
+                holder.headerTv.setVisibility(View.VISIBLE);
+                holder.mSpecialHeaderTv.setVisibility(View.GONE);
+                holder.headerTv.setText(vaccineDetails.getHeaderString());
             }
         } else {
             holder.itemDetailContainer.setVisibility(View.VISIBLE);
-            holder.headerTv.setVisibility(View.GONE);
+            holder.mHeaderContainer.setVisibility(View.GONE);
             if (!TextUtils.isEmpty(vaccineDetails.getVaccineName())) {
                 holder.name.setVisibility(View.VISIBLE);
                 holder.name.setText(vaccineDetails.getVaccineName());
-            }else {
+            } else {
                 holder.name.setVisibility(View.GONE);
             }
 

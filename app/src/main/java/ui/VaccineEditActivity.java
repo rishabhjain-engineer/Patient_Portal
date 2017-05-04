@@ -142,7 +142,14 @@ public class VaccineEditActivity extends BaseActivity {
         final ArrayList<VaccineDetails> vaccineDetailList = (ArrayList<VaccineDetails>) bundle.getSerializable("list");
         mListSize = vaccineDetailList.size();
         //mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
-        if (mListSize > 1) {
+
+        mVaccineDetailsObj = vaccineDetailList.get(0);
+
+        boolean isToshowList = true;
+        if (TextUtils.isEmpty(mVaccineDetailsObj.getVaccineDateTime())) {
+            isToshowList = false;
+        }
+        if (isToshowList) {
             List<String> dateList = new ArrayList<>();
             for (int i = 0; i < vaccineDetailList.size(); i++) {
                 VaccineDetails vaccineDetails = vaccineDetailList.get(i);
@@ -173,7 +180,7 @@ public class VaccineEditActivity extends BaseActivity {
                 }
             });
         }
-        //setData();
+        setData();
         setDateLayout(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mActionBar.setTitle("Insert");
@@ -361,10 +368,10 @@ public class VaccineEditActivity extends BaseActivity {
                 if (response.optString("d").equalsIgnoreCase("success")) {
                     if (mIsInsert) {
                         //Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
-                        showAlertMessage("Record added successfully.");
+                        showAlertMessage1("Record added successfully.");
                     } else {
                         //Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
-                        showAlertMessage("Record updated successfully.");
+                        showAlertMessage1("Record updated successfully.");
                     }
                     AppConstant.isToRefereshVaccine = true;
                 } else {
@@ -453,7 +460,7 @@ public class VaccineEditActivity extends BaseActivity {
         }
     }
 
-    public void showAlertMessage(String message) {
+    private void showAlertMessage1(String message) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
