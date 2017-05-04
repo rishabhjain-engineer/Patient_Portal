@@ -183,7 +183,9 @@ public class VaccineActivity extends BaseActivity {
                 mProgressDialog.dismiss();
                 String data = null;
                 mVaccineDetailsList.clear();
+                mListOfVaccineId.clear();
                 listHashMap.clear();
+                mKeyHashList.clear();
                 mKeysList.clear();
                 mFinalVaccineDetailsListToSend.clear();
                 try {

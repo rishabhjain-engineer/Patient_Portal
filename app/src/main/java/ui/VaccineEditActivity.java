@@ -51,6 +51,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utility;
 
 /**
  * Created by ayaz on 7/3/17.
@@ -139,19 +140,28 @@ public class VaccineEditActivity extends BaseActivity {
         final ArrayList<VaccineDetails> vaccineDetailList = (ArrayList<VaccineDetails>) bundle.getSerializable("list");
         mListSize = vaccineDetailList.size();
         mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
-
         if (mListSize > 1) {
             List<String> dateList = new ArrayList<>();
-            for (VaccineDetails vaccineDetails : vaccineDetailList) {
-                String string = vaccineDetails.getVaccineDateTime();
-                String arrayString[] = string.split(" ");
-                String arra2String[] = arrayString[0].split("-");
-                String date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
-                dateList.add("Edited On : " + date);
+            for (int i = 0; i < vaccineDetailList.size(); i++) {
+                if (i != 0) {
+                    VaccineDetails vaccineDetails = vaccineDetailList.get(i);
+                    String string = vaccineDetails.getVaccineDateTime();
+                    String arrayString[] = string.split(" ");
+                    String arra2String[] = arrayString[0].split("-");
+                    String date = "";
+                    if (arrayString[0].contains("-00-00")) {
+                        date = arra2String[0];
+                    } else if (arrayString[0].contains("-00")) {
+                        date = arra2String[1] + "/" + arra2String[0];
+                    } else {
+                        date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
+                    }
+                    dateList.add("Edited On : " + date);
+                }
             }
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dateList);
             mLisListView.setAdapter(itemsAdapter);
-
+            Utility.setListViewHeightBasedOnChildren(mLisListView);
             mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
@@ -315,7 +325,7 @@ public class VaccineEditActivity extends BaseActivity {
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setMessage("Loading...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
@@ -468,6 +478,7 @@ public class VaccineEditActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.add:
+                mIsInsert = true;
                 mActionBar.setTitle("Insert");
                 insertUpdateBtn.setText("Insert");
                 return true;
