@@ -572,9 +572,9 @@ public class VaccineActivity extends BaseActivity {
             } else {
                 vaccineDetails.setAgeRange(agetAtString + "-" + ageToString);
                 if (agetAtStringUnit.equalsIgnoreCase(ageToStringUnit)) {
-                    vaccineDetails.setRangeWithUnit(agetAtString + "-" + ageToString + " " + ageToStringUnit);
+                    vaccineDetails.setRangeWithUnit(agetAtString + " - " + ageToString + " " + ageToStringUnit);
                 } else {
-                    vaccineDetails.setRangeWithUnit(agetAtString + " " + agetAtStringUnit + "-" + ageToString + " " + ageToStringUnit);
+                    vaccineDetails.setRangeWithUnit(agetAtString + " " + agetAtStringUnit + " - " + ageToString + " " + ageToStringUnit);
                 }
             }
         }
