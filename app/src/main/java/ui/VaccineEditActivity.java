@@ -484,4 +484,24 @@ public class VaccineEditActivity extends BaseActivity {
         });
         dialog.show();
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.add:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
