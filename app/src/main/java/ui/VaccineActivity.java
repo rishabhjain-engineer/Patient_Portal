@@ -238,7 +238,9 @@ public class VaccineActivity extends BaseActivity {
                         }
 
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
-                        Collections.sort(mVaccineDetailsList);
+                        if (mVaccineDetailsList.size() > 0) {
+                            Collections.sort(mVaccineDetailsList);
+                        }
                         for (VaccineDetails vaccineDetails : mVaccineDetailsList) {
                             addAgeandRange(vaccineDetails, vaccineDetails.getAgeAt(), vaccineDetails.getAgeTo());
                         }
