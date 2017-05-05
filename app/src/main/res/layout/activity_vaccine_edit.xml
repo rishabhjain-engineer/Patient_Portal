@@ -13,12 +13,30 @@
         android:paddingRight="15dp"
         android:paddingTop="15dp">
 
-
-        <ListView
-            android:id="@+id/vaccine_edit_list"
+        <LinearLayout
+            android:id="@+id/list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"></ListView>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@color/gray_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:text="Past Entries"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/vaccine_edit_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"></ListView>
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/insert_update_conainer"

@@ -67,7 +67,7 @@ public class VaccineEditActivity extends BaseActivity {
     private List<String> monthArray = new ArrayList<String>();
     private List<String> mYearsArray = new ArrayList<String>();
     private Spinner mFromMonthSpinner, mFromYearSpinner;
-    private LinearLayout mExactDateContainerLl, mMonthYearContainer, insertUpdateConainerLL;
+    private LinearLayout mExactDateContainerLl, mMonthYearContainer, insertUpdateConainerLL, listContainerLL;
     private static int month1, year1, day1;
     private Calendar mCalender;
     private static String mDateTosend = null;
@@ -101,6 +101,7 @@ public class VaccineEditActivity extends BaseActivity {
         monthArray.add("12");
         setupActionBar();
 
+        listContainerLL = (LinearLayout) findViewById(R.id.list_container);
         insertUpdateConainerLL = (LinearLayout) findViewById(R.id.insert_update_conainer);
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         mExactDateContainerLl = (LinearLayout) findViewById(R.id.exact_date_container);
@@ -121,7 +122,7 @@ public class VaccineEditActivity extends BaseActivity {
         monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromMonthSpinner.setAdapter(monthArrayAdapter);
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = 1900; i <= thisYear; i++) {
+        for (int i = 1950; i <= thisYear; i++) {
             mYearsArray.add(Integer.toString(i));
         }
         Collections.reverse(mYearsArray);
@@ -492,8 +493,10 @@ public class VaccineEditActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.weightmenu, menu);
         if (mIsToshowList) {
+            listContainerLL.setVisibility(View.VISIBLE);
             menu.findItem(R.id.add).setVisible(true);
         } else {
+            listContainerLL.setVisibility(View.GONE);
             menu.findItem(R.id.add).setVisible(false);
             insertUpdateConainerLL.setVisibility(View.VISIBLE);
         }
@@ -509,6 +512,8 @@ public class VaccineEditActivity extends BaseActivity {
                 return true;
             case R.id.add:
                 mIsInsert = true;
+                listContainerLL.setVisibility(View.GONE);
+                mLisListView.setVisibility(View.GONE);
                 mActionBar.setTitle("Insert");
                 insertUpdateBtn.setText("Insert");
                 insertUpdateConainerLL.setVisibility(View.VISIBLE);
