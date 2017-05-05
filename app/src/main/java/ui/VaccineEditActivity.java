@@ -67,7 +67,7 @@ public class VaccineEditActivity extends BaseActivity {
     private List<String> monthArray = new ArrayList<String>();
     private List<String> mYearsArray = new ArrayList<String>();
     private Spinner mFromMonthSpinner, mFromYearSpinner;
-    private LinearLayout mExactDateContainerLl, mMonthYearContainer;
+    private LinearLayout mExactDateContainerLl, mMonthYearContainer, insertUpdateConainerLL;
     private static int month1, year1, day1;
     private Calendar mCalender;
     private static String mDateTosend = null;
@@ -79,6 +79,7 @@ public class VaccineEditActivity extends BaseActivity {
     private int mListSize;
     private VaccineDetails mVaccineDetailsObj;
     private TextView nameTv, vaccineAbreviationTv, doseTv, doseTypeTv, doseFrequencyTv, commentTv;
+    private boolean mIsToshowList = true;
 
     @Override
 
@@ -100,6 +101,7 @@ public class VaccineEditActivity extends BaseActivity {
         monthArray.add("12");
         setupActionBar();
 
+        insertUpdateConainerLL = (LinearLayout) findViewById(R.id.insert_update_conainer);
         mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         mExactDateContainerLl = (LinearLayout) findViewById(R.id.exact_date_container);
         mMonthYearContainer = (LinearLayout) findViewById(R.id.month_year_container);
@@ -145,11 +147,10 @@ public class VaccineEditActivity extends BaseActivity {
 
         mVaccineDetailsObj = vaccineDetailList.get(0);
 
-        boolean isToshowList = true;
         if (TextUtils.isEmpty(mVaccineDetailsObj.getVaccineDateTime())) {
-            isToshowList = false;
+            mIsToshowList = false;
         }
-        if (isToshowList) {
+        if (mIsToshowList) {
             List<String> dateList = new ArrayList<>();
             for (int i = 0; i < vaccineDetailList.size(); i++) {
                 VaccineDetails vaccineDetails = vaccineDetailList.get(i);
@@ -172,6 +173,7 @@ public class VaccineEditActivity extends BaseActivity {
             mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                    insertUpdateConainerLL.setVisibility(View.VISIBLE);
                     mActionBar.setTitle("Update");
                     insertUpdateBtn.setText("Update");
                     mIsInsert = false;
@@ -483,5 +485,39 @@ public class VaccineEditActivity extends BaseActivity {
             }
         });
         dialog.show();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        if (mIsToshowList) {
+            menu.findItem(R.id.add).setVisible(true);
+        } else {
+            menu.findItem(R.id.add).setVisible(false);
+            insertUpdateConainerLL.setVisibility(View.VISIBLE);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.add:
+                mIsInsert = true;
+                mActionBar.setTitle("Insert");
+                insertUpdateBtn.setText("Insert");
+                insertUpdateConainerLL.setVisibility(View.VISIBLE);
+                setDateLayout(0);
+                mNoteEditText.setText("");
+                mDateEditText.setText("");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
