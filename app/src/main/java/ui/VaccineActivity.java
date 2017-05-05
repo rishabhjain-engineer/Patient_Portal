@@ -172,7 +172,6 @@ public class VaccineActivity extends BaseActivity {
         JSONObject sendData = new JSONObject();
         try {
             String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-            //sendData.put("patientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
             sendData.put("patientId", id);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -232,13 +231,12 @@ public class VaccineActivity extends BaseActivity {
                                 vaccineDetailsList.add(vaccineDetails);
                                 mKeyHashList.put(vaccineDetails.getVaccineID(), vaccineDetailsList);
                             }
-
-                            ///////////////
                             mListOfVaccineId.add(vaccineDetails.getVaccineID());
                         }
 
-                        //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
-                        Collections.sort(mVaccineDetailsList);
+                        if (mVaccineDetailsList.size() > 0) {
+                            Collections.sort(mVaccineDetailsList);
+                        }
                         for (VaccineDetails vaccineDetails : mVaccineDetailsList) {
                             addAgeandRange(vaccineDetails, vaccineDetails.getAgeAt(), vaccineDetails.getAgeTo());
                         }
@@ -297,6 +295,10 @@ public class VaccineActivity extends BaseActivity {
                             mFinalVaccineDetailsListToSend.add(vaccineDetailsObj);
                             mFinalVaccineDetailsListToSend.addAll(vaccineDetailsest);
                         }
+                        
+                        mVaccineAdapter.setVaccineDetailData(mFinalVaccineDetailsListToSend);
+                        mListView.setAdapter(mVaccineAdapter);
+                        mVaccineAdapter.notifyDataSetChanged();
 
                         /**
                          * This loop makes calculation asuming that for month, year or week AgeAt will not be null
@@ -483,11 +485,6 @@ public class VaccineActivity extends BaseActivity {
                             }
                             Log.i("ayaz", "mFinalVaccineDetailsListToSend: " + mFinalVaccineDetailsListToSend.size());
                         }*/
-
-
-                        mVaccineAdapter.setVaccineDetailData(mFinalVaccineDetailsListToSend);
-                        mListView.setAdapter(mVaccineAdapter);
-                        mVaccineAdapter.notifyDataSetChanged();
                     }
 
                 } catch (JSONException e) {
