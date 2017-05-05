@@ -192,6 +192,8 @@ public class VaccineActivity extends BaseActivity {
                 mKeyHashList.clear();
                 mKeysList.clear();
                 mFinalVaccineDetailsListToSend.clear();
+                mSortingOnRangeList.clear();
+                mSortingOnRangeHashMap.clear();
                 try {
                     data = response.optString("d");
                     JSONObject cut = new JSONObject(data);
@@ -266,7 +268,10 @@ public class VaccineActivity extends BaseActivity {
                             }
                         }
 
-                        Collections.sort(specialDoseKeyList);
+                        if (specialDoseKeyList != null && specialDoseKeyList.size() > 0) {
+                            Collections.sort(specialDoseKeyList);
+                        }
+
                         List<VaccineDetails> modifiedVaccineDetailses = new ArrayList<>();
                         for (String key : specialDoseKeyList) {
                             List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
@@ -285,7 +290,12 @@ public class VaccineActivity extends BaseActivity {
                         mSortingOnRangeHashMap.put(SPECIAL_DOSE, modifiedVaccineDetailses);
 
                         for (String key : mSortingOnRangeList) {
-
+                            VaccineDetails vaccineDetailsObj = new VaccineDetails();
+                            vaccineDetailsObj.setHeader(true);
+                            vaccineDetailsObj.setHeaderString(key);
+                            List<VaccineDetails> vaccineDetailsest = mSortingOnRangeHashMap.get(key);
+                            mFinalVaccineDetailsListToSend.add(vaccineDetailsObj);
+                            mFinalVaccineDetailsListToSend.addAll(vaccineDetailsest);
                         }
 
                         /**
@@ -500,68 +510,72 @@ public class VaccineActivity extends BaseActivity {
         String agetAtString = null, ageToString = null;
         String agetAtStringUnit = "", ageToStringUnit = "";
         if (ageAt == 0) {
-            agetAtString = 0 + "";
+            agetAtString = "birth";
             agetAtStringUnit = "At Birth";
         } else if (ageAt % 365 == 0) {
             agetAtString = (ageAt / 365) + "";
             if (ageAt == 365) {
-                agetAtStringUnit = "Year";
+                agetAtStringUnit = "year";
             } else {
-                agetAtStringUnit = "Years";
+                agetAtStringUnit = "years";
             }
 
         } else if (ageAt % 30 == 0) {
             agetAtString = (ageAt / 30) + "";
             if (ageAt == 30) {
-                agetAtStringUnit = "Month";
+                agetAtStringUnit = "month";
             } else {
-                agetAtStringUnit = "Months";
+                agetAtStringUnit = "months";
             }
         } else if (ageAt % 7 == 0) {
             agetAtString = (ageAt / 7) + "";
             if (ageAt == 7) {
-                agetAtStringUnit = "Week";
+                agetAtStringUnit = "week";
             } else {
-                agetAtStringUnit = "Weeks";
+                agetAtStringUnit = "weeks";
             }
         }
 
         if (ageTo % 365 == 0) {
             ageToString = (ageTo / 365) + "";
             if (ageAt == 365) {
-                agetAtStringUnit = "Year";
+                ageToStringUnit = "year";
             } else {
-                agetAtStringUnit = "Years";
+                ageToStringUnit = "years";
             }
         } else if (ageTo % 30 == 0) {
             ageToString = (ageTo / 30) + "";
             if (ageAt == 30) {
-                agetAtStringUnit = "Month";
+                ageToStringUnit = "month";
             } else {
-                agetAtStringUnit = "Months";
+                ageToStringUnit = "months";
             }
         } else if (ageTo % 7 == 0) {
             ageToString = (ageTo / 7) + "";
             if (ageAt == 7) {
-                agetAtStringUnit = "Week";
+                ageToStringUnit = "week";
             } else {
-                agetAtStringUnit = "Weeks";
+                ageToStringUnit = "weeks";
             }
         }
 
         if (TextUtils.isEmpty(agetAtString)) { //Special Doses
             vaccineDetails.setAgeRange("");
-            vaccineDetails.setAgeRangeUnit(SPECIAL_DOSE);
             vaccineDetails.setRangeWithUnit(SPECIAL_DOSE);
+        } else if (agetAtString.equalsIgnoreCase("birth")) {
+            vaccineDetails.setAgeRange("");
+            vaccineDetails.setRangeWithUnit("At Birth");
         } else {
             if (TextUtils.isEmpty(ageToString)) {
                 vaccineDetails.setAgeRange(agetAtString);
-                vaccineDetails.setAgeRangeUnit(agetAtStringUnit);
-                vaccineDetails.setRangeWithUnit(vaccineDetails.getAgeRange() + vaccineDetails.getAgeRangeUnit());
+                vaccineDetails.setRangeWithUnit(vaccineDetails.getAgeRange() + " " + agetAtStringUnit);
             } else {
                 vaccineDetails.setAgeRange(agetAtString + "-" + ageToString);
-                vaccineDetails.setAgeRangeUnit(agetAtStringUnit + "-" + ageToStringUnit);
-                vaccineDetails.setRangeWithUnit(vaccineDetails.getAgeRange() + vaccineDetails.getAgeRangeUnit());
+                if (agetAtStringUnit.equalsIgnoreCase(ageToStringUnit)) {
+                    vaccineDetails.setRangeWithUnit(agetAtString + "-" + ageToString + " " + ageToStringUnit);
+                } else {
+                    vaccineDetails.setRangeWithUnit(agetAtString + " " + agetAtStringUnit + "-" + ageToString + " " + ageToStringUnit);
+                }
             }
         }
 
