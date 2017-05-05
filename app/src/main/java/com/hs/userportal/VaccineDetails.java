@@ -27,6 +27,9 @@ public class VaccineDetails implements Serializable, Comparable<VaccineDetails> 
     private String doseFrequency;
     private boolean isSpecialDose;
     private String vaccineNameAndDose;
+    private String ageRange;
+    private String ageRangeUnit;
+    private String rangeWithUnit;
 
     public String getVaccineName() {
         return vaccineName;
@@ -170,6 +173,30 @@ public class VaccineDetails implements Serializable, Comparable<VaccineDetails> 
 
     public void setVaccineNameAndDose(String vaccineNameAndDose) {
         this.vaccineNameAndDose = vaccineNameAndDose;
+    }
+
+    public String getAgeRange() {
+        return ageRange;
+    }
+
+    public void setAgeRange(String ageRange) {
+        this.ageRange = ageRange;
+    }
+
+    public String getAgeRangeUnit() {
+        return ageRangeUnit;
+    }
+
+    public void setAgeRangeUnit(String ageRangeUnit) {
+        this.ageRangeUnit = ageRangeUnit;
+    }
+
+    public String getRangeWithUnit() {
+        return rangeWithUnit;
+    }
+
+    public void setRangeWithUnit(String rangeWithUnit) {
+        this.rangeWithUnit = rangeWithUnit;
     }
 
     /*public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
