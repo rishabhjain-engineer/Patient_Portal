@@ -57,6 +57,10 @@ public class VaccineActivity extends BaseActivity {
     private List<String> mKeysList = new ArrayList<>();
     private List<String> mListOfVaccineId = new ArrayList<>();
     private Map<String, List<VaccineDetails>> mKeyHashList = new HashMap<>();
+    private List<String> mSortingOnRangeList = new ArrayList<>();
+    private Map<String, List<VaccineDetails>> mSortingOnRangeHashMap = new HashMap<>();
+
+    private static final String SPECIAL_DOSE = "Special Doses";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -188,6 +192,8 @@ public class VaccineActivity extends BaseActivity {
                 mKeyHashList.clear();
                 mKeysList.clear();
                 mFinalVaccineDetailsListToSend.clear();
+                mSortingOnRangeList.clear();
+                mSortingOnRangeHashMap.clear();
                 try {
                     data = response.optString("d");
                     JSONObject cut = new JSONObject(data);
@@ -233,11 +239,71 @@ public class VaccineActivity extends BaseActivity {
 
                         //Collections.sort(mVaccineDetailsList, new VaccineDetails.VaccineDetailsComparator());
                         Collections.sort(mVaccineDetailsList);
+                        for (VaccineDetails vaccineDetails : mVaccineDetailsList) {
+                            addAgeandRange(vaccineDetails, vaccineDetails.getAgeAt(), vaccineDetails.getAgeTo());
+                        }
+
+                        List<VaccineDetails> specialVaccineList = mSortingOnRangeHashMap.get(SPECIAL_DOSE); // Special Doses LIst
+                        Map<String, List<VaccineDetails>> specialDoseHashMap = new HashMap<>();
+                        List<String> specialDoseKeyList = new ArrayList<>();
+
+                        if (specialVaccineList != null && specialVaccineList.size() > 0) {
+                            for (VaccineDetails vaccineDetails : specialVaccineList) {
+                                String key = vaccineDetails.getVaccineName();
+                                if (specialDoseKeyList.contains(key)) {
+                                    List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
+                                    vaccineDetails.setSpecialDose(true);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                } else {
+                                    specialDoseKeyList.add(key);
+                                    List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+                                    VaccineDetails vaccineDetailsObj = new VaccineDetails();
+                                    vaccineDetailsObj.setHeader(true);
+                                    vaccineDetailsObj.setSpecialDose(true);
+                                    vaccineDetailsObj.setHeaderString(key);
+                                    vaccineDetailsList.add(vaccineDetailsObj);
+                                    vaccineDetailsList.add(vaccineDetails);
+                                    specialDoseHashMap.put(key, vaccineDetailsList);
+                                }
+                            }
+                        }
+
+                        if (specialDoseKeyList != null && specialDoseKeyList.size() > 0) {
+                            Collections.sort(specialDoseKeyList);
+                        }
+
+                        List<VaccineDetails> modifiedVaccineDetailses = new ArrayList<>();
+                        for (String key : specialDoseKeyList) {
+                            List<VaccineDetails> vaccineDetailsList = specialDoseHashMap.get(key);
+                            if (vaccineDetailsList.size() == 2) {
+                                vaccineDetailsList.remove(0);
+                            } else {
+                                for (VaccineDetails vaccineDetails : vaccineDetailsList) {
+                                    if (!vaccineDetails.isHeader()) {
+                                        vaccineDetails.setVaccineName("");
+                                    }
+                                }
+                            }
+                            modifiedVaccineDetailses.addAll(vaccineDetailsList);
+
+                        }
+                        mSortingOnRangeHashMap.put(SPECIAL_DOSE, modifiedVaccineDetailses);
+
+                        for (String key : mSortingOnRangeList) {
+                            VaccineDetails vaccineDetailsObj = new VaccineDetails();
+                            vaccineDetailsObj.setHeader(true);
+                            vaccineDetailsObj.setHeaderString(key);
+                            List<VaccineDetails> vaccineDetailsest = mSortingOnRangeHashMap.get(key);
+                            mFinalVaccineDetailsListToSend.add(vaccineDetailsObj);
+                            mFinalVaccineDetailsListToSend.addAll(vaccineDetailsest);
+                        }
+
                         /**
                          * This loop makes calculation asuming that for month, year or week AgeAt will not be null
                          * There are 5 cases simple/rangewise in year, simple/rangewise in month , simple/rangewise in week , AgeAt = 0 (means At Birth) and Special Doses which are time independent
                          */
-                        for (int i = 0; i < mVaccineDetailsList.size(); i++) {
+
+                        /*for (int i = 0; i < mVaccineDetailsList.size(); i++) {
                             VaccineDetails vaccineDetails = mVaccineDetailsList.get(i);
                             if (vaccineDetails.getAgeAt() <= 0 && vaccineDetails.getAgeTo() <= 0) {
                                 if (vaccineDetails.getAgeAt() == 0) {
@@ -332,7 +398,6 @@ public class VaccineActivity extends BaseActivity {
                                 }
                             }
                         }
-
                         List<VaccineDetails> specialVaccineList = listHashMap.get("a"); // Special Doses LIst
                         Map<String, List<VaccineDetails>> specialDoseHashMap = new HashMap<>();
                         List<String> specialDoseKeyList = new ArrayList<>();
@@ -417,7 +482,8 @@ public class VaccineActivity extends BaseActivity {
                                 mFinalVaccineDetailsListToSend.add(vaccineDetails);
                             }
                             Log.i("ayaz", "mFinalVaccineDetailsListToSend: " + mFinalVaccineDetailsListToSend.size());
-                        }
+                        }*/
+
 
                         mVaccineAdapter.setVaccineDetailData(mFinalVaccineDetailsListToSend);
                         mListView.setAdapter(mVaccineAdapter);
@@ -437,5 +503,91 @@ public class VaccineActivity extends BaseActivity {
             }
         });
         mRequestQueue.add(jsonObjectRequest);
+    }
+
+
+    private void addAgeandRange(VaccineDetails vaccineDetails, int ageAt, int ageTo) {
+        String agetAtString = null, ageToString = null;
+        String agetAtStringUnit = "", ageToStringUnit = "";
+        if (ageAt == 0) {
+            agetAtString = "birth";
+            agetAtStringUnit = "At Birth";
+        } else if (ageAt % 365 == 0) {
+            agetAtString = (ageAt / 365) + "";
+            if (ageAt == 365) {
+                agetAtStringUnit = "year";
+            } else {
+                agetAtStringUnit = "years";
+            }
+
+        } else if (ageAt % 30 == 0) {
+            agetAtString = (ageAt / 30) + "";
+            if (ageAt == 30) {
+                agetAtStringUnit = "month";
+            } else {
+                agetAtStringUnit = "months";
+            }
+        } else if (ageAt % 7 == 0) {
+            agetAtString = (ageAt / 7) + "";
+            if (ageAt == 7) {
+                agetAtStringUnit = "week";
+            } else {
+                agetAtStringUnit = "weeks";
+            }
+        }
+
+        if (ageTo % 365 == 0) {
+            ageToString = (ageTo / 365) + "";
+            if (ageAt == 365) {
+                ageToStringUnit = "year";
+            } else {
+                ageToStringUnit = "years";
+            }
+        } else if (ageTo % 30 == 0) {
+            ageToString = (ageTo / 30) + "";
+            if (ageAt == 30) {
+                ageToStringUnit = "month";
+            } else {
+                ageToStringUnit = "months";
+            }
+        } else if (ageTo % 7 == 0) {
+            ageToString = (ageTo / 7) + "";
+            if (ageAt == 7) {
+                ageToStringUnit = "week";
+            } else {
+                ageToStringUnit = "weeks";
+            }
+        }
+
+        if (TextUtils.isEmpty(agetAtString)) { //Special Doses
+            vaccineDetails.setAgeRange("");
+            vaccineDetails.setRangeWithUnit(SPECIAL_DOSE);
+        } else if (agetAtString.equalsIgnoreCase("birth")) {
+            vaccineDetails.setAgeRange("");
+            vaccineDetails.setRangeWithUnit("At Birth");
+        } else {
+            if (TextUtils.isEmpty(ageToString)) {
+                vaccineDetails.setAgeRange(agetAtString);
+                vaccineDetails.setRangeWithUnit(vaccineDetails.getAgeRange() + " " + agetAtStringUnit);
+            } else {
+                vaccineDetails.setAgeRange(agetAtString + "-" + ageToString);
+                if (agetAtStringUnit.equalsIgnoreCase(ageToStringUnit)) {
+                    vaccineDetails.setRangeWithUnit(agetAtString + " - " + ageToString + " " + ageToStringUnit);
+                } else {
+                    vaccineDetails.setRangeWithUnit(agetAtString + " " + agetAtStringUnit + " - " + ageToString + " " + ageToStringUnit);
+                }
+            }
+        }
+
+        String key = vaccineDetails.getRangeWithUnit();
+        if (mSortingOnRangeList.contains(key)) {
+            List<VaccineDetails> vaccineDetailsList = mSortingOnRangeHashMap.get(key);
+            vaccineDetailsList.add(vaccineDetails);
+        } else {
+            mSortingOnRangeList.add(key);
+            List<VaccineDetails> vaccineDetailsList = new ArrayList<VaccineDetails>();
+            vaccineDetailsList.add(vaccineDetails);
+            mSortingOnRangeHashMap.put(key, vaccineDetailsList);
+        }
     }
 }

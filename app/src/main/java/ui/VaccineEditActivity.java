@@ -176,18 +176,18 @@ public class VaccineEditActivity extends BaseActivity {
                     insertUpdateBtn.setText("Update");
                     mIsInsert = false;
                     mVaccineDetailsObj = vaccineDetailList.get(position);
-                    setData();
+                    setData(true);
                 }
             });
         }
-        setData();
+        setData(false);
         setDateLayout(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mActionBar.setTitle("Insert");
         insertUpdateBtn.setText("Insert");
     }
 
-    private void setData() {
+    private void setData(boolean isToShowDateandNote) {
         String name = mVaccineDetailsObj.getVaccineName();
         String abbreviationName = mVaccineDetailsObj.getVaccineNameInShort();
         String dose = mVaccineDetailsObj.getVaccineDose();
@@ -244,7 +244,7 @@ public class VaccineEditActivity extends BaseActivity {
             commentTv.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(date)) {
+        if (!TextUtils.isEmpty(date) && isToShowDateandNote) {
             if (date.contains("00/00/")) {
                 date = date.replace("00/00/", "");
                 int position = mYearsArray.indexOf(date);
@@ -266,7 +266,7 @@ public class VaccineEditActivity extends BaseActivity {
             mDateTosend = date;
         }
 
-        if (!TextUtils.isEmpty(notes)) {
+        if (!TextUtils.isEmpty(notes) && isToShowDateandNote) {
             mNoteEditText.setText(notes);
         }
 
