@@ -979,6 +979,7 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         finish();
