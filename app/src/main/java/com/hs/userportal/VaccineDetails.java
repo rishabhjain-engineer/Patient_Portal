@@ -2,13 +2,14 @@ package com.hs.userportal;
 
 import android.text.TextUtils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by ayaz on 6/3/17.
  */
 
-public class VaccineDetails implements Comparable<VaccineDetails> {
+public class VaccineDetails implements Serializable, Comparable<VaccineDetails> {
 
     private String vaccineName;
     private String vaccineID;
@@ -26,6 +27,8 @@ public class VaccineDetails implements Comparable<VaccineDetails> {
     private String doseFrequency;
     private boolean isSpecialDose;
     private String vaccineNameAndDose;
+    private String ageRange;
+    private String rangeWithUnit;
 
     public String getVaccineName() {
         return vaccineName;
@@ -117,9 +120,12 @@ public class VaccineDetails implements Comparable<VaccineDetails> {
 
     @Override
     public int compareTo(VaccineDetails o) {
-        int value = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
-        if (value != 0) {
-            return value;
+        int valueAgeAt = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
+        int valueAgeTo = this.getAgeTo() < o.getAgeTo() ? 1 : (this.getAgeTo() > o.getAgeTo() ? -1 : 0);
+        if (valueAgeAt != 0) {
+            return valueAgeAt;
+        } else if (valueAgeTo != 0) {
+            return valueAgeTo;
         } else {
             String s1 = this.getVaccineNameAndDose();
             String s2 = o.getVaccineNameAndDose();
@@ -166,6 +172,22 @@ public class VaccineDetails implements Comparable<VaccineDetails> {
 
     public void setVaccineNameAndDose(String vaccineNameAndDose) {
         this.vaccineNameAndDose = vaccineNameAndDose;
+    }
+
+    public String getAgeRange() {
+        return ageRange;
+    }
+
+    public void setAgeRange(String ageRange) {
+        this.ageRange = ageRange;
+    }
+
+    public String getRangeWithUnit() {
+        return rangeWithUnit;
+    }
+
+    public void setRangeWithUnit(String rangeWithUnit) {
+        this.rangeWithUnit = rangeWithUnit;
     }
 
     /*public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {

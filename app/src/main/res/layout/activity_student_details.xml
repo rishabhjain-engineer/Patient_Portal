@@ -7,7 +7,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/white"
         android:orientation="vertical"
         android:padding="10dp">
@@ -485,6 +485,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/gray_medium"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical"
             android:text="Medical Officer Details"
             android:textColor="@color/black"

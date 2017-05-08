@@ -92,7 +92,8 @@ public class ReportRecords extends BaseActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(ReportRecords.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(ReportRecords.this, "ReportRecords", "").execute();
+            //new Authentication(ReportRecords.this, "ReportRecords", "").execute();
+            new BackgroundProcess().execute();
         }
         //  new BackgroundProcess().execute();
     }

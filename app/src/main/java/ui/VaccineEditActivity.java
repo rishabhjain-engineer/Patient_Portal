@@ -5,12 +5,16 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -19,6 +23,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -33,6 +38,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.AddGraphDetails;
 import com.hs.userportal.R;
+import com.hs.userportal.VaccineDetails;
 import com.hs.userportal.Work;
 
 import org.json.JSONException;
@@ -47,26 +53,33 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.Utility;
 
 /**
  * Created by ayaz on 7/3/17.
  */
 
 public class VaccineEditActivity extends BaseActivity {
-    private boolean mIsInsert;
+    private boolean mIsInsert = true;
     private String mVaccineNameId, mPatientVaccineId;
     private static EditText mDateEditText, mNoteEditText;
     //private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private List<String> monthArray = new ArrayList<String>();
     private List<String> mYearsArray = new ArrayList<String>();
     private Spinner mFromMonthSpinner, mFromYearSpinner;
-    private LinearLayout mExactDateContainerLl, mMonthYearContainer;
+    private LinearLayout mExactDateContainerLl, mMonthYearContainer, insertUpdateConainerLL, listContainerLL;
     private static int month1, year1, day1;
     private Calendar mCalender;
     private static String mDateTosend = null;
     private String mFromMonth = "00", mFromYear;
     private boolean mIsExact = true;
     private RadioGroup mRadioGroup;
+    private ListView mLisListView;
+    private Button insertUpdateBtn;
+    private int mListSize;
+    private VaccineDetails mVaccineDetailsObj;
+    private TextView nameTv, vaccineAbreviationTv, doseTv, doseTypeTv, doseFrequencyTv, commentTv;
+    private boolean mIsToshowList = true;
 
     @Override
 
@@ -88,16 +101,14 @@ public class VaccineEditActivity extends BaseActivity {
         monthArray.add("12");
         setupActionBar();
 
-
-        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group) ;
-        RadioButton radioButtonExact = (RadioButton) findViewById(R.id.exact);
-        RadioButton radioButtonMonthYear = (RadioButton) findViewById(R.id.month_year);
-        RadioButton radioButtonYear = (RadioButton) findViewById(R.id.year);
-
+        listContainerLL = (LinearLayout) findViewById(R.id.list_container);
+        insertUpdateConainerLL = (LinearLayout) findViewById(R.id.insert_update_conainer);
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
         mExactDateContainerLl = (LinearLayout) findViewById(R.id.exact_date_container);
         mMonthYearContainer = (LinearLayout) findViewById(R.id.month_year_container);
         mFromMonthSpinner = (Spinner) findViewById(R.id.from_month);
         mFromYearSpinner = (Spinner) findViewById(R.id.from_year);
+        mLisListView = (ListView) findViewById(R.id.vaccine_edit_list);
 
         mCalender = Calendar.getInstance();
         year1 = mCalender.get(Calendar.YEAR);
@@ -111,7 +122,7 @@ public class VaccineEditActivity extends BaseActivity {
         monthArrayAdapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromMonthSpinner.setAdapter(monthArrayAdapter);
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = 1900; i <= thisYear; i++) {
+        for (int i = 1950; i <= thisYear; i++) {
             mYearsArray.add(Integer.toString(i));
         }
         Collections.reverse(mYearsArray);
@@ -119,27 +130,77 @@ public class VaccineEditActivity extends BaseActivity {
         adapter.setDropDownViewResource(R.layout.spinner_appearence);
         mFromYearSpinner.setAdapter(adapter);
 
-        TextView nameTv = (TextView) findViewById(R.id.name);
-        TextView vaccineAbreviationTv = (TextView) findViewById(R.id.vaccine_abreviation);
-        TextView doseTv = (TextView) findViewById(R.id.dose);
-        TextView doseTypeTv = (TextView) findViewById(R.id.dose_type);
-        TextView doseFrequencyTv = (TextView) findViewById(R.id.dose_frequency);
-        TextView commentTv = (TextView) findViewById(R.id.comments);
+        nameTv = (TextView) findViewById(R.id.name);
+        vaccineAbreviationTv = (TextView) findViewById(R.id.vaccine_abreviation);
+        doseTv = (TextView) findViewById(R.id.dose);
+        doseTypeTv = (TextView) findViewById(R.id.dose_type);
+        doseFrequencyTv = (TextView) findViewById(R.id.dose_frequency);
+        commentTv = (TextView) findViewById(R.id.comments);
         mDateEditText = (EditText) findViewById(R.id.date_edit_text);
         mNoteEditText = (EditText) findViewById(R.id.comment_edit_text);
-        Button insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
+        insertUpdateBtn = (Button) findViewById(R.id.insert_update_btn);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("Name");
-        String abbreviationName = intent.getStringExtra("VaccineName");
-        String dose = intent.getStringExtra("Dose");
-        String doseType = intent.getStringExtra("DoseType");
-        String notes = intent.getStringExtra("DoctorNotes");
-        String doseFrequency = intent.getStringExtra("doseFrequency");
-        String comments = intent.getStringExtra("comment");
-        String agAt = intent.getStringExtra("AgeAt");
-        String ageTo = intent.getStringExtra("AgeTo");
-        String date = intent.getStringExtra("VaccineDateTime");
+        Bundle bundle = intent.getBundleExtra("BUNDLE");
+        final ArrayList<VaccineDetails> vaccineDetailList = (ArrayList<VaccineDetails>) bundle.getSerializable("list");
+        mListSize = vaccineDetailList.size();
+        //mVaccineDetailsObj = (VaccineDetails) bundle.getSerializable("listObject");
+
+        mVaccineDetailsObj = vaccineDetailList.get(0);
+
+        if (TextUtils.isEmpty(mVaccineDetailsObj.getVaccineDateTime())) {
+            mIsToshowList = false;
+        }
+        if (mIsToshowList) {
+            List<String> dateList = new ArrayList<>();
+            for (int i = 0; i < vaccineDetailList.size(); i++) {
+                VaccineDetails vaccineDetails = vaccineDetailList.get(i);
+                String string = vaccineDetails.getVaccineDateTime();
+                String arrayString[] = string.split(" ");
+                String arra2String[] = arrayString[0].split("-");
+                String date = "";
+                if (arrayString[0].contains("-00-00")) {
+                    date = arra2String[0];
+                } else if (arrayString[0].contains("-00")) {
+                    date = arra2String[1] + "/" + arra2String[0];
+                } else {
+                    date = arra2String[2] + "/" + arra2String[1] + "/" + arra2String[0];
+                }
+                dateList.add(date);
+            }
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dateList);
+            mLisListView.setAdapter(itemsAdapter);
+            Utility.setListViewHeightBasedOnChildren(mLisListView);
+            mLisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                    insertUpdateConainerLL.setVisibility(View.VISIBLE);
+                    mActionBar.setTitle("Update");
+                    insertUpdateBtn.setText("Update");
+                    mIsInsert = false;
+                    mVaccineDetailsObj = vaccineDetailList.get(position);
+                    setData(true);
+                }
+            });
+        }
+        setData(false);
+        setDateLayout(0);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mActionBar.setTitle("Insert");
+        insertUpdateBtn.setText("Insert");
+    }
+
+    private void setData(boolean isToShowDateandNote) {
+        String name = mVaccineDetailsObj.getVaccineName();
+        String abbreviationName = mVaccineDetailsObj.getVaccineNameInShort();
+        String dose = mVaccineDetailsObj.getVaccineDose();
+        String doseType = mVaccineDetailsObj.getVaccineDoseType();
+        String notes = mVaccineDetailsObj.getDoctorNotes();
+        String doseFrequency = mVaccineDetailsObj.getDoseFrequency();
+        String comments = mVaccineDetailsObj.getVaccineComment();
+        String date = mVaccineDetailsObj.getVaccineDateTime();
+        mVaccineNameId = mVaccineDetailsObj.getVaccineID();
+        mPatientVaccineId = mVaccineDetailsObj.getPatientVaccineId();
 
         if (!TextUtils.isEmpty(date)) {
             String dateInArray[] = date.split(" ");
@@ -150,56 +211,43 @@ public class VaccineEditActivity extends BaseActivity {
             }
         }
 
-        mVaccineNameId = intent.getStringExtra("VaccineNameID");
-        mPatientVaccineId = intent.getStringExtra("PatientVaccineId");
-
-        if (TextUtils.isEmpty(mPatientVaccineId)) {
-            mActionBar.setTitle("Insert");
-            insertUpdateBtn.setText("Insert");
-            mIsInsert = true;
-        } else {
-            mActionBar.setTitle("Update");
-            insertUpdateBtn.setText("Update");
-            mIsInsert = false;
-        }
-
         if (!TextUtils.isEmpty(name)) {
             nameTv.setText("Vaccine For: " + name);
-        }else{
+        } else {
             nameTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(abbreviationName)) {
             vaccineAbreviationTv.setText("Vaccine: " + abbreviationName);
-        }else{
+        } else {
             vaccineAbreviationTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(dose)) {
             doseTv.setText("Dose: " + dose);
-        }else{
+        } else {
             doseTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(doseType)) {
             doseTypeTv.setText("Dose Type: " + doseType);
-        }else{
+        } else {
             doseTypeTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(doseFrequency)) {
             doseFrequencyTv.setText("Dose Frequency: " + doseFrequency);
-        }else{
+        } else {
             doseFrequencyTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(comments)) {
             commentTv.setText("Comments: " + comments);
-        }else{
+        } else {
             commentTv.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(date)) {
+        if (!TextUtils.isEmpty(date) && isToShowDateandNote) {
             if (date.contains("00/00/")) {
                 date = date.replace("00/00/", "");
                 int position = mYearsArray.indexOf(date);
@@ -207,23 +255,21 @@ public class VaccineEditActivity extends BaseActivity {
                 setDateLayout(2);
             } else if (date.contains("00/")) {
                 date = date.replace("00/", "");
-                String [] splitDate = date.split("/");
+                String[] splitDate = date.split("/");
                 mFromMonth = splitDate[0];
                 int position = monthArray.indexOf(mFromMonth);
                 mFromMonthSpinner.setSelection(position);
                 int position2 = mYearsArray.indexOf(splitDate[1]);
                 mFromYearSpinner.setSelection(position2);
                 setDateLayout(1);
-            }else{
+            } else {
                 mDateEditText.setText(date);
                 setDateLayout(0);
             }
             mDateTosend = date;
-        }else{
-            setDateLayout(0);
         }
 
-        if (!TextUtils.isEmpty(notes)) {
+        if (!TextUtils.isEmpty(notes) && isToShowDateandNote) {
             mNoteEditText.setText(notes);
         }
 
@@ -231,9 +277,9 @@ public class VaccineEditActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (NetworkChangeListener.getNetworkStatus().isConnected() && isSessionExist()) {
-                    if(!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)){
+                    if (!TextUtils.isEmpty(mNoteEditText.getEditableText().toString().trim()) && (mIsExact ? !TextUtils.isEmpty(mDateEditText.getEditableText().toString()) : true)) {
                         sendrequest();
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "No fields can be empty.", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -273,8 +319,6 @@ public class VaccineEditActivity extends BaseActivity {
 
             }
         });
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private ProgressDialog mProgressDialog;
@@ -285,7 +329,7 @@ public class VaccineEditActivity extends BaseActivity {
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Getting Vaccine Detail...");
+        mProgressDialog.setMessage("Loading...");
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
 
@@ -300,7 +344,7 @@ public class VaccineEditActivity extends BaseActivity {
                 sendData.put("VaccineNameID", mVaccineNameId);
                 sendData.put("VaccineDateTime", mDateTosend);
                 String id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-               // sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
+                // sendData.put("PatientId", "6FEDB1A4-B306-4E96-8AB2-667629CC82D1"); //TODO
                 sendData.put("PatientId", id);
                 sendData.put("Comments", mNoteEditText.getEditableText().toString());
 
@@ -325,16 +369,17 @@ public class VaccineEditActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 mProgressDialog.dismiss();
                 if (response.optString("d").equalsIgnoreCase("success")) {
-                    if(mIsInsert){
-                        Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                    if (mIsInsert) {
+                        //Toast.makeText(getApplicationContext(), "Record added successfully.", Toast.LENGTH_LONG).show();
+                        showAlertMessage1("Record added successfully.");
+                    } else {
+                        //Toast.makeText(getApplicationContext(), "Record updated successfully.", Toast.LENGTH_LONG).show();
+                        showAlertMessage1("Record updated successfully.");
                     }
                     AppConstant.isToRefereshVaccine = true;
                 } else {
                     Toast.makeText(getApplicationContext(), "Some error occurred. Please try again later.", Toast.LENGTH_LONG).show();
                 }
-                finish();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -415,6 +460,69 @@ public class VaccineEditActivity extends BaseActivity {
             mDateTosend = formattedDayOfMonth + "/" + formattedMonth + "/" + year;
             mDateEditText.setText(mDateTosend);
 
+        }
+    }
+
+    private void showAlertMessage1(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        if (mIsToshowList) {
+            listContainerLL.setVisibility(View.VISIBLE);
+            menu.findItem(R.id.add).setVisible(true);
+        } else {
+            listContainerLL.setVisibility(View.GONE);
+            menu.findItem(R.id.add).setVisible(false);
+            insertUpdateConainerLL.setVisibility(View.VISIBLE);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.add:
+                mIsInsert = true;
+                listContainerLL.setVisibility(View.GONE);
+                mLisListView.setVisibility(View.GONE);
+                mActionBar.setTitle("Insert");
+                insertUpdateBtn.setText("Insert");
+                insertUpdateConainerLL.setVisibility(View.VISIBLE);
+                setDateLayout(0);
+                mNoteEditText.setText("");
+                mDateEditText.setText("");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

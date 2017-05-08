@@ -308,7 +308,7 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-
+        Log.i("ayaz", "Dashboard onBackPressed");
         finish();
     }
 
