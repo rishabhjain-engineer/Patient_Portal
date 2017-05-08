@@ -105,7 +105,7 @@ public class VaccineActivity extends BaseActivity {
                 List<VaccineDetails> vaccineDetailsFilteredList = new ArrayList<VaccineDetails>();
                 if (!TextUtils.isEmpty(s)) {
                     for (VaccineDetails vaccineDetails : mFinalVaccineDetailsListToSend) {
-                        if (!vaccineDetails.isHeader() && vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                        if (!vaccineDetails.isHeader() && (vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase()) || vaccineDetails.getVaccineNameInShort().toLowerCase().startsWith(s.toString().toLowerCase()))) {
                             vaccineDetailsFilteredList.add(vaccineDetails);
                         }
                     }
