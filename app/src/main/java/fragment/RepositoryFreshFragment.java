@@ -1056,8 +1056,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
-                //        Log.e("Rishabh", "IO exception := "+ex);
                 return;
             }
             if (photoFile != null) {
@@ -1078,7 +1076,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 storageDir
         );
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        //    Log.e("Rishabh", "image := " + image.getName());
         return image;
     }
 
@@ -1179,10 +1176,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-
-
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
@@ -1193,14 +1186,18 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     mProgressDialog.show();
                 }
                 ArrayList<Uri> multipleUri = new ArrayList<>();
-                // Intent data contains Multiple URIs , so to extract each uri from intent we use ClipData.
-                ClipData clipData = data.getClipData();
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    multipleUri.add(clipData.getItemAt(i).getUri());
-                }
-                File downloadedFile = null;
-                //new code saves recieved bitmap as file
                 Uri selectedImageUri;
+                File downloadedFile = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    ClipData clipData = data.getClipData();
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        multipleUri.add(clipData.getItemAt(i).getUri());
+                    }
+                }else{
+                    selectedImageUri = data.getData();
+                    multipleUri.add(selectedImageUri);
+                }
+                //new code saves recieved bitmap as file
                 for (int i = 0; i < multipleUri.size(); i++) {
                     selectedImageUri = multipleUri.get(i);
                     InputStream is = null;
@@ -1216,7 +1213,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 outStream.close();
                                 listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Log.e("Rishabh", "Exception := "+e);
                             }
                         }
                     }
@@ -1249,7 +1246,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 listOfFilesToUpload.add(downloadedFile);
 
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Log.e("Rishabh", "Exception bitmap:= "+e);
                             }
                         }
                     }
@@ -1262,10 +1259,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
                 listOfFilesToUpload.add(thumbnailFile);
             }
-            RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
-            //super.onActivityResult(requestCode, resultCode, data);
+           RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
+            super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("Rishabh", "Exception := "+e);
         }
     }
 
