@@ -89,7 +89,7 @@ public class SignInActivity extends BaseActivity {
     private Button mSignInBtn;
     private LinearLayout mSignInFbContainer;
     private Services mServices;
-    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mRoleName, mDisclaimerType, mMiddleName;
+    private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mEmail, mRoleName, mDisclaimerType, mMiddleName;
     private String mDAsString, mUserName = "", mPassWord = "";
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
@@ -207,6 +207,7 @@ public class SignInActivity extends BaseActivity {
                                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                 mContactNo = innerJsonObject.optString("ContactNo");
                                                 mTerms = innerJsonObject.optBoolean("Terms");
+                                                mEmail = innerJsonObject.optString("Email");
 
                                                 if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
                                                     goToDashBoardPage();
@@ -364,10 +365,10 @@ public class SignInActivity extends BaseActivity {
         String userName = mSingnInUserEt.getText().toString().trim();
         String passWord = mSingnInPasswordEt.getText().toString();
         if (TextUtils.isEmpty(userName)) {
-            showAlertMessage("Enter Username first!");
+            showAlertMessage("Enter username first.");
             return;
         } else if (TextUtils.isEmpty(passWord)) {
-            showAlertMessage("Enter Password first!");
+            showAlertMessage("Enter password first.");
             return;
         }
         ConnectionDetector con = new ConnectionDetector(SignInActivity.this);
@@ -450,6 +451,7 @@ public class SignInActivity extends BaseActivity {
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mContactNo = innerJsonObject.optString("ContactNo");
                         mTerms = innerJsonObject.optBoolean("Terms");
+                        mEmail = innerJsonObject.optString("Email");
                     } else {
                         isToShowSignInErrorMessage = true;
                     }
@@ -629,9 +631,9 @@ public class SignInActivity extends BaseActivity {
             public void onClick(View v) {
                 String mobileNumber = editnumber.getText().toString();
                 if (TextUtils.isEmpty(mobileNumber)) {
-                    Toast.makeText(getApplicationContext(), "Mobile Number Should not empty !", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Mobile number should not empty.", Toast.LENGTH_LONG).show();
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter valid number.", Toast.LENGTH_LONG).show();
                 } else {
                     checkContactNoExistAPI(mobileNumber);
                 }
@@ -740,7 +742,7 @@ public class SignInActivity extends BaseActivity {
         alertDialog.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (input.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "This field cannnot be left blank!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "This field cannnot be left blank.", Toast.LENGTH_SHORT).show();
                 } else {
                     mForgotEmailOrPhoneNo = input.getText().toString().trim();
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -978,6 +980,8 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
+        AppConstant.EMAIL = mEmail;
+        AppConstant.CONTACT_NO = mContactNo;
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -990,6 +994,7 @@ public class SignInActivity extends BaseActivity {
         intent.putExtra("fromActivity", "signin_activity");
         intent.putExtra("fbUserName", mFbUserName);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         finish();
     }
 
@@ -1141,6 +1146,7 @@ public class SignInActivity extends BaseActivity {
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mContactNo = innerJsonObject.optString("ContactNo");
                         mTerms = innerJsonObject.optBoolean("Terms");
+                        mEmail = innerJsonObject.optString("Email");
                     } else {
                         isToShowSignInErrorMessage = true;
                     }
