@@ -126,6 +126,7 @@ public class AccountFragment extends Fragment {
                         //intent.putExtra("fbLinked", fbLinked);
                         //intent.putExtra("fbLinkedID", fbLinkedID);
                         startActivity(intent);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 } else if (position == 1) {
                     //FAQ
@@ -134,6 +135,7 @@ public class AccountFragment extends Fragment {
                     } else {
                         Intent intent = new Intent(mActivity, FAQ.class);
                         startActivity(intent);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 } else if (position == 2) {
                     //Feedback
@@ -143,6 +145,8 @@ public class AccountFragment extends Fragment {
                         Intent intentContact = new Intent(mActivity, Help.class);
                         intentContact.putExtra("id", id);
                         startActivity(intentContact);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                     }
 
                 } else if (position == 3) {
@@ -150,6 +154,8 @@ public class AccountFragment extends Fragment {
                     Intent intentAbout = new Intent(mActivity, AboutUs.class);
                     intentAbout.putExtra("from", "dash");
                     startActivity(intentAbout);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
 
                 } else if (position == 4) {
                     //Password
@@ -159,6 +165,8 @@ public class AccountFragment extends Fragment {
                         Intent change = new Intent(mActivity, changepass.class);
                         change.putExtra("id", id);
                         startActivity(change);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                     }
                 } else if (position == 5) {
                     //Terms
@@ -167,11 +175,15 @@ public class AccountFragment extends Fragment {
                     } else {
                         Intent termsAndCondition = new Intent(mActivity, PrivacyPolicy.class);
                         startActivity(termsAndCondition);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                     }
                 } else if (position == 6) {
                     //Credits
                     Intent termsAndCondition = new Intent(mActivity, CreditsActivity.class);
                     startActivity(termsAndCondition);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
 
                 } else if (position == 7) {
                     //logout

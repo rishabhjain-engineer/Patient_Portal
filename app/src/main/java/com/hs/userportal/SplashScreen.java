@@ -68,8 +68,8 @@ public class SplashScreen extends BaseActivity {
         sendData = new JSONObject();
         if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
             Intent intent = new Intent(this, DashBoardActivity.class);
-            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             finish();
         }else{
             new Handler().postDelayed(new Runnable() {
