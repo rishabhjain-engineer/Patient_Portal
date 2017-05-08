@@ -13,6 +13,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.Random;
 
+import fragment.RepositoryFragment;
+
 public class NotificationHandler {
 	// Notification handler singleton
 	private static NotificationHandler nHandler;
@@ -48,7 +50,7 @@ public class NotificationHandler {
 		 
 		 
 		    intent.setAction(Intent.ACTION_VIEW);
-		    File file = new File(Filevault.path+"/"+def); // set your audio path 
+		    File file = new File(RepositoryFragment.path+"/"+def); // set your audio path
 		    intent.setDataAndType(Uri.fromFile(file), "image/*");
 		    
 		    

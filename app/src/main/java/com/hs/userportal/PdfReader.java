@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import ui.BaseActivity;
 
@@ -93,17 +97,35 @@ public class PdfReader extends BaseActivity {
 
 		protected void onPostExecute(String result) {
 
-			File pdfFile = new File(Environment.getExternalStorageDirectory() + "/filevaltpdf/" + fileName); // ->
-																												// filename
-																												// =
-																												// maven.pdf
-			Uri path = Uri.fromFile(pdfFile);
-			Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
-			pdfIntent.setDataAndType(path, "application/pdf");
-			pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			File pdfFile = new File(Environment.getExternalStorageDirectory() + "/filevaltpdf/" + fileName);
+			///////////
+			Log.v("post", "execute");
+
+			Intent objIntent = new Intent(Intent.ACTION_VIEW);
+			///////
+			Uri uri = null;
+			//if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			Method m = null;
+			try {
+				m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+				m.invoke(null);
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			uri = Uri.fromFile(pdfFile);
+                    /*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*/
+			/////
+			objIntent.setDataAndType(uri, "application/pdf");
+			objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 			try {
-				startActivity(pdfIntent);
+				startActivity(objIntent);//Staring the pdf viewer
 			} catch (ActivityNotFoundException e) {
 				Toast.makeText(PdfReader.this, "No Application available to view PDF", Toast.LENGTH_SHORT).show();
 			}

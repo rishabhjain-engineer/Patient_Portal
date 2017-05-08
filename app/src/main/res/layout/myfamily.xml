@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/common_header" />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/family_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:layout_marginBottom="10dp"></ListView>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_container"
+        android:layout_marginBottom="10dp"
+        android:divider="@null"></ListView>
 
     <TextView
         android:id="@+id/empty_msg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:layout_centerInParent="true"
         android:text="You have no members added."
         android:textStyle="bold"
         android:visibility="gone" />
 
-</LinearLayout>
+
+</RelativeLayout>

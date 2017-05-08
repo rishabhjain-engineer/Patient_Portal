@@ -2,7 +2,7 @@
     <string name="app_name">ScionTra</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="forgot"><u>Forgot Password?</u></string>
+    <string name="forgot">Forgot Password?</string>
     <string name="not_remembered"><u>Not Remembered Exactly !</u></string>
     <string name="remembered"><u> "Fill Exact Date !"</u></string>
     <string name="help">FAQ\'s</string>
@@ -14,8 +14,10 @@
     <string name="twitter"><u>Twitter</u></string>
     <string name="youtube"><u>Youtube</u></string>
     <string name="name"><b>View reports and manage health records</b></string>
-    <string name="app_id">608699132624495</string>
-     <!--126834477650763-->
+    <string name="app_id_old">608699132624495</string>
+    <string name="app_id">318942061855338</string>
+
+    <!--126834477650763-->
     <string name="file_vault">File Vault</string>
     <string name="labs_loc">Labs Near You</string>
     <string name="s3_access_key">AKIAIUG673POSGFZTX4A</string>
@@ -51,5 +53,11 @@
         <item>Post Grad</item>
     </string-array>
     <string name="file_extension_text"><![CDATA[File extension should be \u2022png, \u2022jpg, \u2022bmp, \u2022gif, \u2022pdf, \u2022doc, \u2022docx, \u2022xls, \u2022xlsx. File name and size should be less than 99 characters and 10 MB respectively.]]></string>
-
+    <string name="donot_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up">&#160;Sign Up</string>
+    <string name="sign_in">&#160;Sign in</string>
+    <string name="let_started_text">Let\'s get you started in few clicks.</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="credit_text">Health (Reports) Icon by rekanice from the Noun Project.\nWeight scale (Vitals) Icon by Eucalyp from the Noun Project.\nFamily Icon by Rauan from the Noun Project.\nFolder (Repository) Icon by Setyo Ari Wibowo from the Noun Project.</string>
+    <string name="title_activity_transparent">Transparent</string>
 </resources>

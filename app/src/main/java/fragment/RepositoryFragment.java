@@ -1,9 +1,10 @@
-package com.hs.userportal;
+package fragment;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -17,7 +18,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
@@ -28,11 +28,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.provider.MediaStore.MediaColumns;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -40,9 +40,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,6 +54,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -61,7 +62,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request.Method;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
@@ -71,6 +72,16 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.BuildConfig;
+import com.hs.userportal.ExpandImage;
+import com.hs.userportal.Filevault2;
+import com.hs.userportal.Helper;
+import com.hs.userportal.MyVolleySingleton;
+import com.hs.userportal.NotificationHandler;
+import com.hs.userportal.PdfReader;
+import com.hs.userportal.R;
+import com.hs.userportal.Services;
+import com.hs.userportal.UploadService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,21 +91,33 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
-import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.NavFolder;
+import utils.PreferenceHelper;
 
-public class Filevault extends BaseActivity {
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+/**
+ * Created by android1 on 3/4/17.
+ */
+
+public class RepositoryFragment extends Fragment {
 
     private ImageLoader mImageLoader;
+    private Helper mhelper;
+    private String first_timefolderclicked = "";
     private ByteArrayOutputStream byteArrayOutputStream;
     private NetworkImageView mNetworkImageView;
     private JSONObject sendData, receiveData;
@@ -125,7 +148,7 @@ public class Filevault extends BaseActivity {
     private JsonObjectRequest jr2, jr3, jr4;
     private static JsonObjectRequest s3jr;
     private JsonObjectRequest lock_folder;
-    private ImageAdapter imageAdapter;
+    private RepositoryFragment.ImageAdapter imageAdapter;
     private boolean[] thumbnailsselection;
     private int count;
     private static Menu menu_toggle;
@@ -139,14 +162,14 @@ public class Filevault extends BaseActivity {
     private int ipos = 0;
     private Services service;
     private GridView gridView;
-    private int check = 0;
+    private int check = 0, MY_PERMISSIONS_REQUEST = 1;
     private int check_grid = 0;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
-    private boolean view_list = false;
+    private boolean view_list = false, mIsSdkLessThanM = true, mPermissionGranted;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey;
+    private String list_operation, patientId, Folder_Clicked, HashKey, mCurrentPhotoPath = null;
     private Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
@@ -160,68 +183,94 @@ public class Filevault extends BaseActivity {
     private static final int REQUEST_CAMERA = 0;
     private static boolean refresh_vault1 = true;
     private String[] rem_dup_folder;
-    private String check_view = "";
+    private String check_view = "", mBundleTotalUri;
     private int checkdialog = 0;
     private Folder_adapter folder_adapter;
     private ArrayList<HashMap<String, String>> moveFolder_navigate = new ArrayList<HashMap<String, String>>();
-    private TextView warning_msg;
+    private TextView warning_msg, mHeaderRepositoryTitle;
     private int position_scroll = 0;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0;
     private Handler mHandler;
-    private ImageView mSearchBarImageView ;
-    private EditText mSearchBarEditText ;
-
+    private EditText mSearchBarEditText;
+    private LinearLayout mHeaderMiddleImageViewContainer;
 
     public static Context file_vaultcontxt;
     public static ArrayList<HashMap<String, String>> originalVaultlist = new ArrayList<HashMap<String, String>>();
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
+    private Activity mActivity;
+    private PreferenceHelper mPreferenceHelper;
+    private Bundle mBundleFromGallery;
+    private Uri mObtainedUriFromDashboard, mGalleryUploadUri;
+    private ArrayList<Uri> mMultipleUriFromDashboard = new ArrayList<>();
+    private ImageView mHeaderGridImageView, mHeaderSaveImageView, mHeaderDeleteImageView, mHeaderMoveImageView, mHeaderSelectAllImageView, mHeaderBackButtonImageView;
+    //  private ArrayList<HashMap<String, String>> family = new ArrayList<>();
+
     /*@Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
 
         outState.putParcelable("myObj", menu_toggle);
     }*/
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.filevault);
-        pd = new ProgressDialog(Filevault.this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.filevault, null);
+
+        mActivity = getActivity();
+        pd = new ProgressDialog(mActivity);
         pd.setMessage("Loading Vault .....");
         pd.setCanceledOnTouchOutside(false);
         pd.show();
 
-        setupActionBar();
-        Intent z = getIntent();
-        id = z.getStringExtra("id");
-        mContext = Filevault.this;
-        file_vaultcontxt = Filevault.this;
-        upload = (Button) findViewById(R.id.upload);
-        gridView = (GridView) findViewById(R.id.gridView);
-        vault_list = (ListView) findViewById(R.id.vault_list);
-        list_header = (RelativeLayout) findViewById(R.id.list_header);
-        list_header2 = (RelativeLayout) findViewById(R.id.list_header2);
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        patientId = id;
 
-        mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
-        mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
+      /*  Intent i = getIntent();
+        family = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");*/
+        upload = (Button) view.findViewById(R.id.upload);
+        gridView = (GridView) view.findViewById(R.id.gridView);
+        vault_list = (ListView) view.findViewById(R.id.vault_list);
+        list_header = (RelativeLayout) view.findViewById(R.id.list_header);
+        list_header2 = (RelativeLayout) view.findViewById(R.id.list_header2);
+        bar = (ProgressBar) view.findViewById(R.id.pg);
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mSearchBarEditText = (EditText) view.findViewById(R.id.et_searchbar);
+        mHeaderGridImageView = (ImageView) view.findViewById(R.id.repository_grid_imageview);
+   //     mHeaderSaveImageView = (ImageView) view.findViewById(R.id.repository_save_imageview);
+        mHeaderDeleteImageView = (ImageView) view.findViewById(R.id.repository_delete_imageview);
+        mHeaderMoveImageView = (ImageView) view.findViewById(R.id.repository_move_imageview);
+        mHeaderSelectAllImageView = (ImageView) view.findViewById(R.id.repository_selectall_imageview);
+        mHeaderBackButtonImageView = (ImageView) view.findViewById(R.id.repository_backbutton_imageview);
+        mHeaderRepositoryTitle = (TextView) view.findViewById(R.id.repository_title);
+        mHeaderMiddleImageViewContainer = (LinearLayout) view.findViewById(R.id.middle_options_container);
+
+        mHeaderGridImageView.setOnClickListener(mOnClickListener);
+      //  mHeaderSaveImageView.setOnClickListener(mOnClickListener);
+        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
+        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
+        mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
+        mHeaderBackButtonImageView.setOnClickListener(mOnClickListener);
+
 
         sendData = new JSONObject();
-        service = new Services(Filevault.this);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
-        warning_msg = (TextView) findViewById(R.id.warning_msg);
+        service = new Services(mActivity);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        warning_msg = (TextView) view.findViewById(R.id.warning_msg);
         //refresh_vault1 = view_list;
+
+        askRunTimePermissions();
 
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new Authentication(Filevault.this, "Filevault", "").execute();
+            //new Authentication(mActivity, "Filevault", "").execute();
+            createLockFolder();
         }
 
-
-       mSearchBarEditText.addTextChangedListener(new TextWatcher() {
+        mSearchBarEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -237,111 +286,13 @@ public class Filevault extends BaseActivity {
 
             }
         });
-       /* jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
 
-                System.out.println(response);
-                thumbImage.clear();
-                imageName.clear();
-                vault_data = new ArrayList<HashMap<String, String>>();
-                try {
-                    String imageData = response.getString("d");
-                    JSONObject cut = new JSONObject(imageData);
-                    subArrayImage = cut.getJSONArray("Table");
-                    HashMap<String, String> hmap;
-                    for (int i = 0; i < subArrayImage.length(); i++) {
-                        hmap = new HashMap<String, String>();
-                        imageNamewithpdf.add(subArrayImage.getJSONObject(i).getString("ImageName"));
-                        imageName.add(subArrayImage.getJSONObject(i).getString("Image"));
-                        thumbImage.add(subArrayImage.getJSONObject(i).getString("ThumbImage"));
-                        hmap.put("ImageId", subArrayImage.getJSONObject(i).getString("ImageId"));
-                        hmap.put("ImageName", subArrayImage.getJSONObject(i).getString("ImageName"));
-                        hmap.put("ThumbImage", subArrayImage.getJSONObject(i).getString("ThumbImage"));
-                        hmap.put("TimeStamp", subArrayImage.getJSONObject(i).getString("TimeStamp"));
-                        hmap.put("Image", subArrayImage.getJSONObject(i).getString("Image"));
-                        vault_data.add(hmap);
-                    }
-
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                mImageLoader = MyVolleySingleton.getInstance(Filevault.this).getImageLoader();
-                count = subArrayImage.length();
-                thumbnailsselection = new boolean[count];
-                imageAdapter = new ImageAdapter();
-                gridView.setAdapter(imageAdapter);
-                vault_adapter = new Vault_adapter(Filevault.this, vault_data, false);
-                vault_list.setAdapter(vault_adapter);
-                if (view_list) {
-                    list_header.setVisibility(View.VISIBLE);
-                    list_header2.setVisibility(View.GONE);
-                }
-                vault_adapter.notifyDataSetChanged();
-                progress.dismiss();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                System.out.println("GetPatientFilesNew: " + error);
-                progress.dismiss();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Cookie", Services.hoja);
-                return headers;
-            }
-        };
-        queue.add(jr);*/
-
-		/*url =  Services.init+"Patient/loadVaultMobile";*/
-       /* StaticHolder sttc_holdr1 = new StaticHolder(Filevault.this, StaticHolder.Services_static.loadVaultMobile);
-        String url1 = sttc_holdr1.request_Url();
-        StringRequest myReq = new StringRequest(Method.POST, url1, createloadVaultSuccessListener(),
-                createloadVaultErrorListener()) {
-
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("PatientId", id);
-
-                return params;
-            }
-
-            ;
-        };
-        queue.add(myReq);*/
-
-		/*url = Services.init+"Patient/getDistinctTags";*/
-      /*  StaticHolder sttc_holdr2 = new StaticHolder(Filevault.this, StaticHolder.Services_static.getDistinctTags);
-        String url2 = sttc_holdr2.request_Url();
-        StringRequest myReq1 = new StringRequest(Method.POST, url2, createDistinctTagsSuccessListener(),
-                createDistinctTagsErrorListener()) {
-
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("PatientId", id);
-                params.put("NewTag", "false");
-                params.put("tagId", "");
-
-                return params;
-            }
-
-            ;
-        };
-        queue.add(myReq1);*/
-
-        upload.setOnClickListener(new OnClickListener() {
+        upload.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 ///////////////////////////////////////////////////////////////////////////////////
-                final Dialog dialog = new Dialog(Filevault.this);
+                final Dialog dialog = new Dialog(mActivity);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.uploadfile_alertbox);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -366,6 +317,7 @@ public class Filevault extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        askRunTimePermissions();
                         chooseimage();
 
                     }
@@ -375,7 +327,6 @@ public class Filevault extends BaseActivity {
             }
         });
 
-
         vault_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -384,15 +335,14 @@ public class Filevault extends BaseActivity {
                         && !thumbImage.get(position).get("Personal3").contains(".JPG") && !thumbImage.get(position).get("Personal3").contains(".pdf")
                         && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")
                         && !thumbImage.get(position).get("Personal3").contains(".txt")) {
-                    Intent i = new Intent(Filevault.this, Filevault2.class);
+                    Intent i = new Intent(mActivity, Filevault2.class);
                     i.putExtra("Folder_Clicked", thumbImage.get(position).get("Personal3").trim());
                     i.putExtra("hash_keyvalue", "Personal3");
                     i.putExtra("view", "List");
                     i.putExtra("first_timefolderclicked", thumbImage.get(position).get("Personal3").trim());
                     startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
-                    Intent i = new Intent(Filevault.this, PdfReader.class);
+                    Intent i = new Intent(mActivity, PdfReader.class);
                     i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -410,7 +360,7 @@ public class Filevault extends BaseActivity {
                     }
 
                 } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
-                    Intent i = new Intent(Filevault.this, PdfReader.class);
+                    Intent i = new Intent(mActivity, PdfReader.class);
                     i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -427,7 +377,7 @@ public class Filevault extends BaseActivity {
                         // Log.e("Viewer not installed on your device.", e.getMessage());
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
-                    Intent i = new Intent(Filevault.this, PdfReader.class);
+                    Intent i = new Intent(mActivity, PdfReader.class);
                     i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -444,7 +394,7 @@ public class Filevault extends BaseActivity {
                         // Log.e("Viewer not installed on your device.", e.getMessage());
                     }
                 } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
-                    Intent i = new Intent(Filevault.this, PdfReader.class);
+                    Intent i = new Intent(mActivity, PdfReader.class);
                     i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3").replaceAll(" ", "%20"));
                     String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                     i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -461,7 +411,7 @@ public class Filevault extends BaseActivity {
                         // Log.e("Viewer not installed on your device.", e.getMessage());
                     }
                 } else {
-                    Intent i = new Intent(Filevault.this, ExpandImage.class);
+                    Intent i = new Intent(mActivity, ExpandImage.class);
                     String removeonejpg = thumbImage.get(position).get("Personal3");
                     if (thumbImage.get(position).get("Personal3").endsWith(".jpg")) {
 
@@ -497,8 +447,11 @@ public class Filevault extends BaseActivity {
         vault_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> av, View v, int pos, long id) {
-                vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                 vault_list.setAdapter(vault_delete_adapter);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                mHeaderRepositoryTitle.setVisibility(View.GONE);
+                mHeaderBackButtonImageView.setVisibility(View.VISIBLE);
                   /*  vault_delete_adapter.notifyDataSetChanged();*/
                 list_header2.setVisibility(View.VISIBLE);
                 list_header.setVisibility(View.GONE);
@@ -515,7 +468,7 @@ public class Filevault extends BaseActivity {
                 if (check_list.equals("Prescription") ||
                         check_list.equals("Insurance")
                         || check_list.equals("Bills") || check_list.equals("Reports")) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Filevault.this);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
                     // set title
                     alertDialogBuilder.setTitle("Alert");
                     // set dialog message
@@ -534,7 +487,128 @@ public class Filevault extends BaseActivity {
                 return onLongListItemClick(v, pos, id);
             }
         });
+        setHasOptionsMenu(true);
+        return view;
+    }
 
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int viewId = view.getId();
+
+            if (viewId == R.id.repository_grid_imageview) {
+                changeGridViewToListView();
+            } else if (viewId == R.id.repository_selectall_imageview) {
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                mHeaderRepositoryTitle.setVisibility(View.GONE);
+                mHeaderBackButtonImageView.setVisibility(View.VISIBLE);
+                selectAll();
+            } else if (viewId == R.id.repository_delete_imageview) {
+                deleteFile();
+            } else if (viewId == R.id.repository_move_imageview) {
+                moveFile();
+            }  else if (viewId == R.id.repository_backbutton_imageview) {
+
+                headerBackButton();                                                                     // ActionBar Back Home Button
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                mHeaderRepositoryTitle.setVisibility(View.VISIBLE);
+                mHeaderBackButtonImageView.setVisibility(View.GONE);
+
+
+            }
+        }
+    };
+
+    private void getBundleFromGallery() {
+
+        mBundleTotalUri = mBundleFromGallery.getString("totaluri");
+        Log.e("Rishabh", " no of uri := "+mBundleTotalUri);
+        if(!TextUtils.isEmpty(mBundleTotalUri) && mBundleTotalUri.contains("single")){
+            mObtainedUriFromDashboard = mBundleFromGallery.getParcelable("uri");
+
+
+            alias_thumbImage_folder.clear();
+            rem_dup_folder = new String[thumbImage.size()];
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                            !thumbImage.get(i).get("Personal3").contains(".jpg")
+                            && !thumbImage.get(i).get("Personal3").contains(".JPG") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                        rem_dup_folder[i] = thumbImage.get(i).get("Personal3");
+                    }
+                }
+            }
+            check_para = 0;
+            select_times = 0;
+            moveFolder1 = foldername();
+            if (rem_dup_folder != null/* && !rem_dup_folder.equalsIgnoreCase("")*/) {
+                for (int r = 0; r < moveFolder1.size(); r++) {
+                    for (int l = 0; l < rem_dup_folder.length; l++) {
+                        if (moveFolder1.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
+                            moveFolder1.remove(r);
+                        }
+                    }
+
+                }
+            }
+            alias_thumbImage_folder.addAll(moveFolder1);
+
+
+            final Dialog move_dialog = new Dialog(mActivity);
+            move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //setting custom layout to dialog
+            move_dialog.setContentView(R.layout.move_folderlist);
+            ListView folder_list = (ListView) move_dialog.findViewById(R.id.folder_list);
+            Button move_btn = (Button) move_dialog.findViewById(R.id.move_btn);
+            final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
+            folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            folder_root.setEnabled(false);
+            folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, "");
+            folder_list.setAdapter(folder_adapter);
+            folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (!thumbImage.get(position).get("Personal3").contains(".PNG") && !thumbImage.get(position).get("Personal3").contains(".png") &&
+                            !thumbImage.get(position).get("Personal3").contains(".jpg") && !thumbImage.get(position).get("Personal3").contains(".JPG")
+                            && !thumbImage.get(position).get("Personal3").contains(".pdf")
+                            && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")) {
+                        Folder_Clicked = moveFolder1.get(position).get("folder_name");
+                        HashKey = moveFolder1.get(position).get("hash_keyvalue");
+                        nextdialog();
+                        move_dialog.dismiss();
+                    }
+                }
+            });
+            move_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
+
+                        uploadGalleryFile(mObtainedUriFromDashboard);
+                    }
+                    Log.e("Rishabh", "Root folder on move button");
+                    move_dialog.dismiss();
+                }
+            });
+            move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(final DialogInterface arg0) {
+                    //folder_path.clear();
+                }
+            });
+            move_dialog.show();
+
+        }else {
+            mMultipleUriFromDashboard = mBundleFromGallery.getParcelableArrayList("multipleUri");
+            int length = mMultipleUriFromDashboard.size();
+            Log.e("Rishabh","Total number of URIs from gallery received  := "+length);
+            for(int i=0 ; i<length ; i++) {
+                Log.e("Rishabh", "Single Uri := "+mMultipleUriFromDashboard.get(i).getPath());
+                Uri singleUriFile = mMultipleUriFromDashboard.get(i);
+         //       uploadGalleryFile(singleUriFile);
+            }
+        }
     }
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
@@ -582,7 +656,7 @@ public class Filevault extends BaseActivity {
         private LayoutInflater mInflater;
 
         public ImageAdapter() {
-            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         public int getCount() {
@@ -599,9 +673,9 @@ public class Filevault extends BaseActivity {
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
+            final RepositoryFragment.ViewHolder holder;
             if (convertView == null) {
-                holder = new ViewHolder();
+                holder = new RepositoryFragment.ViewHolder();
                 convertView = mInflater.inflate(R.layout.filevaultdeleteitem, null);
                 holder.imageview = (ImageView) convertView.findViewById(R.id.thumbImage);
                 // holder.thumbImage2 = (ImageView) convertView.findViewById(R.id.thumbImage2);
@@ -610,12 +684,12 @@ public class Filevault extends BaseActivity {
                 holder.image_name = (TextView) convertView.findViewById(R.id.image_name);
                 convertView.setTag(holder);
             } else {
-                holder = (ViewHolder) convertView.getTag();
+                holder = (RepositoryFragment.ViewHolder) convertView.getTag();
             }
             holder.checkbox.setId(position);
             holder.imageview.setId(position);
             //  holder.thumbImage2.setId(position);
-            holder.checkbox.setOnClickListener(new OnClickListener() {
+            holder.checkbox.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
                     CheckBox cb = (CheckBox) v;
@@ -646,33 +720,32 @@ public class Filevault extends BaseActivity {
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                 }
 
             });
 
-            holder.folder_name.setOnClickListener(new OnClickListener() {
+            holder.folder_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(Filevault.this, Filevault2.class);
+                    Intent i = new Intent(mActivity, Filevault2.class);
                     i.putExtra("Folder_Clicked", holder.folder_name.getText().toString().trim());
                     i.putExtra("check_load", check_load);
                     i.putExtra("view", "Gird");
                     i.putExtra("hash_keyvalue", "Personal3");
                     i.putExtra("first_timefolderclicked", thumbImage.get(position).get("Personal3").trim());
                     startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             });
 
-            holder.imageview.setOnClickListener(new OnClickListener() {
+            holder.imageview.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
 
                     if (thumbImage.get(position).get("Personal3").contains(".pdf")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + patientId + "/FileVault/Personal/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -690,7 +763,7 @@ public class Filevault extends BaseActivity {
                         }
 
                     } else if (thumbImage.get(position).get("Personal3").contains(".doc") || thumbImage.get(position).get("Personal3").contains(".docx")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -707,7 +780,7 @@ public class Filevault extends BaseActivity {
                             // Log.e("Viewer not installed on your device.", e.getMessage());
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".xls") || thumbImage.get(position).get("Personal3").contains(".xlsx")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -724,7 +797,7 @@ public class Filevault extends BaseActivity {
                             // Log.e("Viewer not installed on your device.", e.getMessage());
                         }
                     } else if (thumbImage.get(position).get("Personal3").contains(".txt")) {
-                        Intent i = new Intent(Filevault.this, PdfReader.class);
+                        Intent i = new Intent(mActivity, PdfReader.class);
                         i.putExtra("image_url", "https://files.healthscion.com/" + thumbImage.get(position).get("Personal3"));
                         String pdf_name = thumbImage.get(position).get("Personal3").replace(patientId + "/FileVault/Personal/", "");
                         i.putExtra("imagename", pdf_name/* thumbImage.get(position)*/);
@@ -743,7 +816,7 @@ public class Filevault extends BaseActivity {
                     } else {
 
 
-                        Intent i = new Intent(Filevault.this, ExpandImage.class);
+                        Intent i = new Intent(mActivity, ExpandImage.class);
                         String removeonejpg = thumbImage.get(position).get("Personal3");
                         if (thumbImage.get(position).get("Personal3").endsWith(".jpg")) {
 
@@ -912,25 +985,25 @@ public class Filevault extends BaseActivity {
 
     public String getPath(Uri uri, Activity activity) {
 
-        String[] projection = {MediaColumns.DATA};
+        String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
 
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         IntentFilter f = new IntentFilter();
         f.addAction(UploadService.UPLOAD_STATE_CHANGED_ACTION);
-        registerReceiver(uploadStateReceiver, f);
+        mActivity.registerReceiver(uploadStateReceiver, f);
     }
 
     @Override
-    protected void onStop() {
-        unregisterReceiver(uploadStateReceiver);
+    public void onStop() {
+        mActivity.unregisterReceiver(uploadStateReceiver);
         super.onStop();
     }
 
@@ -952,8 +1025,8 @@ public class Filevault extends BaseActivity {
     private String getPathFromContentUri(Uri uri) {
         String path = uri.getPath();
         if (uri.toString().startsWith("content://")) {
-            String[] projection = {MediaColumns.DATA};
-            ContentResolver cr = getApplicationContext().getContentResolver();
+            String[] projection = {MediaStore.MediaColumns.DATA};
+            ContentResolver cr = mActivity.getContentResolver();
             Cursor cursor = cr.query(uri, projection, null, null, null);
             if (cursor != null) {
                 try {
@@ -969,7 +1042,7 @@ public class Filevault extends BaseActivity {
         return path;
     }
 
-    static void refresh() {
+    public static void refresh() {
 
         //   thumbImage.clear();
         imageName.clear();
@@ -981,7 +1054,7 @@ public class Filevault extends BaseActivity {
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         try {
             if (requestCode == PICK_FROM_GALLERY) {
@@ -1009,22 +1082,25 @@ public class Filevault extends BaseActivity {
 
                                 stringcheck = listsplitstr[listsplitstr.length - 1];
                                 leangth = listsplitstr[listsplitstr.length - 1].length();
+
+                                Log.e("gharse","string check := "+stringcheck);
+                                Log.e("gharse", "lenght :="+leangth);
                                 exhistimg = "true";
                             }
 
                         }
                     }
-                    Intent intent = new Intent(this, UploadService.class);
+                    Intent intent = new Intent(mActivity, UploadService.class);
                     intent.putExtra(UploadService.ARG_FILE_PATH, path);
                     intent.putExtra("add_path", "");
                     intent.putExtra(UploadService.uploadfrom, "");
                     intent.putExtra("exhistimg", exhistimg);
                     intent.putExtra("stringcheck", stringcheck);
-                    startService(intent);
+                    mActivity.startService(intent);
 
                     System.out.println("After Service");
 
-                    String tempPath = getPath(selectedImageUri, Filevault.this);
+                    String tempPath = getPath(selectedImageUri, mActivity);
                     Bitmap bm;
                     BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
                     btmapOptions.inSampleSize = 4;
@@ -1046,17 +1122,36 @@ public class Filevault extends BaseActivity {
 
                 } else {
 
-                    Toast.makeText(this, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
 
                 }
 
             }
             if (requestCode == PICK_FROM_CAMERA) {
 
-                Uri selectedImageUri = Imguri;
+                File imageFile = null;
+                Uri selectedImageUri;
+
+                if (mIsSdkLessThanM == true) {
+                    selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
+
+                } else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  " + imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  " + imageFile.getPath());
+                }
+
+                //   Uri selectedImageUri = Imguri;
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-                File imageFile = new File(path);
+                //    File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -1082,16 +1177,16 @@ public class Filevault extends BaseActivity {
                     }
                     if (check != 0) {
                         preventRotation(path);
-                        Intent intent = new Intent(this, UploadService.class);
+                        Intent intent = new Intent(mActivity, UploadService.class);
                         intent.putExtra(UploadService.ARG_FILE_PATH, path);
                         intent.putExtra(UploadService.uploadfrom, "");
                         intent.putExtra("add_path", "");
                         intent.putExtra(UploadService.uploadfrom, "");
                         intent.putExtra("exhistimg", exhistimg);
                         intent.putExtra("stringcheck", stringcheck);
-                        startService(intent);
+                        mActivity.startService(intent);
 
-                        ContentResolver cr = getContentResolver();
+                        ContentResolver cr = mActivity.getContentResolver();
                         Bitmap bitmap;
                         bitmap = MediaStore.Images.Media.getBitmap(cr, selectedImageUri);
                         byteArrayOutputStream = new ByteArrayOutputStream();
@@ -1102,10 +1197,10 @@ public class Filevault extends BaseActivity {
                         picname = "camera.jpg";
 
                         // finish();
-                        startActivity(getIntent());
+                        startActivity(mActivity.getIntent());
                     }
                 } else {
-                    Toast.makeText(this, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -1117,11 +1212,1163 @@ public class Filevault extends BaseActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.delete, menu);
+
+    /*public boolean onCreateOptionsMenu(Menu menu) {
+        mActivity.getMenuInflater().inflate(R.menu.delete, menu);
         menu_toggle = menu;
         return true;
+    }*/
+    private void selectAll() {
+        if (select_times != 0 && !view_list) {
+            if (check % 2 == 0) {
+
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                    thumbnailsselection[i] = true;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                    menu_toggle.findItem(R.id.save).setVisible(true);
+                    menu_toggle.findItem(R.id.action_move).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                    thumbnailsselection[i] = false;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                    menu_toggle.findItem(R.id.save).setVisible(false);
+                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            }
+            check++;
+        } else if (view_list) {
+            if (check_grid % 2 == 0) {
+
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    thumbnailsselection[i] = true;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                    menu_toggle.findItem(R.id.save).setVisible(true);
+                    menu_toggle.findItem(R.id.action_move).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    thumbnailsselection[i] = false;
+                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                    menu_toggle.findItem(R.id.save).setVisible(false);
+                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
+                }
+            }
+            check_grid++;
+        }
+        select_times = 1;
+        toggle_move = true;
+        check_para = 1;
+        imageAdapter = new RepositoryFragment.ImageAdapter();
+        gridView.setAdapter(imageAdapter);
+        if (!view_list) {
+            vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+            vault_list.setAdapter(vault_delete_adapter);
+                  /*  vault_delete_adapter.notifyDataSetChanged();*/
+            list_header2.setVisibility(View.VISIBLE);
+            list_header.setVisibility(View.GONE);
+            menu_toggle.findItem(R.id.action_delete).setVisible(true);
+            menu_toggle.findItem(R.id.save).setVisible(true);
+            menu_toggle.findItem(R.id.action_move).setVisible(true);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
+        }
+    }
+
+    private void deleteFile() {
+        checkdialog = 0;
+        toggle_move = false;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+        } /*else if (toggle_move && checkdialog == 0) {
+                    list_header.setVisibility(View.VISIBLE);
+                    list_header2.setVisibility(View.GONE);
+                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_list.setAdapter(vault_adapter);
+                    thumbnailsselection = new boolean[thumbImage.size()];
+                    toggle_move = false;
+                }*/ else if (!view_list) {
+            if (!view_list /*&& !toggle_move*/ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                toggle_move = true;
+                //  vault_delete_adapter.notifyDataSetChanged();
+                //checkdialog = 0;
+                if (checkdialog == 1) {
+
+                    final Dialog dialog = new Dialog(mActivity);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.unsaved_alert_dialog);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                    TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                    titleTv.setText("Delete");
+                    TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                    TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+
+                    messageTv.setText("Are you sure you want to delete the selected file(s)?");
+
+                    stayButton.setText("Cancel");
+                    stayButton.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            check_para = 0;
+                            select_times = 0;
+                        }
+                    });
+
+                    toggle_move = true;
+                    okBTN.setVisibility(View.VISIBLE);
+                    okBTN.setText("OK");
+                    okBTN.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            pd = new ProgressDialog(mActivity);
+                            pd.setMessage("Deleting .....");
+                            pd.show();
+                            toggle_move = false;
+                            JSONArray array = new JSONArray();
+                            check_para = 0;
+                            select_times = 0;
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+                                JSONObject imageobject = new JSONObject();
+                                if (thumbnailsselection[i]) {
+                                    try {
+                                        //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                        if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                                !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                                && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "1");
+                                            imageobject.put("ThumbFile", "");
+                                            imageobject.put("Status", "");
+                                        } else {
+                                            if (thumbImage.get(i).get("Personal3").contains(".png")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
+                                                String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("ThumbFile", thumbimg);
+                                                } else {
+                                                    imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("Status", "");
+                                            } else {
+                                                if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                    imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                                } else {
+                                                    imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                                }
+                                                imageobject.put("Type", "0");
+                                                imageobject.put("ThumbFile", "");
+                                                imageobject.put("Status", "");
+                                            }
+
+                                        }
+
+                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*/
+                                    } catch (JSONException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+                                    array.put(imageobject);
+                                }
+
+
+                            }
+
+
+                            System.out.println(array);
+
+                            queue2 = Volley.newRequestQueue(mActivity);
+
+                            sendData = new JSONObject();
+                            try {
+                                sendData.put("ObjectList", array);
+                                sendData.put("UserId", patientId);
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+                            StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
+                            String url = sttc_holdr.request_Url();
+                            jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println(response);
+
+                                    try {
+                                        Toast.makeText(mActivity, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                                .show();
+                                        //  S3Objects.clear();
+                                        pd.dismiss();
+                                        refresh();
+                                    } catch (Exception e) {
+                                        // TODO Auto-generated catch
+                                        // block
+                                        e.printStackTrace();
+                                    }
+
+                                    // queue.add(jr);
+
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    pd.dismiss();
+                                    Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });/* {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> headers = new HashMap<String, String>();
+                                        headers.put("Cookie", Services.hoja);
+                                        return headers;
+                                    }
+                                };*/
+                            queue2.add(jr2);
+                            dialog.dismiss();
+                        }
+
+                    });
+
+                    dialog.show();
+                } else {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            int checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Delete");
+                dialog.setMessage("Are you sure you want to delete the selected file(s)?");
+
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                vault_list.setAdapter(vault_adapter);
+                                vault_list.setSelection(position_scroll);
+                                imageAdapter = new ImageAdapter();
+                                gridView.setAdapter(imageAdapter);
+                                thumbnailsselection = new boolean[thumbImage.size()];
+                                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                menu_toggle.findItem(R.id.save).setVisible(false);
+                                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                        dialog.dismiss();
+                        //toggle_move = false;
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        JSONArray array = new JSONArray();
+                        pd = new ProgressDialog(mActivity);
+                        pd.setMessage("Deleting .....");
+                        pd.show();
+                        toggle_move = false;
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+                            JSONObject imageobject = new JSONObject();
+                            if (thumbnailsselection[i]) {
+
+                                try {
+                                    //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+
+                                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(i).get("Personal3").contains(".jpg") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                        if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                        } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                            imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                        } else {
+                                            imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                        }
+                                        imageobject.put("Type", "1");
+                                        imageobject.put("ThumbFile", "");
+                                        imageobject.put("Status", "");
+                                    } else {
+                                        if (thumbImage.get(i).get("Personal3").contains(".png")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.png", "_thumb.png");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".PNG")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.PNG", "_thumb.PNG");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".jpg")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.jpg", "_thumb.jpg");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else if (thumbImage.get(i).get("Personal3").contains(".JPG")) {
+                                            String thumbimg = thumbImage.get(i).get("Personal3").replaceAll("\\.JPG", "_thumb.JPG");
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            if (thumbimg.startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else if (thumbimg.contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("ThumbFile", thumbimg);
+                                            } else {
+                                                imageobject.put("ThumbFile", patientId + "/FileVault/Personal/" + thumbimg);
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("Status", "");
+                                        } else {
+                                            if (thumbImage.get(i).get("Personal3").startsWith(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else if (thumbImage.get(i).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                                                imageobject.put("Key", thumbImage.get(i).get("Personal3"));
+                                            } else {
+                                                imageobject.put("Key", patientId + "/FileVault/Personal/" + thumbImage.get(i).get("Personal3"));
+                                            }
+                                            imageobject.put("Type", "0");
+                                            imageobject.put("ThumbFile", "");
+                                            imageobject.put("Status", "");
+                                        }
+                                    }
+
+                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                                    + ",";
+                                            System.out.println(i);*/
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                                array.put(imageobject);
+                            }
+
+                        }
+
+                        System.out.println(array);
+
+                        queue2 = Volley.newRequestQueue(mActivity);
+
+                        sendData = new JSONObject();
+                        try {
+                            sendData.put("ObjectList", array);
+                            sendData.put("UserId", patientId);
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
+                        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
+                        String url = sttc_holdr.request_Url();
+                        jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                System.out.println(response);
+
+                                try {
+                                    Toast.makeText(mActivity, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                            .show();
+                                    // S3Objects.clear();
+                                    pd.dismiss();
+                                    refresh();
+
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch
+                                    // block
+                                    e.printStackTrace();
+                                }
+
+                                // queue.add(jr);
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                pd.dismiss();
+                                Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        queue2.add(jr2);
+
+
+                    }
+                });
+                dialog.show();
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void changeGridViewToListView() {
+        if (!view_list) {
+            check_grid = 0;
+            show_menu = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    show_menu = 1;
+                    check_grid = 1;
+                    break;
+                }
+            }
+            if (show_menu == 1) {
+                menu_toggle.findItem(R.id.action_move).setVisible(true);
+                menu_toggle.findItem(R.id.save).setVisible(true);
+                menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            } else {
+                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                menu_toggle.findItem(R.id.save).setVisible(false);
+                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            }
+            gridView.setVisibility(View.VISIBLE);
+            imageAdapter.notifyDataSetChanged();
+                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
+                    vault_list.setAdapter(vault_adapter);*/
+            list_header.setVisibility(View.GONE);
+            list_header2.setVisibility(View.GONE);
+            vault_list.setVisibility(View.GONE);
+            menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_list);
+            view_list = true;
+            refresh_vault1 = true;
+            check_view = "Grid";
+        } else {
+            check = 0;
+            show_menu1 = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    show_menu1 = 1;
+                    check = 1;
+                    break;
+                }
+            }
+            if (show_menu1 == 1) {
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                menu_toggle.findItem(R.id.action_move).setVisible(true);
+                menu_toggle.findItem(R.id.save).setVisible(true);
+                menu_toggle.findItem(R.id.action_delete).setVisible(true);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_list.setVisibility(View.VISIBLE);
+                gridView.setVisibility(View.GONE);
+            } else {
+                list_header.setVisibility(View.VISIBLE);
+                list_header2.setVisibility(View.GONE);
+                vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+                vault_list.setAdapter(vault_adapter);
+                vault_list.setSelection(position_scroll);
+                vault_list.setVisibility(View.VISIBLE);
+                gridView.setVisibility(View.GONE);
+                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                menu_toggle.findItem(R.id.save).setVisible(false);
+                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                menu_toggle.findItem(R.id.action_home).setVisible(false);
+            }
+                    /*list_header.setVisibility(View.VISIBLE);
+                    list_header2.setVisibility(View.GONE);
+                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_list.setAdapter(vault_adapter);
+                    vault_list.setVisibility(View.VISIBLE);
+                    gridView.setVisibility(View.GONE);
+                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*/
+            menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);
+            view_list = false;
+            refresh_vault1 = false;
+            check_view = "List";
+        }
+
+    }
+
+    private void moveFile() {
+        checkdialog = 0;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please Select file(s).", Toast.LENGTH_SHORT).show();
+        }  else if (!view_list) {
+            if (!view_list/* && !toggle_move*/ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                list_header.setVisibility(View.GONE);
+                list_header2.setVisibility(View.VISIBLE);
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                toggle_move = true;
+                checkdialog = 0;
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        checkdialog = 1;
+                        break;
+                    }
+                }
+                if (checkdialog == 1) {
+
+                    AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                    dialog.setTitle("Move");
+                    dialog.setMessage("Are you sure you want to move the selected file(s)?");
+
+                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            dialog.dismiss();
+                            check_para = 0;
+                            select_times = 0;
+                        }
+                    });
+
+                    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alias_thumbImage_folder.clear();
+                            rem_dup_folder = new String[thumbImage.size()];
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+                                if (thumbnailsselection[i]) {
+                                    if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(i).get("Personal3").contains(".jpg")
+                                            && !thumbImage.get(i).get("Personal3").contains(".JPG") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                        rem_dup_folder[i] = thumbImage.get(i).get("Personal3");
+                                    }
+                                }
+                            }
+                            check_para = 0;
+                            select_times = 0;
+                            moveFolder1 = foldername();
+                                          if (rem_dup_folder != null/* && !rem_dup_folder.equalsIgnoreCase("")*/) {
+                                for (int r = 0; r < moveFolder1.size(); r++) {
+                                    for (int l = 0; l < rem_dup_folder.length; l++) {
+                                        if (moveFolder1.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
+                                            moveFolder1.remove(r);
+                                        }
+                                    }
+
+                                }
+                            }
+                            alias_thumbImage_folder.addAll(moveFolder1);
+
+
+                            final Dialog move_dialog = new Dialog(mActivity);
+                            move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            //setting custom layout to dialog
+                            move_dialog.setContentView(R.layout.move_folderlist);
+                            ListView folder_list = (ListView) move_dialog.findViewById(R.id.folder_list);
+                            Button move_btn = (Button) move_dialog.findViewById(R.id.move_btn);
+                            final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
+                            folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                            folder_root.setEnabled(false);
+                            folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, "");
+                            folder_list.setAdapter(folder_adapter);
+                            folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    if (!thumbImage.get(position).get("Personal3").contains(".PNG") && !thumbImage.get(position).get("Personal3").contains(".png") &&
+                                            !thumbImage.get(position).get("Personal3").contains(".jpg") && !thumbImage.get(position).get("Personal3").contains(".JPG")
+                                            && !thumbImage.get(position).get("Personal3").contains(".pdf")
+                                            && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")) {
+                                        Folder_Clicked = moveFolder1.get(position).get("folder_name");
+                                        HashKey = moveFolder1.get(position).get("hash_keyvalue");
+                                        nextdialog();
+                                        move_dialog.dismiss();
+                                    }
+                                }
+                            });
+                            move_btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
+                                        Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(final DialogInterface arg0) {
+                                    //folder_path.clear();
+                                }
+                            });
+
+                            move_dialog.show();
+                        }
+                    });
+                    dialog.show();
+                } else
+
+                {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Move");
+                dialog.setMessage("Are you sure you want to move the selected file(s) or Folder(s)?");
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alias_thumbImage_folder.clear();
+                        rem_dup_folder = new String[thumbImage.size()];
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+                            if (thumbnailsselection[i]) {
+
+                                //imageId.add(patientId+"/FileVault/"+thumbImage.get(i).get("folder_name"));
+                                if (!thumbImage.get(i).get("Personal3").contains(".PNG") && !thumbImage.get(i).get("Personal3").contains(".png") &&
+                                        !thumbImage.get(i).get("Personal3").contains(".jpg")
+                                        && !thumbImage.get(i).get("Personal3").contains(".JPG") && !thumbImage.get(i).get("Personal3").contains(".pdf")
+                                        && !thumbImage.get(i).get("Personal3").contains(".xls") && !thumbImage.get(i).get("Personal3").contains(".doc")) {
+                                    rem_dup_folder[i] = thumbImage.get(i).get("Personal3");
+                                }
+                            }
+                        }
+                        moveFolder2 = foldername();
+                        if (rem_dup_folder != null /*&& !rem_dup_folder.equalsIgnoreCase("")*/) {
+                            for (int r = 0; r < moveFolder2.size(); r++) {
+                                for (int l = 0; l < rem_dup_folder.length; l++) {
+                                    if (moveFolder2.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
+                                        moveFolder2.remove(r);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        alias_thumbImage_folder.addAll(moveFolder2);
+                        final Dialog move_dialog = new Dialog(mActivity);
+                        move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        //setting custom layout to dialog
+                        move_dialog.setContentView(R.layout.move_folderlist);
+                        Button move_btn = (Button) move_dialog.findViewById(R.id.move_btn);
+                        ListView folder_list = (ListView) move_dialog.findViewById(R.id.folder_list);
+                        final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
+                        folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        folder_root.setEnabled(false);
+                        folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, "");
+                        folder_list.setAdapter(folder_adapter);
+                        folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                if (!thumbImage.get(position).get("Personal3").contains(".PNG") && !thumbImage.get(position).get("Personal3").contains(".png") &&
+                                        !thumbImage.get(position).get("Personal3").contains(".jpg") && !thumbImage.get(position).get("Personal3").contains(".JPG")
+                                        && !thumbImage.get(position).get("Personal3").contains(".pdf")
+                                        && !thumbImage.get(position).get("Personal3").contains(".xls") && !thumbImage.get(position).get("Personal3").contains(".doc")) {
+                                    Folder_Clicked = moveFolder2.get(position).get("folder_name");
+                                    HashKey = moveFolder2.get(position).get("hash_keyvalue");
+                                    nextdialog();
+                                    move_dialog.dismiss();
+                                }
+                            }
+                        });
+                        move_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
+                                    Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        move_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(final DialogInterface arg0) {
+                                // folder_path.clear();
+                            }
+                        });
+                        move_dialog.show();
+                    }
+                });
+                dialog.show();
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void saveFile() {
+        checkdialog = 0;
+        for (int i = 0; i < thumbnailsselection.length; i++) {
+            if (thumbnailsselection[i]) {
+                checkdialog = 1;
+                toggle_move = false;
+                break;
+            }
+        }
+        if (toggle_move && check_para == 1) {
+            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+        } else if (toggle_move && checkdialog == 0) {
+            list_header.setVisibility(View.VISIBLE);
+            list_header2.setVisibility(View.GONE);
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+            vault_list.setAdapter(vault_adapter);
+            vault_list.setSelection(position_scroll);
+            thumbnailsselection = new boolean[thumbImage.size()];
+            toggle_move = false;
+        } else if (!view_list) {
+            if (!view_list /*&& !toggle_move */ || checkdialog == 1) {
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        position_scroll = i;
+                    }
+                }
+                vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
+                vault_list.setAdapter(vault_delete_adapter);
+                vault_list.setSelection(position_scroll);
+                vault_delete_adapter.notifyDataSetChanged();
+                list_header2.setVisibility(View.VISIBLE);
+                list_header.setVisibility(View.GONE);
+                toggle_move = true;
+                checkdialog = 0;
+                for (int i = 0; i < thumbnailsselection.length; i++) {
+                    if (thumbnailsselection[i]) {
+                        checkdialog = 1;
+                        //toggle_move = false;
+                        break;
+                    }
+                }
+
+                if (checkdialog == 1) {
+
+                    AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                    dialog.setTitle("Save");
+                    dialog.setMessage("Are you sure you want to save the selected file(s)?");
+
+                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int id) {
+                                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                    vault_list.setAdapter(vault_adapter);
+                                    vault_list.setSelection(position_scroll);
+                                    thumbnailsselection = new boolean[thumbImage.size()];
+                                    imageAdapter = new ImageAdapter();
+                                    gridView.setAdapter(imageAdapter);
+                                    menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                    menu_toggle.findItem(R.id.save).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                            dialog.dismiss();
+                            check_para = 0;
+                                    /*toggle_move = false;*/
+
+                        }
+                    });
+
+                    dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ipos = 0;
+                            toggle_move = false;
+                            Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                            check_para = 0;
+                            for (int i = 0; i < thumbnailsselection.length; i++) {
+
+
+                                if (thumbnailsselection[i]) {
+
+                                    ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
+                                            new Response.Listener<Bitmap>() {
+
+                                                @Override
+                                                public void onResponse(Bitmap response) {
+                                                    String fname = "";
+
+                                                    ipos++;
+                                                    final Bitmap newbitMap = response;
+
+                                                    if (newbitMap != null) {
+                                                        Calendar cal = Calendar.getInstance();
+                                                        File myDir = new File(path);
+                                                        myDir.mkdirs();
+                                                        fname = "Image-" + String.valueOf(cal.getTimeInMillis()) + ".jpg";
+                                                        File file = new File(myDir, fname);
+                                                        if (file.exists())
+                                                            file.delete();
+                                                        try {
+                                                            FileOutputStream out = new FileOutputStream(file);
+                                                            newbitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                                                            out.flush();
+                                                            out.close();
+
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                        if (Build.VERSION.SDK_INT >= 19) {
+                                                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                                                            File f = new File(path, fname);
+                                                            Uri contentUri = Uri.fromFile(f);
+                                                            mediaScanIntent.setData(contentUri);
+                                                            mActivity.sendBroadcast(mediaScanIntent);
+                                                        } else {
+                                                            mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                    + Environment.getExternalStorageDirectory())));
+                                                        }
+
+                                                    }
+
+                                                    nHandler.createSimpleNotification(mActivity, ipos, fname);
+
+                                                }
+                                            }, 0, 0, null, null);
+
+                                    queue3.add(ir);
+
+                                }
+
+                            }
+
+                        }
+                    });
+                    dialog.show();
+
+                } else {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            checkdialog = 0;
+            for (int i = 0; i < thumbnailsselection.length; i++) {
+                if (thumbnailsselection[i]) {
+                    checkdialog = 1;
+                    break;
+                }
+            }
+
+            if (checkdialog == 1) {
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
+                dialog.setTitle("Save");
+                dialog.setMessage("Are you sure you want to save the selected file(s)?");
+
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                vault_list.setAdapter(vault_adapter);
+                                vault_list.setSelection(position_scroll);
+                                thumbnailsselection = new boolean[thumbImage.size()];
+                                imageAdapter = new ImageAdapter();
+                                gridView.setAdapter(imageAdapter);
+                                menu_toggle.findItem(R.id.action_move).setVisible(false);
+                                menu_toggle.findItem(R.id.save).setVisible(false);
+                                menu_toggle.findItem(R.id.action_delete).setVisible(false);
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                        dialog.dismiss();
+                        // toggle_move = false;
+
+                    }
+                });
+
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ipos = 0;
+                        toggle_move = false;
+                        Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+
+                        for (int i = 0; i < thumbnailsselection.length; i++) {
+
+                            if (thumbnailsselection[i]) {
+
+                                ImageRequest ir = new ImageRequest("https://files.healthscion.com/" + thumbImage.get(i).get("Personal3"),
+                                        new Response.Listener<Bitmap>() {
+
+                                            @Override
+                                            public void onResponse(Bitmap response) {
+                                                String fname = "";
+
+                                                ipos++;
+                                                final Bitmap newbitMap = response;
+
+                                                if (newbitMap != null) {
+                                                    Calendar cal = Calendar.getInstance();
+                                                    File myDir = new File(path);
+                                                    myDir.mkdirs();
+                                                    fname = "Image-" + String.valueOf(cal.getTimeInMillis()) + ".jpg";
+                                                    File file = new File(myDir, fname);
+                                                    if (file.exists())
+                                                        file.delete();
+                                                    try {
+                                                        FileOutputStream out = new FileOutputStream(file);
+                                                        newbitMap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                                                        out.flush();
+                                                        out.close();
+
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    if (Build.VERSION.SDK_INT >= 19) {
+                                                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                                                        File f = new File(path, fname);
+                                                        Uri contentUri = Uri.fromFile(f);
+                                                        mediaScanIntent.setData(contentUri);
+                                                        mActivity.sendBroadcast(mediaScanIntent);
+                                                    } else {
+                                                        mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                + Environment.getExternalStorageDirectory())));
+                                                    }
+
+                                                }
+
+                                                nHandler.createSimpleNotification(mActivity, ipos, fname);
+
+                                            }
+                                        }, 0, 0, null, null);
+
+                                queue3.add(ir);
+
+                            }
+
+                        }
+
+                    }
+                });
+                dialog.show();
+
+            } else {
+                Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    private void headerBackButton() {
+        if (!toggle_move) {
+          /*  super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        } else if (!view_list) {
+            list_header.setVisibility(View.VISIBLE);
+            list_header2.setVisibility(View.GONE);
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
+            vault_list.setAdapter(vault_adapter);
+            toggle_move = false;
+            check_para = 0;
+            select_times = 0;
+            menu_toggle.findItem(R.id.action_delete).setVisible(false);
+            menu_toggle.findItem(R.id.save).setVisible(false);
+            menu_toggle.findItem(R.id.action_move).setVisible(false);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
+            thumbnailsselection = new boolean[thumbImage.size()];
+        } else {
+           /* super.onBackPressed();*/
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            thumbImage.clear();
+            originalVaultlist.clear();
+            mActivity.finish();
+        }
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.delete, menu);
+        menu_toggle = menu;
+        menu_toggle.findItem(R.id.action_home).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @SuppressWarnings("deprecation")
@@ -1131,19 +2378,18 @@ public class Filevault extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                if (!toggle_move) {
-          /*  super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+            /*    if (!toggle_move) {
+          *//*  super.onBackPressed();*//*
+                    Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
                     originalVaultlist.clear();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    finish();
+                    mActivity.finish();
                 } else if (!view_list) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
-                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     toggle_move = false;
                     check_para = 0;
@@ -1151,23 +2397,22 @@ public class Filevault extends BaseActivity {
                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
                     menu_toggle.findItem(R.id.save).setVisible(false);
                     menu_toggle.findItem(R.id.action_move).setVisible(false);
-                    menu_toggle.findItem(R.id.action_home).setVisible(true);
+                    menu_toggle.findItem(R.id.action_home).setVisible(false);
                     thumbnailsselection = new boolean[thumbImage.size()];
                 } else {
-           /* super.onBackPressed();*/
-                    Intent intent = new Intent(getApplicationContext(), logout.class);
+           *//* super.onBackPressed();*//*
+                    Intent intent = new Intent(mActivity, DashBoardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     thumbImage.clear();
                     originalVaultlist.clear();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    finish();
+                    mActivity.finish();
                 }
                 return true;
-
+*/
             case R.id.select_all:
 
-                if (select_times != 0 && !view_list) {
+                /*if (select_times != 0 && !view_list) {
                     if (check % 2 == 0) {
 
                         for (int i = 0; i < thumbnailsselection.length; i++) {
@@ -1185,7 +2430,7 @@ public class Filevault extends BaseActivity {
                             menu_toggle.findItem(R.id.action_delete).setVisible(false);
                             menu_toggle.findItem(R.id.save).setVisible(false);
                             menu_toggle.findItem(R.id.action_move).setVisible(false);
-                            menu_toggle.findItem(R.id.action_home).setVisible(true);
+                            menu_toggle.findItem(R.id.action_home).setVisible(false);
                         }
                     }
                     check++;
@@ -1205,7 +2450,7 @@ public class Filevault extends BaseActivity {
                             menu_toggle.findItem(R.id.action_delete).setVisible(false);
                             menu_toggle.findItem(R.id.save).setVisible(false);
                             menu_toggle.findItem(R.id.action_move).setVisible(false);
-                            menu_toggle.findItem(R.id.action_home).setVisible(true);
+                            menu_toggle.findItem(R.id.action_home).setVisible(false);
                         }
                     }
                     check_grid++;
@@ -1213,12 +2458,12 @@ public class Filevault extends BaseActivity {
                 select_times = 1;
                 toggle_move = true;
                 check_para = 1;
-                imageAdapter = new ImageAdapter();
+                imageAdapter = new RepositoryFragment.ImageAdapter();
                 gridView.setAdapter(imageAdapter);
                 if (!view_list) {
-                    vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                    vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                     vault_list.setAdapter(vault_delete_adapter);
-                  /*  vault_delete_adapter.notifyDataSetChanged();*/
+                  *//*  vault_delete_adapter.notifyDataSetChanged();*//*
                     list_header2.setVisibility(View.VISIBLE);
                     list_header.setVisibility(View.GONE);
                     menu_toggle.findItem(R.id.action_delete).setVisible(true);
@@ -1226,7 +2471,7 @@ public class Filevault extends BaseActivity {
                     menu_toggle.findItem(R.id.action_move).setVisible(true);
                     menu_toggle.findItem(R.id.action_home).setVisible(false);
                 }
-                return true;
+                return true;*/
 
             case R.id.action_home:
                 // try {
@@ -1247,14 +2492,14 @@ public class Filevault extends BaseActivity {
                 // Toast.LENGTH_SHORT).show();
                 // }
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(mActivity, DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
-                finish();
+                mActivity.finish();
                 return true;
 
             case R.id.save:
-                checkdialog = 0;
+                /*checkdialog = 0;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
                         checkdialog = 1;
@@ -1263,23 +2508,23 @@ public class Filevault extends BaseActivity {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                 } else if (toggle_move && checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
-                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     vault_list.setSelection(position_scroll);
                     thumbnailsselection = new boolean[thumbImage.size()];
                     toggle_move = false;
                 } else if (!view_list) {
-                    if (!view_list /*&& !toggle_move */ || checkdialog == 1) {
+                    if (!view_list *//*&& !toggle_move *//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
                             }
                         }
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         vault_delete_adapter.notifyDataSetChanged();
@@ -1297,14 +2542,14 @@ public class Filevault extends BaseActivity {
 
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                            AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                             dialog.setTitle("Save");
                             dialog.setMessage("Are you sure you want to save the selected file(s)?");
 
                             dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int id) {
-                                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                                   *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                     vault_list.setAdapter(vault_adapter);
                                     vault_list.setSelection(position_scroll);
                                     thumbnailsselection = new boolean[thumbImage.size()];
@@ -1313,10 +2558,10 @@ public class Filevault extends BaseActivity {
                                     menu_toggle.findItem(R.id.action_move).setVisible(false);
                                     menu_toggle.findItem(R.id.save).setVisible(false);
                                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                     dialog.dismiss();
                                     check_para = 0;
-                                    /*toggle_move = false;*/
+                                    *//*toggle_move = false;*//*
 
                                 }
                             });
@@ -1328,7 +2573,7 @@ public class Filevault extends BaseActivity {
 
                                     ipos = 0;
                                     toggle_move = false;
-                                    Toast.makeText(Filevault.this, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
                                     check_para = 0;
                                     for (int i = 0; i < thumbnailsselection.length; i++) {
 
@@ -1368,15 +2613,15 @@ public class Filevault extends BaseActivity {
                                                                     File f = new File(path, fname);
                                                                     Uri contentUri = Uri.fromFile(f);
                                                                     mediaScanIntent.setData(contentUri);
-                                                                    sendBroadcast(mediaScanIntent);
+                                                                    mActivity.sendBroadcast(mediaScanIntent);
                                                                 } else {
-                                                                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                    mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                                                                             + Environment.getExternalStorageDirectory())));
                                                                 }
 
                                                             }
 
-                                                            nHandler.createSimpleNotification(Filevault.this, ipos, fname);
+                                                            nHandler.createSimpleNotification(mActivity, ipos, fname);
 
                                                         }
                                                     }, 0, 0, null, null);
@@ -1392,7 +2637,7 @@ public class Filevault extends BaseActivity {
                             dialog.show();
 
                         } else {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -1406,14 +2651,14 @@ public class Filevault extends BaseActivity {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Save");
                         dialog.setMessage("Are you sure you want to save the selected file(s)?");
 
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 thumbnailsselection = new boolean[thumbImage.size()];
@@ -1422,7 +2667,7 @@ public class Filevault extends BaseActivity {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 // toggle_move = false;
 
@@ -1436,7 +2681,7 @@ public class Filevault extends BaseActivity {
 
                                 ipos = 0;
                                 toggle_move = false;
-                                Toast.makeText(Filevault.this, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, "Image(s) would be saved on " + path, Toast.LENGTH_SHORT).show();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
 
@@ -1475,15 +2720,15 @@ public class Filevault extends BaseActivity {
                                                                 File f = new File(path, fname);
                                                                 Uri contentUri = Uri.fromFile(f);
                                                                 mediaScanIntent.setData(contentUri);
-                                                                sendBroadcast(mediaScanIntent);
+                                                                mActivity.sendBroadcast(mediaScanIntent);
                                                             } else {
-                                                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                                                                mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
                                                                         + Environment.getExternalStorageDirectory())));
                                                             }
 
                                                         }
 
-                                                        nHandler.createSimpleNotification(Filevault.this, ipos, fname);
+                                                        nHandler.createSimpleNotification(mActivity, ipos, fname);
 
                                                     }
                                                 }, 0, 0, null, null);
@@ -1499,14 +2744,14 @@ public class Filevault extends BaseActivity {
                         dialog.show();
 
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
 
                 }
-                return true;
+                return true;*/
 
             case R.id.action_delete:
-                checkdialog = 0;
+               /* checkdialog = 0;
                 toggle_move = false;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
@@ -1516,16 +2761,16 @@ public class Filevault extends BaseActivity {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
-                } /*else if (toggle_move && checkdialog == 0) {
+                    Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                } *//*else if (toggle_move && checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     thumbnailsselection = new boolean[thumbImage.size()];
                     toggle_move = false;
-                }*/ else if (!view_list) {
-                    if (!view_list /*&& !toggle_move*/ || checkdialog == 1) {
+                }*//* else if (!view_list) {
+                    if (!view_list *//*&& !toggle_move*//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
@@ -1533,7 +2778,7 @@ public class Filevault extends BaseActivity {
                         }
                         list_header.setVisibility(View.GONE);
                         list_header2.setVisibility(View.VISIBLE);
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         toggle_move = true;
@@ -1541,7 +2786,7 @@ public class Filevault extends BaseActivity {
                         //checkdialog = 0;
                         if (checkdialog == 1) {
 
-                            final Dialog dialog = new Dialog(this);
+                            final Dialog dialog = new Dialog(mActivity);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dialog.setContentView(R.layout.unsaved_alert_dialog);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -1573,7 +2818,7 @@ public class Filevault extends BaseActivity {
 
                                 @Override
                                 public void onClick(View v) {
-                                    pd = new ProgressDialog(Filevault.this);
+                                    pd = new ProgressDialog(mActivity);
                                     pd.setMessage("Deleting .....");
                                     pd.show();
                                     toggle_move = false;
@@ -1690,9 +2935,9 @@ public class Filevault extends BaseActivity {
 
                                                 }
 
-                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*/
+                                            System.out.println(i);*//*
                                             } catch (JSONException e) {
                                                 // TODO Auto-generated catch block
                                                 e.printStackTrace();
@@ -1706,7 +2951,7 @@ public class Filevault extends BaseActivity {
 
                                     System.out.println(array);
 
-                                    queue2 = Volley.newRequestQueue(Filevault.this);
+                                    queue2 = Volley.newRequestQueue(mActivity);
 
                                     sendData = new JSONObject();
                                     try {
@@ -1717,16 +2962,16 @@ public class Filevault extends BaseActivity {
                                         e.printStackTrace();
                                     }
 
-				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
-                                    StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+                                    StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                     String url = sttc_holdr.request_Url();
-                                    jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                    jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
                                             System.out.println(response);
 
                                             try {
-                                                Toast.makeText(Filevault.this, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                                Toast.makeText(mActivity, " Item(s) successfully deleted.", Toast.LENGTH_SHORT)
                                                         .show();
                                                 //  S3Objects.clear();
                                                 pd.dismiss();
@@ -1744,16 +2989,16 @@ public class Filevault extends BaseActivity {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             pd.dismiss();
-                                            Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
                                         }
-                                    });/* {
+                                    });*//* {
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> headers = new HashMap<String, String>();
                                         headers.put("Cookie", Services.hoja);
                                         return headers;
                                     }
-                                };*/
+                                };*//*
                                     queue2.add(jr2);
                                     dialog.dismiss();
                                 }
@@ -1762,7 +3007,7 @@ public class Filevault extends BaseActivity {
 
                             dialog.show();
                         } else {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -1776,14 +3021,14 @@ public class Filevault extends BaseActivity {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Delete");
                         dialog.setMessage("Are you sure you want to delete the selected file(s)?");
 
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 imageAdapter = new ImageAdapter();
@@ -1792,7 +3037,7 @@ public class Filevault extends BaseActivity {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 //toggle_move = false;
 
@@ -1805,7 +3050,7 @@ public class Filevault extends BaseActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 JSONArray array = new JSONArray();
-                                pd = new ProgressDialog(Filevault.this);
+                                pd = new ProgressDialog(mActivity);
                                 pd.setMessage("Deleting .....");
                                 pd.show();
                                 toggle_move = false;
@@ -1920,9 +3165,9 @@ public class Filevault extends BaseActivity {
                                                 }
                                             }
 
-                                         /*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*/
+                                            System.out.println(i);*//*
                                         } catch (Exception e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -1934,7 +3179,7 @@ public class Filevault extends BaseActivity {
 
                                 System.out.println(array);
 
-                                queue2 = Volley.newRequestQueue(Filevault.this);
+                                queue2 = Volley.newRequestQueue(mActivity);
 
                                 sendData = new JSONObject();
                                 try {
@@ -1945,16 +3190,16 @@ public class Filevault extends BaseActivity {
                                     e.printStackTrace();
                                 }
 
-				/*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*/
-                                StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
+				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+                                StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.DeleteObject);
                                 String url = sttc_holdr.request_Url();
-                                jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                                jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         System.out.println(response);
 
                                         try {
-                                            Toast.makeText(Filevault.this, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
+                                            Toast.makeText(mActivity, "Item(s) successfully deleted.", Toast.LENGTH_SHORT)
                                                     .show();
                                             // S3Objects.clear();
                                             pd.dismiss();
@@ -1973,7 +3218,7 @@ public class Filevault extends BaseActivity {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
                                         pd.dismiss();
-                                        Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 queue2.add(jr2);
@@ -1983,13 +3228,13 @@ public class Filevault extends BaseActivity {
                         });
                         dialog.show();
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
                 return true;
 
             case R.id.action_listview:
-                if (!view_list) {
+                /*if (!view_list) {
                     check_grid = 0;
                     show_menu = 0;
                     for (int i = 0; i < thumbnailsselection.length; i++) {
@@ -2008,12 +3253,12 @@ public class Filevault extends BaseActivity {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                     gridView.setVisibility(View.VISIBLE);
                     imageAdapter.notifyDataSetChanged();
-                   /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
-                    vault_list.setAdapter(vault_adapter);*/
+                   *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId);
+                    vault_list.setAdapter(vault_adapter);*//*
                     list_header.setVisibility(View.GONE);
                     list_header2.setVisibility(View.GONE);
                     vault_list.setVisibility(View.GONE);
@@ -2032,7 +3277,7 @@ public class Filevault extends BaseActivity {
                         }
                     }
                     if (show_menu1 == 1) {
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         menu_toggle.findItem(R.id.action_move).setVisible(true);
@@ -2046,7 +3291,7 @@ public class Filevault extends BaseActivity {
                     } else {
                         list_header.setVisibility(View.VISIBLE);
                         list_header2.setVisibility(View.GONE);
-                        vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                        vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                         vault_list.setAdapter(vault_adapter);
                         vault_list.setSelection(position_scroll);
                         vault_list.setVisibility(View.VISIBLE);
@@ -2054,25 +3299,25 @@ public class Filevault extends BaseActivity {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
-                    /*list_header.setVisibility(View.VISIBLE);
+                    *//*list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     vault_list.setVisibility(View.VISIBLE);
                     gridView.setVisibility(View.GONE);
-                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*/
+                    menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);*//*
                     menu_toggle.findItem(R.id.action_listview).setIcon(R.drawable.ic_grid);
                     view_list = false;
                     refresh_vault1 = false;
                     check_view = "List";
                 }
-
+*/
                 return true;
 
             case R.id.action_move:
-                checkdialog = 0;
+                /*checkdialog = 0;
                 for (int i = 0; i < thumbnailsselection.length; i++) {
                     if (thumbnailsselection[i]) {
                         checkdialog = 1;
@@ -2081,16 +3326,16 @@ public class Filevault extends BaseActivity {
                     }
                 }
                 if (toggle_move && check_para == 1) {
-                    Toast.makeText(Filevault.this, "Please Select file(s).", Toast.LENGTH_SHORT).show();
-                } /*else if (*//*toggle_move &&*//* checkdialog == 0) {
+                    Toast.makeText(mActivity, "Please Select file(s).", Toast.LENGTH_SHORT).show();
+                } *//*else if (*//**//*toggle_move &&*//**//* checkdialog == 0) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     thumbnailsselection = new boolean[thumbImage.size()];
                    // toggle_move = false;
-                }*/ else if (!view_list) {
-                    if (!view_list/* && !toggle_move*/ || checkdialog == 1) {
+                }*//* else if (!view_list) {
+                    if (!view_list*//* && !toggle_move*//* || checkdialog == 1) {
                         for (int i = 0; i < thumbnailsselection.length; i++) {
                             if (thumbnailsselection[i]) {
                                 position_scroll = i;
@@ -2098,7 +3343,7 @@ public class Filevault extends BaseActivity {
                         }
                         list_header.setVisibility(View.GONE);
                         list_header2.setVisibility(View.VISIBLE);
-                        vault_delete_adapter = new Vault_delete_adapter(Filevault.this, thumbImage, view_list, patientId, thumbnailsselection, "");
+                        vault_delete_adapter = new Vault_delete_adapter(mActivity, thumbImage, view_list, patientId, thumbnailsselection, "");
                         vault_list.setAdapter(vault_delete_adapter);
                         vault_list.setSelection(position_scroll);
                         toggle_move = true;
@@ -2113,14 +3358,14 @@ public class Filevault extends BaseActivity {
                         }
                         if (checkdialog == 1) {
 
-                            AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                            AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                             dialog.setTitle("Move");
                             dialog.setMessage("Are you sure you want to move the selected file(s)?");
 
                             dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int id) {
-                                   /* list_header.setVisibility(View.VISIBLE);
+                                   *//* list_header.setVisibility(View.VISIBLE);
                                     list_header2.setVisibility(View.GONE);
                                     vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                     vault_list.setAdapter(vault_adapter);
@@ -2131,7 +3376,7 @@ public class Filevault extends BaseActivity {
                                     menu_toggle.findItem(R.id.action_move).setVisible(false);
                                     menu_toggle.findItem(R.id.save).setVisible(false);
                                     menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                    menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                     dialog.dismiss();
                                     check_para = 0;
                                     select_times = 0;
@@ -2161,7 +3406,7 @@ public class Filevault extends BaseActivity {
                                     check_para = 0;
                                     select_times = 0;
                                     moveFolder1 = foldername();
-                                /*JSONArray array = new JSONArray();
+                                *//*JSONArray array = new JSONArray();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
                                     JSONObject imageobject = new JSONObject();
@@ -2208,9 +3453,9 @@ public class Filevault extends BaseActivity {
                                                 }
                                             }
 
-                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//**//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*//*
+                                            System.out.println(i);*//**//*
                                         } catch (JSONException e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -2237,7 +3482,7 @@ public class Filevault extends BaseActivity {
                                     e.printStackTrace();
                                 }
 
-				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+				*//**//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//**//*
                                 StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.MoveObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2265,16 +3510,16 @@ public class Filevault extends BaseActivity {
                                     public void onErrorResponse(VolleyError error) {
                                         Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
-                                });*//* {
+                                });*//**//* {
                                     @Override
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> headers = new HashMap<String, String>();
                                         headers.put("Cookie", Services.hoja);
                                         return headers;
                                     }
-                                };*//*
-                                queue2.add(jr2);*/
-                                    if (rem_dup_folder != null/* && !rem_dup_folder.equalsIgnoreCase("")*/) {
+                                };*//**//*
+                                queue2.add(jr2);*//*
+                                    if (rem_dup_folder != null*//* && !rem_dup_folder.equalsIgnoreCase("")*//*) {
                                         for (int r = 0; r < moveFolder1.size(); r++) {
                                             for (int l = 0; l < rem_dup_folder.length; l++) {
                                                 if (moveFolder1.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
@@ -2285,9 +3530,9 @@ public class Filevault extends BaseActivity {
                                         }
                                     }
                                     alias_thumbImage_folder.addAll(moveFolder1);
-                                /*String[] stockArr = new String[moveFolder1.size()];
-                                stockArr = moveFolder1.toArray(stockArr);*/
-                                /*AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+                                *//*String[] stockArr = new String[moveFolder1.size()];
+                                stockArr = moveFolder1.toArray(stockArr);*//*
+                                *//*AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
                                 builder.setTitle("Make your selection");
                                 builder.setItems(stockArr, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int item) {
@@ -2296,9 +3541,9 @@ public class Filevault extends BaseActivity {
                                     }
                                 });
                                 AlertDialog alert = builder.create();
-                                alert.show();*/
+                                alert.show();*//*
 
-                                    final Dialog move_dialog = new Dialog(Filevault.this);
+                                    final Dialog move_dialog = new Dialog(mActivity);
                                     move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     //setting custom layout to dialog
                                     move_dialog.setContentView(R.layout.move_folderlist);
@@ -2307,7 +3552,7 @@ public class Filevault extends BaseActivity {
                                     final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
                                     folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     folder_root.setEnabled(false);
-                                    folder_adapter = new Folder_adapter(Filevault.this, moveFolder1, patientId, "");
+                                    folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, "");
                                     folder_list.setAdapter(folder_adapter);
                                     folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -2323,11 +3568,11 @@ public class Filevault extends BaseActivity {
                                             }
                                         }
                                     });
-                                    move_btn.setOnClickListener(new OnClickListener() {
+                                    move_btn.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
-                                                Toast.makeText(Filevault.this, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -2345,7 +3590,7 @@ public class Filevault extends BaseActivity {
                         } else
 
                         {
-                            Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -2359,14 +3604,14 @@ public class Filevault extends BaseActivity {
 
                     if (checkdialog == 1) {
 
-                        AlertDialog dialog = new AlertDialog.Builder(Filevault.this).create();
+                        AlertDialog dialog = new AlertDialog.Builder(mActivity).create();
                         dialog.setTitle("Move");
                         dialog.setMessage("Are you sure you want to move the selected file(s) or Folder(s)?");
 
                         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                               /* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                               *//* vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
                                 vault_list.setAdapter(vault_adapter);
                                 vault_list.setSelection(position_scroll);
                                 imageAdapter = new ImageAdapter();
@@ -2375,7 +3620,7 @@ public class Filevault extends BaseActivity {
                                 menu_toggle.findItem(R.id.action_move).setVisible(false);
                                 menu_toggle.findItem(R.id.save).setVisible(false);
                                 menu_toggle.findItem(R.id.action_delete).setVisible(false);
-                                menu_toggle.findItem(R.id.action_home).setVisible(true);*/
+                                menu_toggle.findItem(R.id.action_home).setVisible(true);*//*
                                 dialog.dismiss();
                                 //toggle_move = false;
 
@@ -2402,7 +3647,7 @@ public class Filevault extends BaseActivity {
                                 }
                                 moveFolder2 = foldername();
 
-                               /* JSONArray array = new JSONArray();
+                               *//* JSONArray array = new JSONArray();
 
                                 for (int i = 0; i < thumbnailsselection.length; i++) {
                                     JSONObject imageobject = new JSONObject();
@@ -2451,9 +3696,9 @@ public class Filevault extends BaseActivity {
                                                 }
                                             }
 
-                                         *//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
+                                         *//**//*   imageIdsToBeSent = imageIdsToBeSent + subArrayImage.getJSONObject(i).getString("ImageId")
                                                     + ",";
-                                            System.out.println(i);*//*
+                                            System.out.println(i);*//**//*
                                         } catch (Exception e) {
                                             // TODO Auto-generated catch block
                                             e.printStackTrace();
@@ -2476,7 +3721,7 @@ public class Filevault extends BaseActivity {
                                     e.printStackTrace();
                                 }
 
-				*//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//*
+				*//**//*		String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";*//**//*
                                 StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.DeleteObject);
                                 String url = sttc_holdr.request_Url();
                                 jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
@@ -2507,8 +3752,8 @@ public class Filevault extends BaseActivity {
                                     }
                                 });
                                 queue2.add(jr2);
-*/
-                                if (rem_dup_folder != null /*&& !rem_dup_folder.equalsIgnoreCase("")*/) {
+*//*
+                                if (rem_dup_folder != null *//*&& !rem_dup_folder.equalsIgnoreCase("")*//*) {
                                     for (int r = 0; r < moveFolder2.size(); r++) {
                                         for (int l = 0; l < rem_dup_folder.length; l++) {
                                             if (moveFolder2.get(r).get("folder_name").equalsIgnoreCase(rem_dup_folder[l])) {
@@ -2519,7 +3764,7 @@ public class Filevault extends BaseActivity {
                                     }
                                 }
                                 alias_thumbImage_folder.addAll(moveFolder2);
-                               /* String[] stockArr = new String[moveFolder2.size()];
+                               *//* String[] stockArr = new String[moveFolder2.size()];
                                 stockArr = moveFolder2.toArray(stockArr);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
                                 builder.setTitle("Make your selection");
@@ -2529,8 +3774,8 @@ public class Filevault extends BaseActivity {
                                     }
                                 });
                                 AlertDialog alert = builder.create();
-                                alert.show();*/
-                                final Dialog move_dialog = new Dialog(Filevault.this);
+                                alert.show();*//*
+                                final Dialog move_dialog = new Dialog(mActivity);
                                 move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 //setting custom layout to dialog
                                 move_dialog.setContentView(R.layout.move_folderlist);
@@ -2539,7 +3784,7 @@ public class Filevault extends BaseActivity {
                                 final TextView folder_root = (TextView) move_dialog.findViewById(R.id.folder_root);
                                 folder_root.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                 folder_root.setEnabled(false);
-                                folder_adapter = new Folder_adapter(Filevault.this, moveFolder2, patientId, "");
+                                folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, "");
                                 folder_list.setAdapter(folder_adapter);
                                 folder_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
@@ -2556,11 +3801,11 @@ public class Filevault extends BaseActivity {
                                         }
                                     }
                                 });
-                                move_btn.setOnClickListener(new OnClickListener() {
+                                move_btn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         if (folder_root.getText().toString().trim().equalsIgnoreCase("Root")) {
-                                            Toast.makeText(Filevault.this, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mActivity, "Please select a destination folder different from the current one.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -2575,12 +3820,12 @@ public class Filevault extends BaseActivity {
                         });
                         dialog.show();
                     } else {
-                        Toast.makeText(Filevault.this, "Please select file(s).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, "Please select file(s).", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 return true;
-
+*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -2588,7 +3833,7 @@ public class Filevault extends BaseActivity {
 
     private void chooseimage() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Filevault.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("Choose Image Source");
         builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera"},
                 new DialogInterface.OnClickListener() {
@@ -2602,7 +3847,11 @@ public class Filevault extends BaseActivity {
                                 startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
                                 break;
                             case 1:
-                                checkCameraPermission();
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                /* File photo = null;
                                 Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
                                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -2632,7 +3881,7 @@ public class Filevault extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
         // thumbImage.clear();
@@ -2642,10 +3891,10 @@ public class Filevault extends BaseActivity {
         help.folder_path.clear();
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(Filevault.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
             if (Helper.authentication_flag == true) {
-                finish();
+                mActivity.finish();
             }
         }
 
@@ -2654,17 +3903,16 @@ public class Filevault extends BaseActivity {
     public void onBackPressed() {
         if (!toggle_move) {
           /*  super.onBackPressed();*/
-            Intent intent = new Intent(getApplicationContext(), logout.class);
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             thumbImage.clear();
             originalVaultlist.clear();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            finish();
+            mActivity.finish();
         } else if (!view_list) {
             list_header.setVisibility(View.VISIBLE);
             list_header2.setVisibility(View.GONE);
-            vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+            vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
             vault_list.setAdapter(vault_adapter);
             toggle_move = false;
             check_para = 0;
@@ -2672,17 +3920,16 @@ public class Filevault extends BaseActivity {
             menu_toggle.findItem(R.id.action_delete).setVisible(false);
             menu_toggle.findItem(R.id.save).setVisible(false);
             menu_toggle.findItem(R.id.action_move).setVisible(false);
-            menu_toggle.findItem(R.id.action_home).setVisible(true);
+            menu_toggle.findItem(R.id.action_home).setVisible(false);
             thumbnailsselection = new boolean[thumbImage.size()];
         } else {
            /* super.onBackPressed();*/
-            Intent intent = new Intent(getApplicationContext(), logout.class);
+            Intent intent = new Intent(mActivity, DashBoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             thumbImage.clear();
             originalVaultlist.clear();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            finish();
+            mActivity.finish();
         }
     }
 
@@ -2774,9 +4021,9 @@ public class Filevault extends BaseActivity {
     }*/
 
     public void createLockFolder() {
-        req = Volley.newRequestQueue(this);
+        req = Volley.newRequestQueue(mActivity);
         mHandler = new Handler();
-        StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.CreateLockFolder);
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.CreateLockFolder);
         String url = sttc_holdr.request_Url();
         JSONObject data = new JSONObject();
         JSONArray array_folders = new JSONArray();
@@ -2784,13 +4031,14 @@ public class Filevault extends BaseActivity {
         array_folders.put("Insurance");
         array_folders.put("Bills");
         array_folders.put("Reports");
+        Log.e("Rishabh", "Patient id := "+patientId);
         try {
             data.put("list", array_folders);
             data.put("patientId", patientId);
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        lock_folder = new JsonObjectRequest(Method.POST, url, data, new Response.Listener<JSONObject>() {
+        lock_folder = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 startBackgroundprocess();
@@ -2798,26 +4046,26 @@ public class Filevault extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
         req.add(lock_folder);
     }
 
     private void startBackgroundprocess() {
+        originalVaultlist.clear();
+
         try {
             sendData.put("PatientId", id);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        nHandler = NotificationHandler.getInstance(this);
-        bar = (ProgressBar) findViewById(R.id.pg);
-        queue = Volley.newRequestQueue(this);
-        queue3 = Volley.newRequestQueue(this);
-        req = Volley.newRequestQueue(this);
-        mImageLoader = MyVolleySingleton.getInstance(Filevault.this).getImageLoader();
-        StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.GetAllObjectFromS3);
+        nHandler = NotificationHandler.getInstance(mActivity);
+        queue = Volley.newRequestQueue(mActivity);
+        queue3 = Volley.newRequestQueue(mActivity);
+        req = Volley.newRequestQueue(mActivity);
+        mImageLoader = MyVolleySingleton.getInstance(mActivity).getImageLoader();
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetAllObjectFromS3);
         String url = sttc_holdr.request_Url();
         JSONObject s3data = new JSONObject();
         try {
@@ -2826,11 +4074,12 @@ public class Filevault extends BaseActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        s3jr = new JsonObjectRequest(Method.POST, url, s3data, new Response.Listener<JSONObject>() {
+        s3jr = new JsonObjectRequest(Request.Method.POST, url, s3data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String data = response.getString("d");
+                    String data = response.optString("d");
+                    Log.e("Rishabh", "data := "+data);
                     JSONObject j = new JSONObject(data);
                     S3Objects_arr = j.getJSONArray("S3Objects");
                     thumbImage.clear();
@@ -2838,6 +4087,7 @@ public class Filevault extends BaseActivity {
                     HashMap<String, String> hmap;
                     HashMap<String, String> hmap_details;
                     S3Objects = new ArrayList<HashMap<String, String>>();
+                    S3Objects.clear();
                     for (int i = 0; i < S3Objects_arr.length(); i++) {
                         JSONObject json_obj = S3Objects_arr.getJSONObject(i);
                         hmap_details = new HashMap<String, String>();
@@ -2849,7 +4099,7 @@ public class Filevault extends BaseActivity {
 
                         String[] key_split = Folder.split("/");
                         hmap = new HashMap<String, String>();
-
+                        hmap.clear();
                         for (int k = 2; k < key_split.length; k++) {
 
                             if (!key_split[k].contains(".PNG") && !key_split[k].contains(".jpg") && !key_split[k].contains(".xls")
@@ -2886,7 +4136,6 @@ public class Filevault extends BaseActivity {
                     }
 
                     firsttime_fileShow(originalVaultlist);
-
                     HashMap<String, String> hmap1;
                     for (int i = 0; i < S3Objects.size(); i++) {
                         String check = S3Objects.get(i).get("folder_name");
@@ -2905,9 +4154,9 @@ public class Filevault extends BaseActivity {
                     }
                     new Helper().sortHashList(thumbImage, "Personal3");
                     thumbnailsselection = new boolean[thumbImage.size()];
-                    imageAdapter = new ImageAdapter();
+                    imageAdapter = new RepositoryFragment.ImageAdapter();
                     gridView.setAdapter(imageAdapter);
-                    vault_adapter = new Vault_adapter(Filevault.this, thumbImage, false, patientId, "");
+                    vault_adapter = new Vault_adapter(mActivity, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     alias_foldername();
                     if (check_view.equalsIgnoreCase("")) {
@@ -2941,7 +4190,7 @@ public class Filevault extends BaseActivity {
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                     }
                     if (S3Objects.size() != 0) {
                         menu_toggle.findItem(R.id.action_listview).setVisible(true);
@@ -2950,12 +4199,14 @@ public class Filevault extends BaseActivity {
                         menu_toggle.findItem(R.id.action_delete).setVisible(false);
                         menu_toggle.findItem(R.id.save).setVisible(false);
                         menu_toggle.findItem(R.id.action_move).setVisible(false);
-                        menu_toggle.findItem(R.id.action_home).setVisible(true);
+                        menu_toggle.findItem(R.id.action_home).setVisible(false);
                         warning_msg.setVisibility(View.GONE);
                     }
                 } catch (JSONException je) {
                     je.printStackTrace();
                 }
+
+                getBundleData();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -2968,7 +4219,14 @@ public class Filevault extends BaseActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         s3jr.setRetryPolicy(policy1);
         req.add(s3jr);
+    }
 
+    private void getBundleData(){
+        mBundleFromGallery = this.getArguments();
+
+        if(mBundleFromGallery != null ) {
+            getBundleFromGallery();
+        }
     }
 
     public void firsttime_fileShow(ArrayList<HashMap<String, String>> origin_list) {
@@ -3037,7 +4295,7 @@ public class Filevault extends BaseActivity {
 
     public void show_dialog() {
         // final Dialog overlay_dialog = new Dialog(Pkg_TabActivity.this, R.style.DialogSlideAnim);
-        final Dialog overlay_dialog = new Dialog(Filevault.this);
+        final Dialog overlay_dialog = new Dialog(mActivity);
         overlay_dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);//SOFT_INPUT_STATE_ALWAYS_HIDDEN
         overlay_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         // overlay_dialog.setCancelable(false);
@@ -3048,21 +4306,21 @@ public class Filevault extends BaseActivity {
         path.setVisibility(View.GONE);
         final EditText folder_name = (EditText) overlay_dialog.findViewById(R.id.folder_name);
         //opening keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) mActivity.getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(folder_name.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
         //
         folder_name.requestFocus();
         Button canceltxt = (Button) overlay_dialog.findViewById(R.id.cancel);
-        canceltxt.setOnClickListener(new OnClickListener() {
+        canceltxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 overlay_dialog.dismiss();
             }
         });
-        btn_continue.setOnClickListener(new OnClickListener() {
+        btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog progress = new ProgressDialog(Filevault.this);
+                final ProgressDialog progress = new ProgressDialog(mActivity);
 
                 progress.setCancelable(false);
                 //progress.setTitle("Logging in...");
@@ -3083,9 +4341,9 @@ public class Filevault extends BaseActivity {
                     } catch (JSONException EX) {
                         EX.printStackTrace();
                     }
-                    StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.CreateFolder);
+                    StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.CreateFolder);
                     String url = sttc_holdr.request_Url();
-                    JsonObjectRequest jr = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                    JsonObjectRequest jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
 
@@ -3095,13 +4353,13 @@ public class Filevault extends BaseActivity {
                                 String packagedata = response.getString("d");
                                 if (packagedata.equalsIgnoreCase("Error")) {
                                     progress.dismiss();
-                                    Toast.makeText(getApplicationContext(), "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
                                 } else if (packagedata.equalsIgnoreCase("Folder exist")) {
                                     progress.dismiss();
-                                    Toast.makeText(getApplicationContext(), "A folder already exists with this name.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, "A folder already exists with this name.", Toast.LENGTH_SHORT).show();
                                 } else if (packagedata.equalsIgnoreCase("Added")) {
                                     progress.dismiss();
-                                    Toast.makeText(getApplicationContext(), "Folder created successfully.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mActivity, "Folder created successfully.", Toast.LENGTH_LONG).show();
                                     refresh();
                                 }
 
@@ -3116,7 +4374,7 @@ public class Filevault extends BaseActivity {
                         public void onErrorResponse(VolleyError error) {
                             progress.dismiss();
                             overlay_dialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Server Connectivity Error, Try Later.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "Server Connectivity Error, Try Later.", Toast.LENGTH_SHORT).show();
 
                         }
                     }) {
@@ -3133,7 +4391,7 @@ public class Filevault extends BaseActivity {
 
     public void move_to_folder(final String newpath) {
 
-        pd = new ProgressDialog(Filevault.this);
+        pd = new ProgressDialog(mActivity);
         pd.setMessage("Moving .....");
         pd.show();
         toggle_move = false;
@@ -3257,7 +4515,7 @@ public class Filevault extends BaseActivity {
 
         System.out.println(array);
 
-        queue2 = Volley.newRequestQueue(Filevault.this);
+        queue2 = Volley.newRequestQueue(mActivity);
 
         sendData = new JSONObject();
         try {
@@ -3271,19 +4529,19 @@ public class Filevault extends BaseActivity {
         }
 
         //String url = Services.init + "PatientModule/PatientService.asmx/DeletePatientFiles";
-        StaticHolder sttc_holdr = new StaticHolder(Filevault.this, StaticHolder.Services_static.MoveObject);
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.MoveObject);
         String url = sttc_holdr.request_Url();
-        jr2 = new JsonObjectRequest(Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+        jr2 = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 System.out.println(response);
 
                 try {
                     if (response.getString("d").toString().equalsIgnoreCase("success")) {
-                        Toast.makeText(Filevault.this, "File(s) successfully moved to: " + newpath, Toast.LENGTH_LONG)
+                        Toast.makeText(mActivity, "File(s) successfully moved to: " + newpath, Toast.LENGTH_LONG)
                                 .show();
                     } else {
-                        Toast.makeText(Filevault.this, response.getString("d").toString(), Toast.LENGTH_LONG)
+                        Toast.makeText(mActivity, response.getString("d").toString(), Toast.LENGTH_LONG)
                                 .show();
                     }
                     pd.dismiss();
@@ -3303,7 +4561,7 @@ public class Filevault extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 pd.dismiss();
-                Toast.makeText(Filevault.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         queue2.add(jr2);
@@ -3390,7 +4648,7 @@ public class Filevault extends BaseActivity {
     }
 
     public void nextdialog() {
-        final Dialog move_dialog = new Dialog(Filevault.this);
+        final Dialog move_dialog = new Dialog(mActivity);
         move_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //setting custom layout to dialog
         move_dialog.setContentView(R.layout.move_folderlist);
@@ -3414,8 +4672,8 @@ public class Filevault extends BaseActivity {
             @Override
             public void run() {
                 if (S3Objects.size() == 0) {
-                    Toast.makeText(Filevault.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(mActivity, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    mActivity.finish();
                 } else {
                     thumbImage_folder.clear();
                     Show_Data(S3Objects_folder);
@@ -3428,7 +4686,7 @@ public class Filevault extends BaseActivity {
                         for (int k = 0; k < folder_path.size(); k++) {
                             buffer.append(folder_path.get(k) + "/");
                         }
-                        Log.v("buffer", buffer.toString());
+                        Log.e("Rishabh", "buffer  :== "+buffer.toString());
                         //String path_finder = first_timefolderclicked + "/" + buffer;
                         String[] make_path = buffer.toString().split("/");
                         StringBuffer path_buffer = new StringBuffer();
@@ -3439,10 +4697,10 @@ public class Filevault extends BaseActivity {
                                 path_buffer.append(make_path[i] + "/");
                             }
                         }
-                        Log.v("buffer_upload", path_buffer.toString());
+                        Log.e("Rishabh","buffer_upload  :== "+path_buffer.toString());
                         folder_list.setVisibility(View.VISIBLE);
                         empty_text.setVisibility(View.GONE);
-                        folder_adapter = new Folder_adapter(Filevault.this, dialog_folder, patientId, path_buffer.toString());
+                        folder_adapter = new Folder_adapter(mActivity, dialog_folder, patientId, path_buffer.toString());
                         folder_list.setAdapter(folder_adapter);
                     }
 
@@ -3458,7 +4716,7 @@ public class Filevault extends BaseActivity {
                     @Override
                     public void run() {
                         if (S3Objects.size() == 0) {
-                            Toast.makeText(Filevault.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "No Internet Connection", Toast.LENGTH_SHORT).show();
                             move_dialog.dismiss();
                         } else {
                             //dialog_folder = folder1();
@@ -3510,7 +4768,7 @@ public class Filevault extends BaseActivity {
                                 for (int k = 0; k < folder_path.size(); k++) {
                                     buffer.append(folder_path.get(k) + "/");
                                 }
-                                Log.v("buffer", buffer.toString());
+                                Log.e("Rishabh", "buffer inside directory :=  "+buffer.toString());
                                 //String path_finder = first_timefolderclicked + "/" + buffer;
                                 String[] make_path = buffer.toString().split("/");
                                 StringBuffer path_buffer = new StringBuffer();
@@ -3521,7 +4779,7 @@ public class Filevault extends BaseActivity {
                                         path_buffer.append(make_path[i] + "/");
                                     }
                                 }
-                                Log.v("buffer_upload", path_buffer.toString());
+                                Log.e("Rishabh","buffer_upload  inside directory := "+path_buffer.toString());
 
                                 if (dialog_folder.size() == 0) {
                                     folder_list.setVisibility(View.GONE);
@@ -3529,7 +4787,7 @@ public class Filevault extends BaseActivity {
                                 } else {
                                     folder_list.setVisibility(View.VISIBLE);
                                     empty_text.setVisibility(View.GONE);
-                                    folder_adapter = new Folder_adapter(Filevault.this, dialog_folder, patientId, path_buffer.toString());
+                                    folder_adapter = new Folder_adapter(mActivity, dialog_folder, patientId, path_buffer.toString());
                                     folder_list.setAdapter(folder_adapter);
                                 }
                             }
@@ -3538,18 +4796,10 @@ public class Filevault extends BaseActivity {
                 }, 100);
             }
         });
-        folder_root.setOnClickListener(new OnClickListener() {
+        folder_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  if (folder_path.size() == 1) {
-                    folder_list.setVisibility(View.VISIBLE);
-                    empty_text.setVisibility(View.GONE);
-                    if (moveFolder1.size() == 0) {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder2);
-                    } else {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder1);
-                    }
-                } else {*/
+
                 String path_string = folder_root.getText().toString().trim();
                 if (folder_path.size() == 1) {
                     folder_list.setVisibility(View.VISIBLE);
@@ -3558,7 +4808,7 @@ public class Filevault extends BaseActivity {
                     for (int k = 0; k < folder_path.size(); k++) {
                         buffer.append(folder_path.get(k) + "/");
                     }
-                    Log.v("buffer", buffer.toString());
+                    Log.e("Rishabh", "buffer folder root :=  "+buffer.toString());
                     //String path_finder = first_timefolderclicked + "/" + buffer;
                     String[] make_path = buffer.toString().split("/");
                     StringBuffer path_buffer = new StringBuffer();
@@ -3569,11 +4819,11 @@ public class Filevault extends BaseActivity {
                             path_buffer.append(make_path[i] + "/");
                         }
                     }
-                    Log.v("buffer_upload", path_buffer.toString());
+                    Log.e("Rishabh","buffer_upload  folder root :== "+path_buffer.toString());
                     if (moveFolder1.size() == 0) {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder2, patientId, path_buffer.toString());
+                        folder_adapter = new Folder_adapter(mActivity, moveFolder2, patientId, path_buffer.toString());
                     } else {
-                        folder_adapter = new Folder_adapter(Filevault.this, moveFolder1, patientId, path_buffer.toString());
+                        folder_adapter = new Folder_adapter(mActivity, moveFolder1, patientId, path_buffer.toString());
                     }
                     folder_list.setAdapter(folder_adapter);
                     folder_root.setText("Root");
@@ -3623,7 +4873,7 @@ public class Filevault extends BaseActivity {
                         folder_list.setVisibility(View.VISIBLE);
                         empty_text.setVisibility(View.GONE);
                         folder_root.setText(Folder_Clicked);
-                        folder_adapter = new Folder_adapter(Filevault.this, dialog_folder, patientId, path_buffer.toString());
+                        folder_adapter = new Folder_adapter(mActivity, dialog_folder, patientId, path_buffer.toString());
                         folder_list.setAdapter(folder_adapter);
                     }
                 }
@@ -3637,12 +4887,12 @@ public class Filevault extends BaseActivity {
                 Log.v("FOLDER_PATH", folder_path.toString());
             }
         });
-        move_btn.setOnClickListener(new OnClickListener() {
+        move_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String check_root = folder_root.getText().toString().trim();
                 if (check_root.equalsIgnoreCase("Root")) {
-                    Toast.makeText(Filevault.this, "Unable to move folder on same path.Please Select a destination folder to move.", Toast.LENGTH_SHORT).show();
+                   uploadGalleryFile(mObtainedUriFromDashboard);
                 } else {
                     if (folder_path.size() == 1) {
                         move_to_folder(folder_path.get(0));
@@ -3653,7 +4903,7 @@ public class Filevault extends BaseActivity {
                         for (int k = 0; k < folder_path.size(); k++) {
                             buffer.append(folder_path.get(k) + "/");
                         }
-                        Log.v("buffer", buffer.toString());
+                        Log.e("buffer", buffer.toString());
                       /*  String path_finder = first_timefolderclicked + "/" + buffer;
                         File imageFile = new File(path);*/
                         String[] make_path = buffer.toString().split("/");
@@ -3665,13 +4915,95 @@ public class Filevault extends BaseActivity {
                                 path_buffer.append(make_path[k] + "/");
                             }
                         }
-                        Log.v("buffer_upload", path_buffer.toString());
+                        Log.e("Rishabh", "buffer move button :=  "+buffer.toString());
                         move_to_folder(path_buffer.toString());
                         move_dialog.dismiss();
                         folder_path.clear();
                     }
                 }
+                Log.e("Rishabh", "Inside folder := ");
+                Uri selectedImageUri = mObtainedUriFromDashboard;
 
+                String path = getPathFromContentUri(selectedImageUri);
+                System.out.println(path);
+                StringBuffer buffer = new StringBuffer();
+                for (int k = 0; k < mhelper.folder_path.size(); k++) {
+                    buffer.append(mhelper.folder_path.get(k) + "/");
+                }
+                Log.e("Rishabh","buffer"+buffer.toString());
+              /*  show_dialog(buffer.toString());*/
+                String path_finder = Folder_Clicked + "/" + buffer;
+                Log.e("Rishabh", "path finder := "+path_finder);
+                File imageFile = new File(path);
+                String[] make_path = path_finder.toString().split("/");
+                StringBuffer path_buffer = new StringBuffer();
+                for (int i = 0; i < make_path.length; i++) {
+                    if (i == make_path.length - 1) {
+                        path_buffer.append(make_path[i]);
+                    } else {
+                        path_buffer.append(make_path[i] + "/");
+                    }
+                }
+                Log.e("Rishabh", "path buffer := "+path_buffer.toString());
+                long check = ((imageFile.length() / 1024));
+                String splitfo_lenthcheck[] = path.split("/");
+                int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+                if (check < 10000 && filenamelength < 99) {
+
+                    String splitstr[];
+                    String chosenimg = "";
+                    String stringcheck = "", exhistimg = "false";
+                    int leangth = 0;
+                    if (path.contains("/")) {
+                        splitstr = path.split("/");
+                        chosenimg = splitstr[splitstr.length - 1];
+                    }
+                    for (int i = 0; i < thumbImage.size(); i++) {
+                        String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
+                        if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
+                            if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+
+                                stringcheck = listsplitstr[listsplitstr.length - 1];
+                                leangth = listsplitstr[listsplitstr.length - 1].length();
+                                exhistimg = "true";
+                            }
+
+                        }
+                    }
+
+                    Intent intent = new Intent(mActivity, UploadService.class);
+                    intent.putExtra(UploadService.ARG_FILE_PATH, path);
+                    intent.putExtra("add_path", path_buffer.toString());
+                    intent.putExtra("exhistimg", exhistimg);
+                    intent.putExtra("stringcheck", stringcheck);
+                    mActivity.startService(intent);
+
+                    System.out.println("After Service");
+
+                    String tempPath = getPath(selectedImageUri, mActivity);
+                    Bitmap bm;
+                    BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+                    btmapOptions.inSampleSize = 4;
+                    bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+                    // vault_adapter.notifyDataSetChanged();
+                    if (bm != null) {
+
+                        System.out.println("in onactivity");
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                        byteArray = byteArrayOutputStream.toByteArray();
+
+                        pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        picname = "b.jpg";
+                        pic = "data:image/jpeg;base64," + pic;
+
+                    }
+
+                } else {
+
+                    Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
     }
@@ -3786,7 +5118,7 @@ public class Filevault extends BaseActivity {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
         } else {
-            photo = new File(Filevault.this.getCacheDir(), "test.jpg");
+            photo = new File(mActivity.getCacheDir(), "test.jpg");
         }
         if (photo != null) {
             intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
@@ -3799,14 +5131,19 @@ public class Filevault extends BaseActivity {
     /**
      * Method to check permission
      */
-    void checkCameraPermission() {
-        boolean isGranted;
-        if (ActivityCompat.checkSelfPermission(Filevault.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startCamera();
+        } else {
+            takePhoto();
+        }
+       /* boolean isGranted;
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             // Camera permission has not been granted.
             requestCameraPermission();
         } else {
             takePhoto();
-        }
+        }*/
     }
 
     /**
@@ -3814,12 +5151,12 @@ public class Filevault extends BaseActivity {
      */
     private void requestCameraPermission() {
         // Camera permission has not been granted yet. Request it directly.
-        ActivityCompat.requestPermissions(Filevault.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+        ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA) {
+        /*if (requestCode == REQUEST_CAMERA) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for camera permission.
 
@@ -3829,12 +5166,148 @@ public class Filevault extends BaseActivity {
                 takePhoto();
             } else {
                 //Permission not granted
-                Toast.makeText(Filevault.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        }*/
+
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mPermissionGranted = true;
+                Log.e("Rishabh", "Permissions are Granted .");
+            } else {
+                mPermissionGranted = false;
+                Log.e("Rishabh", "Permissions are not granted .");
             }
         }
     }
 
+    void askRunTimePermissions() {
+
+        int permissionCAMERA = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
+        int storagePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(mActivity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
+        }
+
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void uploadGalleryFile(Uri obtainUri) {
+
+        mGalleryUploadUri = obtainUri;
+
+        Log.e("Rishabh", "picked from gallery URI PATH :=  " + mGalleryUploadUri.getPath());
+        String path = getPathFromContentUri(mGalleryUploadUri);
+        File imageFile = new File(path);
+        String path1 = imageFile.getAbsolutePath();
+        String splitfo_lenthcheck[] = path1.split("/");
+        int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
+        long check = ((imageFile.length() / 1024));
+        if (check < 10000 && filenamelength < 99) {
+            String splitstr[];
+            String chosenimg = "";
+            String stringcheck = "", exhistimg = "false";
+            int leangth = 0;
+            if (path.contains("/")) {
+                splitstr = path.split("/");
+                chosenimg = splitstr[splitstr.length - 1];
+            }
+            for (int i = 0; i < thumbImage.size(); i++) {
+                String listsplitstr[] = thumbImage.get(i).get("Personal3").split("/");
+                if (listsplitstr[listsplitstr.length - 1].contains(chosenimg.substring(0, chosenimg.length() - 4))) {
+                    if (leangth < listsplitstr[listsplitstr.length - 1].length()) {
+
+                        stringcheck = listsplitstr[listsplitstr.length - 1];
+
+                        leangth = listsplitstr[listsplitstr.length - 1].length();
+                        Log.e("Rishabh", "stringcheck := "+stringcheck);
+                        Log.e("Rishabh", "length := "+leangth);
+                        exhistimg = "true";
+                    }
+
+                }
+            }
+            Intent intent = new Intent(mActivity, UploadService.class);
+            intent.putExtra(UploadService.ARG_FILE_PATH, path);
+            intent.putExtra(UploadService.uploadfrom, "");
+            intent.putExtra("exhistimg", exhistimg);
+            intent.putExtra("stringcheck", stringcheck);
+            mActivity.startService(intent);
+
+            System.out.println("After Service");
+
+            String tempPath = getPath(mGalleryUploadUri, mActivity);
+            Bitmap bm;
+            BitmapFactory.Options btmapOptions = new BitmapFactory.Options();
+            btmapOptions.inSampleSize = 4;
+            bm = BitmapFactory.decodeFile(tempPath, btmapOptions);
+            // vault_adapter.notifyDataSetChanged();
+            if (bm != null) {
+
+                System.out.println("in onactivity");
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                byteArray = byteArrayOutputStream.toByteArray();
+
+                pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                picname = "b.jpg";
+                pic = "data:image/jpeg;base64," + pic;
+                //  vault_adapter.notifyDataSetChanged();
+
+            }
+
+        } else {
+
+            Toast.makeText(mActivity, "Image should be less than 10 mb.", Toast.LENGTH_LONG).show();
+
+        }
 
 
+        ///////////////////////////////////////////////
+    }
 
 }

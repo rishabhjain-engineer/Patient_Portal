@@ -11,8 +11,8 @@ android {
         applicationId "com.hs.userportal"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 20
-        versionName "3.1.3"
+        versionCode 27
+        versionName "4.3"
         multiDexEnabled true
     }
     buildTypes {
@@ -54,6 +54,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-nearby:8.4.0'*/
     compile 'dev.dworks.libs:astickyheader:0.1.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.facebook.android:facebook-android-sdk:4.15.0'
@@ -68,4 +69,9 @@ dependencies {
     compile project(':SegmentedControlLibrary')
     compile project(':Simpl3r')
     compile project(':MPChartLib')
+    compile project(':dynamicgrid')
+    compile 'com.google.firebase:firebase-core:10.2.0'
+    compile 'com.google.firebase:firebase-messaging:10.2.0'
+    compile 'com.android.support:recyclerview-v7:24.1.1'
 }
+apply plugin: 'com.google.gms.google-services'

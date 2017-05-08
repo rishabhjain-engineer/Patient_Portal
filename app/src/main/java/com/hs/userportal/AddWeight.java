@@ -35,8 +35,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
 import ui.BpActivity;
+import ui.HealthCommonActivity;
 
 public class AddWeight extends BaseActivity {
 
@@ -133,8 +135,11 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.VISIBLE);
             mBpContainerLl.setVisibility(View.GONE);
-            new GetHeightAsyncTask().execute();
-
+            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                new GetHeightAsyncTask().execute();
+            } else {
+                Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            }
         } else {
           /*  mIsHeight = false;*/
             mActionBar.setTitle("Enter Blood Pressure");
@@ -236,10 +241,14 @@ public class AddWeight extends BaseActivity {
                             int upperBp = Integer.parseInt(mBpTopNumberEditText.getEditableText().toString());
                             if (lowerBp > upperBp) {
                                 Toast.makeText(AddWeight.this, "Upper BP should be greater than lower Bp", Toast.LENGTH_SHORT).show();
-                            } else if(lowerBp < 40  || upperBp > 400){
+                            } else if (lowerBp < 40 || upperBp > 400) {
                                 Toast.makeText(AddWeight.this, "Bp value seems incorrect", Toast.LENGTH_SHORT).show();
-                            } else{
-                                new submitchange().execute();
+                            } else {
+                                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                    new submitchange().execute();
+                                } else {
+                                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         } catch (NumberFormatException ex) {
                             Toast.makeText(AddWeight.this, "Fill values correctly", Toast.LENGTH_SHORT).show();
@@ -249,13 +258,21 @@ public class AddWeight extends BaseActivity {
                     if (TextUtils.isEmpty(mHeightCmEditText.getEditableText().toString()) && mIsFtInchValue == false) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
-                        new submitchange().execute();
+                        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            new submitchange().execute();
+                        } else {
+                            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } else {
                     if (TextUtils.isEmpty(enter_add.getEditableText().toString())) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
-                        new submitchange().execute();
+                        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            new submitchange().execute();
+                        } else {
+                            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 }
@@ -462,8 +479,7 @@ public class AddWeight extends BaseActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                finish();
                 return true;
 
             default:
@@ -520,6 +536,16 @@ public class AddWeight extends BaseActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
                         String height = obj.optString("height");
+
+                        if (!TextUtils.isEmpty(height)) {
+                            try {
+                                double heightInDouble = Double.parseDouble(height);
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                height = df.format(heightInDouble);
+                            } catch (NumberFormatException ex) {
+
+                            }
+                        }
                         mHeightList.add(height);
                     }
                 }

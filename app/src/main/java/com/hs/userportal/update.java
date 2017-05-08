@@ -100,6 +100,8 @@ import java.util.regex.Pattern;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.SignInActivity;
+import utils.PreferenceHelper;
 import utils.Utility;
 
 
@@ -150,8 +152,8 @@ public class update extends BaseActivity {
     private String nationid;
     private ImageView dp, dpchange;
     private byte[] byteArray;
-    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path;
-    private String email_varification, mobile_varification;
+    private String FirstName, MiddleName, LastName, Salutation, UserNameAlias, Sex, BloodGroup, DOB, HusbandName, FatherName, Email, ContactNo, Nationality, age, nation_id, oldimage, oldthumbimage, oldimagename, path, mPreviousNumber;
+    private String email_varification, mobile_varification, mFacebookId;
     private String pic = "", picname = "", oldfile = "Nofile", oldfile1 = "Nofile";
     private ArrayAdapter<String> adapter1;
     private ArrayList<String> list = new ArrayList<String>();
@@ -169,9 +171,9 @@ public class update extends BaseActivity {
     private String unverify, emailverify;
     private boolean mIsToShowProgressbar = true;
     private String userChoosenTask;
-    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ /*MY_PERMISSIONS_REQUEST_CAMERA = 1 , WRITE_EXTERNAL =2 ,*/ MY_PERMISSIONS_REQUEST =1;
+    private int /*REQUEST_CAMERA = 0, SELECT_FILE = 1 ,*/ /*MY_PERMISSIONS_REQUEST_CAMERA = 1 , WRITE_EXTERNAL =2 ,*/ MY_PERMISSIONS_REQUEST = 1;
     private String mCurrentPhotoPath = null;
-    private boolean mIsSdkLessThanM = true ;
+    private boolean mIsSdkLessThanM = true, mPermissionGranted;
 
 
     public static JSONArray arraybasic;
@@ -186,17 +188,19 @@ public class update extends BaseActivity {
     public static Bitmap bitmap;
     public static Uri Imguri;
     public static Context mcontext;
+    private RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         mActionBar.setTitle("Basic");
+        mRequestQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.update_new);
         service = new Services(update.this);
         Intent i = getIntent();
-        id = i.getStringExtra("id");
-        passw = i.getStringExtra("pass");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        passw = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PASS);
         pic = i.getStringExtra("pic");
         picname = i.getStringExtra("picname");
         mcontext = update.this;
@@ -311,56 +315,10 @@ public class update extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+                    askRunTimePermissions();
+                    mIsSdkLessThanM = true;
 
-                    askRunTimePermissions() ;
-                    mIsSdkLessThanM = true ;
-                    //if (fbLinked.equals("true")) {
-                    if (false) { //Above line is commented as fb link is removed, thats why I have taken condition false also
-                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        builder.setTitle("Choose Image Source");
-                        //builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Take from Facebook"},
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-
-                                            case 1:
-
-                                                File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-                                                break;
-                                            case 2:
-                                                new fbImagePull().execute();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
-                        builder.show();
-                    } else {
-
+                    if (!TextUtils.isEmpty(mFacebookId)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
                         builder.setTitle("Choose Image Source");
                         builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
@@ -385,20 +343,6 @@ public class update extends BaseActivity {
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
-
-                                               /* File photo = null;
-                                                Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-                                                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                                    photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-                                                } else {
-                                                    photo = new File(getCacheDir(), "test.jpg");
-                                                }
-                                                if (photo != null) {
-                                                    intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-                                                    Imguri = Uri.fromFile(photo);
-                                                    startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                                }
-*/
                                                 break;
 
                                             case 2:
@@ -410,7 +354,42 @@ public class update extends BaseActivity {
                                     }
                                 });
                         builder.show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
+                        builder.setTitle("Choose Image Source");
+                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        switch (which) {
+                                            case 0:
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                                try {
+                                                    intent.putExtra("return-data", true);
+                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                                } catch (ActivityNotFoundException e) {
+                                                }
+                                                break;
+                                            case 1:
+
+                                                try {
+                                                    checkCameraPermission();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                });
+                        builder.show();
                     }
+
+
                 } else {
                     if (fbLinked.equals("true")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -543,6 +522,8 @@ public class update extends BaseActivity {
                         } else {
                             new VerifyEmail().execute();
                         }
+                    } else if (!mPreviousNumber.equalsIgnoreCase(cont.getText().toString())) {
+                        checkContactNoExistAPI();
                     } else {
                         new submitchange().execute();
                     }
@@ -790,6 +771,45 @@ public class update extends BaseActivity {
         });
     }
 
+    private void checkContactNoExistAPI() {
+        final String contactnumber = cont.getText().toString();
+        if (TextUtils.isEmpty(contactnumber)) {
+            Toast.makeText(getApplicationContext(), "Please fill valid Mobile Number", Toast.LENGTH_SHORT).show();
+        } else if (mPreviousNumber.equalsIgnoreCase(cont.getText().toString())) {
+            new submitchange().execute(); //if we are coming from email api this case is necessary
+        } else {
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("ContactNo", contactnumber);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            StaticHolder sttc_holdr = new StaticHolder(update.this, StaticHolder.Services_static.CheckContactNoExist);
+            String url = sttc_holdr.request_Url();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                    try {
+                        String result = jsonObject.getString("d");
+                        if (result.equalsIgnoreCase("username") || TextUtils.isEmpty(result)) {
+                            new submitchange().execute();
+                        } else {
+                            showAlertMessage(result);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                }
+            });
+            mRequestQueue.add(jsonObjectRequest);
+        }
+    }
+
     class submitchange extends AsyncTask<Void, Void, Void> {
         String Salutation, FirstName, MiddleName, LastName, UserNameAlias, Sex, BloodGroup,
                 DOB, HusbandName, FatherName, Email, ContactNo, NationId, message;
@@ -819,6 +839,7 @@ public class update extends BaseActivity {
             FatherName = father.getText().toString().trim();
             Email = em.getText().toString().trim();
             ContactNo = cont.getText().toString().trim();
+            mPreviousNumber = ContactNo;
             for (int i = 0; i < countrylist.size(); i++) {
                 if (nationality.getText().toString().trim().equals(countrylist.get(i))) {
                     NationId = countryids.get(i);
@@ -946,6 +967,7 @@ public class update extends BaseActivity {
                     FatherName = commonarray.getJSONObject(m).getString("FatherName");
                     Email = commonarray.getJSONObject(m).getString("Email");
                     ContactNo = commonarray.getJSONObject(m).getString("ContactNo");
+                    mPreviousNumber = ContactNo;
                     Nationality = commonarray.getJSONObject(m).getString("Nationality");
                     age = commonarray.getJSONObject(m).getString("age");
                     nation_id = commonarray.getJSONObject(m).getString("NationId");
@@ -955,6 +977,7 @@ public class update extends BaseActivity {
                     path = commonarray.getJSONObject(m).getString("Path");
                     String ImageId = commonarray.getJSONObject(m).getString("ImageId");
                     email_varification = commonarray.getJSONObject(m).getString("Validate");
+                    mFacebookId = commonarray.getJSONObject(m).isNull("FacebookId") ? null : commonarray.getJSONObject(m).optString("FacebookId");
                     mobile_varification = commonarray.getJSONObject(m).getString("validateContactNo");
 
                     //oldimage,oldthumbimage,oldimagename,path
@@ -987,8 +1010,11 @@ public class update extends BaseActivity {
 
                 String gender = subArray.getJSONObject(0).getString("Sex");
                 sal.setText(Salutation);
-                mOccupationEditText.setText(mOccupation);
-
+                if (!TextUtils.isEmpty(mOccupation) && !mOccupation.equalsIgnoreCase("null")) {
+                    mOccupationEditText.setText(mOccupation);
+                } else {
+                    mOccupationEditText.setText("");
+                }
                 fn.setText(FirstName);
 
                 ln.setText(LastName);
@@ -1287,8 +1313,6 @@ public class update extends BaseActivity {
             servi.setRefresh(update.this);*/
             if (requestCode == PICK_FROM_GALLERY) {
 
-                Log.e("Rishabh ", "PICKED FROM GALLERY onActivityResult . ");
-
                 Uri selectedImageUri = data.getData();
 
                 String path = getPathFromContentUri(selectedImageUri);
@@ -1339,30 +1363,25 @@ public class update extends BaseActivity {
             }
 
             if (requestCode == PICK_FROM_CAMERA) {
-                File imageFile = null ;
-                Uri selectedImageUri;
-                if(mIsSdkLessThanM == true){
-                   selectedImageUri = Imguri;
-                    imageFile = new File(selectedImageUri.getPath());
-                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
 
-                }else {
+
+                File imageFile = null;
+                Uri selectedImageUri;
+                if (mIsSdkLessThanM == true) {
+                    selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+
+                } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     selectedImageUri = imageUri;
                     imageFile = new File(imageUri.getPath());
-                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
-                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
                 }
 
                 //    File file = new File(imageUri.getPath());       // Rishabh : new code but this particular line integrated in old code .
-               // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
+                // Uri selectedImageUri = Imguri;                              // Rishabh ; previous code commented by me .
                 String path = getPathFromContentUri(selectedImageUri);
 
-                Log.e("Rishabh" ,"onActivityResult Camera : Path of FILE := "+path) ;
-               // File imageFile = new File(path);
+                // File imageFile = new File(path);
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -1584,7 +1603,7 @@ public class update extends BaseActivity {
             try {
                 stream = getHttpConnection(imageUrl);
                 bitmap = decodeBitmap(stream, 100, 100);
-                if(stream!=null) {
+                if (stream != null) {
                     stream.close();
                 }
 
@@ -1866,7 +1885,7 @@ public class update extends BaseActivity {
             if (isEmailAlreadyVerified) {
                 emailAlreadyRegistered();
             } else {
-                new submitchange().execute();
+                checkContactNoExistAPI();
             }
         }
     }
@@ -2279,8 +2298,8 @@ public class update extends BaseActivity {
     void checkCameraPermission() throws IOException {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             takePhoto();
-        }else {
-            startCamera() ;
+        } else {
+            startCamera();
         }
     }
 
@@ -2310,27 +2329,26 @@ public class update extends BaseActivity {
         if (requestCode == MY_PERMISSIONS_REQUEST) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.e("Rishabh", "Permissions are Granted .");
+                mPermissionGranted = true;
             } else {
-                Log.e("Rishabh", "Permissions are not granted .");
+                mPermissionGranted = false;
             }
         }
     }
 
     private void takePhoto() throws IOException {
-        mIsSdkLessThanM = false ;
+        mIsSdkLessThanM = false;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.e("Rishabh ", "IO Exception := " + ex);
                 // Error occurred while creating the File
                 return;
             }
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(update.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                Uri photoURI = FileProvider.getUriForFile(update.this, "com.hs.userportal.provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
             }
@@ -2340,7 +2358,7 @@ public class update extends BaseActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -2352,8 +2370,8 @@ public class update extends BaseActivity {
 
 
     void startCamera() {
-        mIsSdkLessThanM = true ;
-         File photo = null;
+        mIsSdkLessThanM = true;
+        File photo = null;
         Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");

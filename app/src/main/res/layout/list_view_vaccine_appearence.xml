@@ -8,10 +8,11 @@
     android:paddingRight="8dp"
     android:paddingTop="5dp">
 
-    <LinearLayout
+
+    <RelativeLayout
         android:id="@+id/item_detail_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -20,33 +21,54 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="RotaVirus"
+            android:text=""
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/vaccine_acronyms"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/vaccine_name_tv"
+            android:text=""
             android:textColor="@color/black" />
 
-        <!-- <TextView
-             android:id="@+id/vaccine_aget_at"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="Date"
-             android:layout_marginTop="5dp"
-             android:textColor="@color/black" />-->
+        <ImageView
+            android:id="@+id/ticked_image_view"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/vaccine_ticked"
+            android:visibility="gone" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/header"
+    <LinearLayout
+        android:id="@+id/header_container"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/grey"
-        android:gravity="center"
-        android:textColor="@color/black" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/grey"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/header_special"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
 </LinearLayout>

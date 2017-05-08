@@ -20,6 +20,7 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -123,7 +124,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
-            mListHeadingTv.setText("BMI");;
+            mListHeadingTv.setText("BMI");
+            ;
         }
 
         mWebView = (WebView) findViewById(R.id.weight_graphView);
@@ -140,10 +142,43 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mWebView.setInitialScale(1);
         mWebView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
 
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if (mFromBMI) {
+                    mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
+                    mListView.setAdapter(mMyHealthsAdapter);
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                    if (mIsBmiEmpty) {
+                        Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+
+                    if (mMyHealthsAdapter == null) {
+                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mListView.setAdapter(mMyHealthsAdapter);
+                    } else {
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mMyHealthsAdapter.notifyDataSetChanged();
+                    }
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                }
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    mListViewHeaderRl.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         mRequestQueue = Volley.newRequestQueue(this);
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             //new Authentication(HealthCommonActivity.this, "healthCommon", "").execute();
         }
@@ -189,7 +224,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
-                            deleteWeight();
+                            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                deleteWeight();
+                            } else {
+                                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     dialog.show();
@@ -197,7 +236,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             }
 
         });
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if (isSessionExist()) {
+            if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            } else {
+                new HealthCommonActivity.BackgroundProcess().execute();
+            }
+        }
     }
 
     @Override
@@ -218,11 +263,16 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     protected void onRestart() {
         super.onRestart();
         Log.i("ayaz", "onRestart");
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            new HealthCommonActivity.BackgroundProcess().execute();
+        }
     }
 
+    private ProgressDialog progress;
+
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
-        ProgressDialog progress;
         JSONObject receiveData1;
         boolean isDataAvailable = false;
 
@@ -509,48 +559,27 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (mFromBMI) {
-                setDateList(mDateList);
-                mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
-                mListView.setAdapter(mMyHealthsAdapter);
-                Weight.Utility.setListViewHeightBasedOnChildren(mListView);
-
                 mWebView.loadUrl("file:///android_asset/html/index.html");
-                if (progress != null && progress.isShowing()) {
-                    progress.dismiss();
-                }
-                if (mIsBmiEmpty) {
-                    Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
-                }
+                setDateList(mDateList);
             } else {
                 if (isDataAvailable) {
-                    setDateList(mDateList);
-                    if (mMyHealthsAdapter == null) {
-                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mListView.setAdapter(mMyHealthsAdapter);
-                    } else {
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mMyHealthsAdapter.notifyDataSetChanged();
-                    }
-
-                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
                     mWebView.loadUrl("file:///android_asset/html/index.html");
-
-                    if (progress != null && progress.isShowing()) {
-                        progress.dismiss();
-                    }
+                    setDateList(mDateList);
                 } else {
-                    Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                    i.putExtra("id", mPatientId);
-                    if (mFromHeight) {
-                        i.putExtra("htype", "height");
-                    } else if (mFromWeight) {
-                        i.putExtra("htype", "weight");
-                    } else if (mFromBp) {
-                        i.putExtra("htype", "bp");
+                    if (isSessionExist()) {
+                        Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
+                        i.putExtra("id", mPatientId);
+                        if (mFromHeight) {
+                            i.putExtra("htype", "height");
+                        } else if (mFromWeight) {
+                            i.putExtra("htype", "weight");
+                        } else if (mFromBp) {
+                            i.putExtra("htype", "bp");
+                        }
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        finish();
                     }
-                    startActivity(i);
-                    finish();
                 }
             }
         }
@@ -572,8 +601,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                super.onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                finish();
                 return true;
             case R.id.add:
                 Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
@@ -587,6 +615,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     i.putExtra("htype", "bp");
                 }
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
 
             case R.id.option:
@@ -624,7 +653,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
                         //startActivity(getIntent());
-                        new HealthCommonActivity.BackgroundProcess().execute();
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            new HealthCommonActivity.BackgroundProcess().execute();
+                        }
+
                     } else {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -646,7 +680,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     }
 
     public void startBackgroundprocess() {
-        //new BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            //new BackgroundProcess().execute();
+        }
+
     }
 
     @Override
@@ -786,9 +825,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public boolean getUserInteractiveGuidline() {
-            if(mFromBp){
+            if (mFromBp) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }

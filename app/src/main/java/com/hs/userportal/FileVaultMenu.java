@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import ui.DashBoardActivity;
 
 public class FileVaultMenu extends ActionBarActivity {
 
@@ -62,9 +63,9 @@ public class FileVaultMenu extends ActionBarActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                Intent intent = new Intent(getApplicationContext(), Filevault.class);
+            /*    Intent intent = new Intent(getApplicationContext(), Filevault.class);             // TODO replace filevault class with repository fragment
                 intent.putExtra("id", id);
-                startActivity(intent);
+                startActivity(intent);*/
 
             }
         });
@@ -118,7 +119,7 @@ public class FileVaultMenu extends ActionBarActivity {
 
             case R.id.action_home:
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
 

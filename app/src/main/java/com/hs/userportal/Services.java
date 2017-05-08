@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import config.StaticHolder;
+import utils.PreferenceHelper;
 
 public class Services {
     /* Variables declaration */
@@ -52,36 +53,10 @@ public class Services {
     public Services(Context context) {
         client = new DefaultHttpClient();
         this.context = context;
-        if (MainActivity.demo.equals("true")) {
-
-            // init = "http://192.168.1.45:8083";
-
-            // init = "http://192.168.1.56";
-            // init = "http://192.168.1.202:81";
-			/*init ="https://d141702.cloudchowk.com/";*///"https://demo0421.cloudchowk.com";//"https://d141702.cloudchowk.com/";//"https://demo0421.cloudchowk.com";//////;//////
-            // init = "http://192.168.1.122";
-            // init = "https://l141702.cloudchowk.com";
-            // init = "http://192.168.1.122:8084";
-            // init= "http://192.168.1.106";
-
-        } else {
-            // init = "http://192.168.1.122";
-            // init = "https://l141702.cloudchowk.com";
-			/*init ="https://l141702.cloudchowk.com/"*/
-            ;//"http://192.168.1.202:81";// "https://l141702.cloudchowk.com/";//"http://192.168.1.202:81";//////;////
-
-            // //replace by
-            // init = "http://192.168.1.202:81";
-            // init = "http://192.168.1.56";
-            // init = "http://192.168.1.122:8084";
-            // init= "http://192.168.1.106";
-        }
-
     }
 
     public JSONObject LogIn(JSONObject sendData, String url) {// {"browserType":"4.4.2","UserName":"dheer","applicationType":"Mobile","rememberMe":"false","Password":"dheer@123"}
 
-	/*	url = init + "/CredentialsModule/CredentialService.asmx/LogIn";*/ // http://192.168.1.202:81/CredentialsModule/CredentialService.asmx/LogIn
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
@@ -89,34 +64,19 @@ public class Services {
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         try {
-
-            // URL myUrl = new URL(url);
-            // URLConnection connection = myUrl.openConnection();
-            // connection.setConnectTimeout(5000);
-            // connection.connect();
             response = getThreadSafeClient().execute(request);
             String result = response.toString();
-
             cookies = response.getHeaders("Set-Cookie");
-
-			/* **** SAVING COOKIE DATA ON PHONE STORAGE *** */
             String cookieData = "";
-
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";"; // ASP.NET_SessionId=spghlyjtkcymxiw5d0pzm3u0;
-                // path=/; HttpOnly;
-
             }
             hoja = cookieData;
-            MainActivity.cook = hoja;
             LocationClass.cook = hoja;
-
-            // System.out.println(hoja);
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
             outputStream.write(cookieData.getBytes());
@@ -131,21 +91,14 @@ public class Services {
             receiveData = new JSONObject(new String(sb));
 
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             Log.e("Client", "Error checking internet connection", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             Log.e("IO", "Error checking internet connection", e);
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
-
             Log.e("JSON", "Error checking internet connection", e);
         }
 
         return receiveData;
-
-        // LOGOUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     }
 
     public JSONObject GetCredentialDetails(JSONObject sendData) {
@@ -168,14 +121,31 @@ public class Services {
 
     }
 
-    public JSONObject IsUserAuthenticated(JSONObject sendData) {
-
-		/*url = init + "/CredentialsModule/CredentialService.asmx/IsUserAuthenticated";*/
-        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.IsUserAuthenticated);
+    public JSONObject GetLatestVersionInfo(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetLatestVersionInfo);
         String url = sttc_holdr.request_Url();
         JSONObject abc = common(sendData, url);
         return abc;
+    }
 
+    public JSONObject IsUserAuthenticated(JSONObject sendData) {
+       /* StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.AuthenticateUserSession);
+        String url = sttc_holdr.request_Url();
+        JSONObject jsonObjectToSend = new JSONObject();
+        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+        try {
+            jsonObjectToSend.put("SessionId", preferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("d", "true");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //JSONObject jsonObject = common(sendData, url);
+        return jsonObject;
     }
 
     public JSONObject AgreeService(JSONObject sendData) {
@@ -339,11 +309,11 @@ public class Services {
 
     public JSONObject common(JSONObject sendData, String url) {
         // System.out.println("hahahahahahahahahahaha");
+        Log.e("Url: ", url);
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
 
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
@@ -368,7 +338,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -408,8 +377,6 @@ public class Services {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
-
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -433,7 +400,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -569,7 +535,6 @@ public class Services {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
         request.setHeader("Cookie", hoja);
-        // System.out.println(hoja);
 
         try {
             request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
@@ -588,7 +553,6 @@ public class Services {
             for (int i = 0; i < cookies.length; i++) {
                 cookieData += cookies[i].getValue() + ";";
             }
-            // System.out.println(hoja);
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -636,7 +600,6 @@ public class Services {
     // request.setHeader("Content-type", "application/json");
     // request.setHeader("Accept", "application/octet-stream");
     // request.setHeader("Cookie", hoja);
-    // // System.out.println(hoja);
     //
     // try {
     // request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
@@ -980,7 +943,6 @@ public class Services {
 
             }
             hoja = cookieData;
-            MainActivity.cook = hoja;
 
             FileOutputStream outputStream;
             outputStream = context.openFileOutput("Cookie-Data", Context.MODE_PRIVATE);
@@ -1100,14 +1062,14 @@ public class Services {
     }
 
     public byte[] pdf(JSONObject sendData, String actName) {
-        if(actName.equalsIgnoreCase("ReportRecords")) {
+       /* if(actName.equalsIgnoreCase("ReportRecords")) {
             ReportRecords.progress_bar.setProgress(7);
             ReportRecords.progress_bar.setSecondaryProgress(10);
-        }
-        if(actName.equalsIgnoreCase("Report Status")) {
+        }*/
+        /*if(actName.equalsIgnoreCase("Report Status")) {
             ReportStatus.progress_bar.setProgress(11);
             ReportStatus.progress_bar.setSecondaryProgress(13);
-        }
+        }*/
         byte[] fileContents = null;
         //url =  "https://l141702.cloudchowk.com/LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetpatienttestReportAndroid);
@@ -1142,14 +1104,14 @@ public class Services {
             String[] byteValues = p.substring(1, p.length() - 1).split(",");
             byte[] bytes = new byte[byteValues.length];
             Log.i("byteValues", byteValues.toString());
-            if(actName.equalsIgnoreCase("ReportRecords")) {
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
                 ReportRecords.progress_bar.setProgress(11);
                 ReportRecords.progress_bar.setSecondaryProgress(13);
-            }
-            if(actName.equalsIgnoreCase("Report Status")) {
+            }*/
+            /*if(actName.equalsIgnoreCase("Report Status")) {
                 ReportStatus.progress_bar.setProgress(14);
                 ReportStatus.progress_bar.setSecondaryProgress(14);
-            }
+            }*/
             for (int i = 0, len = bytes.length; i < len; i++) {
                 bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
             }
@@ -1158,33 +1120,28 @@ public class Services {
 
             fileContents = bytes;
             Log.v("contents!!", fileContents.toString());
-            if(actName.equalsIgnoreCase("ReportRecords")) {
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
                 ReportRecords.progress_bar.setProgress(14);
                 ReportRecords.progress_bar.setSecondaryProgress(14);
-            }
+            }*/
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NumberFormatException ex) {
-           // Toast.makeText(context, "Some error occured, Please try again later!", Toast.LENGTH_LONG).show();
             if(ReportStatus.progress != null){
                 ReportStatus.progress.dismiss();
             }
             ReportStatus.progress = null;
         }
-        if(actName.equalsIgnoreCase("Report Status")) {
+       /* if(actName.equalsIgnoreCase("Report Status")) {
             ReportStatus.progress_bar.setProgress(15);
             ReportStatus.progress_bar.setSecondaryProgress(15);
-        }
+        }*/
         return fileContents;
     }
 
@@ -1299,6 +1256,50 @@ public class Services {
         JSONObject abc = common(sendData, url);
         return abc;
 
+    }
+
+    public JSONObject NewLogInApi(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.NewLogIn);
+        String url = staticHolder.request_Url();
+        JSONObject jsonObjectResponse = LogIn(sendData, url);
+        return jsonObjectResponse;
+
+    }
+
+    public JSONObject LogInUser_facebook(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebook);
+        String url = staticHolder.request_Url();
+        JSONObject jsonObjectResponse = LogIn(sendData, url);
+        return jsonObjectResponse;
+
+    }
+
+    public JSONObject getUserGrade(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserGrade);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
+    public JSONObject saveUserDevice(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.SaveUserDevice);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
+    public JSONObject getSchoolDoctorList(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetSchoolDoctorList);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
+    public JSONObject getSchoolStudentDetails(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.getSchoolStudentDetails);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
     }
 
 }

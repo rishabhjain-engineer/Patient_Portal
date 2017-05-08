@@ -26,16 +26,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Filevault;
 import com.hs.userportal.Filevault2;
 import com.hs.userportal.LocationClass;
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.MapLabDetails;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.UploadService;
-import com.hs.userportal.Uploader1;
-import com.hs.userportal.update;
 import com.readystatesoftware.simpl3r.UploadIterruptedException;
 import com.readystatesoftware.simpl3r.Uploader;
 
@@ -51,6 +46,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import fragment.RepositoryFragment;
+import ui.SignInActivity;
 
 /**
  * Created by android1 on 30/1/17.
@@ -214,7 +211,7 @@ public class QuestionReportPageService extends IntentService {
 
                                     Toast.makeText(getApplicationContext(), response.getString("d"), Toast.LENGTH_SHORT).show();
                                     if (response.getString("d").equalsIgnoreCase("success")) {
-                                        Filevault.Imguri = null;
+                                        RepositoryFragment.Imguri = null;                                                            // Todo Filevault.class replaced bu Repository fragment
                                         handler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
@@ -352,7 +349,7 @@ public class QuestionReportPageService extends IntentService {
         builder.setOngoing(true);
         builder.setProgress(100, progress, false);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, SignInActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         builder.setContentIntent(contentIntent);

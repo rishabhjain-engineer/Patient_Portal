@@ -99,4 +99,22 @@
     <color name="gray_medium">#E5E5E5</color>
     <color name="header_color">#1da17f</color>
     <color name="text_color_blue">#4180AB</color>
+    <color name="sign_in_use_your_gray_color">#9fa1a2</color>
+    <color name="sign_in_blue_color">#01c8cd</color>
+    <color name="sign_in_fb_blue_color">#3a579b</color>
+    <color name="sign_in_edit_bg">#f7f7f9</color>
+    <color name="sign_in_edit_bg_hint">#b3bcc1</color>
+    <color name="create_account_tv_color">#696870</color>
+
+    <color name="dashboard_footer_textcolor">#9fa0a2</color>
+    <color name="dashboard_footer_background">#f7f7f7</color>
+    <color name="dashboard_devider">#dedede</color>
+    <color name="dashboard_header_color">#0f9347</color>
+
+    <color name="home_title_tra">#0f9347</color>
+    <color name="home_title_scion">#6c6c6c</color>
+    <color name="home_content_text">#9fa1a2</color>
+    <color name="home_seprator">#dedede</color>
+
+
 </resources>

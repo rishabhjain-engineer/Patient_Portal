@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/common_header" />
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/select_member_lab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/header_container"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -64,11 +76,12 @@
     <ListView
         android:id="@+id/past_visits"
         android:layout_width="match_parent"
-        android:scrollbars="none"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select_member_lab"
         android:layout_margin="10dp"
-        android:drawSelectorOnTop="true"
         android:divider="@android:color/transparent"
-        android:dividerHeight="10dp"></ListView>
+        android:dividerHeight="10dp"
+        android:drawSelectorOnTop="true"
+        android:scrollbars="none"></ListView>
 
-</LinearLayout>
+</RelativeLayout>

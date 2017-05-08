@@ -43,8 +43,10 @@ import java.util.List;
 
 import adapters.Group_testAdapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
+import ui.DashBoardActivity;
 
-public class GraphDetails extends ActionBarActivity {
+public class GraphDetails extends BaseActivity {
 
     private WebView view;
     private String data = "";
@@ -103,9 +105,10 @@ public class GraphDetails extends ActionBarActivity {
         String from_activity = extras.getString("from_activity");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(GraphDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else{
-        new Authentication().execute();}
+            Toast.makeText(GraphDetails.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            isSessionExist();
+        }
         if (RangeFrom != null && (!from_activity.equalsIgnoreCase("grouptest"))) {
             bullet_indicator1.setVisibility(View.VISIBLE);
             bullet_indicator.setVisibility(View.VISIBLE);
@@ -133,14 +136,19 @@ public class GraphDetails extends ActionBarActivity {
                     bullet_indicator2.setVisibility(View.GONE);
                 }
             }
-            if (!RangeTo.contains(".")) {
-                if (Integer.parseInt(RangeTo) == Integer.parseInt(CriticalHigh)) {
-                    bullet_indicator1.setVisibility(View.GONE);
+
+            try{
+                if (!RangeTo.contains(".")) {
+                    if (Integer.parseInt(RangeTo) == Integer.parseInt(CriticalHigh)) {
+                        bullet_indicator1.setVisibility(View.GONE);
+                    }
+                } else {
+                    if (Float.parseFloat(RangeTo) == Float.parseFloat(CriticalHigh)) {
+                        bullet_indicator1.setVisibility(View.GONE);
+                    }
                 }
-            } else {
-                if (Float.parseFloat(RangeTo) == Float.parseFloat(CriticalHigh)) {
-                    bullet_indicator1.setVisibility(View.GONE);
-                }
+            }catch (NumberFormatException exc){
+
             }
             normal_txtval.setText("Normal Value: " + RangeFrom + "-" + RangeTo + " " + UnitCode);
             belownormal.setText("Critical Low:  " + CriticalLow + " " + UnitCode);
@@ -408,7 +416,7 @@ public class GraphDetails extends ActionBarActivity {
                 startActivity(in);
                 finish();*/
                 Intent in = new Intent(GraphDetails.this, ReportRecords.class);
-                in.putExtra("id", logout.id);
+                in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId",caseIds.get(position));
                 startActivity(in);
@@ -523,76 +531,6 @@ public class GraphDetails extends ActionBarActivity {
                     + (listView.getDividerHeight()
                     * (listAdapter.getCount() - 1));
             listView.setLayoutParams(params);
-        }
-    }
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                JSONObject sendData = new JSONObject();
-                JSONObject receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(GraphDetails.this)
-                            .create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-                                    SharedPreferences sharedpreferences = getSharedPreferences(
-                                            "MyPrefs", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    Helper.authentication_flag = true;
-                                    finish();
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left);
-                                }
-                            });
-                    dialog.show();
-
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
         }
     }
 }

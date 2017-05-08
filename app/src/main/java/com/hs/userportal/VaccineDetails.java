@@ -2,13 +2,14 @@ package com.hs.userportal;
 
 import android.text.TextUtils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by ayaz on 6/3/17.
  */
 
-public class VaccineDetails implements Comparable<VaccineDetails>{
+public class VaccineDetails implements Serializable, Comparable<VaccineDetails> {
 
     private String vaccineName;
     private String vaccineID;
@@ -24,6 +25,10 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
     private boolean header;
     private String headerString;
     private String doseFrequency;
+    private boolean isSpecialDose;
+    private String vaccineNameAndDose;
+    private String ageRange;
+    private String rangeWithUnit;
 
     public String getVaccineName() {
         return vaccineName;
@@ -115,8 +120,18 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
 
     @Override
     public int compareTo(VaccineDetails o) {
-        return this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
-
+        int valueAgeAt = this.getAgeAt() < o.getAgeAt() ? 1 : (this.getAgeAt() > o.getAgeAt() ? -1 : 0);
+        int valueAgeTo = this.getAgeTo() < o.getAgeTo() ? 1 : (this.getAgeTo() > o.getAgeTo() ? -1 : 0);
+        if (valueAgeAt != 0) {
+            return valueAgeAt;
+        } else if (valueAgeTo != 0) {
+            return valueAgeTo;
+        } else {
+            String s1 = this.getVaccineNameAndDose();
+            String s2 = o.getVaccineNameAndDose();
+            int sComp = s1.compareTo(s2);
+            return sComp;
+        }
     }
 
     public boolean isHeader() {
@@ -143,13 +158,45 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
         this.doseFrequency = doseFrequency;
     }
 
-  /*  public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
+    public boolean isSpecialDose() {
+        return isSpecialDose;
+    }
+
+    public void setSpecialDose(boolean specialDose) {
+        isSpecialDose = specialDose;
+    }
+
+    public String getVaccineNameAndDose() {
+        return vaccineNameAndDose;
+    }
+
+    public void setVaccineNameAndDose(String vaccineNameAndDose) {
+        this.vaccineNameAndDose = vaccineNameAndDose;
+    }
+
+    public String getAgeRange() {
+        return ageRange;
+    }
+
+    public void setAgeRange(String ageRange) {
+        this.ageRange = ageRange;
+    }
+
+    public String getRangeWithUnit() {
+        return rangeWithUnit;
+    }
+
+    public void setRangeWithUnit(String rangeWithUnit) {
+        this.rangeWithUnit = rangeWithUnit;
+    }
+
+    /*public static class VaccineDetailsComparator implements Comparator<VaccineDetails> {
 
         public int compare(VaccineDetails firstObject, VaccineDetails secondObject) {
 
             return (firstObject.getAgeAt() - secondObject.getAgeAt());
 
-           *//* if (flag == 0) {
+            if (flag == 0) {
                 if (firstObject.getLinkTo() == secondObject.getLinkTo()) {
                     flag = 0;                           //if both are null return 0
                 } else if (TextUtils.isEmpty(firstObject.getLinkTo()) || firstObject.getLinkTo().equalsIgnoreCase("null")) {
@@ -159,7 +206,7 @@ public class VaccineDetails implements Comparable<VaccineDetails>{
                 } else {
                     flag = Integer.parseInt(firstObject.getLinkTo().trim()) - Integer.parseInt(secondObject.getLinkTo().trim());
                 }
-            }*//*
+            }
         }
     }*/
 }

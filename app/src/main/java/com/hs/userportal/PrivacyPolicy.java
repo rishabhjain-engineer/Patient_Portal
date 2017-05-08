@@ -43,9 +43,10 @@ public class PrivacyPolicy extends BaseActivity {
 		privacy = (WebView) findViewById(R.id.webPrivacy);
 		ok = (Button) findViewById(R.id.bOK);
 		service = new Services(PrivacyPolicy.this);
-		
-		new LoadPolicy().execute();
-		
+
+		if(isSessionExist()){
+			new LoadPolicy().execute();
+		}
 	}
 
 	class LoadPolicy extends AsyncTask<Void, Void, Void> {
