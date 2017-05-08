@@ -215,6 +215,8 @@ public class BaseActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Log.e("Rishabh","dialog dismmiss");
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, null);
                         SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -226,7 +228,7 @@ public class BaseActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("from logout", "logout");
                         startActivity(intent);
-                        dialog.dismiss();
+
                         finish();
                     }
                 });
