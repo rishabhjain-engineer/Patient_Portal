@@ -980,7 +980,8 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.EMAIL_ID, mEmail);
+        AppConstant.EMAIL = mEmail;
+        AppConstant.CONTACT_NO = mContactNo;
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
