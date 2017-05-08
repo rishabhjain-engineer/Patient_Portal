@@ -334,7 +334,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                 }
             }
 
-            if(downloadedFile.getName().endsWith(".pdf")|| downloadedFile.getName().endsWith(".doc")|| downloadedFile.getName().endsWith(".xls")){
+            if(downloadedFile.getAbsolutePath().endsWith(".pdf")|| downloadedFile.getName().endsWith(".doc")|| downloadedFile.getName().endsWith(".xls")){
 
             } else {
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
@@ -437,7 +437,7 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getApplicationContext().getPackageName() + "/Files");
+        File mediaStorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         //  File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         //File mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageFileName);
         mImage = File.createTempFile(
