@@ -1137,7 +1137,8 @@ public class SignUpActivity extends BaseActivity {
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.EMAIL_ID, mEmail);
+        AppConstant.EMAIL = mEmail;
+        AppConstant.CONTACT_NO = mContactNo;
         Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
