@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,8 +75,9 @@ public class Help extends BaseActivity {
 		contact.setText(Helper.resend_sms);
 		name.setText(Helper.resend_name);
 		name.setText(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME));
-		subject.setText(Helper.resend_email);
-
+		if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.EMAIL_ID))){
+			subject.setText(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.EMAIL_ID));
+		}
 	//	new BackgroundProcess().execute();
 
 		Random r = new Random();

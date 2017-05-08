@@ -88,7 +88,7 @@ public class SignUpActivity extends BaseActivity {
     private RadioButton mSignUpMaleRadioButton, mSignUpFemaleRadioButton;
     private SegmentedGroup mSegmentedGroup;
     private Services mServices;
-    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo;
+    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo, mEmail;
     private String mUserID, mPatientCode, mPatientBussinessDateTime, mRoleName, mMiddleName, mDisclaimerType, mUserVersionNo;
     private String mUserCodeFromEmail = null, mBuildNo, fnln;
     private static String mFromActivity, mDateOfBirthResult;
@@ -232,6 +232,7 @@ public class SignUpActivity extends BaseActivity {
             } else if (viewId == R.id.sign_in_tv) {
                 Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 finish();
             } else if (viewId == R.id.sign_up_continue) {
                 if (mUserNameAvailable && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
@@ -256,7 +257,7 @@ public class SignUpActivity extends BaseActivity {
         } else if ((contactNo.length() != 10)) {
             showAlertMessage("Please enter a valid 10 digit mobile number.");
         } else if (!isValidPassword(password)) {
-            showAlertMessage("1. Length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
+            showAlertMessage("1. Password length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
         } else if (!con.isConnectingToInternet()) {
             showAlertMessage("No Internet Connection.");
         } else {
@@ -365,8 +366,8 @@ public class SignUpActivity extends BaseActivity {
                                                 mLastName = innerJsonObject.optString("LastName");
                                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                                 mContactNo = innerJsonObject.optString("ContactNo");
+                                                mEmail = innerJsonObject.optString("Email");
                                                 boolean terms = innerJsonObject.optBoolean("Terms");
-
                                                 if (!terms && !TextUtils.isEmpty(mContactNo)) {
                                                     goToDashBoardPage();
                                                 } else {
@@ -588,6 +589,7 @@ public class SignUpActivity extends BaseActivity {
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mUserVersionNo = innerJsonObject.optString("UserVersionNo");
                         mContactNo = innerJsonObject.optString("ContactNo");
+                        mEmail = innerJsonObject.optString("Email");
                         boolean terms = innerJsonObject.optBoolean("Terms");
                         if (terms) {
                             sendrequestForDesclaimer();
@@ -690,9 +692,9 @@ public class SignUpActivity extends BaseActivity {
             public void onClick(View v) {
                 String mobileNumber = editnumber.getText().toString();
                 if (TextUtils.isEmpty(mobileNumber)) {
-                    Toast.makeText(getApplicationContext(), "Mobile Number Should not empty !", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Mobile number should not empty.", Toast.LENGTH_LONG).show();
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Valid Number !", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter valid number.", Toast.LENGTH_LONG).show();
                 } else {
                     checkContactNoExistAPI();                    // API hit ; to check duplicate mobile number ;
                     if(permitToNextSignUpPage) {
@@ -904,6 +906,7 @@ public class SignUpActivity extends BaseActivity {
                                 mLastName = innerJsonObject.optString("LastName");
                                 mDisclaimerType = innerJsonObject.optString("disclaimerType");
                                 mContactNo = innerJsonObject.optString("ContactNo");
+                                mEmail = innerJsonObject.optString("Email");
                                 boolean terms = innerJsonObject.optBoolean("Terms");
                                 if (!terms && !TextUtils.isEmpty(mContactNo)) {
                                     goToDashBoardPage();
@@ -993,6 +996,7 @@ public class SignUpActivity extends BaseActivity {
                         mLastName = innerJsonObject.optString("LastName");
                         mDisclaimerType = innerJsonObject.optString("disclaimerType");
                         mContactNo = innerJsonObject.optString("ContactNo");
+                        mEmail = innerJsonObject.optString("Email");
                         loginTerms = innerJsonObject.optBoolean("Terms");
                     } else {
                         isToShowSignInErrorMessage = true;
@@ -1105,6 +1109,7 @@ public class SignUpActivity extends BaseActivity {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             intent.putExtra("from logout", "logout");
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             LoginManager.getInstance().logOut();
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
             finish();
@@ -1132,6 +1137,7 @@ public class SignUpActivity extends BaseActivity {
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSignUpPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.EMAIL_ID, mEmail);
         Intent intent = new Intent(SignUpActivity.this, DashBoardActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
