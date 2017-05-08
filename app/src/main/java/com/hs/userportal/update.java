@@ -12,6 +12,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -34,6 +35,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -189,12 +191,18 @@ public class update extends BaseActivity {
     public static Uri Imguri;
     public static Context mcontext;
     private RequestQueue mRequestQueue;
+    String[] permissionsRequired = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int PERMISSION_CALLBACK_CONSTANT = 100;
+    private static final int REQUEST_PERMISSION_SETTING = 101;
+    private SharedPreferences permissionStatus;
+    private boolean sentToSettings = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         mActionBar.setTitle("Basic");
+        permissionStatus = getSharedPreferences("permissionStatus", MODE_PRIVATE);
         mRequestQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.update_new);
         service = new Services(update.this);
@@ -314,152 +322,65 @@ public class update extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
-                    askRunTimePermissions();
-                    mIsSdkLessThanM = true;
 
-                    if (!TextUtils.isEmpty(mFacebookId)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-                                            case 1:
-
-                                                try {
-                                                    checkCameraPermission();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                break;
-
-                                            case 2:
-                                                new fbImagePull().execute();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
+                if (ActivityCompat.checkSelfPermission(update.this, permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(update.this, permissionsRequired[1]) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(update.this, permissionsRequired[0]) || ActivityCompat.shouldShowRequestPermissionRationale(update.this, permissionsRequired[1])) {
+                        //Show Information about why you need the permission
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(update.this);
+                        builder.setTitle("Need multiple permissions");
+                        builder.setMessage("This app needs camera and storage permissions.");
+                        builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                ActivityCompat.requestPermissions(update.this, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        builder.show();
+                    } else if (permissionStatus.getBoolean(permissionsRequired[0], false)) {
+                        //Previously Permission Request was cancelled with 'Dont Ask Again',
+                        // Redirect to Settings after showing Information about why you need the permission
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(update.this);
+                        builder.setTitle("Need multiple permissions");
+                        builder.setMessage("This app needs camera and storage permissions.");
+                        builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                sentToSettings = true;
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                                Toast.makeText(getBaseContext(), "Go to permissions to grant  camera and storage", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
                         builder.show();
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-                                            case 1:
-
-                                                try {
-                                                    checkCameraPermission();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                break;
-
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
-                        builder.show();
+                        //just request the permission
+                        ActivityCompat.requestPermissions(update.this, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
                     }
 
-
+                    SharedPreferences.Editor editor = permissionStatus.edit();
+                    editor.putBoolean(permissionsRequired[0], true);
+                    editor.commit();
                 } else {
-                    if (fbLinked.equals("true")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(
-                                update.this);
-                        builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library",
-                                        "Take from Facebook"},
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                intent.putExtra("crop", "true");
-                                                intent.putExtra("aspectX", 1);
-                                                intent.putExtra("aspectY", 1);
-                                                intent.putExtra("outputX", 250);
-                                                intent.putExtra("outputY", 250);
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-
-                                            case 1:
-                                                new fbImagePull().execute();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
-                        builder.show();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
-                        builder.setTitle("Choose Image Source");
-                        builder.setItems(new CharSequence[]{"Photo Library"},
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                                                intent.putExtra("crop", "true");
-                                                intent.putExtra("aspectX", 1);
-                                                intent.putExtra("aspectY", 1);
-                                                intent.putExtra("outputX", 250);
-                                                intent.putExtra("outputY", 250);
-
-                                                try {
-                                                    intent.putExtra("return-data", true);
-                                                    startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                                } catch (ActivityNotFoundException e) {
-                                                }
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                });
-                        builder.show();
-                    }
+                    //You already have the permission, just go ahead.
+                    proceedAfterPermission();
                 }
-
             }
 
         });
@@ -2324,7 +2245,7 @@ public class update extends BaseActivity {
 
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST) {
 
@@ -2332,6 +2253,134 @@ public class update extends BaseActivity {
                 mPermissionGranted = true;
             } else {
                 mPermissionGranted = false;
+            }
+        }
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CALLBACK_CONSTANT) {
+            //check if all permissions are granted
+            boolean allgranted = false;
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    allgranted = true;
+                } else {
+                    allgranted = false;
+                    break;
+                }
+            }
+
+            if (allgranted) {
+                proceedAfterPermission();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(update.this, permissionsRequired[0])
+                    || ActivityCompat.shouldShowRequestPermissionRationale(update.this, permissionsRequired[1])) {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(update.this);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(update.this, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                Toast.makeText(getBaseContext(), "Unable to get Permission", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+    private void proceedAfterPermission() {
+        if (!TextUtils.isEmpty(mFacebookId)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
+            builder.setTitle("Choose Image Source");
+            builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera", "Pick from Facebook"},
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            switch (which) {
+                                case 0:
+                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                    try {
+                                        intent.putExtra("return-data", true);
+                                        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                    } catch (ActivityNotFoundException e) {
+                                    }
+                                    break;
+                                case 1:
+
+                                    try {
+                                        checkCameraPermission();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+
+                                case 2:
+                                    new fbImagePull().execute();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(update.this);
+            builder.setTitle("Choose Image Source");
+            builder.setItems(new CharSequence[]{"Photo Library", "Take from Camera"},
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            switch (which) {
+                                case 0:
+                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                    try {
+                                        intent.putExtra("return-data", true);
+                                        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                    } catch (ActivityNotFoundException e) {
+                                    }
+                                    break;
+                                case 1:
+
+                                    try {
+                                        checkCameraPermission();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
+        }
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (sentToSettings) {
+            if (ActivityCompat.checkSelfPermission(update.this, permissionsRequired[0]) == PackageManager.PERMISSION_GRANTED) {
+                //Got Permission
+               // proceedAfterPermission();
             }
         }
     }
