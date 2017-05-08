@@ -139,7 +139,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
-    List<S3ObjectSummary> summaries = new ArrayList<>();
+    private List<S3ObjectSummary> summaries = new ArrayList<>();
+    private Bitmap mPickLatestPhotoBitMap = null;
 
 
     private static RepositoryFreshFragment repositoryFreshFragment;
@@ -207,9 +208,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             currentDirectory.clearAll();
 
             while (objectListing.isTruncated()) {
-                objectListing = s3Client.listNextBatchOfObjects (objectListing);
-               // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
-               // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
+                objectListing = s3Client.listNextBatchOfObjects(objectListing);
+                // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
+                // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
                 s3allData.addAll(objectListing.getCommonPrefixes());
                 summaries.addAll(objectListing.getObjectSummaries());
             }
@@ -503,7 +504,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     setListAdapter(mRepositoryAdapter.getDirectory());
                 }
             });
-
 
 
         } else {
@@ -989,9 +989,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 break;
 
                             case 2:
-                                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     pickLatestPhoto();
-                                }else{
+                                } else {
                                     ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
                                 }
 
@@ -1098,7 +1098,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
 
-    private void pickLatestPhoto(){
+    private void pickLatestPhoto() {
 
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1119,22 +1119,40 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 MediaStore.Images.ImageColumns.MIME_TYPE
         };
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final Cursor cursor = getContext().getContentResolver()
                     .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
                             null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
 
-// Put it in the image view
             if (cursor.moveToFirst()) {
                 String imageLocation = cursor.getString(1);
                 File imageFile = new File(imageLocation);
-                if (imageFile.exists()) {   // TODO: is there a better way to do this?
-                    Bitmap bm = BitmapFactory.decodeFile(imageLocation);
-                    imageView.setImageBitmap(bm);
-                    Uri test = Uri.fromFile(imageFile);
-                    Log.e("Rishabh", "Test uri := "+test);
+
+                if (imageFile.exists()) {
+                    File downloadedFile = null;
+                    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
+                    imageView.setImageBitmap(mPickLatestPhotoBitMap);
+                    if (mPickLatestPhotoBitMap != null) {
+                        try {
+                            downloadedFile = createImageFile();
+                            OutputStream outStream = new FileOutputStream(downloadedFile);
+                            mPickLatestPhotoBitMap.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                            outStream.flush();
+                            outStream.close();
+                            listOfFilesToUpload.add(downloadedFile);
+                        } catch (Exception e) {
+                            Log.e("Rishabh", "Exception := " + e);
+                        }
+                        File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                        listOfFilesToUpload.add(thumbnailFile);
+                    } else {
+                        ((BaseActivity) mActivity).showAlertMessage("No Recent File Available.");
+                    }
                 }
             }
+        }else {
+            ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!.\n " +
+                                                        "Kindle choose 'Pick from Gallery' option to upload your file(s).");
         }
 
         dialog.show();
@@ -1149,6 +1167,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             }
         });
     }
@@ -1166,6 +1185,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         try {
             if (requestCode == PICK_FROM_GALLERY) {
                 ArrayList<Uri> multipleUri = new ArrayList<>();
+                // Intent data contains Multiple URIs , so to extract each uri from intent we use ClipData.
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     multipleUri.add(clipData.getItemAt(i).getUri());
@@ -1250,7 +1270,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                 } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
-                    selectedImageUri = imageUri;
                     downloadedFile = new File(imageUri.getPath());
                     listOfFilesToUpload.add(downloadedFile);
 
