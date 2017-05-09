@@ -202,8 +202,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             s3allData.clear();
             summaries.clear();
             ObjectListing objectListing = s3Client.listObjects(lor);
-            s3allData.addAll(objectListing.getCommonPrefixes());
-            summaries = objectListing.getObjectSummaries();
+            s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
+            summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
             currentDirectory.clearAll();
 
             while (objectListing.isTruncated()) {
@@ -221,11 +221,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
                 if (DirectoryUtility.isFile(summary.getKey())) {
                     DirectoryFile file = new DirectoryFile();
-                    file.setKey(summary.getKey());
-                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
+                    file.setKey(summary.getKey());                                      // this will keep whole path : PatientID/Filevault/personal/Directorypath/FileName.Extension ; also create thumb path of a file .
+                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));       // path will be stored:= Directorypath/Filename.Extension
                     file.setSize(summary.getSize());
                     file.setLastModified(summary.getLastModified());
-                    file.setName(DirectoryUtility.getFileName(summary.getKey()));
+                    file.setName(DirectoryUtility.getFileName(summary.getKey()));       //filename.extension
                     DirectoryUtility.addFile(mDirectory, file, file.getPath());
                 }
             }
@@ -989,8 +989,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                             case 2:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                  //  pickLatestPhoto();
-                                    ((BaseActivity) mActivity).showAlertMessage("Work in Progress");
+                                    pickLatestPhoto();
+                                   // ((BaseActivity) mActivity).showAlertMessage("Work in Progress");
                                 } else {
                                     ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
                                 }
@@ -1239,7 +1239,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             try {
                                 downloadedFile = createImageFile();
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
-                                //compressing image to 80 percent quality to reduce size
+                                //compressing image to 90 percent quality to reduce size
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();

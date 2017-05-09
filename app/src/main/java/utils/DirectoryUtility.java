@@ -97,7 +97,9 @@ public class DirectoryUtility {
                 || s.endsWith(".bmp")
                 || s.endsWith(".doc")
                 || s.endsWith(".txt")
-                || s.endsWith(".docx")) {
+                || s.endsWith(".docx")
+                || s.endsWith(".JPG")
+                || s.endsWith(".JPEG")) {
             return true;
         } else {
             return false;
