@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,6 +171,89 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
 
         return mView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        /*/
+        >>> CODE FOR HANDLING HARDWARE BACKPRESS IN FRAGMENT >>>
+         */
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_BACK) {
+                        callDeviceBackButton(mRepositoryAdapter.getDirectory());   // Function what to do on device backpress
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    private void callDeviceBackButton(Directory directory){
+        Log.e("Rishabh","onActivityCreated");
+        if (directory.getParentDirectory() == null) {
+            toolbarTitle.setText("Repository");
+
+
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+
+                        } else {
+                            getActivity().finish();
+                        }
+                    } else if (listMode == 1) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            getActivity().finish();
+                        }
+                    }
+
+
+
+        } else {
+            toolbarTitle.setText(directory.getDirectoryName());
+
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            Log.e("Rishabh","LOL HUEHUEHUEHUE");
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                            currentDirectory = directory.getParentDirectory();
+                        }
+                    } else if (listMode == 1) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                            currentDirectory = directory.getParentDirectory();
+                        }
+                    }
+
+        }
     }
 
     public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
@@ -314,7 +398,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 setBackButtonPress(mDirectory);
             } else if (viewId == R.id.repository_grid_imageview) {
                 Directory directory;
-                if (listMode == 0) {
+                if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
                     listMode = 1;
                 } else {
                     listMode = 0;
