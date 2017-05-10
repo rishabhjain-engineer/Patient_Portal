@@ -34,7 +34,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="10dp"
-            android:text="Are you sure you want to exit from app?"
+            android:text="Are you sure you want to exit from app ?"
             android:textColor="@color/black"
             android:textSize="15dp" />
 
