@@ -271,6 +271,7 @@ public class ReportStatus extends BaseActivity {
                                         grouptest.class);
                                 intent.putExtra("group", results.toString());
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
 
                                 for (int i = 0; i < results.length(); i++) {
@@ -472,6 +473,7 @@ public class ReportStatus extends BaseActivity {
                                         intent.putExtra("from_activity", "grouptest");
 
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                     } else {
                                         callSingleGraph(singlechartposition);
                                     }
@@ -572,6 +574,7 @@ public class ReportStatus extends BaseActivity {
                                     intent.putExtra("chartNames", chartNames.get(0));
                                     intent.putExtra("from_activity", "grouptest");
                                     startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
                                 }
 
@@ -756,6 +759,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
 
                                 int i = 0;
@@ -851,6 +855,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("chartNames", chartNames.get(0));
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -1460,8 +1465,8 @@ public class ReportStatus extends BaseActivity {
 
                 Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             default:
@@ -1472,8 +1477,9 @@ public class ReportStatus extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
     }
 
 
@@ -1665,6 +1671,7 @@ public class ReportStatus extends BaseActivity {
             intent1.putExtra("chartNames", chartNames.get(0));
             intent1.putExtra("from_activity", "grouptest");
             startActivity(intent1);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else {
             Intent intent = new Intent(
                     ReportStatus.this,
@@ -1686,6 +1693,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("CriticalLow", criticallow);
             intent.putExtra("ActionTitle", description);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 }

@@ -195,12 +195,19 @@ public class changepass extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
             case R.id.action_home:
                 finish();

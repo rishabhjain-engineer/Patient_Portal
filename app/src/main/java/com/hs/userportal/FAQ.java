@@ -82,6 +82,7 @@ public class FAQ extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -91,5 +92,6 @@ public class FAQ extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 }

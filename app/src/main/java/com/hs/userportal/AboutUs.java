@@ -128,6 +128,7 @@ public class AboutUs extends BaseActivity {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
 		finish();
+		overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 		/*if (from.equals("dash")) {
 
 		} else if (from.equals("login")) {
@@ -148,12 +149,14 @@ public class AboutUs extends BaseActivity {
 				backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 				startActivity(backNav);*/
 				finish();
+				overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 			} else if (from.equals("login")) {
 
 				Intent backNav = new Intent(AboutUs.this, SignInActivity.class);
 				backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 				startActivity(backNav);
+				overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 			}
 
@@ -198,6 +201,7 @@ public class AboutUs extends BaseActivity {
 				// showAppMsg();
 				Intent i = new Intent(getApplicationContext(), Error.class);
 				startActivity(i);
+				overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 			}
 		}
 	};
