@@ -256,32 +256,57 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     }
 
     private void callDeviceBackButton(Directory directory) {
-        Log.e("Rishabh", "onActivityCreated");
+
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
 
+            if(mRepositoryAdapter.isInSelectionMode()){
+                if (listMode == 0) {
+                    if (mRepositoryAdapter.isInSelectionMode()) {
+                        unselectAll();
+                        mRepositoryAdapter.setSelectionMode(false);
+                        mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                        toolbarTitle.setVisibility(View.VISIBLE);
 
-            if (listMode == 0) {
-                if (mRepositoryAdapter.isInSelectionMode()) {
-                    unselectAll();
-                    mRepositoryAdapter.setSelectionMode(false);
-                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                    toolbarTitle.setVisibility(View.VISIBLE);
+                    } else {
+                        getActivity().finish();
+                    }
+                } else if (listMode == 1) {
+                    if (mRepositoryAdapter.isInSelectionMode()) {
+                        unselectAll();
+                        mRepositoryAdapter.setSelectionMode(false);
+                        mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                        toolbarTitle.setVisibility(View.VISIBLE);
+                    } else {
+                        getActivity().finish();
+                    }
+                }
+            }else {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setContentView(R.layout.exit_from_app);
+                TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView cancelButton = (TextView) dialog.findViewById(R.id.delete_cancel_btn);
+                dialog.show();
 
-                } else {
-                    getActivity().finish();
-                }
-            } else if (listMode == 1) {
-                if (mRepositoryAdapter.isInSelectionMode()) {
-                    unselectAll();
-                    mRepositoryAdapter.setSelectionMode(false);
-                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                    toolbarTitle.setVisibility(View.VISIBLE);
-                } else {
-                    getActivity().finish();
-                }
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                });
             }
-
 
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
@@ -293,7 +318,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                     toolbarTitle.setVisibility(View.VISIBLE);
                 } else {
-                    Log.e("Rishabh", "LOL HUEHUEHUEHUE");
                     setListAdapter(directory.getParentDirectory());
                     setBackButtonPress(directory.getParentDirectory());
                     currentDirectory = directory.getParentDirectory();
@@ -753,12 +777,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+
                     if (listMode == 0) {
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                             toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
 
                         } else {
                             getActivity().finish();
@@ -769,11 +796,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                             toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
                         } else {
                             getActivity().finish();
                         }
                     }
-
                 }
             });
         } else {
@@ -807,7 +834,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
             });
         }
-
     }
 
     private void unselectAll() {
@@ -1020,11 +1046,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 String imageLocation = cursor.getString(1);
                 File imageFile = new File(imageLocation);
                 Uri obtainedUri = Uri.fromFile(imageFile);
-                Log.e("Rishabh", "Obtained URi := "+obtainedUri);
+                Log.e("Rishabh", "Obtained URi := " + obtainedUri);
                 if (imageFile.exists()) {
                     File downloadedFile = null;
 
-                    InputStream is=null;
+                    InputStream is = null;
                     try {
                         is = mActivity.getContentResolver().openInputStream(obtainedUri);
                         mPickLatestPhotoBitMap = BitmapFactory.decodeStream(is);
@@ -1033,7 +1059,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
 
 
-                //    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
+                    //    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
                     imageView.setImageBitmap(mPickLatestPhotoBitMap);
                     if (mPickLatestPhotoBitMap != null) {
                         try {
