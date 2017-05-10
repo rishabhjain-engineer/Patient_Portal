@@ -129,7 +129,7 @@ public class ProfileContainerActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
-    private ProgressDialog progress;
+   // private ProgressDialog progress;
     private String path;
     JSONObject receiveDataFb, receiveData;
     JSONArray subArray;
@@ -138,12 +138,12 @@ public class ProfileContainerActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progress = new ProgressDialog(ProfileContainerActivity.this);
+           /* progress = new ProgressDialog(ProfileContainerActivity.this);
             progress.setCancelable(false);
             progress.setCanceledOnTouchOutside(true);
             progress.setMessage("Please wait...");
             progress.setIndeterminate(true);
-            progress.show();
+            progress.show();*/
         }
         protected Void doInBackground(Void... arg0) {
             JSONObject sendDataFb = new JSONObject();
@@ -269,10 +269,10 @@ public class ProfileContainerActivity extends BaseActivity {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            if (progress != null) {
+           /* if (progress != null) {
                 progress.dismiss();
                 progress = null;
-            }
+            }*/
 
 
             //   imageProgress.setVisibility(View.VISIBLE);  //////-------------------------------------Commented by us------------------------------

@@ -106,7 +106,7 @@ public class AccountFragment extends Fragment {
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"My Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};
+        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);
@@ -151,12 +151,15 @@ public class AccountFragment extends Fragment {
 
                 } else if (position == 3) {
                     //About
-                    Intent intentAbout = new Intent(mActivity, AboutUs.class);
-                    intentAbout.putExtra("from", "dash");
-                    startActivity(intentAbout);
-                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intentAbout = new Intent(mActivity, AboutUs.class);
+                        intentAbout.putExtra("from", "dash");
+                        startActivity(intentAbout);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
-
+                    }
                 } else if (position == 4) {
                     //Password
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
