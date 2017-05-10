@@ -52,7 +52,6 @@ public class DirectoryFile {
             // mrsajat doc
             String[] splitted = key.split("\\.");
             String ExtensionType = splitted[splitted.length-1];
-            Log.e("Rishabh", "Extension Type:= "+ExtensionType);
             setExtensionType(ExtensionType);
 
         }
