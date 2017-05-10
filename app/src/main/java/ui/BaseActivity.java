@@ -228,8 +228,8 @@ public class BaseActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("from logout", "logout");
                         startActivity(intent);
-
                         finish();
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 });
         dialog.show();
