@@ -52,7 +52,7 @@
                 android:padding="0dp"
                 android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/btn_ok"
-                android:text="Stay"
+                android:text="Cancel"
                 android:textColor="@color/header_color"
                 android:textSize="15dp"
                 android:textStyle="bold"/>
