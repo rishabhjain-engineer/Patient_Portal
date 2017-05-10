@@ -101,8 +101,13 @@ import utils.RepositoryUtils;
 
 public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction {
 
-    private List<File> listOfFilesToUpload;
     private static final int PICK_FROM_CAMERA = 2;
+    private static RequestQueue req;
+    private static JsonObjectRequest s3jr;
+    private static String patientId = null;
+    private static ProgressDialog mProgressDialog;
+    private static RepositoryFreshFragment repositoryFreshFragment;
+    private List<File> listOfFilesToUpload;
     private RecyclerView list;
     private Directory mDirectory;
     private Directory searchableDirectory;
@@ -113,13 +118,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
     private JsonObjectRequest lock_folder;
-    private static RequestQueue req;
     private JsonObjectRequest jr2, jr3, jr4;
-    private static JsonObjectRequest s3jr;
     private NotificationHandler nHandler;
     private Handler mHandler;
     private PreferenceHelper mPreferenceHelper;
-    private static String patientId = null;
     private EditText mSearchEditText;
     private Button mUploadFileButton;
     private RelativeLayout toolbar;
@@ -129,7 +131,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private View mView;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
-    private static ProgressDialog mProgressDialog;
     private int listMode = 0; //0=list, 1=grid
     private int PICK_FROM_GALLERY = 1;
     private Uri Imguri;
@@ -141,11 +142,69 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<String> s3allData = new ArrayList<>();
     private List<S3ObjectSummary> summaries = new ArrayList<>();
     private Bitmap mPickLatestPhotoBitMap = null;
-
-
-    private static RepositoryFreshFragment repositoryFreshFragment;
     private RepositoryDialogAdapter dialogAdapter;
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
+            int viewId = v.getId();
+            if (viewId == R.id.upload) {
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadFile();
+                }
+
+            } else if (viewId == R.id.repository_backbutton_imageview) {
+                setBackButtonPress(mDirectory);
+            } else if (viewId == R.id.repository_grid_imageview) {
+                Directory directory;
+                if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
+                    listMode = 1;
+                } else {
+                    listMode = 0;
+                }
+                setListAdapter(mRepositoryAdapter.getDirectory());
+            } else if (viewId == R.id.repository_selectall_imageview) {
+                if (listMode == 0) {
+                    selectAll();
+                    mRepositoryAdapter.notifyDataSetChanged();
+                    mRepositoryAdapter.setSelectionMode(true);
+                } else {
+                    selectAll();
+                    mRepositoryGridAdapter.notifyDataSetChanged();
+                    mRepositoryAdapter.setSelectionMode(true);
+                }
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+            } else if (viewId == R.id.repository_delete_imageview) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    deleteFile();
+                }
+
+            } else if (viewId == R.id.repository_move_imageview) {
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+                } else {
+                    moveFile();
+                }
+
+            }
+        }
+    };
+
+    public static void refresh() {
+        mProgressDialog.dismiss();
+        repositoryFreshFragment.startCreatingDirectoryStructure();
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }
 
     @Nullable
     @Override
@@ -196,139 +255,62 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         });
     }
 
-    private void callDeviceBackButton(Directory directory){
-        Log.e("Rishabh","onActivityCreated");
+    private void callDeviceBackButton(Directory directory) {
+        Log.e("Rishabh", "onActivityCreated");
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
 
 
-                    if (listMode == 0) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
+            if (listMode == 0) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
 
-                        } else {
-                            getActivity().finish();
-                        }
-                    } else if (listMode == 1) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                        } else {
-                            getActivity().finish();
-                        }
-                    }
-
+                } else {
+                    getActivity().finish();
+                }
+            } else if (listMode == 1) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    getActivity().finish();
+                }
+            }
 
 
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
 
-                    if (listMode == 0) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                        } else {
-                            Log.e("Rishabh","LOL HUEHUEHUEHUE");
-                            setListAdapter(directory.getParentDirectory());
-                            setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
-                        }
-                    } else if (listMode == 1) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                        } else {
-                            setListAdapter(directory.getParentDirectory());
-                            setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
-                        }
-                    }
-
-        }
-    }
-
-    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
-
-        Directory currentDirectory;
-
-        public GetDataFromAmazon(Directory currentDirectory) {
-            this.currentDirectory = currentDirectory;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String s3BucketName = getString(R.string.s3_bucket);
-            String prefix = "";
-            if (currentDirectory.getParentDirectory() == null) {
-                prefix = patientId + "/FileVault/Personal/";
-            } else {
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
-            }
-            String delimiter = "/";
-
-            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
-
-            ListObjectsRequest lor = new ListObjectsRequest()
-                    .withBucketName(s3BucketName)
-                    .withPrefix(prefix)
-                    .withMaxKeys(1000)
-                    .withDelimiter(delimiter);
-
-            s3allData.clear();
-            summaries.clear();
-            ObjectListing objectListing = s3Client.listObjects(lor);
-            s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
-            summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
-            currentDirectory.clearAll();
-
-            while (objectListing.isTruncated()) {
-                objectListing = s3Client.listNextBatchOfObjects(objectListing);
-                // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
-                // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
-                s3allData.addAll(objectListing.getCommonPrefixes());
-                summaries.addAll(objectListing.getObjectSummaries());
-            }
-
-
-            for (S3ObjectSummary summary : summaries) {
-                if (summary.getKey().contains("_thumb")) {
-                    continue;
+            if (listMode == 0) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e("Rishabh", "LOL HUEHUEHUEHUE");
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
                 }
-                if (DirectoryUtility.isFile(summary.getKey())) {
-                    DirectoryFile file = new DirectoryFile();
-                    file.setKey(summary.getKey());                                      // this will keep whole path : PatientID/Filevault/personal/Directorypath/FileName.Extension ; also create thumb path of a file .
-                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));       // path will be stored:= Directorypath/Filename.Extension
-                    file.setSize(summary.getSize());
-                    file.setLastModified(summary.getLastModified());
-                    file.setName(DirectoryUtility.getFileName(summary.getKey()));       //filename.extension
-                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
+            } else if (listMode == 1) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
                 }
             }
 
-            for (String path : s3allData) {
-                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
-                DirectoryUtility.addFolder(currentDirectory, directory);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            setListAdapter(currentDirectory);
-            setBackButtonPress(currentDirectory);
-            progressDialog.dismiss();
-            loadData();
         }
     }
 
@@ -381,58 +363,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         });
 
     }
-
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            int viewId = v.getId();
-            if (viewId == R.id.upload) {
-                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-                } else {
-                    uploadFile();
-                }
-
-            } else if (viewId == R.id.repository_backbutton_imageview) {
-                setBackButtonPress(mDirectory);
-            } else if (viewId == R.id.repository_grid_imageview) {
-                Directory directory;
-                if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
-                    listMode = 1;
-                } else {
-                    listMode = 0;
-                }
-                setListAdapter(mRepositoryAdapter.getDirectory());
-            } else if (viewId == R.id.repository_selectall_imageview) {
-                if (listMode == 0) {
-                    selectAll();
-                    mRepositoryAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter.setSelectionMode(true);
-                } else {
-                    selectAll();
-                    mRepositoryGridAdapter.notifyDataSetChanged();
-                    mRepositoryAdapter.setSelectionMode(true);
-                }
-                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
-            } else if (viewId == R.id.repository_delete_imageview) {
-
-                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-                } else {
-                    deleteFile();
-                }
-
-            } else if (viewId == R.id.repository_move_imageview) {
-                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-                } else {
-                    moveFile();
-                }
-
-            }
-        }
-    };
 
     private void deleteFile() {
         final List<SelectableObject> selectedObjects = new ArrayList<>();
@@ -658,7 +588,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         dialog.show();
     }
-
 
     private void setListAdapter(Directory directory) {
         parseDirectory(directory);
@@ -928,123 +857,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     }
 
-    public class FileDownloader extends AsyncTask<Void, Void, String> {
-
-        final int BUFFER_SIZE = 4096;
-        private ProgressDialog progressDialog;
-        private String fileUrl = "", saveFilePath = "";
-
-        public FileDownloader(String fileUrl) {
-            this.fileUrl = fileUrl;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(mActivity);
-            progressDialog.setMessage("Loading File");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-
-            //check read permission
-
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            try {
-                if (!(fileUrl.equals("")) || fileUrl != null) {
-                    URL url = new URL(fileUrl);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    int responseCode = httpURLConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        String filename = "";
-                        String disposition = httpURLConnection.getHeaderField("Content-Disposition");
-                        String contentType = httpURLConnection.getContentType();
-                        int contentLength = httpURLConnection.getContentLength();
-
-                        if (disposition != null) {
-                            int index = disposition.indexOf("filename=");
-                            if (index > 0) {
-                                filename = disposition.substring(index + 10, disposition.length() - 1);
-                            }
-                        } else {
-                            filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
-                        }
-
-                        InputStream inputStream = httpURLConnection.getInputStream();
-                        saveFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString().trim() + File.separator + filename;
-
-                        FileOutputStream fileOutputStream = new FileOutputStream(saveFilePath);
-
-                        int byteReads = -1;
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        while ((byteReads = inputStream.read(buffer)) != -1) {
-                            fileOutputStream.write(buffer, 0, byteReads);
-                        }
-
-                        fileOutputStream.close();
-                        inputStream.close();
-
-                    } else {
-                        saveFilePath = "";
-                    }
-
-                    httpURLConnection.disconnect();
-                }
-
-            } catch (IOException e) {
-
-            }
-
-            return saveFilePath;
-        }
-
-        @Override
-        protected void onPostExecute(String saveFilePath) {
-            super.onPostExecute(saveFilePath);
-            progressDialog.dismiss();
-
-            if (saveFilePath.endsWith("pdf")) {
-                Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/pdf");
-                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Intent i = Intent.createChooser(objIntent, "Open File");
-                try {
-                    startActivity(i);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                    //                   Log.e("Rishabh", "Lol");
-                }
-            } else if (saveFilePath.contains("doc")) {
-                Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/msword");
-                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Intent i = Intent.createChooser(objIntent, "Open File");
-                try {
-                    startActivity(i);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a ms-word reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
-                }
-            } else if (saveFilePath.contains("xls")) {
-                Intent objIntent = new Intent(Intent.ACTION_VIEW);
-                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/vnd.ms-excel");
-                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Intent i = Intent.createChooser(objIntent, "Open File");
-                try {
-                    startActivity(i);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a X-excel reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
-                }
-            }
-
-
-        }
-    }
-
     private void chooseimage() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -1074,7 +886,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             case 2:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     pickLatestPhoto();
-                                   // ((BaseActivity) mActivity).showAlertMessage("Work in Progress");
                                 } else {
                                     ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
                                 }
@@ -1208,10 +1019,21 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (cursor.moveToFirst()) {
                 String imageLocation = cursor.getString(1);
                 File imageFile = new File(imageLocation);
-
+                Uri obtainedUri = Uri.fromFile(imageFile);
+                Log.e("Rishabh", "Obtained URi := "+obtainedUri);
                 if (imageFile.exists()) {
                     File downloadedFile = null;
-                    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
+
+                    InputStream is=null;
+                    try {
+                        is = mActivity.getContentResolver().openInputStream(obtainedUri);
+                        mPickLatestPhotoBitMap = BitmapFactory.decodeStream(is);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+                //    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
                     imageView.setImageBitmap(mPickLatestPhotoBitMap);
                     if (mPickLatestPhotoBitMap != null) {
                         try {
@@ -1231,9 +1053,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     }
                 }
             }
-        }else {
+        } else {
             ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!.\n " +
-                                                        "Kindle choose 'Pick from Gallery' option to upload your file(s).");
+                    "Kindle choose 'Pick from Gallery' option to upload your file(s).");
         }
 
         dialog.show();
@@ -1263,7 +1085,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
-                if(data!=null){
+                if (data != null) {
                     mProgressDialog = new ProgressDialog(mActivity);
                     mProgressDialog.setMessage("Uploading File ...");
                     mProgressDialog.setCancelable(false);
@@ -1272,12 +1094,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 ArrayList<Uri> multipleUri = new ArrayList<>();
                 Uri selectedImageUri;
                 File downloadedFile = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ClipData clipData = data.getClipData();
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         multipleUri.add(clipData.getItemAt(i).getUri());
                     }
-                }else{
+                } else {
                     selectedImageUri = data.getData();
                     multipleUri.add(selectedImageUri);
                 }
@@ -1297,7 +1119,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 outStream.close();
                                 listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
-                                Log.e("Rishabh", "Exception := "+e);
+                                Log.e("Rishabh", "Exception := " + e);
                             }
                         }
                     }
@@ -1330,7 +1152,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 listOfFilesToUpload.add(downloadedFile);
 
                             } catch (Exception e) {
-                                Log.e("Rishabh", "Exception bitmap:= "+e);
+                                Log.e("Rishabh", "Exception bitmap:= " + e);
                             }
                         }
                     }
@@ -1343,22 +1165,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
                 listOfFilesToUpload.add(thumbnailFile);
             }
-           RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
+            RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
-            Log.e("Rishabh", "Exception := "+e);
+            Log.e("Rishabh", "Exception := " + e);
         }
-    }
-
-    public static void refresh() {
-        mProgressDialog.dismiss();
-        repositoryFreshFragment.startCreatingDirectoryStructure();
-    }
-
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
     }
 
     @Override
@@ -1414,6 +1225,199 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
                 displayedDirectory.add(new SelectableObject(file, false));
             }
+        }
+    }
+
+    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
+
+        Directory currentDirectory;
+
+        public GetDataFromAmazon(Directory currentDirectory) {
+            this.currentDirectory = currentDirectory;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String s3BucketName = getString(R.string.s3_bucket);
+            String prefix = "";
+            if (currentDirectory.getParentDirectory() == null) {
+                prefix = patientId + "/FileVault/Personal/";
+            } else {
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
+            }
+            String delimiter = "/";
+
+            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+
+            ListObjectsRequest lor = new ListObjectsRequest()
+                    .withBucketName(s3BucketName)
+                    .withPrefix(prefix)
+                    .withMaxKeys(1000)
+                    .withDelimiter(delimiter);
+
+            s3allData.clear();
+            summaries.clear();
+            ObjectListing objectListing = s3Client.listObjects(lor);
+            s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
+            summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
+            currentDirectory.clearAll();
+
+            while (objectListing.isTruncated()) {
+                objectListing = s3Client.listNextBatchOfObjects(objectListing);
+                // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
+                // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
+                s3allData.addAll(objectListing.getCommonPrefixes());
+                summaries.addAll(objectListing.getObjectSummaries());
+            }
+
+
+            for (S3ObjectSummary summary : summaries) {
+                if (summary.getKey().contains("_thumb")) {
+                    continue;
+                }
+                if (DirectoryUtility.isFile(summary.getKey())) {
+                    DirectoryFile file = new DirectoryFile();
+                    file.setKey(summary.getKey());                                      // this will keep whole path : PatientID/Filevault/personal/Directorypath/FileName.Extension ; also create thumb path of a file .
+                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));       // path will be stored:= Directorypath/Filename.Extension
+                    file.setSize(summary.getSize());
+                    file.setLastModified(summary.getLastModified());
+                    file.setName(DirectoryUtility.getFileName(summary.getKey()));       //filename.extension
+                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                }
+            }
+
+            for (String path : s3allData) {
+                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
+                DirectoryUtility.addFolder(currentDirectory, directory);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setListAdapter(currentDirectory);
+            setBackButtonPress(currentDirectory);
+            progressDialog.dismiss();
+            loadData();
+        }
+    }
+
+    public class FileDownloader extends AsyncTask<Void, Void, String> {
+
+        final int BUFFER_SIZE = 4096;
+        private ProgressDialog progressDialog;
+        private String fileUrl = "", saveFilePath = "";
+
+        public FileDownloader(String fileUrl) {
+            this.fileUrl = fileUrl;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(mActivity);
+            progressDialog.setMessage("Loading File");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            //check read permission
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            try {
+                if (!(fileUrl.equals("")) || fileUrl != null) {
+                    URL url = new URL(fileUrl);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    int responseCode = httpURLConnection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        String filename = "";
+                        String disposition = httpURLConnection.getHeaderField("Content-Disposition");
+                        String contentType = httpURLConnection.getContentType();
+                        int contentLength = httpURLConnection.getContentLength();
+
+                        if (disposition != null) {
+                            int index = disposition.indexOf("filename=");
+                            if (index > 0) {
+                                filename = disposition.substring(index + 10, disposition.length() - 1);
+                            }
+                        } else {
+                            filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+                        }
+
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        saveFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString().trim() + File.separator + filename;
+
+                        FileOutputStream fileOutputStream = new FileOutputStream(saveFilePath);
+
+                        int byteReads = -1;
+                        byte[] buffer = new byte[BUFFER_SIZE];
+                        while ((byteReads = inputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, byteReads);
+                        }
+
+                        fileOutputStream.close();
+                        inputStream.close();
+
+                    } else {
+                        saveFilePath = "";
+                    }
+
+                    httpURLConnection.disconnect();
+                }
+
+            } catch (IOException e) {
+
+            }
+
+            return saveFilePath;
+        }
+
+        @Override
+        protected void onPostExecute(String saveFilePath) {
+            super.onPostExecute(saveFilePath);
+            progressDialog.dismiss();
+
+            if (saveFilePath.endsWith("pdf")) {
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/pdf");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                    //                   Log.e("Rishabh", "Lol");
+                }
+            } else if (saveFilePath.contains("doc")) {
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/msword");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a ms-word reader here, or something
+                    //                  Log.e("Rishabh", "Lol");
+                }
+            } else if (saveFilePath.contains("xls")) {
+                Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                objIntent.setDataAndType(Uri.parse("file:///" + saveFilePath), "application/vnd.ms-excel");
+                objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Intent i = Intent.createChooser(objIntent, "Open File");
+                try {
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a X-excel reader here, or something
+                    //                  Log.e("Rishabh", "Lol");
+                }
+            }
+
+
         }
     }
 }
