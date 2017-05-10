@@ -248,6 +248,7 @@ public class Help extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                 return true;
 
@@ -275,6 +276,7 @@ public class Help extends BaseActivity {
 //		startActivity(backNav);
 
         finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
     }
 

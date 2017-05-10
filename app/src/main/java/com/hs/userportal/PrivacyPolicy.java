@@ -118,7 +118,7 @@ public class PrivacyPolicy extends BaseActivity {
 //			Intent backNav = new Intent(getApplicationContext(), Login.class);
 //			backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 //			startActivity(backNav);
-			super.onBackPressed();
+			finish();
 			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 			return true;
 
@@ -127,4 +127,9 @@ public class PrivacyPolicy extends BaseActivity {
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+	}
 }

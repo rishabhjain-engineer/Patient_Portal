@@ -1274,6 +1274,7 @@ public class ReportFragment extends Fragment {
             i.putExtra("SamplePickupstatus", pastVisitArray.get(arg2).get("SamplePickupstatus"));
             i.putExtra("scroll_position", String.valueOf(arg2));
             startActivity(i);
+            mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         } else {
             String idsent;
             idsent = pastVisitArray.get(arg2).get("CaseId");
@@ -1286,6 +1287,7 @@ public class ReportFragment extends Fragment {
             i.putExtra("caseId", caseid);
             i.putExtra("id", id);
             startActivity(i);
+            mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
         //  slidingMenu.toggle();
         //  new BackgroundProcess().execute();

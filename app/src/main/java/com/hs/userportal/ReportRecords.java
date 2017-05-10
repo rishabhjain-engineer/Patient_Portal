@@ -138,6 +138,7 @@ public class ReportRecords extends BaseActivity {
                             ImageGridActivity.class);
                     i.putExtra("caseid", case_id);
                     startActivity(i);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
             }
         });
@@ -259,8 +260,8 @@ public class ReportRecords extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     @Override
@@ -275,6 +276,7 @@ public class ReportRecords extends BaseActivity {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

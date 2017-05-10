@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
+import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -308,8 +309,37 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Log.i("ayaz", "Dashboard onBackPressed");
-        finish();
+        confirmDialog();
+    }
+
+    private void confirmDialog() {
+        final Dialog dialog = new Dialog(DashBoardActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+        messageTv.setText("Do you really want to exit " + getResources().getString(R.string.app_name) + " ?");
+
+        stayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
     }
 
     public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {

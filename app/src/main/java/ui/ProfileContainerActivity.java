@@ -117,6 +117,7 @@ public class ProfileContainerActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -125,6 +126,7 @@ public class ProfileContainerActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private ProgressDialog progress;
