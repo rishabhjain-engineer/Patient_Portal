@@ -120,7 +120,11 @@ public class VitalFragment extends Fragment {
         bgHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showdialog();
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    showdialog();
+                } else {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         weightLayout.setOnClickListener(new View.OnClickListener() {
