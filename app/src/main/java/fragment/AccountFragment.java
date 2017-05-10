@@ -269,6 +269,7 @@ public class AccountFragment extends Fragment {
             LoginManager.getInstance().logOut();
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
             mActivity.finish();
+            mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
 
     }

@@ -85,6 +85,7 @@ public class VaccineActivity extends BaseActivity {
                     bundle.putSerializable("list", (Serializable) vaccineDetailsList);
                     intent.putExtra("BUNDLE", bundle);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
             }
         });
@@ -151,10 +152,17 @@ public class VaccineActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private ProgressDialog mProgressDialog;

@@ -577,8 +577,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             i.putExtra("htype", "bp");
                         }
                         startActivity(i);
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         finish();
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 }
             }
@@ -602,6 +602,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.add:
                 Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
@@ -621,6 +622,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(HealthCommonActivity.this, AddGraphDetails.class);
                 startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             default:
                 return super.onOptionsItemSelected(item);
         }
