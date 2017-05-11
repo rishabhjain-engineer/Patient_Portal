@@ -248,7 +248,7 @@ public class Help extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
                 return true;
 
@@ -260,6 +260,7 @@ public class Help extends BaseActivity {
                 email.setType("message/rfc822");
                 startActivity(Intent.createChooser(email,
                         "Choose an Email client :"));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
 
 
@@ -276,7 +277,7 @@ public class Help extends BaseActivity {
 //		startActivity(backNav);
 
         finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
     }
 

@@ -65,8 +65,9 @@ public class AboutUs extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                        .parse("http://blog.zureka.in/")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.zureka.in/")));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 blog.setTextColor(Color.parseColor("#1998ca"));
             }
         });
@@ -77,8 +78,9 @@ public class AboutUs extends BaseActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-                            .parse("fb://profile/329712027119803"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/329712027119803"));
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                     startActivity(intent);
                 } catch (Exception e) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri
@@ -97,9 +99,13 @@ public class AboutUs extends BaseActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri
                             .parse("twitter://user?screen_name="
                                     + "zurekaindia")));
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 } catch (Exception e) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri
                             .parse("https://twitter.com/#!/" + "zurekaindia")));
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 }
                 twitter.setTextColor(Color.parseColor("#1998ca"));
             }
@@ -114,6 +120,8 @@ public class AboutUs extends BaseActivity {
                 startActivity(new Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse("https://www.youtube.com/channel/UChFWfYBhEIJddlk5cV2bu_g")));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 youtube.setTextColor(Color.parseColor("#1998ca"));
             }
 
@@ -128,7 +136,7 @@ public class AboutUs extends BaseActivity {
         // TODO Auto-generated method stub
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		/*if (from.equals("dash")) {
 
 		} else if (from.equals("login")) {
@@ -149,14 +157,14 @@ public class AboutUs extends BaseActivity {
 				backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 				startActivity(backNav);*/
                     finish();
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
                 } else if (from.equals("login")) {
 
                     Intent backNav = new Intent(AboutUs.this, SignInActivity.class);
                     backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(backNav);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
                 }
 

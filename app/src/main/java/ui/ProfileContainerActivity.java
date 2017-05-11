@@ -82,6 +82,8 @@ public class ProfileContainerActivity extends BaseActivity {
                     intent.putExtra("fbLinked", fbLinked);
                     intent.putExtra("fbLinkedID", fbLinkedID);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 }
             } else if (id == R.id.residence_container) {
                 if(isSessionExist()) {
@@ -93,6 +95,8 @@ public class ProfileContainerActivity extends BaseActivity {
                 intent.putExtra("fbLinked", fbLinked);
                 intent.putExtra("fbLinkedID", fbLinkedID);*/
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 }
 
             } else if (id == R.id.work_container) {
@@ -105,6 +109,8 @@ public class ProfileContainerActivity extends BaseActivity {
                 intent.putExtra("fbLinked", fbLinked);
                 intent.putExtra("fbLinkedID", fbLinkedID);*/
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                 }
 
             }
@@ -117,7 +123,7 @@ public class ProfileContainerActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -126,7 +132,7 @@ public class ProfileContainerActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
    // private ProgressDialog progress;
