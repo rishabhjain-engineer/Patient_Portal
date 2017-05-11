@@ -152,8 +152,9 @@ public class VaccineActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
