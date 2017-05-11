@@ -322,7 +322,7 @@ public class DashBoardActivity extends BaseActivity {
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         TextView messageTv = (TextView) dialog.findViewById(R.id.message);
-        messageTv.setText("Are you sure you want to exit from app ?");
+        messageTv.setText("Are you sure you want to exit from ScionTra ?");
 
         stayButton.setOnClickListener(new View.OnClickListener() {
             @Override
