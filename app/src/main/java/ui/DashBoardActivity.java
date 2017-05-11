@@ -4,15 +4,9 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.NotificationManagerCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +23,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,11 +38,9 @@ import fragment.AccountFragment;
 import fragment.DashboardFragment;
 import fragment.FamilyFragment;
 import fragment.ReportFragment;
-import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
 import fragment.SchoolFragment;
 import fragment.VitalFragment;
-import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -73,6 +64,7 @@ public class DashBoardActivity extends BaseActivity {
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
     private int grayColor, greenColor;
     private ProgressDialog mProgressDialog;
+    private boolean mIsHomeFragmentOpen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,7 +301,12 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        confirmDialog();
+        if (mIsHomeFragmentOpen) {
+            confirmDialog();
+        } else {
+            openDashBoardFragment();
+        }
+
     }
 
     private void confirmDialog() {
@@ -322,7 +319,7 @@ public class DashBoardActivity extends BaseActivity {
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         TextView messageTv = (TextView) dialog.findViewById(R.id.message);
-        messageTv.setText("Are you sure you want to exit from app ?");
+        messageTv.setText("Are you sure you want to exit from ScionTra ?");
 
         stayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,7 +339,7 @@ public class DashBoardActivity extends BaseActivity {
         dialog.show();
     }
 
-    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
+    public void fromFamilyToReport(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
         mFooterContainer.setVisibility(View.VISIBLE);
         mDashBoardTv.setTextColor(grayColor);
         mReportTv.setTextColor(greenColor);
@@ -375,6 +372,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openDashBoardFragment() {
+        mIsHomeFragmentOpen = true;
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
@@ -388,6 +386,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openVitalFragment() {
+        mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             Log.d("ayaz", "inside if");
@@ -413,6 +412,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openReportFragment() {
+        mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
         } else {
@@ -445,7 +445,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
-
+        mIsHomeFragmentOpen = false;                                    // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -472,6 +472,7 @@ public class DashBoardActivity extends BaseActivity {
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
         //mActionBar.show();
+        mIsHomeFragmentOpen = false;                               // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -495,6 +496,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openAccountFragment() {
+        mIsHomeFragmentOpen = false;                                     // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -519,7 +521,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openSchoolFragment() {
-
+        mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);

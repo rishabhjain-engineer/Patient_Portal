@@ -33,7 +33,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,111 +231,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         return mView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        /*/
-        >>> CODE FOR HANDLING HARDWARE BACKPRESS IN FRAGMENT >>>
-         */
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (i == KeyEvent.KEYCODE_BACK) {
-                        callDeviceBackButton(mRepositoryAdapter.getDirectory());   // Function what to do on device backpress
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-    }
-
-    private void callDeviceBackButton(Directory directory) {
-
-        if (directory.getParentDirectory() == null) {
-            toolbarTitle.setText("Repository");
-
-            if(mRepositoryAdapter.isInSelectionMode()){
-                if (listMode == 0) {
-                    if (mRepositoryAdapter.isInSelectionMode()) {
-                        unselectAll();
-                        mRepositoryAdapter.setSelectionMode(false);
-                        mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                        toolbarTitle.setVisibility(View.VISIBLE);
-
-                    } else {
-                        getActivity().finish();
-                    }
-                } else if (listMode == 1) {
-                    if (mRepositoryAdapter.isInSelectionMode()) {
-                        unselectAll();
-                        mRepositoryAdapter.setSelectionMode(false);
-                        mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                        toolbarTitle.setVisibility(View.VISIBLE);
-                    } else {
-                        getActivity().finish();
-                    }
-                }
-            }else {
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dialog.setCancelable(false);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.setContentView(R.layout.exit_from_app);
-                TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
-                TextView cancelButton = (TextView) dialog.findViewById(R.id.delete_cancel_btn);
-                dialog.show();
-
-                cancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-
-                okButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                        getActivity().finish();
-                    }
-                });
-            }
-
-        } else {
-            toolbarTitle.setText(directory.getDirectoryName());
-
-            if (listMode == 0) {
-                if (mRepositoryAdapter.isInSelectionMode()) {
-                    unselectAll();
-                    mRepositoryAdapter.setSelectionMode(false);
-                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                    toolbarTitle.setVisibility(View.VISIBLE);
-                } else {
-                    setListAdapter(directory.getParentDirectory());
-                    setBackButtonPress(directory.getParentDirectory());
-                    currentDirectory = directory.getParentDirectory();
-                }
-            } else if (listMode == 1) {
-                if (mRepositoryAdapter.isInSelectionMode()) {
-                    unselectAll();
-                    mRepositoryAdapter.setSelectionMode(false);
-                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                    toolbarTitle.setVisibility(View.VISIBLE);
-                } else {
-                    setListAdapter(directory.getParentDirectory());
-                    setBackButtonPress(directory.getParentDirectory());
-                    currentDirectory = directory.getParentDirectory();
-                }
-            }
-
-        }
-    }
 
     private void initObject() {
         toolbar = (RelativeLayout) mView.findViewById(R.id.repository_toolbar);
@@ -788,7 +682,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             toolbarBackButton.setVisibility(View.GONE);
 
                         } else {
-                            getActivity().finish();
+                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
                     } else if (listMode == 1) {
                         if (mRepositoryAdapter.isInSelectionMode()) {
@@ -798,7 +692,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             toolbarTitle.setVisibility(View.VISIBLE);
                             toolbarBackButton.setVisibility(View.GONE);
                         } else {
-                            getActivity().finish();
+                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
                     }
                 }
