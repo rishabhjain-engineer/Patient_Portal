@@ -425,6 +425,7 @@ public class GraphDetails extends BaseActivity {
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -444,6 +445,7 @@ public class GraphDetails extends BaseActivity {
                 //
                 // startActivity(backNav);
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.test_history:
@@ -464,6 +466,7 @@ public class GraphDetails extends BaseActivity {
         // backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //
         // startActivity(backNav);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
