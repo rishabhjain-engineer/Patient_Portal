@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -22,11 +23,13 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -56,10 +59,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import adapters.Group_testAdapter;
+import adapters.MyHealthsAdapter;
 import ui.BaseActivity;
 import ui.BmiActivity;
 import ui.DashBoardActivity;
 import ui.GraphHandlerActivity;
+import ui.HealthCommonActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
@@ -87,7 +92,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private Services service;
     private ListView graph_listview_id;
     private int maxYrange = 0 , mRotationAngle = 0;
-    private WebView mLineChartWebView;
+    private WebView mWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
@@ -98,6 +103,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private String title;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
     private List<String> mDateList = new ArrayList<>();
+    private ProgressDialog progress;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -116,10 +122,10 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         chartvakueList = new ArrayList<String>();
         chartvakueList = getIntent().getStringArrayListExtra("values");
 
-        mLineChartWebView = (WebView) findViewById(R.id.linechart_webview);
-        mLineChartWebView.setFocusable(true);
-        mLineChartWebView.setFocusableInTouchMode(true);
-        WebSettings settings = mLineChartWebView.getSettings();
+        mWebView = (WebView) findViewById(R.id.linechart_webview);
+        mWebView.setFocusable(true);
+        mWebView.setFocusableInTouchMode(true);
+        WebSettings settings = mWebView.getSettings();
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
@@ -129,8 +135,27 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         settings.setSupportZoom(true);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-        mLineChartWebView.setInitialScale(1);
-        mLineChartWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+        mWebView.setInitialScale(1);
+        mWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if(progress != null && progress.isShowing()){
+                    progress.dismiss();
+                }
+                if(adapter == null){
+                    adapter = new Group_testAdapter(GraphDetailsNew.this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
+                    adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
+                    graph_listview_id.setAdapter(adapter);
+                }else{
+                    adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
+                    adapter.notifyDataSetChanged();
+                }
+
+                Utility.setListViewHeightBasedOnChildren(graph_listview_id);
+            }
+        });
 
 
 
@@ -217,6 +242,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
 
     private void setData(){
+        progress = new ProgressDialog(GraphDetailsNew.this);
+        progress.setCancelable(false);
+        progress.setMessage("Loading...");
+        progress.setIndeterminate(true);
+        progress.show();
          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -330,17 +360,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
 
         setDateList(mDateList);
-        if(adapter == null){
-            adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
-            graph_listview_id.setAdapter(adapter);
-        }else{
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
-            adapter.notifyDataSetChanged();
-        }
-
-        Utility.setListViewHeightBasedOnChildren(graph_listview_id);
-        mLineChartWebView.loadUrl("file:///android_asset/html/index.html");
+        mWebView.loadUrl("file:///android_asset/html/index.html");
     }
 
     @Override
