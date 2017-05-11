@@ -132,9 +132,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         WebSettings settings = mWebView.getSettings();
         mWebView.setFocusable(true);
         mWebView.setFocusableInTouchMode(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setJavaScriptEnabled(true);
+        //settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
+        settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(true);
         settings.setSupportZoom(true);
