@@ -255,7 +255,7 @@ public class Help extends BaseActivity {
             case R.id.action_support:
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.putExtra(Intent.EXTRA_EMAIL,
-                        new String[]{"support@zureka.in"});
+                        new String[]{"support@sciontra.com"});
                 // need this to prompts email client only
                 email.setType("message/rfc822");
                 startActivity(Intent.createChooser(email,
