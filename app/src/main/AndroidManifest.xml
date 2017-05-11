@@ -338,8 +338,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".GraphDetailsNew"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name="ui.QuestionireActivity"
             android:screenOrientation="portrait" />
