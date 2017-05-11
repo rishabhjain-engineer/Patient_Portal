@@ -87,12 +87,6 @@ public class VitalFragment extends Fragment {
         heighttxt_id = (TextView) view.findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) view.findViewById(R.id.allergytxtid);
         blood_group = (EditText) view.findViewById(R.id.blood_group);
-        blood_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showdialog();
-            }
-        });
         bloodID = (TextView) view.findViewById(R.id.bloodID);
         weight_latest = (TextView) view.findViewById(R.id.weight_latest);
         height_latest = (TextView) view.findViewById(R.id.height_latest);
