@@ -1049,6 +1049,7 @@ public class SignInActivity extends BaseActivity {
                 new SignInActivity.LogoutAsync().execute();
             }
         }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
@@ -1088,6 +1089,7 @@ public class SignInActivity extends BaseActivity {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             intent.putExtra("from logout", "logout");
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             LoginManager.getInstance().logOut();
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
             finish();

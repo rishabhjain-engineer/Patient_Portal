@@ -138,7 +138,7 @@ public class ReportRecords extends BaseActivity {
                             ImageGridActivity.class);
                     i.putExtra("caseid", case_id);
                     startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
             }
         });
@@ -199,7 +199,7 @@ public class ReportRecords extends BaseActivity {
                                 e.printStackTrace();
                             }
                             startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         }
                     } else if (subArray1.getJSONObject(position).getString("IsPublish")
                             .equalsIgnoreCase("true")

@@ -1524,11 +1524,13 @@ public class residence extends BaseActivity {
                 startActivity(backNav);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.action_home:
                 finish();
                 //showUnsavedAlertDialog();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.add:
 
@@ -1549,6 +1551,7 @@ public class residence extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
 }

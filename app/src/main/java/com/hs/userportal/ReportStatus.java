@@ -271,7 +271,7 @@ public class ReportStatus extends BaseActivity {
                                         grouptest.class);
                                 intent.putExtra("group", results.toString());
                                 startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 for (int i = 0; i < results.length(); i++) {
@@ -471,7 +471,7 @@ public class ReportStatus extends BaseActivity {
                                         intent.putExtra("from_activity", "grouptest");
 
                                         startActivity(intent);
-                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                                     } else {
                                         callSingleGraph(singlechartposition);
                                     }
@@ -572,7 +572,7 @@ public class ReportStatus extends BaseActivity {
                                     intent.putExtra("chartNames", chartNames.get(0));
                                     intent.putExtra("from_activity", "grouptest");
                                     startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                                 }
 
@@ -756,7 +756,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 int i = 0;
@@ -851,7 +851,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("chartNames", chartNames.get(0));
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -1454,7 +1454,7 @@ public class ReportStatus extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
-
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.action_home:
@@ -1666,7 +1666,7 @@ public class ReportStatus extends BaseActivity {
             intent1.putExtra("chartNames", chartNames.get(0));
             intent1.putExtra("from_activity", "grouptest");
             startActivity(intent1);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         } else {
             Intent intent = new Intent(
                     ReportStatus.this,
@@ -1688,7 +1688,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("CriticalLow", criticallow);
             intent.putExtra("ActionTitle", description);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 }

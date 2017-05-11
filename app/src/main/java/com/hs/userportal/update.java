@@ -1910,6 +1910,8 @@ public class update extends BaseActivity {
                 dialog.dismiss();
                 update.Imguri = null;
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {

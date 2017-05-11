@@ -239,6 +239,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         setData();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
 
     private void setData(){
@@ -628,6 +634,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(GraphDetailsNew.this, AddGraphDetails.class);

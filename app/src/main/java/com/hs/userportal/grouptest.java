@@ -4,13 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -287,10 +283,10 @@ public class grouptest extends BaseActivity {
                     intent.putExtra("from_activity", "grouptest");
                     startActivity(intent);*/
 
-                    int pos=0;
-                    for(int k=0;i<jarr_info.size();k++){
-                        if(description.equalsIgnoreCase(jarr_info.get(k).get("Description"))){
-                            pos=k;
+                    int pos = 0;
+                    for (int k = 0; i < jarr_info.size(); k++) {
+                        if (description.equalsIgnoreCase(jarr_info.get(k).get("Description"))) {
+                            pos = k;
                             break;
                         }
                     }
@@ -315,6 +311,7 @@ public class grouptest extends BaseActivity {
                     intent1.putExtra("CriticalLow", jarr_info.get(pos).get("CriticalLow"));
                     intent1.putExtra("from_activity", "grouptest");
                     startActivity(intent1);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                 } else {
                     if (chartValues.size() > 1) {
@@ -389,6 +386,7 @@ public class grouptest extends BaseActivity {
                         intent.putExtra("CriticalLow", jarr_info.get(pos).get("CriticalLow"));
                         intent.putExtra("from_activity", "grouptest");
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                     } else {
                         callSingleGraph(singlechartposition);
@@ -478,8 +476,9 @@ public class grouptest extends BaseActivity {
         intent.putExtra("CriticalHigh", CriticalHigh);
         intent.putExtra("CriticalLow", CriticalLow);
         intent.putExtra("from_activity", "ReportStatus");
-        intent.putExtra("ActionTitle",description);
+        intent.putExtra("ActionTitle", description);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
 
@@ -500,6 +499,7 @@ public class grouptest extends BaseActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case android.R.id.home:
@@ -510,7 +510,7 @@ public class grouptest extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
-
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             default:
@@ -524,7 +524,8 @@ public class grouptest extends BaseActivity {
 //		backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 //
 //		startActivity(backNav);
-
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
@@ -547,11 +548,12 @@ public class grouptest extends BaseActivity {
         super.onResume();
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(grouptest.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        }else{
-        if (Helper.authentication_flag == true) {
-            finish();
-        }}
+            Toast.makeText(grouptest.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            if (Helper.authentication_flag == true) {
+                finish();
+            }
+        }
     }
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {

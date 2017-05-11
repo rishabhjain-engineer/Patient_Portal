@@ -407,6 +407,7 @@ public class ImageGridActivity extends ActionBarActivity {
 		imageLoader.destroy();
 //		backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 //		startActivity(backNav);
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		finish();
 	}
 	

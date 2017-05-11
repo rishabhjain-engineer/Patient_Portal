@@ -305,6 +305,7 @@ public class DashBoardActivity extends BaseActivity {
             confirmDialog();
         } else {
             openDashBoardFragment();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
 
     }
@@ -407,6 +408,8 @@ public class DashBoardActivity extends BaseActivity {
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
         }
         Log.d("ayaz", "out of if");
     }
@@ -439,7 +442,7 @@ public class DashBoardActivity extends BaseActivity {
                 transaction.replace(R.id.fragment_container, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         }
     }
@@ -465,6 +468,7 @@ public class DashBoardActivity extends BaseActivity {
             transaction.replace(R.id.fragment_container, mRepositoryFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
@@ -492,6 +496,7 @@ public class DashBoardActivity extends BaseActivity {
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
@@ -517,6 +522,7 @@ public class DashBoardActivity extends BaseActivity {
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
@@ -541,6 +547,7 @@ public class DashBoardActivity extends BaseActivity {
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 }
