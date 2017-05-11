@@ -294,8 +294,7 @@ public class grouptest extends BaseActivity {
                             break;
                         }
                     }
-                    Intent intent1 = new Intent(grouptest.this,
-                            GraphDetailsNew.class);
+                    Intent intent1 = new Intent(grouptest.this, GraphDetailsNew.class);
                     intent1.putExtra("chart_type", "Pie");
                     intent1.putExtra("data", db);
                     intent1.putStringArrayListExtra("dates",

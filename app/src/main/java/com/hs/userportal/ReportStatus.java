@@ -429,9 +429,7 @@ public class ReportStatus extends BaseActivity {
                                                 + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                                 + "</div></body></html>";
 
-                                        Intent intent = new Intent(
-                                                ReportStatus.this,
-                                                GraphDetailsNew.class);
+                                        Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
@@ -732,8 +730,7 @@ public class ReportStatus extends BaseActivity {
                                         + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                         + "</div></body></html>";
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
                                 if (chartNames.size() != 0)
@@ -834,8 +831,7 @@ public class ReportStatus extends BaseActivity {
                                 startActivity(intent);
                                 finish();*/
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "Pie");
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -1650,8 +1646,7 @@ public class ReportStatus extends BaseActivity {
 
            /* intent.putExtra("data", db);
             intent.putExtra("from_activity", "grouptest");*/
-            Intent intent1 = new Intent(ReportStatus.this,
-                    GraphDetailsNew.class);
+            Intent intent1 = new Intent(ReportStatus.this, GraphDetailsNew.class);
             intent1.putExtra("chart_type", "Pie");
             intent1.putExtra("data", db);
             intent1.putStringArrayListExtra("dates",
