@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,9 @@ public class VitalFragment extends Fragment {
     private ProgressDialog progress;
     private String[] bloodList = {"O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"};
     private int allergy_no = 0;
+    private RelativeLayout mInitialTextViewContainer, mScoreTextViewContainer;
+    private TextView mScoreUpperTextView, mScoreLowerTextView;
+    private String mScore, mFact, mPathOfGlobalIndex, mUserId;
 
     @Nullable
     @Override
@@ -98,12 +102,18 @@ public class VitalFragment extends Fragment {
         mBmiContainer = (LinearLayout) view.findViewById(R.id.bmi_container);
         mBpContainer = (LinearLayout) view.findViewById(R.id.bp_container);
         mVaccineContainer = (LinearLayout) view.findViewById(R.id.vaccine_container);
+
+        mInitialTextViewContainer = (RelativeLayout) view.findViewById(R.id.initial_textview_container);
+        mScoreTextViewContainer = (RelativeLayout) view.findViewById(R.id.score_textview_container);
+        mScoreUpperTextView = (TextView) view.findViewById(R.id.uppertv);
+        mScoreLowerTextView = (TextView) view.findViewById(R.id.middletv);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mUserId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
@@ -505,6 +515,7 @@ public class VitalFragment extends Fragment {
             Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             new VitalFragment.BackgroundProcessResume().execute();
+            new GetUserGradeAsync().execute();
         }
     }
 
@@ -593,6 +604,72 @@ public class VitalFragment extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private boolean isToLoadData;
+
+    private class GetUserGradeAsync extends AsyncTask<Void, Void, Void> {
+        ProgressDialog progress;
+        JSONObject receiveData1;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = new ProgressDialog(mActivity);
+            progress.setCancelable(false);
+            progress.setMessage("Loading...");
+            progress.setIndeterminate(true);
+            isToLoadData = false;
+            if (mActivity != null && mActivity.getCurrentFocus() != null) {
+                progress.show();
+            }
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (progress != null && progress.isShowing()) {
+                progress.dismiss();
+            }
+            if (isToLoadData) {
+                /*Intent intent = new Intent(logout.this, GraphHandlerWebViewActivity.class);
+                intent.putExtra("path", mPathOfGlobalIndex + id);
+                startActivityForResult(intent, 2);*/
+                mInitialTextViewContainer.setVisibility(View.VISIBLE);
+                mScoreTextViewContainer.setVisibility(View.GONE);
+            } else {
+                mInitialTextViewContainer.setVisibility(View.GONE);
+                mScoreTextViewContainer.setVisibility(View.VISIBLE);
+                mScoreUpperTextView.setVisibility(View.GONE);
+                //mScoreUpperTextView.setText(mScore);
+                mScoreLowerTextView.setText(mFact);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+                sendData1.put("PatientId", mUserId);
+                // sendData1.put("PatientId", "442454B7-7CEA-48B7-8472-DBE7D7DC0D93");
+                receiveData1 = service.getUserFact(sendData1);
+                String data = receiveData1.optString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.optJSONArray("Table");
+                if (jsonArray != null) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(0);
+                    mPathOfGlobalIndex = jsonObject.optString("Path");
+                    mScore = jsonObject.optString("Score");
+                    mFact = jsonObject.optString("Fact");
+                    if (!TextUtils.isEmpty(mPathOfGlobalIndex) && mPathOfGlobalIndex.contains("globalhealthindex")) {
+                        isToLoadData = true;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                progress.dismiss();
             }
             return null;
         }
