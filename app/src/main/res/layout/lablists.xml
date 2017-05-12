@@ -14,6 +14,30 @@
 
         <include layout="@layout/common_header" />
 
+        <RelativeLayout
+            android:id="@+id/quiz_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_page_green_height"
+            android:background="@drawable/homepage_dynamicview"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/middletv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uppertv"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+
+        </RelativeLayout>
+
     </LinearLayout>
 
     <EditText

@@ -13,96 +13,29 @@
         <include layout="@layout/common_header" />
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/quiz_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/home_page_green_height"
             android:background="@drawable/homepage_dynamicview"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/initial_textview_container"
+
+            <TextView
+                android:id="@+id/middletv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/uppertextview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp"
-                    android:text="So you think you take good"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:id="@+id/middletextview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/uppertextview"
-                    android:layout_centerHorizontal="true"
-                    android:text="care of your health ? "
-                    android:textColor="@color/white"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/lowertextview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/middletextview"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:text="Let's see if you do"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_below="@+id/middletextview"
-                    android:layout_marginTop="22dp"
-                    android:layout_toRightOf="@+id/lowertextview"
-                    android:background="@drawable/homepage_dv_rightarrow"
-                    android:clickable="false" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/score_textview_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uppertv"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/uppertv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                android:padding="2dp"
+                android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
 
-                <TextView
-                    android:id="@+id/middletv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/uppertv"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center"
-                    android:padding="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="normal" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/bgHeader"
@@ -358,6 +291,49 @@
 
         <LinearLayout
             android:id="@+id/bp_seprator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#C4C4C4"
+            android:clickable="false"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/pulse_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pulse_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Pulse (beats per minute)"
+                android:textColor="@android:color/black"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/pulse_tv_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:drawablePadding="5dp"
+                android:drawableRight="@drawable/arrow_grey"
+                android:gravity="center_vertical"
+                android:text="-"
+                android:textColor="@android:color/black"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/bp_seprator_2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
