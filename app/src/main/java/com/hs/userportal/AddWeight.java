@@ -3,11 +3,13 @@ package com.hs.userportal;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,9 +46,9 @@ import ui.HealthCommonActivity;
 public class AddWeight extends BaseActivity {
 
     private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText, mPulseEditText;
-    private TimePicker mTimePicker ;
+
     private static EditText lasstCheckedDate;
-    private Button bsave;
+    private Button bsave, mTimePicker;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
     private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue;
     private Services service;
@@ -58,6 +60,12 @@ public class AddWeight extends BaseActivity {
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
     private List<String> mHeightList = new ArrayList<>();
     private Spinner mHeightFtSpinner, mHeightInchSpinner, mWeightLinkHeightSpinner;
+
+
+    private int pHour;
+    private int pMinute;
+    static final int TIME_DIALOG_ID = 0;
+    private Button pickTime;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -85,7 +93,7 @@ public class AddWeight extends BaseActivity {
         mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
         mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
         mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
-        mTimePicker = (TimePicker) findViewById(R.id.timepicker);
+        mTimePicker = (Button) findViewById(R.id.timepicker);
         mPulseEditText = (EditText) findViewById(R.id.pulse_edittext);
 
         enter_add = (EditText) findViewById(R.id.enter_add);
@@ -106,6 +114,20 @@ public class AddWeight extends BaseActivity {
         if(day < 10){
             dateInString = "0"+day;
         }*/
+
+
+        mTimePicker.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDialog(TIME_DIALOG_ID);
+            }
+        });
+
+        final Calendar cal = Calendar.getInstance();
+        pHour = cal.get(Calendar.HOUR_OF_DAY);
+        pMinute = cal.get(Calendar.MINUTE);
+
+        updateDisplay();
+
 
         long currentTimeMillis = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -331,6 +353,16 @@ public class AddWeight extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case TIME_DIALOG_ID:
+                return new TimePickerDialog(this,
+                        mTimeSetListener, pHour, pMinute, false);
+        }
+        return null;
     }
 
     class submitchange extends AsyncTask<Void, Void, Void> {
@@ -611,72 +643,30 @@ public class AddWeight extends BaseActivity {
         }
     }
 
-    private class GetPulseAsyncTask extends AsyncTask<Void, Void, Void> {
-        private JSONObject receiveData1;
-        private ProgressDialog mProgressDialog;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog = new ProgressDialog(AddWeight.this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            JSONObject sendData1 = new JSONObject();
-            try {
-                sendData1.put("UserId", id);
-                sendData1.put("profileParameter", "health");
-                sendData1.put("htype", "pulse");
-                receiveData1 = service.patienBasicDetails(sendData1);
-                String data = receiveData1.optString("d");
-                JSONObject cut = new JSONObject(data);
-                JSONArray jsonArray = cut.optJSONArray("Table");
-                mHeightList.clear();
-                if (jsonArray != null) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        String height = obj.optString("height");
-
-                        if (!TextUtils.isEmpty(height)) {
-                            try {
-                                double heightInDouble = Double.parseDouble(height);
-                                DecimalFormat df = new DecimalFormat("#.##");
-                                height = df.format(heightInDouble);
-                            } catch (NumberFormatException ex) {
-
-                            }
-                        }
-                        mHeightList.add(height);
-                    }
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    pHour = hourOfDay;
+                    pMinute = minute;
+                    updateDisplay();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+            };
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            mProgressDialog.dismiss();
-            ArrayAdapter hSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mHeightList);
-            hSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mWeightLinkHeightSpinner.setAdapter(hSpinner);
-            mWeightLinkHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    mHeightLinkedValue = mHeightList.get(position);
-                }
+    private void updateDisplay() {
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-        }
+              String time =  new StringBuilder()
+                        .append(pad(pHour)).append(":")
+                        .append(pad(pMinute)).toString();
+
+        Log.e("Rishabh", "TIME := "+time);
     }
+
+    private static String pad(int c) {
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
+    }
+
 }
