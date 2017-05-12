@@ -93,7 +93,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private boolean mIsToAddMaxMinValue = true;
     private RelativeLayout mListViewHeaderRl;
     private List<String> mDateList = new ArrayList<>();
-    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
+    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI, mIsFromPulse;
     private boolean mIsBmiEmpty = true;
     private TextView mListHeadingTv;
 
@@ -111,6 +111,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mFromWeight = intent.getBooleanExtra("forWeight", false);
         mFromBp = intent.getBooleanExtra("forBp", false);
         mFromBMI = intent.getBooleanExtra("forBmi", false);
+        mIsFromPulse = intent.getBooleanExtra("forPulse", false);
 
         if (mFromHeight) {
             mActionBar.setTitle("Height");
@@ -125,7 +126,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
             mListHeadingTv.setText("BMI");
-            ;
+        }else if (mIsFromPulse) {
+            mActionBar.setTitle("Pulse");
+            mListHeadingTv.setText("Pulse (bpm)");
         }
 
         mWebView = (WebView) findViewById(R.id.weight_graphView);
@@ -208,6 +211,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         titleTv.setText("Delete Weight");
                     } else if (mFromBp) {
                         mActionBar.setTitle("Delete Blood Pressure");
+                    } else if (mIsFromPulse) {
+                        mActionBar.setTitle("Delete Pulse");
                     }
 
                     TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
@@ -302,6 +307,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     sendData1.put("htype", "weight");
                 } else if (mFromBp) {
                     sendData1.put("htype", "bp");
+                } else if (mIsFromPulse) {
+                    sendData1.put("htype", "pulse");
                 }
                 receiveData1 = mServices.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
@@ -321,6 +328,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String weight = obj.optString("weight");
                     String bp = obj.optString("bp");
                     String height = obj.optString("height");
+                    String pulse = obj.optString("Pulse");
                     //FOR BMI
                     if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
@@ -541,6 +549,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             outerJsonObject.put("key", "Weight (kg)");
                         } else if (mFromBMI) {
                             outerJsonObject.put("key", "BMI");
+                        }else if (mIsFromPulse) {
+                            outerJsonObject.put("key", "Pulse (bpm)");
                         }
 
                         outerJsonObject.put("values", jsonArray1);
@@ -575,6 +585,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             i.putExtra("htype", "weight");
                         } else if (mFromBp) {
                             i.putExtra("htype", "bp");
+                        }else if (mFromBp) {
+                            i.putExtra("htype", "pulse");
                         }
                         startActivity(i);
                         finish();
@@ -614,6 +626,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     i.putExtra("htype", "weight");
                 } else if (mFromBp) {
                     i.putExtra("htype", "bp");
+                } else if (mFromBp) {
+                    i.putExtra("htype", "pulse");
                 }
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

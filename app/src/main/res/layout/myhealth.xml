@@ -28,7 +28,7 @@
             android:padding="2dp"
             android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
 
     </RelativeLayout>
@@ -320,7 +320,7 @@
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Pulse (beats per minute)"
+                    android:text="Pulse"
                     android:textColor="@android:color/black"
                     android:textSize="16dp" />
 

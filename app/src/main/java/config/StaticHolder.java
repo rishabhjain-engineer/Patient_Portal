@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class StaticHolder {
 
 
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
-   // public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
     //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
@@ -44,6 +44,27 @@ public class StaticHolder {
     public StaticHolder(Activity activity, Services_static serviceName) {
         this.serviceName = serviceName;
         this.context = activity;
+    }
+
+    public JSONObject request_services() {
+        Services service = new Services(context);
+        JSONObject receiveData = null;
+        switch (serviceName) {
+            case LogIn:
+                System.out.println("login.");
+                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
+                break;
+
+            case SignUpByPatient:
+                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
+                break;
+
+
+            default:
+                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
+                break;
+        }
+        return receiveData;
     }
 
 
@@ -484,34 +505,16 @@ public class StaticHolder {
             case UploadImage_New:
                 url = BASE_URL + "UploadImage_New";
                 break;
+            case saveHealthDetailMod:
+                url = BASE_URL + "saveHealthDetailMod";
+                break;
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
         }
-
         return url;
     }
 
-    public JSONObject request_services() {
-        Services service = new Services(context);
-        JSONObject receiveData = null;
-        switch (serviceName) {
-            case LogIn:
-                System.out.println("login.");
-                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
-                break;
-
-            case SignUpByPatient:
-                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
-                break;
-
-
-            default:
-                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
-                break;
-        }
-        return receiveData;
-    }
 
     public enum Services_static {
         LogIn, NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
@@ -539,7 +542,8 @@ public class StaticHolder {
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
-        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact
+        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
+        saveHealthDetailMod
     }
 
 }
