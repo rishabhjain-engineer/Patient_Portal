@@ -237,7 +237,7 @@ public class VitalFragment extends Fragment {
                 if (((BaseActivity) mActivity).isSessionExist()) {
                     if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                         Intent in = new Intent(mActivity, HealthCommonActivity.class);
-                        in.putExtra("id", "97E9496B-8630-4D61-9F13-D7E95C0AD6A7");
+                        in.putExtra("id", id);
                         in.putExtra("forPulse", true);
                         startActivity(in);
                         mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

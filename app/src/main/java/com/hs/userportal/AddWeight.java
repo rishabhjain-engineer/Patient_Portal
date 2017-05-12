@@ -311,7 +311,7 @@ public class AddWeight extends BaseActivity {
                         }
                     }
                 } else if (htype.equalsIgnoreCase("pulse")) {
-                    if (TextUtils.isEmpty(mPulseEditText.getEditableText().toString())) {
+                    if (TextUtils.isEmpty(mPulseEditText.getEditableText().toString()) || TextUtils.isEmpty(mTimePicker.getEditableText().toString())) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
                     } else {
                         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -476,14 +476,25 @@ public class AddWeight extends BaseActivity {
                 sendwork.put("fromdate", fromdate + " " + time);
                 sendwork.put("todate", "");
                 sendwork.put("PatientHistoryId", "");
+                if (htype.equalsIgnoreCase("pulse")) {
+                    senddata.put("pulse", pulse);
+                    senddata.put("bp", "");
+                    senddata.put("statusType", "");
+                }
                 JSONArray jarray = new JSONArray();
                 jarray.put(sendwork);
                 senddata.put("healthDetails", jarray);
                 senddata.put("UserId", id);
                 senddata.put("htype", htype);
                 senddata.put("statusType", "");
-                JSONObject receiveData1 = service.saveHealthDetail(senddata);
-                message = receiveData1.getString("d");
+                if (htype.equalsIgnoreCase("pulse")) {
+                    JSONObject receiveData1 = service.saveHealthDetail(senddata);
+                    message = receiveData1.getString("d");
+                } else {
+                    JSONObject receiveData1 = service.saveHealthDetailMod(senddata);
+                    message = receiveData1.getString("d");
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
