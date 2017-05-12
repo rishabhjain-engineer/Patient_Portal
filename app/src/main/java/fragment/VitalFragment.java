@@ -471,6 +471,12 @@ public class VitalFragment extends Fragment {
                 mpulseTv.setText("-");
             }
 
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mPulse);
+            } else {
+                mpulseTv.setText("-");
+            }
+
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
@@ -576,9 +582,9 @@ public class VitalFragment extends Fragment {
             }
 
             if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
-                weight_latest.setText(weight + " Kg");
+                mpulseTv.setText(mPulse);
             } else {
-                weight_latest.setText("-");
+                mpulseTv.setText("-");
             }
 
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
