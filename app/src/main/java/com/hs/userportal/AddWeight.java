@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,17 +41,15 @@ import java.util.List;
 
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
-import ui.BpActivity;
-import ui.HealthCommonActivity;
 
 public class AddWeight extends BaseActivity {
 
-    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText, mPulseEditText;
+    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText, mPulseEditText, mTimePicker;
 
     private static EditText lasstCheckedDate;
-    private Button bsave, mTimePicker;
+    private Button bsave;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
-    private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue;
+    private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue, mTimeValue;
     private Services service;
     private static int cyear, month, day;
     private Switch mSwitchWeight, mSwitchHeight;
@@ -93,7 +92,7 @@ public class AddWeight extends BaseActivity {
         mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
         mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
         mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
-        mTimePicker = (Button) findViewById(R.id.timepicker);
+        mTimePicker = (EditText) findViewById(R.id.timepicker);
         mPulseEditText = (EditText) findViewById(R.id.pulse_edittext);
 
         enter_add = (EditText) findViewById(R.id.enter_add);
@@ -118,6 +117,7 @@ public class AddWeight extends BaseActivity {
 
         mTimePicker.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 showDialog(TIME_DIALOG_ID);
             }
         });
@@ -180,11 +180,11 @@ public class AddWeight extends BaseActivity {
             mTimePicker.setVisibility(View.VISIBLE);
 
             if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-           //     new GetPulseAsyncTask().execute();
+                //     new GetPulseAsyncTask().execute();
             } else {
                 Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
           /*  mIsHeight = false;*/
             mActionBar.setTitle("Enter Blood Pressure");
             mHeightContainer.setVisibility(View.GONE);
@@ -393,6 +393,7 @@ public class AddWeight extends BaseActivity {
                     height = mHeightCmEditText.getText().toString();
                 }
 
+                fromdate = lasstCheckedDate.getText().toString();
             } else if (htype.equalsIgnoreCase("weight")) {
 
 
@@ -406,14 +407,24 @@ public class AddWeight extends BaseActivity {
                     weight = enter_add.getText().toString();
                     height = mHeightLinkedValue;
                 }
-            }else if (htype.equalsIgnoreCase("pulse")) {
-                    pulse = mPulseEditText.getEditableText().toString();
+                fromdate = lasstCheckedDate.getText().toString();
+            } else if (htype.equalsIgnoreCase("pulse")) {
+                pulse = mPulseEditText.getEditableText().toString();
+                if (!TextUtils.isEmpty(mTimeValue)) {
+                    fromdate = lasstCheckedDate.getText().toString() + " " + mTimeValue;
+                    Log.e("Rishabh", "from date := " + fromdate);
+                }
+
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
                 bpTosend = upperBp + "," + lowerBp;
+                if (!TextUtils.isEmpty(mTimeValue)) {
+                    fromdate = lasstCheckedDate.getText().toString() + " " + mTimeValue;
+                    Log.e("Rishabh", "from date := " + fromdate);
+                }
             }
-            fromdate = lasstCheckedDate.getText().toString();
+
 
         }
 
@@ -655,11 +666,13 @@ public class AddWeight extends BaseActivity {
 
     private void updateDisplay() {
 
-              String time =  new StringBuilder()
-                        .append(pad(pHour)).append(":")
-                        .append(pad(pMinute)).toString();
+        mTimeValue = new StringBuilder()
+                .append(pad(pHour)).append(":")
+                .append(pad(pMinute)).toString();
 
-        Log.e("Rishabh", "TIME := "+time);
+
+        mTimeValue = mTimeValue + ":17";
+        mTimePicker.setText(mTimeValue);
     }
 
     private static String pad(int c) {
