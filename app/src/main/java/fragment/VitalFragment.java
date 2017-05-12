@@ -233,7 +233,17 @@ public class VitalFragment extends Fragment {
         mPulseContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forBmi", true);
+                        startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
