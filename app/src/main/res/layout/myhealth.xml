@@ -32,7 +32,7 @@
                 android:padding="2dp"
                 android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="20dp" />
 
 
         </RelativeLayout>
