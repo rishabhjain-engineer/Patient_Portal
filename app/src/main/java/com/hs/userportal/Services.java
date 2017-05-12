@@ -1001,6 +1001,14 @@ public class Services {
 
     }
 
+    public JSONObject saveHealthDetailMod(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.saveHealthDetailMod);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
     public JSONObject countrylist(JSONObject sendData) {
 
 
