@@ -210,9 +210,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     } else if (mFromWeight) {
                         titleTv.setText("Delete Weight");
                     } else if (mFromBp) {
-                        mActionBar.setTitle("Delete Blood Pressure");
+                        titleTv.setText("Delete Blood Pressure");
                     } else if (mIsFromPulse) {
-                        mActionBar.setTitle("Delete Pulse");
+                        titleTv.setText("Delete Pulse");
                     }
 
                     TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
@@ -410,6 +410,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             DecimalFormat df = new DecimalFormat("#.##");
                             weight = df.format(weightInDouble);
                             hmap.put("dataValue", weight);
+                        } else if (mIsFromPulse) {
+                            hmap.put("dataValue", pulse);
                         }
 
                         hmap.put("fromdate", onlyDate);
