@@ -74,11 +74,8 @@ public class GraphDetails extends BaseActivity {
 
         setContentView(R.layout.graphdetails);
 
-        ActionBar action = getSupportActionBar();
-        action.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setIcon(new ColorDrawable(Color.parseColor("#3cbed8")));
-        action.setDisplayHomeAsUpEnabled(true);
-        action.setTitle(getIntent().getExtras().getString("ActionTitle"));
+        setupActionBar();
+        mActionBar.setTitle(getIntent().getExtras().getString("ActionTitle"));
         bullet_indicator1 = (LinearLayout) findViewById(R.id.bullet_indicator1);
         bullet_indicator = (LinearLayout) findViewById(R.id.bullet_indicator);
         bullet_indicator2 = (LinearLayout) findViewById(R.id.bullet_indicator2);
@@ -122,10 +119,10 @@ public class GraphDetails extends BaseActivity {
             caseIds = getIntent().getStringArrayListExtra("caseIds");
             String strtxt = null;
             if (!CriticalLow.contains(".")) {
-                if(!RangeFrom.contains(".")){
+                if (!RangeFrom.contains(".")) {
                     if (Integer.parseInt(CriticalLow) == Float.parseFloat(RangeFrom)) {
                         bullet_indicator2.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         if (Integer.parseInt(CriticalLow) == Integer.parseInt(RangeFrom)) {
                             bullet_indicator2.setVisibility(View.GONE);
                         }
@@ -137,7 +134,7 @@ public class GraphDetails extends BaseActivity {
                 }
             }
 
-            try{
+            try {
                 if (!RangeTo.contains(".")) {
                     if (Integer.parseInt(RangeTo) == Integer.parseInt(CriticalHigh)) {
                         bullet_indicator1.setVisibility(View.GONE);
@@ -147,7 +144,7 @@ public class GraphDetails extends BaseActivity {
                         bullet_indicator1.setVisibility(View.GONE);
                     }
                 }
-            }catch (NumberFormatException exc){
+            } catch (NumberFormatException exc) {
 
             }
             normal_txtval.setText("Normal Value: " + RangeFrom + "-" + RangeTo + " " + UnitCode);
@@ -418,7 +415,7 @@ public class GraphDetails extends BaseActivity {
                 Intent in = new Intent(GraphDetails.this, ReportRecords.class);
                 in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                in.putExtra("caseId",caseIds.get(position));
+                in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);
                 finish();
             }

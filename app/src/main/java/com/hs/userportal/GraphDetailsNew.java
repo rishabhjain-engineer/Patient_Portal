@@ -104,6 +104,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
     private List<String> mDateList = new ArrayList<>();
     private ProgressDialog progress;
+    private boolean isLoadNvd3 = true;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -168,16 +169,23 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         // Assigning height of graph dynamically----------------------------------
         if (getIntent().getStringExtra("chart_type").equals("line")) {
             pi_chart.setVisibility(View.GONE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
-            params.height = Math.round(height / 2);
+            mWebView.setVisibility(View.VISIBLE);
+            isLoadNvd3 = true;
+           // LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
+           // params.height = Math.round(height / 2);
             //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it.
-            MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+            //MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
             //  linechart.setMarkerView(mv);    //TODO for displaying line chart; un comment it.
             //   linechart.animateX(3500);    //TODO for displaying line chart; un comment it.
-            setLinechart();
-        } else {
+
+            //nvd3 graph is used now instead of line
+
+            //setLinechart();
+        } else if (getIntent().getStringExtra("chart_type").equals("Pie")){
             // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
+            isLoadNvd3 = false;
+            mWebView.setVisibility(View.GONE);
             pi_chart.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
@@ -232,6 +240,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
 

@@ -181,9 +181,7 @@ public class ReportRecords extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
                 try {
-                    if (subArray1.getJSONObject(position).getString("IsPublish")
-                            .equalsIgnoreCase("true")
-                            && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
+                    if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
 
                         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                             Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
@@ -192,58 +190,18 @@ public class ReportRecords extends BaseActivity {
                             intent.putExtra("index", position);
                             intent.putExtra("array", subArray1.toString());
                             intent.putExtra("USER_ID", id);
-                            try {
-                                intent.putExtra("code", subArray1.getJSONObject(0).getString("PatientCode"));
-                            } catch (JSONException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+                            intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         }
-                    } else if (subArray1.getJSONObject(position).getString("IsPublish")
-                            .equalsIgnoreCase("true")
-                            && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {
-                        final Toast toast = Toast.makeText(
-                                getApplicationContext(), "Balance due",
-                                Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast.cancel();
-                            }
-                        }, 2000);
-
-                    } else if (subArray1.getJSONObject(position).getString("IsSampleReceived")
-                            .equals("true")) {
-                        final Toast toast = Toast.makeText(
-                                getApplicationContext(), "Result awaited",
-                                Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast.cancel();
-                            }
-                        }, 2000);
+                    } else if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {
+                        Toast.makeText(getApplicationContext(), "Balance due", Toast.LENGTH_SHORT).show();
+                    } else if (subArray1.getJSONObject(position).getString("IsSampleReceived").equals("true")) {
+                        Toast.makeText(getApplicationContext(), "Result awaited", Toast.LENGTH_SHORT).show();
                     } else {
-                        final Toast toast = Toast.makeText(
-                                getApplicationContext(),
-                                "Sample not collected", Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast.cancel();
-                            }
-                        }, 2000);
+                        Toast.makeText(getApplicationContext(), "Sample not collected", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -697,14 +655,6 @@ public class ReportRecords extends BaseActivity {
             progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);*/
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Helper.authentication_flag == true) {
-            finish();
-        }
     }
 
     private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void> {
