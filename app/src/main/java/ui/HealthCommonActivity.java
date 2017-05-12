@@ -388,6 +388,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             }
                         }
 
+                        if (!TextUtils.isEmpty(pulse) && mIsFromPulse) {
+                            double heightInDouble = Double.parseDouble(pulse);
+                            if (mMaxWeight <= heightInDouble) {
+                                mMaxWeight = heightInDouble;
+                            }
+                        }
+
                         String fromdate = obj.optString("fromdate");
                         String dateWithoutHour[] = fromdate.split("T");
                         String onlyDate = dateWithoutHour[0];
