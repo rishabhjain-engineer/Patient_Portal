@@ -699,14 +699,6 @@ public class ReportRecords extends BaseActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Helper.authentication_flag == true) {
-            finish();
-        }
-    }
-
     private class PatientbussinessModelAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
