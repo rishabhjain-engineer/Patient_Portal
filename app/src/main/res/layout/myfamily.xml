@@ -33,7 +33,7 @@
                 android:padding="2dp"
                 android:text="Link accounts of your close ones to stay updated on their health status."
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="20dp" />
 
 
         </RelativeLayout>
