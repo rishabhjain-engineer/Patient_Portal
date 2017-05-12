@@ -477,9 +477,9 @@ public class AddWeight extends BaseActivity {
                 sendwork.put("todate", "");
                 sendwork.put("PatientHistoryId", "");
                 if (htype.equalsIgnoreCase("pulse")) {
-                    senddata.put("pulse", pulse);
-                    senddata.put("bp", "");
-                    senddata.put("statusType", "");
+                    sendwork.put("pulse", pulse);
+                    sendwork.put("bp", "");
+                    sendwork.put("statusType", "");
                 }
                 JSONArray jarray = new JSONArray();
                 jarray.put(sendwork);

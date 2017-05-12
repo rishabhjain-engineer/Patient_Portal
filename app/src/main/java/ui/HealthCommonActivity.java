@@ -594,7 +594,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             i.putExtra("htype", "weight");
                         } else if (mFromBp) {
                             i.putExtra("htype", "bp");
-                        }else if (mFromBp) {
+                        }else if (mIsFromPulse) {
                             i.putExtra("htype", "pulse");
                         }
                         startActivity(i);
