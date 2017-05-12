@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:padding="10dp"
-    android:background="@color/header_color">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/header_title_tv"
@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:textColor="@color/white"
+        android:textColor="@color/black_bg"
         android:textSize="20dp" />
 
     <ImageView
