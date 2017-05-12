@@ -31,9 +31,9 @@
                 android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:padding="2dp"
-                android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
+                android:text="Receive test reports from lab and watch how your test parameters are changing."
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="20dp" />
 
 
         </RelativeLayout>

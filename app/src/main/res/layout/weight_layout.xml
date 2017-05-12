@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
-            android:text="Date"
+            android:text="Checked at"
             android:textColor="@android:color/black" />
 
     </RelativeLayout>
