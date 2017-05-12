@@ -410,7 +410,7 @@
             android:drawablePadding="15dp"
             android:ellipsize="start"
             android:hint="Date"
-            android:inputType="text"
+            android:inputType="date"
             android:maxLines="1"
             android:padding="10dp"
             android:singleLine="true"
@@ -420,6 +420,7 @@
 
         <EditText
             android:visibility="visible"
+            android:inputType="time"
             android:id="@+id/timepicker"
             android:layout_width="120dp"
             android:layout_height="40dp"
