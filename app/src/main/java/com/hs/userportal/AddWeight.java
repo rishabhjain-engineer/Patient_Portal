@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -42,7 +43,8 @@ import ui.HealthCommonActivity;
 
 public class AddWeight extends BaseActivity {
 
-    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText;
+    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText, mPulseEditText;
+    private TimePicker mTimePicker ;
     private static EditText lasstCheckedDate;
     private Button bsave;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
@@ -50,7 +52,7 @@ public class AddWeight extends BaseActivity {
     private Services service;
     private static int cyear, month, day;
     private Switch mSwitchWeight, mSwitchHeight;
-    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
+    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl, mPulseContainer;
     private boolean mIsFtInchValue = true, mIsHeight, mIsPound = false;
     private String[] mfeetValues = {"1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
@@ -74,6 +76,7 @@ public class AddWeight extends BaseActivity {
         mHeightInchContainer = (LinearLayout) findViewById(R.id.height_inch_container);
         mHeightFtContainer = (LinearLayout) findViewById(R.id.height_ft_container);
         mHeightCmEditText = (EditText) findViewById(R.id.enter_cm);
+        mPulseContainer = (LinearLayout) findViewById(R.id.pulse_container_layout);
 
         mWeightContainer = (LinearLayout) findViewById(R.id.weight_container_layout);
         mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
@@ -82,7 +85,8 @@ public class AddWeight extends BaseActivity {
         mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
         mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
         mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
-
+        mTimePicker = (TimePicker) findViewById(R.id.timepicker);
+        mPulseEditText = (EditText) findViewById(R.id.pulse_edittext);
 
         enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
@@ -124,7 +128,9 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.VISIBLE);
             mWeightContainer.setVisibility(View.GONE);
             mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
             lasstCheckedDate.setFocusable(false);
+            mTimePicker.setVisibility(View.GONE);
 
 
         } else if (htype.equals("weight")) {
@@ -135,17 +141,35 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.VISIBLE);
             mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
+            mTimePicker.setVisibility(View.GONE);
             if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                 new GetHeightAsyncTask().execute();
             } else {
                 Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
             }
-        } else {
+        } else if (htype.equals("pulse")) {
+
+            mActionBar.setTitle("Enter Pulse");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.VISIBLE);
+            mTimePicker.setVisibility(View.VISIBLE);
+
+            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+           //     new GetPulseAsyncTask().execute();
+            } else {
+                Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            }
+        }else {
           /*  mIsHeight = false;*/
             mActionBar.setTitle("Enter Blood Pressure");
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
             mBpContainerLl.setVisibility(View.VISIBLE);
+            mTimePicker.setVisibility(View.VISIBLE);
         }
 
 
@@ -264,6 +288,16 @@ public class AddWeight extends BaseActivity {
                             Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                         }
                     }
+                } else if (htype.equalsIgnoreCase("pulse")) {
+                    if (TextUtils.isEmpty(mPulseEditText.getEditableText().toString())) {
+                        Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            new submitchange().execute();
+                        } else {
+                            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 } else {
                     if (TextUtils.isEmpty(enter_add.getEditableText().toString())) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
@@ -301,7 +335,7 @@ public class AddWeight extends BaseActivity {
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend;
+        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend, pulse;
         ProgressDialog ghoom;
 
         @Override
@@ -340,6 +374,8 @@ public class AddWeight extends BaseActivity {
                     weight = enter_add.getText().toString();
                     height = mHeightLinkedValue;
                 }
+            }else if (htype.equalsIgnoreCase("pulse")) {
+                    pulse = mPulseEditText.getEditableText().toString();
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
@@ -527,6 +563,75 @@ public class AddWeight extends BaseActivity {
                 sendData1.put("UserId", id);
                 sendData1.put("profileParameter", "health");
                 sendData1.put("htype", "height");
+                receiveData1 = service.patienBasicDetails(sendData1);
+                String data = receiveData1.optString("d");
+                JSONObject cut = new JSONObject(data);
+                JSONArray jsonArray = cut.optJSONArray("Table");
+                mHeightList.clear();
+                if (jsonArray != null) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        String height = obj.optString("height");
+
+                        if (!TextUtils.isEmpty(height)) {
+                            try {
+                                double heightInDouble = Double.parseDouble(height);
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                height = df.format(heightInDouble);
+                            } catch (NumberFormatException ex) {
+
+                            }
+                        }
+                        mHeightList.add(height);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mProgressDialog.dismiss();
+            ArrayAdapter hSpinner = new ArrayAdapter(AddWeight.this, android.R.layout.simple_spinner_item, mHeightList);
+            hSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mWeightLinkHeightSpinner.setAdapter(hSpinner);
+            mWeightLinkHeightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    mHeightLinkedValue = mHeightList.get(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
+    }
+
+    private class GetPulseAsyncTask extends AsyncTask<Void, Void, Void> {
+        private JSONObject receiveData1;
+        private ProgressDialog mProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(AddWeight.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData1 = new JSONObject();
+            try {
+                sendData1.put("UserId", id);
+                sendData1.put("profileParameter", "health");
+                sendData1.put("htype", "pulse");
                 receiveData1 = service.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
