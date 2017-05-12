@@ -285,7 +285,8 @@ public class DashboardFragment extends Fragment {
             } else {
                 mInitialTextViewContainer.setVisibility(View.GONE);
                 mScoreTextViewContainer.setVisibility(View.VISIBLE);
-                mScoreUpperTextView.setText(mScore);
+                mScoreUpperTextView.setVisibility(View.GONE);
+                //mScoreUpperTextView.setText(mScore);
                 mScoreLowerTextView.setText(mFact);
             }
         }
@@ -296,7 +297,7 @@ public class DashboardFragment extends Fragment {
             try {
                 sendData1.put("PatientId", mUserId);
                 // sendData1.put("PatientId", "442454B7-7CEA-48B7-8472-DBE7D7DC0D93");
-                receiveData1 = service.getUserGrade(sendData1);
+                receiveData1 = service.getUserFact(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.optJSONArray("Table");
