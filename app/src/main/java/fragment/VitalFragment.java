@@ -237,7 +237,7 @@ public class VitalFragment extends Fragment {
                     if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                         Intent in = new Intent(mActivity, HealthCommonActivity.class);
                         in.putExtra("id", id);
-                        in.putExtra("forBmi", true);
+                        in.putExtra("forHeight", true);
                         startActivity(in);
                         mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else {
