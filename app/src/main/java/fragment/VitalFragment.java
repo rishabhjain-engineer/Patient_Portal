@@ -64,9 +64,9 @@ import utils.PreferenceHelper;
 public class VitalFragment extends Fragment {
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
-    private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
+    private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, mpulseTv,  allergies, mBpTvValue, mBmiTvValue;
     private EditText blood_group;
-    private String id, show_blood, bgroup, height, weight, mBp;
+    private String id, show_blood, bgroup, height, weight, mBp, mPulse;
     private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer, mVaccineContainer, mPulseContainer;
     private Services service;
     private RequestQueue send_request;
@@ -91,6 +91,7 @@ public class VitalFragment extends Fragment {
         bloodID = (TextView) view.findViewById(R.id.bloodID);
         weight_latest = (TextView) view.findViewById(R.id.weight_latest);
         height_latest = (TextView) view.findViewById(R.id.height_latest);
+        mpulseTv = (TextView) view.findViewById(R.id.pulse_tv_value);
         allergies = (TextView) view.findViewById(R.id.allergies);
         bgHeader = (LinearLayout) view.findViewById(R.id.bgHeader);
         weightLayout = (LinearLayout) view.findViewById(R.id.weightLayout);
@@ -464,10 +465,16 @@ public class VitalFragment extends Fragment {
                 mBpTvValue.setText("-");
             }
 
-            if (!TextUtils.isEmpty(mBp) && !mBp.equalsIgnoreCase("null")) {
-                mBpTvValue.setText(mBp);
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mBp);
             } else {
-                mBpTvValue.setText("-");
+                mpulseTv.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mPulse);
+            } else {
+                mpulseTv.setText("-");
             }
 
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
@@ -499,6 +506,7 @@ public class VitalFragment extends Fragment {
                     height = obj.getString("height");
                     weight = obj.getString("weight");
                     mBp = obj.getString("BP");
+                    mPulse = obj.getString("Pulse");
 
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
@@ -573,6 +581,12 @@ public class VitalFragment extends Fragment {
                 mBpTvValue.setText("-");
             }
 
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mPulse);
+            } else {
+                mpulseTv.setText("-");
+            }
+
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
@@ -600,6 +614,7 @@ public class VitalFragment extends Fragment {
                     height = obj.getString("height");
                     weight = obj.getString("weight");
                     mBp = obj.optString("BP");
+                    mPulse = obj.getString("Pulse");
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
                         allergy_no = 0;
