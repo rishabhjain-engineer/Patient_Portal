@@ -402,7 +402,7 @@
         <EditText
             android:id="@+id/enter_lasstCheckedDate"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="9dp"
             android:layout_toRightOf="@+id/weight1"
@@ -418,20 +418,21 @@
             android:textSize="14dp" />
 
 
-        <Button
+        <EditText
             android:visibility="visible"
             android:id="@+id/timepicker"
             android:layout_width="120dp"
-            android:layout_centerInParent="true"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
+            android:background="@drawable/edittext_corner"
             android:layout_marginLeft="5dp"
-            android:padding="0dp"
-            android:text="Time"
-            android:textColor="@color/gray"
-            android:background="@color/white"
+            android:padding="10dp"
+            android:textSize="14dp"
+            android:hint="Time"
+            android:drawablePadding="15dp"
+            android:textColor="@android:color/black"
             android:layout_toRightOf="@+id/enter_lasstCheckedDate">
 
-        </Button>
+        </EditText>
 
     </RelativeLayout>
 
