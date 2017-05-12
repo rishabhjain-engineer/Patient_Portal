@@ -165,6 +165,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
                 setListAdapter(mRepositoryAdapter.getDirectory());
             } else if (viewId == R.id.repository_selectall_imageview) {
+
+                if(mRepositoryAdapter.getDirectory().getParentDirectory()==null){
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                    toolbarTitle.setVisibility(View.GONE);
+                }else{
+                    toolbarBackButton.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                }
+
                 if (listMode == 0) {
                     selectAll();
                     mRepositoryAdapter.notifyDataSetChanged();
@@ -680,6 +689,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                             toolbarTitle.setVisibility(View.VISIBLE);
                             toolbarBackButton.setVisibility(View.GONE);
+
 
                         } else {
                             getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
