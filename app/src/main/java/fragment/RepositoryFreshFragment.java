@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -25,6 +26,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -202,6 +205,87 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
         }
     };
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mView.setFocusableInTouchMode(true);
+        mView.requestFocus();
+        mView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN){
+                    if( keyCode == KeyEvent.KEYCODE_BACK ) {
+                        deviceBackPress(mRepositoryAdapter.getDirectory()) ;
+                        return true;
+                    } else {
+                        return false;
+                    }
+
+                }
+               return false;
+            }
+        });
+    }
+
+    private void deviceBackPress(final Directory directory){
+        if (directory.getParentDirectory() == null) {
+            toolbarTitle.setText("Repository");
+                    if (listMode == 0) {                                            // ListView
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
+
+
+                        } else {
+                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+
+                        }
+                    } else if (listMode == 1) {                         // GridView
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
+                        } else {
+                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                        }
+                    }
+
+        } else {
+            toolbarTitle.setText(directory.getDirectoryName());
+
+                    if (listMode == 0) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                            currentDirectory = directory.getParentDirectory();
+                        }
+                    } else if (listMode == 1) {
+                        if (mRepositoryAdapter.isInSelectionMode()) {
+                            unselectAll();
+                            mRepositoryAdapter.setSelectionMode(false);
+                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                            toolbarTitle.setVisibility(View.VISIBLE);
+                        } else {
+                            setListAdapter(directory.getParentDirectory());
+                            setBackButtonPress(directory.getParentDirectory());
+                            currentDirectory = directory.getParentDirectory();
+                        }
+                    }
+
+        }
+    }
 
     public static void refresh() {
         mProgressDialog.dismiss();
@@ -675,6 +759,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     void setBackButtonPress(final Directory directory) {
 
+
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
@@ -682,7 +767,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 public void onClick(View view) {
 
 
-                    if (listMode == 0) {
+                    if (listMode == 0) {                                            // ListView
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
@@ -694,7 +779,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         } else {
                             getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
-                    } else if (listMode == 1) {
+                    } else if (listMode == 1) {                         // GridView
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
