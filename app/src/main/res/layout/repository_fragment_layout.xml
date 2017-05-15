@@ -12,7 +12,7 @@
         <include
             layout="@layout/repository_header_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="?android:attr/actionBarSize" />
 
         <RelativeLayout
             android:id="@+id/quiz_container"
