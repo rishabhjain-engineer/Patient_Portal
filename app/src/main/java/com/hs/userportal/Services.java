@@ -1274,8 +1274,8 @@ public class Services {
 
     }
 
-    public JSONObject LogInUser_facebook(JSONObject sendData) {
-        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebook);
+    public JSONObject LogInUser_facebookMod(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebookMod);
         String url = staticHolder.request_Url();
         JSONObject jsonObjectResponse = LogIn(sendData, url);
         return jsonObjectResponse;

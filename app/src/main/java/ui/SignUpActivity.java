@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
@@ -328,6 +329,8 @@ public class SignUpActivity extends BaseActivity {
                             jsonObjectForNewSignUpByPatientFacebook.put("username", "");
                             jsonObjectForNewSignUpByPatientFacebook.put("email", eMail);
                             jsonObjectForNewSignUpByPatientFacebook.put("facebookId", fbUserID);
+                            String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                            jsonObjectForNewSignUpByPatientFacebook.put("UserDeviceToken", android_id);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -340,9 +343,11 @@ public class SignUpActivity extends BaseActivity {
                         JSONObject sendData = new JSONObject();
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
+                        String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                        sendData.put("UserDeviceToken", android_id);
                         isToShowSignInErrorMessage = false;
 
-                        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewFacebookLogin);
+                        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewFacebookLoginMod);
                         String url = sttc_holdr.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -554,6 +559,8 @@ public class SignUpActivity extends BaseActivity {
             mSendData.put("password", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob", dateFormatToSend);
             mSendData.put("gender", mGender);
+            String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            mSendData.put("UserDeviceToken", android_id);
             if (mShowUserNameUI) {
                 mSendData.put("username", mSignUpUserNameEt.getText().toString());
             } else {
@@ -563,7 +570,7 @@ public class SignUpActivity extends BaseActivity {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientMod);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
@@ -881,7 +888,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void newSignUpByPatientFacebookApiCall(JSONObject dataToSend) {
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientFacebook);
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientFacebookMod);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, dataToSend,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -976,7 +983,7 @@ public class SignUpActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
+            loginApiReceivedData = mServices.LogInUser_facebookMod(loginApiSendData);
             if (loginApiReceivedData != null) {
                 dAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;

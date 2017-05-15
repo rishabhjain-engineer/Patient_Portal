@@ -86,9 +86,9 @@ public class StaticHolder {
                 url = BASE_URL + "CheckDupUserName";
                 break;
 
-            case NewSignUpByPatient:
+            case NewSignUpByPatientMod:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/NewSignUpByPatient";
-                url = BASE_URL + "NewSignUpByPatient";
+                url = BASE_URL + "NewSignUpByPatientMod";
                 break;
 
             case CheckEmailIdIsExistMobile:
@@ -471,15 +471,15 @@ public class StaticHolder {
             case NewLogIn:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogin1";
                 break;
-            case NewFacebookLogin:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
+            case NewFacebookLoginMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLoginMod";
                 break;
 
-            case NewSignUpByPatientFacebook:
-                url = BASE_URL + "NewSignUpByPatientFacebook";
+            case NewSignUpByPatientFacebookMod:
+                url = BASE_URL + "NewSignUpByPatientFacebookMod";
 
-            case LogInUser_facebook:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebook";
+            case LogInUser_facebookMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebookMod";
                 break;
 
             case GetUserGrade:
@@ -541,8 +541,8 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
-        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
+        LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
         saveHealthDetailMod
     }
 
