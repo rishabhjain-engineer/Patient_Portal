@@ -1169,7 +1169,11 @@ public class SignInActivity extends BaseActivity {
                 showAlertMessage("An error occured, please try again.");
             } else {
                 if (isToShowSignInErrorMessage) {
-                    showAlertMessage(result);
+                    if(TextUtils.isEmpty(result)){
+                        showAlertMessage("An error occured, please try again.");
+                    }else{
+                        showAlertMessage(result);
+                    }
                 } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
                     goToDashBoardPage();
                 } else {
