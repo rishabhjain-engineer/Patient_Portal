@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class StaticHolder {
 
 
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
-    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
     //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
@@ -471,15 +471,15 @@ public class StaticHolder {
             case NewLogIn:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogin1";
                 break;
-            case NewFacebookLogin:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
+            case NewFacebookLoginMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLoginMod";
                 break;
 
             case NewSignUpByPatientFacebook:
                 url = BASE_URL + "NewSignUpByPatientFacebook";
 
-            case LogInUser_facebook:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebook";
+            case LogInUser_facebookMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebookMod";
                 break;
 
             case GetUserGrade:
@@ -541,8 +541,8 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
-        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
+        LogInUser_facebookMod, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
         saveHealthDetailMod
     }
 
