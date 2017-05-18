@@ -61,6 +61,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.internal.Logger;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.ImageActivity;
@@ -313,7 +314,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload = new ArrayList<>();
 
         mDirectory = new Directory("Personal");
+        mDirectory.setServerPath("");
         searchableDirectory = new Directory("Personal");
+        searchableDirectory.setServerPath("");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -730,6 +733,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
                         DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
+
+                    Log.e("AVI", "Data Saved");
 
 
                 } catch (JSONException je) {
@@ -1258,7 +1263,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (currentDirectory.getParentDirectory() == null) {
                 prefix = patientId + "/FileVault/Personal/";
             } else {
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
+                Log.e("Rishabh", "onTouch Path := "+currentDirectory.getServerPath());
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/" ;
+                Log.e("Rishabh", "Prefix := "+prefix);
             }
             String delimiter = "/";
 
