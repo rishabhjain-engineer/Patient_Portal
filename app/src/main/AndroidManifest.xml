@@ -377,6 +377,7 @@
             android:name="ui.DashBoardActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name="ui.SignUpActivity"

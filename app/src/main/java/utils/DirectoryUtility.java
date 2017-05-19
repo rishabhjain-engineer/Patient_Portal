@@ -11,8 +11,6 @@ import com.hs.userportal.DirectoryFile;
 
 public class DirectoryUtility {
 
-    private Directory searchedResults = new Directory("SearchDirectory");
-
     public static void addFile(Directory directory, DirectoryFile file, String path) {
         //recursive method to set file in directory
         String name;
@@ -36,6 +34,11 @@ public class DirectoryUtility {
                 } else {
                     Directory newDirectory = new Directory(name);
                     directory.addDirectory(newDirectory);
+                    if(directory.getServerPath().equals("")){
+                        newDirectory.setServerPath(name);
+                    }else {
+                        newDirectory.setServerPath(directory.getServerPath() + "/" + name);
+                    }
                     String newPath = removeOneDirectory(path);
                     addFile(newDirectory, file, newPath);
                 }
@@ -46,6 +49,15 @@ public class DirectoryUtility {
     public static void addFolder(Directory directory, Directory subDirectory) {
         if (!directory.hasDirectory(subDirectory.getDirectoryName())) {
             directory.addDirectory(subDirectory);
+
+            if(directory.getServerPath().equals("")){
+                subDirectory.setServerPath(subDirectory.getDirectoryName());
+            }else {
+                subDirectory.setServerPath(directory.getServerPath() + "/" + subDirectory.getDirectoryName());
+            }
+
+
+            //subDirectory.setServerPath(subDirectory.getDirectoryName());
         }
     }
 

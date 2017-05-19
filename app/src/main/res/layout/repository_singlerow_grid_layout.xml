@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginBottom="33dp"
         android:orientation="vertical">
 
         <ImageView
@@ -28,6 +29,7 @@
             android:text="itemName" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/lastModified"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,6 +40,7 @@
             android:text="Last Modified" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

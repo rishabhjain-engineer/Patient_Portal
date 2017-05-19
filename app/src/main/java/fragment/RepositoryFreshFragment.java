@@ -61,6 +61,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.internal.Logger;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.ImageActivity;
@@ -126,8 +127,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private PreferenceHelper mPreferenceHelper;
     private EditText mSearchEditText;
     private Button mUploadFileButton;
-    private RelativeLayout toolbar;
-    private TextView toolbarTitle, mHeaderTitleTextView;
+    private RelativeLayout toolbar, mQuizContainer;
+    private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
     private View mView;
@@ -313,7 +314,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload = new ArrayList<>();
 
         mDirectory = new Directory("Personal");
+        mDirectory.setServerPath("");
         searchableDirectory = new Directory("Personal");
+        searchableDirectory.setServerPath("");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -340,6 +343,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mHeaderMoveImageView = (ImageView) mView.findViewById(R.id.repository_move_imageview);
         mHeaderMiddleImageViewContainer = (LinearLayout) mView.findViewById(R.id.middle_options_container);
         toolbarTitle.setText("Repository");
+        mFileExtensionMsgTextView = (TextView) mView.findViewById(R.id.file_text);
+        mQuizContainer = (RelativeLayout) mView.findViewById(R.id.quiz_container);
 
         mUploadFileButton.setOnClickListener(mOnClickListener);
         showGridLayout.setOnClickListener(mOnClickListener);
@@ -731,6 +736,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
 
+                    Log.e("AVI", "Data Saved");
+
 
                 } catch (JSONException je) {
                     je.printStackTrace();
@@ -751,6 +758,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onDirectoryTouched(Directory directory) {
+        mSearchEditText.setText("");
         currentDirectory = directory;
         progressDialog.show();
         new GetDataFromAmazon(currentDirectory).execute();
@@ -1258,7 +1266,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (currentDirectory.getParentDirectory() == null) {
                 prefix = patientId + "/FileVault/Personal/";
             } else {
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
+                Log.e("Rishabh", "onTouch Path := "+currentDirectory.getServerPath());
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/" ;
+                Log.e("Rishabh", "Prefix := "+prefix);
             }
             String delimiter = "/";
 
