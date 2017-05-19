@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +65,8 @@ public class DashBoardActivity extends BaseActivity {
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
     private int grayColor, greenColor;
     private ProgressDialog mProgressDialog;
-    private boolean mIsHomeFragmentOpen = true;
+    private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false ;
+    private CallBack mCallBackInterfaceObject ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,12 +303,21 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mIsHomeFragmentOpen) {
-            confirmDialog();
-        } else {
-            openDashBoardFragment();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+
+       if(mRepositoryFragOpen) {
+           mCallBackInterfaceObject.backPressFromDashBoard();
+       } else {
+
+           if (mIsHomeFragmentOpen) {
+               confirmDialog();
+           } else {
+               openDashBoardFragment();
+               overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+           }
+
+       }
+
+
 
     }
 
@@ -374,6 +385,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openDashBoardFragment() {
         mIsHomeFragmentOpen = true;
+        mRepositoryFragOpen = false;
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
@@ -388,6 +400,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openVitalFragment() {
         mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             Log.d("ayaz", "inside if");
@@ -416,6 +429,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openReportFragment() {
         mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
         } else {
@@ -448,6 +462,8 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
+
+        mRepositoryFragOpen = true;
         mIsHomeFragmentOpen = false;                                    // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
@@ -456,6 +472,7 @@ public class DashBoardActivity extends BaseActivity {
             mRepositoryTv.setTextColor(greenColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(grayColor);
+
             //mActionBar.setTitle("Repository");
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
@@ -464,6 +481,9 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             mRepositoryFragment = new RepositoryFreshFragment();
+
+            mCallBackInterfaceObject = (CallBack) mRepositoryFragment;
+
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, mRepositoryFragment);
             transaction.addToBackStack(null);
@@ -476,6 +496,7 @@ public class DashBoardActivity extends BaseActivity {
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
         //mActionBar.show();
+        mRepositoryFragOpen = false;
         mIsHomeFragmentOpen = false;                               // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
@@ -502,6 +523,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openAccountFragment() {
         mIsHomeFragmentOpen = false;                                     // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -528,6 +550,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openSchoolFragment() {
         mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = true;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -550,4 +573,9 @@ public class DashBoardActivity extends BaseActivity {
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
+
+    public interface CallBack {
+       void backPressFromDashBoard() ;
+    }
+
 }

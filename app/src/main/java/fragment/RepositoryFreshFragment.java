@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -26,7 +25,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
@@ -61,7 +59,6 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.internal.Logger;
 import com.hs.userportal.Directory;
 import com.hs.userportal.DirectoryFile;
 import com.hs.userportal.ImageActivity;
@@ -92,6 +89,7 @@ import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
 import utils.PreferenceHelper;
@@ -102,7 +100,7 @@ import utils.RepositoryUtils;
  * Created by rishabh on 6/4/17.
  */
 
-public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction {
+public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction, DashBoardActivity.CallBack {
 
     private static final int PICK_FROM_CAMERA = 2;
     private static RequestQueue req;
@@ -135,7 +133,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
-    private int PICK_FROM_GALLERY = 1;
+    private int PICK_FROM_GALLERY = 1, counter = 1;
     private Uri Imguri;
     private String mCurrentPhotoPath = null;
     private boolean mIsSdkLessThanM = true;
@@ -170,10 +168,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 setListAdapter(mRepositoryAdapter.getDirectory());
             } else if (viewId == R.id.repository_selectall_imageview) {
 
-                if(mRepositoryAdapter.getDirectory().getParentDirectory()==null){
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
                     toolbarBackButton.setVisibility(View.VISIBLE);
                     toolbarTitle.setVisibility(View.GONE);
-                }else{
+                } else {
                     toolbarBackButton.setVisibility(View.GONE);
                     toolbarTitle.setVisibility(View.VISIBLE);
                 }
@@ -216,74 +214,74 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN){
-                    if( keyCode == KeyEvent.KEYCODE_BACK ) {
-                        deviceBackPress(mRepositoryAdapter.getDirectory()) ;
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        deviceBackPress(mRepositoryAdapter.getDirectory());
                         return true;
                     } else {
                         return false;
                     }
 
                 }
-               return false;
+                return false;
             }
         });
     }
 
-    private void deviceBackPress(final Directory directory){
+    private void deviceBackPress(final Directory directory) {
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
-                    if (listMode == 0) {                                            // ListView
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                            toolbarBackButton.setVisibility(View.GONE);
+            if (listMode == 0) {                                            // ListView
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                    toolbarBackButton.setVisibility(View.GONE);
 
 
-                        } else {
-                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                } else {
+                    getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
 
-                        }
-                    } else if (listMode == 1) {                         // GridView
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                            toolbarBackButton.setVisibility(View.GONE);
-                        } else {
-                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
-                        }
-                    }
+                }
+            } else if (listMode == 1) {                         // GridView
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                }
+            }
 
         } else {
             toolbarTitle.setText(directory.getDirectoryName());
 
-                    if (listMode == 0) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                        } else {
-                            setListAdapter(directory.getParentDirectory());
-                            setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
-                        }
-                    } else if (listMode == 1) {
-                        if (mRepositoryAdapter.isInSelectionMode()) {
-                            unselectAll();
-                            mRepositoryAdapter.setSelectionMode(false);
-                            mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                            toolbarTitle.setVisibility(View.VISIBLE);
-                        } else {
-                            setListAdapter(directory.getParentDirectory());
-                            setBackButtonPress(directory.getParentDirectory());
-                            currentDirectory = directory.getParentDirectory();
-                        }
-                    }
+            if (listMode == 0) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
+                }
+            } else if (listMode == 1) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
+                }
+            }
 
         }
     }
@@ -329,6 +327,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
 
     private void initObject() {
+
+
         toolbar = (RelativeLayout) mView.findViewById(R.id.repository_toolbar);
         toolbarTitle = (TextView) mView.findViewById(R.id.repository_title);
         toolbarBackButton = (ImageView) mView.findViewById(R.id.repository_backbutton_imageview);
@@ -352,6 +352,21 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
         mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
         mHeaderMoveImageView.setOnClickListener(mOnClickListener);
+
+
+        mSearchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    mFileExtensionMsgTextView.setVisibility(View.GONE);
+                    mQuizContainer.setVisibility(View.GONE);
+
+                } else {
+                    mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+                    mQuizContainer.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         mSearchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -377,7 +392,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 }
             }
         });
-
     }
 
     private void deleteFile() {
@@ -785,7 +799,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
 
                         } else {
-                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                            mActivity.finish();
+                            //getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
                     } else if (listMode == 1) {                         // GridView
                         if (mRepositoryAdapter.isInSelectionMode()) {
@@ -795,7 +810,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             toolbarTitle.setVisibility(View.VISIBLE);
                             toolbarBackButton.setVisibility(View.GONE);
                         } else {
-                            getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                            // getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
                     }
                 }
@@ -1251,6 +1266,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     }
 
+    @Override
+    public void backPressFromDashBoard() {
+        mQuizContainer.setVisibility(View.VISIBLE);
+        mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+    }
+
     public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
 
         Directory currentDirectory;
@@ -1266,9 +1287,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (currentDirectory.getParentDirectory() == null) {
                 prefix = patientId + "/FileVault/Personal/";
             } else {
-                Log.e("Rishabh", "onTouch Path := "+currentDirectory.getServerPath());
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/" ;
-                Log.e("Rishabh", "Prefix := "+prefix);
+                Log.e("Rishabh", "onTouch Path := " + currentDirectory.getServerPath());
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/";
+                Log.e("Rishabh", "Prefix := " + prefix);
             }
             String delimiter = "/";
 
