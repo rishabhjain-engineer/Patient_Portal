@@ -43,7 +43,7 @@ public class Directory {
 
     public void setServerPath(String serverPath) {
         this.serverPath = serverPath;
-        Log.e("RIshabh", "server Path := "+serverPath);
+      //  Log.e("RIshabh", "server Path := "+serverPath);
     }
 
     public long getSize() {

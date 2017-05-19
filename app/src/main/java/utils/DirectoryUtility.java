@@ -49,7 +49,15 @@ public class DirectoryUtility {
     public static void addFolder(Directory directory, Directory subDirectory) {
         if (!directory.hasDirectory(subDirectory.getDirectoryName())) {
             directory.addDirectory(subDirectory);
-            directory.setServerPath(subDirectory.getDirectoryName());
+
+            if(directory.getServerPath().equals("")){
+                subDirectory.setServerPath(subDirectory.getDirectoryName());
+            }else {
+                subDirectory.setServerPath(directory.getServerPath() + "/" + subDirectory.getDirectoryName());
+            }
+
+
+            //subDirectory.setServerPath(subDirectory.getDirectoryName());
         }
     }
 
