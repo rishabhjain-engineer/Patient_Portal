@@ -127,8 +127,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private PreferenceHelper mPreferenceHelper;
     private EditText mSearchEditText;
     private Button mUploadFileButton;
-    private RelativeLayout toolbar;
-    private TextView toolbarTitle, mHeaderTitleTextView;
+    private RelativeLayout toolbar, mQuizContainer;
+    private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
     private View mView;
@@ -343,6 +343,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mHeaderMoveImageView = (ImageView) mView.findViewById(R.id.repository_move_imageview);
         mHeaderMiddleImageViewContainer = (LinearLayout) mView.findViewById(R.id.middle_options_container);
         toolbarTitle.setText("Repository");
+        mFileExtensionMsgTextView = (TextView) mView.findViewById(R.id.file_text);
+        mQuizContainer = (RelativeLayout) mView.findViewById(R.id.quiz_container);
 
         mUploadFileButton.setOnClickListener(mOnClickListener);
         showGridLayout.setOnClickListener(mOnClickListener);
