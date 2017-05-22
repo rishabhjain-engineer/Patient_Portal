@@ -2,6 +2,7 @@ package ui;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -61,10 +62,12 @@ public class DashBoardActivity extends BaseActivity {
     private Services mServices;
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
+    FragmentManager mFragmentmanager;
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
     private int grayColor, greenColor;
     private ProgressDialog mProgressDialog;
-    private boolean mIsHomeFragmentOpen = true;
+    private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false;
+    private CallBack mCallBackInterfaceObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +84,10 @@ public class DashBoardActivity extends BaseActivity {
         mFooterContainer.setVisibility(View.GONE);
         mDashBoardTv.setTextColor(greenColor);
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+        mFragmentmanager = getFragmentManager();
         Fragment newFragment = new DashboardFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
         transaction.addToBackStack(null);
         transaction.commit();
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -301,12 +305,20 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mIsHomeFragmentOpen) {
-            confirmDialog();
+
+        if (mRepositoryFragOpen) {
+            mCallBackInterfaceObject.backPressFromDashBoard();
         } else {
-            openDashBoardFragment();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+            if (mIsHomeFragmentOpen) {
+                confirmDialog();
+            } else {
+                openDashBoardFragment();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+
         }
+
 
     }
 
@@ -374,13 +386,14 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openDashBoardFragment() {
         mIsHomeFragmentOpen = true;
+        mRepositoryFragOpen = false;
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
             // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
             Fragment newFragment = new DashboardFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
             transaction.addToBackStack(null);
             transaction.commit();
         }
@@ -388,6 +401,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openVitalFragment() {
         mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             Log.d("ayaz", "inside if");
@@ -404,8 +418,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new VitalFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "VitalFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -416,6 +430,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openReportFragment() {
         mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
         } else {
@@ -438,8 +453,8 @@ public class DashBoardActivity extends BaseActivity {
                 bundle.putBoolean("fromFamilyClass", false);
                 Fragment newFragment = new ReportFragment();
                 newFragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
+                FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment, "ReportFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -448,6 +463,8 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openRepositoryFragment() {
+
+        mRepositoryFragOpen = true;
         mIsHomeFragmentOpen = false;                                    // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
@@ -456,6 +473,7 @@ public class DashBoardActivity extends BaseActivity {
             mRepositoryTv.setTextColor(greenColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(grayColor);
+
             //mActionBar.setTitle("Repository");
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
@@ -464,8 +482,11 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             mRepositoryFragment = new RepositoryFreshFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mRepositoryFragment);
+
+            mCallBackInterfaceObject = (CallBack) mRepositoryFragment;
+
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, mRepositoryFragment, "RepositoryFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -476,6 +497,7 @@ public class DashBoardActivity extends BaseActivity {
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
         //mActionBar.show();
+        mRepositoryFragOpen = false;
         mIsHomeFragmentOpen = false;                               // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
@@ -492,8 +514,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_active);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new FamilyFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "FamilyFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -502,6 +524,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openAccountFragment() {
         mIsHomeFragmentOpen = false;                                     // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -518,8 +541,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_active);
             Fragment newFragment = new AccountFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "AccountFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -528,6 +551,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openSchoolFragment() {
         mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = true;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -543,11 +567,16 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new SchoolFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "SchoolFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
+
+    public interface CallBack {
+        void backPressFromDashBoard();
+    }
+
 }

@@ -26,12 +26,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.hs.userportal.AppAplication;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.logout;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
@@ -85,6 +83,7 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -179,7 +178,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (NetworkChangeListener.getNetworkStatus().isConnected() && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
             new MyHealthAsync().execute();
             new GetUserGradeAsync().execute();
