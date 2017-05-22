@@ -31,6 +31,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -388,7 +389,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 if (editable.toString().equals("")) {
                     currentDirectory = mDirectory;
                     setListAdapter(mDirectory);
-
                 } else {
                     Directory searchedDirectory = DirectoryUtility.searchDirectory(searchableDirectory, editable.toString());
                     currentDirectory = searchedDirectory;
@@ -842,6 +842,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             currentDirectory = directory.getParentDirectory();
                         }
                     }
+
+                    if(!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
+                        mSearchEditText.setText("");
+                        mSearchEditText.clearFocus();
+                    }
                 }
             });
         }
@@ -1260,6 +1265,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void backPressFromDashBoard() {
+        mSearchEditText.setText("");
         mSearchEditText.clearFocus();
         mQuizContainer.setVisibility(View.VISIBLE);
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
