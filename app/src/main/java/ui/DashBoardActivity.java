@@ -2,6 +2,7 @@ package ui;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -24,7 +25,6 @@ import com.android.volley.toolbox.Volley;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,11 +62,12 @@ public class DashBoardActivity extends BaseActivity {
     private Services mServices;
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
+    FragmentManager mFragmentmanager;
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
     private int grayColor, greenColor;
     private ProgressDialog mProgressDialog;
-    private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false ;
-    private CallBack mCallBackInterfaceObject ;
+    private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false;
+    private CallBack mCallBackInterfaceObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +84,10 @@ public class DashBoardActivity extends BaseActivity {
         mFooterContainer.setVisibility(View.GONE);
         mDashBoardTv.setTextColor(greenColor);
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+        mFragmentmanager = getFragmentManager();
         Fragment newFragment = new DashboardFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
         transaction.addToBackStack(null);
         transaction.commit();
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -304,19 +306,18 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-       if(mRepositoryFragOpen) {
-           mCallBackInterfaceObject.backPressFromDashBoard();
-       } else {
+        if (mRepositoryFragOpen) {
+            mCallBackInterfaceObject.backPressFromDashBoard();
+        } else {
 
-           if (mIsHomeFragmentOpen) {
-               confirmDialog();
-           } else {
-               openDashBoardFragment();
-               overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-           }
+            if (mIsHomeFragmentOpen) {
+                confirmDialog();
+            } else {
+                openDashBoardFragment();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
 
-       }
-
+        }
 
 
     }
@@ -391,8 +392,8 @@ public class DashBoardActivity extends BaseActivity {
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
             // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
             Fragment newFragment = new DashboardFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
             transaction.addToBackStack(null);
             transaction.commit();
         }
@@ -417,8 +418,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new VitalFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "VitalFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -452,8 +453,8 @@ public class DashBoardActivity extends BaseActivity {
                 bundle.putBoolean("fromFamilyClass", false);
                 Fragment newFragment = new ReportFragment();
                 newFragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
+                FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment, "ReportFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -484,8 +485,8 @@ public class DashBoardActivity extends BaseActivity {
 
             mCallBackInterfaceObject = (CallBack) mRepositoryFragment;
 
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mRepositoryFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, mRepositoryFragment, "RepositoryFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -513,8 +514,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_active);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new FamilyFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "FamilyFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -540,8 +541,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_active);
             Fragment newFragment = new AccountFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "AccountFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -566,8 +567,8 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new SchoolFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "SchoolFragment");
             transaction.addToBackStack(null);
             transaction.commit();
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -575,7 +576,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public interface CallBack {
-       void backPressFromDashBoard() ;
+        void backPressFromDashBoard();
     }
 
 }

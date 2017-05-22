@@ -32,7 +32,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -206,6 +205,11 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     };
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -241,8 +245,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
 
                 } else {
-                    getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
-
+                    ((DashBoardActivity) mActivity).openDashBoardFragment();
                 }
             } else if (listMode == 1) {                         // GridView
                 if (mRepositoryAdapter.isInSelectionMode()) {
@@ -252,7 +255,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     toolbarTitle.setVisibility(View.VISIBLE);
                     toolbarBackButton.setVisibility(View.GONE);
                 } else {
-                    getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
+                    ((DashBoardActivity) mActivity).openDashBoardFragment();
                 }
             }
 
@@ -749,10 +752,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
                         DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
-
-                    Log.e("AVI", "Data Saved");
-
-
                 } catch (JSONException je) {
                     je.printStackTrace();
                 }
@@ -879,9 +878,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         if (file.getOtherExtension()) {
             if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
-                //             Log.e("Rishabh", "Opening pdf");
                 String filepath = AppConstant.AMAZON_URL + file.getKey();
-                //               Log.e("Rishabh", "filepath := " + filepath);
                 new FileDownloader(filepath).execute();
 
             }
@@ -1058,7 +1055,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 String imageLocation = cursor.getString(1);
                 File imageFile = new File(imageLocation);
                 Uri obtainedUri = Uri.fromFile(imageFile);
-                Log.e("Rishabh", "Obtained URi := " + obtainedUri);
                 if (imageFile.exists()) {
                     File downloadedFile = null;
 
@@ -1082,7 +1078,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             outStream.close();
                             listOfFilesToUpload.add(downloadedFile);
                         } catch (Exception e) {
-                            Log.e("Rishabh", "Exception := " + e);
                         }
                         File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
                         listOfFilesToUpload.add(thumbnailFile);
@@ -1157,7 +1152,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 outStream.close();
                                 listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
-                                Log.e("Rishabh", "Exception := " + e);
                             }
                         }
                     }
@@ -1190,7 +1184,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 listOfFilesToUpload.add(downloadedFile);
 
                             } catch (Exception e) {
-                                Log.e("Rishabh", "Exception bitmap:= " + e);
                             }
                         }
                     }
@@ -1206,7 +1199,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
-            Log.e("Rishabh", "Exception := " + e);
         }
     }
 
@@ -1270,6 +1262,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     public void backPressFromDashBoard() {
         mQuizContainer.setVisibility(View.VISIBLE);
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+
+        if(counter != 1){
+            deviceBackPress(mRepositoryAdapter.getDirectory());
+        }else {
+            counter = counter + 1 ;
+        }
+
+
     }
 
     public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
@@ -1287,9 +1287,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             if (currentDirectory.getParentDirectory() == null) {
                 prefix = patientId + "/FileVault/Personal/";
             } else {
-                Log.e("Rishabh", "onTouch Path := " + currentDirectory.getServerPath());
                 prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/";
-                Log.e("Rishabh", "Prefix := " + prefix);
             }
             String delimiter = "/";
 
@@ -1310,8 +1308,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             while (objectListing.isTruncated()) {
                 objectListing = s3Client.listNextBatchOfObjects(objectListing);
-                // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
-                // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
                 s3allData.addAll(objectListing.getCommonPrefixes());
                 summaries.addAll(objectListing.getObjectSummaries());
             }
@@ -1437,7 +1433,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a PDF reader here, or something
-                    //                   Log.e("Rishabh", "Lol");
                 }
             } else if (saveFilePath.contains("doc")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
@@ -1448,7 +1443,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a ms-word reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
                 }
             } else if (saveFilePath.contains("xls")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
@@ -1459,7 +1453,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a X-excel reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
                 }
             }
 
