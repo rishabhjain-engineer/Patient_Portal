@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
-    useLibrary  'org.apache.http.legacy'
+    useLibrary 'org.apache.http.legacy'
     dexOptions {
         javaMaxHeapSize "4g"
     }
@@ -28,15 +28,35 @@ android {
     aaptOptions {
         cruncherEnabled = false
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/ECLIPSE_.SF'
+        exclude 'META-INF/ECLIPSE_.RSA'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/classes.jar'
+        exclude '...'
+    }
+
 }
 /*configurations {
     all*.exclude group: 'com.android.support', module: 'support-v4'
 }*/
+
 def appendVersionName(variant, defaultConfig) {
     variant.outputs.each { output ->
         if (output.zipAlign) {
             def file = output.outputFile
-            def fileName = file.name.replace("app-release.apk", "HealthScion- " + defaultConfig.versionName  + "v.apk")
+            def fileName = file.name.replace("app-release.apk", "HealthScion- " + defaultConfig.versionName + "v.apk")
             output.outputFile = new File(file.parent, fileName)
         }
 
@@ -73,5 +93,6 @@ dependencies {
     compile 'com.google.firebase:firebase-core:10.2.0'
     compile 'com.google.firebase:firebase-messaging:10.2.0'
     compile 'com.android.support:recyclerview-v7:24.1.1'
+    compile 'com.applozic.communication.uiwidget:audiovideo:1.2'
 }
 apply plugin: 'com.google.gms.google-services'
