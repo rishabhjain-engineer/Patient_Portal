@@ -772,7 +772,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void onDirectoryTouched(Directory directory) {
-        mSearchEditText.setText("");
         currentDirectory = directory;
         progressDialog.show();
         new GetDataFromAmazon(currentDirectory).execute();
