@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -106,7 +107,7 @@ public class AccountFragment extends Fragment {
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};
+        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Chat", "Logout"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);
@@ -188,7 +189,12 @@ public class AccountFragment extends Fragment {
                     mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 
-                } else if (position == 7) {
+                }else if (position == 7) {
+                    //Chat
+                    Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    startActivity(intent);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                } else if (position == 8) {
                     //logout
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                         Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
@@ -276,6 +282,8 @@ public class AccountFragment extends Fragment {
         }
 
     }
+
+
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override

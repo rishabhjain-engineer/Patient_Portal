@@ -26,7 +26,7 @@ public class UserDeviceAsyncTask extends AsyncTask {
     protected void onPreExecute() {
         super.onPreExecute();
         preferenceHelper = PreferenceHelper.getInstance();
-        String devicetoken = preferenceHelper.getString(PreferenceHelper.PreferenceKey.DEVICE_TOKEN);
+        String devicetoken = preferenceHelper.getString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN);
         userId = preferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         dataToSend = new JSONObject();
         try {

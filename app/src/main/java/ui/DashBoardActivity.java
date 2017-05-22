@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
@@ -68,6 +74,7 @@ public class DashBoardActivity extends BaseActivity {
     private ProgressDialog mProgressDialog;
     private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false;
     private CallBack mCallBackInterfaceObject;
+    private String mFcmDeviceToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +109,53 @@ public class DashBoardActivity extends BaseActivity {
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();
         }
+        mFcmDeviceToken = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN);
+        //loginToApplogic();
+    }
+
+    private void loginToApplogic() {
+        UserLoginTask.TaskListener listener = new UserLoginTask.TaskListener() {
+
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                //After successful registration with Applozic server the callback will come here
+
+                if(MobiComUserPreference.getInstance(context).isRegistered()) {
+
+                    PushNotificationTask pushNotificationTask = null;
+                    PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {
+                        @Override
+                        public void onSuccess(RegistrationResponse registrationResponse) {
+
+                        }
+                        @Override
+                        public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+
+                        }
+
+                    };
+
+                    pushNotificationTask = new PushNotificationTask(mFcmDeviceToken, listener, DashBoardActivity.this);
+                    pushNotificationTask.execute((Void) null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                //If any failure in registration the callback  will come here
+            }
+        };
+
+        User user = new User();
+        user.setUserId(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID)); //userId it can be any unique user identifier
+        user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
+        user.setEmail(""); //optional
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());  //User.AuthenticationType.APPLOZIC.getValue() for password verification from Applozic server and User.AuthenticationType.CLIENT.getValue() for access Token verification from your server set access token as password
+        user.setPassword(""); //optional, leave it blank for testing purpose, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
+        user.setImageLink("");//optional,pass your image link
+        new UserLoginTask(user, listener, this).execute((Void) null);
+
     }
 
 
