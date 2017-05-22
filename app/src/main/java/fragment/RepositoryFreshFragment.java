@@ -1279,6 +1279,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         public GetDataFromAmazon(Directory currentDirectory) {
             this.currentDirectory = currentDirectory;
+
+
+
         }
 
         @Override
@@ -1326,14 +1329,22 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     file.setLastModified(summary.getLastModified());
                     file.setName(DirectoryUtility.getFileName(summary.getKey()));       //filename.extension
                     DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                    // Bills/FolderNew/JPEG_20170518_180440_1170208006.jpg
+                    //     Parent directory for search directory is always  =     SearchResults
+                    //  following if case works when we search the repository, in this case parent directory is always "SearchResults" .
+                    // we send directory structure := SearchResults/currentDirectory/FileName.
+                    if( currentDirectory.getParentDirectory()!=null  &&  currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")   ){
+                        String path = file.getPath();
+                        String spilitPath [] = path.split("/");
+                        String pathToPass = spilitPath[spilitPath.length-1];
+                        DirectoryUtility.addFile(currentDirectory, file, pathToPass);
+                    }
                 }
             }
-
             for (String path : s3allData) {
                 Directory directory = new Directory(DirectoryUtility.getFolderName(path));
                 DirectoryUtility.addFolder(currentDirectory, directory);
             }
-
             return null;
         }
 
