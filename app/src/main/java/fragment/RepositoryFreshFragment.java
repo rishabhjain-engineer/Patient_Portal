@@ -37,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -324,7 +325,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         } else {
             createLockFolder();
         }
-
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         return mView;
     }
 
@@ -1260,6 +1261,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     @Override
     public void backPressFromDashBoard() {
+        mSearchEditText.clearFocus();
         mQuizContainer.setVisibility(View.VISIBLE);
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
 
