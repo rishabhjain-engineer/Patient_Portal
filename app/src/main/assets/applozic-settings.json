@@ -47,7 +47,7 @@
   "inviteFriendsInContactActivity": true,
   "registeredUserContactListCall": true,
   "createAnyContact": true,
-  "showActionDialWithOutCalling": false,
+  "showActionDialWithOutCalling": true,
   "profileLogoutButton": false,
   "userProfileFragment": true,
   "messageSearchOption": false,
