@@ -52,7 +52,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = jsonObject.optString("contentTitle");
             String message = jsonObject.optString("message");
             String tickerText = jsonObject.optString("tickerText");
-            sendNotification(title, message);
+            if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(message)){
+                sendNotification(title, message);
+            }
         }
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
