@@ -37,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -191,9 +193,14 @@ public class AccountFragment extends Fragment {
 
                 }else if (position == 7) {
                     //Chat
-                    Intent intent = new Intent(mActivity, ConversationActivity.class);
+                   /* Intent intent = new Intent(mActivity, ConversationActivity.class);
                     startActivity(intent);
-                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    if(ApplozicClient.getInstance(mActivity).isContextBasedChat()){
+                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
+                    }
+                    startActivity(intent);
                 } else if (position == 8) {
                     //logout
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
