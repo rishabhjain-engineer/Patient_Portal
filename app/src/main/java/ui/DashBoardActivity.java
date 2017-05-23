@@ -116,7 +116,7 @@ public class DashBoardActivity extends BaseActivity {
             openReportFragment();
         }
         mFcmDeviceToken = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN);
-        //loginToApplogic();
+        loginToApplogic();
     }
 
     private void loginToApplogic() {
@@ -133,7 +133,7 @@ public class DashBoardActivity extends BaseActivity {
                 ApplozicSetting.getInstance(context).setActivityCallbacks(activityCallbacks);
 
 
-                if(MobiComUserPreference.getInstance(context).isRegistered()) {
+                if (MobiComUserPreference.getInstance(context).isRegistered()) {
 
                     PushNotificationTask pushNotificationTask = null;
                     PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {
@@ -141,6 +141,7 @@ public class DashBoardActivity extends BaseActivity {
                         public void onSuccess(RegistrationResponse registrationResponse) {
 
                         }
+
                         @Override
                         public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
 
@@ -162,7 +163,11 @@ public class DashBoardActivity extends BaseActivity {
 
         User user = new User();
         user.setUserId(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID)); //userId it can be any unique user identifier
-        user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
+        if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME))) {
+            user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
+        }else{
+            user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_CODE)); //displayName is the name of the user which will be shown in chat messages
+        }
         user.setEmail(""); //optional
         user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());  //User.AuthenticationType.APPLOZIC.getValue() for password verification from Applozic server and User.AuthenticationType.CLIENT.getValue() for access Token verification from your server set access token as password
         user.setPassword(""); //optional, leave it blank for testing purpose, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
@@ -172,7 +177,7 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     private List<String> getFeatureList() {
-        List<String> featureList =  new ArrayList<>();
+        List<String> featureList = new ArrayList<>();
         featureList.add(User.Features.IP_AUDIO_CALL.getValue());
         featureList.add(User.Features.IP_VIDEO_CALL.getValue());
         return featureList;

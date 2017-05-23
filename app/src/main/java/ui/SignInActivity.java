@@ -1021,7 +1021,6 @@ public class SignInActivity extends BaseActivity {
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
