@@ -160,10 +160,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             } else if (viewId == R.id.repository_backbutton_imageview) {
                 setBackButtonPress(mDirectory);
             } else if (viewId == R.id.repository_grid_imageview) {
-                Directory directory;
+
                 if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_list_black);
                     listMode = 1;
                 } else {
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_grid_black);
                     listMode = 0;
                 }
                 setListAdapter(mRepositoryAdapter.getDirectory());
@@ -310,6 +314,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         initObject();
+        showGridLayout.setImageResource(R.drawable.ic_grid_black);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
