@@ -59,6 +59,12 @@ public *;
 -keep public class com.google.android.gms.* { public *; }
 -dontwarn com.google.android.gms.**
 -keep class com.google.gson.** { *; }
+-kepp class com.applozic.audiovideo.authentication.** { *; }
 -keep class org.webrtc.** { *; }
 -keep class com.twilio.** { *; }
+
+
+
+
+
 
