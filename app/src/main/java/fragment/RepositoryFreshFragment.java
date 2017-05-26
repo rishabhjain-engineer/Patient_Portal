@@ -130,7 +130,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
-    private View mView , mSepratorBelowHeader;
+    private View mView, mSepratorBelowHeader;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
@@ -852,7 +852,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         }
                     }
 
-                    if(!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
+                    if (!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
                         mSearchEditText.setText("");
                         mSearchEditText.clearFocus();
                     }
@@ -1143,6 +1143,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 File downloadedFile = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ClipData clipData = data.getClipData();
+
+                    if (clipData.getItemCount() > 10) {
+                        ((BaseActivity) mActivity).showAlertMessage("You can upload max 10 files at a time");
+                        mProgressDialog.dismiss();
+                        return;
+                    }
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         multipleUri.add(clipData.getItemAt(i).getUri());
                     }
@@ -1280,10 +1286,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
         mSepratorBelowHeader.setVisibility(View.GONE);
 
-        if(counter != 1){
+        if (counter != 1) {
             deviceBackPress(mRepositoryAdapter.getDirectory());
-        }else {
-            counter = counter + 1 ;
+        } else {
+            counter = counter + 1;
         }
 
 
@@ -1295,7 +1301,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         public GetDataFromAmazon(Directory currentDirectory) {
             this.currentDirectory = currentDirectory;
-
 
 
         }
@@ -1349,10 +1354,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     //     Parent directory for search directory is always  =     SearchResults
                     //  following if case works when we search the repository, in this case parent directory is always "SearchResults" .
                     // we send directory structure := SearchResults/currentDirectory/FileName.
-                    if( currentDirectory.getParentDirectory()!=null  &&  currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")   ){
+                    if (currentDirectory.getParentDirectory() != null && currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")) {
                         String path = file.getPath();
-                        String spilitPath [] = path.split("/");
-                        String pathToPass = spilitPath[spilitPath.length-1];
+                        String spilitPath[] = path.split("/");
+                        String pathToPass = spilitPath[spilitPath.length - 1];
                         DirectoryUtility.addFile(currentDirectory, file, pathToPass);
                     }
                 }
