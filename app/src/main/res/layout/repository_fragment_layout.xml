@@ -13,6 +13,11 @@
             layout="@layout/repository_header_layout"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize" />
+        <View
+            android:id="@+id/seprator_below_header"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_text_dark" />
 
         <RelativeLayout
             android:id="@+id/quiz_container"

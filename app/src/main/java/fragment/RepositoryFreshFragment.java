@@ -130,7 +130,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
-    private View mView;
+    private View mView , mSepratorBelowHeader;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
@@ -315,6 +315,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         initObject();
         showGridLayout.setImageResource(R.drawable.ic_grid_black);
+        mSepratorBelowHeader.setVisibility(View.GONE);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
@@ -355,6 +356,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         toolbarTitle.setText("Repository");
         mFileExtensionMsgTextView = (TextView) mView.findViewById(R.id.file_text);
         mQuizContainer = (RelativeLayout) mView.findViewById(R.id.quiz_container);
+        mSepratorBelowHeader = mView.findViewById(R.id.seprator_below_header);
 
         mUploadFileButton.setOnClickListener(mOnClickListener);
         showGridLayout.setOnClickListener(mOnClickListener);
@@ -370,10 +372,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 if (b) {
                     mFileExtensionMsgTextView.setVisibility(View.GONE);
                     mQuizContainer.setVisibility(View.GONE);
+                    mSepratorBelowHeader.setVisibility(View.VISIBLE);
 
                 } else {
                     mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
                     mQuizContainer.setVisibility(View.VISIBLE);
+                    mSepratorBelowHeader.setVisibility(View.GONE);
                 }
             }
         });
@@ -1274,6 +1278,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mSearchEditText.clearFocus();
         mQuizContainer.setVisibility(View.VISIBLE);
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+        mSepratorBelowHeader.setVisibility(View.GONE);
 
         if(counter != 1){
             deviceBackPress(mRepositoryAdapter.getDirectory());
