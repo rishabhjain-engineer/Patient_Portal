@@ -130,7 +130,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
-    private View mView;
+    private View mView, mSepratorBelowHeader;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
@@ -160,10 +160,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             } else if (viewId == R.id.repository_backbutton_imageview) {
                 setBackButtonPress(mDirectory);
             } else if (viewId == R.id.repository_grid_imageview) {
-                Directory directory;
+
                 if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_list_black);
                     listMode = 1;
                 } else {
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_grid_black);
                     listMode = 0;
                 }
                 setListAdapter(mRepositoryAdapter.getDirectory());
@@ -310,6 +314,8 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         initObject();
+        showGridLayout.setImageResource(R.drawable.ic_grid_black);
+        mSepratorBelowHeader.setVisibility(View.GONE);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
         repositoryFreshFragment = this;
@@ -350,6 +356,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         toolbarTitle.setText("Repository");
         mFileExtensionMsgTextView = (TextView) mView.findViewById(R.id.file_text);
         mQuizContainer = (RelativeLayout) mView.findViewById(R.id.quiz_container);
+        mSepratorBelowHeader = mView.findViewById(R.id.seprator_below_header);
 
         mUploadFileButton.setOnClickListener(mOnClickListener);
         showGridLayout.setOnClickListener(mOnClickListener);
@@ -365,10 +372,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 if (b) {
                     mFileExtensionMsgTextView.setVisibility(View.GONE);
                     mQuizContainer.setVisibility(View.GONE);
+                    mSepratorBelowHeader.setVisibility(View.VISIBLE);
 
                 } else {
                     mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
                     mQuizContainer.setVisibility(View.VISIBLE);
+                    mSepratorBelowHeader.setVisibility(View.GONE);
                 }
             }
         });
@@ -843,7 +852,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         }
                     }
 
-                    if(!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
+                    if (!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
                         mSearchEditText.setText("");
                         mSearchEditText.clearFocus();
                     }
@@ -1134,6 +1143,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 File downloadedFile = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ClipData clipData = data.getClipData();
+
+                    if (clipData.getItemCount() > 10) {
+                        ((BaseActivity) mActivity).showAlertMessage("You can upload max 10 files at a time");
+                        mProgressDialog.dismiss();
+                        return;
+                    }
                     for (int i = 0; i < clipData.getItemCount(); i++) {
                         multipleUri.add(clipData.getItemAt(i).getUri());
                     }
@@ -1269,11 +1284,12 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mSearchEditText.clearFocus();
         mQuizContainer.setVisibility(View.VISIBLE);
         mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+        mSepratorBelowHeader.setVisibility(View.GONE);
 
-        if(counter != 1){
+        if (counter != 1) {
             deviceBackPress(mRepositoryAdapter.getDirectory());
-        }else {
-            counter = counter + 1 ;
+        } else {
+            counter = counter + 1;
         }
 
 
@@ -1285,7 +1301,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
         public GetDataFromAmazon(Directory currentDirectory) {
             this.currentDirectory = currentDirectory;
-
 
 
         }
@@ -1339,10 +1354,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     //     Parent directory for search directory is always  =     SearchResults
                     //  following if case works when we search the repository, in this case parent directory is always "SearchResults" .
                     // we send directory structure := SearchResults/currentDirectory/FileName.
-                    if( currentDirectory.getParentDirectory()!=null  &&  currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")   ){
+                    if (currentDirectory.getParentDirectory() != null && currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")) {
                         String path = file.getPath();
-                        String spilitPath [] = path.split("/");
-                        String pathToPass = spilitPath[spilitPath.length-1];
+                        String spilitPath[] = path.split("/");
+                        String pathToPass = spilitPath[spilitPath.length - 1];
                         DirectoryUtility.addFile(currentDirectory, file, pathToPass);
                     }
                 }
