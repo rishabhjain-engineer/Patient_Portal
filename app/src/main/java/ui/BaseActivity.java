@@ -102,6 +102,7 @@ public class BaseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -228,8 +229,8 @@ public class BaseActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("from logout", "logout");
                         startActivity(intent);
-
                         finish();
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 });
         dialog.show();

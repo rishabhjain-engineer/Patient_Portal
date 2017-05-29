@@ -477,6 +477,7 @@ public class OrderDetails extends BaseActivity {
             case android.R.id.home:
                /*  super.onBackPressed();*/
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                /* overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
                 return true;
             default:
@@ -489,8 +490,8 @@ public class OrderDetails extends BaseActivity {
        /* Intent i = new Intent(OrderDetails.this, OrderHistory.class);
         i.putExtra("scroll_position", scroll_position);
         startActivity(i);*/
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     public void resend_confirmation() {

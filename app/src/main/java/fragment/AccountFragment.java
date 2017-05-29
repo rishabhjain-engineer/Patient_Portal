@@ -37,6 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -106,7 +109,7 @@ public class AccountFragment extends Fragment {
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"My Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};
+        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};    // TODO add chat for AppLozic
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);
@@ -151,12 +154,15 @@ public class AccountFragment extends Fragment {
 
                 } else if (position == 3) {
                     //About
-                    Intent intentAbout = new Intent(mActivity, AboutUs.class);
-                    intentAbout.putExtra("from", "dash");
-                    startActivity(intentAbout);
-                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intentAbout = new Intent(mActivity, AboutUs.class);
+                        intentAbout.putExtra("from", "dash");
+                        startActivity(intentAbout);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
-
+                    }
                 } else if (position == 4) {
                     //Password
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -192,6 +198,17 @@ public class AccountFragment extends Fragment {
                     } else {
                         logout();
                     }
+
+                } else if (position == 8) {
+                    //Chat
+                   /* Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    startActivity(intent);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    if (ApplozicClient.getInstance(mActivity).isContextBasedChat()) {
+                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
+                    }
+                    startActivity(intent);
                 }
             }
 
@@ -269,9 +286,11 @@ public class AccountFragment extends Fragment {
             LoginManager.getInstance().logOut();
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
             mActivity.finish();
+            mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
 
     }
+
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override

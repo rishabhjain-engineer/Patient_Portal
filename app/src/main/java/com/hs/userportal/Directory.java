@@ -17,6 +17,7 @@ public class Directory {
     private long size;
     private Date lastModified;
     private boolean isLocked = false;
+    private String serverPath = "";
 
     public List<Directory> listOfDirectories;
     public List<DirectoryFile> listOfDirectoryFiles;
@@ -33,6 +34,16 @@ public class Directory {
                 setLocked(true);
             }
         }
+    }
+
+
+    public String getServerPath() {
+        return serverPath;
+    }
+
+    public void setServerPath(String serverPath) {
+        this.serverPath = serverPath;
+      //  Log.e("RIshabh", "server Path := "+serverPath);
     }
 
     public long getSize() {
@@ -163,8 +174,8 @@ public class Directory {
             searchDirectory.search(directory, searchedItem);
         }
 
-      //  Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
-      //  Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
+        //  Log.e("RAVI", "Searched files: " + directory.getListOfDirectoryFiles().size());
+        //  Log.e("RAVI", "Searched folders: " + directory.getListOfDirectories().size());
 
     }
 

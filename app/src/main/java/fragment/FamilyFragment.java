@@ -139,7 +139,7 @@ public class FamilyFragment extends Fragment implements Myfamily_Adapter.action_
                         String message = array[1];
                         showSubScriptionDialog(message);
                     }else{
-                        ((DashBoardActivity)mActivity).fromFamilyToDashboard(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
+                        ((DashBoardActivity)mActivity).fromFamilyToReport(family_object, memberName, family_object.get(position).get("FamilyMemberId"));
                     }
                 } else {
                     showalert("You don't have permission to view their report.");

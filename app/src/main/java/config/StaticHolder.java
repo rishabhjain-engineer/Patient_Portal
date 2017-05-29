@@ -46,6 +46,27 @@ public class StaticHolder {
         this.context = activity;
     }
 
+    public JSONObject request_services() {
+        Services service = new Services(context);
+        JSONObject receiveData = null;
+        switch (serviceName) {
+            case LogIn:
+                System.out.println("login.");
+                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
+                break;
+
+            case SignUpByPatient:
+                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
+                break;
+
+
+            default:
+                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
+                break;
+        }
+        return receiveData;
+    }
+
 
     public StaticHolder(Services_static serviceName) {
         this.serviceName = serviceName;
@@ -65,9 +86,9 @@ public class StaticHolder {
                 url = BASE_URL + "CheckDupUserName";
                 break;
 
-            case NewSignUpByPatient:
+            case NewSignUpByPatientMod:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/NewSignUpByPatient";
-                url = BASE_URL + "NewSignUpByPatient";
+                url = BASE_URL + "NewSignUpByPatientMod";
                 break;
 
             case CheckEmailIdIsExistMobile:
@@ -450,19 +471,23 @@ public class StaticHolder {
             case NewLogIn:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogin1";
                 break;
-            case NewFacebookLogin:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLogin";
+            case NewFacebookLoginMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLoginMod";
                 break;
 
-            case NewSignUpByPatientFacebook:
-                url = BASE_URL + "NewSignUpByPatientFacebook";
+            case NewSignUpByPatientFacebookMod:
+                url = BASE_URL + "NewSignUpByPatientFacebookMod";
 
-            case LogInUser_facebook:
-                url = BASE_URL + "LogInUser_facebook";
+            case LogInUser_facebookMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebookMod";
                 break;
 
             case GetUserGrade:
                 url = BASE_URL + "GetUserGrade";
+                break;
+
+            case GetUserFact:
+                url = BASE_URL + "GetUserFact";
                 break;
 
             case SaveUserDevice:
@@ -480,34 +505,16 @@ public class StaticHolder {
             case UploadImage_New:
                 url = BASE_URL + "UploadImage_New";
                 break;
+            case saveHealthDetailMod:
+                url = BASE_URL + "saveHealthDetailMod";
+                break;
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
         }
-
         return url;
     }
 
-    public JSONObject request_services() {
-        Services service = new Services(context);
-        JSONObject receiveData = null;
-        switch (serviceName) {
-            case LogIn:
-                System.out.println("login.");
-                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
-                break;
-
-            case SignUpByPatient:
-                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
-                break;
-
-
-            default:
-                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
-                break;
-        }
-        return receiveData;
-    }
 
     public enum Services_static {
         LogIn, NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
@@ -534,8 +541,9 @@ public class StaticHolder {
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
-        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLogin, CheckContactNoExist, CheckDupUserName, NewSignUpByPatient,
-        LogInUser_facebook, NewSignUpByPatientFacebook, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
+        LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
+        saveHealthDetailMod
     }
 
 }

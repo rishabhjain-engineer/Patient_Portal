@@ -25,6 +25,7 @@
     <dimen name="repository_header_icon_height">33dp</dimen>
     <dimen name="repository_header_icon_width">33dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="home_page_green_height">130dp</dimen>
 
 
 </resources>

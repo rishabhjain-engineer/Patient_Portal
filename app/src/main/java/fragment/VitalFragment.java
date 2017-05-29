@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,10 +64,10 @@ import utils.PreferenceHelper;
 public class VitalFragment extends Fragment {
     private Activity mActivity;
     private PreferenceHelper mPreferenceHelper;
-    private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, allergies, mBpTvValue, mBmiTvValue;
+    private TextView heighttxt_id, alergytxtid, bloodID, weight_latest, height_latest, mpulseTv,  allergies, mBpTvValue, mBmiTvValue;
     private EditText blood_group;
-    private String id, show_blood, bgroup, height, weight, mBp;
-    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer, mVaccineContainer;
+    private String id, show_blood, bgroup, height, weight, mBp, mPulse;
+    private LinearLayout bgHeader, weightLayout, heightLayout, allergyLayout, mBmiContainer, mBpContainer, mVaccineContainer, mPulseContainer;
     private Services service;
     private RequestQueue send_request;
     private ProgressDialog progress;
@@ -87,15 +88,10 @@ public class VitalFragment extends Fragment {
         heighttxt_id = (TextView) view.findViewById(R.id.heighttxt_id);
         alergytxtid = (TextView) view.findViewById(R.id.allergytxtid);
         blood_group = (EditText) view.findViewById(R.id.blood_group);
-        blood_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showdialog();
-            }
-        });
         bloodID = (TextView) view.findViewById(R.id.bloodID);
         weight_latest = (TextView) view.findViewById(R.id.weight_latest);
         height_latest = (TextView) view.findViewById(R.id.height_latest);
+        mpulseTv = (TextView) view.findViewById(R.id.pulse_tv_value);
         allergies = (TextView) view.findViewById(R.id.allergies);
         bgHeader = (LinearLayout) view.findViewById(R.id.bgHeader);
         weightLayout = (LinearLayout) view.findViewById(R.id.weightLayout);
@@ -104,6 +100,7 @@ public class VitalFragment extends Fragment {
         mBmiContainer = (LinearLayout) view.findViewById(R.id.bmi_container);
         mBpContainer = (LinearLayout) view.findViewById(R.id.bp_container);
         mVaccineContainer = (LinearLayout) view.findViewById(R.id.vaccine_container);
+        mPulseContainer = (LinearLayout) view.findViewById(R.id.pulse_container);
         return view;
     }
 
@@ -120,7 +117,11 @@ public class VitalFragment extends Fragment {
         bgHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showdialog();
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    showdialog();
+                } else {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         weightLayout.setOnClickListener(new View.OnClickListener() {
@@ -226,6 +227,23 @@ public class VitalFragment extends Fragment {
                         Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     }
 
+                }
+            }
+        });
+
+        mPulseContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((BaseActivity) mActivity).isSessionExist()) {
+                    if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Intent in = new Intent(mActivity, HealthCommonActivity.class);
+                        in.putExtra("id", id);
+                        in.putExtra("forPulse", true);
+                        startActivity(in);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    } else {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -447,10 +465,16 @@ public class VitalFragment extends Fragment {
                 mBpTvValue.setText("-");
             }
 
-            if (!TextUtils.isEmpty(mBp) && !mBp.equalsIgnoreCase("null")) {
-                mBpTvValue.setText(mBp);
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mBp);
             } else {
-                mBpTvValue.setText("-");
+                mpulseTv.setText("-");
+            }
+
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mPulse);
+            } else {
+                mpulseTv.setText("-");
             }
 
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
@@ -482,6 +506,7 @@ public class VitalFragment extends Fragment {
                     height = obj.getString("height");
                     weight = obj.getString("weight");
                     mBp = obj.getString("BP");
+                    mPulse = obj.getString("Pulse");
 
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
@@ -556,6 +581,12 @@ public class VitalFragment extends Fragment {
                 mBpTvValue.setText("-");
             }
 
+            if (!TextUtils.isEmpty(mPulse) && !mPulse.equalsIgnoreCase("null")) {
+                mpulseTv.setText(mPulse);
+            } else {
+                mpulseTv.setText("-");
+            }
+
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
@@ -583,6 +614,7 @@ public class VitalFragment extends Fragment {
                     height = obj.getString("height");
                     weight = obj.getString("weight");
                     mBp = obj.optString("BP");
+                    mPulse = obj.getString("Pulse");
                     String alergyString = obj.getString("allergiesName");
                     if (TextUtils.isEmpty(alergyString) || alergyString.equalsIgnoreCase("null")) {
                         allergy_no = 0;

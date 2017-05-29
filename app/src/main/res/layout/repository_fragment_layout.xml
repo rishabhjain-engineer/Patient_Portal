@@ -5,14 +5,43 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include
             layout="@layout/repository_header_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="?android:attr/actionBarSize" />
+        <View
+            android:id="@+id/seprator_below_header"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_text_dark" />
+
+        <RelativeLayout
+            android:id="@+id/quiz_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_page_green_height"
+            android:background="@drawable/homepage_dynamicview"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/middletv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uppertv"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="One place to store all your health related documents. Add here to access anytime, anywhere."
+                android:textColor="@color/white"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
 
 
         <LinearLayout
@@ -55,46 +84,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:orientation="horizontal"
-            android:background="@color/light_gray">
+            android:background="@color/light_gray"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:layout_gravity="center"
                 android:paddingLeft="10dp"
-                android:textColor="@color/black_header"/>
+                android:text="Name"
+                android:textColor="@color/black_header" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:text="Last Modified"
-                android:layout_gravity="center"
-                android:textColor="@color/black_header"/>
+                android:textColor="@color/black_header" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Size"
                 android:layout_gravity="center"
-                android:textColor="@color/black_header"/>
+                android:layout_weight="1"
+                android:text="Size"
+                android:textColor="@color/black_header" />
 
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_text_dark"/>
+            android:background="@color/grey_text_dark" />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_weight="1"
             android:id="@+id/list"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="5dp"
-            android:layout_height="0dp" />
+            android:layout_weight="1" />
 
 
     </LinearLayout>

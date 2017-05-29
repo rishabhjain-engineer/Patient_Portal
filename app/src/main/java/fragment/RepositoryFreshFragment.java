@@ -10,6 +10,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,21 +23,24 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -65,6 +69,7 @@ import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
 import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,21 +93,29 @@ import adapters.RepositoryDialogAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.AppConstant;
 import utils.DirectoryUtility;
 import utils.PreferenceHelper;
 import utils.RepositoryGridAdapter;
 import utils.RepositoryUtils;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by rishabh on 6/4/17.
  */
 
-public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction {
+public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction, DashBoardActivity.CallBack {
 
-
-    private List<File> listOfFilesToUpload;
     private static final int PICK_FROM_CAMERA = 2;
+    private static final int MY_PERMISSIONS_REQUEST_READ_FILE = 5;
+    private static RequestQueue req;
+    private static JsonObjectRequest s3jr;
+    private static String patientId = null;
+    private static ProgressDialog mProgressDialog;
+    private static RepositoryFreshFragment repositoryFreshFragment;
+    private List<File> listOfFilesToUpload;
     private RecyclerView list;
     private Directory mDirectory;
     private Directory searchableDirectory;
@@ -113,25 +126,21 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private JSONObject sendData, receiveData;
     private RequestQueue queue, queue3;
     private JsonObjectRequest lock_folder;
-    private static RequestQueue req;
     private JsonObjectRequest jr2, jr3, jr4;
-    private static JsonObjectRequest s3jr;
     private NotificationHandler nHandler;
     private Handler mHandler;
     private PreferenceHelper mPreferenceHelper;
-    private static String patientId = null;
     private EditText mSearchEditText;
     private Button mUploadFileButton;
-    private RelativeLayout toolbar;
-    private TextView toolbarTitle, mHeaderTitleTextView;
+    private RelativeLayout toolbar, mQuizContainer;
+    private TextView toolbarTitle, mHeaderTitleTextView, mFileExtensionMsgTextView;
     private ImageView toolbarBackButton;
     private ImageView showGridLayout, mHeaderDeleteImageView, mHeaderSelectAllImageView, mHeaderMoveImageView;
-    private View mView;
+    private View mView, mSepratorBelowHeader;
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
-    private static ProgressDialog mProgressDialog;
     private int listMode = 0; //0=list, 1=grid
-    private int PICK_FROM_GALLERY = 1;
+    private int PICK_FROM_GALLERY = 1, counter = 1, mTotalNumberOfUri, mTotalNumberOfUriCounter;
     private Uri Imguri;
     private String mCurrentPhotoPath = null;
     private boolean mIsSdkLessThanM = true;
@@ -139,165 +148,17 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private boolean mPermissionGranted, isFromGallery = false;
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
-    List<S3ObjectSummary> summaries = new ArrayList<>();
+    private List<S3ObjectSummary> summaries = new ArrayList<>();
+    ArrayList<File> mCountFileSize10Mb = new ArrayList<>();
 
+    String[] permissionsRequired = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int PERMISSION_CALLBACK_CONSTANT = 100;
+    private static final int REQUEST_PERMISSION_SETTING = 101;
+    private SharedPreferences permissionStatus;
+    private boolean sentToSettings = false;
 
-    private static RepositoryFreshFragment repositoryFreshFragment;
+    private Bitmap mPickLatestPhotoBitMap = null;
     private RepositoryDialogAdapter dialogAdapter;
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.repository_fragment_layout, container, false);
-        mActivity = getActivity();
-        mPreferenceHelper = PreferenceHelper.getInstance();
-        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-        initObject();
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        repositoryFreshFragment = this;
-        displayedDirectory = new ArrayList<>();
-        listOfFilesToUpload = new ArrayList<>();
-
-        mDirectory = new Directory("Personal");
-        searchableDirectory = new Directory("Personal");
-
-        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
-        } else {
-            createLockFolder();
-        }
-
-        return mView;
-    }
-
-    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
-
-        Directory currentDirectory;
-
-        public GetDataFromAmazon(Directory currentDirectory) {
-            this.currentDirectory = currentDirectory;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String s3BucketName = getString(R.string.s3_bucket);
-            String prefix = "";
-            if (currentDirectory.getParentDirectory() == null) {
-                prefix = patientId + "/FileVault/Personal/";
-            } else {
-                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getDirectoryPath() + "/";
-            }
-            String delimiter = "/";
-
-            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
-
-            ListObjectsRequest lor = new ListObjectsRequest()
-                    .withBucketName(s3BucketName)
-                    .withPrefix(prefix)
-                    .withMaxKeys(1000)
-                    .withDelimiter(delimiter);
-
-            s3allData.clear();
-            summaries.clear();
-            ObjectListing objectListing = s3Client.listObjects(lor);
-            s3allData.addAll(objectListing.getCommonPrefixes());
-            summaries = objectListing.getObjectSummaries();
-            currentDirectory.clearAll();
-
-            while (objectListing.isTruncated()) {
-                objectListing = s3Client.listNextBatchOfObjects (objectListing);
-               // Log.e("Rishabh", "trunctd list Common prefixes:= "+objectListing.getCommonPrefixes());
-               // Log.e("Rishabh", "trunctd list objuect summaries:= "+objectListing.getObjectSummaries());
-                s3allData.addAll(objectListing.getCommonPrefixes());
-                summaries.addAll(objectListing.getObjectSummaries());
-            }
-
-
-            for (S3ObjectSummary summary : summaries) {
-                if (summary.getKey().contains("_thumb")) {
-                    continue;
-                }
-                if (DirectoryUtility.isFile(summary.getKey())) {
-                    DirectoryFile file = new DirectoryFile();
-                    file.setKey(summary.getKey());
-                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));
-                    file.setSize(summary.getSize());
-                    file.setLastModified(summary.getLastModified());
-                    file.setName(DirectoryUtility.getFileName(summary.getKey()));
-                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
-                }
-            }
-
-            for (String path : s3allData) {
-                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
-                DirectoryUtility.addFolder(currentDirectory, directory);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            setListAdapter(currentDirectory);
-            setBackButtonPress(currentDirectory);
-            progressDialog.dismiss();
-            loadData();
-        }
-    }
-
-    private void initObject() {
-        toolbar = (RelativeLayout) mView.findViewById(R.id.repository_toolbar);
-        toolbarTitle = (TextView) mView.findViewById(R.id.repository_title);
-        toolbarBackButton = (ImageView) mView.findViewById(R.id.repository_backbutton_imageview);
-        showGridLayout = (ImageView) mView.findViewById(R.id.repository_grid_imageview);
-        mUploadFileButton = (Button) mView.findViewById(R.id.upload);
-        list = (RecyclerView) mView.findViewById(R.id.list);
-        list.setHasFixedSize(true);
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mSearchEditText = (EditText) mView.findViewById(R.id.et_searchbar);
-        mHeaderDeleteImageView = (ImageView) mView.findViewById(R.id.repository_delete_imageview);
-        mHeaderSelectAllImageView = (ImageView) mView.findViewById(R.id.repository_selectall_imageview);
-        mHeaderMoveImageView = (ImageView) mView.findViewById(R.id.repository_move_imageview);
-        mHeaderMiddleImageViewContainer = (LinearLayout) mView.findViewById(R.id.middle_options_container);
-        toolbarTitle.setText("Repository");
-
-        mUploadFileButton.setOnClickListener(mOnClickListener);
-        showGridLayout.setOnClickListener(mOnClickListener);
-        toolbarBackButton.setOnClickListener(mOnClickListener);
-        mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
-        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
-        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
-
-        mSearchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.toString().equals("")) {
-                    currentDirectory = mDirectory;
-                    setListAdapter(mDirectory);
-
-                } else {
-                    Directory searchedDirectory = DirectoryUtility.searchDirectory(searchableDirectory, editable.toString());
-                    currentDirectory = searchedDirectory;
-                    setListAdapter(searchedDirectory);
-                }
-            }
-        });
-
-    }
-
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -313,14 +174,27 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             } else if (viewId == R.id.repository_backbutton_imageview) {
                 setBackButtonPress(mDirectory);
             } else if (viewId == R.id.repository_grid_imageview) {
-                Directory directory;
-                if (listMode == 0) {
+
+                if (listMode == 0) {            // listmode = 0 ; LIST VIEW ; listmode =1 : GRID VIEW
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_list_black);
                     listMode = 1;
                 } else {
+                    showGridLayout.setImageDrawable(null);
+                    showGridLayout.setImageResource(R.drawable.ic_grid_black);
                     listMode = 0;
                 }
                 setListAdapter(mRepositoryAdapter.getDirectory());
             } else if (viewId == R.id.repository_selectall_imageview) {
+
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                    toolbarTitle.setVisibility(View.GONE);
+                } else {
+                    toolbarBackButton.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                }
+
                 if (listMode == 0) {
                     selectAll();
                     mRepositoryAdapter.notifyDataSetChanged();
@@ -349,6 +223,204 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mView.setFocusableInTouchMode(true);
+        mView.requestFocus();
+        mView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        deviceBackPress(mRepositoryAdapter.getDirectory());
+                        return true;
+                    } else {
+                        return false;
+                    }
+
+                }
+                return false;
+            }
+        });
+    }
+
+    private void deviceBackPress(final Directory directory) {
+        if (directory.getParentDirectory() == null) {
+            toolbarTitle.setText("Repository");
+            if (listMode == 0) {                                            // ListView
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                    toolbarBackButton.setVisibility(View.GONE);
+
+
+                } else {
+                    ((DashBoardActivity) mActivity).openDashBoardFragment();
+                }
+            } else if (listMode == 1) {                         // GridView
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    ((DashBoardActivity) mActivity).openDashBoardFragment();
+                }
+            }
+
+        } else {
+            toolbarTitle.setText(directory.getDirectoryName());
+
+            if (listMode == 0) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
+                }
+            } else if (listMode == 1) {
+                if (mRepositoryAdapter.isInSelectionMode()) {
+                    unselectAll();
+                    mRepositoryAdapter.setSelectionMode(false);
+                    mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                    toolbarTitle.setVisibility(View.VISIBLE);
+                } else {
+                    setListAdapter(directory.getParentDirectory());
+                    setBackButtonPress(directory.getParentDirectory());
+                    currentDirectory = directory.getParentDirectory();
+                }
+            }
+
+        }
+    }
+
+    public static void refresh() {
+        mProgressDialog.dismiss();
+        repositoryFreshFragment.startCreatingDirectoryStructure();
+    }
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.repository_fragment_layout, container, false);
+        mActivity = getActivity();
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+        initObject();
+        permissionStatus = mActivity.getSharedPreferences("permissionStatus", MODE_PRIVATE);
+        showGridLayout.setImageResource(R.drawable.ic_grid_black);
+        mSepratorBelowHeader.setVisibility(View.GONE);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        repositoryFreshFragment = this;
+        displayedDirectory = new ArrayList<>();
+        listOfFilesToUpload = new ArrayList<>();
+
+        mDirectory = new Directory("Personal");
+        mDirectory.setServerPath("");
+        searchableDirectory = new Directory("Personal");
+        searchableDirectory.setServerPath("");
+
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+        } else {
+            createLockFolder();
+        }
+        mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        return mView;
+    }
+
+
+    private void initObject() {
+
+
+        toolbar = (RelativeLayout) mView.findViewById(R.id.repository_toolbar);
+        toolbarTitle = (TextView) mView.findViewById(R.id.repository_title);
+        toolbarBackButton = (ImageView) mView.findViewById(R.id.repository_backbutton_imageview);
+        showGridLayout = (ImageView) mView.findViewById(R.id.repository_grid_imageview);
+        mUploadFileButton = (Button) mView.findViewById(R.id.upload);
+        list = (RecyclerView) mView.findViewById(R.id.list);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mSearchEditText = (EditText) mView.findViewById(R.id.et_searchbar);
+        mHeaderDeleteImageView = (ImageView) mView.findViewById(R.id.repository_delete_imageview);
+        mHeaderSelectAllImageView = (ImageView) mView.findViewById(R.id.repository_selectall_imageview);
+        mHeaderMoveImageView = (ImageView) mView.findViewById(R.id.repository_move_imageview);
+        mHeaderMiddleImageViewContainer = (LinearLayout) mView.findViewById(R.id.middle_options_container);
+        toolbarTitle.setText("Repository");
+        mFileExtensionMsgTextView = (TextView) mView.findViewById(R.id.file_text);
+        mQuizContainer = (RelativeLayout) mView.findViewById(R.id.quiz_container);
+        mSepratorBelowHeader = mView.findViewById(R.id.seprator_below_header);
+
+        mUploadFileButton.setOnClickListener(mOnClickListener);
+        showGridLayout.setOnClickListener(mOnClickListener);
+        toolbarBackButton.setOnClickListener(mOnClickListener);
+        mHeaderSelectAllImageView.setOnClickListener(mOnClickListener);
+        mHeaderDeleteImageView.setOnClickListener(mOnClickListener);
+        mHeaderMoveImageView.setOnClickListener(mOnClickListener);
+
+
+        mSearchEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    mFileExtensionMsgTextView.setVisibility(View.GONE);
+                    mQuizContainer.setVisibility(View.GONE);
+                    mSepratorBelowHeader.setVisibility(View.VISIBLE);
+
+                } else {
+                    mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+                    mQuizContainer.setVisibility(View.VISIBLE);
+                    mSepratorBelowHeader.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mSearchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().equals("")) {
+                    currentDirectory = mDirectory;
+                    setListAdapter(mDirectory);
+                } else {
+                    Directory searchedDirectory = DirectoryUtility.searchDirectory(searchableDirectory, editable.toString());
+                    currentDirectory = searchedDirectory;
+                    setListAdapter(searchedDirectory);
+                }
+            }
+        });
+    }
 
     private void deleteFile() {
         final List<SelectableObject> selectedObjects = new ArrayList<>();
@@ -505,7 +577,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             });
 
 
-
         } else {
             backText.setText(dialogAdapter.getDirectory().getDirectoryName());
             backText.setOnClickListener(new View.OnClickListener() {
@@ -567,15 +638,16 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                askRunTimePermissions();            // Need run time permissions
-                chooseimage();                      // upload file either from camera or gallery
-
+                askRunTimePermissions();
             }
         });
 
         dialog.show();
     }
 
+    private void proceedAfterPermission(){
+        chooseimage();
+    }
 
     private void setListAdapter(Directory directory) {
         parseDirectory(directory);
@@ -707,8 +779,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         //this is a recursive method that will keep adding directories until file is set in hierarchy
                         DirectoryUtility.addFile(searchableDirectory, file, file.getPath());
                     }
-
-
                 } catch (JSONException je) {
                     je.printStackTrace();
                 }
@@ -736,32 +806,38 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
     void setBackButtonPress(final Directory directory) {
 
+
         if (directory.getParentDirectory() == null) {
             toolbarTitle.setText("Repository");
             toolbarBackButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (listMode == 0) {
+
+
+                    if (listMode == 0) {                                            // ListView
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                             toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
+
 
                         } else {
-                            getActivity().finish();
+                            mActivity.finish();
+                            //getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
-                    } else if (listMode == 1) {
+                    } else if (listMode == 1) {                         // GridView
                         if (mRepositoryAdapter.isInSelectionMode()) {
                             unselectAll();
                             mRepositoryAdapter.setSelectionMode(false);
                             mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
                             toolbarTitle.setVisibility(View.VISIBLE);
+                            toolbarBackButton.setVisibility(View.GONE);
                         } else {
-                            getActivity().finish();
+                            // getFragmentManager().popBackStack();      // Take user back to DASHBOARD page
                         }
                     }
-
                 }
             });
         } else {
@@ -792,10 +868,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                             currentDirectory = directory.getParentDirectory();
                         }
                     }
+
+                    if (!TextUtils.isEmpty(mSearchEditText.getEditableText().toString())) {
+                        mSearchEditText.setText("");
+                        mSearchEditText.clearFocus();
+                    }
                 }
             });
         }
-
     }
 
     private void unselectAll() {
@@ -825,24 +905,671 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onImageTouched(DirectoryFile file) {
 
-        askRunTimePermissions();
-
-        if (file.getOtherExtension()) {
-            if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
-                //             Log.e("Rishabh", "Opening pdf");
-                String filepath = AppConstant.AMAZON_URL + file.getKey();
-                //               Log.e("Rishabh", "filepath := " + filepath);
-                new FileDownloader(filepath).execute();
-
+        ActivityCompat.requestPermissions(mActivity,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_FILE);
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }else {
+            if (file.getOtherExtension()) {
+                if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
+                    String filepath = AppConstant.AMAZON_URL + file.getKey();
+                    new FileDownloader(filepath).execute();
+                }
+            } else {
+                Intent i = new Intent(mActivity, ImageActivity.class);
+                i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+                startActivity(i);
             }
 
+        }
+    }
+
+    private void chooseimage() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle("Choose Image Source");
+        builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera", "Pick Latest Photo"},
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                intent.setType("image/*");
+                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                                }
+                                startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
+                                break;
+                            case 1:
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+
+                            case 2:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    pickLatestPhoto();
+                                } else {
+                                    ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
+                                }
+
+
+                            default:
+                                break;
+                        }
+                    }
+                });
+        builder.show();
+
+
+    }
+
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startCamera();
         } else {
-            Intent i = new Intent(mActivity, ImageActivity.class);
-            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
-            startActivity(i);
+            takePhoto();
+        }
+    }
+
+
+    void askRunTimePermissions() {
+
+        if (ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[1]) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[0]) || ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[1])) {
+                //Show Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else if (permissionStatus.getBoolean(permissionsRequired[0], false)) {
+                //Previously Permission Request was cancelled with 'Dont Ask Again',
+                // Redirect to Settings after showing Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        sentToSettings = true;
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", mActivity.getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                        Toast.makeText(mActivity.getBaseContext(), "Go to permissions to grant  camera and storage", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                //just request the permission
+                ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+            }
+
+            SharedPreferences.Editor editor = permissionStatus.edit();
+            editor.putBoolean(permissionsRequired[0], true);
+            editor.commit();
+        } else {
+            //You already have the permission, just go ahead.
+            proceedAfterPermission();
         }
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CALLBACK_CONSTANT) {
+            //check if all permissions are granted
+            boolean allgranted = false;
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    allgranted = true;
+                } else {
+                    allgranted = false;
+                    break;
+                }
+            }
+            if (allgranted) {
+                proceedAfterPermission();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[0])
+                    || ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[1])) {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                Toast.makeText(mActivity.getBaseContext(), "Unable to get Permission", Toast.LENGTH_LONG).show();
+            }
+        } else if ( requestCode == MY_PERMISSIONS_REQUEST_READ_FILE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
+        }
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(mActivity, "com.hs.userportal.provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(mActivity.getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
+
+
+    private void pickLatestPhoto() {
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.upload_latest_pick);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+
+
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final Cursor cursor = getContext().getContentResolver()
+                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                            null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+            if (cursor.moveToFirst()) {
+                String imageLocation = cursor.getString(1);
+                File imageFile = new File(imageLocation);
+                Uri obtainedUri = Uri.fromFile(imageFile);
+                if (imageFile.exists()) {
+                    File downloadedFile = null;
+
+                    InputStream is = null;
+                    try {
+                        is = mActivity.getContentResolver().openInputStream(obtainedUri);
+                        mPickLatestPhotoBitMap = BitmapFactory.decodeStream(is);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    //    mPickLatestPhotoBitMap = BitmapFactory.decodeFile(imageLocation);
+                    imageView.setImageBitmap(mPickLatestPhotoBitMap);
+                    if (mPickLatestPhotoBitMap != null) {
+                        try {
+                            downloadedFile = createImageFile();
+                            OutputStream outStream = new FileOutputStream(downloadedFile);
+                            mPickLatestPhotoBitMap.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                            outStream.flush();
+                            outStream.close();
+                            listOfFilesToUpload.add(downloadedFile);
+                        } catch (Exception e) {
+                        }
+                        File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                        listOfFilesToUpload.add(thumbnailFile);
+                    } else {
+                        ((BaseActivity) mActivity).showAlertMessage("No Recent File Available.");
+                    }
+                }
+            }
+        } else {
+            ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!.\n " +
+                    "Kindle choose 'Pick from Gallery' option to upload your file(s).");
+        }
+
+        dialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                mProgressDialog = new ProgressDialog(mActivity);
+                mProgressDialog.setMessage("Uploading File ...");
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+                RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
+            }
+        });
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        listOfFilesToUpload.clear();
+        try {
+            if (requestCode == PICK_FROM_GALLERY) {
+                mTotalNumberOfUriCounter = 0;                                // to count number of URI came from gallery ;
+                if (data != null) {
+                    mProgressDialog = new ProgressDialog(mActivity);
+                    mProgressDialog.setMessage("Uploading File ...");
+                    mProgressDialog.setCancelable(false);
+                    mProgressDialog.show();
+                }
+                ArrayList<Uri> multipleUri = new ArrayList<>();
+
+                Uri selectedImageUri;
+                File downloadedFile = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ClipData clipData = data.getClipData();
+
+                    if (clipData.getItemCount() > 10) {
+                        ((BaseActivity) mActivity).showAlertMessage("You can upload max 10 files at a time");
+                        mProgressDialog.dismiss();
+                        return;
+                    }
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        multipleUri.add(clipData.getItemAt(i).getUri());
+                    }
+                } else {
+                    selectedImageUri = data.getData();
+                    multipleUri.add(selectedImageUri);
+                }
+                //new code saves recieved bitmap as file
+                mTotalNumberOfUri = multipleUri.size();
+                for (int i = 0; i < multipleUri.size(); i++) {
+                    mTotalNumberOfUriCounter++;
+                    selectedImageUri = multipleUri.get(i);
+                    InputStream is = null;
+                    if (selectedImageUri.getAuthority() != null) {
+                        is = getActivity().getContentResolver().openInputStream(selectedImageUri);
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+                            try {
+                                downloadedFile = createImageFile();
+
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+
+
+                                double fileSize = calculateFileSize(downloadedFile);
+                                if (fileSize > 10) {
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    if(mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+                                        showFileSizeExceedAlertBox(downloadedFile);
+                                    }
+                                } else {
+                                    // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
+
+
+                                listOfFilesToUpload.add(downloadedFile);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (requestCode == PICK_FROM_CAMERA && resultCode == -1) {   // resultcode -1 is for SUCCESS
+                mProgressDialog = new ProgressDialog(mActivity);
+                mProgressDialog.setMessage("Uploading File ...");
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+                File downloadedFile = null;
+                Uri selectedImageUri;
+                if (mIsSdkLessThanM == true) {
+                    InputStream is = null;
+                    if (Imguri.getAuthority() != null) {
+
+                        is = getActivity().getContentResolver().openInputStream(Imguri);
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+
+                            try {
+                                downloadedFile = createImageFile();
+
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                //compressing image to 90 percent quality to reduce size
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+
+                                double fileSize = calculateFileSize(downloadedFile);
+                                if (fileSize > 10) {
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    showFileSizeExceedAlertBox(downloadedFile);
+                                } else {
+                                    //Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
+
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                } else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    downloadedFile = new File(imageUri.getPath());
+                    double fileSize = calculateFileSize(downloadedFile);
+                    if (fileSize > 10) {
+                        mCountFileSize10Mb.add(downloadedFile);
+                        showFileSizeExceedAlertBox(downloadedFile);
+                    } else {
+                        // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                        listOfFilesToUpload.add(downloadedFile);
+                        File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                        listOfFilesToUpload.add(thumbnailFile);
+                    }
+                }
+            }
+            RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
+            super.onActivityResult(requestCode, resultCode, data);
+        } catch (Exception e) {
+        }
+    }
+
+    private double calculateFileSize(File file) {
+
+        double sizeOfFileInByte = file.length();
+        //Log.e("Rishabh","size in Bytes := "+sizeOfFileInByte+" B");
+        double sizeOfFileInKb = sizeOfFileInByte / 1024;
+        //Log.e("Rishabh","size in KiloBytes := "+sizeOfFileInKb+" Kb");
+        double sizeInMb = sizeOfFileInKb / 1024;
+        //Log.e("Rishabh","size in MBytes := "+sizeInMb+" Mb");
+
+
+        return sizeInMb;
+
+    }
+
+    private void showFileSizeExceedAlertBox(File file) {
+
+
+        File thumbnailFile = RepositoryUtils.getThumbnailFile(file, mActivity);
+
+        // converting file to bitmap
+
+        String filePath = thumbnailFile.getPath();
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+        // Log.e("Rishabh", "BitMap of thumbnail:= "+bitmap.toString());
+
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.alert_file_size);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView message = (TextView) dialog.findViewById(R.id.message);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+        cancelButton.setVisibility(View.GONE);
+
+        if (mCountFileSize10Mb.size() > 1 && mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+            // more than 1 file greater than 10 mb
+            imageView.setImageResource(R.drawable.multiple_images_thumb);
+            message.setText("Files not uploaded as they were more than 10 mb in size (each).");
+        } else if (mCountFileSize10Mb.size() == 1) {
+            // only 1 file is greate than 10 MB
+            imageView.setImageBitmap(bitmap);
+            message.setText("File not uploaded as it’s more than 10 mb in size.");
+        } else {
+            return;
+        }
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void onItemLongClicked(int position) {
+        if (listMode == 0) {
+            if (mRepositoryAdapter.isInSelectionMode()) {
+                mRepositoryAdapter.setSelectionMode(false);
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                toolbarTitle.setVisibility(View.VISIBLE);
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                mRepositoryAdapter.setSelectionMode(true);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                toolbarTitle.setVisibility(View.GONE);
+                toolbarBackButton.setVisibility(View.VISIBLE);
+                setBackButtonPress(mRepositoryAdapter.getDirectory());
+
+            }
+        } else if (listMode == 1) {
+            if (mRepositoryGridAdapter.isInSelectionMode()) {
+                mRepositoryGridAdapter.setSelectionMode(false);
+
+                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
+                toolbarTitle.setVisibility(View.VISIBLE);
+                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
+                    toolbarBackButton.setVisibility(View.GONE);
+                } else {
+                    toolbarBackButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                mRepositoryGridAdapter.setSelectionMode(true);
+                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
+                toolbarTitle.setVisibility(View.GONE);
+                toolbarBackButton.setVisibility(View.VISIBLE);
+                setBackButtonPress(mRepositoryGridAdapter.getDirectory());
+            }
+        }
+
+    }
+
+    public void parseDirectory(Directory directory) {
+        displayedDirectory.clear();
+        if (!directory.listOfDirectories.isEmpty()) {
+            for (Directory d : directory.getListOfDirectories()) {
+                displayedDirectory.add(new SelectableObject(d, false));
+            }
+        }
+        if (!directory.getListOfDirectoryFiles().isEmpty()) {
+            for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
+                displayedDirectory.add(new SelectableObject(file, false));
+            }
+        }
+    }
+
+    @Override
+    public void backPressFromDashBoard() {
+        mSearchEditText.setText("");
+        mSearchEditText.clearFocus();
+        mQuizContainer.setVisibility(View.VISIBLE);
+        mFileExtensionMsgTextView.setVisibility(View.VISIBLE);
+        mSepratorBelowHeader.setVisibility(View.GONE);
+
+        if (counter != 1) {
+            deviceBackPress(mRepositoryAdapter.getDirectory());
+        } else {
+            counter = counter + 1;
+        }
+
+
+    }
+
+    public class GetDataFromAmazon extends AsyncTask<Void, Void, Void> {
+
+        Directory currentDirectory;
+
+        public GetDataFromAmazon(Directory currentDirectory) {
+            this.currentDirectory = currentDirectory;
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String s3BucketName = getString(R.string.s3_bucket);
+            String prefix = "";
+            if (currentDirectory.getParentDirectory() == null) {
+                prefix = patientId + "/FileVault/Personal/";
+            } else {
+                prefix = patientId + "/FileVault/Personal/" + currentDirectory.getServerPath() + "/";
+            }
+            String delimiter = "/";
+
+            AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+
+            ListObjectsRequest lor = new ListObjectsRequest()
+                    .withBucketName(s3BucketName)
+                    .withPrefix(prefix)
+                    .withMaxKeys(1000)
+                    .withDelimiter(delimiter);
+
+            s3allData.clear();
+            summaries.clear();
+            ObjectListing objectListing = s3Client.listObjects(lor);
+            s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
+            summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
+            currentDirectory.clearAll();
+
+            while (objectListing.isTruncated()) {
+                objectListing = s3Client.listNextBatchOfObjects(objectListing);
+                s3allData.addAll(objectListing.getCommonPrefixes());
+                summaries.addAll(objectListing.getObjectSummaries());
+            }
+
+
+            for (S3ObjectSummary summary : summaries) {
+                if (summary.getKey().contains("_thumb")) {
+                    continue;
+                }
+                if (DirectoryUtility.isFile(summary.getKey())) {
+                    DirectoryFile file = new DirectoryFile();
+                    file.setKey(summary.getKey());                                      // this will keep whole path : PatientID/Filevault/personal/Directorypath/FileName.Extension ; also create thumb path of a file .
+                    file.setPath(DirectoryUtility.removeExtra(summary.getKey()));       // path will be stored:= Directorypath/Filename.Extension
+                    file.setSize(summary.getSize());
+                    file.setLastModified(summary.getLastModified());
+                    file.setName(DirectoryUtility.getFileName(summary.getKey()));       //filename.extension
+                    DirectoryUtility.addFile(mDirectory, file, file.getPath());
+                    // Bills/FolderNew/JPEG_20170518_180440_1170208006.jpg
+                    //     Parent directory for search directory is always  =     SearchResults
+                    //  following if case works when we search the repository, in this case parent directory is always "SearchResults" .
+                    // we send directory structure := SearchResults/currentDirectory/FileName.
+                    if (currentDirectory.getParentDirectory() != null && currentDirectory.getParentDirectory().getDirectoryName().equalsIgnoreCase("SearchResults")) {
+                        String path = file.getPath();
+                        String spilitPath[] = path.split("/");
+                        String pathToPass = spilitPath[spilitPath.length - 1];
+                        DirectoryUtility.addFile(currentDirectory, file, pathToPass);
+                    }
+                }
+            }
+            for (String path : s3allData) {
+                Directory directory = new Directory(DirectoryUtility.getFolderName(path));
+                DirectoryUtility.addFolder(currentDirectory, directory);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setListAdapter(currentDirectory);
+            setBackButtonPress(currentDirectory);
+            progressDialog.dismiss();
+            loadData();
+        }
     }
 
     public class FileDownloader extends AsyncTask<Void, Void, String> {
@@ -932,7 +1659,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a PDF reader here, or something
-                    //                   Log.e("Rishabh", "Lol");
                 }
             } else if (saveFilePath.contains("doc")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
@@ -943,7 +1669,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a ms-word reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
                 }
             } else if (saveFilePath.contains("xls")) {
                 Intent objIntent = new Intent(Intent.ACTION_VIEW);
@@ -954,459 +1679,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     startActivity(i);
                 } catch (ActivityNotFoundException e) {
                     // Instruct the user to install a X-excel reader here, or something
-                    //                  Log.e("Rishabh", "Lol");
                 }
             }
 
 
-        }
-    }
-
-    private void chooseimage() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("Choose Image Source");
-        builder.setItems(new CharSequence[]{"Pick from Gallery", "Take from Camera", "Pick Latest Photo"},
-                new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                intent.setType("image/*");
-                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                                }
-                                startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_GALLERY);
-                                break;
-                            case 1:
-                                try {
-                                    checkCameraPermission();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-
-                            case 2:
-                                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-                                    pickLatestPhoto();
-                                }else{
-                                    ((BaseActivity) mActivity).showAlertMessage("Your Mobile device doesn't support!. Kindle choose 'Pick from Gallery' option.");
-                                }
-
-
-                            default:
-                                break;
-                        }
-                    }
-                });
-        builder.show();
-
-
-    }
-
-    void checkCameraPermission() throws IOException {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startCamera();
-        } else {
-            takePhoto();
-        }
-    }
-
-    void askRunTimePermissions() {
-
-        int permissionCAMERA = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
-        int storagePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int writePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }
-        if (writePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(mActivity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == MY_PERMISSIONS_REQUEST) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mPermissionGranted = true;
-            } else {
-                mPermissionGranted = false;
-            }
-        }
-    }
-
-    void startCamera() throws IOException {
-        mIsSdkLessThanM = false;
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                //        Log.e("Rishabh", "IO exception := "+ex);
-                return;
-            }
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(mActivity, "com.hs.userportal.provider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
-            }
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        //    Log.e("Rishabh", "image := " + image.getName());
-        return image;
-    }
-
-    private void takePhoto() {
-        File photo = null;
-        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
-        } else {
-            photo = new File(mActivity.getCacheDir(), "test.jpg");
-        }
-        if (photo != null) {
-            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-            Imguri = Uri.fromFile(photo);
-            startActivityForResult(intent1, PICK_FROM_CAMERA);
-        }
-    }
-
-
-    private void pickLatestPhoto(){
-
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.upload_latest_pick);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
-        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
-        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
-
-
-        String[] projection = new String[]{
-                MediaStore.Images.ImageColumns._ID,
-                MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.DATE_TAKEN,
-                MediaStore.Images.ImageColumns.MIME_TYPE
-        };
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            final Cursor cursor = getContext().getContentResolver()
-                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
-                            null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
-
-// Put it in the image view
-            if (cursor.moveToFirst()) {
-                String imageLocation = cursor.getString(1);
-                File imageFile = new File(imageLocation);
-                if (imageFile.exists()) {   // TODO: is there a better way to do this?
-                    Bitmap bm = BitmapFactory.decodeFile(imageLocation);
-                    imageView.setImageBitmap(bm);
-                    Uri test = Uri.fromFile(imageFile);
-                    Log.e("Rishabh", "Test uri := "+test);
-                }
-            }
-        }
-
-        dialog.show();
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setMessage("Uploading File ...");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
-
-        listOfFilesToUpload.clear();
-        try {
-            if (requestCode == PICK_FROM_GALLERY) {
-                ArrayList<Uri> multipleUri = new ArrayList<>();
-                ClipData clipData = data.getClipData();
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    multipleUri.add(clipData.getItemAt(i).getUri());
-                }
-                File downloadedFile = null;
-                //new code saves recieved bitmap as file
-                Uri selectedImageUri;
-                for (int i = 0; i < multipleUri.size(); i++) {
-                    selectedImageUri = multipleUri.get(i);
-                    InputStream is = null;
-                    if (selectedImageUri.getAuthority() != null) {
-                        is = getActivity().getContentResolver().openInputStream(selectedImageUri);
-                        Bitmap bmp = BitmapFactory.decodeStream(is);
-                        if (bmp != null) {
-                            try {
-                                downloadedFile = createImageFile();
-                                OutputStream outStream = new FileOutputStream(downloadedFile);
-                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                                outStream.flush();
-                                outStream.close();
-                                listOfFilesToUpload.add(downloadedFile);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                    listOfFilesToUpload.add(thumbnailFile);
-                }
-//                Uri thumbUri = Uri.parse(thumbnailFile.getAbsolutePath());
-//                ThumbUriList.add(thumbUri);
-//                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);
-
-                /*try {
-                    File thumbFileCreated = createThumbFile(downloadedFile);
-                    Uri thumbImageUri = Uri.parse(thumbFileCreated.getAbsolutePath());
-                    ThumbUriList.add(thumbImageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                RepositoryUtils.uploadFile(uriList, ThumbUriList, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
-                // old code -> this used to work for files that are on phone itself,
-                // but fails for files from cloud
-                // example -> try an image that google photos first downloads and then sends in onactivityresult
-                // the result uri will be like ---- content://com.google.android.apps.photos.content....
-                // this uri is not like a uri for camera file that exists on device,
-                // so better download any type of file into a temp file and then give the uri for the temp file
-                // this way file can be from any type of source (drive, dropbox) and will always work
-                /*Uri selectedImageUri = data.getData();
-                RepositoryUtils.uploadFile(selectedImageUri, getActivity(), currentDirectory, UploadService.REPOSITORY);*/
-            }
-            if (requestCode == PICK_FROM_CAMERA) {
-
-                File downloadedFile = null;
-                Uri selectedImageUri;
-
-                if (mIsSdkLessThanM == true) {
-                    InputStream is = null;
-                    if (Imguri.getAuthority() != null) {
-                        is = getActivity().getContentResolver().openInputStream(Imguri);
-                        Bitmap bmp = BitmapFactory.decodeStream(is);
-                        if (bmp != null) {
-
-                            try {
-                                downloadedFile = createImageFile();
-                                OutputStream outStream = new FileOutputStream(downloadedFile);
-                                //compressing image to 80 percent quality to reduce size
-                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
-                                outStream.flush();
-                                outStream.close();
-//                                Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
-//                                uriList.add(downloadedFileUri);
-
-                                listOfFilesToUpload.add(downloadedFile);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-
-                } else {
-                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
-                    selectedImageUri = imageUri;
-                    downloadedFile = new File(imageUri.getPath());
-                    listOfFilesToUpload.add(downloadedFile);
-
-                }
-
-                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                listOfFilesToUpload.add(thumbnailFile);
-            }
-            RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
-            //super.onActivityResult(requestCode, resultCode, data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void refresh() {
-        mProgressDialog.dismiss();
-
-        repositoryFreshFragment.startCreatingDirectoryStructure();
-    }
-
-
-    /*private File createThumbFile(File file) throws IOException {
-
-        Bitmap bitmap = getThumbnail(file);
-        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap, 250, 250);
-        File thumbFile = storeImage(ThumbImage);
-        return thumbFile;
-    }*/
-
-    /*private File storeImage(Bitmap ThumbnailImage) throws IOException {
-        File pictureFile = getOutputMediaFile();
-        if (pictureFile == null) {
-
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            ThumbnailImage.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            fos.close();
-            return pictureFile;
-
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        }
-        return null;
-    }*/
-
-    private File getOutputMediaFile() throws IOException {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + mActivity.getPackageName() + "/Files");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        String mImageName = "JPEG_" + timeStamp + "_thumb" + ".jpg";
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
-        //File thumb_image = File.createTempFile(mImageName, "_thumb.jpg", mediaStorageDir);
-        //       Log.e("Rishabh", "THumb := " + mediaFile.getName());
-        return mediaFile;
-    }
-
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
-        final int THUMBNAIL_SIZE = 250;
-        InputStream input = mActivity.getContentResolver().openInputStream(uri);
-
-        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
-        onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
-        input.close();
-
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
-            return null;
-        }
-
-        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
-
-        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither = true; //optional
-        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//
-        input = mActivity.getContentResolver().openInputStream(uri);
-        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
-        input.close();
-        return bitmap;
-    }
-
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
-    }
-
-    @Override
-    public void onItemLongClicked(int position) {
-        if (listMode == 0) {
-            if (mRepositoryAdapter.isInSelectionMode()) {
-                mRepositoryAdapter.setSelectionMode(false);
-                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                toolbarTitle.setVisibility(View.VISIBLE);
-                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
-                    toolbarBackButton.setVisibility(View.GONE);
-                } else {
-                    toolbarBackButton.setVisibility(View.VISIBLE);
-                }
-            } else {
-                mRepositoryAdapter.setSelectionMode(true);
-                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
-                toolbarTitle.setVisibility(View.GONE);
-                toolbarBackButton.setVisibility(View.VISIBLE);
-                setBackButtonPress(mRepositoryAdapter.getDirectory());
-
-            }
-        } else if (listMode == 1) {
-            if (mRepositoryGridAdapter.isInSelectionMode()) {
-                mRepositoryGridAdapter.setSelectionMode(false);
-
-                mHeaderMiddleImageViewContainer.setVisibility(View.GONE);
-                toolbarTitle.setVisibility(View.VISIBLE);
-                if (mRepositoryAdapter.getDirectory().getParentDirectory() == null) {
-                    toolbarBackButton.setVisibility(View.GONE);
-                } else {
-                    toolbarBackButton.setVisibility(View.VISIBLE);
-                }
-            } else {
-                mRepositoryGridAdapter.setSelectionMode(true);
-                mHeaderMiddleImageViewContainer.setVisibility(View.VISIBLE);
-                toolbarTitle.setVisibility(View.GONE);
-                toolbarBackButton.setVisibility(View.VISIBLE);
-                setBackButtonPress(mRepositoryGridAdapter.getDirectory());
-            }
-        }
-
-    }
-
-    public void parseDirectory(Directory directory) {
-        displayedDirectory.clear();
-        if (!directory.listOfDirectories.isEmpty()) {
-            for (Directory d : directory.getListOfDirectories()) {
-                displayedDirectory.add(new SelectableObject(d, false));
-            }
-        }
-        if (!directory.getListOfDirectoryFiles().isEmpty()) {
-            for (DirectoryFile file : directory.getListOfDirectoryFiles()) {
-                displayedDirectory.add(new SelectableObject(file, false));
-            }
         }
     }
 }

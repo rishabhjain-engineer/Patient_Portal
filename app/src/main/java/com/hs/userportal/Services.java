@@ -1001,6 +1001,14 @@ public class Services {
 
     }
 
+    public JSONObject saveHealthDetailMod(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.saveHealthDetailMod);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+
+    }
+
     public JSONObject countrylist(JSONObject sendData) {
 
 
@@ -1266,8 +1274,8 @@ public class Services {
 
     }
 
-    public JSONObject LogInUser_facebook(JSONObject sendData) {
-        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebook);
+    public JSONObject LogInUser_facebookMod(JSONObject sendData) {
+        StaticHolder staticHolder = new StaticHolder(StaticHolder.Services_static.LogInUser_facebookMod);
         String url = staticHolder.request_Url();
         JSONObject jsonObjectResponse = LogIn(sendData, url);
         return jsonObjectResponse;
@@ -1276,6 +1284,13 @@ public class Services {
 
     public JSONObject getUserGrade(JSONObject sendData) {
         StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserGrade);
+        String url = sttc_holdr.request_Url();
+        JSONObject abc = common(sendData, url);
+        return abc;
+    }
+
+    public JSONObject getUserFact(JSONObject sendData) {
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetUserFact);
         String url = sttc_holdr.request_Url();
         JSONObject abc = common(sendData, url);
         return abc;

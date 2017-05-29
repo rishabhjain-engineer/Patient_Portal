@@ -14,9 +14,9 @@
         android:layout_height="45dp"
         android:gravity="center"
         android:background="@color/header_color"
-        android:text="Alert!"
+        android:text="Alert"
         android:textColor="@color/white"
-        android:textSize="17dp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,16 +33,16 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:text="Any unsaved changes will be lost. Are you sure you want to go back?"
             android:textColor="@color/black"
-            android:textSize="15dp" />
+            android:textSize="17sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/message"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:gravity="center"
@@ -52,9 +52,9 @@
                 android:padding="0dp"
                 android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/btn_ok"
-                android:text="Stay"
+                android:text="Cancel"
                 android:textColor="@color/header_color"
-                android:textSize="15dp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -65,9 +65,9 @@
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:text="OK"
+                android:text="Ok"
                 android:textColor="@color/header_color"
-                android:textSize="15dp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
         </RelativeLayout>
 

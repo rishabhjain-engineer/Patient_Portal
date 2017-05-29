@@ -14,7 +14,7 @@
         android:layout_height="45dp"
         android:gravity="center"
         android:background="@color/header_color"
-        android:text="Upload Latest Image"
+        android:text="File Size Exceeds 10 Mb"
         android:textColor="@color/white"
         android:textSize="17dp" />
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Are you sure you want to upload file?"
+            android:text="File not uploaded as it’s more than 10 mb in size."
             android:textColor="@color/black"
             android:textSize="17sp" />
 

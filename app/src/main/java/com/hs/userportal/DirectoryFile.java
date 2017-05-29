@@ -17,7 +17,8 @@ public class DirectoryFile {
     private double roundOff;
     private String thumb;
     private String name, extensionType;
-    private boolean notImage ;
+    private boolean notImage, isFileSizeInKb = false;
+
 
     public String getName() {
         return name;
@@ -52,7 +53,6 @@ public class DirectoryFile {
             // mrsajat doc
             String[] splitted = key.split("\\.");
             String ExtensionType = splitted[splitted.length-1];
-            Log.e("Rishabh", "Extension Type:= "+ExtensionType);
             setExtensionType(ExtensionType);
 
         }
@@ -81,8 +81,16 @@ public class DirectoryFile {
 
     public void setSize(long size) {
         this.size = size;
-        double sizeinKb = size / 1000;
+        double d = (double)size;
+        double sizeinKb = d / 1000;
         roundOff = Math.round(sizeinKb * 100.0) / 100.0;
+        if(roundOff > 1000.00){
+            setFileSizeType(false);
+            roundOff = roundOff/1000;
+            roundOff = Math.round(roundOff * 100.0) / 100.0;
+        }else {
+            setFileSizeType(true);
+        }
     }
 
     public String getThumb() {
@@ -103,5 +111,13 @@ public class DirectoryFile {
 
     public String getExtensionType(){
         return extensionType;
+    }
+
+    public boolean getFileSizeType() {
+        return isFileSizeInKb ;
+    }
+
+    public void setFileSizeType(boolean b) {
+        isFileSizeInKb = b ;
     }
 }

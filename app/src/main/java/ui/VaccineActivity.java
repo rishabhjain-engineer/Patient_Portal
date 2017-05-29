@@ -85,6 +85,7 @@ public class VaccineActivity extends BaseActivity {
                     bundle.putSerializable("list", (Serializable) vaccineDetailsList);
                     intent.putExtra("BUNDLE", bundle);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
             }
         });
@@ -105,7 +106,7 @@ public class VaccineActivity extends BaseActivity {
                 List<VaccineDetails> vaccineDetailsFilteredList = new ArrayList<VaccineDetails>();
                 if (!TextUtils.isEmpty(s)) {
                     for (VaccineDetails vaccineDetails : mFinalVaccineDetailsListToSend) {
-                        if (!vaccineDetails.isHeader() && vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                        if (!vaccineDetails.isHeader() && (vaccineDetails.getVaccineName().toLowerCase().startsWith(s.toString().toLowerCase()) || vaccineDetails.getVaccineNameInShort().toLowerCase().startsWith(s.toString().toLowerCase()))) {
                             vaccineDetailsFilteredList.add(vaccineDetails);
                         }
                     }
@@ -151,10 +152,18 @@ public class VaccineActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private ProgressDialog mProgressDialog;

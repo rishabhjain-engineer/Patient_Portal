@@ -2,17 +2,13 @@ package ui;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Color;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.NotificationManagerCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +23,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.applozic.audiovideo.activity.AudioCallActivityV2;
+import com.applozic.audiovideo.activity.VideoActivity;
+import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.api.account.user.UserLoginTask;
+import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
@@ -37,6 +42,8 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import base.MyFirebaseMessagingService;
 import config.StaticHolder;
@@ -44,11 +51,9 @@ import fragment.AccountFragment;
 import fragment.DashboardFragment;
 import fragment.FamilyFragment;
 import fragment.ReportFragment;
-import fragment.RepositoryFragment;
 import fragment.RepositoryFreshFragment;
 import fragment.SchoolFragment;
 import fragment.VitalFragment;
-import networkmngr.ConnectionDetector;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -69,9 +74,13 @@ public class DashBoardActivity extends BaseActivity {
     private Services mServices;
     public static String notiem = "no", notisms = "no";
     private Fragment mRepositoryFragment;
+    FragmentManager mFragmentmanager;
     private TextView mDashBoardTv, mReportTv, mRepositoryTv, mFamilyTv, mAccountTv;
     private int grayColor, greenColor;
     private ProgressDialog mProgressDialog;
+    private boolean mIsHomeFragmentOpen = true, mRepositoryFragOpen = false;
+    private CallBack mCallBackInterfaceObject;
+    private String mFcmDeviceToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +97,10 @@ public class DashBoardActivity extends BaseActivity {
         mFooterContainer.setVisibility(View.GONE);
         mDashBoardTv.setTextColor(greenColor);
         mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+        mFragmentmanager = getFragmentManager();
         Fragment newFragment = new DashboardFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
         transaction.addToBackStack(null);
         transaction.commit();
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
@@ -105,6 +115,72 @@ public class DashBoardActivity extends BaseActivity {
         if (!TextUtils.isEmpty(quote) && quote.equalsIgnoreCase("report")) {
             openReportFragment();
         }
+        mFcmDeviceToken = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN);
+        //loginToApplogic();    // TODO uncomment for AppLozic
+    }
+
+    private void loginToApplogic() {
+        UserLoginTask.TaskListener listener = new UserLoginTask.TaskListener() {
+
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                //After successful registration with Applozic server the callback will come here
+
+                ApplozicClient.getInstance(context).setHandleDial(true).setIPCallEnabled(true);
+                Map<ApplozicSetting.RequestCode, String> activityCallbacks = new HashMap<ApplozicSetting.RequestCode, String>();
+                activityCallbacks.put(ApplozicSetting.RequestCode.AUDIO_CALL, AudioCallActivityV2.class.getName());
+                activityCallbacks.put(ApplozicSetting.RequestCode.VIDEO_CALL, VideoActivity.class.getName());
+                ApplozicSetting.getInstance(context).setActivityCallbacks(activityCallbacks);
+
+
+                if (MobiComUserPreference.getInstance(context).isRegistered()) {
+
+                    PushNotificationTask pushNotificationTask = null;
+                    PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {
+                        @Override
+                        public void onSuccess(RegistrationResponse registrationResponse) {
+
+                        }
+
+                        @Override
+                        public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+
+                        }
+
+                    };
+
+                    pushNotificationTask = new PushNotificationTask(mFcmDeviceToken, listener, DashBoardActivity.this);
+                    pushNotificationTask.execute((Void) null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                //If any failure in registration the callback  will come here
+            }
+        };
+
+        User user = new User();
+        user.setUserId(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID)); //userId it can be any unique user identifier
+        if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME))) {
+            user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
+        }else{
+            user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_CODE)); //displayName is the name of the user which will be shown in chat messages
+        }
+        user.setEmail(""); //optional
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());  //User.AuthenticationType.APPLOZIC.getValue() for password verification from Applozic server and User.AuthenticationType.CLIENT.getValue() for access Token verification from your server set access token as password
+        user.setPassword(""); //optional, leave it blank for testing purpose, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
+        user.setImageLink("");//optional,pass your image link
+        user.setFeatures(getFeatureList());
+        new UserLoginTask(user, listener, this).execute((Void) null);
+    }
+
+    private List<String> getFeatureList() {
+        List<String> featureList = new ArrayList<>();
+        featureList.add(User.Features.IP_AUDIO_CALL.getValue());
+        featureList.add(User.Features.IP_VIDEO_CALL.getValue());
+        return featureList;
     }
 
 
@@ -308,11 +384,54 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Log.i("ayaz", "Dashboard onBackPressed");
-        finish();
+
+        if (mRepositoryFragOpen) {
+            mCallBackInterfaceObject.backPressFromDashBoard();
+        } else {
+
+            if (mIsHomeFragmentOpen) {
+                confirmDialog();
+            } else {
+                openDashBoardFragment();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+
+        }
+
+
     }
 
-    public void fromFamilyToDashboard(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
+    private void confirmDialog() {
+        final Dialog dialog = new Dialog(DashBoardActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+        messageTv.setText("Are you sure you want to exit from ScionTra ?");
+
+        stayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
+    public void fromFamilyToReport(ArrayList<HashMap<String, String>> family_object, String name, String userId) {
         mFooterContainer.setVisibility(View.VISIBLE);
         mDashBoardTv.setTextColor(grayColor);
         mReportTv.setTextColor(greenColor);
@@ -345,19 +464,23 @@ public class DashBoardActivity extends BaseActivity {
     }
 
     public void openDashBoardFragment() {
+        mIsHomeFragmentOpen = true;
+        mRepositoryFragOpen = false;
         mFooterContainer.setVisibility(View.GONE);
         if (isSessionExist()) {
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
             // mActionBar.setTitle(Html.fromHtml("<font color='#5a5a5d'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Scion</font><font color='#0f9347'>Tra</font>"));
             Fragment newFragment = new DashboardFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "DashBoardFragment");
             transaction.addToBackStack(null);
             transaction.commit();
         }
     }
 
     public void openVitalFragment() {
+        mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             Log.d("ayaz", "inside if");
@@ -374,15 +497,19 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new VitalFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "VitalFragment");
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
         }
         Log.d("ayaz", "out of if");
     }
 
     public void openReportFragment() {
+        mIsHomeFragmentOpen = false; // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))) {
             showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
         } else {
@@ -405,17 +532,19 @@ public class DashBoardActivity extends BaseActivity {
                 bundle.putBoolean("fromFamilyClass", false);
                 Fragment newFragment = new ReportFragment();
                 newFragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, newFragment);
+                FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+                transaction.replace(R.id.fragment_container, newFragment, "ReportFragment");
                 transaction.addToBackStack(null);
                 transaction.commit();
-
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         }
     }
 
     public void openRepositoryFragment() {
 
+        mRepositoryFragOpen = true;
+        mIsHomeFragmentOpen = false;                                    // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -423,6 +552,7 @@ public class DashBoardActivity extends BaseActivity {
             mRepositoryTv.setTextColor(greenColor);
             mFamilyTv.setTextColor(grayColor);
             mAccountTv.setTextColor(grayColor);
+
             //mActionBar.setTitle("Repository");
             //mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
             mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
@@ -431,10 +561,14 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             mRepositoryFragment = new RepositoryFreshFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mRepositoryFragment);
+
+            mCallBackInterfaceObject = (CallBack) mRepositoryFragment;
+
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, mRepositoryFragment, "RepositoryFragment");
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
@@ -442,6 +576,8 @@ public class DashBoardActivity extends BaseActivity {
 /*   intent = new Intent(DashBoardActivity.this, MyFamily.class);
                 startActivity(intent);*/
         //mActionBar.show();
+        mRepositoryFragOpen = false;
+        mIsHomeFragmentOpen = false;                               // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -457,14 +593,17 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_active);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new FamilyFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "FamilyFragment");
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
     public void openAccountFragment() {
+        mIsHomeFragmentOpen = false;                                     // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -481,15 +620,17 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_active);
             Fragment newFragment = new AccountFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "AccountFragment");
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 
     public void openSchoolFragment() {
-
+        mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = true;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -505,10 +646,16 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new SchoolFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, newFragment);
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "SchoolFragment");
             transaction.addToBackStack(null);
             transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
+
+    public interface CallBack {
+        void backPressFromDashBoard();
+    }
+
 }

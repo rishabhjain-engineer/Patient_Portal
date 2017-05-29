@@ -6,6 +6,8 @@ package base;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.hs.userportal.AppAplication;
@@ -33,6 +35,13 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(refreshedToken);
+        if (MobiComUserPreference.getInstance(this).isRegistered()) {
+            try {
+                new RegisterUserClientService(this).updatePushNotificationId(refreshedToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     // [END refresh_token]
 
@@ -46,7 +55,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
-        preferenceHelper.setString(PreferenceHelper.PreferenceKey.DEVICE_TOKEN, token);
+        preferenceHelper.setString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN, token);
         if(NetworkChangeListener.getNetworkStatus().isConnected()){
             new UserDeviceAsyncTask().execute();
         }else{

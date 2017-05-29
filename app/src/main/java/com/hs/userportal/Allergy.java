@@ -107,9 +107,10 @@ public class Allergy extends BaseActivity {
                                         else
                                             onSubmitAllergiesName = onSubmitAllergiesName + splitAllergies[i] + ",";
                                     }
+
                                 }
                                 if (onSubmitAllergiesName.endsWith(",")) {
-                                    onSubmitAllergiesName = onSubmitAllergiesName.substring(0, onSubmitAllergiesName.length() - 2);
+                                    onSubmitAllergiesName = onSubmitAllergiesName.substring(0, onSubmitAllergiesName.length() - 1);
                                 }
                                 submitstatus = "delete";
                                 new BackgroundProcess().execute();
@@ -233,6 +234,7 @@ public class Allergy extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -279,7 +281,6 @@ public class Allergy extends BaseActivity {
             } else {
                 try {
                     splitAllergies = weight_contentlists.get(0).get("allergiesName").split(",");
-                    Log.e("Rishabh", "Split Allergies : =" + splitAllergies.toString());
                     m_adapter = new ArrayAdapter<String>(Allergy.this, android.R.layout.simple_list_item_1, splitAllergies);
                     listView.setAdapter(m_adapter);
                 } catch (Exception e) {
@@ -364,7 +365,6 @@ public class Allergy extends BaseActivity {
                         String PatientHistoryId = obj.getString("PatientHistoryId");
                         String allergiesName = obj.getString("allergiesName");
                         String ID = obj.getString("ID");
-
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("allergiesName", allergiesName);
                         hmap.put("ID", ID);

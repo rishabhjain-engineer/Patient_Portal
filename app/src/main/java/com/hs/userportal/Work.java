@@ -1506,10 +1506,11 @@ public class Work extends BaseActivity {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.action_home:
                 finish();
-
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.add:
@@ -1520,7 +1521,7 @@ public class Work extends BaseActivity {
                 }
 
                 //finish();
-                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                 return true;
 
@@ -1533,6 +1534,7 @@ public class Work extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
 }

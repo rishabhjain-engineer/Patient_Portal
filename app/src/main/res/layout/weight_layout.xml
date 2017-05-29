@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/header"
-        android:layout_margin="4dp"
         android:background="#ffffff"></WebView>
 
     <RelativeLayout
@@ -40,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
-            android:text="Date"
+            android:text="Checked at"
             android:textColor="@android:color/black" />
 
     </RelativeLayout>

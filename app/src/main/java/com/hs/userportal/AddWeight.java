@@ -3,14 +3,17 @@ package com.hs.userportal;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -37,25 +41,30 @@ import java.util.List;
 
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
-import ui.BpActivity;
-import ui.HealthCommonActivity;
 
 public class AddWeight extends BaseActivity {
 
-    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText;
+    private EditText enter_add, mHeightCmEditText, mBpTopNumberEditText, mBpBottomNumberEditText, mPulseEditText, mTimePicker;
+
     private static EditText lasstCheckedDate;
     private Button bsave;
     private TextView weight, mWeightUnitTextView, mHeightUnitFtTextView, mHeightUnitInchTextView;
-    private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue;
+    private String id, htype, mHeightFtValue, mHeightInValue, mHeightLinkedValue, mTimeValue;
     private Services service;
     private static int cyear, month, day;
     private Switch mSwitchWeight, mSwitchHeight;
-    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl;
+    private LinearLayout mHeightContainer, mWeightContainer, mHeightInchContainer, mHeightFtContainer, mBpContainerLl, mPulseContainer;
     private boolean mIsFtInchValue = true, mIsHeight, mIsPound = false;
     private String[] mfeetValues = {"1", "2", "3", "4", "5", "6", "7"};
     private String[] mInchValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
     private List<String> mHeightList = new ArrayList<>();
     private Spinner mHeightFtSpinner, mHeightInchSpinner, mWeightLinkHeightSpinner;
+
+
+    private int pHour;
+    private int pMinute;
+    static final int TIME_DIALOG_ID = 0;
+    private Button pickTime;
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
@@ -74,6 +83,7 @@ public class AddWeight extends BaseActivity {
         mHeightInchContainer = (LinearLayout) findViewById(R.id.height_inch_container);
         mHeightFtContainer = (LinearLayout) findViewById(R.id.height_ft_container);
         mHeightCmEditText = (EditText) findViewById(R.id.enter_cm);
+        mPulseContainer = (LinearLayout) findViewById(R.id.pulse_container_layout);
 
         mWeightContainer = (LinearLayout) findViewById(R.id.weight_container_layout);
         mSwitchWeight = (Switch) findViewById(R.id.switch_weight);
@@ -82,7 +92,8 @@ public class AddWeight extends BaseActivity {
         mBpContainerLl = (LinearLayout) findViewById(R.id.bloodpressure_container_layout);
         mBpTopNumberEditText = (EditText) findViewById(R.id.bp_enter_topnumber);
         mBpBottomNumberEditText = (EditText) findViewById(R.id.bp_enter_bottomnumber);
-
+        mTimePicker = (EditText) findViewById(R.id.timepicker);
+        mPulseEditText = (EditText) findViewById(R.id.pulse_edittext);
 
         enter_add = (EditText) findViewById(R.id.enter_add);
         lasstCheckedDate = (EditText) findViewById(R.id.enter_lasstCheckedDate);
@@ -102,6 +113,21 @@ public class AddWeight extends BaseActivity {
         if(day < 10){
             dateInString = "0"+day;
         }*/
+
+
+        mTimePicker.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                showDialog(TIME_DIALOG_ID);
+            }
+        });
+
+        final Calendar cal = Calendar.getInstance();
+        pHour = cal.get(Calendar.HOUR_OF_DAY);
+        pMinute = cal.get(Calendar.MINUTE);
+
+        updateDisplay();
+
 
         long currentTimeMillis = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -124,7 +150,9 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.VISIBLE);
             mWeightContainer.setVisibility(View.GONE);
             mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
             lasstCheckedDate.setFocusable(false);
+            mTimePicker.setVisibility(View.GONE);
 
 
         } else if (htype.equals("weight")) {
@@ -135,8 +163,24 @@ public class AddWeight extends BaseActivity {
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.VISIBLE);
             mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
+            mTimePicker.setVisibility(View.GONE);
             if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                 new GetHeightAsyncTask().execute();
+            } else {
+                Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            }
+        } else if (htype.equals("pulse")) {
+
+            mActionBar.setTitle("Enter Pulse");
+            mHeightContainer.setVisibility(View.GONE);
+            mWeightContainer.setVisibility(View.GONE);
+            mBpContainerLl.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.VISIBLE);
+            mTimePicker.setVisibility(View.VISIBLE);
+
+            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                //     new GetPulseAsyncTask().execute();
             } else {
                 Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
             }
@@ -145,7 +189,9 @@ public class AddWeight extends BaseActivity {
             mActionBar.setTitle("Enter Blood Pressure");
             mHeightContainer.setVisibility(View.GONE);
             mWeightContainer.setVisibility(View.GONE);
+            mPulseContainer.setVisibility(View.GONE);
             mBpContainerLl.setVisibility(View.VISIBLE);
+            mTimePicker.setVisibility(View.VISIBLE);
         }
 
 
@@ -264,6 +310,16 @@ public class AddWeight extends BaseActivity {
                             Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                         }
                     }
+                } else if (htype.equalsIgnoreCase("pulse")) {
+                    if (TextUtils.isEmpty(mPulseEditText.getEditableText().toString()) || TextUtils.isEmpty(mTimePicker.getEditableText().toString())) {
+                        Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            new submitchange().execute();
+                        } else {
+                            Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 } else {
                     if (TextUtils.isEmpty(enter_add.getEditableText().toString())) {
                         Toast.makeText(AddWeight.this, "Fill the value correctly", Toast.LENGTH_SHORT).show();
@@ -299,9 +355,19 @@ public class AddWeight extends BaseActivity {
         });
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case TIME_DIALOG_ID:
+                return new TimePickerDialog(this,
+                        mTimeSetListener, pHour, pMinute, false);
+        }
+        return null;
+    }
+
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend;
+        String weight, height, fromdate, message, tempHeightIN, tempHeightFT, tempPound, upperBp, lowerBp, bpTosend, pulse;
         ProgressDialog ghoom;
 
         @Override
@@ -327,6 +393,7 @@ public class AddWeight extends BaseActivity {
                     height = mHeightCmEditText.getText().toString();
                 }
 
+                fromdate = lasstCheckedDate.getText().toString();
             } else if (htype.equalsIgnoreCase("weight")) {
 
 
@@ -340,12 +407,24 @@ public class AddWeight extends BaseActivity {
                     weight = enter_add.getText().toString();
                     height = mHeightLinkedValue;
                 }
+                fromdate = lasstCheckedDate.getText().toString();
+            } else if (htype.equalsIgnoreCase("pulse")) {
+                pulse = mPulseEditText.getEditableText().toString();
+                if (!TextUtils.isEmpty(mTimeValue)) {
+                    fromdate = lasstCheckedDate.getText().toString() + " " + mTimeValue;
+                    Log.e("Rishabh", "from date := " + fromdate);
+                }
+
             } else {
                 upperBp = mBpTopNumberEditText.getEditableText().toString();
                 lowerBp = mBpBottomNumberEditText.getEditableText().toString();
                 bpTosend = upperBp + "," + lowerBp;
+                if (!TextUtils.isEmpty(mTimeValue)) {
+                    fromdate = lasstCheckedDate.getText().toString() + " " + mTimeValue;
+                    Log.e("Rishabh", "from date := " + fromdate);
+                }
             }
-            fromdate = lasstCheckedDate.getText().toString();
+
 
         }
 
@@ -397,14 +476,25 @@ public class AddWeight extends BaseActivity {
                 sendwork.put("fromdate", fromdate + " " + time);
                 sendwork.put("todate", "");
                 sendwork.put("PatientHistoryId", "");
+                if (htype.equalsIgnoreCase("pulse")) {
+                    sendwork.put("pulse", pulse);
+                    sendwork.put("bp", "");
+                    sendwork.put("statusType", "");
+                }
                 JSONArray jarray = new JSONArray();
                 jarray.put(sendwork);
                 senddata.put("healthDetails", jarray);
                 senddata.put("UserId", id);
                 senddata.put("htype", htype);
                 senddata.put("statusType", "");
-                JSONObject receiveData1 = service.saveHealthDetail(senddata);
-                message = receiveData1.getString("d");
+                if (htype.equalsIgnoreCase("pulse")) {
+                    JSONObject receiveData1 = service.saveHealthDetail(senddata);
+                    message = receiveData1.getString("d");
+                } else {
+                    JSONObject receiveData1 = service.saveHealthDetailMod(senddata);
+                    message = receiveData1.getString("d");
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -574,4 +664,33 @@ public class AddWeight extends BaseActivity {
             });
         }
     }
+
+
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    pHour = hourOfDay;
+                    pMinute = minute;
+                    updateDisplay();
+                }
+            };
+
+    private void updateDisplay() {
+
+        mTimeValue = new StringBuilder()
+                .append(pad(pHour)).append(":")
+                .append(pad(pMinute)).toString();
+
+
+        mTimeValue = mTimeValue + ":17";
+        mTimePicker.setText(mTimeValue);
+    }
+
+    private static String pad(int c) {
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
+    }
+
 }

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
@@ -88,7 +89,7 @@ public class SignUpActivity extends BaseActivity {
     private RadioButton mSignUpMaleRadioButton, mSignUpFemaleRadioButton;
     private SegmentedGroup mSegmentedGroup;
     private Services mServices;
-    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo, mEmail;
+    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo, mEmail, mFacebookId = "";
     private String mUserID, mPatientCode, mPatientBussinessDateTime, mRoleName, mMiddleName, mDisclaimerType, mUserVersionNo;
     private String mUserCodeFromEmail = null, mBuildNo, fnln;
     private static String mFromActivity, mDateOfBirthResult;
@@ -225,8 +226,8 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
+                mSignUpBtn.setClickable(false);
                 createButtonhandling();
-
             } else if (viewId == R.id.signup_fb_btn) {
                 onClickLogin();
             } else if (viewId == R.id.sign_in_tv) {
@@ -236,6 +237,7 @@ public class SignUpActivity extends BaseActivity {
                 finish();
             } else if (viewId == R.id.sign_up_continue) {
                 if (mUserNameAvailable && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
+                    mSignUpContinueBtn.setClickable(false);
                     newSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
                 }
             } else if (viewId == R.id.sign_up_dob_container) {
@@ -253,12 +255,16 @@ public class SignUpActivity extends BaseActivity {
         String password = mSignUpPasswordEt.getText().toString();
         ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("Please fill all the details. ");
         } else if ((contactNo.length() != 10)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("Please enter a valid 10 digit mobile number.");
         } else if (!isValidPassword(password)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("1. Password length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
         } else if (!con.isConnectingToInternet()) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("No Internet Connection.");
         } else {
             mSignUpThroughFacebook=false;
@@ -295,6 +301,7 @@ public class SignUpActivity extends BaseActivity {
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
                             String currentTime = formatter.format(new Date(currentTimeMillis));
                             String fbUserID = object.optString("id");
+                            mFacebookId = fbUserID;
                             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
                             mFirstName = object.optString("first_name");
                             mLastName = object.optString("last_name");
@@ -328,6 +335,8 @@ public class SignUpActivity extends BaseActivity {
                             jsonObjectForNewSignUpByPatientFacebook.put("username", "");
                             jsonObjectForNewSignUpByPatientFacebook.put("email", eMail);
                             jsonObjectForNewSignUpByPatientFacebook.put("facebookId", fbUserID);
+                            String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                            jsonObjectForNewSignUpByPatientFacebook.put("UserDeviceToken", android_id);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -340,9 +349,11 @@ public class SignUpActivity extends BaseActivity {
                         JSONObject sendData = new JSONObject();
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
+                        String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                        sendData.put("UserDeviceToken", android_id);
                         isToShowSignInErrorMessage = false;
 
-                        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewFacebookLogin);
+                        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewFacebookLoginMod);
                         String url = sttc_holdr.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -443,8 +454,13 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
-
+    private ProgressDialog progress;
     private void checkContactNoExistAPI() {
+        progress = new ProgressDialog(SignUpActivity.this);
+        progress.setCancelable(false);
+        progress.setMessage("Checking contact...");
+        progress.setIndeterminate(true);
+        progress.show();
 
         mSendData = new JSONObject();
         try {
@@ -457,7 +473,8 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                mSignUpBtn.setClickable(true);
+                progress.dismiss();
                 try {
                     String result = jsonObject.getString("d");
                     if (result.equalsIgnoreCase("username")) {
@@ -482,6 +499,8 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                mSignUpBtn.setClickable(true);
+                progress.dismiss();
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
@@ -542,8 +561,14 @@ public class SignUpActivity extends BaseActivity {
 
     boolean isToShowErrorDialog;
 
+    private ProgressDialog progressDialog;
     private void newSignUpByPatientAPI() {
         isToShowErrorDialog = false;
+        progressDialog = new ProgressDialog(SignUpActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
 
         String dateExtracted = mSignUpDateOfBirth.getText().toString();
         String dateFormatToSend = dateExtracted.replace("-", "/");
@@ -554,6 +579,8 @@ public class SignUpActivity extends BaseActivity {
             mSendData.put("password", mSignUpPasswordEt.getText().toString());
             mSendData.put("dob", dateFormatToSend);
             mSendData.put("gender", mGender);
+            String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            mSendData.put("UserDeviceToken", android_id);
             if (mShowUserNameUI) {
                 mSendData.put("username", mSignUpUserNameEt.getText().toString());
             } else {
@@ -563,12 +590,13 @@ public class SignUpActivity extends BaseActivity {
             Log.e("Rishabh", "Signup page: contact no exception: " + e);
             e.printStackTrace();
         }
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatient);
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientMod);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                mSignUpContinueBtn.setClickable(true);
+                progressDialog.dismiss();
                 String result = jsonObject.optString("d");
                 Log.e("Rishabh", "NewSingUpByPatient Response := " + result);
                 try {
@@ -609,6 +637,8 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                mSignUpContinueBtn.setClickable(true);
+                progressDialog.dismiss();
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
@@ -881,7 +911,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void newSignUpByPatientFacebookApiCall(JSONObject dataToSend) {
-        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientFacebook);
+        StaticHolder sttc_holdr = new StaticHolder(SignUpActivity.this, StaticHolder.Services_static.NewSignUpByPatientFacebookMod);
         String url = sttc_holdr.request_Url();
         mJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, dataToSend,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -970,13 +1000,14 @@ public class SignUpActivity extends BaseActivity {
             loginApiSendData = new JSONObject();
             try {
                 loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("facebookid", mFacebookId);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
+            loginApiReceivedData = mServices.LogInUser_facebookMod(loginApiSendData);
             if (loginApiReceivedData != null) {
                 dAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;

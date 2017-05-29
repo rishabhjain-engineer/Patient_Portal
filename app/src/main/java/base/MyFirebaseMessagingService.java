@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.hs.userportal.R;
@@ -51,13 +52,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = jsonObject.optString("contentTitle");
             String message = jsonObject.optString("message");
             String tickerText = jsonObject.optString("tickerText");
-            sendNotification(title, message);
+            if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(message)){
+                sendNotification(title, message);
+            }
         }
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             //sendNotification(remoteMessage.getNotification().getBody());
             sendNotification("Sciontra", remoteMessage.getNotification().getBody());
         }
+
+        if (MobiComPushReceiver.isMobiComPushNotification(remoteMessage.getData())) {
+            MobiComPushReceiver.processMessageAsync(this, remoteMessage.getData());
+            return;
+        }
+
     }
 
     public static final String INTENT_KEY = "THE_QUOTE";

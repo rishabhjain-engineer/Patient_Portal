@@ -46,6 +46,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.applozic.mobicomkit.api.account.user.UserClientService;
+import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
+import com.applozic.mobicomkit.feed.ApiResponse;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -55,6 +58,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
@@ -90,7 +94,7 @@ public class SignInActivity extends BaseActivity {
     private LinearLayout mSignInFbContainer;
     private Services mServices;
     private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mEmail, mRoleName, mDisclaimerType, mMiddleName;
-    private String mDAsString, mUserName = "", mPassWord = "";
+    private String mDAsString, mUserName = "", mPassWord = "", mFacebookId = "";
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
@@ -123,13 +127,54 @@ public class SignInActivity extends BaseActivity {
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     LoginManager.getInstance().logOut();
                     new UserDeviceAsyncTask().execute();
+
+                    // TODO uncomment for AppLozic
+
+                  /*  UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener() {
+                        @Override
+                        public void onSuccess(Context context) {
+                            //Logout success
+                        }
+                        @Override
+                        public void onFailure(Exception exception) {
+                            //Logout failure
+                        }
+                    };
+
+                    UserLogoutTask userLogoutTask = new UserLogoutTask(userLogoutTaskListener, AppAplication.getAppContext());
+                    userLogoutTask.execute((Void) null);*/
                 } else {
                     Toast.makeText(SignInActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        // getSha();
+        //getSha();
+    }
+
+    private class AppLogicSdklogOut extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ApiResponse apiResponse =  new UserClientService(SignInActivity.this).logout();
+
+            if(apiResponse != null && apiResponse.isSuccess()){
+                //Logout success
+
+            }else {
+                //Logout failure
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
     }
 
     /**
@@ -177,12 +222,15 @@ public class SignInActivity extends BaseActivity {
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
                         String eMail = object.optString("email");
                         JSONObject sendData = new JSONObject();
+                        mFacebookId = fbUserID;
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
+                        String android_id = Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                        sendData.put("UserDeviceToken", android_id);
                         mFbUserName = object.getString("name");
                         isToShowSignInErrorMessage = false;
 
-                        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLogin);
+                        StaticHolder staticHolder = new StaticHolder(SignInActivity.this, StaticHolder.Services_static.NewFacebookLoginMod);
                         String url = staticHolder.request_Url();
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, sendData,
                                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -975,7 +1023,6 @@ public class SignInActivity extends BaseActivity {
         }
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.SESSION_ID, mSessionID);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_ID, mUserId);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_CODE, mPatientCode);
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
@@ -1049,6 +1096,7 @@ public class SignInActivity extends BaseActivity {
                 new SignInActivity.LogoutAsync().execute();
             }
         }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
@@ -1088,6 +1136,7 @@ public class SignInActivity extends BaseActivity {
             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
             intent.putExtra("from logout", "logout");
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             LoginManager.getInstance().logOut();
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, null);
             finish();
@@ -1119,13 +1168,16 @@ public class SignInActivity extends BaseActivity {
             loginApiSendData = new JSONObject();
             try {
                 loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("facebookid", mFacebookId);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
+                String android_id = Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                loginApiSendData.put("UserDeviceToken", android_id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            loginApiReceivedData = mServices.LogInUser_facebook(loginApiSendData);
+            loginApiReceivedData = mServices.LogInUser_facebookMod(loginApiSendData);
             if (loginApiReceivedData != null) {
                 dAsString = loginApiReceivedData.optString("d");
                 JSONObject jsonObject = null;
@@ -1167,7 +1219,11 @@ public class SignInActivity extends BaseActivity {
                 showAlertMessage("An error occured, please try again.");
             } else {
                 if (isToShowSignInErrorMessage) {
-                    showAlertMessage(result);
+                    if (TextUtils.isEmpty(result)) {
+                        showAlertMessage("An error occured, please try again.");
+                    } else {
+                        showAlertMessage(result);
+                    }
                 } else if (!mTerms && !TextUtils.isEmpty(mContactNo)) {
                     goToDashBoardPage();
                 } else {

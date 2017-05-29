@@ -93,7 +93,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private boolean mIsToAddMaxMinValue = true;
     private RelativeLayout mListViewHeaderRl;
     private List<String> mDateList = new ArrayList<>();
-    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
+    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI, mIsFromPulse;
     private boolean mIsBmiEmpty = true;
     private TextView mListHeadingTv;
 
@@ -111,6 +111,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mFromWeight = intent.getBooleanExtra("forWeight", false);
         mFromBp = intent.getBooleanExtra("forBp", false);
         mFromBMI = intent.getBooleanExtra("forBmi", false);
+        mIsFromPulse = intent.getBooleanExtra("forPulse", false);
 
         if (mFromHeight) {
             mActionBar.setTitle("Height");
@@ -125,16 +126,18 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
             mListHeadingTv.setText("BMI");
-            ;
+        }else if (mIsFromPulse) {
+            mActionBar.setTitle("Pulse");
+            mListHeadingTv.setText("Pulse (bpm)");
         }
 
         mWebView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = mWebView.getSettings();
         mWebView.setFocusable(true);
         mWebView.setFocusableInTouchMode(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setJavaScriptEnabled(true);
+        //settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
+        settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(true);
         settings.setSupportZoom(true);
@@ -207,7 +210,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     } else if (mFromWeight) {
                         titleTv.setText("Delete Weight");
                     } else if (mFromBp) {
-                        mActionBar.setTitle("Delete Blood Pressure");
+                        titleTv.setText("Delete Blood Pressure");
+                    } else if (mIsFromPulse) {
+                        titleTv.setText("Delete Pulse");
                     }
 
                     TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
@@ -302,6 +307,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     sendData1.put("htype", "weight");
                 } else if (mFromBp) {
                     sendData1.put("htype", "bp");
+                } else if (mIsFromPulse) {
+                    sendData1.put("htype", "pulse");
                 }
                 receiveData1 = mServices.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
@@ -321,6 +328,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String weight = obj.optString("weight");
                     String bp = obj.optString("bp");
                     String height = obj.optString("height");
+                    String pulse = obj.optString("Pulse");
                     //FOR BMI
                     if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
@@ -380,6 +388,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             }
                         }
 
+                        if (!TextUtils.isEmpty(pulse) && mIsFromPulse) {
+                            double heightInDouble = Double.parseDouble(pulse);
+                            if (mMaxWeight <= heightInDouble) {
+                                mMaxWeight = heightInDouble;
+                            }
+                        }
+
                         String fromdate = obj.optString("fromdate");
                         String dateWithoutHour[] = fromdate.split("T");
                         String onlyDate = dateWithoutHour[0];
@@ -402,6 +417,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             DecimalFormat df = new DecimalFormat("#.##");
                             weight = df.format(weightInDouble);
                             hmap.put("dataValue", weight);
+                        } else if (mIsFromPulse) {
+                            hmap.put("dataValue", pulse);
                         }
 
                         hmap.put("fromdate", onlyDate);
@@ -541,6 +558,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             outerJsonObject.put("key", "Weight (kg)");
                         } else if (mFromBMI) {
                             outerJsonObject.put("key", "BMI");
+                        }else if (mIsFromPulse) {
+                            outerJsonObject.put("key", "Pulse (bpm)");
                         }
 
                         outerJsonObject.put("values", jsonArray1);
@@ -575,10 +594,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             i.putExtra("htype", "weight");
                         } else if (mFromBp) {
                             i.putExtra("htype", "bp");
+                        }else if (mIsFromPulse) {
+                            i.putExtra("htype", "pulse");
                         }
                         startActivity(i);
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         finish();
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
                 }
             }
@@ -602,6 +623,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.add:
                 Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
@@ -613,6 +635,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     i.putExtra("htype", "weight");
                 } else if (mFromBp) {
                     i.putExtra("htype", "bp");
+                } else if (mIsFromPulse) {
+                    i.putExtra("htype", "pulse");
                 }
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -621,6 +645,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(HealthCommonActivity.this, AddGraphDetails.class);
                 startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             default:
                 return super.onOptionsItemSelected(item);
         }

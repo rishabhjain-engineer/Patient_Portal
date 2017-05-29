@@ -271,6 +271,7 @@ public class ReportStatus extends BaseActivity {
                                         grouptest.class);
                                 intent.putExtra("group", results.toString());
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 for (int i = 0; i < results.length(); i++) {
@@ -428,9 +429,7 @@ public class ReportStatus extends BaseActivity {
                                                 + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                                 + "</div></body></html>";
 
-                                        Intent intent = new Intent(
-                                                ReportStatus.this,
-                                                GraphDetailsNew.class);
+                                        Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
@@ -472,6 +471,7 @@ public class ReportStatus extends BaseActivity {
                                         intent.putExtra("from_activity", "grouptest");
 
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                                     } else {
                                         callSingleGraph(singlechartposition);
                                     }
@@ -572,6 +572,7 @@ public class ReportStatus extends BaseActivity {
                                     intent.putExtra("chartNames", chartNames.get(0));
                                     intent.putExtra("from_activity", "grouptest");
                                     startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                                 }
 
@@ -729,8 +730,7 @@ public class ReportStatus extends BaseActivity {
                                         + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                         + "</div></body></html>";
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
                                 if (chartNames.size() != 0)
@@ -756,6 +756,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 int i = 0;
@@ -830,8 +831,7 @@ public class ReportStatus extends BaseActivity {
                                 startActivity(intent);
                                 finish();*/
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "Pie");
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -851,6 +851,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("chartNames", chartNames.get(0));
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -1453,15 +1454,15 @@ public class ReportStatus extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
-
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.action_home:
 
                 Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             default:
@@ -1472,8 +1473,9 @@ public class ReportStatus extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
     }
 
 
@@ -1644,8 +1646,7 @@ public class ReportStatus extends BaseActivity {
 
            /* intent.putExtra("data", db);
             intent.putExtra("from_activity", "grouptest");*/
-            Intent intent1 = new Intent(ReportStatus.this,
-                    GraphDetailsNew.class);
+            Intent intent1 = new Intent(ReportStatus.this, GraphDetailsNew.class);
             intent1.putExtra("chart_type", "Pie");
             intent1.putExtra("data", db);
             intent1.putStringArrayListExtra("dates",
@@ -1665,6 +1666,7 @@ public class ReportStatus extends BaseActivity {
             intent1.putExtra("chartNames", chartNames.get(0));
             intent1.putExtra("from_activity", "grouptest");
             startActivity(intent1);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         } else {
             Intent intent = new Intent(
                     ReportStatus.this,
@@ -1686,6 +1688,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("CriticalLow", criticallow);
             intent.putExtra("ActionTitle", description);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 }

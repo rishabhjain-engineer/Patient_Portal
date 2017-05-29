@@ -3,4 +3,8 @@
     <external-path
         name="my_images"
         path="Android/data/com.hs.userportal/files/Pictures" />
+
+    <external-path
+        name="files"
+        path="." />
 </paths>

@@ -65,8 +65,8 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
                 holder.image.setImageResource(R.drawable.ic_folder);
             }
             holder.name.setText(((Directory) listOfObjects.get(position).getObject()).getDirectoryName());
-            holder.lastModified.setText("--");
-            holder.size.setText("--");
+           // holder.lastModified.setText("--");
+          //  holder.size.setText("--");
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,9 +116,9 @@ public class RepositoryGridAdapter extends RecyclerView.Adapter<RepositoryGridAd
 
             holder.name.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getName());
             if (((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified() != null) {
-                holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().toString());
+               // holder.lastModified.setText(((DirectoryFile) listOfObjects.get(position).getObject()).getLastModified().toString());
             }
-            holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize()) + " kb");
+           // holder.size.setText("" + (((DirectoryFile) listOfObjects.get(position).getObject()).getSize()) + " kb");
             holder.row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

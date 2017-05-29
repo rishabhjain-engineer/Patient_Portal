@@ -26,12 +26,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.hs.userportal.AppAplication;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
-import com.hs.userportal.logout;
 
 import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
@@ -85,6 +83,7 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -179,7 +178,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         if (NetworkChangeListener.getNetworkStatus().isConnected() && !TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))) {
             new MyHealthAsync().execute();
             new GetUserGradeAsync().execute();
@@ -285,7 +283,8 @@ public class DashboardFragment extends Fragment {
             } else {
                 mInitialTextViewContainer.setVisibility(View.GONE);
                 mScoreTextViewContainer.setVisibility(View.VISIBLE);
-                mScoreUpperTextView.setText(mScore);
+                mScoreUpperTextView.setVisibility(View.GONE);
+                //mScoreUpperTextView.setText(mScore);
                 mScoreLowerTextView.setText(mFact);
             }
         }
@@ -296,7 +295,7 @@ public class DashboardFragment extends Fragment {
             try {
                 sendData1.put("PatientId", mUserId);
                 // sendData1.put("PatientId", "442454B7-7CEA-48B7-8472-DBE7D7DC0D93");
-                receiveData1 = service.getUserGrade(sendData1);
+                receiveData1 = service.getUserFact(sendData1);
                 String data = receiveData1.optString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.optJSONArray("Table");

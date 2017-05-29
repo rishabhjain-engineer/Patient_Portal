@@ -248,17 +248,19 @@ public class Help extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
                 return true;
 
             case R.id.action_support:
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.putExtra(Intent.EXTRA_EMAIL,
-                        new String[]{"support@zureka.in"});
+                        new String[]{"support@sciontra.com"});
                 // need this to prompts email client only
                 email.setType("message/rfc822");
                 startActivity(Intent.createChooser(email,
                         "Choose an Email client :"));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
 
 
@@ -275,6 +277,7 @@ public class Help extends BaseActivity {
 //		startActivity(backNav);
 
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
     }
 

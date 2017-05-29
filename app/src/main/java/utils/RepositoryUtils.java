@@ -291,7 +291,7 @@ public class RepositoryUtils {
     }
 
     public static File getThumbnailFile(File mainFile, Activity activity) {
-    //    Log.e("RAVI", "Repository utils -- Main file : " + mainFile.getAbsolutePath());
+        Log.e("RAVI", "Repository utils -- Main file : " + mainFile.getAbsolutePath());
         File thumbnailFile = null;
 
 
@@ -322,7 +322,7 @@ public class RepositoryUtils {
         boolean renamedFile = thumbnailFile.renameTo(file);
 
 
-   //     Log.e("RAVI", "Repository utils -- Thumb file : " + file.getAbsolutePath());
+        Log.e("RAVI", "Repository utils -- Thumb file : " + file.getAbsolutePath());
 
         return file;
     }

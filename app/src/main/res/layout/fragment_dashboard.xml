@@ -62,7 +62,7 @@
     <LinearLayout
         android:id="@+id/quiz_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/home_main_content_height"
+        android:layout_height="@dimen/home_page_green_height"
         android:background="@drawable/homepage_dynamicview"
         android:orientation="vertical">
 
@@ -127,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAllCaps="true"
+                android:visibility="gone"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
@@ -142,7 +143,7 @@
                 android:gravity="center"
                 android:layout_marginTop="2dp"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="18dp"
                 android:textStyle="normal"/>
 
         </RelativeLayout>

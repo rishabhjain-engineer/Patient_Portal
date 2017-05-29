@@ -50,7 +50,7 @@ public class PreferenceHelper {
 
         SESSION_ID("null"),
 
-        DEVICE_TOKEN("null"),
+        FCM_DEVICE_TOKEN("null"),
 
         ON_DASH_BOARD_DEVICE_TKEN_SEND("false"),
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
     android:minWidth="300dp"
     android:orientation="vertical">
 
@@ -14,9 +14,9 @@
         android:layout_height="45dp"
         android:gravity="center"
         android:background="@color/header_color"
-        android:text="Upload Latest Image"
+        android:text="Alert"
         android:textColor="@color/white"
-        android:textSize="17dp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,22 +26,15 @@
         android:paddingBottom="5dp"
         android:background="@color/white">
 
-
-
-        <ImageView
-            android:layout_marginTop="10dp"
-            android:id="@+id/latest_image_iv"
-            android:layout_width="150dp"
-            android:layout_gravity="center"
-            android:layout_height="140dp" />
-
         <TextView
-            android:gravity="center"
             android:id="@+id/message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Are you sure you want to upload file?"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="20dp"
+            android:text="Are you sure you want to exit from ScionTra ?"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -49,18 +42,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/message"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:gravity="center"
-                android:id="@+id/stay_btn"
+                android:id="@+id/delete_cancel_btn"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:padding="0dp"
+                android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/btn_ok"
                 android:text="Cancel"
                 android:textColor="@color/header_color"
-                android:textSize="15dp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -71,9 +65,9 @@
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:text="OK"
+                android:text="Ok"
                 android:textColor="@color/header_color"
-                android:textSize="15dp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
         </RelativeLayout>
 

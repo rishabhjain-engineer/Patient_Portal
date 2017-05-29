@@ -14,6 +14,30 @@
 
         <include layout="@layout/common_header" />
 
+        <RelativeLayout
+            android:id="@+id/quiz_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_page_green_height"
+            android:background="@drawable/homepage_dynamicview"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/middletv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uppertv"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Link accounts of your close ones to stay updated on their health status."
+                android:textColor="@color/white"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+
     </LinearLayout>
 
     <ListView
@@ -28,8 +52,8 @@
         android:id="@+id/empty_msg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_centerInParent="true"
+        android:gravity="center"
         android:text="You have no members added."
         android:textStyle="bold"
         android:visibility="gone" />
