@@ -10,6 +10,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,10 +23,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +69,7 @@ import com.hs.userportal.NotificationHandler;
 import com.hs.userportal.R;
 import com.hs.userportal.SelectableObject;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.update;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +100,8 @@ import utils.PreferenceHelper;
 import utils.RepositoryGridAdapter;
 import utils.RepositoryUtils;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by rishabh on 6/4/17.
  */
@@ -104,6 +109,7 @@ import utils.RepositoryUtils;
 public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction, DashBoardActivity.CallBack {
 
     private static final int PICK_FROM_CAMERA = 2;
+    private static final int MY_PERMISSIONS_REQUEST_READ_FILE = 5;
     private static RequestQueue req;
     private static JsonObjectRequest s3jr;
     private static String patientId = null;
@@ -134,7 +140,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
-    private int PICK_FROM_GALLERY = 1, counter = 1;
+    private int PICK_FROM_GALLERY = 1, counter = 1, mTotalNumberOfUri, mTotalNumberOfUriCounter;
     private Uri Imguri;
     private String mCurrentPhotoPath = null;
     private boolean mIsSdkLessThanM = true;
@@ -143,6 +149,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
     private List<S3ObjectSummary> summaries = new ArrayList<>();
+    ArrayList<File> mCountFileSize10Mb = new ArrayList<>();
+
+    String[] permissionsRequired = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int PERMISSION_CALLBACK_CONSTANT = 100;
+    private static final int REQUEST_PERMISSION_SETTING = 101;
+    private SharedPreferences permissionStatus;
+    private boolean sentToSettings = false;
+
     private Bitmap mPickLatestPhotoBitMap = null;
     private RepositoryDialogAdapter dialogAdapter;
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -314,6 +328,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         mPreferenceHelper = PreferenceHelper.getInstance();
         patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         initObject();
+        permissionStatus = mActivity.getSharedPreferences("permissionStatus", MODE_PRIVATE);
         showGridLayout.setImageResource(R.drawable.ic_grid_black);
         mSepratorBelowHeader.setVisibility(View.GONE);
         progressDialog = new ProgressDialog(getActivity());
@@ -623,13 +638,15 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                askRunTimePermissions();            // Need run time permissions
-                chooseimage();                      // upload file either from camera or gallery
-
+                askRunTimePermissions();
             }
         });
 
         dialog.show();
+    }
+
+    private void proceedAfterPermission(){
+        chooseimage();
     }
 
     private void setListAdapter(Directory directory) {
@@ -888,22 +905,25 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onImageTouched(DirectoryFile file) {
 
-        askRunTimePermissions();
-
-        if (file.getOtherExtension()) {
-            if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
-                String filepath = AppConstant.AMAZON_URL + file.getKey();
-                new FileDownloader(filepath).execute();
-
+        ActivityCompat.requestPermissions(mActivity,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_FILE);
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }else {
+            if (file.getOtherExtension()) {
+                if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
+                    String filepath = AppConstant.AMAZON_URL + file.getKey();
+                    new FileDownloader(filepath).execute();
+                }
+            } else {
+                Intent i = new Intent(mActivity, ImageActivity.class);
+                i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+                startActivity(i);
             }
 
-        } else {
-            Intent i = new Intent(mActivity, ImageActivity.class);
-            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
-            startActivity(i);
         }
-
-
     }
 
     private void chooseimage() {
@@ -958,36 +978,112 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     }
 
+
     void askRunTimePermissions() {
 
-        int permissionCAMERA = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
-        int storagePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int writePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[1]) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[0]) || ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[1])) {
+                //Show Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else if (permissionStatus.getBoolean(permissionsRequired[0], false)) {
+                //Previously Permission Request was cancelled with 'Dont Ask Again',
+                // Redirect to Settings after showing Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        sentToSettings = true;
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", mActivity.getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                        Toast.makeText(mActivity.getBaseContext(), "Go to permissions to grant  camera and storage", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                //just request the permission
+                ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+            }
+
+            SharedPreferences.Editor editor = permissionStatus.edit();
+            editor.putBoolean(permissionsRequired[0], true);
+            editor.commit();
+        } else {
+            //You already have the permission, just go ahead.
+            proceedAfterPermission();
         }
-        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }
-        if (writePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(mActivity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
-        }
+
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == MY_PERMISSIONS_REQUEST) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mPermissionGranted = true;
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CALLBACK_CONSTANT) {
+            //check if all permissions are granted
+            boolean allgranted = false;
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    allgranted = true;
+                } else {
+                    allgranted = false;
+                    break;
+                }
+            }
+            if (allgranted) {
+                proceedAfterPermission();
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[0])
+                    || ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[1])) {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Need multiple permissions");
+                builder.setMessage("This app needs camera and storage permissions.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        ActivityCompat.requestPermissions(mActivity, permissionsRequired, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             } else {
-                mPermissionGranted = false;
+                Toast.makeText(mActivity.getBaseContext(), "Unable to get Permission", Toast.LENGTH_LONG).show();
+            }
+        } else if ( requestCode == MY_PERMISSIONS_REQUEST_READ_FILE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
             }
         }
     }
@@ -1132,6 +1228,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
+                mTotalNumberOfUriCounter = 0;                                // to count number of URI came from gallery ;
                 if (data != null) {
                     mProgressDialog = new ProgressDialog(mActivity);
                     mProgressDialog.setMessage("Uploading File ...");
@@ -1139,6 +1236,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     mProgressDialog.show();
                 }
                 ArrayList<Uri> multipleUri = new ArrayList<>();
+
                 Uri selectedImageUri;
                 File downloadedFile = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1157,7 +1255,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     multipleUri.add(selectedImageUri);
                 }
                 //new code saves recieved bitmap as file
+                mTotalNumberOfUri = multipleUri.size();
                 for (int i = 0; i < multipleUri.size(); i++) {
+                    mTotalNumberOfUriCounter++;
                     selectedImageUri = multipleUri.get(i);
                     InputStream is = null;
                     if (selectedImageUri.getAuthority() != null) {
@@ -1166,17 +1266,32 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         if (bmp != null) {
                             try {
                                 downloadedFile = createImageFile();
+
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();
+
+
+                                double fileSize = calculateFileSize(downloadedFile);
+                                if (fileSize > 10) {
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    showFileSizeExceedAlertBox(downloadedFile);
+                                    continue;
+                                } else {
+                                    // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
+
+
                                 listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
                             }
                         }
                     }
-                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                    listOfFilesToUpload.add(thumbnailFile);
+
                 }
             }
             if (requestCode == PICK_FROM_CAMERA && resultCode == -1) {   // resultcode -1 is for SUCCESS
@@ -1196,12 +1311,24 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                             try {
                                 downloadedFile = createImageFile();
+
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
                                 //compressing image to 90 percent quality to reduce size
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();
-                                listOfFilesToUpload.add(downloadedFile);
+
+                                double fileSize = calculateFileSize(downloadedFile);
+                                if (fileSize > 10) {
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    showFileSizeExceedAlertBox(downloadedFile);
+                                    return;
+                                } else {
+                                    //Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
 
                             } catch (Exception e) {
                             }
@@ -1210,16 +1337,85 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     downloadedFile = new File(imageUri.getPath());
-                    listOfFilesToUpload.add(downloadedFile);
+                    double fileSize = calculateFileSize(downloadedFile);
+                    if (fileSize > 10) {
+                        mCountFileSize10Mb.add(downloadedFile);
+                        showFileSizeExceedAlertBox(downloadedFile);
+                        return;
+                    } else {
+                        // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                        listOfFilesToUpload.add(downloadedFile);
+                        File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                        listOfFilesToUpload.add(thumbnailFile);
+                    }
                 }
 
-                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                listOfFilesToUpload.add(thumbnailFile);
+
             }
             RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
         }
+    }
+
+    private double calculateFileSize(File file) {
+
+        double sizeOfFileInByte = file.length();
+        //Log.e("Rishabh","size in Bytes := "+sizeOfFileInByte+" B");
+        double sizeOfFileInKb = sizeOfFileInByte / 1024;
+        //Log.e("Rishabh","size in KiloBytes := "+sizeOfFileInKb+" Kb");
+        double sizeInMb = sizeOfFileInKb / 1024;
+        //Log.e("Rishabh","size in MBytes := "+sizeInMb+" Mb");
+
+
+        return sizeInMb;
+
+    }
+
+    private void showFileSizeExceedAlertBox(File file) {
+
+
+        File thumbnailFile = RepositoryUtils.getThumbnailFile(file, mActivity);
+
+        // converting file to bitmap
+
+        String filePath = thumbnailFile.getPath();
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+        // Log.e("Rishabh", "BitMap of thumbnail:= "+bitmap.toString());
+
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.alert_file_size);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView message = (TextView) dialog.findViewById(R.id.message);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+        cancelButton.setVisibility(View.GONE);
+
+        if (mCountFileSize10Mb.size() > 1 && mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+            // more than 1 file greater than 10 mb
+            imageView.setImageResource(R.drawable.multiple_images_thumb);
+            message.setText("Files not uploaded as they were more than 10 mb in size (each).");
+        } else if (mCountFileSize10Mb.size() == 1) {
+            // only 1 file is greate than 10 MB
+            imageView.setImageBitmap(bitmap);
+            message.setText("File not uploaded as it’s more than 10 mb in size.");
+        } else {
+            return;
+        }
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
