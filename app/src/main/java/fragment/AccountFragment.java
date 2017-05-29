@@ -109,7 +109,7 @@ public class AccountFragment extends Fragment {
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Chat", "Logout"};
+        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};    // TODO add chat for AppLozic
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);
@@ -191,23 +191,24 @@ public class AccountFragment extends Fragment {
                     mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 
-                }else if (position == 7) {
-                    //Chat
-                   /* Intent intent = new Intent(mActivity, ConversationActivity.class);
-                    startActivity(intent);
-                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
-                    Intent intent = new Intent(mActivity, ConversationActivity.class);
-                    if(ApplozicClient.getInstance(mActivity).isContextBasedChat()){
-                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
-                    }
-                    startActivity(intent);
-                } else if (position == 8) {
+                } else if (position == 7) {
                     //logout
                     if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                         Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                     } else {
                         logout();
                     }
+
+                } else if (position == 8) {
+                    //Chat
+                   /* Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    startActivity(intent);
+                    mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    Intent intent = new Intent(mActivity, ConversationActivity.class);
+                    if (ApplozicClient.getInstance(mActivity).isContextBasedChat()) {
+                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
+                    }
+                    startActivity(intent);
                 }
             }
 
@@ -289,7 +290,6 @@ public class AccountFragment extends Fragment {
         }
 
     }
-
 
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {

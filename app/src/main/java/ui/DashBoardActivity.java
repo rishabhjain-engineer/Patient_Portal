@@ -116,7 +116,7 @@ public class DashBoardActivity extends BaseActivity {
             openReportFragment();
         }
         mFcmDeviceToken = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.FCM_DEVICE_TOKEN);
-        loginToApplogic();
+        //loginToApplogic();    // TODO uncomment for AppLozic
     }
 
     private void loginToApplogic() {
