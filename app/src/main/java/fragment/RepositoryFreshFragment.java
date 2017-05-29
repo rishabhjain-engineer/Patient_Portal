@@ -1276,8 +1276,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 double fileSize = calculateFileSize(downloadedFile);
                                 if (fileSize > 10) {
                                     mCountFileSize10Mb.add(downloadedFile);
-                                    showFileSizeExceedAlertBox(downloadedFile);
-                                    continue;
+                                    if(mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+                                        showFileSizeExceedAlertBox(downloadedFile);
+                                    }
                                 } else {
                                     // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
                                     listOfFilesToUpload.add(downloadedFile);
@@ -1322,7 +1323,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                 if (fileSize > 10) {
                                     mCountFileSize10Mb.add(downloadedFile);
                                     showFileSizeExceedAlertBox(downloadedFile);
-                                    return;
                                 } else {
                                     //Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
                                     listOfFilesToUpload.add(downloadedFile);
@@ -1341,7 +1341,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     if (fileSize > 10) {
                         mCountFileSize10Mb.add(downloadedFile);
                         showFileSizeExceedAlertBox(downloadedFile);
-                        return;
                     } else {
                         // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
                         listOfFilesToUpload.add(downloadedFile);
@@ -1349,8 +1348,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         listOfFilesToUpload.add(thumbnailFile);
                     }
                 }
-
-
             }
             RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             super.onActivityResult(requestCode, resultCode, data);
