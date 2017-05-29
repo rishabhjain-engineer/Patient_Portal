@@ -226,8 +226,8 @@ public class SignUpActivity extends BaseActivity {
             int viewId = v.getId();
 
             if (viewId == R.id.create_account_bt) {
+                mSignUpBtn.setClickable(false);
                 createButtonhandling();
-
             } else if (viewId == R.id.signup_fb_btn) {
                 onClickLogin();
             } else if (viewId == R.id.sign_in_tv) {
@@ -237,6 +237,7 @@ public class SignUpActivity extends BaseActivity {
                 finish();
             } else if (viewId == R.id.sign_up_continue) {
                 if (mUserNameAvailable && !TextUtils.isEmpty(mSignUpDateOfBirth.getText().toString())) {           // check for : NON existing user name , gender value , DOB value
+                    mSignUpContinueBtn.setClickable(false);
                     newSignUpByPatientAPI();                               // Final API to be hit , before going to dashBoard ; do check Variable value: mUserNameAvailable == true ;
                 }
             } else if (viewId == R.id.sign_up_dob_container) {
@@ -254,12 +255,16 @@ public class SignUpActivity extends BaseActivity {
         String password = mSignUpPasswordEt.getText().toString();
         ConnectionDetector con = new ConnectionDetector(SignUpActivity.this);
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contactNo) || TextUtils.isEmpty(password)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("Please fill all the details. ");
         } else if ((contactNo.length() != 10)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("Please enter a valid 10 digit mobile number.");
         } else if (!isValidPassword(password)) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("1. Password length should be 8-16 characters" + "\n" + "2. Must contain at least 1 letter and number");
         } else if (!con.isConnectingToInternet()) {
+            mSignUpBtn.setClickable(true);
             showAlertMessage("No Internet Connection.");
         } else {
             mSignUpThroughFacebook=false;
@@ -449,8 +454,13 @@ public class SignUpActivity extends BaseActivity {
         }
     };
 
-
+    private ProgressDialog progress;
     private void checkContactNoExistAPI() {
+        progress = new ProgressDialog(SignUpActivity.this);
+        progress.setCancelable(false);
+        progress.setMessage("Checking contact...");
+        progress.setIndeterminate(true);
+        progress.show();
 
         mSendData = new JSONObject();
         try {
@@ -463,7 +473,8 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                mSignUpBtn.setClickable(true);
+                progress.dismiss();
                 try {
                     String result = jsonObject.getString("d");
                     if (result.equalsIgnoreCase("username")) {
@@ -488,6 +499,8 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                mSignUpBtn.setClickable(true);
+                progress.dismiss();
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
@@ -548,8 +561,14 @@ public class SignUpActivity extends BaseActivity {
 
     boolean isToShowErrorDialog;
 
+    private ProgressDialog progressDialog;
     private void newSignUpByPatientAPI() {
         isToShowErrorDialog = false;
+        progressDialog = new ProgressDialog(SignUpActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
 
         String dateExtracted = mSignUpDateOfBirth.getText().toString();
         String dateFormatToSend = dateExtracted.replace("-", "/");
@@ -576,7 +595,8 @@ public class SignUpActivity extends BaseActivity {
         mJsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, mSendData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                mSignUpContinueBtn.setClickable(true);
+                progressDialog.dismiss();
                 String result = jsonObject.optString("d");
                 Log.e("Rishabh", "NewSingUpByPatient Response := " + result);
                 try {
@@ -617,6 +637,8 @@ public class SignUpActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                mSignUpContinueBtn.setClickable(true);
+                progressDialog.dismiss();
                 Log.e("Rishabh", "create account volley error :=" + volleyError);
             }
         });
