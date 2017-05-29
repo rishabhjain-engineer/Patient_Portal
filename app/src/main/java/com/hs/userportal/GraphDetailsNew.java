@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -22,11 +23,13 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -56,9 +59,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import adapters.Group_testAdapter;
+import adapters.MyHealthsAdapter;
 import ui.BaseActivity;
 import ui.BmiActivity;
+import ui.DashBoardActivity;
 import ui.GraphHandlerActivity;
+import ui.HealthCommonActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
@@ -86,7 +92,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private Services service;
     private ListView graph_listview_id;
     private int maxYrange = 0 , mRotationAngle = 0;
-    private WebView mLineChartWebView;
+    private WebView mWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
     private long mDateMaxValue, mDateMinValue;
@@ -97,6 +103,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private String title;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
     private List<String> mDateList = new ArrayList<>();
+    private ProgressDialog progress;
+    private boolean isLoadNvd3 = true;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -115,10 +123,10 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         chartvakueList = new ArrayList<String>();
         chartvakueList = getIntent().getStringArrayListExtra("values");
 
-        mLineChartWebView = (WebView) findViewById(R.id.linechart_webview);
-        mLineChartWebView.setFocusable(true);
-        mLineChartWebView.setFocusableInTouchMode(true);
-        WebSettings settings = mLineChartWebView.getSettings();
+        mWebView = (WebView) findViewById(R.id.linechart_webview);
+        mWebView.setFocusable(true);
+        mWebView.setFocusableInTouchMode(true);
+        WebSettings settings = mWebView.getSettings();
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);
@@ -128,8 +136,27 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         settings.setSupportZoom(true);
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19");
-        mLineChartWebView.setInitialScale(1);
-        mLineChartWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+        mWebView.setInitialScale(1);
+        mWebView.addJavascriptInterface(new MyJavaScriptInterface(), "Interface");
+
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if(progress != null && progress.isShowing()){
+                    progress.dismiss();
+                }
+                if(adapter == null){
+                    adapter = new Group_testAdapter(GraphDetailsNew.this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
+                    adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
+                    graph_listview_id.setAdapter(adapter);
+                }else{
+                    adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
+                    adapter.notifyDataSetChanged();
+                }
+
+                Utility.setListViewHeightBasedOnChildren(graph_listview_id);
+            }
+        });
 
 
 
@@ -142,16 +169,23 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         // Assigning height of graph dynamically----------------------------------
         if (getIntent().getStringExtra("chart_type").equals("line")) {
             pi_chart.setVisibility(View.GONE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
-            params.height = Math.round(height / 2);
+            mWebView.setVisibility(View.VISIBLE);
+            isLoadNvd3 = true;
+           // LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
+           // params.height = Math.round(height / 2);
             //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it.
-            MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
+            //MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
             //  linechart.setMarkerView(mv);    //TODO for displaying line chart; un comment it.
             //   linechart.animateX(3500);    //TODO for displaying line chart; un comment it.
-            setLinechart();
-        } else {
+
+            //nvd3 graph is used now instead of line
+
+            //setLinechart();
+        } else if (getIntent().getStringExtra("chart_type").equals("Pie")){
             // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
+            isLoadNvd3 = false;
+            mWebView.setVisibility(View.GONE);
             pi_chart.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) pi_chart.getLayoutParams();
             params.height = Math.round(height / 2);
@@ -201,11 +235,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 caseindex = casecodes.get(position);
                 System.out.println(caseindex);
                 Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
-                in.putExtra("id", logout.id);
+                in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
 
@@ -213,11 +248,22 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         setData();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
 
     private void setData(){
-         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        progress = new ProgressDialog(GraphDetailsNew.this);
+        progress.setCancelable(false);
+        progress.setMessage("Loading...");
+        progress.setIndeterminate(true);
+        progress.show();
+         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         graphDetailValueAndDateList.clear();
         if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
@@ -225,8 +271,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             for (int i=0 ; i < chartValues.size(); i++) {
 
                 String dateInString = chartDates.get(i);
-                String dateArray[] = dateInString.split(" ");
-                dateInString = dateArray[0];
+                //String dateArray[] = dateInString.split(" ");
+                //dateInString = dateArray[0];
                 String chartValueInString = chartValues.get(i);
                 String caseCode = chartValues.get(i);
                 mDateList.add(dateInString);
@@ -329,17 +375,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         }
 
         setDateList(mDateList);
-        if(adapter == null){
-            adapter = new Group_testAdapter(this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
-            graph_listview_id.setAdapter(adapter);
-        }else{
-            adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
-            adapter.notifyDataSetChanged();
-        }
-
-        Utility.setListViewHeightBasedOnChildren(graph_listview_id);
-        mLineChartWebView.loadUrl("file:///android_asset/html/index.html");
+        mWebView.loadUrl("file:///android_asset/html/index.html");
     }
 
     @Override
@@ -607,6 +643,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(GraphDetailsNew.this, AddGraphDetails.class);
@@ -635,7 +672,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             mToDate = data.getStringExtra("toDate");
             mIsToAddMaxMinValue = false;
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             Date date1 = null, date2 = null;
 
             try {
@@ -771,7 +809,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 try {
                     String first = list.get(i).getDate();
                     String second = list.get(j).getDate();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     Date date1 = simpleDateFormat.parse(first);
                     Date date2 = simpleDateFormat.parse(second);
 

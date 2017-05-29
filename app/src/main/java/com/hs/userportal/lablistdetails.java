@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 
+import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -63,7 +67,11 @@ import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.AccountActivity;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
+import utils.AppConstant;
+import utils.PreferenceHelper;
 
 public class lablistdetails extends BaseActivity {
 
@@ -112,13 +120,15 @@ public class lablistdetails extends BaseActivity {
     private ArrayList<HashMap<String, String>> family = new ArrayList<>();
     private static ArrayList<HashMap<String, String>> static_family = new ArrayList<>();
     private List<HashMap<String, String>> order_listarr = new ArrayList<>();
-    private String patientID, Member_Name;
+    private String  Member_Name;
     private int check_fill = 0;
     private String check_ID;
     private ListView past_visits;
     private PastVisitAdapter past_adapt;
     private String checkID;
     private RequestQueue queue;
+
+    private LinearLayout mFooterDashBoard , mFooterFamily, mFooterRepository , mFooterAccount ;
     //  private LinearLayout buttonbar;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -132,7 +142,7 @@ public class lablistdetails extends BaseActivity {
         static_family.clear();
         progress = new ProgressDialog(lablistdetails.this);
         setupActionBar();
-
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         queue = Volley.newRequestQueue(this);
       /*  slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.RIGHT);
@@ -148,6 +158,20 @@ public class lablistdetails extends BaseActivity {
         select_member_lab = (EditText) findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) findViewById(R.id.past_visits);
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        ImageView reportImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        reportImageView.setImageResource(R.drawable.reports_active);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterRepository.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
@@ -179,40 +203,61 @@ public class lablistdetails extends BaseActivity {
         // dor = (TextView) findViewById(R.id.tvdor);
         // gen = (TextView) findViewById(R.id.tvgender);
 
+
+       // id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+       // Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
+
         Intent z = getIntent();
-        id = z.getStringExtra("id");
-        Member_Name = z.getStringExtra("Member_Name");
+
+        boolean isComingFromMyFamilyClass = z.getBooleanExtra("fromFamilyClass", false) ;
+
         if (select_member_lab.getVisibility() == View.VISIBLE) {
             select_member_lab.setText(Member_Name);
         }
-        family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
-        patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
 
-        if (check_fill == 0) {
-            for (int chk = 0; chk < family.size(); chk++) {
-                if (family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
-                    family.remove(chk);
+        if(isComingFromMyFamilyClass){
+            id = z.getStringExtra("id");
+            Member_Name = z.getStringExtra("Member_Name");
+            family = (ArrayList<HashMap<String, String>>) z.getSerializableExtra("family");
+        }
+       else {
+            id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+            Member_Name = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
+            family = AppConstant.mFamilyMembersList;
+        }
+      //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+        if( family != null){
+            if (check_fill == 0) {
+                for (int chk = 0; chk <  family.size(); chk++) {
+                    if ( family.get(chk).get("FirstName").equalsIgnoreCase("Self")) {
+                        family.remove(chk);
+                    }
+                }
+                HashMap<String, String> hmap = new HashMap<>();
+                hmap.put("Image", DashBoardActivity.image_parse);
+                hmap.put("FirstName", "Self");
+                hmap.put("LastName", " ");
+                hmap.put("HM", "");
+                hmap.put("FamilyMemberId", id);
+                family.add(hmap);
+            }
+
+            if ( family.size() == 1) {
+                select_member_lab.setVisibility(View.GONE);
+            } else {
+                for (int c = 0; c <  family.size(); c++) {
+                    if ( family.get(c).get("HM").equals("1")) {
+                        select_member_lab.setVisibility(View.GONE);
+                    }
                 }
             }
-            HashMap<String, String> hmap = new HashMap<>();
-            hmap.put("Image", logout.image_parse);
-            hmap.put("FirstName", "Self");
-            hmap.put("LastName", " ");
-            hmap.put("HM", "");
-            hmap.put("FamilyMemberId", patientID);
-            family.add(hmap);
+
+            static_family.addAll( family);
         }
 
-        if (family.size() == 1) {
-            select_member_lab.setVisibility(View.GONE);
-        } else {
-            for (int c = 0; c < family.size(); c++) {
-                if (family.get(c).get("HM").equals("1")) {
-                    select_member_lab.setVisibility(View.GONE);
-                }
-            }
-        }
-        static_family.addAll(family);
+
+
+
         check_fill = 1;
         // caseid = z.getStringExtra("caseid");
         caseid = "";
@@ -439,6 +484,27 @@ public class lablistdetails extends BaseActivity {
             }
         });
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                intent = new Intent(lablistdetails.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_family_container){
+                intent = new Intent(lablistdetails.this , MyFamily.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_repository_container){
+      //          intent = new Intent(lablistdetails.this , Filevault.class);                               // TODO check intent class ..
+       //         startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                intent = new Intent(lablistdetails.this , AccountActivity.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -890,7 +956,7 @@ public class lablistdetails extends BaseActivity {
                 labnumber.clear();
                 ispublished.clear();
                 testcomplete.clear();
-                data1 = receiveData.getString("d");
+                data1 = receiveData.optString("d");
                 JSONObject cut = new JSONObject(data1);
                 subArray = cut.getJSONArray("Table");
 
@@ -1009,7 +1075,7 @@ public class lablistdetails extends BaseActivity {
 
             // //////////////////////////////////////////////////
             if (id == null) {
-                id = logout.id;
+                id = DashBoardActivity.id;
             } else if (check_ID != null) {
                 id = check_ID;
             }
@@ -1272,12 +1338,12 @@ public class lablistdetails extends BaseActivity {
         overlay_dialog.setCanceledOnTouchOutside(true);
         overlay_dialog.setContentView(R.layout.select_member_order);
         ListView list_member = (ListView) overlay_dialog.findViewById(R.id.list_member);
-        list_member.setAdapter(new Order_family_adapter(lablistdetails.this, family, logout.image_parse));
+        list_member.setAdapter(new Order_family_adapter(lablistdetails.this,  family, DashBoardActivity.image_parse));
         list_member.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long ids) {
-                check_ID = family.get(position).get("FamilyMemberId");
-                select_member_lab.setText(family.get(position).get("FirstName") + " " + family.get(position)
+                check_ID =  family.get(position).get("FamilyMemberId");
+                select_member_lab.setText( family.get(position).get("FirstName") + " " +  family.get(position)
                         .get("LastName"));
                 overlay_dialog.dismiss();
                 description.clear();
@@ -1298,17 +1364,17 @@ public class lablistdetails extends BaseActivity {
 
         try {
             sendData = new JSONObject();
-            patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
+          //  patientID = PreferenceManager.getDefaultSharedPreferences(this).getString("ke", "");
             Intent i = getIntent();
             String checkid = i.getStringExtra("id");
             if (checkid != null) {
-                patientID = checkid;
+                id = checkid;
             }
             if (checkid == null && checkID != null) {
-                patientID = checkID;
+               id = checkID;
             }
-            if (patientID != null) {
-                sendData.put("userId", patientID);//   //patientID //"825D9C5A-4CF3-4440-BFE9-810E39CADDC1"
+            if (id != null) {
+                sendData.put("userId", id);//   //patientID //"825D9C5A-4CF3-4440-BFE9-810E39CADDC1"
             }
             StaticHolder sttc_holdr = new StaticHolder(lablistdetails.this, StaticHolder.Services_static.GetOrderHistoryDetails);
             String url = sttc_holdr.request_Url();
@@ -1473,7 +1539,6 @@ public class lablistdetails extends BaseActivity {
                 public void onErrorResponse(VolleyError error) {
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(), "Some error occurred please try again later.", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
             });
         } catch (Exception e1) {

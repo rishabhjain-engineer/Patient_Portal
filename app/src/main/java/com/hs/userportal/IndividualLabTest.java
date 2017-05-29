@@ -72,6 +72,8 @@ import networkmngr.HugeDataPassing;
 import networkmngr.NetworkChangeListener;
 import swipelist.ItemAdapter;
 import swipelist.ItemRow;
+import ui.SignInActivity;
+import ui.SignUpActivity;
 
 /*import swipelist.ItemAdapter;
 import swipelist.ItemRow;*/
@@ -1594,7 +1596,7 @@ public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.
                 dialog.dismiss();
                 // finish();
 
-                Intent main = new Intent(IndividualLabTest.this, MainActivity.class);
+                Intent main = new Intent(IndividualLabTest.this, SignInActivity.class);
                 //main.putExtra("fromActivity", "signinMaplab");
                 Helper.fromactivity = "signinMaplab";
                 IndividualLabTest.this.from_widget = from_widget;
@@ -1608,7 +1610,7 @@ public class IndividualLabTest extends ActionBarActivity implements ItemAdapter.
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(IndividualLabTest.this, Register.class);
+                Intent i = new Intent(IndividualLabTest.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 IndividualLabTest.this.from_widget = from_widget;
                 startActivity(i);

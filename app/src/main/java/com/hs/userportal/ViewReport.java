@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import networkmngr.NetworkChangeListener;
+import ui.DashBoardActivity;
 
 public class ViewReport extends ActionBarActivity {
 
@@ -111,7 +112,7 @@ public class ViewReport extends ActionBarActivity {
 
             case R.id.action_home:
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 startActivity(intent);

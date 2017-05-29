@@ -4,7 +4,6 @@
     package="com.hs.userportal">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="com.hs.userportal.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -12,15 +11,28 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.MANAGE_USERS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <uses-permission android:name="com.hs.userportal.permission.MAPS_RECEIVE" />
+
+    <permission
+        android:name="com.hs.userportal.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
 
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -47,7 +59,7 @@
         android:required="false" />
 
     <application
-        android:name="com.hs.userportal.AppAplication"
+        android:name=".AppAplication"
         android:allowBackup="true"
         android:icon="@drawable/ic"
         android:label="@string/app_name"
@@ -57,18 +69,17 @@
         tools:replace="android:icon">
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.hs.userportal.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
         <activity
-            android:name="com.hs.userportal.SplashScreen"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyAppTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -76,392 +87,397 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.hs.userportal.UploadService" />
-
+        <service android:name=".UploadService" />
         <service android:name="utils.QuestionReportPageService" />
 
         <activity
-            android:name="com.hs.userportal.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="goo.gl"
-                    android:pathPrefix="/6UBTR6"
-                    android:scheme="http" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.hs.userportal.logout"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
-
-        <activity
-            android:name="com.hs.userportal.Register"
-            android:label="Sign Up"
-            android:parentActivityName="com.hs.userportal.MainActivity"
-            android:screenOrientation="portrait"
-
-            android:windowSoftInputMode="stateHidden" />
-
-        <activity
-            android:name="com.hs.userportal.update"
+            android:name=".update"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
 
-        <!-- <activity
+        <!--
+             <activity
              android:name=".ViewOrderFiles"
              android:launchMode="singleInstance"
              android:screenOrientation="portrait"
-             android:windowSoftInputMode="stateHidden" />-->
+             android:windowSoftInputMode="stateHidden" />
+        -->
 
         <activity
-            android:name="com.hs.userportal.changepass"
+            android:name=".changepass"
             android:configChanges="orientation|screenSize"
             android:label="Change Password"
-            android:parentActivityName="com.hs.userportal.logout"
+            android:parentActivityName=".logout"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
-            android:name="com.hs.userportal.TabsActivity"
+            android:name=".TabsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Update Details"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ViewOrderReport"
             android:noHistory="true"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Pkg_TabActivity"
+            android:name=".Pkg_TabActivity"
             android:label="Details"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Invoice"
+            android:name=".Invoice"
             android:label="Invoice"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Education"
+            android:name=".Education"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.OtherPackages"
+            android:name=".OtherPackages"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.Pkg_LabDetails"
+            android:name=".Pkg_LabDetails"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.PackageTestDetails"
+            android:name=".PackageTestDetails"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.residence"
+            android:name=".residence"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.hs.userportal.Work"
+            android:name=".Work"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.hs.userportal.Travel"
+            android:name=".Travel"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.Personal"
+            android:name=".Personal"
             android:noHistory="true" />
         <activity
-            android:name="com.hs.userportal.Medical"
+            android:name=".Medical"
             android:noHistory="true" />
-
         <activity
-            android:name="com.hs.userportal.Booking_Info"
+            android:name=".Booking_Info"
             android:configChanges="orientation|keyboardHidden"
             android:label="Booking Info"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize" />
-
         <activity
-            android:name="com.hs.userportal.Booking_type"
+            android:name=".Booking_type"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Confirm_Order"
+            android:name=".Confirm_Order"
             android:label="Order Confirmation"
             android:noHistory="true"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Mail"
+            android:name=".Mail"
             android:label="Feedback/Help"
-            android:parentActivityName="com.hs.userportal.MainActivity"
+            android:parentActivityName="ui.DashBoardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
-            android:name="com.hs.userportal.Help"
+            android:name=".Help"
             android:label="Feedback/Help"
-            android:parentActivityName="com.hs.userportal.logout"
+            android:parentActivityName=".logout"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
-            android:name="com.hs.userportal.lablistdetails"
+            android:name=".lablistdetails"
             android:label="My Reports"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hs.userportal.ReportRecords"
+            android:name=".ReportRecords"
             android:label="Case Details"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.ReportStatus"
+            android:name=".ReportStatus"
             android:configChanges="keyboardHidden|orientation|screenLayout"
             android:label="Report status"
-            android:parentActivityName="com.hs.userportal.lablistdetails"
+            android:parentActivityName=".lablistdetails"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.GraphDetails"
+            android:name=".GraphDetails"
             android:label="Graph Details"
-            android:parentActivityName="com.hs.userportal.ReportStatus"
+            android:parentActivityName=".ReportStatus"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.OrderHistory"
+            android:name=".OrderHistory"
             android:label="Order History"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.OrderDetails"
+            android:name=".OrderDetails"
             android:label="Order Details"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.grouptest"
+            android:name=".grouptest"
             android:label="Select Test"
-            android:parentActivityName="com.hs.userportal.ReportStatus"
+            android:parentActivityName=".ReportStatus"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.allergylist"
+            android:name=".allergylist"
             android:label="Select Allergy"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Login_First"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MyFamily"
             android:label="My Family"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.hs.userportal.Profile"
+            android:name=".Profile"
             android:label="Profile"
-            android:parentActivityName="com.hs.userportal.logout"
+            android:parentActivityName=".logout"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.AboutUs"
+            android:name=".AboutUs"
             android:label="About Us"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.MyNotification"
+            android:name=".MyNotification"
             android:label="Notifications"
-            android:parentActivityName="com.hs.userportal.logout"
+            android:parentActivityName=".logout"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.TestHistory"
+            android:name=".TestHistory"
             android:label="Test History"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.viewpdf"
+            android:name=".viewpdf"
             android:label="Report PDF"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ImageGridActivity"
             android:label="Images"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ImagePagerActivity"
             android:label="Images" />
-
         <activity
-            android:name="com.hs.userportal.Error"
+            android:name=".Error"
             android:label="Error"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.FAQ"
+            android:name=".FAQ"
             android:label="F.A.Q"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.PDFActivity"
+            android:name=".PDFActivity"
             android:label="PDF"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.SampleCirclesDefault"
+            android:name=".SampleCirclesDefault"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Filevault"
-            android:configChanges="keyboardHidden|orientation|screenLayout"
-            android:label="Repository"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.hs.userportal.Filevault2"
+            android:name=".Filevault2"
             android:configChanges="keyboardHidden|orientation|screenLayout"
             android:label="Vault"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.hs.userportal.FileVaultMenu"
+            android:name=".FileVaultMenu"
             android:label="File vault"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Filevaultcase"
+            android:name=".Filevaultcase"
             android:label="File vault"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.ExpandImage"
+            android:name=".ExpandImage"
             android:label="    "
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Packages"
             android:configChanges="orientation|screenSize"
             android:label="Health Packages"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.hs.userportal.FilevaultDelete"
+            android:name=".FilevaultDelete"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.LocationClass"
+            android:name=".LocationClass"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.hs.userportal.MapClass"
+            android:name=".MapClass"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.SinglelabMap"
+            android:name=".SinglelabMap"
             android:noHistory="true"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.PrivacyPolicy"
+            android:name=".PrivacyPolicy"
             android:label="Privacy Policy"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.MapLabDetails"
+            android:name=".MapLabDetails"
             android:configChanges="orientation|screenSize"
             android:label="Lab Information"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.CouponActivity"
+            android:name=".CouponActivity"
             android:configChanges="orientation|screenSize"
             android:label="Generate Coupon"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.PdfReader"
+            android:name=".PdfReader"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.Height"
+            android:name=".Height"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name="com.hs.userportal.Weight"
+            android:name=".Weight"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name="com.hs.userportal.AddGraphDetails"
+            android:name=".AddGraphDetails"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.hs.userportal.Allergy"
+            android:name=".Allergy"
             android:label="Allergies"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hs.userportal.AddWeight"
+            android:name=".AddWeight"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.hs.userportal.GraphDetailsNew"
+            android:name=".GraphDetailsNew"
             android:configChanges="orientation|screenSize" />
-
         <activity
             android:name="ui.QuestionireActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="ui.QuestionReportActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="ui.BpActivity"
-            android:configChanges="orientation|screenSize" />
-
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ui.HealthCommonActivity"
             android:configChanges="orientation|screenSize" />
-
         <activity
             android:name="ui.VaccineActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="ui.VaccineEditActivity"
             android:screenOrientation="portrait" />
-
-
         <activity
             android:name="ui.BmiActivity"
-            android:configChanges="orientation|screenSize" />
-
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ui.ProfileContainerActivity"
             android:screenOrientation="portrait" />
-
-
         <activity
-            android:name="com.hs.userportal.MyHealth"
+            android:name="ui.CreditsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ui.SignInActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ui.DashBoardActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="ui.SignUpActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".GalleryReceivedData"
+            android:label="Add to ScionTra"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/vnd.ms-excel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/msword" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/msword" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/vnd.ms-excel" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".MyHealth"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ui.AccountActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImageActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.hs.userportal.UploadProfileService" />
+        <activity
+            android:name="ui.StudentsDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+
+        <service android:name=".UploadProfileService" />
 
         <activity
-            android:name="com.hs.userportal.IndividualLabTest"
+            android:name=".IndividualLabTest"
             android:label="Lab"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
@@ -473,14 +489,16 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBeKiVCcMy9tvlZ4-wOEgAphDmIJsFseVI" />
 
-        <!-- AIzaSyBeKiVCcMy9tvlZ4-wOEgAphDmIJsFseVI-->
-        <!--AIzaSyDPEeIalPb11XO0RLOX5B0XkwklHBwUGws-->
+        <!-- AIzaSyBeKiVCcMy9tvlZ4-wOEgAphDmIJsFseVI -->
+        <!-- AIzaSyDPEeIalPb11XO0RLOX5B0XkwklHBwUGws -->
 
-        <!-- <meta-data
-             android:name="com.google.android.gms.version"
-             android:value="@integer/google_play_services_version" />-->
+
         <!--
-                <activity android:name="com.facebook.LoginActivity" />-->
+             <meta-data
+             android:name="com.google.android.gms.version"
+             android:value="@integer/google_play_services_version" />
+        -->
+        <!-- <activity android:name="com.facebook.LoginActivity" /> -->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -493,6 +511,248 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <!-- [START fcm_default_icon] -->
+        <!--
+             Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <!--
+            <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic" />
+        -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <!--
+            <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/text_color_blue" />
+        -->
+        <!-- [END fcm_default_icon] -->
+        <!-- [START firebase_service] -->
+        <service android:name="base.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+        <!-- [START firebase_iid_service] -->
+        <service android:name="base.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_iid_service] -->
+
+        <activity android:name=".Transparent"></activity>
+
+        <meta-data
+            android:name="com.applozic.application.key"
+            android:value="healthscione528964188c9a414a033984f36c106fc" /> <!-- Applozic Application Key -->
+
+        <meta-data
+            android:name="com.applozic.mobicomkit.notification.smallIcon"
+            android:resource="@drawable/ic" /> <!-- Launcher white Icon -->
+
+        <meta-data
+            android:name="main_folder_name"
+            android:value="@string/default_media_location_folder" /> <!-- Attachment Folder Name -->
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAxtzJCKRNn6JJPF4eqMQF1XJD-9-KVa10" />  <!--Replace with your geo api key from google developer console  -->
+        <!-- For testing purpose use AIzaSyAYB1vPc4cpn_FJv68eS_ZGe1UasBNwxLI
+        To disable the location sharing via map add this line ApplozicSetting.getInstance(context).disableLocationSharingViaMap(); in onSuccess of Applozic UserLoginTask -->
+
+        <meta-data
+            android:name="activity.open.on.notification"
+            android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" /> <!-- NOTE : Do NOT change this value -->
+
+        <meta-data
+            android:name="com.package.name"
+            android:value="${applicationId}" /> <!-- NOTE: Do NOT change this, it should remain same i.e 'com.package.name' -->
+
+        <receiver android:name="com.applozic.mobicomkit.uiwidgets.notification.MTNotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}.send.notification" />
+            </intent-filter>
+        </receiver>
+
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:parentActivityName="ui.DashBoardActivity"
+            android:theme="@style/ApplozicTheme">
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ui.DashBoardActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:label="@string/activity_contacts_list"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_contacts" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Image"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/Applozic_FullScreen_Theme">
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ContactSelectionActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelCreateActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelNameActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme"></activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:theme="@style/ApplozicTheme"
+            android:windowSoftInputMode="adjustResize"></activity>
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.conversation.MessageIntentService"
+            android:exported="false" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.conversation.ApplozicIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.people.UserIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.conversation.ConversationIntentService"
+            android:exported="false" />
+
+        <service
+            android:name="com.applozic.mobicomkit.api.conversation.ConversationReadService"
+            android:exported="false" />
+
+        <service
+            android:name="com.applozic.mobicomkit.uiwidgets.notification.NotificationIntentService"
+            android:exported="false" />
+
+        <receiver android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.applozic.mobicomkit.broadcast.ConnectivityReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.applozic.audiovideo.activity.AudioCallActivityV2"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Applozic_FullScreen_Theme" />
+        <activity
+            android:name="com.applozic.audiovideo.activity.CallActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/Applozic_FullScreen_Theme" />
+        <activity
+            android:name="com.applozic.audiovideo.activity.VideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Applozic_FullScreen_Theme"></activity>
 
     </application>
 

@@ -107,7 +107,7 @@
                     android:id="@+id/viewReports_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="19dp"
                     android:drawablePadding="30dp"
                     android:textSize="15dp"
                     android:layout_centerVertical="true"

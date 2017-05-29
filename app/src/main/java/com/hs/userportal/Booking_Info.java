@@ -85,11 +85,14 @@ import networkmngr.ConnectionDetector;
 import networkmngr.HugeDataPassing;
 import networkmngr.NetworkChangeListener;
 import swipelist.ItemRow;
+import ui.BaseActivity;
+import ui.SignInActivity;
+import ui.SignUpActivity;
 
 /**
  * Created by ashish on 11/4/2015.
  */
-public class Booking_Info extends ActionBarActivity {
+public class Booking_Info extends BaseActivity {
 
     private ArrayList<ItemRow> itemData;
     private Activity act;
@@ -1759,7 +1762,14 @@ public class Booking_Info extends ActionBarActivity {
     public void placeOrderClicked() {
         //  patientId = sharedPreferences.getString("ke", "");
         if (patientId != "" && patientId != null && (!patientId.equals(""))) {
-            new Authenticationfromresume().execute();
+            if(isSessionExist()){
+                if (!is_coupon) {
+                    requestpickup();
+                } else if (is_coupon) {
+                    generatecoupon();
+                }
+                //placeOrderClicked();
+            }
         } else {
             showSignInSignUp("placeorderbuttonclick");
         }
@@ -1861,7 +1871,7 @@ public class Booking_Info extends ActionBarActivity {
                 dialog.dismiss();
                 // finish();
 
-                Intent main = new Intent(Booking_Info.this, MainActivity.class);
+                Intent main = new Intent(Booking_Info.this, SignInActivity.class);
                 //  main.putExtra("fromActivity", "signinMaplab");
                 Helper.fromactivity = "signinMaplab";
                 Booking_Info.this.from_widget = from_widget;
@@ -1875,7 +1885,7 @@ public class Booking_Info extends ActionBarActivity {
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(Booking_Info.this, Register.class);
+                Intent i = new Intent(Booking_Info.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 Booking_Info.this.from_widget = from_widget;
                 startActivity(i);
@@ -2035,77 +2045,6 @@ public class Booking_Info extends ActionBarActivity {
             ne.printStackTrace();
         }
 
-    }
-
-    class Authenticationfromresume extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(Booking_Info.this).create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO Auto-generated method stub
-
-                            SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.clear();
-                            editor.commit();
-                            dialog.dismiss();
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            Helper.authentication_flag = true;
-                            finish();
-
-                        }
-                    });
-                    dialog.show();
-
-                } else {
-                    if (!is_coupon) {
-                        requestpickup();
-                    } else if (is_coupon) {
-                        generatecoupon();
-                    }
-                    //placeOrderClicked();
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
-        }
     }
 
     int i = 0, j;

@@ -50,6 +50,8 @@ public class FAQ extends BaseActivity {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
                         intent.setData(Uri.parse(url));
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                     } catch (android.content.ActivityNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -60,6 +62,8 @@ public class FAQ extends BaseActivity {
                         emailIntent.setType("plain/text");
                         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"support@healthscion.com"});
                         startActivity(Intent.createChooser(emailIntent, "Email via"));
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
                         return true;
                     } catch (android.content.ActivityNotFoundException e) {
                         e.printStackTrace();
@@ -72,7 +76,9 @@ public class FAQ extends BaseActivity {
             }
         }));
         link = "file:///android_asset/faq.html";
-        supportView.loadUrl(link);
+        if(isSessionExist()){
+            supportView.loadUrl(link);
+        }
     }
 
     @Override
@@ -80,6 +86,7 @@ public class FAQ extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -89,5 +96,6 @@ public class FAQ extends BaseActivity {
     @Override
     public void onBackPressed() {
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

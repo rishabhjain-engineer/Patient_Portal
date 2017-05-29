@@ -12,11 +12,17 @@ import java.util.HashMap;
 
 public class StaticHolder {
 
+
     public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
     public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
+
     //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+
+    //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
+    //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
+
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
     public static ArrayList<HashMap<String, String>> finalOrderedListAlways = new ArrayList<HashMap<String, String>>();
@@ -40,6 +46,28 @@ public class StaticHolder {
         this.context = activity;
     }
 
+    public JSONObject request_services() {
+        Services service = new Services(context);
+        JSONObject receiveData = null;
+        switch (serviceName) {
+            case LogIn:
+                System.out.println("login.");
+                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
+                break;
+
+            case SignUpByPatient:
+                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
+                break;
+
+
+            default:
+                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
+                break;
+        }
+        return receiveData;
+    }
+
+
     public StaticHolder(Services_static serviceName) {
         this.serviceName = serviceName;
     }
@@ -47,6 +75,21 @@ public class StaticHolder {
     public String request_Url() {
         String url = null;
         switch (serviceName) {
+
+            case CheckContactNoExist:
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckContactNoExist";
+                url = BASE_URL + "CheckContactNoExist";
+                break;
+
+            case CheckDupUserName:
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckDupUserName";
+                url = BASE_URL + "CheckDupUserName";
+                break;
+
+            case NewSignUpByPatientMod:
+                //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/NewSignUpByPatient";
+                url = BASE_URL + "NewSignUpByPatientMod";
+                break;
 
             case CheckEmailIdIsExistMobile:
                 //url = LIVELOGIN_URL + "PatientModule/PatientService.asmx/CheckEmailIdIsExistMobile";
@@ -118,7 +161,7 @@ public class StaticHolder {
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/UpdateImage";
                 break;
             case GetpatienttestReportAndroid:
-                 url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
+                url = BASE_URL1 + "WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; //TODO ayaz uncomment it on live
                 //url = "https://api.healthscion.com/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
                 //url = "http://192.168.1.11/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid"; // Local //TODO ayaz uncomment it on local
                 //http://192.168.1.202:86/WebServices/HTMLReports.asmx
@@ -276,8 +319,8 @@ public class StaticHolder {
             case CheckLabrangefrom_area:
                 url = BASE_URL + "CheckLabrangefrom_area";
                 break;
-            case IsUserAuthenticated:
-                url = BASE_URL1 + "WebServices/CredentialsService.asmx/IsUserAuthenticated";
+            case AuthenticateUserSession:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/AuthenticateUserSessionNew";
                 break;
             case agreeTermsCondition:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/agreeTermsCondition";
@@ -411,52 +454,70 @@ public class StaticHolder {
                 url = BASE_URL + "GetQuizData";
                 break;
             case GetVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/GetVaccineDetails";
+                url = BASE_URL + "GetVaccineDetails";
                 break;
             case UpdatePatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-                //https://api.healthscion.com/WebServices/LabService.asmx/
-                // url = "http://192.168.1.11/WebServices/LabService.asmx/UpdatePatientVaccineDetails";
+                url = BASE_URL + "UpdatePatientVaccineDetails";
                 break;
 
             case InsertIntoPatientVaccineDetails:
-                url = BASE_URL + "GetVaccineDetails"; //TODO ayaz for live
-
-                //url = "http://192.168.1.11/WebServices/LabService.asmx/InsertIntoPatientVaccineDetails";
+                url = BASE_URL + "InsertIntoPatientVaccineDetails";
                 break;
 
+            case GetLatestVersionInfo:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/GetLatestVersionInfo1";
+                break;
+
+            case NewLogIn:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewLogin1";
+                break;
+            case NewFacebookLoginMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "NewFacebookLoginMod";
+                break;
+
+            case NewSignUpByPatientFacebookMod:
+                url = BASE_URL + "NewSignUpByPatientFacebookMod";
+
+            case LogInUser_facebookMod:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebookMod";
+                break;
+
+            case GetUserGrade:
+                url = BASE_URL + "GetUserGrade";
+                break;
+
+            case GetUserFact:
+                url = BASE_URL + "GetUserFact";
+                break;
+
+            case SaveUserDevice:
+                url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "SaveUserDevice";
+                break;
+
+            case GetSchoolDoctorList:
+                url = BASE_URL + "GetSchoolDoctorList";
+                break;
+
+            case getSchoolStudentDetails:
+                url = BASE_URL + "getSchoolStudentDetails";
+                break;
+
+            case UploadImage_New:
+                url = BASE_URL + "UploadImage_New";
+                break;
+            case saveHealthDetailMod:
+                url = BASE_URL + "saveHealthDetailMod";
+                break;
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
         }
-
         return url;
     }
 
-    public JSONObject request_services() {
-        Services service = new Services(context);
-        JSONObject receiveData = null;
-        switch (serviceName) {
-            case LogIn:
-                System.out.println("login.");
-                receiveData = service.LogIn(sendData, BASE_URL1 + url_parts[1] + "LogIn");
-                break;
-
-            case SignUpByPatient:
-                receiveData = service.common(sendData, BASE_URL + "SignUpByPatient");
-                break;
-
-
-            default:
-                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
-                break;
-        }
-        return receiveData;
-    }
 
     public enum Services_static {
-        LogIn, IsUserAuthenticated, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
+        LogIn, NewLogIn, AuthenticateUserSession, GetCredentialDetails, agreeTermsCondition, SignUpPatient,
         LogOutIOS, ChangePasswordIOS, Register, GetUserDisclaimer, FacebookLinked, FacebookLoginMobile,
         FacebookUnLinked, GetUserDeatils, ForgotPassword, NeedHelp, CheckEmailIdIsExistMobile,
         PatientDisclaimer, EmailIdExistFacebook, GetUserCodeFromEmail, SignUpByPatient,
@@ -479,7 +540,10 @@ public class StaticHolder {
         CreateFolder, DeleteObject, MoveObject, deleteSingularDetails, saveHealthDetail, getAllergies,
         getNationality, saveBasicDetail, UploadProfilePic, GetAllObjectFromS3, CreateLockFolder,
         GetMember, AddMember, AcceptRequest, IsContactExist, GetMemberRecords, getpatientHistoryDetails,
-        Updatepatientbloodgroup,patientbussinessModel,GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails, UpdatePatientVaccineDetails
+        Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
+        UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
+        LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
+        saveHealthDetailMod
     }
 
 }

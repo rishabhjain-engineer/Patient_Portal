@@ -20,6 +20,7 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -92,7 +93,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     private boolean mIsToAddMaxMinValue = true;
     private RelativeLayout mListViewHeaderRl;
     private List<String> mDateList = new ArrayList<>();
-    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI;
+    private boolean mFromHeight, mFromWeight, mFromBp, mFromBMI, mIsFromPulse;
     private boolean mIsBmiEmpty = true;
     private TextView mListHeadingTv;
 
@@ -110,6 +111,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mFromWeight = intent.getBooleanExtra("forWeight", false);
         mFromBp = intent.getBooleanExtra("forBp", false);
         mFromBMI = intent.getBooleanExtra("forBmi", false);
+        mIsFromPulse = intent.getBooleanExtra("forPulse", false);
 
         if (mFromHeight) {
             mActionBar.setTitle("Height");
@@ -123,16 +125,19 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         } else if (mFromBMI) {
             mActionBar.setTitle("BMI");
-            mListHeadingTv.setText("BMI");;
+            mListHeadingTv.setText("BMI");
+        }else if (mIsFromPulse) {
+            mActionBar.setTitle("Pulse");
+            mListHeadingTv.setText("Pulse (bpm)");
         }
 
         mWebView = (WebView) findViewById(R.id.weight_graphView);
         WebSettings settings = mWebView.getSettings();
         mWebView.setFocusable(true);
         mWebView.setFocusableInTouchMode(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setJavaScriptEnabled(true);
+        //settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
+        settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(true);
         settings.setSupportZoom(true);
@@ -140,10 +145,43 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         mWebView.setInitialScale(1);
         mWebView.addJavascriptInterface(new HealthCommonActivity.MyJavaScriptInterface(), "Interface");
 
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if (mFromBMI) {
+                    mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
+                    mListView.setAdapter(mMyHealthsAdapter);
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                    if (mIsBmiEmpty) {
+                        Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+
+                    if (mMyHealthsAdapter == null) {
+                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mListView.setAdapter(mMyHealthsAdapter);
+                    } else {
+                        mMyHealthsAdapter.setListData(mValuesAndDateList);
+                        mMyHealthsAdapter.notifyDataSetChanged();
+                    }
+                    if (progress != null && progress.isShowing()) {
+                        progress.dismiss();
+                    }
+                }
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    mListViewHeaderRl.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         mRequestQueue = Volley.newRequestQueue(this);
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         } else {
             //new Authentication(HealthCommonActivity.this, "healthCommon", "").execute();
         }
@@ -172,7 +210,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     } else if (mFromWeight) {
                         titleTv.setText("Delete Weight");
                     } else if (mFromBp) {
-                        mActionBar.setTitle("Delete Blood Pressure");
+                        titleTv.setText("Delete Blood Pressure");
+                    } else if (mIsFromPulse) {
+                        titleTv.setText("Delete Pulse");
                     }
 
                     TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
@@ -189,7 +229,11 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
-                            deleteWeight();
+                            if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                                deleteWeight();
+                            } else {
+                                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     dialog.show();
@@ -197,7 +241,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
             }
 
         });
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if (isSessionExist()) {
+            if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            } else {
+                new HealthCommonActivity.BackgroundProcess().execute();
+            }
+        }
     }
 
     @Override
@@ -218,11 +268,16 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     protected void onRestart() {
         super.onRestart();
         Log.i("ayaz", "onRestart");
-        new HealthCommonActivity.BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            new HealthCommonActivity.BackgroundProcess().execute();
+        }
     }
 
+    private ProgressDialog progress;
+
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
-        ProgressDialog progress;
         JSONObject receiveData1;
         boolean isDataAvailable = false;
 
@@ -252,6 +307,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     sendData1.put("htype", "weight");
                 } else if (mFromBp) {
                     sendData1.put("htype", "bp");
+                } else if (mIsFromPulse) {
+                    sendData1.put("htype", "pulse");
                 }
                 receiveData1 = mServices.patienBasicDetails(sendData1);
                 String data = receiveData1.optString("d");
@@ -271,6 +328,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     String weight = obj.optString("weight");
                     String bp = obj.optString("bp");
                     String height = obj.optString("height");
+                    String pulse = obj.optString("Pulse");
                     //FOR BMI
                     if (mFromBMI) {
                         int heightInInt = obj.optInt("height");
@@ -330,6 +388,13 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             }
                         }
 
+                        if (!TextUtils.isEmpty(pulse) && mIsFromPulse) {
+                            double heightInDouble = Double.parseDouble(pulse);
+                            if (mMaxWeight <= heightInDouble) {
+                                mMaxWeight = heightInDouble;
+                            }
+                        }
+
                         String fromdate = obj.optString("fromdate");
                         String dateWithoutHour[] = fromdate.split("T");
                         String onlyDate = dateWithoutHour[0];
@@ -352,6 +417,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             DecimalFormat df = new DecimalFormat("#.##");
                             weight = df.format(weightInDouble);
                             hmap.put("dataValue", weight);
+                        } else if (mIsFromPulse) {
+                            hmap.put("dataValue", pulse);
                         }
 
                         hmap.put("fromdate", onlyDate);
@@ -491,6 +558,8 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                             outerJsonObject.put("key", "Weight (kg)");
                         } else if (mFromBMI) {
                             outerJsonObject.put("key", "BMI");
+                        }else if (mIsFromPulse) {
+                            outerJsonObject.put("key", "Pulse (bpm)");
                         }
 
                         outerJsonObject.put("values", jsonArray1);
@@ -509,48 +578,29 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (mFromBMI) {
-                setDateList(mDateList);
-                mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this, mValuesAndDateList);
-                mListView.setAdapter(mMyHealthsAdapter);
-                Weight.Utility.setListViewHeightBasedOnChildren(mListView);
-
                 mWebView.loadUrl("file:///android_asset/html/index.html");
-                if (progress != null && progress.isShowing()) {
-                    progress.dismiss();
-                }
-                if (mIsBmiEmpty) {
-                    Toast.makeText(HealthCommonActivity.this, "Please add data in weight section to see more.", Toast.LENGTH_LONG).show();
-                }
+                setDateList(mDateList);
             } else {
                 if (isDataAvailable) {
-                    setDateList(mDateList);
-                    if (mMyHealthsAdapter == null) {
-                        mMyHealthsAdapter = new MyHealthsAdapter(HealthCommonActivity.this);
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mListView.setAdapter(mMyHealthsAdapter);
-                    } else {
-                        mMyHealthsAdapter.setListData(mValuesAndDateList);
-                        mMyHealthsAdapter.notifyDataSetChanged();
-                    }
-
-                    HealthCommonActivity.Utility.setListViewHeightBasedOnChildren(mListView);
                     mWebView.loadUrl("file:///android_asset/html/index.html");
-
-                    if (progress != null && progress.isShowing()) {
-                        progress.dismiss();
-                    }
+                    setDateList(mDateList);
                 } else {
-                    Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
-                    i.putExtra("id", mPatientId);
-                    if (mFromHeight) {
-                        i.putExtra("htype", "height");
-                    } else if (mFromWeight) {
-                        i.putExtra("htype", "weight");
-                    } else if (mFromBp) {
-                        i.putExtra("htype", "bp");
+                    if (isSessionExist()) {
+                        Intent i = new Intent(HealthCommonActivity.this, AddWeight.class);
+                        i.putExtra("id", mPatientId);
+                        if (mFromHeight) {
+                            i.putExtra("htype", "height");
+                        } else if (mFromWeight) {
+                            i.putExtra("htype", "weight");
+                        } else if (mFromBp) {
+                            i.putExtra("htype", "bp");
+                        }else if (mIsFromPulse) {
+                            i.putExtra("htype", "pulse");
+                        }
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
-                    startActivity(i);
-                    finish();
                 }
             }
         }
@@ -572,7 +622,7 @@ public class HealthCommonActivity extends GraphHandlerActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                super.onBackPressed();
+                finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.add:
@@ -585,13 +635,17 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                     i.putExtra("htype", "weight");
                 } else if (mFromBp) {
                     i.putExtra("htype", "bp");
+                } else if (mIsFromPulse) {
+                    i.putExtra("htype", "pulse");
                 }
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 return true;
 
             case R.id.option:
                 Intent addGraphDetailsIntent = new Intent(HealthCommonActivity.this, AddGraphDetails.class);
                 startActivityForResult(addGraphDetailsIntent, AppConstant.WEIGHT_REQUEST_CODE);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -624,7 +678,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                         //finish();
                         //startActivity(getIntent());
-                        new HealthCommonActivity.BackgroundProcess().execute();
+                        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            new HealthCommonActivity.BackgroundProcess().execute();
+                        }
+
                     } else {
                         Toast.makeText(HealthCommonActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -646,7 +705,12 @@ public class HealthCommonActivity extends GraphHandlerActivity {
     }
 
     public void startBackgroundprocess() {
-        //new BackgroundProcess().execute();
+        if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+            Toast.makeText(HealthCommonActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            //new BackgroundProcess().execute();
+        }
+
     }
 
     @Override
@@ -786,9 +850,9 @@ public class HealthCommonActivity extends GraphHandlerActivity {
 
         @JavascriptInterface
         public boolean getUserInteractiveGuidline() {
-            if(mFromBp){
+            if (mFromBp) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }

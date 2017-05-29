@@ -123,13 +123,13 @@ public class Authentication extends AsyncTask<Void, Void, Void> {
                 }else if (activityname.equals("Weight") && whichbtn.equals("")) {
                     ((Weight) context).startBackgroundprocess();
                 } else if (activityname.equals("Filevault") && whichbtn.equals("")) {
-                    ((Filevault) context).createLockFolder();
+        //            ((Filevault) context).createLockFolder();
                 } else if (activityname.equals("Filevault2") && whichbtn.equals("")) {
-                    ((Filevault2) context).startBackgroundprocess();
+         //           ((Filevault2) context).startBackgroundprocess();
                 } else if (activityname.equals("MyFamily") && whichbtn.equals("")) {
                     ((MyFamily) context).LoadFamilyMembers();
                 } else if (activityname.equalsIgnoreCase("ReportRecords") && whichbtn.equals("")) {
-                    ((ReportRecords) context).startBackgroundProcess();
+                   // ((ReportRecords) context).startBackgroundProcess();
                 }else if (activityname.equalsIgnoreCase("healthCommon") && whichbtn.equals("")) {
 					((HealthCommonActivity) context).startBackgroundprocess();
 				}

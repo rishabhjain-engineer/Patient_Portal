@@ -39,6 +39,7 @@ import java.util.ArrayList;
 
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 
 public class MyNotification extends BaseActivity {
 
@@ -49,6 +50,7 @@ public class MyNotification extends BaseActivity {
     private Services service;
     private JSONObject sendData, receiveData;
     private TextView nonoti;
+    public static String notiem = "no", notisms = "no";
 
 
     @Override
@@ -71,14 +73,14 @@ public class MyNotification extends BaseActivity {
         nonoti = (TextView) findViewById(R.id.tvNoNoti);
         nonoti.setVisibility(View.GONE);
 
-        if (logout.notiem.equals("yes")) {
+        if (DashBoardActivity.notiem.equals("yes")) {
             noti.add("Resend Verification link to E-mail");
 
         }
-        if (logout.notisms.equals("yes")) {
+        if (DashBoardActivity.notisms.equals("yes")) {
             noti.add("Resend Verification code to registered phone");
         }
-        if ((!logout.notiem.equals("yes")) && (!logout.notisms.equals("yes"))) {
+        if ((!DashBoardActivity.notiem.equals("yes")) && (!DashBoardActivity.notisms.equals("yes"))) {
             nonoti.setVisibility(View.VISIBLE);
         }
 
@@ -207,7 +209,7 @@ public class MyNotification extends BaseActivity {
                 finish();
                 return true;
             case R.id.action_home:
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
                 return true;

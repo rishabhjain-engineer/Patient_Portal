@@ -44,6 +44,7 @@ import ui.BmiActivity;
 import ui.BpActivity;
 import ui.HealthCommonActivity;
 import ui.VaccineActivity;
+import utils.PreferenceHelper;
 
 import static java.lang.Math.round;
 
@@ -94,8 +95,9 @@ public class MyHealth extends BaseActivity {
             new Authentication(MyHealth.this, "MyHealth", "").execute();
         }
         Intent z = getIntent();
-        id = z.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         show_blood = z.getStringExtra("show_blood");
+        //int position = z.getIntExtra("position", -1);
         if (show_blood.equalsIgnoreCase("yes")) {
             bgHeader.setVisibility(View.VISIBLE);
         } else {
@@ -112,31 +114,34 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, Weight.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forWeight", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forWeight", true);
+                    startActivity(in);
+                }
             }
         });
         heightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Intent in = new Intent(MyHealth.this, Height.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forHeight", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                // Intent in = new Intent(MyHealth.this, Height.class);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forHeight", true);
+                    startActivity(in);
+                }
             }
         });
         allergyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MyHealth.this, Allergy.class);
-                in.putExtra("id", id);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, Allergy.class);
+                    in.putExtra("id", id);
+                    startActivity(in);
+                }
             }
         });
 
@@ -144,11 +149,12 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BmiActivity.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forBmi", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forBmi", true);
+                    startActivity(in);
+                }
             }
         });
 
@@ -157,24 +163,53 @@ public class MyHealth extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Intent in = new Intent(MyHealth.this, BpActivity.class);
-                Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
-                in.putExtra("id", id);
-                in.putExtra("forBp", true);
-                startActivity(in);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if(isSessionExist()) {
+                    Intent in = new Intent(MyHealth.this, HealthCommonActivity.class);
+                    in.putExtra("id", id);
+                    in.putExtra("forBp", true);
+                    startActivity(in);
+                }
             }
         });
 
         mVaccineContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyHealth.this, VaccineActivity.class);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                startActivity(intent);
+                if(isSessionExist()) {
+                    Intent intent = new Intent(MyHealth.this, VaccineActivity.class);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    startActivity(intent);
+                }
             }
         });
 
+        /*if (position == 0) {
+            bgHeader.setVisibility(View.VISIBLE);
+            mVaccineContainer.setVisibility(View.VISIBLE);
+            allergyLayout.setVisibility(View.VISIBLE);
 
+            heightLayout.setVisibility(View.GONE);
+            weightLayout.setVisibility(View.GONE);
+            mBmiContainer.setVisibility(View.GONE);
+            mBpContainer.setVisibility(View.GONE);
+            findViewById(R.id.height_sepraor).setVisibility(View.GONE);
+            findViewById(R.id.weight_seprator).setVisibility(View.GONE);
+            findViewById(R.id.bp_seprator).setVisibility(View.GONE);
+            findViewById(R.id.bmi_seprator).setVisibility(View.GONE);
+
+        } else {
+            bgHeader.setVisibility(View.GONE);
+            mVaccineContainer.setVisibility(View.GONE);
+            allergyLayout.setVisibility(View.GONE);
+            findViewById(R.id.blood_group_seprator).setVisibility(View.GONE);
+            findViewById(R.id.vaccine_seprator).setVisibility(View.GONE);
+            findViewById(R.id.alergy_seprator).setVisibility(View.GONE);
+
+            heightLayout.setVisibility(View.VISIBLE);
+            weightLayout.setVisibility(View.VISIBLE);
+            mBmiContainer.setVisibility(View.VISIBLE);
+            mBpContainer.setVisibility(View.VISIBLE);
+        }*/
     }
 
     @Override
@@ -289,7 +324,7 @@ public class MyHealth extends BaseActivity {
                         String data = response.getString("d");
                         if (!data.equalsIgnoreCase("Success")) {
                             Toast.makeText(MyHealth.this, data, Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             new BackgroundProcess().execute();
                         }
                     } catch (JSONException je) {
@@ -386,9 +421,9 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
+                double bmi = ((weightInDouble) / (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
-               // double time = Double.valueOf(df.format(bmi));
+                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);
                 mBmiTvValue.setText(value);
             }
@@ -485,9 +520,9 @@ public class MyHealth extends BaseActivity {
             if (!TextUtils.isEmpty(height) && !height.equalsIgnoreCase("null") && !TextUtils.isEmpty(weight) && !weight.equalsIgnoreCase("null")) {
                 double weightInDouble = Double.parseDouble(weight);
                 double heightInDouble = Double.parseDouble(height);
-                double bmi = ((weightInDouble )/ (heightInDouble * heightInDouble) * 10000);
+                double bmi = ((weightInDouble) / (heightInDouble * heightInDouble) * 10000);
                 DecimalFormat df = new DecimalFormat("#.##");
-               // double time = Double.valueOf(df.format(bmi));
+                // double time = Double.valueOf(df.format(bmi));
                 String value = df.format(bmi);
                 mBmiTvValue.setText(value);
             }

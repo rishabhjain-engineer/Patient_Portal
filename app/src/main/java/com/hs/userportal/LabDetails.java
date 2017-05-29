@@ -54,13 +54,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
 
-public class LabDetails extends ActionBarActivity {
+public class LabDetails extends BaseActivity {
 
     private String id, caseid;
     private byte[] result = null;
@@ -153,7 +156,9 @@ public class LabDetails extends ActionBarActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(LabDetails.this,"No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         }else {
-            new Authentication().execute();
+            if(isSessionExist()){
+                new BackgroundProcess().execute();
+            }
         }
         lvcode.setOnItemClickListener(new OnItemClickListener() {
 
@@ -197,8 +202,7 @@ public class LabDetails extends ActionBarActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
+                all.setClickable(false);
                 new pdfprocess().execute();
 
             }
@@ -501,187 +505,130 @@ public class LabDetails extends ActionBarActivity {
 
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
             result = service.pdf(sendData,"LabDetails");
-            String temp = null;
-            try {
-                temp = new String(result, "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
+            if(result != null){
+                String temp = null;
+                try {
+                    temp = new String(result, "UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
+                Log.v("View & result==null", reportFile.getAbsolutePath());
+                Log.v("Content of PDF", temp);
+                OutputStream out;
+                try {
+                    out = new FileOutputStream(reportFile);
+                    out.write(result);
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            Log.v("View & result==null", reportFile.getAbsolutePath());
-            Log.v("Content of PDF", temp);
-            OutputStream out;
-            try {
-                out = new FileOutputStream(reportFile);
-                out.write(result);
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // System.out.println(sendData);
-            //
-            // receiveData = service.pdfreport(sendData);
-
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
+        protected void onPostExecute(Void abc) {
+            super.onPostExecute(abc);
+            if(progress!=null && progress.isShowing()) {
+                progress.dismiss();
+                progress = null;
+            }
+            if(result != null){
+                try {
+                    File sdCard = Environment.getExternalStorageDirectory();
+                    File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
 
-            try {
-                if(progress!=null) {
-                    progress.dismiss();
-                    progress = null;
-                }
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+                    File fileReport = new File(dir.getAbsolutePath(),  ptname + "report.pdf");
 
-                File fileReport = new File(dir.getAbsolutePath(),  ptname + "report.pdf");
+                    PackageManager packageManager = getPackageManager();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setType("application/pdf");
 
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("application/pdf");
+                    @SuppressWarnings("rawtypes")
+                    List list = packageManager.queryIntentActivities(intent,
+                            PackageManager.MATCH_DEFAULT_ONLY);
 
-                @SuppressWarnings("rawtypes")
-                List list = packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
+                    if (list.size() > 0 && fileReport.isFile()) {
+                        Log.v("post", "execute");
 
-                if (list.size() > 0 && fileReport.isFile()) {
-                    Log.v("post", "execute");
-
-                    Intent i = new Intent();
+                   /* Intent i = new Intent();
                     i.setAction(Intent.ACTION_VIEW);
                     Uri uri = Uri.fromFile(fileReport);
                     i.setDataAndType(uri, "application/pdf");
-                    startActivity(i);
+                    startActivity(i);*/
 
-                } else if (!fileReport.isFile()) {
-                    Log.v("ERROR!!!!", "OOPS2");
-                } else if (list.size() <= 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(
+                        ///////////
+
+                        Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                        ///////
+                        Uri uri = null;
+                        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Method m = null;
+                        try {
+                            m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                            m.invoke(null);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        uri = Uri.fromFile(fileReport);
+                    /*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*/
+                        /////
+                        objIntent.setDataAndType(uri, "application/pdf");
+                        objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(objIntent);
+
+
+
+                    } else if (!fileReport.isFile()) {
+                        Log.v("ERROR!!!!", "OOPS2");
+                    } else if (list.size() <= 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                LabDetails.this);
+                        dialog.setTitle("PDF Reader not found");
+                        dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                                + fileReport.getAbsolutePath());
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        dialog.dismiss();
+                                    }
+                                });
+                        dialog.show();
+                    }
+
+                } catch (OutOfMemoryError e) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(
                             LabDetails.this);
-                    dialog.setTitle("PDF Reader not found");
-                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
-                            + fileReport.getAbsolutePath());
-                    dialog.setCancelable(false);
-                    dialog.setPositiveButton("OK",
+                    dlg.setTitle("Not enough memory");
+                    dlg.setMessage("There is not enough memory on this device.");
+                    dlg.setPositiveButton("Ok",
                             new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    // TODO Auto-generated method stub
-                                    dialog.dismiss();
+                                    LabDetails.this.finish();
                                 }
                             });
-                    dialog.show();
+                    e.printStackTrace();
                 }
-
-            } catch (OutOfMemoryError e) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(
-                        LabDetails.this);
-                dlg.setTitle("Not enough memory");
-                dlg.setMessage("There is not enough memory on this device.");
-                dlg.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                LabDetails.this.finish();
-                            }
-                        });
-                e.printStackTrace();
+            }else{
+                Toast.makeText(LabDetails.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
-
-        }
-    }
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            progress = new ProgressDialog(LabDetails.this);
-            progress.setCancelable(false);
-            progress.setMessage("Loading...");
-            progress.setIndeterminate(true);
-            LabDetails.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress.show();
-                }
-            });
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-                if(progress !=null) {
-                    progress.dismiss();
-                    progress =null;
-                }
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(
-                            LabDetails.this).create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-
-                                    SharedPreferences sharedpreferences = getSharedPreferences(
-                                            "MyPrefs", MODE_PRIVATE);
-                                    Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    finish();
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left);
-
-                                }
-                            });
-                    dialog.show();
-
-                } else {
-                    new BackgroundProcess().execute();
-
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
+            all.setClickable(true);
         }
     }
 

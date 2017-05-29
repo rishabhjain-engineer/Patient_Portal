@@ -1,322 +1,399 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/bgHeader"
+
+    <include layout="@layout/common_header" />
+
+
+    <RelativeLayout
+        android:id="@+id/quiz_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="12dp"
-        android:clickable="true"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/home_page_green_height"
+        android:background="@drawable/homepage_dynamicview"
+        android:orientation="vertical">
+
 
         <TextView
-            android:id="@+id/bloodID"
-            android:layout_width="wrap_content"
+            android:id="@+id/middletv"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Blood Group"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/blood_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/blood_bg"
-            android:cursorVisible="false"
-            android:focusable="false"
+            android:layout_below="@+id/uppertv"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="2dp"
             android:gravity="center"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+            android:padding="2dp"
+            android:text="Information on critical health parameters. Requires close tracking. Keep these up to date."
+            android:textColor="@color/white"
+            android:textSize="18dp" />
 
-    <LinearLayout
-        android:id="@+id/separator12"
+
+    </RelativeLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/weightLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/weighttxtid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Weight"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/bgHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/weight_latest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/bloodID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Blood Group"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-    <LinearLayout
-        android:id="@+id/separator2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+                <EditText
+                    android:id="@+id/blood_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/blood_bg"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/heightLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/blood_group_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        <TextView
-            android:id="@+id/heighttxt_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Height"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/weightLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/height_latest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/weighttxtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Weight"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-    <LinearLayout
-        android:id="@+id/separator3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+                <TextView
+                    android:id="@+id/weight_latest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/allergyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/weight_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        <TextView
-            android:id="@+id/allergytxtid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Allergies"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/heightLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/allergies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/heighttxt_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Height"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-    <LinearLayout
-        android:id="@+id/separator5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+                <TextView
+                    android:id="@+id/height_latest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/bmi_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/height_sepraor"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        <TextView
-            android:id="@+id/bmi_tv_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="BMI"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/allergyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/bmi_tv_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:text="-"
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/allergytxtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Allergies"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-    <LinearLayout
-        android:id="@+id/separator6"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+                <TextView
+                    android:id="@+id/allergies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/bp_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/alergy_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        <TextView
-            android:id="@+id/bp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="BP"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/bmi_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/bp_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:text="-"
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/bmi_tv_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="BMI"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-    <LinearLayout
-        android:id="@+id/separator7"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+                <TextView
+                    android:id="@+id/bmi_tv_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text="-"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/vaccine_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/bmi_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        <TextView
-            android:id="@+id/vaccine_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Vaccine"
-            android:textColor="@android:color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/bp_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/vaccine_tv_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/arrow_grey"
-            android:gravity="center_vertical"
-            android:textColor="@android:color/black"
-            android:textSize="14dp" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/bp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Blood Pressure"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/bp_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text="-"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bp_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/pulse_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/pulse_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Pulse"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/pulse_tv_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:text="-"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
 
 
-    <LinearLayout
+            <LinearLayout
+                android:id="@+id/bp_seprator_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
 
-        android:id="@+id/separator4"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#C4C4C4"
-        android:clickable="false"
-        android:orientation="vertical" />
+            <LinearLayout
+                android:id="@+id/vaccine_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/vaccine_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Vaccines"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/vaccine_tv_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/arrow_grey"
+                    android:gravity="center_vertical"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+
+                android:id="@+id/vaccine_seprator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="#C4C4C4"
+                android:clickable="false"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
