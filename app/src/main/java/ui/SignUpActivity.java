@@ -89,7 +89,7 @@ public class SignUpActivity extends BaseActivity {
     private RadioButton mSignUpMaleRadioButton, mSignUpFemaleRadioButton;
     private SegmentedGroup mSegmentedGroup;
     private Services mServices;
-    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo, mEmail;
+    private String mFirstName = "", mLastName = "", eMail = " ", mGender = "Male", mDateOfBirth, mContactNo, mEmail, mFacebookId = "";
     private String mUserID, mPatientCode, mPatientBussinessDateTime, mRoleName, mMiddleName, mDisclaimerType, mUserVersionNo;
     private String mUserCodeFromEmail = null, mBuildNo, fnln;
     private static String mFromActivity, mDateOfBirthResult;
@@ -296,6 +296,7 @@ public class SignUpActivity extends BaseActivity {
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
                             String currentTime = formatter.format(new Date(currentTimeMillis));
                             String fbUserID = object.optString("id");
+                            mFacebookId = fbUserID;
                             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
                             mFirstName = object.optString("first_name");
                             mLastName = object.optString("last_name");
@@ -977,6 +978,7 @@ public class SignUpActivity extends BaseActivity {
             loginApiSendData = new JSONObject();
             try {
                 loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("facebookid", mFacebookId);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
             } catch (JSONException e) {
