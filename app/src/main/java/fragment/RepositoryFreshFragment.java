@@ -34,6 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +109,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class RepositoryFreshFragment extends Fragment implements RepositoryAdapter.onDirectoryAction, RepositoryGridAdapter.onDirectoryAction, DashBoardActivity.CallBack {
 
     private static final int PICK_FROM_CAMERA = 2;
+    private static final int MY_PERMISSIONS_REQUEST_READ_FILE = 5;
     private static RequestQueue req;
     private static JsonObjectRequest s3jr;
     private static String patientId = null;
@@ -636,9 +638,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                askRunTimePermissions();            // Need run time permissions
-                                    // upload file either from camera or gallery
-
+                askRunTimePermissions();
             }
         });
 
@@ -905,22 +905,25 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     @Override
     public void onImageTouched(DirectoryFile file) {
 
-        //askRunTimePermissions();
-
-        if (file.getOtherExtension()) {
-            if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
-                String filepath = AppConstant.AMAZON_URL + file.getKey();
-                new FileDownloader(filepath).execute();
-
+        ActivityCompat.requestPermissions(mActivity,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_FILE);
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }else {
+            if (file.getOtherExtension()) {
+                if (file.getKey().contains("pdf") || file.getKey().contains("doc") || file.getKey().contains("xls")) {
+                    String filepath = AppConstant.AMAZON_URL + file.getKey();
+                    new FileDownloader(filepath).execute();
+                }
+            } else {
+                Intent i = new Intent(mActivity, ImageActivity.class);
+                i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
+                startActivity(i);
             }
 
-        } else {
-            Intent i = new Intent(mActivity, ImageActivity.class);
-            i.putExtra("ImagePath", AppConstant.AMAZON_URL + file.getKey());
-            startActivity(i);
         }
-
-
     }
 
     private void chooseimage() {
@@ -975,41 +978,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         }
     }
 
-   /* void askRunTimePermissions() {
-
-        int permissionCAMERA = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
-        int storagePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int writePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }
-        if (writePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(mActivity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == MY_PERMISSIONS_REQUEST) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mPermissionGranted = true;
-            } else {
-                mPermissionGranted = false;
-                Log.e("Rishabh", "permission denied");
-            }
-        }
-    }
-*/
 
     void askRunTimePermissions() {
 
@@ -1089,7 +1057,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     break;
                 }
             }
-
             if (allgranted) {
                 proceedAfterPermission();
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permissionsRequired[0])
@@ -1113,6 +1080,10 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 builder.show();
             } else {
                 Toast.makeText(mActivity.getBaseContext(), "Unable to get Permission", Toast.LENGTH_LONG).show();
+            }
+        } else if ( requestCode == MY_PERMISSIONS_REQUEST_READ_FILE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
             }
         }
     }
