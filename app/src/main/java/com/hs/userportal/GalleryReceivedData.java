@@ -92,10 +92,11 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
     private Uri mSingleImageUri;
     private ArrayList<Uri> mMultipleImageUris = new ArrayList<>();
     private ArrayList<Uri> mMultipleImageUrisSending = new ArrayList<>();
-    private int numberOfUri;
+    private int numberOfUri, mTotalNumberOfUri, mTotalNumberOfUriCounter;
     private boolean isFromGallery;
     private File mImage;
     private ProgressDialog mProgressDialog;
+    ArrayList<File> mCountFileSize10Mb = new ArrayList<>();
 
     private List<SelectableObject> displayedDirectory;
 
@@ -332,18 +333,27 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
         ArrayList<Uri> selectedImageUri = new ArrayList<>();
         ArrayList<Uri> ThumbUriList = new ArrayList<>();
         InputStream is = null;
+
+        mTotalNumberOfUri = getUri.size();
+
         for (int i = 0; i < getUri.size(); i++) {
+            mTotalNumberOfUriCounter++;
             File downloadedFile = null;
             Uri testSingleUri = getUri.get(i);
 
             if(testSingleUri.toString().contains("pdf") || testSingleUri.toString().contains("doc") || testSingleUri.toString().contains("xls")) {
                 downloadedFile = new File(testSingleUri.getPath());
-               // Log.e("Rishabh","pdf uri file := "+downloadedFile.toString());
-               // Log.e("Rishabh","pdf uri path := "+downloadedFile.getPath());
-               // Log.e("Rishabh","pdf uri name := "+downloadedFile.getName());
+
                 selectedImageUri.add(testSingleUri);
 
-                listOfFiles.add(downloadedFile);
+                double fileSize = calculateFileSize(downloadedFile);
+                if (fileSize > 10) {
+                    mCountFileSize10Mb.add(downloadedFile);
+                    showFileSizeExceedAlertBox(downloadedFile);
+                } else {
+                    listOfFiles.add(downloadedFile);
+                }
+
             }
 
             else {
@@ -361,26 +371,93 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
                             Uri downloadedFileUri = Uri.parse(downloadedFile.getAbsolutePath());
                           //  Log.e("Rishabh", "image uri := "+downloadedFileUri.getPath());
                             selectedImageUri.add(downloadedFileUri);
-                            listOfFiles.add(downloadedFile);
+
+                            double fileSize = calculateFileSize(downloadedFile);
+                            if (fileSize > 10) {
+                                mCountFileSize10Mb.add(downloadedFile);
+                                if(mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+                                    showFileSizeExceedAlertBox(downloadedFile);
+                                }
+
+                            } else {
+                                // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                listOfFiles.add(downloadedFile);
+                                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                listOfFiles.add(thumbnailFile);
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
             }
-
-            if(downloadedFile.getAbsolutePath().endsWith(".pdf")|| downloadedFile.getName().endsWith(".doc")|| downloadedFile.getName().endsWith(".xls")){
-
-            } else {
-                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                listOfFiles.add(thumbnailFile);
-            }
-
         }
 
-    //    Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
         RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
+
+
+    private double calculateFileSize(File file) {
+
+        double sizeOfFileInByte = file.length();
+        Log.e("Rishabh","size in Bytes := "+sizeOfFileInByte+" B");
+        double sizeOfFileInKb = sizeOfFileInByte / 1024;
+        Log.e("Rishabh","size in KiloBytes := "+sizeOfFileInKb+" Kb");
+        double sizeInMb = sizeOfFileInKb / 1024;
+        Log.e("Rishabh","size in MBytes := "+sizeInMb+" Mb");
+
+
+        return sizeInMb;
+
+    }
+
+    private void showFileSizeExceedAlertBox(File file) {
+
+
+        File thumbnailFile = RepositoryUtils.getThumbnailFile(file, mActivity);
+
+        // converting file to bitmap
+
+        String filePath = thumbnailFile.getPath();
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+        // Log.e("Rishabh", "BitMap of thumbnail:= "+bitmap.toString());
+
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.alert_file_size);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView message = (TextView) dialog.findViewById(R.id.message);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+        cancelButton.setVisibility(View.GONE);
+
+        if (mCountFileSize10Mb.size() > 1 ) {
+            // more than 1 file greater than 10 mb
+            imageView.setImageResource(R.drawable.multiple_images_thumb);
+            message.setText("Files not uploaded as they were more than 10 mb in size (each).");
+        } else if (mCountFileSize10Mb.size() == 1) {
+            // only 1 file is greate than 10 MB
+            imageView.setImageBitmap(bitmap);
+            message.setText("File not uploaded as it’s more than 10 mb in size.");
+        } else {
+            return;
+        }
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
 
     public static List<File> getUploadUriObjectList() {
 
