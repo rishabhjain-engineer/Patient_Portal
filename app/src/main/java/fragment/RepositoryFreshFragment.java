@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,7 +135,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private LinearLayout mHeaderMiddleImageViewContainer;
     private ProgressDialog progressDialog;
     private int listMode = 0; //0=list, 1=grid
-    private int PICK_FROM_GALLERY = 1, counter = 1;
+    private int PICK_FROM_GALLERY = 1, counter = 1, mTotalNumberOfUri, mTotalNumberOfUriCounter;
     private Uri Imguri;
     private String mCurrentPhotoPath = null;
     private boolean mIsSdkLessThanM = true;
@@ -143,6 +144,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
     private List<SelectableObject> displayedDirectory;
     private List<String> s3allData = new ArrayList<>();
     private List<S3ObjectSummary> summaries = new ArrayList<>();
+    ArrayList<File> mCountFileSize10Mb = new ArrayList<>() ;
     private Bitmap mPickLatestPhotoBitMap = null;
     private RepositoryDialogAdapter dialogAdapter;
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -1132,6 +1134,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
         listOfFilesToUpload.clear();
         try {
             if (requestCode == PICK_FROM_GALLERY) {
+                mTotalNumberOfUriCounter =0;                                // to count number of URI came from gallery ;
                 if (data != null) {
                     mProgressDialog = new ProgressDialog(mActivity);
                     mProgressDialog.setMessage("Uploading File ...");
@@ -1139,6 +1142,7 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     mProgressDialog.show();
                 }
                 ArrayList<Uri> multipleUri = new ArrayList<>();
+
                 Uri selectedImageUri;
                 File downloadedFile = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1157,7 +1161,9 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                     multipleUri.add(selectedImageUri);
                 }
                 //new code saves recieved bitmap as file
+                mTotalNumberOfUri = multipleUri.size();
                 for (int i = 0; i < multipleUri.size(); i++) {
+                    mTotalNumberOfUriCounter ++ ;
                     selectedImageUri = multipleUri.get(i);
                     InputStream is = null;
                     if (selectedImageUri.getAuthority() != null) {
@@ -1166,17 +1172,32 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                         if (bmp != null) {
                             try {
                                 downloadedFile = createImageFile();
+
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();
+
+
+                                double fileSize = calculateFileSize(downloadedFile) ;
+                                if(fileSize>10){
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    showFileSizeExceedAlertBox(downloadedFile) ;
+                                    continue;
+                                }else {
+                                   // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
+
+
                                 listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
                             }
                         }
                     }
-                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                    listOfFilesToUpload.add(thumbnailFile);
+
                 }
             }
             if (requestCode == PICK_FROM_CAMERA && resultCode == -1) {   // resultcode -1 is for SUCCESS
@@ -1196,12 +1217,24 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
                             try {
                                 downloadedFile = createImageFile();
+
                                 OutputStream outStream = new FileOutputStream(downloadedFile);
                                 //compressing image to 90 percent quality to reduce size
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
                                 outStream.flush();
                                 outStream.close();
-                                listOfFilesToUpload.add(downloadedFile);
+
+                                double fileSize = calculateFileSize(downloadedFile) ;
+                                if(fileSize>10){
+                                    mCountFileSize10Mb.add(downloadedFile);
+                                    showFileSizeExceedAlertBox(downloadedFile) ;
+                                    return;
+                                }else {
+                                    //Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                                    listOfFilesToUpload.add(downloadedFile);
+                                    File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                                    listOfFilesToUpload.add(thumbnailFile);
+                                }
 
                             } catch (Exception e) {
                             }
@@ -1210,16 +1243,85 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                 } else {
                     Uri imageUri = Uri.parse(mCurrentPhotoPath);
                     downloadedFile = new File(imageUri.getPath());
-                    listOfFilesToUpload.add(downloadedFile);
+                    double fileSize = calculateFileSize(downloadedFile) ;
+                    if(fileSize>10){
+                        mCountFileSize10Mb.add(downloadedFile);
+                        showFileSizeExceedAlertBox(downloadedFile) ;
+                        return;
+                    }else {
+                       // Log.e("Rishabh", "File does not exceed 10 MB. uploading ..") ;
+                        listOfFilesToUpload.add(downloadedFile);
+                        File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
+                        listOfFilesToUpload.add(thumbnailFile);
+                    }
                 }
 
-                File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
-                listOfFilesToUpload.add(thumbnailFile);
+
             }
             RepositoryUtils.uploadFilesToS3(listOfFilesToUpload, mActivity, mRepositoryAdapter.getDirectory(), UploadService.REPOSITORY);
             super.onActivityResult(requestCode, resultCode, data);
         } catch (Exception e) {
         }
+    }
+
+    private double calculateFileSize (File file) {
+
+        double sizeOfFileInByte = file.length() ;
+        //Log.e("Rishabh","size in Bytes := "+sizeOfFileInByte+" B");
+        double sizeOfFileInKb = sizeOfFileInByte / 1024 ;
+        //Log.e("Rishabh","size in KiloBytes := "+sizeOfFileInKb+" Kb");
+        double sizeInMb = sizeOfFileInKb/1024 ;
+        //Log.e("Rishabh","size in MBytes := "+sizeInMb+" Mb");
+
+
+        return sizeInMb ;
+
+    }
+
+    private void showFileSizeExceedAlertBox(File file) {
+
+
+        File thumbnailFile = RepositoryUtils.getThumbnailFile(file, mActivity);
+
+        // converting file to bitmap
+
+        String filePath = thumbnailFile.getPath();
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+       // Log.e("Rishabh", "BitMap of thumbnail:= "+bitmap.toString());
+
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.alert_file_size);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okButton = (TextView) dialog.findViewById(R.id.btn_ok);
+        TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        TextView message = (TextView) dialog.findViewById(R.id.message);
+        ImageView imageView = (ImageView) dialog.findViewById(R.id.latest_image_iv);
+        cancelButton.setVisibility(View.GONE);
+
+        if(mCountFileSize10Mb.size() > 1 &&  mTotalNumberOfUri == mTotalNumberOfUriCounter) {
+            // more than 1 file greater than 10 mb
+            imageView.setImageResource(R.drawable.multiple_images_thumb);
+            message.setText("Files not uploaded as they were more than 10 mb in size (each).");
+        }else if (mCountFileSize10Mb.size() == 1){
+            // only 1 file is greate than 10 MB
+            imageView.setImageBitmap(bitmap);
+            message.setText("File not uploaded as it’s more than 10 mb in size.");
+        }else {
+            return;
+        }
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
