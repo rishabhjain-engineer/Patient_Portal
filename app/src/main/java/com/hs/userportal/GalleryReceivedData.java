@@ -1,11 +1,13 @@
 package com.hs.userportal;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -124,6 +127,38 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
             } else {
                 createLockFolder();
             }
+
+
+            int countOfFilesFromGallery = intentFromGallery.getClipData().getItemCount();
+            if(countOfFilesFromGallery>10){
+
+                final Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.unsaved_alert_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+                stayButton.setVisibility(View.GONE);
+
+                TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+                messageTextView.setText("You can share maximum 10 files at a time.");
+
+                okBTN.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        finish();
+
+                    }
+                });
+
+                dialog.show();
+                return;
+            }
+
 
             if (Intent.ACTION_SEND.equals(action) && type != null) {
                 if ("text/plain".equals(type)) {
@@ -345,7 +380,6 @@ public class GalleryReceivedData extends BaseActivity implements RepositoryAdapt
 
     //    Log.e("Rishabh","total list of files, including thumbnail := "+listOfFiles.size());
         RepositoryUtils.uploadFilesToS3(listOfFiles, mActivity, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
-//        RepositoryUtils.uploadFile(selectedImageUri, ThumbUriList, GalleryReceivedData.this, mRepositoryAdapter.getDirectory(), UploadService.GALLERY);
     }
 
     public static List<File> getUploadUriObjectList() {

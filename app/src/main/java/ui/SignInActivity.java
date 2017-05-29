@@ -94,7 +94,7 @@ public class SignInActivity extends BaseActivity {
     private LinearLayout mSignInFbContainer;
     private Services mServices;
     private String mUserId, mPatientCode, mVersionNumber, mFirstName, mLastName, mContactNo, mTermsAndCondition, mPatientBussinessFlag, mSessionID, mEmail, mRoleName, mDisclaimerType, mMiddleName;
-    private String mDAsString, mUserName = "", mPassWord = "";
+    private String mDAsString, mUserName = "", mPassWord = "", mFacebookId = "";
     private boolean mTerms;
     private ProgressDialog mProgressDialog;
     private RequestQueue mRequestQueue;
@@ -221,6 +221,7 @@ public class SignInActivity extends BaseActivity {
                         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FACE_BOOK_ID, fbUserID);
                         String eMail = object.optString("email");
                         JSONObject sendData = new JSONObject();
+                        mFacebookId = fbUserID;
                         sendData.put("facebookid", fbUserID);
                         sendData.put("emailid", eMail);
                         String android_id = Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -1166,6 +1167,7 @@ public class SignInActivity extends BaseActivity {
             loginApiSendData = new JSONObject();
             try {
                 loginApiSendData.put("username", mUserName);
+                loginApiSendData.put("facebookid", mFacebookId);
                 loginApiSendData.put("applicationType", "Mobile");
                 loginApiSendData.put("browserType", buildNo);
                 String android_id = Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
