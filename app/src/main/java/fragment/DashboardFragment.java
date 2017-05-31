@@ -31,7 +31,6 @@ import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
 
-import org.askerov.dynamicgrid.DynamicGridView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +49,7 @@ import utils.PreferenceHelper;
  */
 
 public class DashboardFragment extends Fragment {
-    private DynamicGridView mDaDynamicGridView;
+    //private DynamicGridView mDaDynamicGridView;
     private List<String> mList = new ArrayList<>();
     private GridView mGridView;
     private Activity mActivity;

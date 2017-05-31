@@ -267,8 +267,8 @@ public class SignUpActivity extends BaseActivity {
             mSignUpBtn.setClickable(true);
             showAlertMessage("No Internet Connection.");
         } else {
-            mSignUpThroughFacebook=false;
-            checkContactNoExistAPI();
+            mSignUpThroughFacebook = false;
+            checkContactNoExistAPI(contactNo);
         }
     }
 
@@ -384,8 +384,7 @@ public class SignUpActivity extends BaseActivity {
                                                 } else {
                                                     if (TextUtils.isEmpty(mContactNo)) {
                                                         updateContactAlert();
-                                                    }
-                                                    if (terms) {
+                                                    } else if (terms) {
                                                         sendrequestForDesclaimer();
                                                     }
                                                 }
@@ -412,10 +411,10 @@ public class SignUpActivity extends BaseActivity {
                                                     // NewSignUpByPatientFacebook api call
                                                     newSignUpByPatientFacebookApiCall(jsonObjectForNewSignUpByPatientFacebook);
                                                 } else if (decesionString.equalsIgnoreCase("2")) {
-                                                    if(array .length >= 3){
+                                                    if (array.length >= 3) {
                                                         mUserName = array[2];
                                                         facebookDecesionAlertDialog(messageString, true);
-                                                    }else{
+                                                    } else {
                                                         showAlertMessage("An error occured, please try again.");
                                                     }
                                                 }
@@ -455,7 +454,8 @@ public class SignUpActivity extends BaseActivity {
     };
 
     private ProgressDialog progress;
-    private void checkContactNoExistAPI() {
+
+    private void checkContactNoExistAPI(final String mobileNumber) {
         progress = new ProgressDialog(SignUpActivity.this);
         progress.setCancelable(false);
         progress.setMessage("Checking contact...");
@@ -464,7 +464,7 @@ public class SignUpActivity extends BaseActivity {
 
         mSendData = new JSONObject();
         try {
-            mSendData.put("ContactNo", mSignUpContactNoEt.getText().toString());
+            mSendData.put("ContactNo", mobileNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -491,6 +491,9 @@ public class SignUpActivity extends BaseActivity {
                         mSignUpFirstPageContainer.setVisibility(View.GONE);
                         mSignUpSecondPageContainer.setVisibility(View.VISIBLE);
                         signupNextPage();
+                    }
+                    if (permitToNextSignUpPage) {
+                        updateContactApi(mobileNumber);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -562,6 +565,7 @@ public class SignUpActivity extends BaseActivity {
     boolean isToShowErrorDialog;
 
     private ProgressDialog progressDialog;
+
     private void newSignUpByPatientAPI() {
         isToShowErrorDialog = false;
         progressDialog = new ProgressDialog(SignUpActivity.this);
@@ -689,11 +693,11 @@ public class SignUpActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         //   super.onBackPressed();
-        if(termsAndConditionDialog != null && termsAndConditionDialog.isShowing()){
+        if (termsAndConditionDialog != null && termsAndConditionDialog.isShowing()) {
             if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                 Toast.makeText(SignUpActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
             } else {
-                new LogoutAsync().execute() ;
+                new LogoutAsync().execute();
             }
         }
         if (permitToNextSignUpPage) {                                                  // SignUp Second page VISIBLE, Now on backPress go to SignUP Firstpage
@@ -708,7 +712,7 @@ public class SignUpActivity extends BaseActivity {
     private Dialog updateContactDialog;
 
     private void updateContactAlert() {
-        mSignUpThroughFacebook = true ;
+        mSignUpThroughFacebook = true;
         updateContactDialog = new Dialog(SignUpActivity.this, android.R.style.Theme_Holo_Light_NoActionBar);
         updateContactDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         updateContactDialog.setCancelable(false);
@@ -726,10 +730,7 @@ public class SignUpActivity extends BaseActivity {
                 } else if (!isValidatePhoneNumber(mobileNumber)) {
                     Toast.makeText(getApplicationContext(), "Please enter valid number.", Toast.LENGTH_LONG).show();
                 } else {
-                    checkContactNoExistAPI();                    // API hit ; to check duplicate mobile number ;
-                    if(permitToNextSignUpPage) {
-                        updateContactApi(mobileNumber);
-                    }
+                    checkContactNoExistAPI(mobileNumber);                    // API hit ; to check duplicate mobile number ;
                 }
             }
 
@@ -943,8 +944,7 @@ public class SignUpActivity extends BaseActivity {
                                 } else {
                                     if (TextUtils.isEmpty(mContactNo)) {
                                         updateContactAlert();
-                                    }
-                                    if (terms) {
+                                    } else if (terms) {
                                         sendrequestForDesclaimer();
                                     }
                                 }
@@ -975,7 +975,8 @@ public class SignUpActivity extends BaseActivity {
     }
 
     JSONObject loginApiSendData, loginApiReceivedData;
-     private boolean loginTerms;
+    private boolean loginTerms;
+
     private class LogInUserFacebook extends AsyncTask<Void, Void, String> {
         private ProgressDialog progress;
         String buildNo;
@@ -1107,6 +1108,7 @@ public class SignUpActivity extends BaseActivity {
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress;
         private JSONObject logoutReceivedJsonObject;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -1149,12 +1151,12 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void goToDashBoardPage() {
-        if(!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")){
+        if (!TextUtils.isEmpty(mPatientBussinessFlag) && mPatientBussinessFlag.contains("|")) {
             String array[] = mPatientBussinessFlag.split("\\|");
             String message = array[1];
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, array[0]);
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, message);
-        }else{
+        } else {
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG, "");
             mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP, null);
         }

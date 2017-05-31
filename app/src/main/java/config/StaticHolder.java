@@ -477,7 +477,7 @@ public class StaticHolder {
 
             case NewSignUpByPatientFacebookMod:
                 url = BASE_URL + "NewSignUpByPatientFacebookMod";
-
+                break;
             case LogInUser_facebookMod:
                 url = BASE_URL1 + "WebServices/CredentialsService.asmx/" + "LogInUser_facebookMod";
                 break;
