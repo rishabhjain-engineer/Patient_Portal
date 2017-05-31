@@ -260,8 +260,7 @@ public class SignInActivity extends BaseActivity {
                                                 } else {
                                                     if (TextUtils.isEmpty(mContactNo)) {
                                                         updateContactAlert();
-                                                    }
-                                                    if (mTerms) {
+                                                    }else if (mTerms){
                                                         sendrequestForDesclaimer();
                                                     }
                                                 }
