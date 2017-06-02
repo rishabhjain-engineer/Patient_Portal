@@ -127,10 +127,8 @@ public class SignInActivity extends BaseActivity {
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     LoginManager.getInstance().logOut();
                     new UserDeviceAsyncTask().execute();
-
                     // TODO uncomment for AppLozic
-
-                  /*  UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener() {
+                   UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener() {
                         @Override
                         public void onSuccess(Context context) {
                             //Logout success
@@ -142,7 +140,7 @@ public class SignInActivity extends BaseActivity {
                     };
 
                     UserLogoutTask userLogoutTask = new UserLogoutTask(userLogoutTaskListener, AppAplication.getAppContext());
-                    userLogoutTask.execute((Void) null);*/
+                    userLogoutTask.execute((Void) null);
                 } else {
                     Toast.makeText(SignInActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
@@ -262,8 +260,7 @@ public class SignInActivity extends BaseActivity {
                                                 } else {
                                                     if (TextUtils.isEmpty(mContactNo)) {
                                                         updateContactAlert();
-                                                    }
-                                                    if (mTerms) {
+                                                    }else if (mTerms){
                                                         sendrequestForDesclaimer();
                                                     }
                                                 }

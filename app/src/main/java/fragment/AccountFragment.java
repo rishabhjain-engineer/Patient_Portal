@@ -109,7 +109,7 @@ public class AccountFragment extends Fragment {
         ListView accountListView = (ListView) view.findViewById(R.id.account_list_view);
 
         // Defined Array values to show in ListView
-        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout"};    // TODO add chat for AppLozic
+        String[] values = new String[]{"Profile", "FAQ's", "Feedback", "About Us", "Change Password", "Terms & Conditions", "Credits", "Logout", "Chat"};    // TODO add chat for AppLozic
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         accountListView.setAdapter(adapter);

@@ -1,2 +1,2 @@
-include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib', ':dynamicgrid'
+include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib'
 include ':demo_cloud_tagview'

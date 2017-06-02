@@ -86,7 +86,7 @@ dependencies {
     compile project(':SegmentedControlLibrary')
     compile project(':Simpl3r')
     compile project(':MPChartLib')
-    compile project(':dynamicgrid')
+    //compile project(':dynamicgrid')
     compile 'com.google.firebase:firebase-core:10.0.1'
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'

@@ -68,7 +68,7 @@
   "logoutOption": false,
   "logoutPackageName": "",
   "attachmentOptions": {
-    ":location": true,
+    ":location": false,
     ":camera": true,
     ":file": true,
     ":audio": true,
