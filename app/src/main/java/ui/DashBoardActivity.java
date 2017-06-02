@@ -48,6 +48,7 @@ import java.util.Map;
 import base.MyFirebaseMessagingService;
 import config.StaticHolder;
 import fragment.AccountFragment;
+import fragment.ConsultFragment;
 import fragment.DashboardFragment;
 import fragment.FamilyFragment;
 import fragment.ReportFragment;
@@ -646,6 +647,32 @@ public class DashBoardActivity extends BaseActivity {
             mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
             mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
             Fragment newFragment = new SchoolFragment();
+            FragmentTransaction transaction = mFragmentmanager.beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment, "SchoolFragment");
+            transaction.addToBackStack(null);
+            transaction.commit();
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
+    }
+
+    public void openConsultFragment() {
+        mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
+        mRepositoryFragOpen = true;
+        if (isSessionExist()) {
+            mFooterContainer.setVisibility(View.VISIBLE);
+            mDashBoardTv.setTextColor(grayColor);
+            mReportTv.setTextColor(grayColor);
+            mRepositoryTv.setTextColor(grayColor);
+            mFamilyTv.setTextColor(grayColor);
+            mAccountTv.setTextColor(grayColor);
+            //mActionBar.setTitle("Vitals");
+            // mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1da17f")));
+            mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_inactive);
+            mFooterReportImageView.setImageResource(R.drawable.reports_inactive);
+            mFooterRepositoryImageView.setImageResource(R.drawable.repository_inactive);
+            mFooterFamilyImageView.setImageResource(R.drawable.family_inactive);
+            mFooterAccountImageView.setImageResource(R.drawable.account_inactive);
+            Fragment newFragment = new ConsultFragment();
             FragmentTransaction transaction = mFragmentmanager.beginTransaction();
             transaction.replace(R.id.fragment_container, newFragment, "SchoolFragment");
             transaction.addToBackStack(null);

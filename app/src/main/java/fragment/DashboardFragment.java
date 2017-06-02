@@ -108,6 +108,8 @@ public class DashboardFragment extends Fragment {
                 } else if (position == 3) {
                     ((DashBoardActivity) mActivity).openRepositoryFragment();
                 } else if (position == 4) {
+                    ((DashBoardActivity) mActivity).openConsultFragment();
+                }else if (position == 5) {
                     ((DashBoardActivity) mActivity).openSchoolFragment();
                 }
             }
