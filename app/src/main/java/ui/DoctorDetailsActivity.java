@@ -1,9 +1,12 @@
 package ui;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +17,7 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
+import com.hs.userportal.update;
 
 import models.DoctorDetails;
 
@@ -55,31 +59,79 @@ public class DoctorDetailsActivity extends BaseActivity {
 
     }
 
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int id = v.getId();
             if (R.id.audio_call == id) {
-                Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-                audioCallIntent.putExtra("CONTACT_ID", "reciverUserId");
-                startActivity(audioCallIntent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-
-
+                decesionAlertDialog("audio");
             } else if (R.id.video_call == id) {
-
-                Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
-                startActivity(videoCallIntent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                decesionAlertDialog("video");
             } else if (R.id.chat == id) {
-                Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-                if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
-                    intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
-                }
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                decesionAlertDialog("chat");
             }
         }
     };
+
+    private void decesionAlertDialog(final String string) {
+        final Dialog dialog = new Dialog(DoctorDetailsActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
+        TextView message = (TextView) dialog.findViewById(R.id.message);
+        message.setText("Do you want to provide additional information ? ");
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+        okBTN.setText("Later");
+        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        stayButton.setText("Yes");
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (string.equalsIgnoreCase("audio")) {
+                    Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
+                    audioCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    startActivity(audioCallIntent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    dialog.dismiss();
+                } else if (string.equalsIgnoreCase("video")) {
+                    Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
+                    videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    startActivity(videoCallIntent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    dialog.dismiss();
+                } else if (string.equalsIgnoreCase("chat")) {
+                    Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
+                    if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
+                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
+                    }
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    dialog.dismiss();
+                } else {
+
+                }
+            }
+        });
+        stayButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 }
