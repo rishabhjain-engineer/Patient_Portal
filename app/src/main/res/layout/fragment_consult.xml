@@ -12,64 +12,74 @@
         android:layout_height="1dp"
         android:background="@color/gray_medium" />
 
-    <Spinner
-        android:id="@+id/general_medicine"
-        style="@style/SpinnerTheme"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:visibility="visible" />
-
-    <Spinner
-        android:id="@+id/all_states"
-        style="@style/SpinnerTheme"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:visibility="visible" />
-
-    <Spinner
-        android:id="@+id/all_cities"
-        style="@style/SpinnerTheme"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:visibility="visible" />
-
-    <Spinner
-        android:id="@+id/any_availability"
-        style="@style/SpinnerTheme"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:visibility="visible" />
-
-    <CheckBox
-        android:id="@+id/show_doctor_from_other"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:text="Show doctor from other countries" />
-
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/consult_doctor_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginTop="15dp"></ListView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <Spinner
+            android:id="@+id/general_medicine"
+            style="@style/SpinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible" />
+
+        <Spinner
+            android:id="@+id/all_states"
+            style="@style/SpinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible" />
+
+        <Spinner
+            android:id="@+id/all_cities"
+            style="@style/SpinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible" />
+
+        <Spinner
+            android:id="@+id/any_availability"
+            style="@style/SpinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:visibility="visible" />
+
+        <CheckBox
+            android:id="@+id/show_doctor_from_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Show doctor from other countries" />
+
+
+    </LinearLayout>
+
 
 </LinearLayout>

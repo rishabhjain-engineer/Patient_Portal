@@ -631,7 +631,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openSchoolFragment() {
         mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
-        mRepositoryFragOpen = true;
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);
@@ -657,7 +657,7 @@ public class DashBoardActivity extends BaseActivity {
 
     public void openConsultFragment() {
         mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
-        mRepositoryFragOpen = true;
+        mRepositoryFragOpen = false;
         if (isSessionExist()) {
             mFooterContainer.setVisibility(View.VISIBLE);
             mDashBoardTv.setTextColor(grayColor);

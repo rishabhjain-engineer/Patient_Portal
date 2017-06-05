@@ -100,16 +100,16 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (position == 0) {
-                    ((DashBoardActivity) mActivity).openReportFragment();
+                    ((DashBoardActivity) mActivity).openConsultFragment();
                 } else if (position == 1) {
-                    ((DashBoardActivity) mActivity).openVitalFragment();
+                    ((DashBoardActivity) mActivity).openReportFragment();
                 } else if (position == 2) {
-                    ((DashBoardActivity) mActivity).openFamilyFragment();
+                    ((DashBoardActivity) mActivity).openVitalFragment();
                 } else if (position == 3) {
                     ((DashBoardActivity) mActivity).openRepositoryFragment();
                 } else if (position == 4) {
-                    ((DashBoardActivity) mActivity).openConsultFragment();
-                }else if (position == 5) {
+                    ((DashBoardActivity) mActivity).openFamilyFragment();
+                } else if (position == 5) {
                     ((DashBoardActivity) mActivity).openSchoolFragment();
                 }
             }
