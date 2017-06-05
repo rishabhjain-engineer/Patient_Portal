@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/consult_header" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_medium" />
+
+
+        <TextView
+            android:id="@+id/prescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Medication Name"
+            android:textColor="@color/blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/medication_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Medication Name"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/medication_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter medication name"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+
+        <TextView
+            android:id="@+id/strength_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Strength"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/strength_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter strength"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+
+        <TextView
+            android:id="@+id/quantitiy_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Quantitiy"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/quantitiy_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter quantitiy"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+        <TextView
+            android:id="@+id/dispensation_unit_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Dispensation Unit"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/dispensation_unit_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter dispensation unit"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+        <TextView
+            android:id="@+id/refills_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Refills"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/refills_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter refills count"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+
+        //
+
+        <TextView
+            android:id="@+id/directions_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Directions"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/directions_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter direction details"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+        //
+
+        <TextView
+            android:id="@+id/start_date_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Start From"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/start_date_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/consultation_edit_text_height"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter medication name"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+        <TextView
+            android:id="@+id/doctor_signature_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Doctor's Signatue"
+            android:textColor="@color/golden" />
+
+
+        <EditText
+            android:id="@+id/doctor_signature_et"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/consult_border_color"
+            android:cursorVisible="false"
+            android:gravity="left|center_vertical"
+            android:hint="Enter signature"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="@color/create_account_tv_color"
+            android:textColorHint="@color/sign_in_edit_bg_hint" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_toLeftOf="@+id/print"
+                android:background="@drawable/login_edit_text_style"
+                android:text="Close"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/print"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Print"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -115,6 +115,8 @@
     <color name="home_title_scion">#6c6c6c</color>
     <color name="home_content_text">#9fa1a2</color>
     <color name="home_seprator">#dedede</color>
+    <color name="golden">#bca765</color>
+
 
 
 </resources>

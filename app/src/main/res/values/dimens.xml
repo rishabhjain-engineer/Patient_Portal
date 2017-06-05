@@ -27,5 +27,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="home_page_green_height">130dp</dimen>
 
+    <dimen name="consultation_edit_text_height">40dp</dimen>
+
 
 </resources>

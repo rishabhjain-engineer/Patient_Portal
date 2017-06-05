@@ -5,7 +5,7 @@
 
     android:orientation="vertical">
 
-    <include layout="@layout/common_header" />
+    <include layout="@layout/consult_header" />
 
     <View
         android:layout_width="match_parent"
