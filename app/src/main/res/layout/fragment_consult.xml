@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
 
-    android:orientation="vertical">
-
-    <include layout="@layout/consult_header" />
+    <include
+        android:id="@+id/header"
+        layout="@layout/common_header"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize" />
 
     <View
+        android:id="@+id/seprator"
+        android:layout_below="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray_medium" />
@@ -16,6 +20,7 @@
         android:id="@+id/consult_doctor_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/seprator"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="15dp"></ListView>
@@ -81,5 +86,15 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/consult_now"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/header_color"
+        android:gravity="center"
+        android:text="Consult Now"
+        android:textColor="@color/white" />
 
-</LinearLayout>
+</RelativeLayout>

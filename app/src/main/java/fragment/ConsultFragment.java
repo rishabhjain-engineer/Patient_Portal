@@ -49,6 +49,7 @@ public class ConsultFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DoctorDetailsActivity.class);
                 intent.putExtra("doctorDetail", doctorDetails);
                 startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         hederTitle.setText("Find a doctor");

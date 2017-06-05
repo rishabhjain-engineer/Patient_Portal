@@ -659,7 +659,7 @@ public class DashBoardActivity extends BaseActivity {
         mIsHomeFragmentOpen = false;                                          // to check whether dashboard is visible or not; needed when back presses from fragment-- > show dashboard
         mRepositoryFragOpen = false;
         if (isSessionExist()) {
-            mFooterContainer.setVisibility(View.VISIBLE);
+            mFooterContainer.setVisibility(View.GONE);
             mDashBoardTv.setTextColor(grayColor);
             mReportTv.setTextColor(grayColor);
             mRepositoryTv.setTextColor(grayColor);

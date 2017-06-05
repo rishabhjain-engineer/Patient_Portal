@@ -28,7 +28,7 @@ public class DoctorDetailsActivity extends BaseActivity {
 
         setContentView(R.layout.activity_doctor_detail);
         setupActionBar();
-        mActionBar.hide();
+        mActionBar.setTitle("Doctor Details");
 
         TextView doctorName = (TextView) findViewById(R.id.doctor_name);
         TextView doctorLocation = (TextView) findViewById(R.id.city);
