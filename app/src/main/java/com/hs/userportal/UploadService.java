@@ -88,7 +88,8 @@ public class UploadService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+        s3Client = new AmazonS3Client(
+                new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         IntentFilter f = new IntentFilter();
