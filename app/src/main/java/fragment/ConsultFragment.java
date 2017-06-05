@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.applozic.audiovideo.activity.VideoActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.VaccineDetails;
 
@@ -33,6 +35,7 @@ public class ConsultFragment extends Fragment {
     private ListView mListView;
     private ConsultFragmentAdapter mConsultFragmentAdapter;
     private List<DoctorDetails> mDoctorDetailsList = new ArrayList<>();
+    private Button mConsultNow;
 
     @Nullable
     @Override
@@ -40,6 +43,17 @@ public class ConsultFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_consult, null);
         TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
         mListView = (ListView) view.findViewById(R.id.consult_doctor_list);
+        mConsultNow = (Button) view.findViewById(R.id.consult_now);
+        mConsultNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
+                videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                startActivity(videoCallIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
         mConsultFragmentAdapter = new ConsultFragmentAdapter(getActivity());
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

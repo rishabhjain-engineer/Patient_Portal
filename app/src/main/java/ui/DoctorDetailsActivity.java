@@ -63,6 +63,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                 Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
                 audioCallIntent.putExtra("CONTACT_ID", "reciverUserId");
                 startActivity(audioCallIntent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 
             } else if (R.id.video_call == id) {
@@ -70,12 +71,14 @@ public class DoctorDetailsActivity extends BaseActivity {
                 Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
                 videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
                 startActivity(videoCallIntent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else if (R.id.chat == id) {
                 Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                 if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
                     intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                 }
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         }
     };

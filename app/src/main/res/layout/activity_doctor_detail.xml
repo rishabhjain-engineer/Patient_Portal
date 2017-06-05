@@ -25,27 +25,24 @@
 
         <Button
             android:id="@+id/audio_call"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="40dp"
-            android:text="Audio"
-            android:textColor="@color/white" />
+            android:background="@drawable/audio" />
 
         <Button
             android:id="@+id/video_call"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text="Video"
-            android:textColor="@color/white" />
+            android:background="@drawable/video" />
 
 
         <Button
             android:id="@+id/chat"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="40dp"
-            android:text="Chat"
-            android:textColor="@color/white" />
+            android:background="@drawable/chat" />
 
 
     </LinearLayout>
