@@ -24,27 +24,78 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/audio_call"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:background="@drawable/audio" />
-
-        <Button
             android:id="@+id/video_call"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             android:background="@drawable/video" />
 
 
         <Button
+            android:id="@+id/audio_call"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/audio" />
+
+
+        <Button
             android:id="@+id/chat"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             android:background="@drawable/chat" />
 
 
     </LinearLayout>
+
+</LinearLayout><?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_marginLeft="20dp"
+android:orientation="vertical">
+
+<include layout="@layout/consult_single_item_list_view" />
+
+<TextView
+    android:id="@+id/about"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:text="about"
+    android:textColor="@color/black"
+    android:textSize="15dp" />
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/video_call"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+
+        android:background="@drawable/video" />
+
+
+    <Button
+        android:id="@+id/audio_call"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/audio" />
+
+
+    <Button
+        android:id="@+id/chat"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:background="@drawable/chat" />
+
+
+</LinearLayout>
 
 </LinearLayout>

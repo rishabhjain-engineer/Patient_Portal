@@ -72,6 +72,39 @@ public class SymptomsActivity extends BaseActivity {
     private String mCoversationType;
     Uri selectedImageUri;
     String selectedPath;
+    private String symptomsArrY[] = {"Pain",
+            "Anxiety",
+            "Fatigue",
+            "Headache",
+            "Infection",
+            "Depression",
+            "Diabtees mellitus",
+            "Shortnes of breath",
+            "Skin Rash",
+            "Swelling",
+            "Stress",
+            "Fever",
+            "Weight Loss",
+            "Common Cold",
+            "Diarrhea",
+            "Allergy",
+            "Vomiting",
+            "Dizziness",
+            "Abdominal Pain",
+            "Itch",
+            "joint pain",
+            "constipation",
+            "Chest pain",
+            "Weight Gain",
+            "Muscle Pain",
+            "Bleeding",
+            "Ashtama",
+            "Sore Throat",
+            "HyperTension",
+            "Hair Loss",
+            "Migraine",
+            "Blood Pressure",
+            "Blindness"};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

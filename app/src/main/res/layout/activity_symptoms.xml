@@ -15,26 +15,24 @@
         android:textColor="@color/header_color"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/enter_symptoms_et"
+
+    <Spinner
+        android:id="@+id/symptoms_spinner"
+        style="@style/SpinnerTheme"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="35dp"
         android:layout_below="@+id/enter_symptoms"
+        android:layout_gravity="center"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/bg_parent_round_sumary_corner"
-        android:cursorVisible="true"
-        android:gravity="left|top"
-        android:imeOptions="flagNoEnterAction"
-        android:inputType="textNoSuggestions|textMultiLine"
-        android:padding="5dp"
-        android:textColor="@color/create_account_tv_color" />
+        android:visibility="visible" />
+
 
     <TextView
         android:id="@+id/enter_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/enter_symptoms_et"
+        android:layout_below="@+id/symptoms_spinner"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
