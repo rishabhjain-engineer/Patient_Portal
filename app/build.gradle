@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion '25.0.3'
     useLibrary 'org.apache.http.legacy'
     dexOptions {
         javaMaxHeapSize "4g"
@@ -28,6 +28,8 @@ android {
     aaptOptions {
         cruncherEnabled = false
     }
+
+
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -67,9 +69,10 @@ def appendVersionName(variant, defaultConfig) {
 }
 
 dependencies {
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'dev.dworks.libs:astickyheader:0.1.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
@@ -86,10 +89,12 @@ dependencies {
     compile project(':SegmentedControlLibrary')
     compile project(':Simpl3r')
     compile project(':MPChartLib')
-    //compile project(':dynamicgrid')
     compile 'com.google.firebase:firebase-core:10.0.1'
     compile 'com.google.firebase:firebase-messaging:10.0.1'
-    compile 'com.android.support:recyclerview-v7:24.1.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.applozic.communication.uiwidget:audiovideo:1.2'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.4.4'
+
 }
 apply plugin: 'com.google.gms.google-services'
