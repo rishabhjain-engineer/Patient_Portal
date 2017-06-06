@@ -17,7 +17,6 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
-import com.hs.userportal.update;
 
 import models.DoctorDetails;
 
@@ -55,7 +54,7 @@ public class DoctorDetailsActivity extends BaseActivity {
         doctorLocation.setText(doctorDetails.getLocation());
         doctorMedicineType.setText(doctorDetails.getMedicineType());
         doctorPic.setImageResource(doctorDetails.getDoctorImage());
-        about.setText(doctorDetails.getAboutDoctor());
+        about.setText("About: " + doctorDetails.getAboutDoctor());
 
     }
 
@@ -129,6 +128,10 @@ public class DoctorDetailsActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(DoctorDetailsActivity.this, SymptomsActivity.class);
+                intent.putExtra("chatType", string);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 dialog.dismiss();
             }
         });

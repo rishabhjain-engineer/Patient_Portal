@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/enter_symptoms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Enter symptoms: "
+        android:textColor="@color/header_color"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/enter_symptoms_et"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/enter_symptoms"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_parent_round_sumary_corner"
+        android:cursorVisible="true"
+        android:gravity="left|top"
+        android:imeOptions="flagNoEnterAction"
+        android:inputType="textNoSuggestions|textMultiLine"
+        android:padding="5dp"
+        android:textColor="@color/create_account_tv_color" />
+
+    <TextView
+        android:id="@+id/enter_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enter_symptoms_et"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Enter notes: "
+        android:textColor="@color/header_color"
+        android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/enter_notes_et"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/enter_notes"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_parent_round_sumary_corner"
+        android:cursorVisible="true"
+        android:gravity="left|top"
+        android:imeOptions="flagNoEnterAction"
+        android:inputType="textNoSuggestions|textMultiLine"
+        android:padding="5dp"
+        android:textColor="@color/create_account_tv_color" />
+
+    <TextView
+        android:id="@+id/attach_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enter_notes_et"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:text="Attach report: "
+        android:textColor="@color/header_color"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/attach_button"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_below="@+id/attach_report"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/addplus" />
+
+    <Button
+        android:id="@+id/consult_now"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/header_color"
+        android:gravity="center"
+        android:text="Continue"
+        android:textColor="@color/white" />
+
+
+</RelativeLayout>
