@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -37,6 +40,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.Directory;
 import com.hs.userportal.R;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.update;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,6 +70,8 @@ public class SymptomsActivity extends BaseActivity {
     private SharedPreferences permissionStatus;
     private boolean sentToSettings = false;
     private String mCoversationType;
+    Uri selectedImageUri;
+    String selectedPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,12 +97,12 @@ public class SymptomsActivity extends BaseActivity {
             if (id == R.id.continue_button) {
                 if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
@@ -264,6 +270,90 @@ public class SymptomsActivity extends BaseActivity {
 
 
     private void proceedAfterPermission() {
-        //chooseimage();
+        AlertDialog.Builder builder = new AlertDialog.Builder(SymptomsActivity.this);
+        builder.setTitle("Choose Image Source");
+        builder.setItems(new CharSequence[]{"Take from gallery", "Take from Camera"},
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog,
+                                        int which) {
+                        switch (which) {
+                            case 0:
+                                openGallery(10);
+                                break;
+                            case 1:
+
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, 100);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                });
+        builder.show();
+    }
+
+
+    public void openGallery(int req_code) {
+
+        Intent intent = new Intent();
+
+        intent.setType("image/*");
+
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(intent, "Select file to upload "), req_code);
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if (resultCode == RESULT_OK) {
+            if (data.getData() != null) {
+                selectedImageUri = data.getData();
+            } else {
+                Log.d("selectedPath1 : ", "Came here its null !");
+                Toast.makeText(getApplicationContext(), "failed to get Image!", Toast.LENGTH_LONG).show();
+            }
+
+            if (requestCode == 100 && resultCode == RESULT_OK) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                selectedPath = getPath(selectedImageUri);
+                //preview.setImageURI(selectedImageUri);
+                Log.d("selectedPath1 : ", selectedPath);
+
+            }
+
+            if (requestCode == 10)
+
+            {
+
+                selectedPath = getPath(selectedImageUri);
+                //preview.setImageURI(selectedImageUri);
+                Log.d("selectedPath1 : ", selectedPath);
+
+            }
+
+        }
+
+    }
+
+
+    public String getPath(Uri uri) {
+
+        String[] projection = {MediaStore.Images.Media.DATA};
+
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(column_index);
+
     }
 }

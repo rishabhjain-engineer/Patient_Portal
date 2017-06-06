@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.applozic.audiovideo.activity.VideoActivity;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.R;
 import com.hs.userportal.VaccineDetails;
 
@@ -48,7 +49,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

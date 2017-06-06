@@ -101,13 +101,13 @@ public class DoctorDetailsActivity extends BaseActivity {
 
                 if (string.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "reciverUserId");
+                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
