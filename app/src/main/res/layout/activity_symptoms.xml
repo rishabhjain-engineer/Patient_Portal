@@ -20,7 +20,7 @@
         android:id="@+id/symptoms_spinner"
         style="@style/SpinnerTheme"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="50dp"
         android:layout_below="@+id/enter_symptoms"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"

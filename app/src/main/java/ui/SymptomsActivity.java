@@ -28,7 +28,10 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import fragment.RepositoryFreshFragment;
@@ -72,7 +77,7 @@ public class SymptomsActivity extends BaseActivity {
     private String mCoversationType;
     Uri selectedImageUri;
     String selectedPath;
-    private String symptomsArrY[] = {"Pain",
+    private String symptomsArry[] = {"Pain",
             "Anxiety",
             "Fatigue",
             "Headache",
@@ -92,8 +97,8 @@ public class SymptomsActivity extends BaseActivity {
             "Dizziness",
             "Abdominal Pain",
             "Itch",
-            "joint pain",
-            "constipation",
+            "Joint pain",
+            "Constipation",
             "Chest pain",
             "Weight Gain",
             "Muscle Pain",
@@ -120,6 +125,22 @@ public class SymptomsActivity extends BaseActivity {
 
         Button attatchButton = (Button) findViewById(R.id.attach_button);
         attatchButton.setOnClickListener(mOnClickListener);
+
+        Arrays.sort(symptomsArry);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
+        adapter.setDropDownViewResource(R.layout.spinner_appearence);
+        Spinner symptomsSpinner = (Spinner) findViewById(R.id.symptoms_spinner);
+        symptomsSpinner.setAdapter(adapter);
+        symptomsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
