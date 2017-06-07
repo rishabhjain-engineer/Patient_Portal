@@ -22,10 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/enter_symptoms"
-        android:layout_gravity="center"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:visibility="visible" />
+        android:layout_marginRight="20dp" />
 
 
     <TextView

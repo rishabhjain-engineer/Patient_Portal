@@ -26,14 +26,14 @@
         <Button
             android:id="@+id/video_call"
             android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/video" />
 
 
         <Button
             android:id="@+id/audio_call"
             android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/audio" />
@@ -42,7 +42,7 @@
         <Button
             android:id="@+id/chat"
             android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:background="@drawable/chat" />
 
 

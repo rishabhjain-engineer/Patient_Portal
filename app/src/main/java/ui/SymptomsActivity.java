@@ -151,12 +151,12 @@ public class SymptomsActivity extends BaseActivity {
             if (id == R.id.continue_button) {
                 if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                    audioCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                    videoCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {

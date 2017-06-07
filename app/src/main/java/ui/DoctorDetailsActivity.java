@@ -112,12 +112,18 @@ public class DoctorDetailsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("chat")) {
-                    Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
+                    /*Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                     if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
                         intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
                     startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+
+                    Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
+                    intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                    startActivity(intent);
                     dialog.dismiss();
                 } else {
 
