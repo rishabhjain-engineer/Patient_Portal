@@ -1,2 +1,2 @@
-include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib'
+include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib', ':mobicomkitui', ':audiovideo', ':mobicomkit', ':mobicommons'
 include ':demo_cloud_tagview'
