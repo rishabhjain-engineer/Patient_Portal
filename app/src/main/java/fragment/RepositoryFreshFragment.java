@@ -50,6 +50,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
@@ -1509,6 +1512,14 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
             }
             String delimiter = "/";
 
+          /*  CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                    mActivity.getApplicationContext(),
+                    "ap-south-1:0186c083-2e5b-4df9-81d4-6ef80f30d0b4", // Identity Pool ID
+                    Regions.AP_SOUTH_1 // Region
+            );
+
+            AmazonS3 s3Client = new AmazonS3Client(credentialsProvider) ;
+*/
             AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
 
             ListObjectsRequest lor = new ListObjectsRequest()
