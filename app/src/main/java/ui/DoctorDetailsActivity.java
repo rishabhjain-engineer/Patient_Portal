@@ -84,7 +84,7 @@ public class DoctorDetailsActivity extends BaseActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
 
         TextView message = (TextView) dialog.findViewById(R.id.message);
         message.setText("Do you want to provide additional information ? ");

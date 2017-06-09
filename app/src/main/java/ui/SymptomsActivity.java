@@ -171,10 +171,16 @@ public class SymptomsActivity extends BaseActivity {
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                    Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
+                   /* Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
                     if (ApplozicClient.getInstance(SymptomsActivity.this).isContextBasedChat()) {
                         intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.USER_ID, "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }else{
