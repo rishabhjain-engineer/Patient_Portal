@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,12 +26,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,8 +80,10 @@ public class SymptomsActivity extends BaseActivity {
     private SharedPreferences permissionStatus;
     private boolean sentToSettings = false;
     private String mCoversationType;
-    Uri selectedImageUri;
-    String selectedPath;
+    private Uri selectedImageUri;
+    private String selectedPath;
+    private SymptomsDialog mSymptomsDialog;
+    private TextView mSymptomsTextView;
     private String symptomsArry[] = {"Pain",
             "Anxiety",
             "Fatigue",
@@ -126,10 +133,13 @@ public class SymptomsActivity extends BaseActivity {
         Button attatchButton = (Button) findViewById(R.id.attach_button);
         attatchButton.setOnClickListener(mOnClickListener);
 
+
         Arrays.sort(symptomsArry);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
+        mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
+        mSymptomsTextView.setOnClickListener(mOnClickListener);
+
+       /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
         adapter.setDropDownViewResource(R.layout.spinner_appearence);
-        Spinner symptomsSpinner = (Spinner) findViewById(R.id.symptoms_spinner);
         symptomsSpinner.setAdapter(adapter);
         symptomsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -140,7 +150,7 @@ public class SymptomsActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
 
     }
 
@@ -166,7 +176,7 @@ public class SymptomsActivity extends BaseActivity {
                     }
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                } else {
+                }else{
 
                 }
             } else if (id == R.id.attach_button) {
@@ -175,6 +185,9 @@ public class SymptomsActivity extends BaseActivity {
                 } else {
                     uploadFile();
                 }
+            } else if (id == R.id.symptoms_tv) {
+                mSymptomsDialog = new SymptomsDialog(SymptomsActivity.this, symptomsArry);
+                mSymptomsDialog.show();
             }
 
         }
@@ -409,5 +422,56 @@ public class SymptomsActivity extends BaseActivity {
 
         return cursor.getString(column_index);
 
+    }
+
+    public class SymptomsDialog extends Dialog implements View.OnClickListener {
+
+        private ListView list;
+        private EditText filterText = null;
+        ArrayAdapter<String> adapter = null;
+        private static final String TAG = "CityList";
+
+        public SymptomsDialog(Context context, String[] cityList) {
+            super(context);
+
+            /** Design the dialog in main.xml file */
+            setContentView(R.layout.symptoms_alert_dialog);
+            this.setTitle("Select City");
+            filterText = (EditText) findViewById(R.id.symptoms_search);
+            filterText.addTextChangedListener(filterTextWatcher);
+            list = (ListView) findViewById(R.id.symptoms_list);
+            adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cityList);
+            list.setAdapter(adapter);
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                    mSymptomsTextView.setText(list.getItemAtPosition(position).toString());
+                    mSymptomsDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+
+        private TextWatcher filterTextWatcher = new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+        };
+
+        @Override
+        public void onStop() {
+            filterText.removeTextChangedListener(filterTextWatcher);
+        }
     }
 }

@@ -16,13 +16,16 @@
         android:textStyle="bold" />
 
 
-    <Spinner
-        android:id="@+id/symptoms_spinner"
-        style="@style/SpinnerTheme"
+    <TextView
+        android:id="@+id/symptoms_tv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:background="@drawable/bg_parent_round_sumary_corner"
         android:layout_below="@+id/enter_symptoms"
         android:layout_marginLeft="20dp"
+        android:clickable="true"
         android:layout_marginRight="20dp" />
 
 
@@ -30,7 +33,7 @@
         android:id="@+id/enter_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/symptoms_spinner"
+        android:layout_below="@+id/symptoms_tv"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
