@@ -136,6 +136,7 @@ public class SymptomsActivity extends BaseActivity {
 
         Arrays.sort(symptomsArry);
         mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
+        mSymptomsTextView.setText("Please choose symptoms");
         mSymptomsTextView.setOnClickListener(mOnClickListener);
 
        /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
