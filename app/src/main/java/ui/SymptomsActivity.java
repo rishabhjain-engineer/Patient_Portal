@@ -22,20 +22,29 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +57,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.Directory;
 import com.hs.userportal.R;
 import com.hs.userportal.UploadService;
+import com.hs.userportal.VaccineDetails;
 import com.hs.userportal.update;
 
 import java.io.File;
@@ -60,8 +70,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
+import adapters.VaccineAdapter;
 import fragment.RepositoryFreshFragment;
+import models.Symptoms;
 import networkmngr.NetworkChangeListener;
 import utils.RepositoryUtils;
 
@@ -84,44 +97,23 @@ public class SymptomsActivity extends BaseActivity {
     private String selectedPath;
     private SymptomsDialog mSymptomsDialog;
     private TextView mSymptomsTextView;
-    private String symptomsArry[] = {"Pain",
-            "Anxiety",
-            "Fatigue",
-            "Headache",
-            "Infection",
-            "Depression",
-            "Diabtees mellitus",
-            "Shortnes of breath",
-            "Skin Rash",
-            "Swelling",
-            "Stress",
-            "Fever",
-            "Weight Loss",
-            "Common Cold",
-            "Diarrhea",
-            "Allergy",
-            "Vomiting",
-            "Dizziness",
-            "Abdominal Pain",
-            "Itch",
-            "Joint pain",
-            "Constipation",
-            "Chest pain",
-            "Weight Gain",
-            "Muscle Pain",
-            "Bleeding",
-            "Ashtama",
-            "Sore Throat",
-            "HyperTension",
-            "Hair Loss",
-            "Migraine",
-            "Blood Pressure",
-            "Blindness"};
+    private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
+            "Skin Rash", "Swelling", "Stress", "Fever", "Weight Loss", "Common Cold", "Diarrhea", "Allergy", "Vomiting", "Dizziness", "Abdominal Pain", "Itch",
+            "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Ashtama", "Sore Throat", "HyperTension", "Hair Loss",
+            "Migraine", "Blood Pressure", "Blindness"};
+    private List<Symptoms> mSymptomsList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
+
+        for(int i=0; i< symptomsArry.length ; i++){
+            Symptoms symptoms = new Symptoms();
+            symptoms.setName(symptomsArry[i]);
+            mSymptomsList.add(symptoms);
+        }
+
         setupActionBar();
         mActionBar.setTitle("Symptoms");
         mActivity = this;
@@ -136,7 +128,7 @@ public class SymptomsActivity extends BaseActivity {
 
         Arrays.sort(symptomsArry);
         mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
-        mSymptomsTextView.setText("Please choose symptoms");
+        mSymptomsTextView.setText("Please choose symptoms.");
         mSymptomsTextView.setOnClickListener(mOnClickListener);
 
        /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
@@ -183,7 +175,7 @@ public class SymptomsActivity extends BaseActivity {
                     intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                }else{
+                } else {
 
                 }
             } else if (id == R.id.attach_button) {
@@ -435,25 +427,44 @@ public class SymptomsActivity extends BaseActivity {
 
         private ListView list;
         private EditText filterText = null;
-        ArrayAdapter<String> adapter = null;
-        private static final String TAG = "CityList";
+        private SymptomsAdapter symptomsAdapter = null;
+        private Button mOkButton;
 
         public SymptomsDialog(Context context, String[] cityList) {
             super(context);
 
             /** Design the dialog in main.xml file */
             setContentView(R.layout.symptoms_alert_dialog);
-            this.setTitle("Select City");
+            this.setTitle("Select symptoms");
             filterText = (EditText) findViewById(R.id.symptoms_search);
+            mOkButton = (Button) findViewById(R.id.ok_button);
             filterText.addTextChangedListener(filterTextWatcher);
             list = (ListView) findViewById(R.id.symptoms_list);
-            adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cityList);
-            list.setAdapter(adapter);
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cityList);
+            symptomsAdapter = new SymptomsAdapter(SymptomsActivity.this, mSymptomsList);
+            list.setAdapter(symptomsAdapter);
+          /*  list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                     mSymptomsTextView.setText(list.getItemAtPosition(position).toString());
                     mSymptomsDialog.dismiss();
+                }
+            });*/
+
+            mOkButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String list = "";
+                    for(Symptoms symptoms : mSymptomsList){
+                        if(symptoms.isChecked()){
+                            list += symptoms.getName() + " ,";
+                        }
+                    }
+                    mSymptomsDialog.dismiss();
+                    if(list.length() > 0){
+                        list = list.substring(0, list.length() -1);
+                    }
+                    mSymptomsTextView.setText(list);
                 }
             });
         }
@@ -472,13 +483,93 @@ public class SymptomsActivity extends BaseActivity {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
+                List<Symptoms> symptomsFilteredList = new ArrayList<Symptoms>();
+                if (!TextUtils.isEmpty(s)) {
+                    for (Symptoms symptomName : mSymptomsList) {
+                        if (symptomName.getName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                            symptomsFilteredList.add(symptomName);
+                        }
+                    }
+                } else {
+                    symptomsFilteredList = mSymptomsList;
+                }
+                symptomsAdapter.setData(symptomsFilteredList);
+                symptomsAdapter.notifyDataSetChanged();
             }
         };
 
         @Override
         public void onStop() {
             filterText.removeTextChangedListener(filterTextWatcher);
+        }
+    }
+
+    private class SymptomsAdapter extends BaseAdapter {
+
+        private List<Symptoms> mSymptomsList = new ArrayList<>();
+        private Activity mActivity;
+
+        public SymptomsAdapter(Activity activity, List<Symptoms> symptomsList) {
+            mActivity = activity;
+            mSymptomsList = symptomsList;
+        }
+
+        public void setData(List<Symptoms> stringsList) {
+            mSymptomsList = stringsList;
+        }
+
+        @Override
+        public int getCount() {
+            return mSymptomsList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        private class ViewHolder {
+            TextView name;
+            CheckBox checkBox;
+
+
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final SymptomsAdapter.ViewHolder holder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mActivity).inflate(R.layout.symptoms_single_item_view, parent, false);
+                holder = new SymptomsAdapter.ViewHolder();
+                holder.name = (TextView) convertView.findViewById(R.id.symptoms_name);
+                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
+                convertView.setTag(holder);
+            } else {
+                holder = (SymptomsAdapter.ViewHolder) convertView.getTag();
+            }
+
+            final Symptoms symptoms = mSymptomsList.get(position);
+            holder.name.setText(symptoms.getName());
+            holder.checkBox.setChecked(symptoms.isChecked());
+
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
+                        symptoms.setChecked(false);
+                    } else {
+                        holder.checkBox.setChecked(true);
+                        symptoms.setChecked(true);
+                    }
+                }
+            });
+            return convertView;
         }
     }
 }
