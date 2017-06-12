@@ -65,6 +65,37 @@ public class VideoActivity extends AudioCallActivityV2 {
             }
         });
 
+        final LinearLayout videoContainer = (LinearLayout) findViewById(R.id.video_container_ll);
+        final LinearLayout textContainer = (LinearLayout) findViewById(R.id.text_container);
+
+        videoContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) textContainer.getLayoutParams();
+                params1.weight = 3.0f;
+                textContainer.setLayoutParams(params1);
+
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) videoContainer.getLayoutParams();
+                params2.weight = 7.0f;
+                videoContainer.setLayoutParams(params2);
+            }
+        });
+
+        textContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) videoContainer.getLayoutParams();
+                params1.weight = 3.0f;
+                videoContainer.setLayoutParams(params1);
+
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) textContainer.getLayoutParams();
+                params2.weight = 7.0f;
+                textContainer.setLayoutParams(params2);
+            }
+        });
+
         /*
          * Enable changing the volume using the up/down keys during a conversation
          */

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/symptoms_container_rl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="42dp">
 
     <TextView
         android:id="@+id/symptoms_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="Ayaz"
         android:paddingLeft="5dp"
+        android:text="Ayaz"
         android:textColor="@color/black"
         android:textSize="20dp" />
 

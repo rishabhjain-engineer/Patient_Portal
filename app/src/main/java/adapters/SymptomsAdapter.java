@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hs.userportal.R;
@@ -53,6 +54,7 @@ public class SymptomsAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView name;
         CheckBox checkBox;
+        RelativeLayout symptomsContainerRl;
     }
 
     @Override
