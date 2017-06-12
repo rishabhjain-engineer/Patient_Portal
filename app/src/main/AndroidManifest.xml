@@ -479,6 +479,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="ui.PrescriptionActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="ui.SymptomsActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />

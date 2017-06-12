@@ -95,8 +95,24 @@ public class SymptomsActivity extends BaseActivity {
 
 
         mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
-        mSymptomsTextView.setText("Please choose symptoms.");
         mSymptomsTextView.setOnClickListener(mOnClickListener);
+        mSymptomsTextView.setText("Please choose symptoms.");
+
+       /* String list = "";
+        for (Symptoms symptoms : mSymptomsList) {
+            if (symptoms.isChecked()) {
+                list += symptoms.getName() + " ,";
+            }
+        }
+        if (list.length() > 0) {
+            list = list.substring(0, list.length() - 1);
+        }
+        if (TextUtils.isEmpty(list)) {
+            mSymptomsTextView.setText("Please choose symptoms.");
+        } else {
+            mSymptomsTextView.setText(list);
+        }*/
+
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
