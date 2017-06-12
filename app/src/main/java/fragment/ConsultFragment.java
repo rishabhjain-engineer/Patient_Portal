@@ -49,7 +49,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

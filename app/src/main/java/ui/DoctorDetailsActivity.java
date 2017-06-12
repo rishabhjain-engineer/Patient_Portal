@@ -101,13 +101,13 @@ public class DoctorDetailsActivity extends BaseActivity {
 
                 if (string.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
@@ -120,7 +120,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
 
                     Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-                    intent.putExtra(ConversationUIService.USER_ID, "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
                     intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                     intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);

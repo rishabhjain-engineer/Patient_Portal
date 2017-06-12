@@ -19,9 +19,11 @@
     <TextView
         android:id="@+id/symptoms_tv"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
         android:gravity="center"
         android:textSize="20dp"
+        android:minHeight="50dp"
         android:background="@drawable/bg_parent_round_sumary_corner"
         android:layout_below="@+id/enter_symptoms"
         android:layout_marginLeft="20dp"
