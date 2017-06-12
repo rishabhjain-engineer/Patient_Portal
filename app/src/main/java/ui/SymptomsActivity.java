@@ -69,6 +69,8 @@ public class SymptomsActivity extends BaseActivity {
             "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Ashtama", "Sore Throat", "HyperTension", "Hair Loss",
             "Migraine", "Blood Pressure", "Blindness"};
     private List<Symptoms> mSymptomsList = new ArrayList<>();
+    private String symptomsList = "";
+    private EditText mNoteEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class SymptomsActivity extends BaseActivity {
         mCoversationType = getIntent().getStringExtra("chatType");
         Button continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(mOnClickListener);
+        mNoteEditText = (EditText) findViewById(R.id.enter_notes_et);
 
         Button attatchButton = (Button) findViewById(R.id.attach_button);
         attatchButton.setOnClickListener(mOnClickListener);
@@ -128,6 +131,8 @@ public class SymptomsActivity extends BaseActivity {
                 } else if (mCoversationType.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
                     videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                    videoCallIntent.putExtra("symptoms", symptomsList);
+                    videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
@@ -414,17 +419,16 @@ public class SymptomsActivity extends BaseActivity {
             mOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String list = "";
                     for (Symptoms symptoms : mSymptomsList) {
                         if (symptoms.isChecked()) {
-                            list += symptoms.getName() + " ,";
+                            symptomsList += symptoms.getName() + " ,";
                         }
                     }
                     mSymptomsDialog.dismiss();
-                    if (list.length() > 0) {
-                        list = list.substring(0, list.length() - 1);
+                    if (symptomsList.length() > 0) {
+                        symptomsList = symptomsList.substring(0, symptomsList.length() - 1);
                     }
-                    mSymptomsTextView.setText(list);
+                    mSymptomsTextView.setText(symptomsList);
                 }
             });
         }

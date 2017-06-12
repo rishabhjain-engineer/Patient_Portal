@@ -138,23 +138,26 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:text="Symptoms"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/files"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Files"
+            android:text="Symptoms :"
+            android:textSize="18dp"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Notes :"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Notes"
+            android:text="Files :"
+            android:textSize="18dp"
             android:textColor="@color/black" />
 
     </LinearLayout>

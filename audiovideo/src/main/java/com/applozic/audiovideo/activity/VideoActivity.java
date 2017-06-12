@@ -1,6 +1,7 @@
 package com.applozic.audiovideo.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class VideoActivity extends AudioCallActivityV2 {
     private static final String TAG = VideoActivity.class.getName();
 
     LinearLayout videoOptionlayout;
+    private TextView mSymptomsTextView, mNoteTextView;
 
     public VideoActivity() {
         super(true);
@@ -39,6 +41,14 @@ public class VideoActivity extends AudioCallActivityV2 {
         contactName = (TextView) findViewById(R.id.contact_name);
         //profileImage = (ImageView) findViewById(R.id.applozic_audio_profile_image);
         txtCount = (TextView) findViewById(R.id.applozic_audio_timer);
+
+        mSymptomsTextView = (TextView) findViewById(R.id.symptoms);
+        mNoteTextView = (TextView) findViewById(R.id.notes);
+        Intent intent = getIntent();
+        String symptoms = intent.getStringExtra("symptoms");
+        String notes = intent.getStringExtra("notes");
+        mSymptomsTextView.setText("Symptoms: "+ symptoms);
+        mNoteTextView.setText("Notes: " + notes);
 
         contactName.setText(contactToCall.getDisplayName());
         pauseVideo = true;
