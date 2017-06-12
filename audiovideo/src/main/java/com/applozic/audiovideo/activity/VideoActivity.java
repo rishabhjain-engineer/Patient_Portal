@@ -47,8 +47,8 @@ public class VideoActivity extends AudioCallActivityV2 {
         Intent intent = getIntent();
         String symptoms = intent.getStringExtra("symptoms");
         String notes = intent.getStringExtra("notes");
-        mSymptomsTextView.setText("Symptoms: "+ symptoms);
-        mNoteTextView.setText("Notes: " + notes);
+        mSymptomsTextView.setText("Symptoms: \n"+ symptoms);
+        mNoteTextView.setText("Notes: \n" + notes);
 
         contactName.setText(contactToCall.getDisplayName());
         pauseVideo = true;

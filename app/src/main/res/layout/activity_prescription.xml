@@ -12,31 +12,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/common_header" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_medium" />
-
-
-        <TextView
-            android:id="@+id/prescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Prescription"
-            android:textColor="@color/blue"
-            android:textStyle="bold" />
-
         <TextView
             android:id="@+id/medication_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="Medication Name"
             android:textColor="@color/golden" />
 
@@ -261,7 +243,7 @@
             <Button
                 android:id="@+id/close"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/print"
                 android:background="@drawable/login_edit_text_style"
                 android:text="Close"
@@ -270,7 +252,7 @@
             <Button
                 android:id="@+id/print"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"

@@ -25,6 +25,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -115,7 +116,7 @@ public class SymptomsActivity extends BaseActivity {
         } else {
             mSymptomsTextView.setText(list);
         }*/
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
