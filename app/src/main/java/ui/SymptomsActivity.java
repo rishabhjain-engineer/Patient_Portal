@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,69 +11,39 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
-import com.hs.userportal.Directory;
 import com.hs.userportal.R;
-import com.hs.userportal.UploadService;
-import com.hs.userportal.VaccineDetails;
-import com.hs.userportal.update;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import adapters.VaccineAdapter;
-import fragment.RepositoryFreshFragment;
+import adapters.SymptomsAdapter;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
-import utils.RepositoryUtils;
 
 /**
  * Created by ayaz on 6/6/17.
@@ -108,7 +75,7 @@ public class SymptomsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
 
-        for(int i=0; i< symptomsArry.length ; i++){
+        for (int i = 0; i < symptomsArry.length; i++) {
             Symptoms symptoms = new Symptoms();
             symptoms.setName(symptomsArry[i]);
             mSymptomsList.add(symptoms);
@@ -125,26 +92,10 @@ public class SymptomsActivity extends BaseActivity {
         Button attatchButton = (Button) findViewById(R.id.attach_button);
         attatchButton.setOnClickListener(mOnClickListener);
 
-
         Arrays.sort(symptomsArry);
         mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
         mSymptomsTextView.setText("Please choose symptoms.");
         mSymptomsTextView.setOnClickListener(mOnClickListener);
-
-       /* ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
-        adapter.setDropDownViewResource(R.layout.spinner_appearence);
-        symptomsSpinner.setAdapter(adapter);
-        symptomsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -425,7 +376,7 @@ public class SymptomsActivity extends BaseActivity {
 
     public class SymptomsDialog extends Dialog implements View.OnClickListener {
 
-        private ListView list;
+        private ListView listView;
         private EditText filterText = null;
         private SymptomsAdapter symptomsAdapter = null;
         private Button mOkButton;
@@ -439,30 +390,22 @@ public class SymptomsActivity extends BaseActivity {
             filterText = (EditText) findViewById(R.id.symptoms_search);
             mOkButton = (Button) findViewById(R.id.ok_button);
             filterText.addTextChangedListener(filterTextWatcher);
-            list = (ListView) findViewById(R.id.symptoms_list);
-            //adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cityList);
+            listView = (ListView) findViewById(R.id.symptoms_list);
             symptomsAdapter = new SymptomsAdapter(SymptomsActivity.this, mSymptomsList);
-            list.setAdapter(symptomsAdapter);
-          /*  list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                    mSymptomsTextView.setText(list.getItemAtPosition(position).toString());
-                    mSymptomsDialog.dismiss();
-                }
-            });*/
+            listView.setAdapter(symptomsAdapter);
 
             mOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String list = "";
-                    for(Symptoms symptoms : mSymptomsList){
-                        if(symptoms.isChecked()){
+                    for (Symptoms symptoms : mSymptomsList) {
+                        if (symptoms.isChecked()) {
                             list += symptoms.getName() + " ,";
                         }
                     }
                     mSymptomsDialog.dismiss();
-                    if(list.length() > 0){
-                        list = list.substring(0, list.length() -1);
+                    if (list.length() > 0) {
+                        list = list.substring(0, list.length() - 1);
                     }
                     mSymptomsTextView.setText(list);
                 }
@@ -504,72 +447,4 @@ public class SymptomsActivity extends BaseActivity {
         }
     }
 
-    private class SymptomsAdapter extends BaseAdapter {
-
-        private List<Symptoms> mSymptomsList = new ArrayList<>();
-        private Activity mActivity;
-
-        public SymptomsAdapter(Activity activity, List<Symptoms> symptomsList) {
-            mActivity = activity;
-            mSymptomsList = symptomsList;
-        }
-
-        public void setData(List<Symptoms> stringsList) {
-            mSymptomsList = stringsList;
-        }
-
-        @Override
-        public int getCount() {
-            return mSymptomsList.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        private class ViewHolder {
-            TextView name;
-            CheckBox checkBox;
-
-
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final SymptomsAdapter.ViewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mActivity).inflate(R.layout.symptoms_single_item_view, parent, false);
-                holder = new SymptomsAdapter.ViewHolder();
-                holder.name = (TextView) convertView.findViewById(R.id.symptoms_name);
-                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-                convertView.setTag(holder);
-            } else {
-                holder = (SymptomsAdapter.ViewHolder) convertView.getTag();
-            }
-
-            final Symptoms symptoms = mSymptomsList.get(position);
-            holder.name.setText(symptoms.getName());
-            holder.checkBox.setChecked(symptoms.isChecked());
-
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        symptoms.setChecked(false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        symptoms.setChecked(true);
-                    }
-                }
-            });
-            return convertView;
-        }
-    }
 }

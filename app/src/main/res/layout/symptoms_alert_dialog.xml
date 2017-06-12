@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:textColor="@color/white"
-        android:layout_height="60dp"
+        android:background="@color/green_header_login"
+        android:layout_height="40dp"
         android:text="OK" />
 </RelativeLayout>
