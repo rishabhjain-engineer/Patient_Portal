@@ -52,6 +52,8 @@ import android.widget.Toast;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.android.volley.DefaultRetryPolicy;
@@ -1511,25 +1513,48 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
 
             AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
 
-            ListObjectsRequest lor = new ListObjectsRequest()
+
+
+            ListObjectsV2Request lor = new ListObjectsV2Request()
                     .withBucketName(s3BucketName)
                     .withPrefix(prefix)
                     .withMaxKeys(1000)
                     .withDelimiter(delimiter);
 
+            ListObjectsV2Result result ;
+
             s3allData.clear();
             summaries.clear();
-            ObjectListing objectListing = s3Client.listObjects(lor);
-            s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
+          //  ListObjectsV2Result objectListing = s3Client.listObjectsV2(lor);                                  //listObjects(lor);
+          /*  s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
             summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
-            currentDirectory.clearAll();
+            currentDirectory.clearAll();*/
 
-            while (objectListing.isTruncated()) {
-                objectListing = s3Client.listNextBatchOfObjects(objectListing);
+            do {
+                result = s3Client.listObjectsV2(lor);
+
+                for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+
+                    ListObjectsV2Result objectListing = s3Client.listObjectsV2(lor);
+                    s3allData.addAll(objectListing.getCommonPrefixes());          // common prefixes will fetch all the subfolders
+                    summaries = objectListing.getObjectSummaries();               //get object summary will fetch all the paths; from path we can create a file Structure.
+                    currentDirectory.clearAll();
+
+                    System.out.println(" - " + objectSummary.getKey() + "  " + "(size = " + objectSummary.getSize() + ")");
+                }
+                System.out.println("Next Continuation Token : " + result.getNextContinuationToken());
+                lor.setContinuationToken(result.getNextContinuationToken());
+            } while(result.isTruncated());
+
+           /* while (objectListing.isTruncated()) {
+
+                //objectListing = s3Client.listNextBatchOfObjects(objectListing);
+                result = s3Client.listObjectsV2(lor);
+                lor.setContinuationToken(result.getNextContinuationToken());
+
                 s3allData.addAll(objectListing.getCommonPrefixes());
                 summaries.addAll(objectListing.getObjectSummaries());
-            }
-
+            }*/
 
             for (S3ObjectSummary summary : summaries) {
                 if (summary.getKey().contains("_thumb")) {

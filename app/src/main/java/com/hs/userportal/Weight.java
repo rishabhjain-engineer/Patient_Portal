@@ -50,7 +50,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ObjectPool;
 
-import org.codehaus.jackson.annotate.JsonValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -46,25 +46,20 @@ public class DirectoryFile {
 
         if(key.contains(".pdf") ||key.contains(".xls") || key.contains(".xlsx") || key.contains(".doc") || key.contains(".txt")|| key.contains(".docx")) {
             setOtherExtension(true) ;
-
-
             // Mr.SAjat.doc
             // mr sajat doc
             // mrsajat doc
             String[] splitted = key.split("\\.");
             String ExtensionType = splitted[splitted.length-1];
             setExtensionType(ExtensionType);
-
         }
-
 
         if (key.contains("ZurekaTempPatientConfig")) {
 
-        } else {
+        } else if(key.contains("jpg") || key.contains("jpeg") || key.contains("png") || key.contains("JPEG") || key.contains("PNG") || key.contains("JPG")){
             String[] thumbs = key.split("\\.");
             thumb = thumbs[0] + "_thumb." + thumbs[1];
         }
-
     }
 
     public Date getLastModified() {
