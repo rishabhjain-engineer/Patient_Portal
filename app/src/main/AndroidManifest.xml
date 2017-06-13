@@ -771,7 +771,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/ApplicationStyle"></activity>
+            android:theme="@style/Applozic_FullScreen_Theme"></activity>
 
     </application>
 

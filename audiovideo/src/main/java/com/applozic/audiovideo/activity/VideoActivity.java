@@ -205,7 +205,7 @@ public class VideoActivity extends AudioCallActivityV2 {
                 connectActionFab.setVisibility(View.VISIBLE);
                 thumbnailVideoView.setVisibility(View.VISIBLE);
                 contactName.setVisibility(View.VISIBLE);
-                hideShowWithAnimation();
+                //hideShowWithAnimation();
             }
         });
 
@@ -226,7 +226,7 @@ public class VideoActivity extends AudioCallActivityV2 {
                 connectActionFab.setVisibility(View.GONE);
                 thumbnailVideoView.setVisibility(View.GONE);
                 contactName.setVisibility(View.GONE);
-                hideShowWithAnimation();
+               // hideShowWithAnimation();
 
             }
         });
