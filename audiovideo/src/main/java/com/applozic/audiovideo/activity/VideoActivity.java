@@ -1,21 +1,37 @@
 package com.applozic.audiovideo.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.twilio.video.CameraCapturer;
 import com.twilio.video.VideoView;
+
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import applozic.com.audiovideo.R;
 
@@ -24,6 +40,7 @@ public class VideoActivity extends AudioCallActivityV2 {
 
     LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
+    private ImageView showFilesIv;
 
     public VideoActivity() {
         super(true);
@@ -33,6 +50,60 @@ public class VideoActivity extends AudioCallActivityV2 {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
+        showFilesIv = (ImageView) findViewById(R.id.show_files);
+        showFilesIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File fileReport = new File("/storage/emulated/0/Lab Pdf/Mr. Sunil  Raireport.pdf");
+
+                PackageManager packageManager = getPackageManager();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("application/pdf");
+                List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                if (list.size() > 0 && fileReport.isFile()) {
+
+                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                    ///////
+                    Uri uri = null;
+                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    Method m = null;
+                    try {
+                        m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    uri = Uri.fromFile(fileReport);
+                    /*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*/
+                    /////
+                    objIntent.setDataAndType(uri, "application/pdf");
+                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(objIntent);//Staring the pdf viewer
+                } else if (!fileReport.isFile()) {
+                    Log.v("ERROR!!!!", "OOPS2");
+                } else if (list.size() <= 0) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(VideoActivity.this);
+                    dialog.setTitle("PDF Reader not found");
+                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at " + fileReport.getAbsolutePath());
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
+            }
+        });
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
@@ -47,7 +118,15 @@ public class VideoActivity extends AudioCallActivityV2 {
         Intent intent = getIntent();
         String symptoms = intent.getStringExtra("symptoms");
         String notes = intent.getStringExtra("notes");
-        mSymptomsTextView.setText("Symptoms: \n"+ symptoms);
+
+        if(TextUtils.isEmpty(symptoms)){
+            symptoms = "";
+        }
+        if(TextUtils.isEmpty(notes)){
+            notes = "";
+        }
+
+        mSymptomsTextView.setText("Symptoms: \n" + symptoms);
         mNoteTextView.setText("Notes: \n" + notes);
 
         contactName.setText(contactToCall.getDisplayName());
@@ -78,7 +157,7 @@ public class VideoActivity extends AudioCallActivityV2 {
         final LinearLayout videoContainer = (LinearLayout) findViewById(R.id.video_container_ll);
         final LinearLayout textContainer = (LinearLayout) findViewById(R.id.text_container);
 
-        videoContainer.setOnClickListener(new View.OnClickListener() {
+        /*videoContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) textContainer.getLayoutParams();
@@ -103,6 +182,52 @@ public class VideoActivity extends AudioCallActivityV2 {
                 LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) textContainer.getLayoutParams();
                 params2.weight = 7.0f;
                 textContainer.setLayoutParams(params2);
+            }
+        });*/
+        float value = 200;
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final float px = value * (metrics.densityDpi / 160f);
+
+
+        videoContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) videoContainer.getLayoutParams();
+                params1.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                params1.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                videoContainer.setLayoutParams(params1);
+                FrameLayout.LayoutParams params2 = (FrameLayout.LayoutParams) textContainer.getLayoutParams();
+                params2.height = (int) px;
+                params2.width = (int) px;
+                params2.gravity = Gravity.RIGHT;
+                textContainer.bringToFront();
+                textContainer.setLayoutParams(params2);
+                connectActionFab.setVisibility(View.VISIBLE);
+                thumbnailVideoView.setVisibility(View.VISIBLE);
+                contactName.setVisibility(View.VISIBLE);
+                hideShowWithAnimation();
+            }
+        });
+
+        textContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FrameLayout.LayoutParams params2 = (FrameLayout.LayoutParams) videoContainer.getLayoutParams();
+                params2.height = (int) px;
+                params2.width = (int) px;
+                params2.gravity = Gravity.RIGHT;
+                videoContainer.bringToFront();
+                videoContainer.setLayoutParams(params2);
+                FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) textContainer.getLayoutParams();
+                params1.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                params1.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                textContainer.setLayoutParams(params1);
+                connectActionFab.setVisibility(View.GONE);
+                thumbnailVideoView.setVisibility(View.GONE);
+                contactName.setVisibility(View.GONE);
+                hideShowWithAnimation();
+
             }
         });
 
