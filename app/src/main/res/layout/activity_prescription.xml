@@ -218,7 +218,7 @@
             android:textColor="@color/golden" />
 
 
-        <EditText
+        <ImageView
             android:id="@+id/doctor_signature_et"
             android:layout_width="match_parent"
             android:layout_height="100dp"
@@ -226,9 +226,10 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_parent_round_sumary_corner"
             android:cursorVisible="false"
-            android:gravity="left|center_vertical"
-            android:hint="Enter signature"
+            android:gravity="center"
             android:inputType="text"
+            android:src="@drawable/action_search"
+            android:scaleType="centerInside"
             android:paddingLeft="10dp"
             android:singleLine="true"
             android:textColor="@color/create_account_tv_color"

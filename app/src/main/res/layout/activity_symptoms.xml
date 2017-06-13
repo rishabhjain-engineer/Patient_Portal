@@ -84,7 +84,7 @@
             android:layout_height="96dp"
             android:layout_below="@+id/attach_report"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/addplus" />
+            android:background="@drawable/attatch_report" />
 
         <Button
             android:id="@+id/continue_button"
