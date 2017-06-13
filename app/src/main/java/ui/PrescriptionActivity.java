@@ -67,6 +67,7 @@ public class PrescriptionActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.close) {
+                finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (id == R.id.print) {
                 Toast.makeText(PrescriptionActivity.this, "Comming soon...", Toast.LENGTH_SHORT).show();

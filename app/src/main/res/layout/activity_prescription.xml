@@ -228,7 +228,7 @@
             android:cursorVisible="false"
             android:gravity="center"
             android:inputType="text"
-            android:src="@drawable/action_search"
+            android:src="@drawable/sign_icon"
             android:scaleType="centerInside"
             android:paddingLeft="10dp"
             android:singleLine="true"
