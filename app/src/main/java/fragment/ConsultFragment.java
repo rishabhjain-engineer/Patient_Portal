@@ -25,6 +25,7 @@ import adapters.ConsultFragmentAdapter;
 import adapters.VaccineAdapter;
 import models.DoctorDetails;
 import ui.DoctorDetailsActivity;
+import ui.PastVisitActivity;
 import ui.PrescriptionActivity;
 import ui.VaccineActivity;
 import ui.VaccineEditActivity;
@@ -38,7 +39,7 @@ public class ConsultFragment extends Fragment {
     private ConsultFragmentAdapter mConsultFragmentAdapter;
     private List<DoctorDetails> mDoctorDetailsList = new ArrayList<>();
     private Button mConsultNow;
-    private TextView prescriptionTextView;
+    private TextView past_visits;
 
     @Nullable
     @Override
@@ -47,12 +48,12 @@ public class ConsultFragment extends Fragment {
         TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
         mListView = (ListView) view.findViewById(R.id.consult_doctor_list);
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
-        prescriptionTextView = (TextView) view.findViewById(R.id.prescription_text);
-        prescriptionTextView.setVisibility(View.VISIBLE);
-        prescriptionTextView.setOnClickListener(new View.OnClickListener() {
+        past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
+        past_visits.setVisibility(View.VISIBLE);
+        past_visits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PrescriptionActivity.class);
+                Intent intent = new Intent(getActivity(), PastVisitActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <include
+            android:id="@+id/header"
+            layout="@layout/consult_single_item_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="120dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Appoint Time : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="May 2, 2017 \n 4:45 PM"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Symptoms : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Anxiety\nFatigue\nHair Loss\nDepression"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Notes : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Have to spend 12 hour on computer. I don't go in gym, also not involved in any sport activity."
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Diagnosis : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Rest\nExcercise"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Prescription : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Tab Ibuprofen\nTab Aspirin\nTab Codeine"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Tests/Investigation : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="1. KFT\n 2 LFT\n 3 X-Ray"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Files : "
+            android:textColor="@color/sky_blue"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/show_files"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/pdf1" />
+
+    </LinearLayout>
+
+</ScrollView>

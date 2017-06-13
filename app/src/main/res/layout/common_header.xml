@@ -26,8 +26,8 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/prescription_text"
-        android:text="Prescription"
+        android:id="@+id/past_visits_tv"
+        android:text="Past Visits"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:textSize="20dp"
