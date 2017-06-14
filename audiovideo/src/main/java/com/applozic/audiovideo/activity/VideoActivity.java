@@ -38,7 +38,7 @@ import applozic.com.audiovideo.R;
 public class VideoActivity extends AudioCallActivityV2 {
     private static final String TAG = VideoActivity.class.getName();
 
-    LinearLayout videoOptionlayout;
+    private LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
     private ImageView showFilesIv;
 
@@ -119,15 +119,19 @@ public class VideoActivity extends AudioCallActivityV2 {
         String symptoms = intent.getStringExtra("symptoms");
         String notes = intent.getStringExtra("notes");
 
-        if(TextUtils.isEmpty(symptoms)){
-            symptoms = "";
-        }
-        if(TextUtils.isEmpty(notes)){
-            notes = "";
+        if (TextUtils.isEmpty(symptoms)) {
+            mSymptomsTextView.setText("Symptoms:");
+        }else{
+            mSymptomsTextView.setText("Symptoms: \n" + symptoms);
         }
 
-        mSymptomsTextView.setText("Symptoms: \n" + symptoms);
-        mNoteTextView.setText("Notes: \n" + notes);
+        if (TextUtils.isEmpty(notes)) {
+            mNoteTextView.setText("Notes:");
+        }else{
+            mNoteTextView.setText("Notes: \n" + notes);
+        }
+
+
 
         contactName.setText(contactToCall.getDisplayName());
         pauseVideo = true;
@@ -205,7 +209,7 @@ public class VideoActivity extends AudioCallActivityV2 {
                 connectActionFab.setVisibility(View.VISIBLE);
                 thumbnailVideoView.setVisibility(View.VISIBLE);
                 contactName.setVisibility(View.VISIBLE);
-                //hideShowWithAnimation();
+                hideShowOnExpandAndCollapse(false);
             }
         });
 
@@ -226,7 +230,7 @@ public class VideoActivity extends AudioCallActivityV2 {
                 connectActionFab.setVisibility(View.GONE);
                 thumbnailVideoView.setVisibility(View.GONE);
                 contactName.setVisibility(View.GONE);
-               // hideShowWithAnimation();
+                hideShowOnExpandAndCollapse(true);
 
             }
         });
@@ -283,6 +287,45 @@ public class VideoActivity extends AudioCallActivityV2 {
             speakerActionFab.show();
         }
     }
+
+    private void hideShowOnExpandAndCollapse(boolean value) {
+        if (value) {
+            //Camera Actions
+            if (switchCameraActionFab.isShown()) {
+                switchCameraActionFab.hide();
+            }
+            //Mute Actions
+            if (muteActionFab.isShown()) {
+                muteActionFab.hide();
+            }
+
+            if (localVideoActionFab.isShown()) {
+                localVideoActionFab.hide();
+            }
+
+            if (speakerActionFab.isShown()) {
+                speakerActionFab.hide();
+            }
+        } else {
+            //Camera Actions
+            if (!switchCameraActionFab.isShown()) {
+                switchCameraActionFab.show();
+            }
+            //Mute Actions
+            if (!muteActionFab.isShown()) {
+                muteActionFab.show();
+            }
+
+            if (!localVideoActionFab.isShown()) {
+                localVideoActionFab.show();
+            }
+
+            if (!speakerActionFab.isShown()) {
+                speakerActionFab.show();
+            }
+        }
+    }
+
 
     @Override
     public void initializeApplozic() {

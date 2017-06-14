@@ -59,7 +59,7 @@ public class Dialog {
 
     public static AlertDialog createCloseSessionDialog(DialogInterface.OnClickListener keepSession, DialogInterface.OnClickListener closeSessionListener, Context context) {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.Theme_AppCompat_Dialog_Alert);
 
         alertDialogBuilder.setTitle("Close session ");
         alertDialogBuilder.setMessage("Do you want to close your current session?");
