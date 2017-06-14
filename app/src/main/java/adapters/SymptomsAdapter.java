@@ -1,38 +1,32 @@
 package adapters;
 
 /**
- * Created by android1 on 12/6/17.
+ * Created by ayaz on 12/6/17.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hs.userportal.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import models.Symptoms;
 
-public class SymptomsAdapter extends BaseAdapter {
+public class SymptomsAdapter extends ArrayAdapter<Symptoms> {
 
-    private List<Symptoms> mSymptomsList = new ArrayList<>();
-    private Activity mActivity;
+    private LayoutInflater inflater;
+    private List<Symptoms> mSymptomsList;
 
-    public SymptomsAdapter(Activity activity, List<Symptoms> symptomsList) {
-        mActivity = activity;
+    public SymptomsAdapter(Context context, List<Symptoms> symptomsList) {
+        super(context, R.layout.symptoms_single_item_view, R.id.rowTextView, symptomsList);
         mSymptomsList = symptomsList;
-    }
-
-    public void setData(List<Symptoms> stringsList) {
-        mSymptomsList = stringsList;
+        inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -40,53 +34,77 @@ public class SymptomsAdapter extends BaseAdapter {
         return mSymptomsList.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
+    /**
+     * Holds child views for one row.
+     */
+    public static class SymptomsViewHolder {
+        private CheckBox checkBox;
+        private TextView textView;
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+        public SymptomsViewHolder(TextView textView, CheckBox checkBox) {
+            this.checkBox = checkBox;
+            this.textView = textView;
+        }
 
+        public CheckBox getCheckBox() {
+            return checkBox;
+        }
 
-    private class ViewHolder {
-        TextView name;
-        CheckBox checkBox;
-        RelativeLayout symptomsContainerRl;
+        public TextView getTextView() {
+            return textView;
+        }
+
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Symptoms symptoms = (Symptoms) mSymptomsList.get(position);
 
-        SymptomsAdapter.ViewHolder holder = null;
+        // The child views in each row.
+        CheckBox checkBox;
+        TextView textView;
+
+        // Create a new row view
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.symptoms_single_item_view, null);
+            convertView = inflater.inflate(R.layout.symptoms_single_item_view, null);
 
-            holder = new SymptomsAdapter.ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.symptoms_name);
-            holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-            convertView.setTag(holder);
+            // Find the child views.
+            textView = (TextView) convertView.findViewById(R.id.rowTextView);
+            checkBox = (CheckBox) convertView.findViewById(R.id.CheckBox01);
 
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    CheckBox cb = (CheckBox) view;
+            // Optimization: Tag the row with it's child views, so we don't have to
+            // call findViewById() later when we reuse the row.
+            convertView.setTag(new SymptomsViewHolder(textView, checkBox));
+
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    CheckBox cb = (CheckBox) v;
                     Symptoms symptoms = (Symptoms) cb.getTag();
                     symptoms.setChecked(cb.isChecked());
                 }
             });
-        } else {
-            holder = (SymptomsAdapter.ViewHolder) convertView.getTag();
+        }
+        // Reuse existing row view
+        else {
+            // Because we use a ViewHolder, we avoid having to call findViewById().
+            SymptomsViewHolder viewHolder = (SymptomsViewHolder) convertView.getTag();
+            checkBox = viewHolder.getCheckBox();
+            textView = viewHolder.getTextView();
         }
 
-        Symptoms symptoms = mSymptomsList.get(position);
-        holder.name.setText(symptoms.getName());
-        holder.checkBox.setChecked(symptoms.isChecked());
-        holder.checkBox.setTag(symptoms);
+        // Tag the CheckBox with the symptoms it is displaying, so that we can
+        // access the symptoms in onClick() when the CheckBox is toggled.
+        checkBox.setTag(symptoms);
+
+        // Display symptoms data
+        checkBox.setChecked(symptoms.isChecked());
+        textView.setText(symptoms.getName());
 
         return convertView;
-
     }
+
+    public void setData(List<Symptoms> symptomes) {
+        mSymptomsList = symptomes;
+    }
+
 }

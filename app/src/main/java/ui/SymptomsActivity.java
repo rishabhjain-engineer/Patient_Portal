@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -416,10 +417,20 @@ public class SymptomsActivity extends BaseActivity {
             listView = (ListView) findViewById(R.id.symptoms_list);
             symptomsAdapter = new SymptomsAdapter(SymptomsActivity.this, mSymptomsList);
             listView.setAdapter(symptomsAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick( AdapterView<?> parent, View item, int position, long id) {
+                    Symptoms symptoms = symptomsAdapter.getItem( position );
+                    symptoms.toggleChecked();
+                    SymptomsAdapter.SymptomsViewHolder viewHolder = (SymptomsAdapter.SymptomsViewHolder) item.getTag();
+                    viewHolder.getCheckBox().setChecked( symptoms.isChecked() );
+                }
+            });
 
             mOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    symptomsList = "";
                     for (Symptoms symptoms : mSymptomsList) {
                         if (symptoms.isChecked()) {
                             symptomsList += symptoms.getName() + " ,";

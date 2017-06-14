@@ -25,4 +25,8 @@ public class Symptoms {
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
+
+    public void toggleChecked() {
+        isChecked = !isChecked ;
+    }
 }
