@@ -17,6 +17,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ProgressEvent;
 import com.android.volley.AuthFailureError;
@@ -69,6 +72,7 @@ public class UploadService extends IntentService {
     private static final int NOTIFY_ID_UPLOAD = 1337;
     private RequestQueue queue1, queue2;
     private AmazonS3Client s3Client;
+    private AmazonS3 mAmazonS3;
     private Uploader uploader;
     private JsonObjectRequest jr1, jr2;
     private NotificationManager nm;
@@ -88,8 +92,16 @@ public class UploadService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        s3Client = new AmazonS3Client(
-                new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "ap-south-1:0186c083-2e5b-4df9-81d4-6ef80f30d0b4", // Identity Pool ID
+                Regions.AP_SOUTH_1 // Region
+        );
+
+        mAmazonS3 = new AmazonS3Client(credentialsProvider) ;
+
+       // s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         IntentFilter f = new IntentFilter();
@@ -380,7 +392,7 @@ public class UploadService extends IntentService {
             final String msg = "Uploading " + md5File + "...";
 
 
-            uploader = new Uploader(this, s3Client, s3BucketName, md5File, listOfFiles.get(position), directoryPath, listOfFiles.get(position).getName());
+            uploader = new Uploader(this, mAmazonS3, s3BucketName, md5File, listOfFiles.get(position), directoryPath, listOfFiles.get(position).getName());
             // listen for progress updates and broadcast/notify them appropriately
             uploader.setProgressListener(new UploadProgressListener() {
                 @Override

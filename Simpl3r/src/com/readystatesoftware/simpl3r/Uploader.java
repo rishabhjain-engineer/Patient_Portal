@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -30,6 +31,7 @@ import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.model.ProgressEvent;
 import com.amazonaws.services.s3.model.ProgressListener;
+import com.amazonaws.services.s3.model.SSEAwsKeyManagementParams;
 import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.amazonaws.services.s3.model.UploadPartResult;
 import com.readystatesoftware.simpl3r.utils.SharedPreferencesCompat;
@@ -48,8 +50,9 @@ public class Uploader {
 	private static final String PREFS_UPLOAD_ID = "_uploadId";
 	private static final String PREFS_ETAGS = "_etags";
 	private static final String PREFS_ETAG_SEP = "~~";
+	private static final String AWS_KMS_ENCRYPTION_KEY_ID = "arn:aws:kms:ap-south-1:504444404951:key/40e0f25d-891c-44f5-bc9f-32ba8e9aee46" ;
 
-	private AmazonS3Client s3Client;
+	private AmazonS3 s3Client;
 	private String s3bucketName;
 	private String s3key;
 	private File file;
@@ -61,7 +64,7 @@ public class Uploader {
 	private boolean userInterrupted = false;
 	private boolean userAborted = false;
 
-	public Uploader(Context context, AmazonS3Client s3Client, String s3bucketName, String s3key, File file, String path,String filename) {
+	public Uploader(Context context, AmazonS3 s3Client, String s3bucketName, String s3key, File file, String path, String filename) {
 		this.s3Client = s3Client;
 //		this.s3key = s3key+".jpg";
 		this.s3key = path+filename;
@@ -135,13 +138,13 @@ public class Uploader {
                 	// bail out if user cancelled
                 	// TODO calling shutdown too brute force?
                     if (userInterrupted) {
-                		s3Client.shutdown();
+                		//s3Client.shutdown();
                 		throw new UploadIterruptedException("User interrupted");
                 	} else if (userAborted) {
                 		// aborted requests cannot be resumed, so clear any cached etags
                 		clearProgressCache();
                     	s3Client.abortMultipartUpload(abortRequest);
-                    	s3Client.shutdown();
+                    	//s3Client.shutdown();
                     }
 
                     bytesUploaded += progressEvent.getBytesTransfered();
@@ -248,6 +251,7 @@ public class Uploader {
 	 */
 	protected void configureInitiateRequest(InitiateMultipartUploadRequest initRequest) {
 		initRequest.setCannedACL(CannedAccessControlList.PublicRead);
+		//initRequest.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(AWS_KMS_ENCRYPTION_KEY_ID));
 	}
 
 	public void setPrefs(SharedPreferences prefs) {

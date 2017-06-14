@@ -719,6 +719,11 @@
             android:name="com.applozic.mobicomkit.uiwidgets.notification.NotificationIntentService"
             android:exported="false" />
 
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
         <receiver android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />
