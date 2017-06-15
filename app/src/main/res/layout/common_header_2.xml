@@ -8,13 +8,13 @@
 
     <ImageView
         android:id="@+id/back_image"
-        android:layout_width="30dp"
-        android:layout_height="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginRight="15dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_backarrow_black"
+        android:src="@drawable/back_black_arrow"
         android:visibility="visible" />
 
     <TextView
@@ -28,6 +28,15 @@
         android:textSize="20dp" />
 
 
-
+    <TextView
+        android:id="@+id/past_visits_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="Past Visits"
+        android:textColor="@color/black_bg"
+        android:textSize="20dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

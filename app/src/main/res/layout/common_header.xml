@@ -25,15 +25,4 @@
         android:src="@drawable/ic_addplus_black"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/past_visits_tv"
-        android:text="Past Visits"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:textSize="20dp"
-        android:visibility="gone"
-        android:textColor="@color/black_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import java.util.List;
 
 import adapters.ConsultFragmentAdapter;
 import models.DoctorDetails;
+import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
 import ui.DoctorPrescriptionActivity;
 import ui.PastVisitActivity;
@@ -51,6 +53,17 @@ public class ConsultFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), PastVisitActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        ImageView backImage = (ImageView) view.findViewById(R.id.back_image);
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DashBoardActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                getActivity().finish();
             }
         });
 
