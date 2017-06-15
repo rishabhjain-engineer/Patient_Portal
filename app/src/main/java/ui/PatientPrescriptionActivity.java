@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hs.userportal.R;
@@ -15,7 +14,7 @@ import com.hs.userportal.R;
  * Created by ayaz on 12/6/17.
  */
 
-public class PrescriptionActivity extends BaseActivity {
+public class PatientPrescriptionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +69,7 @@ public class PrescriptionActivity extends BaseActivity {
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else if (id == R.id.print) {
-                Toast.makeText(PrescriptionActivity.this, "Comming soon...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PatientPrescriptionActivity.this, "Comming soon...", Toast.LENGTH_SHORT).show();
             }
         }
     };

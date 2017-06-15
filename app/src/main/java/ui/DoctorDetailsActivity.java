@@ -31,12 +31,17 @@ public class DoctorDetailsActivity extends BaseActivity {
 
         setContentView(R.layout.activity_doctor_detail);
         setupActionBar();
-        mActionBar.setTitle("Doctor Details");
+        mActionBar.hide();
 
         TextView doctorName = (TextView) findViewById(R.id.doctor_name);
         TextView doctorLocation = (TextView) findViewById(R.id.city);
         TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
         ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
+        ImageView backImage = (ImageView) findViewById(R.id.back_image);
+        TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        headerTitleTv.setText("Doctor Details");
+        backImage.setOnClickListener(mOnClickListener);
 
         TextView about = (TextView) findViewById(R.id.about);
 
@@ -75,6 +80,9 @@ public class DoctorDetailsActivity extends BaseActivity {
                 decesionAlertDialog("video");
             } else if (R.id.chat == id) {
                 decesionAlertDialog("chat");
+            } else if (R.id.back_image == id) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         }
     };

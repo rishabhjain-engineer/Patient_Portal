@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +69,7 @@ public class SymptomsActivity extends BaseActivity {
     private TextView mSymptomsTextView;
     private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
             "Skin Rash", "Swelling", "Stress", "Fever", "Weight Loss", "Common Cold", "Diarrhea", "Allergy", "Vomiting", "Dizziness", "Abdominal Pain", "Itch",
-            "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Ashtama", "Sore Throat", "HyperTension", "Hair Loss",
+            "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Asthma", "Sore Throat", "HyperTension", "Hair Loss",
             "Migraine", "Blood Pressure", "Blindness"};
     private List<Symptoms> mSymptomsList = new ArrayList<>();
     private String symptomsList = "";
@@ -87,7 +88,13 @@ public class SymptomsActivity extends BaseActivity {
         }
 
         setupActionBar();
-        mActionBar.setTitle("Symptoms");
+        mActionBar.hide();
+
+        ImageView backImage = (ImageView) findViewById(R.id.back_image);
+        TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        headerTitleTv.setText("Symptoms");
+        backImage.setOnClickListener(mOnClickListener);
+
         mActivity = this;
         permissionStatus = mActivity.getSharedPreferences("permissionStatus", MODE_PRIVATE);
         mCoversationType = getIntent().getStringExtra("chatType");
@@ -162,6 +169,9 @@ public class SymptomsActivity extends BaseActivity {
             } else if (id == R.id.symptoms_tv) {
                 mSymptomsDialog = new SymptomsDialog(SymptomsActivity.this, symptomsArry);
                 mSymptomsDialog.show();
+            } else if (R.id.back_image == id) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
 
         }
@@ -419,11 +429,11 @@ public class SymptomsActivity extends BaseActivity {
             listView.setAdapter(symptomsAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick( AdapterView<?> parent, View item, int position, long id) {
-                    Symptoms symptoms = symptomsAdapter.getItem( position );
+                public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+                    Symptoms symptoms = symptomsAdapter.getItem(position);
                     symptoms.toggleChecked();
                     SymptomsAdapter.SymptomsViewHolder viewHolder = (SymptomsAdapter.SymptomsViewHolder) item.getTag();
-                    viewHolder.getCheckBox().setChecked( symptoms.isChecked() );
+                    viewHolder.getCheckBox().setChecked(symptoms.isChecked());
                 }
             });
 
@@ -433,7 +443,7 @@ public class SymptomsActivity extends BaseActivity {
                     symptomsList = "";
                     for (Symptoms symptoms : mSymptomsList) {
                         if (symptoms.isChecked()) {
-                            symptomsList += symptoms.getName() + " ,";
+                            symptomsList += symptoms.getName() + ", ";
                         }
                     }
                     mSymptomsDialog.dismiss();

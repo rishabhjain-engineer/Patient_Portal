@@ -41,7 +41,7 @@ public class VideoActivity extends AudioCallActivityV2 {
     private LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
     private ImageView showFilesIv;
-
+    private static final String INTENT_STRING = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     public VideoActivity() {
         super(true);
     }
@@ -353,6 +353,10 @@ public class VideoActivity extends AudioCallActivityV2 {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Intent intent = new Intent ();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(INTENT_STRING);
+        startActivity(intent);
     }
 
     /*

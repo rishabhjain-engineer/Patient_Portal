@@ -824,7 +824,7 @@ public class AudioCallActivityV2 extends AppCompatActivity implements TokenGener
                 progress.show();
                 scheduleStopRinging(callId);
             } else {
-               // mediaPlayer.start();
+                mediaPlayer.start();
             }
 
             LocalBroadcastManager.getInstance(this).registerReceiver(applozicBroadCastReceiver,

@@ -33,7 +33,18 @@ public class PastVisitActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_visit);
         setupActionBar();
-        mActionBar.setTitle("Past Visit");
+        mActionBar.hide();
+
+        ImageView backImage = (ImageView) findViewById(R.id.back_image);
+        TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        headerTitleTv.setText("Past Visit");
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+        });
 
         TextView doctorName = (TextView) findViewById(R.id.doctor_name);
         TextView doctorLocation = (TextView) findViewById(R.id.city);
@@ -91,12 +102,12 @@ public class PastVisitActivity extends BaseActivity {
                     dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at " + fileReport.getAbsolutePath());
                     dialog.setCancelable(false);
                     dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            dialog.dismiss();
+                        }
+                    });
                     dialog.show();
                 }
 

@@ -13,22 +13,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.applozic.audiovideo.activity.VideoActivity;
-import com.hs.userportal.AppAplication;
 import com.hs.userportal.R;
-import com.hs.userportal.VaccineDetails;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapters.ConsultFragmentAdapter;
-import adapters.VaccineAdapter;
 import models.DoctorDetails;
 import ui.DoctorDetailsActivity;
 import ui.PastVisitActivity;
-import ui.PrescriptionActivity;
-import ui.VaccineActivity;
-import ui.VaccineEditActivity;
 
 /**
  * Created by ayaz on 2/6/17.

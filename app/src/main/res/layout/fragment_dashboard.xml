@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="?android:attr/actionBarSize"
         android:visibility="visible"
         android:layout_alignParentTop="true"
         android:background="@color/white">
