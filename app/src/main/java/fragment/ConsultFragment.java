@@ -23,6 +23,7 @@ import models.DoctorDetails;
 import ui.DoctorDetailsActivity;
 import ui.DoctorPrescriptionActivity;
 import ui.PastVisitActivity;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 2/6/17.
@@ -61,8 +62,13 @@ public class ConsultFragment extends Fragment {
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
 
-                Intent intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
-               // Intent intent = new Intent(getActivity(), PastVisitActivity.class);
+
+                Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(getActivity(), PastVisitActivity.class);
+                } else {
+                    intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
+                }
                 intent.putExtra("chatType", "video");
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

@@ -47,6 +47,7 @@ import java.util.List;
 import adapters.SymptomsAdapter;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 6/6/17.
@@ -160,8 +161,13 @@ public class SymptomsActivity extends BaseActivity {
                 } else {
 
                 }*/
-                Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
-               // Intent intent = new Intent(SymptomsActivity.this, PastVisitActivity.class);
+                //Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
+                Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(SymptomsActivity.this, PastVisitActivity.class);
+                } else {
+                    intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
+                }
                 intent.putExtra("chatType", mCoversationType);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

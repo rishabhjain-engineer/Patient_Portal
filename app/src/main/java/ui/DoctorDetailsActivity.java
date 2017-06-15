@@ -19,6 +19,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.R;
 
 import models.DoctorDetails;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 5/6/17.
@@ -137,8 +138,13 @@ public class DoctorDetailsActivity extends BaseActivity {
 
                 }*/
 
-                Intent intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
-                //Intent intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
+                //Intent intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
+                Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
+                } else {
+                    intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
+                }
                 intent.putExtra("chatType", string);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
