@@ -15,117 +15,118 @@
             android:layout_width="match_parent"
             android:layout_height="120dp" />
 
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Appoint Time : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="May 2, 2017 \n 4:45 PM"
+            android:padding="8dp"
+            android:text="Appoint Time : \nMay 2, 2017, 4:45 PM"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Symptoms : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Anxiety\nFatigue\nHair Loss\nDepression"
+            android:padding="8dp"
+            android:text="Symptoms :\n1.Anxiety\n2.Fatigue\n3.Hair Loss\n4.Depression"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Notes : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Have to spend 12 hour on computer. I don't go in gym, also not involved in any sport activity."
+            android:padding="8dp"
+            android:text="Notes :\nHave to spend 12 hour on computer. I don't go in gym, also not involved in any sport activity."
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Diagnosis : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Rest\nExcercise"
+            android:padding="8dp"
+            android:text="Comments :\nTake rest after every 2 hours"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Prescription : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Tab Ibuprofen\nTab Aspirin\nTab Codeine"
+            android:padding="8dp"
+            android:text="Diagnosis :\n1.Rest\n2.Excercise"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Tests/Investigation : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="1. KFT\n 2 LFT\n 3 X-Ray"
+            android:padding="8dp"
+            android:text="Prescription :\n1.Tab Ibuprofen\n2.Tab Aspirin\n3.Tab Codeine"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Tests/Investigation :\n1. KFT\n 2 LFT\n 3 X-Ray"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:padding="8dp"
             android:text="Files : "
-            android:textColor="@color/sky_blue"
-            android:textSize="18dp" />
+            android:textColor="@color/black"
+            android:textSize="15dp" />
 
         <ImageView
             android:id="@+id/show_files"
             android:layout_width="76dp"
             android:layout_height="76dp"
-            android:layout_marginTop="5dp"
+            android:padding="8dp"
             android:src="@drawable/pdf1" />
 
     </LinearLayout>

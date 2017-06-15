@@ -493,6 +493,11 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="ui.SymptomsChooserActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
         <service android:name=".UploadProfileService" />
 
         <activity

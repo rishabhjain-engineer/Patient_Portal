@@ -88,7 +88,7 @@ public class DoctorDetailsActivity extends BaseActivity {
 
         TextView message = (TextView) dialog.findViewById(R.id.message);
         message.setText("Do you want to provide additional information ? ");
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         okBTN.setText("Later");
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
