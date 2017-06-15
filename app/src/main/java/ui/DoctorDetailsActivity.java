@@ -138,6 +138,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                 }*/
 
                 Intent intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
+                //Intent intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
                 intent.putExtra("chatType", string);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

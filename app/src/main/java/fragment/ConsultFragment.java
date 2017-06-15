@@ -60,7 +60,9 @@ public class ConsultFragment extends Fragment {
                 videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+
                 Intent intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
+               // Intent intent = new Intent(getActivity(), PastVisitActivity.class);
                 intent.putExtra("chatType", "video");
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

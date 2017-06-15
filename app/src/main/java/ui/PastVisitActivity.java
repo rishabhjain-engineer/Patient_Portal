@@ -9,11 +9,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.applozic.audiovideo.activity.AudioCallActivityV2;
+import com.applozic.audiovideo.activity.VideoActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
 
@@ -115,6 +120,24 @@ public class PastVisitActivity extends BaseActivity {
             }
         });
 
+        String mCoversationType = getIntent().getStringExtra("chatType");
+        if(!TextUtils.isEmpty(mCoversationType)){
+            Intent intent = null;
+            if (mCoversationType.equalsIgnoreCase("audio")) {
+                intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
+                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+            } else if (mCoversationType.equalsIgnoreCase("video")) {
+                intent = new Intent(PastVisitActivity.this, VideoActivity.class);
+                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+            } else if (mCoversationType.equalsIgnoreCase("chat")) {
+                intent = new Intent(PastVisitActivity.this, ConversationActivity.class);
+                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
+                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+            }
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
     }
 
     @Override

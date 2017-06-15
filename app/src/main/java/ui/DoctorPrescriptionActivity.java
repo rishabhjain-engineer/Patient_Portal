@@ -27,7 +27,6 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         setContentView(R.layout.activity_doctor_prescription);
         setupActionBar();
         mActionBar.hide();
-        mCoversationType = getIntent().getStringExtra("chatType");
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
         headerTitleTv.setText("Doctor Prescription");
@@ -40,6 +39,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        mCoversationType = getIntent().getStringExtra("chatType");
         Intent intent = null;
         if (mCoversationType.equalsIgnoreCase("audio")) {
             intent = new Intent(DoctorPrescriptionActivity.this, AudioCallActivityV2.class);
