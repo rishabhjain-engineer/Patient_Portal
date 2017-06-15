@@ -107,7 +107,7 @@ public class DoctorDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                if (string.equalsIgnoreCase("audio")) {
+               /* if (string.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
@@ -120,12 +120,12 @@ public class DoctorDetailsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("chat")) {
-                    /*Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
+                    *//*Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                     if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
                         intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
                     startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*//*
 
                     Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                     intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
@@ -135,7 +135,13 @@ public class DoctorDetailsActivity extends BaseActivity {
                     dialog.dismiss();
                 } else {
 
-                }
+                }*/
+
+                Intent intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
+                intent.putExtra("chatType", string);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                dialog.dismiss();
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {

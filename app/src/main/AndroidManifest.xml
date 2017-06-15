@@ -488,11 +488,11 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
 
-            <intent-filter>
+          <!--  <intent-filter>
                 <action android:name="com.hs.userportal.ui.DoctorPrescriptionActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <activity

@@ -132,7 +132,7 @@ public class SymptomsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.continue_button) {
-                if (mCoversationType.equalsIgnoreCase("audio")) {
+               /* if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
@@ -145,12 +145,12 @@ public class SymptomsActivity extends BaseActivity {
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                   /* Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
+                   *//* Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
                     if (ApplozicClient.getInstance(SymptomsActivity.this).isContextBasedChat()) {
                         intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
                     startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*//*
                     Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
                     intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
                     intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
@@ -159,7 +159,11 @@ public class SymptomsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else {
 
-                }
+                }*/
+                Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
+                intent.putExtra("chatType", mCoversationType);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else if (id == R.id.attach_button) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();

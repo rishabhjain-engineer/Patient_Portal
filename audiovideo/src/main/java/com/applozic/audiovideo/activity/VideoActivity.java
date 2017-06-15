@@ -353,10 +353,10 @@ public class VideoActivity extends AudioCallActivityV2 {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent ();
+        /*Intent intent = new Intent ();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(INTENT_STRING);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     /*

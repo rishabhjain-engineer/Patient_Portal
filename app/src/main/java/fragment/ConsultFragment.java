@@ -21,6 +21,7 @@ import java.util.List;
 import adapters.ConsultFragmentAdapter;
 import models.DoctorDetails;
 import ui.DoctorDetailsActivity;
+import ui.DoctorPrescriptionActivity;
 import ui.PastVisitActivity;
 
 /**
@@ -55,9 +56,13 @@ public class ConsultFragment extends Fragment {
         mConsultNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
+               /* Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
                 videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                Intent intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
+                intent.putExtra("chatType", "video");
+                startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
