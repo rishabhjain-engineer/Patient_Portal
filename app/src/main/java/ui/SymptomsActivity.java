@@ -221,7 +221,7 @@ public class SymptomsActivity extends BaseActivity {
         dialog.show();
     }
 
-    void askRunTimePermissions() {
+    private void askRunTimePermissions() {
 
         if (ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[1]) != PackageManager.PERMISSION_GRANTED) {
@@ -359,7 +359,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
 
-    public void openGallery(int req_code) {
+    private void openGallery(int req_code) {
 
         Intent intent = new Intent();
 
@@ -405,7 +405,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
 
-    public String getPath(Uri uri) {
+    private String getPath(Uri uri) {
 
         String[] projection = {MediaStore.Images.Media.DATA};
 
@@ -419,7 +419,7 @@ public class SymptomsActivity extends BaseActivity {
 
     }
 
-    public class SymptomsDialog extends Dialog implements View.OnClickListener {
+    private class SymptomsDialog extends Dialog implements View.OnClickListener {
 
         private ListView listView;
         private EditText filterText = null;
