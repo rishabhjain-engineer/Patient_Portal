@@ -113,8 +113,7 @@ public class ConsultFragment extends Fragment {
         doctorDetails3.setLocation("Sector 22, Noida");
         doctorDetails3.setMedicineType("Family Medicine");
         doctorDetails3.setDoctorImage(R.drawable.update);
-        doctorDetails3.setAboutDoctor("\n" +
-                "Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
+        doctorDetails3.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
         mDoctorDetailsList.add(doctorDetails3);
@@ -124,8 +123,7 @@ public class ConsultFragment extends Fragment {
         doctorDetails1.setLocation("Aminabad, Lucknow");
         doctorDetails1.setMedicineType("Family Medicine");
         doctorDetails1.setDoctorImage(R.drawable.ayaz);
-        doctorDetails1.setAboutDoctor("\n" +
-                "Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
+        doctorDetails1.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
         mDoctorDetailsList.add(doctorDetails1);
@@ -135,8 +133,7 @@ public class ConsultFragment extends Fragment {
         doctorDetails2.setLocation("GTB Nagar, Delhi");
         doctorDetails2.setMedicineType("Family Medicine");
         doctorDetails2.setDoctorImage(R.drawable.update);
-        doctorDetails2.setAboutDoctor("\n" +
-                "Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
+        doctorDetails2.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
         mDoctorDetailsList.add(doctorDetails2);

@@ -24,6 +24,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/back_image"
         android:text="ayaz"
+        android:textStyle="bold"
         android:textColor="@color/black_bg"
         android:textSize="20dp" />
 
@@ -35,6 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:text="Past Visits"
+        android:textStyle="bold"
         android:textColor="@color/black_bg"
         android:textSize="20dp"
         android:visibility="gone" />
