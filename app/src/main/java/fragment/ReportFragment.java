@@ -3,19 +3,13 @@ package fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,6 +19,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,9 +30,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -51,13 +45,12 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Helper;
+import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.OrderDetails;
 import com.hs.userportal.OrderList;
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
 import com.hs.userportal.Services;
-import com.hs.userportal.lablistdetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,13 +65,12 @@ import java.util.List;
 
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
+import adapters.ReportFragmentAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by android1 on 3/4/17.
@@ -149,6 +141,13 @@ public class ReportFragment extends Fragment {
     private boolean sentToSettings = false;
     private int mItemClickedPosition = -1;
 
+
+    private RecyclerView mRecyclerViewReportList ;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ReportFragmentAdapter mAdapterReportFragment ;
+
+    private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
+
     @TargetApi(Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -176,6 +175,11 @@ public class ReportFragment extends Fragment {
         select_member_lab = (EditText) view.findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) view.findViewById(R.id.past_visits);
+
+        mRecyclerViewReportList = (RecyclerView) view.findViewById(R.id.report_records_listview);
+        mRecyclerViewReportList.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mActivity) ;
+        mRecyclerViewReportList.setLayoutManager(mLayoutManager);
 
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
@@ -211,7 +215,6 @@ public class ReportFragment extends Fragment {
 
         // id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         //
-
 
 
         Bundle bundle = getArguments();
@@ -282,8 +285,8 @@ public class ReportFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 mItemClickedPosition = position;
-                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         //Show Information about why you need the permission
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                         builder.setTitle("Need Storage Permission");
@@ -292,7 +295,7 @@ public class ReportFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
-                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -302,7 +305,7 @@ public class ReportFragment extends Fragment {
                             }
                         });
                         builder.show();
-                    } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,false)) {
+                    } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, false)) {
                         //Previously Permission Request was cancelled with 'Dont Ask Again',
                         // Redirect to Settings after showing Information about why you need the permission
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
@@ -327,16 +330,16 @@ public class ReportFragment extends Fragment {
                             }
                         });
                         builder.show();
-                    }  else {
+                    } else {
                         //just request the permission
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                     }
 
                     SharedPreferences.Editor editor = permissionStatus.edit();
-                    editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,true);
+                    editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, true);
                     editor.commit();
                 } else {
-                  proceedAfterPermission(position);
+                    proceedAfterPermission(position);
                 }
             }
         });
@@ -479,7 +482,7 @@ public class ReportFragment extends Fragment {
             }
         });
         setHasOptionsMenu(true);
-        permissionStatus = getActivity().getSharedPreferences("permissionStatus",getActivity().MODE_PRIVATE);
+        permissionStatus = getActivity().getSharedPreferences("permissionStatus", getActivity().MODE_PRIVATE);
         return view;
     }
 
@@ -495,21 +498,24 @@ public class ReportFragment extends Fragment {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(mActivity);
+          /*  progress = new ProgressDialog(mActivity);
             progress.setCancelable(false);
             progress.setMessage("Syncing test records ...");
-            progress.setIndeterminate(true);
+            progress.setIndeterminate(true);*/
             // buttonbar.setVisibility(View.VISIBLE);
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
-            progress.show();
+           // progress.show();
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            if (image.size() == 0) {
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity , listOfCaseCodeModelObjects) ;
+            mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
+
+           /* if (image.size() == 0) {
                 // images.setBackgroundResource(R.drawable.grey_button);
                 //  images.setEnabled(false);
             } else {
@@ -562,13 +568,13 @@ public class ReportFragment extends Fragment {
                 System.out.println("Discount:" + disc);
 
                 if (paid <= 0) {
-                   /* bal.setTextColor(Color.parseColor("#347C17"));
-                    bal.setText("PAID");*/
+                   *//* bal.setTextColor(Color.parseColor("#347C17"));
+                    bal.setText("PAID");*//*
                     bal = "PAID";
                 } else {
 
-                 /*   bal.setTextColor(Color.RED);
-                    bal.setText("DUE");*/
+                 *//*   bal.setTextColor(Color.RED);
+                    bal.setText("DUE");*//*
                     bal = "DUE";
 
                 }
@@ -597,12 +603,12 @@ public class ReportFragment extends Fragment {
                 }
 
             } catch (JSONException e) {
-                /*pat.setText("");
+                *//*pat.setText("");
                 nam.setText("");
                 blg.setText("");
                 tvreferral.setText("");
                 blg.setText("");
-                bal.setText("");*/
+                bal.setText("");*//*
                 Toast.makeText(mActivity, "No cases.", Toast.LENGTH_SHORT).show();
                 Log.e("Rishabh", "JSONException error messgae := " + e);
                 //  buttonbar.setVisibility(View.GONE);
@@ -611,13 +617,13 @@ public class ReportFragment extends Fragment {
 
             try {
                 if (check == subArray1.length()) {
-                 /*   all.setEnabled(false);
+                 *//*   all.setEnabled(false);
                     all.setBackgroundResource(R.drawable.grey_button);
                     images.setBackgroundResource(R.drawable.grey_button);
-                    images.setEnabled(false);*/
+                    images.setEnabled(false);*//*
                 } else {
-                    /*all.setEnabled(true);
-                    all.setBackgroundResource(R.drawable.button_selector);*/
+                    *//*all.setEnabled(true);
+                    all.setBackgroundResource(R.drawable.button_selector);*//*
                 }
                 // lv.setAdapter(adapter);
                 // Utility.setListViewHeightBasedOnChildren(lv);
@@ -629,12 +635,12 @@ public class ReportFragment extends Fragment {
             }
 
             //===========================getting order list=============================//
-            if(!mIsComingFromMyFamilyClass){
+            if (!mIsComingFromMyFamilyClass) {
                 getOrderList();
             }
             if (progress != null && progress.isShowing()) {
                 progress.dismiss();
-            }
+            }*/
         }
 
         @Override
@@ -649,9 +655,9 @@ public class ReportFragment extends Fragment {
             }
             sendDataList = new JSONObject();
             try {
-                sendDataList.put("ApplicationId", "");
-                sendDataList.put("DoctorId", "");
-                sendDataList.put("PatientId", id);
+              //   sendDataList.put("ApplicationId", "");
+             //    sendDataList.put("DoctorId", "");
+                sendDataList.put("PatientId", "48fc92e1-419f-4903-9619-ff0265678cf7");   // id replace
 
             } catch (JSONException e) {
 
@@ -660,6 +666,7 @@ public class ReportFragment extends Fragment {
             System.out.println(sendDataList);
 
             receiveDataList = service.patientstatus(sendDataList);
+
 
             System.out.println(receiveDataList);
 
@@ -672,7 +679,67 @@ public class ReportFragment extends Fragment {
                 dataList = receiveDataList.getString("d");
                 JSONObject cut = new JSONObject(dataList);
                 subArrayList = cut.getJSONArray("Table");
-                if (subArrayList.length() == 0) {
+
+                Log.e("Rishabh", "received response := "+subArrayList.toString()) ;
+                listOfCaseCodeModelObjects.clear();
+                for (int i = 0; i < subArrayList.length(); i++) {
+
+                    String caseCode = subArrayList.getJSONObject(i).getString("CaseCode");
+                    CaseCodeModel caseCodeModelObject = new CaseCodeModel(caseCode);
+                    CaseCodeModel check = checkCaseCodeExistInList(caseCodeModelObject) ;
+
+                    if (check  == null ){
+                        // New Case Code
+
+
+                        caseCodeModelObject.setLocationName(subArrayList.getJSONObject(i).getString("LocationName"));
+                        caseCodeModelObject.setReferrerName(subArrayList.getJSONObject(i).getString("ReferrerName"));
+                        caseCodeModelObject.setDateandTime(subArrayList.getJSONObject(i).getString("AdviseDate"));
+                        caseCodeModelObject.setCaseID(subArrayList.getJSONObject(i).getString("CaseId"));
+                        caseCodeModelObject.settestLocationID(subArrayList.getJSONObject(i).getString("TestLocationId"));
+
+
+
+                        caseCodeModelObject.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).getString("Description"));
+                        caseCodeModelObject.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).getBoolean("IsPublish"));
+                        caseCodeModelObject.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).getBoolean("IsSampleReceived"));
+                        caseCodeModelObject.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).getBoolean("IsTestCompleted"));
+                        caseCodeModelObject.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).getString("InvestigationId"));
+                        caseCodeModelObject.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).getString("TestId"));
+
+                        // Add this new object to ListOf CaseCode objects
+
+
+
+                        listOfCaseCodeModelObjects.add(caseCodeModelObject);
+                        Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
+
+                    } else {
+
+                        // Case Code Exist ;
+
+                        check.createNewTestNameObject() ;
+                        check.setLocationName(subArrayList.getJSONObject(i).getString("LocationName"));
+                        check.setReferrerName(subArrayList.getJSONObject(i).getString("ReferrerName"));
+                        check.setDateandTime(subArrayList.getJSONObject(i).getString("AdviseDate"));
+                        check.setCaseID(subArrayList.getJSONObject(i).getString("CaseId"));
+                        check.settestLocationID(subArrayList.getJSONObject(i).getString("TestLocationId"));
+
+
+                        check.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).getString("Description"));
+                        check.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).getBoolean("IsPublish"));
+                        check.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).getBoolean("IsSampleReceived"));
+                        check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).getBoolean("IsTestCompleted"));
+                        check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).getString("InvestigationId"));
+                        check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).getString("TestId"));
+                        Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
+                    }
+
+                }
+
+
+
+   /*             if (subArrayList.length() == 0) {
                     caseid = "";
                 }
                 HashMap<String, String> hmap;
@@ -732,7 +799,7 @@ public class ReportFragment extends Fragment {
                 } else {
 
                 }
-
+*/
 
             } catch (JSONException e) {
 
@@ -740,7 +807,7 @@ public class ReportFragment extends Fragment {
             }
 
 
-            sendData = new JSONObject();
+         /*   sendData = new JSONObject();
             try {
                 sendData.put("CaseId", caseid);
 
@@ -862,11 +929,23 @@ public class ReportFragment extends Fragment {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
+            }*/
             return null;
+            // End of background method
         }
 
 
+    }
+
+    private CaseCodeModel checkCaseCodeExistInList(CaseCodeModel casecodeObject) {
+
+        for (CaseCodeModel tempOject : listOfCaseCodeModelObjects) {
+
+            if (tempOject.getCaseCode().equals(casecodeObject.getCaseCode())) {
+                return tempOject;
+            }
+        }
+        return null ;
     }
 
     private static class Utility {
@@ -1176,11 +1255,11 @@ public class ReportFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == PERMISSION_CALLBACK_CONSTANT){
+        if (requestCode == PERMISSION_CALLBACK_CONSTANT) {
             //check if all permissions are granted
             boolean allgranted = false;
-            for(int i=0;i<grantResults.length;i++){
-                if(grantResults[i]==PackageManager.PERMISSION_GRANTED){
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     allgranted = true;
                 } else {
                     allgranted = false;
@@ -1188,9 +1267,9 @@ public class ReportFragment extends Fragment {
                 }
             }
 
-            if(allgranted){
+            if (allgranted) {
                 //proceedAfterPermission(mItemClickedPosition);
-            } else if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                 builder.setTitle("Need Storage Permission");
                 builder.setMessage("This app needs phone permission.");
@@ -1198,7 +1277,7 @@ public class ReportFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1209,7 +1288,7 @@ public class ReportFragment extends Fragment {
                 });
                 builder.show();
             } else {
-                Toast.makeText(getActivity(),"Unable to get Permission",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Unable to get Permission", Toast.LENGTH_LONG).show();
             }
         }
     }

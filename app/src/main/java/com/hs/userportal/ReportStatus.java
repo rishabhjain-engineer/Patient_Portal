@@ -157,7 +157,7 @@ public class ReportStatus extends BaseActivity {
         System.out.println("Data Received:" + jarray);
 
         try {
-            advice.setText(jarray.getJSONObject(index).getString("AdviseDate"));
+         //   advice.setText(jarray.getJSONObject(index).getString("AdviseDate"));
 
 
             if (!jarray.getJSONObject(index).getString("ReferrerName").matches(((".*[a-kA-Zo-t]+.*")))) {
@@ -169,9 +169,9 @@ public class ReportStatus extends BaseActivity {
                     || jarray.getJSONObject(index).getString("CollectionTime").equalsIgnoreCase("null")) {
 
             } else {
-                sample.setText(jarray.getJSONObject(index).getString("CollectionTime"));
+          //      sample.setText(jarray.getJSONObject(index).getString("CollectionTime"));
             }
-            dob.setText(jarray.getJSONObject(index).getString("DateOfReport"));
+          //  dob.setText(jarray.getJSONObject(index).getString("DateOfReport"));
             j.put("InvestigationId",
                     jarray.getJSONObject(index).getString("InvestigationId"));
             j.put("TestId", jarray.getJSONObject(index).getString("TestId"));

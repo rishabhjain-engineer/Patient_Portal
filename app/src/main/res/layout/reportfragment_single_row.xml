@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:background="@color/Yellow">
+
+
+    <TextView
+        android:id="@+id/application_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LAB NAME"
+        android:gravity="left"
+        android:layout_margin="10dp"
+        android:textSize="17sp"
+        android:textColor="#0f9347"/>
+
+    <LinearLayout
+        android:id="@+id/middle_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="31"
+        android:background="@color/red">
+
+        <LinearLayout
+            android:id="@+id/middle_container_left_part"
+            android:layout_width="0dp"
+            android:layout_weight="15"
+            android:orientation="vertical"
+            android:background="@color/gray"
+            android:layout_margin="15dp"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/advice_date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text="Date"
+                android:textColor="#737373"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/referred_by_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:layout_marginTop="5dp"
+                android:text="Referred By"
+                android:textColor="#737373"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/casecode_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text="Case Code"
+                android:textColor="#737373"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/middle_container_middle_part"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/orange"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text=":"
+                android:textStyle="bold"
+                android:textColor="#262626"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text=":"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                android:textColor="#262626"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text=":"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                android:textColor="#262626"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/middle_container_right_part"
+            android:layout_width="0dp"
+            android:layout_weight="15"
+            android:orientation="vertical"
+            android:background="@color/blue"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/advice_date_value_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text="Date"
+                android:textStyle="bold"
+                android:textColor="#262626"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/referred_by_value_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:layout_marginTop="2dp"
+                android:text="Referred By"
+                android:textColor="#262626"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/casecode_value_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:text="Case Code"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"
+                android:textColor="#262626"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_report_container"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/lime"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/pdf1"/>
+
+        <TextView
+            android:id="@+id/pdf_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="#0eafe6"
+            android:text="View Report" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/testnames_recyler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:background="@color/colorAccent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
