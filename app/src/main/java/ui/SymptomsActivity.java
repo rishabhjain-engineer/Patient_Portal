@@ -451,7 +451,7 @@ public class SymptomsActivity extends BaseActivity {
                     }
                     mSymptomsDialog.dismiss();
                     if (symptomsList.length() > 0) {
-                        symptomsList = symptomsList.substring(0, symptomsList.length() - 1);
+                        symptomsList = symptomsList.substring(0, symptomsList.length() - 2);
                     }
                     mSymptomsTextView.setText(symptomsList);
                 }

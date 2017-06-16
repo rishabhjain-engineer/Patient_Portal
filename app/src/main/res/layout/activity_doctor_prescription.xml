@@ -20,10 +20,10 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_above="@+id/ok_button"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_below="@+id/header_container">
+        android:layout_above="@+id/ok_button"
+        android:layout_below="@+id/header_container"
+        android:layout_marginBottom="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -63,10 +63,10 @@
                 android:id="@+id/enter_medicine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/diagnosis_et"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_below="@+id/diagnosis_et"
                 android:layout_marginTop="20dp"
                 android:text="Medicine : "
                 android:textColor="@color/header_color"
@@ -86,8 +86,6 @@
                 android:minHeight="50dp"
                 android:padding="8dp"
                 android:textSize="20dp" />
-
-
 
 
             <TextView
