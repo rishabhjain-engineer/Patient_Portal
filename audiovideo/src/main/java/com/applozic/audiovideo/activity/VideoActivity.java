@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -159,6 +160,35 @@ public class VideoActivity extends AudioCallActivityV2 {
 
         final LinearLayout videoContainer = (LinearLayout) findViewById(R.id.video_container_ll);
         final LinearLayout textContainer = (LinearLayout) findViewById(R.id.text_container);
+        final LinearLayout bottomLinearLayout = (LinearLayout) findViewById(R.id.bottom_Linear_layout);
+        //videoContainer.setOnTouchListener(VideoActivity.this);
+        //videoContainer.getRootView().setOnDragListener(VideoActivity.this);
+
+        bottomLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textContainer.setVisibility(View.VISIBLE);
+                bottomLinearLayout.setVisibility(View.GONE);
+                float value = 200;
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                final float px = value * (metrics.densityDpi / 160f);
+                FrameLayout.LayoutParams params2 = (FrameLayout.LayoutParams) videoContainer.getLayoutParams();
+                params2.height = (int) px;
+                params2.width = (int) px;
+                params2.gravity = Gravity.RIGHT;
+                videoContainer.bringToFront();
+                videoContainer.setLayoutParams(params2);
+                FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) textContainer.getLayoutParams();
+                params1.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                params1.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                textContainer.setLayoutParams(params1);
+                connectActionFab.setVisibility(View.GONE);
+                thumbnailVideoView.setVisibility(View.GONE);
+                contactName.setVisibility(View.GONE);
+                hideShowOnExpandAndCollapse(true);
+            }
+        });
+
 
         /*videoContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +225,8 @@ public class VideoActivity extends AudioCallActivityV2 {
         videoContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textContainer.setVisibility(View.GONE);
+                bottomLinearLayout.setVisibility(View.VISIBLE);
                 FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) videoContainer.getLayoutParams();
                 params1.height = LinearLayout.LayoutParams.MATCH_PARENT;
                 params1.width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -425,5 +457,35 @@ public class VideoActivity extends AudioCallActivityV2 {
             return false;
         }
     }
+
+   /* public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+            view.startDrag(null, shadowBuilder, view, 0);
+            view.setVisibility(View.INVISIBLE);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean onDrag(View v, DragEvent event) {
+
+        switch (event.getAction()) {
+            case DragEvent.ACTION_DROP:
+
+                float X = event.getX();
+                float Y = event.getY();
+
+                View view = (View) event.getLocalState();
+                view.setX(X-(view.getWidth()/2));
+                view.setY(Y-(view.getHeight()/2));
+                view.setVisibility(View.VISIBLE);
+
+            default:
+                break;
+        }
+        return true;
+    }*/
 
 }

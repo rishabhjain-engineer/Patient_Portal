@@ -40,12 +40,12 @@ import utils.AppConstant;
 public class DoctorPrescriptionActivity extends BaseActivity {
     private String mCoversationType;
     private TextView mMedicineTv, mTestTv;
-    private String medicineArray[] = {"Korosine", "Combiflam", "Fluconazole", "depedal"};
+    private String medicineArray[] = {"Korosine", "Combiflam", "Fluconazole", "Paracetamol"};
     private List<Symptoms> mMedicineList = new ArrayList<>();
     private String medicineList = "";
     private boolean mIsTest;
 
-    private String testArray[] = {"CBC", "KFT", "LFT", "BP"};
+    private String testArray[] = {"CBC", "KFT", "LFT", "Widal", "Typhoid", "Igg", "Igm"};
     private List<Symptoms> mTestList = new ArrayList<>();
     private String testList = "";
 
@@ -69,7 +69,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mCoversationType = getIntent().getStringExtra("chatType");
+       /* mCoversationType = getIntent().getStringExtra("chatType");
         Intent intent = null;
         if (mCoversationType.equalsIgnoreCase("audio")) {
             intent = new Intent(DoctorPrescriptionActivity.this, AudioCallActivityV2.class);
@@ -84,9 +84,11 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         }
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
 
-
+        mMedicineTv = (TextView) findViewById(R.id.medicine_tv);
+        mTestTv = (TextView) findViewById(R.id.test_tv);
+        Button okButton = (Button) findViewById(R.id.ok_button);
 
         Arrays.sort(medicineArray);
         for (int i = 0; i < medicineArray.length; i++) {
@@ -102,14 +104,14 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             mTestList.add(symptoms);
         }
 
-        mMedicineTv = (TextView) findViewById(R.id.symptoms_tv);
-        mTestTv = (TextView) findViewById(R.id.test_tv);
 
         mMedicineTv.setOnClickListener(mOnClickListener);
         mMedicineTv.setText("Please choose medicine.");
 
         mTestTv.setOnClickListener(mOnClickListener);
         mTestTv.setText("Please choose test.");
+
+        okButton.setOnClickListener(mOnClickListener);
     }
 
     @Override
@@ -122,12 +124,16 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             int id = v.getId();
-            if (id == R.id.symptoms_tv) {
+            if (id == R.id.medicine_tv) {
+                mIsTest = false;
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
                 mCustomAlertDialog.show();
             } else if (id == R.id.test_tv) {
+                mIsTest = true;
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
                 mCustomAlertDialog.show();
+            } else if (id == R.id.ok_button) {
+                finish();
             }
         }
     };
@@ -144,12 +150,21 @@ public class DoctorPrescriptionActivity extends BaseActivity {
 
             /** Design the dialog in main.xml file */
             setContentView(R.layout.symptoms_alert_dialog);
-            this.setTitle("Select symptoms");
+            if (mIsTest) {
+                this.setTitle("Select tests");
+            } else {
+                this.setTitle("Select medicines");
+            }
             filterText = (EditText) findViewById(R.id.symptoms_search);
             mOkButton = (Button) findViewById(R.id.ok_button);
             filterText.addTextChangedListener(filterTextWatcher);
             listView = (ListView) findViewById(R.id.symptoms_list);
-            symptomsAdapter = new SymptomsAdapter(DoctorPrescriptionActivity.this, mMedicineList);
+            if (mIsTest) {
+                symptomsAdapter = new SymptomsAdapter(DoctorPrescriptionActivity.this, mTestList);
+            } else {
+                symptomsAdapter = new SymptomsAdapter(DoctorPrescriptionActivity.this, mMedicineList);
+            }
+
             listView.setAdapter(symptomsAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -164,17 +179,32 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             mOkButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    medicineList = "";
-                    for (Symptoms symptoms : mMedicineList) {
-                        if (symptoms.isChecked()) {
-                            medicineList += symptoms.getName() + ", ";
+                    if (mIsTest) {
+                        testList = "";
+                        for (Symptoms symptoms : mTestList) {
+                            if (symptoms.isChecked()) {
+                                testList += symptoms.getName() + ", ";
+                            }
                         }
+                        mCustomAlertDialog.dismiss();
+                        if (testList.length() > 0) {
+                            testList = testList.substring(0, testList.length() - 2);
+                        }
+                        mTestTv.setText(testList);
+                    } else {
+                        medicineList = "";
+                        for (Symptoms symptoms : mMedicineList) {
+                            if (symptoms.isChecked()) {
+                                medicineList += symptoms.getName() + ", ";
+                            }
+                        }
+                        mCustomAlertDialog.dismiss();
+                        if (medicineList.length() > 0) {
+                            medicineList = medicineList.substring(0, medicineList.length() - 2);
+                        }
+                        mMedicineTv.setText(medicineList);
                     }
-                    mCustomAlertDialog.dismiss();
-                    if (medicineList.length() > 0) {
-                        medicineList = medicineList.substring(0, medicineList.length() - 1);
-                    }
-                    mMedicineTv.setText(medicineList);
+
                 }
             });
         }
@@ -195,13 +225,27 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 List<Symptoms> symptomsFilteredList = new ArrayList<Symptoms>();
                 if (!TextUtils.isEmpty(s)) {
-                    for (Symptoms symptomName : mMedicineList) {
-                        if (symptomName.getName().toLowerCase().startsWith(s.toString().toLowerCase())) {
-                            symptomsFilteredList.add(symptomName);
+                    if (mIsTest) {
+                        for (Symptoms symptomName : mTestList) {
+                            if (symptomName.getName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                                symptomsFilteredList.add(symptomName);
+                            }
+                        }
+                    } else {
+                        for (Symptoms symptomName : mMedicineList) {
+                            if (symptomName.getName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                                symptomsFilteredList.add(symptomName);
+                            }
                         }
                     }
+
                 } else {
-                    symptomsFilteredList = mMedicineList;
+                    if (mIsTest) {
+                        symptomsFilteredList = mTestList;
+                    } else {
+                        symptomsFilteredList = mMedicineList;
+                    }
+
                 }
                 symptomsAdapter.setData(symptomsFilteredList);
                 symptomsAdapter.notifyDataSetChanged();
