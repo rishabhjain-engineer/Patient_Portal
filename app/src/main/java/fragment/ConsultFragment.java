@@ -60,10 +60,10 @@ public class ConsultFragment extends Fragment {
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getActivity().finish();
                 Intent intent = new Intent(getActivity(), DashBoardActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                getActivity().finish();
             }
         });
 
