@@ -71,7 +71,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                videoCallIntent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
