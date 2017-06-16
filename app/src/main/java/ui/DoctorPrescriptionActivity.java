@@ -79,7 +79,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
         } else if (mCoversationType.equalsIgnoreCase("chat")) {
             intent = new Intent(DoctorPrescriptionActivity.this, ConversationActivity.class);
-            intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+            intent.putExtra("USER_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
             intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
             intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         }
