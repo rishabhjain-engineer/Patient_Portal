@@ -657,7 +657,7 @@ public class ReportFragment extends Fragment {
             try {
               //   sendDataList.put("ApplicationId", "");
              //    sendDataList.put("DoctorId", "");
-                sendDataList.put("PatientId", "48fc92e1-419f-4903-9619-ff0265678cf7");   // id replace
+                sendDataList.put("PatientId", id);   // TODO id replace "48fc92e1-419f-4903-9619-ff0265678cf7"
 
             } catch (JSONException e) {
 
@@ -692,20 +692,20 @@ public class ReportFragment extends Fragment {
                         // New Case Code
 
 
-                        caseCodeModelObject.setLocationName(subArrayList.getJSONObject(i).getString("LocationName"));
-                        caseCodeModelObject.setReferrerName(subArrayList.getJSONObject(i).getString("ReferrerName"));
-                        caseCodeModelObject.setDateandTime(subArrayList.getJSONObject(i).getString("AdviseDate"));
-                        caseCodeModelObject.setCaseID(subArrayList.getJSONObject(i).getString("CaseId"));
-                        caseCodeModelObject.settestLocationID(subArrayList.getJSONObject(i).getString("TestLocationId"));
+                        caseCodeModelObject.setLocationName(subArrayList.getJSONObject(i).optString("LocationName"));
+                        caseCodeModelObject.setReferrerName(subArrayList.getJSONObject(i).optString("ReferrerName"));
+                        caseCodeModelObject.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
+                        caseCodeModelObject.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
+                        caseCodeModelObject.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
 
 
 
-                        caseCodeModelObject.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).getString("Description"));
-                        caseCodeModelObject.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).getBoolean("IsPublish"));
-                        caseCodeModelObject.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).getBoolean("IsSampleReceived"));
-                        caseCodeModelObject.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).getBoolean("IsTestCompleted"));
-                        caseCodeModelObject.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).getString("InvestigationId"));
-                        caseCodeModelObject.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).getString("TestId"));
+                        caseCodeModelObject.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
+                        caseCodeModelObject.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).optBoolean("IsPublish"));
+                        caseCodeModelObject.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).optBoolean("IsSampleReceived"));
+                        caseCodeModelObject.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
+                        caseCodeModelObject.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
+                        caseCodeModelObject.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
 
                         // Add this new object to ListOf CaseCode objects
 
@@ -719,19 +719,19 @@ public class ReportFragment extends Fragment {
                         // Case Code Exist ;
 
                         check.createNewTestNameObject() ;
-                        check.setLocationName(subArrayList.getJSONObject(i).getString("LocationName"));
-                        check.setReferrerName(subArrayList.getJSONObject(i).getString("ReferrerName"));
-                        check.setDateandTime(subArrayList.getJSONObject(i).getString("AdviseDate"));
-                        check.setCaseID(subArrayList.getJSONObject(i).getString("CaseId"));
-                        check.settestLocationID(subArrayList.getJSONObject(i).getString("TestLocationId"));
+                        check.setLocationName(subArrayList.getJSONObject(i).optString("LocationName"));
+                        check.setReferrerName(subArrayList.getJSONObject(i).optString("ReferrerName"));
+                        check.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
+                        check.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
+                        check.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
 
 
-                        check.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).getString("Description"));
-                        check.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).getBoolean("IsPublish"));
-                        check.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).getBoolean("IsSampleReceived"));
-                        check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).getBoolean("IsTestCompleted"));
-                        check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).getString("InvestigationId"));
-                        check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).getString("TestId"));
+                        check.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
+                        check.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).optBoolean("IsPublish"));
+                        check.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).optBoolean("IsSampleReceived"));
+                        check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
+                        check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
+                        check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
                       //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
                     }
 
@@ -803,7 +803,7 @@ public class ReportFragment extends Fragment {
 
             } catch (JSONException e) {
 
-                e.printStackTrace();
+                Log.e("Rishabh", "JSON Exception := "+e) ;
             }
 
 

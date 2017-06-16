@@ -7,7 +7,7 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="10dp"
-    android:background="@color/Yellow">
+    android:background="@drawable/bg_parent_rounded_corner">
 
 
     <TextView
@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="LAB NAME"
+        android:textStyle="bold"
         android:gravity="left"
         android:layout_margin="10dp"
         android:textSize="17sp"
@@ -25,15 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="31"
-        android:background="@color/red">
+        android:weightSum="31">
 
         <LinearLayout
             android:id="@+id/middle_container_left_part"
             android:layout_width="0dp"
-            android:layout_weight="15"
+            android:layout_weight="8"
             android:orientation="vertical"
-            android:background="@color/gray"
             android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
@@ -77,7 +76,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@color/orange"
             android:layout_marginTop="15dp"
             android:layout_height="wrap_content">
 
@@ -119,9 +117,8 @@
         <LinearLayout
             android:id="@+id/middle_container_right_part"
             android:layout_width="0dp"
-            android:layout_weight="15"
+            android:layout_weight="22"
             android:orientation="vertical"
-            android:background="@color/blue"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:layout_marginRight="15dp"
@@ -171,7 +168,7 @@
         android:id="@+id/view_report_container"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:background="@color/lime"
+        android:background="@drawable/layout_background"
         android:layout_margin="15dp"
         android:gravity="center"
         android:layout_height="wrap_content">
@@ -198,8 +195,7 @@
         android:id="@+id/testnames_recyler_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:background="@color/colorAccent">
+        android:layout_margin="15dp">
 
     </android.support.v7.widget.RecyclerView>
 

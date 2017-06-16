@@ -1,5 +1,7 @@
 package com.hs.userportal;
 
+import android.util.Log;
+
 /**
  * Created by rishabh on 15/6/17.
  */
@@ -7,9 +9,9 @@ package com.hs.userportal;
 public class TestNames {
 
     private String Description ;  // Name of the Test
-    private boolean isSampleReceived ;
-    private boolean isTestCompleted ;
-    private boolean isPublished ;
+    private Boolean isSampleReceived ;
+    private Boolean isTestCompleted ;
+    private Boolean isPublished ;
     private String investigationID ;
     private String testID ;
 
@@ -21,27 +23,27 @@ public class TestNames {
         Description = description;
     }
 
-    public boolean isSampleReceived() {
+    public Boolean isSampleReceived() {
         return isSampleReceived;
     }
 
-    public void setSampleReceived(boolean sampleReceived) {
+    public void setSampleReceived(Boolean sampleReceived) {
         isSampleReceived = sampleReceived;
     }
 
-    public boolean isTestCompleted() {
+    public Boolean isTestCompleted() {
         return isTestCompleted;
     }
 
-    public void setTestCompleted(boolean testCompleted) {
+    public void setTestCompleted(Boolean testCompleted) {
         isTestCompleted = testCompleted;
     }
 
-    public boolean isPublished() {
+    public Boolean isPublished() {
         return isPublished;
     }
 
-    public void setPublished(boolean published) {
+    public void setPublished(Boolean published) {
         isPublished = published;
     }
 
