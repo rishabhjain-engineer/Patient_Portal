@@ -70,13 +70,13 @@ public class ConsultFragment extends Fragment {
         mConsultNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
+                Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
                 videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
-                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
 
-                Intent intent = null;
+               /* Intent intent = null;
                 if (AppConstant.isPatient) {
                     intent = new Intent(getActivity(), PastVisitActivity.class);
                 } else {
@@ -84,7 +84,7 @@ public class ConsultFragment extends Fragment {
                 }
                 intent.putExtra("chatType", "video");
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             }
         });
 

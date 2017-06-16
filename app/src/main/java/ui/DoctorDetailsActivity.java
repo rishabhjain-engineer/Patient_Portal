@@ -108,7 +108,7 @@ public class DoctorDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-               /* if (string.equalsIgnoreCase("audio")) {
+               if (string.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
@@ -121,25 +121,14 @@ public class DoctorDetailsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("chat")) {
-                    *//*Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-                    if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
-                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
-                    }
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*//*
-
                     Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                     intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
                     intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                     intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);
                     dialog.dismiss();
-                } else {
-
-                }*/
-
-                //Intent intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
-                Intent intent = null;
+                }
+                /*Intent intent = null;
                 if (AppConstant.isPatient) {
                     intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
                 } else {
@@ -148,7 +137,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                 intent.putExtra("chatType", string);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                dialog.dismiss();
+                dialog.dismiss();*/
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {
