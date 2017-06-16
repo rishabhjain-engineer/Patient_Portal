@@ -135,19 +135,19 @@ public class SymptomsActivity extends BaseActivity {
             if (id == R.id.continue_button) {
                if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     videoCallIntent.putExtra("symptoms", symptomsList);
                     videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
                     Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                    intent.putExtra(ConversationUIService.USER_ID, "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                    intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
                     intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                     intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);

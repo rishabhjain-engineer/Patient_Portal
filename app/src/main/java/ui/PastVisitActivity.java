@@ -125,13 +125,13 @@ public class PastVisitActivity extends BaseActivity {
             Intent intent = null;
             if (mCoversationType.equalsIgnoreCase("audio")) {
                 intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
-                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
             } else if (mCoversationType.equalsIgnoreCase("video")) {
                 intent = new Intent(PastVisitActivity.this, VideoActivity.class);
-                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
             } else if (mCoversationType.equalsIgnoreCase("chat")) {
                 intent = new Intent(PastVisitActivity.this, ConversationActivity.class);
-                intent.putExtra("CONTACT_ID", "6fbbd98b-65e5-468e-98ee-741903caeea2");
+                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
             }
