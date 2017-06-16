@@ -1,6 +1,7 @@
 package adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 
 public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyViewHolder>{
 
-  private String testName ;
+  //private String testName ;
+    private ArrayList<String> testname ;
 
-    public TestListAdapter(String testName) {
-        this.testName = testName ;
+    public TestListAdapter(ArrayList<String> testname) {
+        this.testname = testname ;
     }
 
     @Override
@@ -34,13 +36,13 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
     @Override
     public void onBindViewHolder(TestListAdapter.MyViewHolder holder, int position) {
 
-        holder.tvTestName.setText(testName);
+        holder.tvTestName.setText(testname.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return testname.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
