@@ -2,49 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="20dp"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/consult_single_item_list_view" />
+    <include layout="@layout/common_header_2" />
 
-    <TextView
-        android:id="@+id/about"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="about"
-        android:textColor="@color/black"
-        android:textSize="15dp" />
-
+        android:layout_height="1dp"
+        android:background="@color/gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/video_call"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/video" />
+        <include layout="@layout/consult_single_item_list_view" />
 
-
-        <Button
-            android:id="@+id/audio_call"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/audio" />
+        <TextView
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="about"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
 
 
-        <Button
-            android:id="@+id/chat"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/chat" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/video_call"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/video" />
+
+
+            <Button
+                android:id="@+id/audio_call"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/audio" />
+
+
+            <Button
+                android:id="@+id/chat"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/chat" />
+        </LinearLayout>
 
     </LinearLayout>
 

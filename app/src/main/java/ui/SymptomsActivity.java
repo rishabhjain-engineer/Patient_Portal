@@ -4,61 +4,50 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
-import com.hs.userportal.Directory;
 import com.hs.userportal.R;
-import com.hs.userportal.UploadService;
-import com.hs.userportal.update;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 
-import fragment.RepositoryFreshFragment;
+import adapters.SymptomsAdapter;
+import models.Symptoms;
 import networkmngr.NetworkChangeListener;
-import utils.RepositoryUtils;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 6/6/17.
@@ -75,73 +64,68 @@ public class SymptomsActivity extends BaseActivity {
     private SharedPreferences permissionStatus;
     private boolean sentToSettings = false;
     private String mCoversationType;
-    Uri selectedImageUri;
-    String selectedPath;
-    private String symptomsArry[] = {"Pain",
-            "Anxiety",
-            "Fatigue",
-            "Headache",
-            "Infection",
-            "Depression",
-            "Diabtees mellitus",
-            "Shortnes of breath",
-            "Skin Rash",
-            "Swelling",
-            "Stress",
-            "Fever",
-            "Weight Loss",
-            "Common Cold",
-            "Diarrhea",
-            "Allergy",
-            "Vomiting",
-            "Dizziness",
-            "Abdominal Pain",
-            "Itch",
-            "Joint pain",
-            "Constipation",
-            "Chest pain",
-            "Weight Gain",
-            "Muscle Pain",
-            "Bleeding",
-            "Ashtama",
-            "Sore Throat",
-            "HyperTension",
-            "Hair Loss",
-            "Migraine",
-            "Blood Pressure",
-            "Blindness"};
+    private Uri selectedImageUri;
+    private String selectedPath;
+    private SymptomsDialog mSymptomsDialog;
+    private TextView mSymptomsTextView;
+    private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
+            "Skin Rash", "Swelling", "Stress", "Fever", "Weight Loss", "Common Cold", "Diarrhea", "Allergy", "Vomiting", "Dizziness", "Abdominal Pain", "Itch",
+            "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Asthma", "Sore Throat", "HyperTension", "Hair Loss",
+            "Migraine", "Blood Pressure", "Blindness"};
+    private List<Symptoms> mSymptomsList = new ArrayList<>();
+    private String symptomsList = "";
+    private EditText mNoteEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
+
+        Arrays.sort(symptomsArry);
+        for (int i = 0; i < symptomsArry.length; i++) {
+            Symptoms symptoms = new Symptoms();
+            symptoms.setName(symptomsArry[i]);
+            mSymptomsList.add(symptoms);
+        }
+
         setupActionBar();
-        mActionBar.setTitle("Symptoms");
+        mActionBar.hide();
+
+        ImageView backImage = (ImageView) findViewById(R.id.back_image);
+        TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        headerTitleTv.setText("Symptoms");
+        backImage.setOnClickListener(mOnClickListener);
+
         mActivity = this;
         permissionStatus = mActivity.getSharedPreferences("permissionStatus", MODE_PRIVATE);
         mCoversationType = getIntent().getStringExtra("chatType");
         Button continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(mOnClickListener);
+        mNoteEditText = (EditText) findViewById(R.id.enter_notes_et);
 
         Button attatchButton = (Button) findViewById(R.id.attach_button);
         attatchButton.setOnClickListener(mOnClickListener);
 
-        Arrays.sort(symptomsArry);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, symptomsArry);
-        adapter.setDropDownViewResource(R.layout.spinner_appearence);
-        Spinner symptomsSpinner = (Spinner) findViewById(R.id.symptoms_spinner);
-        symptomsSpinner.setAdapter(adapter);
-        symptomsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
+        mSymptomsTextView.setOnClickListener(mOnClickListener);
+        mSymptomsTextView.setText("Please choose symptoms.");
+
+       /* String list = "";
+        for (Symptoms symptoms : mSymptomsList) {
+            if (symptoms.isChecked()) {
+                list += symptoms.getName() + " ,";
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        }
+        if (list.length() > 0) {
+            list = list.substring(0, list.length() - 1);
+        }
+        if (TextUtils.isEmpty(list)) {
+            mSymptomsTextView.setText("Please choose symptoms.");
+        } else {
+            mSymptomsTextView.setText(list);
+        }*/
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -149,32 +133,48 @@ public class SymptomsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.continue_button) {
-                if (mCoversationType.equalsIgnoreCase("audio")) {
+               if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("video")) {
                     Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                    videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                    videoCallIntent.putExtra("symptoms", symptomsList);
+                    videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
                     startActivity(videoCallIntent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } else if (mCoversationType.equalsIgnoreCase("chat")) {
                     Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                    if (ApplozicClient.getInstance(SymptomsActivity.this).isContextBasedChat()) {
-                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
-                    }
+                    intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
+                    intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                } else {
-
                 }
+                /*//Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
+                Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(SymptomsActivity.this, PastVisitActivity.class);
+                } else {
+                    intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
+                }
+                intent.putExtra("chatType", mCoversationType);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             } else if (id == R.id.attach_button) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
                 }
+            } else if (id == R.id.symptoms_tv) {
+                mSymptomsDialog = new SymptomsDialog(SymptomsActivity.this, symptomsArry);
+                mSymptomsDialog.show();
+            } else if (R.id.back_image == id) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
 
         }
@@ -213,7 +213,7 @@ public class SymptomsActivity extends BaseActivity {
         dialog.show();
     }
 
-    void askRunTimePermissions() {
+    private void askRunTimePermissions() {
 
         if (ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(mActivity, permissionsRequired[1]) != PackageManager.PERMISSION_GRANTED) {
@@ -351,7 +351,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
 
-    public void openGallery(int req_code) {
+    private void openGallery(int req_code) {
 
         Intent intent = new Intent();
 
@@ -397,7 +397,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
 
-    public String getPath(Uri uri) {
+    private String getPath(Uri uri) {
 
         String[] projection = {MediaStore.Images.Media.DATA};
 
@@ -410,4 +410,87 @@ public class SymptomsActivity extends BaseActivity {
         return cursor.getString(column_index);
 
     }
+
+    private class SymptomsDialog extends Dialog implements View.OnClickListener {
+
+        private ListView listView;
+        private EditText filterText = null;
+        private SymptomsAdapter symptomsAdapter = null;
+        private Button mOkButton;
+
+        public SymptomsDialog(Context context, String[] cityList) {
+            super(context);
+
+            /** Design the dialog in main.xml file */
+            setContentView(R.layout.symptoms_alert_dialog);
+            this.setTitle("Select symptoms");
+            filterText = (EditText) findViewById(R.id.symptoms_search);
+            mOkButton = (Button) findViewById(R.id.ok_button);
+            filterText.addTextChangedListener(filterTextWatcher);
+            listView = (ListView) findViewById(R.id.symptoms_list);
+            symptomsAdapter = new SymptomsAdapter(SymptomsActivity.this, mSymptomsList);
+            listView.setAdapter(symptomsAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+                    Symptoms symptoms = symptomsAdapter.getItem(position);
+                    symptoms.toggleChecked();
+                    SymptomsAdapter.SymptomsViewHolder viewHolder = (SymptomsAdapter.SymptomsViewHolder) item.getTag();
+                    viewHolder.getCheckBox().setChecked(symptoms.isChecked());
+                }
+            });
+
+            mOkButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    symptomsList = "";
+                    for (Symptoms symptoms : mSymptomsList) {
+                        if (symptoms.isChecked()) {
+                            symptomsList += symptoms.getName() + ", ";
+                        }
+                    }
+                    mSymptomsDialog.dismiss();
+                    if (symptomsList.length() > 0) {
+                        symptomsList = symptomsList.substring(0, symptomsList.length() - 1);
+                    }
+                    mSymptomsTextView.setText(symptomsList);
+                }
+            });
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+
+        private TextWatcher filterTextWatcher = new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                List<Symptoms> symptomsFilteredList = new ArrayList<Symptoms>();
+                if (!TextUtils.isEmpty(s)) {
+                    for (Symptoms symptomName : mSymptomsList) {
+                        if (symptomName.getName().toLowerCase().startsWith(s.toString().toLowerCase())) {
+                            symptomsFilteredList.add(symptomName);
+                        }
+                    }
+                } else {
+                    symptomsFilteredList = mSymptomsList;
+                }
+                symptomsAdapter.setData(symptomsFilteredList);
+                symptomsAdapter.notifyDataSetChanged();
+            }
+        };
+
+        @Override
+        public void onStop() {
+            filterText.removeTextChangedListener(filterTextWatcher);
+        }
+    }
+
 }

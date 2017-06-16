@@ -19,6 +19,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.R;
 
 import models.DoctorDetails;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 5/6/17.
@@ -31,12 +32,17 @@ public class DoctorDetailsActivity extends BaseActivity {
 
         setContentView(R.layout.activity_doctor_detail);
         setupActionBar();
-        mActionBar.setTitle("Doctor Details");
+        mActionBar.hide();
 
         TextView doctorName = (TextView) findViewById(R.id.doctor_name);
         TextView doctorLocation = (TextView) findViewById(R.id.city);
         TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
         ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
+        ImageView backImage = (ImageView) findViewById(R.id.back_image);
+        TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        headerTitleTv.setText("Doctor Details");
+        backImage.setOnClickListener(mOnClickListener);
 
         TextView about = (TextView) findViewById(R.id.about);
 
@@ -75,6 +81,9 @@ public class DoctorDetailsActivity extends BaseActivity {
                 decesionAlertDialog("video");
             } else if (R.id.chat == id) {
                 decesionAlertDialog("chat");
+            } else if (R.id.back_image == id) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         }
     };
@@ -84,11 +93,11 @@ public class DoctorDetailsActivity extends BaseActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.unsaved_alert_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
 
         TextView message = (TextView) dialog.findViewById(R.id.message);
         message.setText("Do you want to provide additional information ? ");
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         okBTN.setText("Later");
         TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
@@ -99,7 +108,7 @@ public class DoctorDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                if (string.equalsIgnoreCase("audio")) {
+               if (string.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
@@ -112,22 +121,23 @@ public class DoctorDetailsActivity extends BaseActivity {
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     dialog.dismiss();
                 } else if (string.equalsIgnoreCase("chat")) {
-                    /*Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-                    if (ApplozicClient.getInstance(DoctorDetailsActivity.this).isContextBasedChat()) {
-                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
-                    }
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
-
                     Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
                     intent.putExtra(ConversationUIService.USER_ID, "be2ce808-6250-4874-a239-31d60d1d8567");
                     intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                     intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                     startActivity(intent);
                     dialog.dismiss();
-                } else {
-
                 }
+                /*Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
+                } else {
+                    intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
+                }
+                intent.putExtra("chatType", string);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                dialog.dismiss();*/
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {

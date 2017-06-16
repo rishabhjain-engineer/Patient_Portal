@@ -9,24 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.applozic.audiovideo.activity.VideoActivity;
-import com.hs.userportal.AppAplication;
 import com.hs.userportal.R;
-import com.hs.userportal.VaccineDetails;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapters.ConsultFragmentAdapter;
-import adapters.VaccineAdapter;
 import models.DoctorDetails;
+import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
-import ui.VaccineActivity;
-import ui.VaccineEditActivity;
+import ui.DoctorPrescriptionActivity;
+import ui.PastVisitActivity;
+import utils.AppConstant;
 
 /**
  * Created by ayaz on 2/6/17.
@@ -37,6 +36,7 @@ public class ConsultFragment extends Fragment {
     private ConsultFragmentAdapter mConsultFragmentAdapter;
     private List<DoctorDetails> mDoctorDetailsList = new ArrayList<>();
     private Button mConsultNow;
+    private TextView past_visits;
 
     @Nullable
     @Override
@@ -45,13 +45,46 @@ public class ConsultFragment extends Fragment {
         TextView hederTitle = (TextView) view.findViewById(R.id.header_title_tv);
         mListView = (ListView) view.findViewById(R.id.consult_doctor_list);
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
+        past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
+        past_visits.setVisibility(View.VISIBLE);
+        past_visits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PastVisitActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        ImageView backImage = (ImageView) view.findViewById(R.id.back_image);
+        backImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+                Intent intent = new Intent(getActivity(), DashBoardActivity.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+        });
+
         mConsultNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "0ac5fc1d-39aa-4636-b3b5-530d5b570fdc");
+                videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
+
+               /* Intent intent = null;
+                if (AppConstant.isPatient) {
+                    intent = new Intent(getActivity(), PastVisitActivity.class);
+                } else {
+                    intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
+                }
+                intent.putExtra("chatType", "video");
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             }
         });
 

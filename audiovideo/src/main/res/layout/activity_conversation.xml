@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/video_container_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+
+            <include layout="@layout/content_conversation" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:background="@color/video_call_top_color"
+                android:gravity="left">
+
+                <TextView
+                    android:id="@+id/contact_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="29dp"
+                    android:layout_marginStart="29dp"
+                    android:layout_toLeftOf="@+id/video_call_option_rl"
+                    android:ellipsize="end"
+                    android:padding="@dimen/fab_margin"
+                    android:singleLine="true"
+                    android:text="cscd"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <RelativeLayout
+                    android:id="@+id/video_call_option_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="10dp">
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/video_call_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/switch_camera_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_switch_camera_512dp"
+                    android:visibility="visible"
+                    app:fabSize="mini" />
+
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/speaker_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_volume_down_green_24px"
+                    app:fabSize="mini" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/local_video_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_videocam_green_24px"
+                    app:fabSize="mini" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/mute_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_mic_green_24px"
+                    app:fabSize="mini" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/call_action_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_call_white_24px" />
+
+
+            </LinearLayout>
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/text_container"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="right"
+        android:background="@color/alphabet_text_e"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/symptoms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Symptoms :"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Notes :"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Files :"
+            android:textSize="18dp"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/show_files"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/pdf1" />
+
+    </LinearLayout>
+
+</FrameLayout>
+
+
+
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/white"
+    android:padding="10dp">
+
+
+    <ImageView
+        android:id="@+id/back_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/back_black_arrow"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/header_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/back_image"
+        android:text="ayaz"
+        android:textColor="@color/black_bg"
+        android:textSize="20dp" />
+
+
+    <TextView
+        android:id="@+id/past_visits_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="Past Visits"
+        android:textColor="@color/black_bg"
+        android:textSize="20dp"
+        android:visibility="gone" />
+
+</RelativeLayout>
