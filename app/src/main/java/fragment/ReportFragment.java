@@ -712,7 +712,7 @@ public class ReportFragment extends Fragment {
 
 
                         listOfCaseCodeModelObjects.add(caseCodeModelObject);
-                        Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
+                     //   Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
 
                     } else {
 
@@ -732,7 +732,7 @@ public class ReportFragment extends Fragment {
                         check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).getBoolean("IsTestCompleted"));
                         check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).getString("InvestigationId"));
                         check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).getString("TestId"));
-                        Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
+                      //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
                     }
 
                 }

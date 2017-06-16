@@ -2,6 +2,7 @@ package adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.R;
+import com.hs.userportal.TestNames;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +24,26 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     private List<CaseCodeModel> adapterCaseCodeObjectList = new ArrayList<>() ;
     private Context context ;
 
+    private TestListAdapter testListAdapter ;
+    private RecyclerView recyclerViewTestList ;
+    private RecyclerView.LayoutManager layoutManager ;
+
+    private List<TestNames> testNamesArrayList = new ArrayList<>() ;
+    private ArrayList<String> nameOfTestList = new ArrayList<>() ;
+    private TestNames testNamesObject ;
+
+
     public ReportFragmentAdapter(Context context , List<CaseCodeModel> list){
 
         this.context = context ;
         adapterCaseCodeObjectList = list ;
+
+        // initalizing Testlist adapter ;
+
+
+
+        // testnames_recyler_view
+
     }
 
 
@@ -40,10 +58,31 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
+        nameOfTestList.clear();
+
         holder.tvLocationName.setText(adapterCaseCodeObjectList.get(position).getLocationName());
         holder.tvAdviceDate.setText(adapterCaseCodeObjectList.get(position).getDateandTime());
         holder.tvReferredBy.setText(adapterCaseCodeObjectList.get(position).getReferrerName());
         holder.tvCaseCode.setText(adapterCaseCodeObjectList.get(position).getCaseCode());
+
+        Log.e("Rishabh" , "case Code : "+adapterCaseCodeObjectList.get(position).getCaseCode()) ;
+
+        testNamesArrayList = adapterCaseCodeObjectList.get(position).getListOfTestNamesInCaseCode();
+       // Log.e("Risahbh", "test list size := "+testNamesArrayList.size());
+
+        for(int i=0 ; i<testNamesArrayList.size();i++){
+
+            nameOfTestList.add(testNamesArrayList.get(i).getDescription()) ;
+        }
+
+        for(int i=0 ; i<nameOfTestList.size();i++){
+
+            Log.e("Rishabh" , "test names : "+nameOfTestList.get(i)) ;
+            testListAdapter = new TestListAdapter(nameOfTestList.get(i)) ;
+        }
+
+
+
 
     }
 
