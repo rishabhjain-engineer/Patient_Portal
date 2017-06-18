@@ -9,8 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.hs.userportal.R;
+import com.hs.userportal.TestNames;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rishabh on 16/6/17.
@@ -19,9 +21,9 @@ import java.util.ArrayList;
 public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyViewHolder>{
 
   //private String testName ;
-    private ArrayList<String> testname ;
+    private List<TestNames> testname ;
 
-    public TestListAdapter(ArrayList<String> testname) {
+    public TestListAdapter(List<TestNames> testname) {
         this.testname = testname ;
     }
 
@@ -36,7 +38,8 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
     @Override
     public void onBindViewHolder(TestListAdapter.MyViewHolder holder, int position) {
 
-        holder.tvTestName.setText(testname.get(position));
+        holder.tvTestName.setText(testname.get(position).getDescription());
+        holder.tvColor.setText(testname.get(position).getColor());
 
     }
 
@@ -46,11 +49,12 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvTestName ;
+        private TextView tvTestName , tvColor;
         public MyViewHolder(View itemView) {
             super(itemView);
 
             tvTestName = (TextView) itemView.findViewById(R.id.testname);
+            tvColor = (TextView) itemView.findViewById(R.id.color);
         }
     }
 

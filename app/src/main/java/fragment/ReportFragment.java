@@ -22,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -513,6 +514,60 @@ public class ReportFragment extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
+            // logic for setting up color for each test in a particular caseCode
+
+            int initialAmount , totalActualAmount , totalPaidAmount , discountAmount ;
+            String labNo =null, color ;
+            Boolean isSampleReceived=false , isPublished =false, isTestCompleted =false;
+
+            for(int i= 0 ; i<listOfCaseCodeModelObjects.size() ; i++) {
+
+              initialAmount =  listOfCaseCodeModelObjects.get(i).getInitialAmount() ;
+              totalActualAmount =  listOfCaseCodeModelObjects.get(i).getTotalActualAmount() ;
+              totalPaidAmount =  listOfCaseCodeModelObjects.get(i).getTotalPaidAmount() ;
+              discountAmount =  listOfCaseCodeModelObjects.get(i).getDiscountAmount() ;
+
+                int noOfTestsInCaseCode  = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().size() ;
+
+                for(int j=0 ; j<noOfTestsInCaseCode ; j++) {
+
+                    labNo = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).getLabNo() ;
+                    isPublished = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isPublished() ;
+                    isSampleReceived =  listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isSampleReceived() ;
+                    isTestCompleted = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isTestCompleted() ;
+
+                   // Log.e("RIshabh", "isPublished :="+isPublished);
+                    //Log.e("RIshabh", "isSampleReceived :="+isSampleReceived);
+                    //Log.e("RIshabh", "isTestCompleted :="+isTestCompleted);
+
+                    // writing logic for setting up for color ; required variables we fetched ;
+
+                    if(!isSampleReceived && !isTestCompleted && TextUtils.isEmpty(labNo)) {
+                        //set color Blue
+                        listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Blue");
+
+                    }else if(isSampleReceived && !isTestCompleted && !TextUtils.isEmpty(labNo)) {
+                        // set color pink
+                        listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
+                    }else if(isSampleReceived && isTestCompleted && !TextUtils.isEmpty(labNo)) {
+
+                        if(isPublished && chunk(initialAmount , totalActualAmount , totalPaidAmount , discountAmount)){
+                            // set color green
+                            listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Green");
+                        }else {
+                            // set color pink
+                            listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
+                        }
+                    }
+                }
+
+
+
+
+
+            }
+
+
             mAdapterReportFragment = new ReportFragmentAdapter(mActivity , listOfCaseCodeModelObjects) ;
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
 
@@ -642,6 +697,23 @@ public class ReportFragment extends Fragment {
             if (progress != null && progress.isShowing()) {
                 progress.dismiss();
             }*/
+        }
+
+        private boolean chunk(int ia , int taa , int tpa , int da) {
+
+            int value ;
+
+            if(da == 0) {
+
+                value  =  taa - ia ;
+            }else {
+                value = taa - ia - da ;
+            }
+
+            if(value <= 0) {
+                return true ;
+            }
+            return false;
         }
 
         @Override

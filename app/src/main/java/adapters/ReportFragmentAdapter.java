@@ -63,11 +63,11 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
 
         testNamesArrayList = adapterCaseCodeObjectList.get(position).getListOfTestNamesInCaseCode();
 
-        for (int i = 0; i < testNamesArrayList.size(); i++) {
+       /* for (int i = 0; i < testNamesArrayList.size(); i++) {
             nameOfTestList.add(testNamesArrayList.get(i).getDescription());
-        }
+        }*/
 
-        testListAdapter = new TestListAdapter(nameOfTestList);
+        testListAdapter = new TestListAdapter(testNamesArrayList);
         holder.lvTestList.setAdapter(testListAdapter);
     }
 
