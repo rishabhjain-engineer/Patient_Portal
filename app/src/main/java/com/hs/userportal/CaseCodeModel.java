@@ -17,6 +17,12 @@ public class CaseCodeModel {
     private String testLocationID ;
     private List<TestNames> listOfTestNamesInCaseCode = new ArrayList<>();   // one CaseCode can have multiple TEST done .
     private TestNames testNameObject;
+    private int totalPaidAmount ;
+    private int totalActualAmount ;
+    private int initialAmount ;
+    private int discountAmount ;
+
+
 
 
     public CaseCodeModel(String caseCode) {
@@ -24,6 +30,39 @@ public class CaseCodeModel {
         testNameObject = new TestNames();
         listOfTestNamesInCaseCode.add(testNameObject);
     }
+
+    public int getTotalPaidAmount() {
+        return totalPaidAmount;
+    }
+
+    public void setTotalPaidAmount(int totalPaidAmount) {
+        this.totalPaidAmount = totalPaidAmount;
+    }
+
+    public int getTotalActualAmount() {
+        return totalActualAmount;
+    }
+
+    public void setTotalActualAmount(int totalActualAmount) {
+        this.totalActualAmount = totalActualAmount;
+    }
+
+    public int getInitialAmount() {
+        return initialAmount;
+    }
+
+    public void setInitialAmount(int initialAmount) {
+        this.initialAmount = initialAmount;
+    }
+
+    public int getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(int discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
 
     public String getCaseCode() {
         return caseCode;

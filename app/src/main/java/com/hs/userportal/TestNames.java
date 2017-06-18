@@ -14,6 +14,24 @@ public class TestNames {
     private Boolean isPublished ;
     private String investigationID ;
     private String testID ;
+    private String labNo ;
+    private String color ;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getLabNo() {
+        return labNo;
+    }
+
+    public void setLabNo(String labNo) {
+        this.labNo = labNo;
+    }
 
     public String getDescription() {
         return Description;

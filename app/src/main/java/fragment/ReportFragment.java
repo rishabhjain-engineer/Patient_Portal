@@ -46,6 +46,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.CaseCodeModel;
+import com.hs.userportal.Constants;
 import com.hs.userportal.OrderDetails;
 import com.hs.userportal.OrderList;
 import com.hs.userportal.R;
@@ -648,7 +649,7 @@ public class ReportFragment extends Fragment {
             // TODO Auto-generated method stub
 
             // //////////////////////////////////////////////////
-            if (id == null) {
+       /*     if (id == null) {
                 id = DashBoardActivity.id;
             } else if (check_ID != null) {
                 id = check_ID;
@@ -671,14 +672,18 @@ public class ReportFragment extends Fragment {
             System.out.println(receiveDataList);
 
 
-            String dataList = "";
+            String dataList = "";*/
             try {
 
                 casecode.clear();
                 dated.clear();
+/*
                 dataList = receiveDataList.getString("d");
                 JSONObject cut = new JSONObject(dataList);
                 subArrayList = cut.getJSONArray("Table");
+*/
+
+subArrayList = new JSONArray(new Constants().Response) ;
 
                 Log.e("Rishabh", "received response := "+subArrayList.toString()) ;
                 listOfCaseCodeModelObjects.clear();
@@ -697,6 +702,10 @@ public class ReportFragment extends Fragment {
                         caseCodeModelObject.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
                         caseCodeModelObject.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
                         caseCodeModelObject.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
+                        caseCodeModelObject.setTotalPaidAmount(subArrayList.getJSONObject(i).optInt("TotalPaidAmount"));
+                        caseCodeModelObject.setTotalActualAmount(subArrayList.getJSONObject(i).optInt("TotalActualAmount"));
+                        caseCodeModelObject.setInitialAmount(subArrayList.getJSONObject(i).optInt("InitialAmount"));
+                        caseCodeModelObject.setDiscountAmount(subArrayList.getJSONObject(i).optInt("DiscountAmount"));
 
 
 
@@ -706,6 +715,9 @@ public class ReportFragment extends Fragment {
                         caseCodeModelObject.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
                         caseCodeModelObject.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
                         caseCodeModelObject.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
+                        caseCodeModelObject.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
+
+
 
                         // Add this new object to ListOf CaseCode objects
 
@@ -724,6 +736,10 @@ public class ReportFragment extends Fragment {
                         check.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
                         check.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
                         check.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
+                        check.setTotalPaidAmount(subArrayList.getJSONObject(i).optInt("TotalPaidAmount"));
+                        check.setTotalActualAmount(subArrayList.getJSONObject(i).optInt("TotalActualAmount"));
+                        check.setInitialAmount(subArrayList.getJSONObject(i).optInt("InitialAmount"));
+                        check.setDiscountAmount(subArrayList.getJSONObject(i).optInt("DiscountAmount"));
 
 
                         check.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
@@ -732,6 +748,8 @@ public class ReportFragment extends Fragment {
                         check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
                         check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
                         check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
+                        check.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
+
                       //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
                     }
 
