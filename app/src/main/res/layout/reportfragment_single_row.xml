@@ -3,12 +3,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="10dp"
-    android:background="@drawable/bg_parent_rounded_corner">
+    android:layout_marginTop="0dp">
 
+    <View
+        android:background="#e5e5e5"
+        android:layout_width="match_parent"
+        android:layout_height="10dp" >
+    </View>
 
     <TextView
         android:id="@+id/application_name_tv"
@@ -17,35 +18,51 @@
         android:text="LAB NAME"
         android:textStyle="bold"
         android:gravity="left"
-        android:layout_margin="10dp"
-        android:textSize="17sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:textSize="21sp"
         android:textColor="#0f9347"/>
+
+    <View
+        android:layout_marginTop="10dp"
+        android:background="#ff5858"
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp" >
+    </View>
 
     <LinearLayout
         android:id="@+id/middle_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:weightSum="31">
 
         <LinearLayout
             android:id="@+id/middle_container_left_part"
             android:layout_width="0dp"
-            android:layout_weight="8"
+            android:layout_weight="15"
             android:orientation="vertical"
-            android:layout_margin="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_height="wrap_content">
 
 
             <TextView
+                android:layout_marginTop="5dp"
                 android:id="@+id/advice_date_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:text="Date"
+                android:text="Adviced Date"
                 android:textColor="#737373"
-                android:textSize="13sp"/>
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="#e5e5e5"
+                android:layout_marginTop="3dp"
+                android:layout_height="0.7dp"></View>
 
             <TextView
                 android:id="@+id/referred_by_tv"
@@ -53,74 +70,35 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:text="Referred By"
                 android:textColor="#737373"
-                android:textSize="13sp"/>
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="#e5e5e5"
+                android:layout_marginTop="3dp"
+                android:layout_height="0.7dp"></View>
 
             <TextView
                 android:id="@+id/casecode_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:text="Case Code"
                 android:textColor="#737373"
-                android:textSize="13sp"/>
+                android:textSize="16sp"/>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/middle_container_middle_part"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginTop="15dp"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:gravity="left"
-                android:text=":"
-                android:textStyle="bold"
-                android:textColor="#262626"
-                android:textSize="15sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:gravity="left"
-                android:text=":"
-                android:layout_marginTop="2dp"
-                android:textStyle="bold"
-                android:textColor="#262626"
-                android:textSize="15sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:gravity="left"
-                android:text=":"
-                android:layout_marginTop="2dp"
-                android:textStyle="bold"
-                android:textColor="#262626"
-                android:textSize="15sp"/>
-
-        </LinearLayout>
-
         <LinearLayout
             android:id="@+id/middle_container_right_part"
             android:layout_width="0dp"
-            android:layout_weight="22"
+            android:layout_weight="16"
             android:orientation="vertical"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="2dp"
             android:layout_marginRight="15dp"
             android:layout_height="wrap_content">
 
@@ -128,13 +106,20 @@
             <TextView
                 android:id="@+id/advice_date_value_tv"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:text="Date"
                 android:textStyle="bold"
                 android:textColor="#262626"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="#e5e5e5"
+                android:layout_marginTop="1dp"
+                android:layout_height="0.7dp"></View>
 
             <TextView
                 android:id="@+id/referred_by_value_tv"
@@ -142,11 +127,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="8dp"
                 android:text="Referred By"
                 android:textColor="#262626"
                 android:textStyle="bold"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
+            <View
+                android:layout_width="match_parent"
+                android:background="#e5e5e5"
+                android:layout_marginTop="4.8dp"
+                android:layout_height="0.7dp"></View>
 
             <TextView
                 android:id="@+id/casecode_value_tv"
@@ -156,13 +146,14 @@
                 android:gravity="left"
                 android:text="Case Code"
                 android:textStyle="bold"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="8dp"
                 android:textColor="#262626"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/view_report_container"
@@ -176,7 +167,7 @@
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:src="@drawable/pdf1"/>
+            android:src="@drawable/pdficonblue"/>
 
         <TextView
             android:id="@+id/pdf_text"
@@ -185,17 +176,33 @@
             android:layout_marginLeft="5dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:textColor="#0eafe6"
             android:text="View Report" />
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Status"
+        android:layout_marginLeft="15dp"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#262626"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:background="#ff5858"
+        android:layout_marginTop="10dp"
+        android:layout_height="1dp"></View>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/testnames_recyler_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_margin="15dp">
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="15dp">
 
     </android.support.v7.widget.RecyclerView>
 

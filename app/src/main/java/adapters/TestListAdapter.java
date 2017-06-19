@@ -49,8 +49,11 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
             holder.ivColor.setImageResource(R.drawable.green_arrow);
         }else if((testname.get(position).getColor()).equalsIgnoreCase("Blue")) {
             holder.ivColor.setImageResource(0);
+            holder.ivColor.setImageResource(R.drawable.blue_arrow);
+
         }else {
             holder.ivColor.setImageResource(0);
+            holder.ivColor.setImageResource(R.drawable.pink_arrow);
         }
 
         holder.row.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +65,10 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
             }
         });
 
+        int size = position+1 ;
+        if(size == testname.size()) {
+            holder.separator.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -73,12 +80,15 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
         private TextView tvTestName ;
         private ImageView ivColor ;
         private LinearLayout row ;
+        private View separator;
+
         public MyViewHolder(View itemView) {
             super(itemView);
 
             tvTestName = (TextView) itemView.findViewById(R.id.testname);
             ivColor = (ImageView) itemView.findViewById(R.id.color_imageview);
             row = (LinearLayout) itemView.findViewById(R.id.testnames_row);
+            separator = itemView.findViewById(R.id.seprator) ;
         }
     }
 

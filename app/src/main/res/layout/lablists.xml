@@ -101,7 +101,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/report_records_listview"
         android:layout_width="match_parent"
-        android:layout_margin="10dp"
         android:layout_below="@+id/select_member_lab"
         android:divider="@android:color/transparent"
         android:dividerHeight="10dp"
