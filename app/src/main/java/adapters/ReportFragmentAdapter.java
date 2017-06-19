@@ -28,11 +28,13 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     private RecyclerView.LayoutManager layoutManager;
     private List<TestNames> testNamesArrayList = new ArrayList<>();
     private ArrayList<String> nameOfTestList = new ArrayList<>();
+    private TestListAdapter.OnRowTouchAction listener ;
 
 
-    public ReportFragmentAdapter(Context context, List<CaseCodeModel> list) {
+    public ReportFragmentAdapter(Context context, List<CaseCodeModel> list, TestListAdapter.OnRowTouchAction listener) {
 
         this.context = context;
+        this.listener = listener ;
         adapterCaseCodeObjectList = list;
 
     }
@@ -67,8 +69,11 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             nameOfTestList.add(testNamesArrayList.get(i).getDescription());
         }*/
 
-        testListAdapter = new TestListAdapter(testNamesArrayList);
+        testListAdapter = new TestListAdapter(testNamesArrayList , listener , adapterCaseCodeObjectList.get(position).getCaseID() );
         holder.lvTestList.setAdapter(testListAdapter);
+
+
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -46,12 +47,14 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.hs.userportal.AppAplication;
 import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.Constants;
 import com.hs.userportal.OrderDetails;
 import com.hs.userportal.OrderList;
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
+import com.hs.userportal.ReportStatus;
 import com.hs.userportal.Services;
 
 import org.json.JSONArray;
@@ -68,17 +71,20 @@ import java.util.List;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import adapters.ReportFragmentAdapter;
+import adapters.ReportTestAdapter;
+import adapters.TestListAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import utils.AppConstant;
+import utils.NestedListHelper;
 import utils.PreferenceHelper;
 
 /**
  * Created by android1 on 3/4/17.
  */
 
-public class ReportFragment extends Fragment {
+public class ReportFragment extends Fragment implements TestListAdapter.OnRowTouchAction {
 
     private String id, caseid;
     private byte[] result = null;
@@ -144,9 +150,9 @@ public class ReportFragment extends Fragment {
     private int mItemClickedPosition = -1;
 
 
-    private RecyclerView mRecyclerViewReportList ;
+    private RecyclerView mRecyclerViewReportList;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ReportFragmentAdapter mAdapterReportFragment ;
+    private ReportFragmentAdapter mAdapterReportFragment;
 
     private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
 
@@ -180,7 +186,7 @@ public class ReportFragment extends Fragment {
 
         mRecyclerViewReportList = (RecyclerView) view.findViewById(R.id.report_records_listview);
         mRecyclerViewReportList.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mActivity) ;
+        mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerViewReportList.setLayoutManager(mLayoutManager);
 
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
@@ -494,6 +500,8 @@ public class ReportFragment extends Fragment {
         progress.dismiss();
     }
 
+
+
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -508,7 +516,7 @@ public class ReportFragment extends Fragment {
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
-           // progress.show();
+            // progress.show();
         }
 
         protected void onPostExecute(Void result) {
@@ -516,45 +524,45 @@ public class ReportFragment extends Fragment {
 
             // logic for setting up color for each test in a particular caseCode
 
-            int initialAmount , totalActualAmount , totalPaidAmount , discountAmount ;
-            String labNo =null, color ;
-            Boolean isSampleReceived=false , isPublished =false, isTestCompleted =false;
+            int initialAmount, totalActualAmount, totalPaidAmount, discountAmount;
+            String labNo = null, color;
+            Boolean isSampleReceived = false, isPublished = false, isTestCompleted = false;
 
-            for(int i= 0 ; i<listOfCaseCodeModelObjects.size() ; i++) {
+            for (int i = 0; i < listOfCaseCodeModelObjects.size(); i++) {
 
-              initialAmount =  listOfCaseCodeModelObjects.get(i).getInitialAmount() ;
-              totalActualAmount =  listOfCaseCodeModelObjects.get(i).getTotalActualAmount() ;
-              totalPaidAmount =  listOfCaseCodeModelObjects.get(i).getTotalPaidAmount() ;
-              discountAmount =  listOfCaseCodeModelObjects.get(i).getDiscountAmount() ;
+                initialAmount = listOfCaseCodeModelObjects.get(i).getInitialAmount();
+                totalActualAmount = listOfCaseCodeModelObjects.get(i).getTotalActualAmount();
+                totalPaidAmount = listOfCaseCodeModelObjects.get(i).getTotalPaidAmount();
+                discountAmount = listOfCaseCodeModelObjects.get(i).getDiscountAmount();
 
-                int noOfTestsInCaseCode  = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().size() ;
+                int noOfTestsInCaseCode = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().size();
 
-                for(int j=0 ; j<noOfTestsInCaseCode ; j++) {
+                for (int j = 0; j < noOfTestsInCaseCode; j++) {
 
-                    labNo = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).getLabNo() ;
-                    isPublished = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isPublished() ;
-                    isSampleReceived =  listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isSampleReceived() ;
-                    isTestCompleted = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isTestCompleted() ;
+                    labNo = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).getLabNo();
+                    isPublished = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isPublished();
+                    isSampleReceived = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isSampleReceived();
+                    isTestCompleted = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isTestCompleted();
 
-                   // Log.e("RIshabh", "isPublished :="+isPublished);
+                    // Log.e("RIshabh", "isPublished :="+isPublished);
                     //Log.e("RIshabh", "isSampleReceived :="+isSampleReceived);
                     //Log.e("RIshabh", "isTestCompleted :="+isTestCompleted);
 
                     // writing logic for setting up for color ; required variables we fetched ;
 
-                    if(!isSampleReceived && !isTestCompleted && TextUtils.isEmpty(labNo)) {
+                    if (!isSampleReceived && !isTestCompleted && TextUtils.isEmpty(labNo)) {
                         //set color Blue
                         listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Blue");
 
-                    }else if(isSampleReceived && !isTestCompleted && !TextUtils.isEmpty(labNo)) {
+                    } else if (isSampleReceived && !isTestCompleted && !TextUtils.isEmpty(labNo)) {
                         // set color pink
                         listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
-                    }else if(isSampleReceived && isTestCompleted && !TextUtils.isEmpty(labNo)) {
+                    } else if (isSampleReceived && isTestCompleted && !TextUtils.isEmpty(labNo)) {
 
-                        if(isPublished && chunk(initialAmount , totalActualAmount , totalPaidAmount , discountAmount)){
+                        if (isPublished && chunk(initialAmount, totalActualAmount, totalPaidAmount, discountAmount)) {
                             // set color green
                             listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Green");
-                        }else {
+                        } else {
                             // set color pink
                             listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
                         }
@@ -562,13 +570,10 @@ public class ReportFragment extends Fragment {
                 }
 
 
-
-
-
             }
 
 
-            mAdapterReportFragment = new ReportFragmentAdapter(mActivity , listOfCaseCodeModelObjects) ;
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfCaseCodeModelObjects , ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
 
            /* if (image.size() == 0) {
@@ -699,19 +704,19 @@ public class ReportFragment extends Fragment {
             }*/
         }
 
-        private boolean chunk(int ia , int taa , int tpa , int da) {
+        private boolean chunk(int ia, int taa, int tpa, int da) {
 
-            int value ;
+            int value;
 
-            if(da == 0) {
+            if (da == 0) {
 
-                value  =  taa - ia ;
-            }else {
-                value = taa - ia - da ;
+                value = taa - ia;
+            } else {
+                value = taa - ia - da;
             }
 
-            if(value <= 0) {
-                return true ;
+            if (value <= 0) {
+                return true;
             }
             return false;
         }
@@ -755,17 +760,17 @@ public class ReportFragment extends Fragment {
                 subArrayList = cut.getJSONArray("Table");
 */
 
-subArrayList = new JSONArray(new Constants().Response) ;
+                subArrayList = new JSONArray(new Constants().Response);
 
-                Log.e("Rishabh", "received response := "+subArrayList.toString()) ;
+                Log.e("Rishabh", "received response := " + subArrayList.toString());
                 listOfCaseCodeModelObjects.clear();
                 for (int i = 0; i < subArrayList.length(); i++) {
 
                     String caseCode = subArrayList.getJSONObject(i).getString("CaseCode");
                     CaseCodeModel caseCodeModelObject = new CaseCodeModel(caseCode);
-                    CaseCodeModel check = checkCaseCodeExistInList(caseCodeModelObject) ;
+                    CaseCodeModel check = checkCaseCodeExistInList(caseCodeModelObject);
 
-                    if (check  == null ){
+                    if (check == null) {
                         // New Case Code
 
 
@@ -780,7 +785,6 @@ subArrayList = new JSONArray(new Constants().Response) ;
                         caseCodeModelObject.setDiscountAmount(subArrayList.getJSONObject(i).optInt("DiscountAmount"));
 
 
-
                         caseCodeModelObject.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
                         caseCodeModelObject.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).optBoolean("IsPublish"));
                         caseCodeModelObject.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).optBoolean("IsSampleReceived"));
@@ -790,19 +794,17 @@ subArrayList = new JSONArray(new Constants().Response) ;
                         caseCodeModelObject.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
 
 
-
                         // Add this new object to ListOf CaseCode objects
 
 
-
                         listOfCaseCodeModelObjects.add(caseCodeModelObject);
-                     //   Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
+                        //   Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
 
                     } else {
 
                         // Case Code Exist ;
 
-                        check.createNewTestNameObject() ;
+                        check.createNewTestNameObject();
                         check.setLocationName(subArrayList.getJSONObject(i).optString("LocationName"));
                         check.setReferrerName(subArrayList.getJSONObject(i).optString("ReferrerName"));
                         check.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
@@ -822,7 +824,7 @@ subArrayList = new JSONArray(new Constants().Response) ;
                         check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
                         check.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
 
-                      //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
+                        //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
                     }
 
                 }
@@ -893,7 +895,7 @@ subArrayList = new JSONArray(new Constants().Response) ;
 
             } catch (JSONException e) {
 
-                Log.e("Rishabh", "JSON Exception := "+e) ;
+                Log.e("Rishabh", "JSON Exception := " + e);
             }
 
 
@@ -1035,7 +1037,7 @@ subArrayList = new JSONArray(new Constants().Response) ;
                 return tempOject;
             }
         }
-        return null ;
+        return null;
     }
 
     private static class Utility {
@@ -1467,4 +1469,184 @@ subArrayList = new JSONArray(new Constants().Response) ;
         // intt.putExtra("id", id);
         // startActivity(intt);
     }
+
+    @Override
+    public void onTestNameTouched(String caseId , int position) {
+        Log.e("Rishabh", "position  : "+position );
+
+        new ReportRecordsBackgroundProcess(caseId).execute() ;
+
+    }
+
+    class ReportRecordsBackgroundProcess extends AsyncTask<Void, Void, Void> {
+
+        String case_id ;
+        public ReportRecordsBackgroundProcess(String caseId) {
+            case_id = caseId ;
+
+            Log.e("Rishabh", "CASE ID in INTEFACE : "+case_id);
+
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            subArray1 = new JSONArray(new ArrayList<String>());
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+
+           /* if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && tvbalance.getText().toString().equalsIgnoreCase("PAID")) {
+
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), ReportStatus.class);
+                    intent.putExtra("index", position);
+                    intent.putExtra("array", subArray1.toString());
+                    intent.putExtra("USER_ID", id);
+                    intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+            } else if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && !(tvbalance.getText().toString().equalsIgnoreCase("PAID"))) {
+                Toast.makeText(getApplicationContext(), "Balance due", Toast.LENGTH_SHORT).show();
+            } else if (subArray1.getJSONObject(position).getString("IsSampleReceived").equals("true")) {
+                Toast.makeText(getApplicationContext(), "Result awaited", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Sample not collected", Toast.LENGTH_SHORT).show();
+            }*/
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            JSONObject receiveData, receiveImageData;
+            JSONArray subArray;
+            try {
+                sendData.put("CaseId", case_id);
+                System.out.println(sendData);
+                receiveData = service.patientinvestigation(sendData);
+                String data = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data);
+                subArray = cut.getJSONArray("Table");
+                subArray1 = subArray.getJSONArray(0);
+                Log.e("Rishabh","Sub array  "+subArray.toString()) ;
+                Log.e("Rishabh","Sub array 1 "+subArray1.toString()) ;
+              /*  lab_name = subArray1.getJSONObject(0).getString(
+                        "LocationName");
+                String[] date = subArray1.getJSONObject(0).getString(
+                        "AdviseDate").split(" ");
+                if (date.length != 0) {
+                    adviseDate = date[0] + " " + date[1] + " " + date[2];
+                }
+                caseCode = subArray1.getJSONObject(0).getString(
+                        "CaseCode");
+                patient_name = subArray1.getJSONObject(0).getString(
+                        "PatientName");
+                String ref_by = subArray1.getJSONObject(0).getString(
+                        "ReferrerName");
+                if (ref_by.equalsIgnoreCase("null")) {
+                    referral = "Self";
+                } else {
+                    referral = ref_by;
+                }
+                String discString = subArray1.getJSONObject(0).getString(
+                        "DiscountAmount");
+                if (!subArray1.getJSONObject(0).getString(
+                        "DiscountAmount").equalsIgnoreCase("null")) {
+                    Double amount_req = Double.valueOf(subArray1.getJSONObject(0).getString(
+                            "DiscountAmount"));
+                    dis = "₹ " + String.format("%.2f", amount_req);
+                } else {
+                    dis = "₹ " + String.format("%.2f", 0.00);
+                }
+                Double amount_req = Double.valueOf(subArray1.getJSONObject(0).getString(
+                        "TotalActualAmount"));
+                subTotal = "₹ " + String.format("%.2f", amount_req);
+                Double amount_req1 = Double.valueOf(subArray1.getJSONObject(0).getString(
+                        "TotalPaidAmount"));
+                yourprice = "₹ " + String.format("%.2f", amount_req1);
+
+                float disc = 0, paid;
+                if (discString.matches(".*\\d.*")) {
+                    disc = Float.parseFloat(discString);
+                    paid = subArray1.getJSONObject(0).getInt(
+                            "TotalActualAmount")
+                            - subArray1.getJSONObject(0)
+                            .getInt("InitialAmount") - disc;
+                } else {
+                    paid = subArray1.getJSONObject(0).getInt("TotalPaidAmount")
+                            - subArray1.getJSONObject(0)
+                            .getInt("InitialAmount");
+                }
+                if (paid <= 0) {
+                    balance_status = "PAID";
+                } else {
+                    balance_status = "DUE";
+                }
+                HashMap<String, String> hmap;
+                subArrayLen = subArray1.length();
+                test_array.clear();
+                for (int i = 0; i < subArray1.length(); i++) {
+                    hmap = new HashMap<>();
+                    JSONObject object = subArray1.getJSONObject(i);
+                    hmap.put("Description", object.getString("Description"));
+                    hmap.put("IsSampleReceived", object.getString("IsSampleReceived"));
+                    hmap.put("IsTestCompleted", object.getString("IsTestCompleted"));
+                    hmap.put("IsPublish", object.getString("IsPublish") + balance_status);
+                    hmap.put("InvestigationId", object.getString("InvestigationId"));
+                    hmap.put("TestId", object.getString("TestId"));
+                    hmap.put("CaseId", object.getString("CaseId"));
+                    hmap.put("TestLocationId", object.getString("TestLocationId"));
+                    hmap.put("PublishCount", object.getString("PublishCount"));
+                    hmap.put("CaseId", object.getString("CaseId"));
+                    if (!object.getString("IsPublish")
+                            .equals("true")
+                            || !balance_status.equals("PAID")) {
+                        check = check + 1;
+                    }
+                    test_array.add(hmap);
+                }
+
+                sendData = new JSONObject();
+                sendData.put("CaseId", case_id);
+                receiveImageData = service.ViewImages(sendData);
+                System.out.println("Images: " + receiveImageData);
+
+                String imageData = "";
+
+
+                imageId.clear();
+                image.clear();
+                imageName.clear();
+                thumbImage.clear();
+
+                imageData = receiveImageData.getString("d");
+                JSONObject cut1 = new JSONObject(imageData);
+                JSONArray subArrayImage = cut1.getJSONArray("Table");
+                for (int i = 0; i < subArrayImage.length(); i++) {
+                    image.add(subArrayImage.getJSONObject(i).getString("Image"));
+                    imageId.add(subArrayImage.getJSONObject(i).getString(
+                            "ImageId"));
+                    imageName.add(subArrayImage.getJSONObject(i).getString(
+                            "ImageName"));
+                    thumbImage.add(subArrayImage.getJSONObject(i).getString(
+                            "ThumbImage"));
+                }*/
+            } catch (Exception e) {
+                e.printStackTrace();
+                progress.dismiss();
+            }
+            return null;
+       }
+    }
+
 }

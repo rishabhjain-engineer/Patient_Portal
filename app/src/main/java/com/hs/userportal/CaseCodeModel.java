@@ -1,5 +1,7 @@
 package com.hs.userportal;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,10 @@ public class CaseCodeModel {
     }
 
     public void setReferrerName(String referrerName) {
+
+        if(TextUtils.isEmpty(referrerName)) {
+            this.referrerName = "SELF" ;
+        }
         this.referrerName = referrerName;
     }
 
