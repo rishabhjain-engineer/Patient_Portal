@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hs.userportal.CaseCodeModel;
@@ -27,16 +28,16 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     private RecyclerView recyclerViewTestList;
     private RecyclerView.LayoutManager layoutManager;
     private List<TestNames> testNamesArrayList = new ArrayList<>();
-    private ArrayList<String> nameOfTestList = new ArrayList<>();
     private TestListAdapter.OnRowTouchAction listener ;
+    private OnPdfTouch onPdfTouchListener ;
 
 
-    public ReportFragmentAdapter(Context context, List<CaseCodeModel> list, TestListAdapter.OnRowTouchAction listener) {
+    public ReportFragmentAdapter(Context context, List<CaseCodeModel> list, TestListAdapter.OnRowTouchAction listener, OnPdfTouch onPdfTouchListener) {
 
         this.context = context;
         this.listener = listener ;
         adapterCaseCodeObjectList = list;
-
+        this.onPdfTouchListener = onPdfTouchListener ;
     }
 
 
@@ -49,9 +50,9 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        nameOfTestList.clear();
+
 
         layoutManager = new LinearLayoutManager(context);
 
@@ -59,19 +60,20 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
         holder.tvAdviceDate.setText(adapterCaseCodeObjectList.get(position).getDateandTime());
         holder.tvReferredBy.setText(adapterCaseCodeObjectList.get(position).getReferrerName());
         holder.tvCaseCode.setText(adapterCaseCodeObjectList.get(position).getCaseCode());
-
         holder.lvTestList.setHasFixedSize(true);
         holder.lvTestList.setLayoutManager(layoutManager);
 
         testNamesArrayList = adapterCaseCodeObjectList.get(position).getListOfTestNamesInCaseCode();
 
-       /* for (int i = 0; i < testNamesArrayList.size(); i++) {
-            nameOfTestList.add(testNamesArrayList.get(i).getDescription());
-        }*/
-
         testListAdapter = new TestListAdapter(testNamesArrayList , listener , adapterCaseCodeObjectList.get(position).getCaseID() );
         holder.lvTestList.setAdapter(testListAdapter);
 
+        holder.llPDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPdfTouchListener.onPdfTouch(adapterCaseCodeObjectList.get(position));
+            }
+        });
 
 
     }
@@ -88,6 +90,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
         private TextView tvReferredBy;
         private TextView tvCaseCode;
         private RecyclerView lvTestList;
+        private LinearLayout llPDF ;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -97,8 +100,14 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             tvReferredBy = (TextView) itemView.findViewById(R.id.referred_by_value_tv);
             tvCaseCode = (TextView) itemView.findViewById(R.id.casecode_value_tv);
             lvTestList = (RecyclerView) itemView.findViewById(R.id.testnames_recyler_view);
+            llPDF = (LinearLayout) itemView.findViewById(R.id.view_report_container);
 
 
         }
+    }
+
+
+    public interface OnPdfTouch{
+        public void onPdfTouch(CaseCodeModel caseCodeModel) ;
     }
 }

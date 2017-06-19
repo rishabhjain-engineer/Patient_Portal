@@ -1,6 +1,7 @@
 package com.hs.userportal;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class CaseCodeModel {
     private String locationName;  // Name of lab , where patient visited for sample
     private String referrerName;  // who refer to this particular Lab .
     private String dateandTime ;
+    private String patientName ;
     private String caseID ;
     private String testLocationID ;
     private List<TestNames> listOfTestNamesInCaseCode = new ArrayList<>();   // one CaseCode can have multiple TEST done .
@@ -85,10 +87,11 @@ public class CaseCodeModel {
 
     public void setReferrerName(String referrerName) {
 
-        if(TextUtils.isEmpty(referrerName)) {
+        if("null".equalsIgnoreCase(referrerName)) {
             this.referrerName = "SELF" ;
+        }else{
+             this.referrerName = referrerName;
         }
-        this.referrerName = referrerName;
     }
 
     public TestNames getTestNamesObject() {
@@ -128,4 +131,11 @@ public class CaseCodeModel {
         this.dateandTime = dateandTime;
     }
 
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
 }
