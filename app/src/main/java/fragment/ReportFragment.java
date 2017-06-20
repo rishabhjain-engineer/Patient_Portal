@@ -53,6 +53,7 @@ import com.hs.userportal.AppAplication;
 import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.Constants;
 import com.hs.userportal.OrderDetails;
+import com.hs.userportal.OrderDetailsModel;
 import com.hs.userportal.OrderList;
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
@@ -166,6 +167,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     private ReportFragmentAdapter mAdapterReportFragment;
 
     private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
+    private List<OrderDetailsModel> listOfOrderDetailsModelObjects = new ArrayList<>() ;
+    private List<Object> listOfAllObjects = new ArrayList<>() ;
     private ProgressDialog mProgressDialog;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -298,7 +301,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new ReportFragment.BackgroundProcess().execute();
+            OrderDetailsBackgroundProcess();
+
         }
 
 
@@ -531,6 +535,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
+            listOfCaseCodeModelObjects.clear();
             // progress.show();
         }
 
@@ -583,9 +588,9 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
             }
 
-
-            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfCaseCodeModelObjects , ReportFragment.this, ReportFragment.this);
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects , ReportFragment.this, ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
+
 
            /* if (image.size() == 0) {
                 // images.setBackgroundResource(R.drawable.grey_button);
@@ -715,8 +720,6 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             }*/
         }
 
-
-
         @Override
         protected Void doInBackground(Void... params) {
             // TODO Auto-generated method stub
@@ -754,12 +757,9 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 dataList = receiveDataList.getString("d");
                 JSONObject cut = new JSONObject(dataList);
                 subArrayList = cut.getJSONArray("Table");
-
-
             //    subArrayList = new JSONArray(new Constants().Response);
-
                 Log.e("Rishabh", "received response := " + subArrayList.toString());
-                listOfCaseCodeModelObjects.clear();
+
                 for (int i = 0; i < subArrayList.length(); i++) {
 
                     String caseCode = subArrayList.getJSONObject(i).getString("CaseCode");
@@ -794,6 +794,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
 
                         listOfCaseCodeModelObjects.add(caseCodeModelObject);
+                        listOfAllObjects.add(caseCodeModelObject);
                         //   Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
 
                     } else {
@@ -1023,8 +1024,11 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             // End of background method
         }
 
-
     }
+
+
+
+
     private boolean chunk(int ia, int taa, int tpa, int da) {
 
         int value;
@@ -1129,7 +1133,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             }
             StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
             String url = sttc_holdr.request_Url();
-            jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            jr = new JsonObjectRequest(Request.Method.POST, url, sendData,  new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject response) {
@@ -1611,7 +1615,6 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
         }
     }
 
-
     private class pdfprocess extends AsyncTask<Void, String, Void> {
 
         private CaseCodeModel caseCodeModelObject ;
@@ -1803,5 +1806,78 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
         }
 
     }
+
+    private void OrderDetailsBackgroundProcess() {
+
+            listOfAllObjects.clear();
+            listOfOrderDetailsModelObjects.clear();
+
+            sendData = new JSONObject();
+            try {
+                sendData.put("userId", id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("Rishabh", "JSON EXCEPTION : "+e) ;
+            }
+            StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
+            String url = sttc_holdr.request_Url();
+
+            Log.e("Rishabh", "send data orderList  : "+sendData) ;
+
+            jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                    String response ;
+                    JSONObject jsonObject1 ;
+                    try {
+                        response = jsonObject.getString("d") ;
+                        jsonObject1 = new JSONObject(response) ;
+                        JSONArray jsonArray = jsonObject1.getJSONArray("Table") ;
+
+                        Log.e("Rishabh", "jsonArray response order list : "+jsonArray.toString()) ;
+                        if(jsonArray.length() != 0) {
+
+                            for(int i = 0 ; i<jsonArray.length(); i++) {
+
+                                OrderDetailsModel orderDetailsModel = new OrderDetailsModel() ;
+                                orderDetailsModel.setOrderID(jsonArray.getJSONObject(i).optString("OrderId"));
+                                orderDetailsModel.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime")) ;
+                                orderDetailsModel.setCentreName(jsonArray.getJSONObject(i).optString("CentreName"));
+                                orderDetailsModel.setBillingAddress(jsonArray.getJSONObject(i).optString("BillingAddress"));
+                                orderDetailsModel.setTestName(jsonArray.getJSONObject(i).optString("TestName"));
+                                orderDetailsModel.setTestID(jsonArray.getJSONObject(i).optString("TestId"));
+                                orderDetailsModel.setSamplePickUpStatus(jsonArray.getJSONObject(i).optBoolean("SamplePickupstatus"));
+                                orderDetailsModel.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
+                                orderDetailsModel.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
+                                orderDetailsModel.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
+                                orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optInt("PromoCodeDiscount"));
+                                orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optInt("DiscountInPercentage"));
+
+                                listOfOrderDetailsModelObjects.add(orderDetailsModel);
+                                listOfAllObjects.add(orderDetailsModel) ;
+                            }
+                        }
+                        new ReportFragment.BackgroundProcess().execute();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("Rishabh", "JSON EXCEPTION : "+e) ;
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Rishabh", "VolleyError : "+volleyError) ;
+                }
+            });
+            int socketTimeout1 = 30000;
+            RetryPolicy policy1 = new DefaultRetryPolicy(socketTimeout1, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            jr.setRetryPolicy(policy1);
+            queue.add(jr);
+
+        }
 
 }
