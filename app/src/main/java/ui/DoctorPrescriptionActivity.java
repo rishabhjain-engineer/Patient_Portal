@@ -64,6 +64,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     private CustomAlertDialog mCustomAlertDialog;
     private static RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
+    private EditText mDiagnosisEt, mCommentEt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +75,9 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         mActionBar.hide();
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
+        mDiagnosisEt = (EditText) findViewById(R.id.diagnosis_et);
+        mCommentEt = (EditText) findViewById(R.id.comment_et);
+
         headerTitleTv.setText("Doctor Prescription");
         backImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +160,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
                 mCustomAlertDialog.show();
             } else if (id == R.id.ok_button) {
+                ConsultAdd();
                 finish();
             }
         }
@@ -282,7 +287,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     }
 
     private void getConsultTestList() {
-        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetAllConsultTestName);
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultTestList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
@@ -299,7 +304,8 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        String name = jsonObject1.optString("SymptomName");
+                        String name = jsonObject1.optString("TestName");
+                        String investigationId = jsonObject1.optString("InvestigationId");
                         Symptoms symptoms = new Symptoms();
                         symptoms.setName(name);
                         mTestList.add(symptoms);
@@ -324,11 +330,33 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     }
 
     private void ConsultAdd() {
-        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.AddDoctorPrescription);
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAdd);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("description", "");
+            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
+            data.put("doctorId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("consultMode", AppConstant.CONSULT_MODE);
+            data.put("diagnosis", "");
+            data.put("docComments", mCommentEt.getEditableText().toString());
+
+            JSONArray jsonArray = new JSONArray();
+            JSONObject innerJsonObject = new JSONObject();
+            innerJsonObject.put("MedId", "");
+            innerJsonObject.put("MedicineName", "");
+            innerJsonObject.put("Dose", "");
+            innerJsonObject.put("Days", "");
+            jsonArray.put(innerJsonObject);
+            data.put("medDetails", jsonArray);
+
+            JSONArray jsonArray2 = new JSONArray();
+            JSONObject innerJsonObject2 = new JSONObject(); //99587328-a719-411a-aae7-15df20f43f0f
+            innerJsonObject2.put("ConsultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
+            innerJsonObject2.put("InvestigationId", "99587328-a719-411a-aae7-15df20f43f0f");
+            innerJsonObject2.put("TestName", "MONTOUX TEST (C)");
+            jsonArray2.put(innerJsonObject2);
+            data.put("ConTestDetails", jsonArray2);
+
         } catch (JSONException je) {
             je.printStackTrace();
         }

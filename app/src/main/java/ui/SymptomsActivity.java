@@ -521,7 +521,7 @@ public class SymptomsActivity extends BaseActivity {
     private ProgressDialog mProgressDialog;
 
     private void getAllSymptoms() {
-        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetAllSymptoms);
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultSymptomsList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
@@ -558,7 +558,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
     private void addPatientSymptoms() {
-        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.AddPatientSymptoms);
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {

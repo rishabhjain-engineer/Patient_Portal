@@ -512,28 +512,28 @@ public class StaticHolder {
                 url = BASE_URL + "UpdateALId";
                 break;
 
-            case AddDoctorPrescription:
-                url = BASE_URL + "AddDoctorPrescription";
+            case ConsultAdd:
+                url = BASE_URL + "ConsultAdd";
                 break;
 
-            case GetAllConsultTestName:
-                url = BASE_URL + "GetAllConsultTestName";
+            case ConsultTestList:
+                url = BASE_URL + "ConsultTestList";
                 break;
 
-            case GetAllSymptoms:
-                url = BASE_URL + "GetAllSymptoms";
+            case ConsultSymptomsList:
+                url = BASE_URL + "ConsultSymptomsList";
                 break;
 
-            case AddConsultantPayment:
-                url = BASE_URL + "AddConsultantPayment";
+            case ConsultPayment:
+                url = BASE_URL + "ConsultPayment";
                 break;
 
-            case UploadImageS3:
-                url = BASE_URL + "UploadImageS3";
+            case ConsultS3Records:
+                url = BASE_URL + "ConsultS3Records";
                 break;
 
-            case AddPatientSymptoms:
-                url = BASE_URL + "AddPatientSymptoms";
+            case ConsultAddSymptoms:
+                url = BASE_URL + "ConsultAddSymptoms";
                 break;
 
             default:
@@ -571,7 +571,7 @@ public class StaticHolder {
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
-        saveHealthDetailMod, UpdateALId, GetAllSymptoms, AddDoctorPrescription, GetAllConsultTestName, AddConsultantPayment, UploadImageS3, AddPatientSymptoms
+        saveHealthDetailMod, UpdateALId, ConsultSymptomsList, ConsultAdd, ConsultTestList, ConsultPayment, ConsultS3Records, ConsultAddSymptoms
     }
 
 }
