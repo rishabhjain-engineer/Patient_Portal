@@ -153,4 +153,6 @@ public class DoctorDetailsActivity extends BaseActivity {
         });
         dialog.show();
     }
+
+    
 }

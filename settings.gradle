@@ -1,2 +1,2 @@
-include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib', ':mobicomkitui', ':audiovideo', ':mobicomkit', ':mobicommons'
+include ':app', ':SegmentedControlLibrary', ':swipelistview', ':SlidingMenuLibrary', ':ViewPagerIndicatorlibrary', ':Simpl3r', ':MPChartLib', ':mobicomkitui', ':audiovideo', ':mobicomkit', ':mobicommons', ':payUMoneysdk'
 include ':demo_cloud_tagview'
