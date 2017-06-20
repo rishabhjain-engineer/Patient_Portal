@@ -1649,9 +1649,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                     int da = caseCodeModelObject.getDiscountAmount();
                     int taa = caseCodeModelObject.getTotalActualAmount();
                     int tpa = caseCodeModelObject.getTotalPaidAmount();
-                    Log.e("Rishabh", "ispublished:= "+caseCodeModelObject.getTestNamesObject().isPublished()) ;
                     if (caseCodeModelObject.getTestNamesObject().isPublished().equals(true) && chunk(ia,taa,tpa,da)) {
-                        Log.e("Rishabh", "helllo") ;
                         pdfobject = new JSONObject();
                         pdfobject.put("InvestigationId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getInvestigationID());
                         pdfobject.put("TestId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getTestID());
@@ -1676,6 +1674,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             } catch (JSONException e) {
                 Log.e("Rishabh", "JSON EXCEPTION := "+e);
             }
+           // Log.e("Rishabh","Send Data for PDF process := "+sendData);
             ptname = caseCodeModelObject.getPatientName();
             ptname.replaceAll(" ", "_");
 
@@ -1689,8 +1688,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 } catch (UnsupportedEncodingException e1) {
                     e1.printStackTrace();
                 }
-                Log.e("Rishabh","View & result==null : "+reportFile.getAbsolutePath());
-                Log.e("Rishabh","Content of PDF :"+temp);
+               // Log.e("Rishabh","View & result==null : "+reportFile.getAbsolutePath());
+               // Log.e("Rishabh","Content of PDF :"+temp);
                 OutputStream out;
                 try {
                     InputStream input = new ByteArrayInputStream(result);

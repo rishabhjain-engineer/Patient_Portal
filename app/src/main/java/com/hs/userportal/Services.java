@@ -530,8 +530,10 @@ public class Services {
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
 
      //   StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
-     //   String url = sttc_holdr.request_Url();
-        String url = "http://192.168.1.11/WebServices/LabService.asmx/GetAllPatientCase";
+       // String url = sttc_holdr.request_Url();
+       // String url = "http://192.168.1.11/WebServices/LabService.asmx/GetAllPatientCase";
+        String url = "https://apidemo.healthscion.com/WebServices/LabService.asmx/GetAllPatientCase";
+
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");

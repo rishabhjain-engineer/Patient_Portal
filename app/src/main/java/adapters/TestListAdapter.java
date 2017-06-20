@@ -45,9 +45,9 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.MyView
     public void onBindViewHolder(TestListAdapter.MyViewHolder holder, final int position) {
 
         holder.tvTestName.setText(testname.get(position).getDescription());
-        if((testname.get(position).getColor()).equalsIgnoreCase("Green") ){
+        if(("Green".equalsIgnoreCase(testname.get(position).getColor()))){
             holder.ivColor.setImageResource(R.drawable.green_arrow);
-        }else if((testname.get(position).getColor()).equalsIgnoreCase("Blue")) {
+        }else if("Blue".equalsIgnoreCase(testname.get(position).getColor())) {
             holder.ivColor.setImageResource(0);
             holder.ivColor.setImageResource(R.drawable.blue_arrow);
 
