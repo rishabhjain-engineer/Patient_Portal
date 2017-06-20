@@ -576,6 +576,7 @@ public class SymptomsActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject jsonObject = new JSONObject(data);
                     String consultId = jsonObject.optString("d");
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
                     mProgressDialog.dismiss();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();

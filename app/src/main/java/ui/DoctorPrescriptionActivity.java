@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,20 +19,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import adapters.SymptomsAdapter;
+import config.StaticHolder;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 15/6/17.
@@ -45,16 +57,19 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     private String medicineList = "";
     private boolean mIsTest;
 
-    private String testArray[] = {"CBC", "KFT", "LFT", "Widal", "Typhoid", "Igg", "Igm"};
+    //private String testArray[] = {"CBC", "KFT", "LFT", "Widal", "Typhoid", "Igg", "Igm"};
     private List<Symptoms> mTestList = new ArrayList<>();
     private String testList = "";
 
     private CustomAlertDialog mCustomAlertDialog;
+    private static RequestQueue mRequestQueue;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_prescription);
+        mRequestQueue = Volley.newRequestQueue(this);
         setupActionBar();
         mActionBar.hide();
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
@@ -97,12 +112,12 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             mMedicineList.add(symptoms);
         }
 
-        Arrays.sort(testArray);
+       /* Arrays.sort(testArray);
         for (int i = 0; i < testArray.length; i++) {
             Symptoms symptoms = new Symptoms();
             symptoms.setName(testArray[i]);
             mTestList.add(symptoms);
-        }
+        }*/
 
 
         mMedicineTv.setOnClickListener(mOnClickListener);
@@ -112,6 +127,14 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         mTestTv.setText("Please choose test.");
 
         okButton.setOnClickListener(mOnClickListener);
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+            getConsultTestList();
+        }
     }
 
     @Override
@@ -256,5 +279,89 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         public void onStop() {
             filterText.removeTextChangedListener(filterTextWatcher);
         }
+    }
+
+    private void getConsultTestList() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetAllConsultTestName);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("description", "");
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String name = jsonObject1.optString("SymptomName");
+                        Symptoms symptoms = new Symptoms();
+                        symptoms.setName(name);
+                        mTestList.add(symptoms);
+                    }
+                    mProgressDialog.dismiss();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
+    private void ConsultAdd() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.AddDoctorPrescription);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("description", "");
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String name = jsonObject1.optString("SymptomName");
+                        Symptoms symptoms = new Symptoms();
+                        symptoms.setName(name);
+                        mTestList.add(symptoms);
+                    }
+                    mProgressDialog.dismiss();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
     }
 }

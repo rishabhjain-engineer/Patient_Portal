@@ -56,6 +56,8 @@ public class PreferenceHelper {
 
         PATIENT_BUSINESS_FLAG(""),
 
+        CONSULT_ID("null"),
+
         TO_DATE("null");
 
         private String defaultValue;
