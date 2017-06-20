@@ -81,6 +81,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import adapters.OrderListAdapter;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import adapters.ReportFragmentAdapter;
@@ -97,7 +98,7 @@ import utils.PreferenceHelper;
  * Created by android1 on 3/4/17.
  */
 
-public class ReportFragment extends Fragment implements TestListAdapter.OnRowTouchAction, ReportFragmentAdapter.OnPdfTouch {
+public class ReportFragment extends Fragment implements TestListAdapter.OnRowTouchAction, ReportFragmentAdapter.OnPdfTouch, OrderListAdapter.OrderListTouched {
 
     private String id, caseid;
     private byte[] result = null;
@@ -521,6 +522,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
 
 
+
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -588,7 +590,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
             }
 
-            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects , ReportFragment.this, ReportFragment.this);
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects , ReportFragment.this, ReportFragment.this, ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
 
 
@@ -1879,5 +1881,10 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             queue.add(jr);
 
         }
+
+    @Override
+    public void orderListTouched() {
+
+    }
 
 }

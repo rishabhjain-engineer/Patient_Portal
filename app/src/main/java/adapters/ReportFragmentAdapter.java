@@ -26,23 +26,25 @@ import java.util.List;
 public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAdapter.MyViewHolder> {
 
     private List<CaseCodeModel> adapterCaseCodeObjectList = new ArrayList<>();
-    private List<Object> listofAllObjects = new ArrayList<>() ;
+    private List<Object> listofAllObjects = new ArrayList<>();
     private Context context;
     private TestListAdapter testListAdapter;
     private RecyclerView recyclerViewTestList;
     private RecyclerView.LayoutManager layoutManager;
     private List<TestNames> testNamesArrayList = new ArrayList<>();
-    private TestListAdapter.OnRowTouchAction listener ;
-    private OrderListAdapter orderListAdapter ;
-    private OnPdfTouch onPdfTouchListener ;
+    private TestListAdapter.OnRowTouchAction listener;
+    private OrderListAdapter orderListAdapter;
+    private OnPdfTouch onPdfTouchListener;
+    private OrderListAdapter.OrderListTouched orderListTouchedListener;
 
 
-    public ReportFragmentAdapter(Context context, List<Object> list, TestListAdapter.OnRowTouchAction listener, OnPdfTouch onPdfTouchListener) {
+    public ReportFragmentAdapter(Context context, List<Object> list, TestListAdapter.OnRowTouchAction listener, OnPdfTouch onPdfTouchListener, OrderListAdapter.OrderListTouched order) {
 
         this.context = context;
-        this.listener = listener ;
-      listofAllObjects = list ;
-        this.onPdfTouchListener = onPdfTouchListener ;
+        this.listener = listener;
+        listofAllObjects = list;
+        this.onPdfTouchListener = onPdfTouchListener;
+        orderListTouchedListener = order ;
     }
 
 
@@ -58,11 +60,10 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
 
-
         layoutManager = new LinearLayoutManager(context);
 
 
-        if(listofAllObjects.get(position) instanceof CaseCodeModel) {
+        if (listofAllObjects.get(position) instanceof CaseCodeModel) {
 
             holder.tvLocationName.setText(((CaseCodeModel) listofAllObjects.get(position)).getLocationName());
             holder.tvAdviceDate.setText(((CaseCodeModel) listofAllObjects.get(position)).getDateandTime());
@@ -70,8 +71,8 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.tvCaseCode.setText(((CaseCodeModel) listofAllObjects.get(position)).getCaseCode());
             holder.lvTestList.setHasFixedSize(true);
             holder.lvTestList.setLayoutManager(layoutManager);
-            testNamesArrayList = ((CaseCodeModel) listofAllObjects.get(position)).getListOfTestNamesInCaseCode()  ;
-            testListAdapter = new TestListAdapter(testNamesArrayList , listener , ((CaseCodeModel) listofAllObjects.get(position)).getCaseID() );
+            testNamesArrayList = ((CaseCodeModel) listofAllObjects.get(position)).getListOfTestNamesInCaseCode();
+            testListAdapter = new TestListAdapter(testNamesArrayList, listener, ((CaseCodeModel) listofAllObjects.get(position)).getCaseID());
             holder.lvTestList.setAdapter(testListAdapter);
 
             holder.llPDF.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +81,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
                     onPdfTouchListener.onPdfTouch(((CaseCodeModel) listofAllObjects.get(position)));
                 }
             });
-        }else if (listofAllObjects.get(position) instanceof OrderDetailsModel) {
+        } else if (listofAllObjects.get(position) instanceof OrderDetailsModel) {
 
 
             holder.tvLocationName.setText(((OrderDetailsModel) listofAllObjects.get(position)).getCentreName());
@@ -93,20 +94,17 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.llPDF.setAlpha(.3f);
             holder.tvPdfLabel.setTextColor(Color.parseColor("#e5e5e5"));
 
-            orderListAdapter = new OrderListAdapter(((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
+            orderListAdapter = new OrderListAdapter(orderListTouchedListener, ((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
             holder.lvTestList.setLayoutManager(layoutManager);
             holder.lvTestList.setHasFixedSize(true);
             holder.lvTestList.setAdapter(orderListAdapter);
         }
 
-
-
-
     }
 
     @Override
     public int getItemCount() {
-        Log.e("Rishabh", "size:= "+listofAllObjects.size());
+        Log.e("Rishabh", "size:= " + listofAllObjects.size());
         return listofAllObjects.size();
     }
 
@@ -114,12 +112,12 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
 
         private TextView tvLocationName;
         private TextView tvAdviceDate;
-        private TextView tvPdfLabel ;
+        private TextView tvPdfLabel;
         private TextView tvReferredBy;
         private TextView tvCaseCode;
         private RecyclerView lvTestList;
-        private LinearLayout llPDF ;
-        private TextView tvCaseCodeLabel ;
+        private LinearLayout llPDF;
+        private TextView tvCaseCodeLabel;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -131,12 +129,12 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             lvTestList = (RecyclerView) itemView.findViewById(R.id.testnames_recyler_view);
             llPDF = (LinearLayout) itemView.findViewById(R.id.view_report_container);
             tvCaseCodeLabel = (TextView) itemView.findViewById(R.id.casecode_tv);
-            tvPdfLabel= (TextView) itemView.findViewById(R.id.pdf_text);
+            tvPdfLabel = (TextView) itemView.findViewById(R.id.pdf_text);
         }
     }
 
 
-    public interface OnPdfTouch{
-        public void onPdfTouch(CaseCodeModel caseCodeModel) ;
+    public interface OnPdfTouch {
+        public void onPdfTouch(CaseCodeModel caseCodeModel);
     }
 }
