@@ -1,6 +1,7 @@
 package adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -88,6 +89,10 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.tvCaseCodeLabel.setText("Order Code");
             holder.tvCaseCode.setText(((OrderDetailsModel) listofAllObjects.get(position)).getOrderID());
 
+            holder.llPDF.setClickable(false);
+            holder.llPDF.setAlpha(.3f);
+            holder.tvPdfLabel.setTextColor(Color.parseColor("#e5e5e5"));
+
             orderListAdapter = new OrderListAdapter(((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
             holder.lvTestList.setLayoutManager(layoutManager);
             holder.lvTestList.setHasFixedSize(true);
@@ -101,6 +106,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
 
     @Override
     public int getItemCount() {
+        Log.e("Rishabh", "size:= "+listofAllObjects.size());
         return listofAllObjects.size();
     }
 
@@ -108,6 +114,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
 
         private TextView tvLocationName;
         private TextView tvAdviceDate;
+        private TextView tvPdfLabel ;
         private TextView tvReferredBy;
         private TextView tvCaseCode;
         private RecyclerView lvTestList;
@@ -124,7 +131,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             lvTestList = (RecyclerView) itemView.findViewById(R.id.testnames_recyler_view);
             llPDF = (LinearLayout) itemView.findViewById(R.id.view_report_container);
             tvCaseCodeLabel = (TextView) itemView.findViewById(R.id.casecode_tv);
-
+            tvPdfLabel= (TextView) itemView.findViewById(R.id.pdf_text);
         }
     }
 
