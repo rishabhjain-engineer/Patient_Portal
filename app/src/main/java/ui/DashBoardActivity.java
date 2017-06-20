@@ -64,7 +64,7 @@ import utils.PreferenceHelper;
  */
 
 public class DashBoardActivity extends BaseActivity {
-    private static RequestQueue request;
+    private static RequestQueue mRequestQueue;
 
     public static String image_parse;
     public static String emailid;
@@ -87,6 +87,7 @@ public class DashBoardActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        mRequestQueue = Volley.newRequestQueue(this);
         grayColor = getResources().getColor(R.color.dashboard_footer_textcolor);
         greenColor = getResources().getColor(R.color.home_title_tra);
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -154,6 +155,7 @@ public class DashBoardActivity extends BaseActivity {
                     pushNotificationTask.execute((Void) null);
                 }
 
+                UpdateALId();
             }
 
             @Override
@@ -166,7 +168,7 @@ public class DashBoardActivity extends BaseActivity {
         user.setUserId(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID)); //userId it can be any unique user identifier
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME))) {
             user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
-        }else{
+        } else {
             user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_CODE)); //displayName is the name of the user which will be shown in chat messages
         }
         user.setEmail(""); //optional
@@ -175,6 +177,35 @@ public class DashBoardActivity extends BaseActivity {
         user.setImageLink("");//optional,pass your image link
         user.setFeatures(getFeatureList());
         new UserLoginTask(user, listener, this).execute((Void) null);
+    }
+
+    private void UpdateALId() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.UpdateALId);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("PatientId", id);
+            data.put("ALId", true);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                } catch (JSONException je) {
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(family);
     }
 
     private List<String> getFeatureList() {
@@ -270,7 +301,6 @@ public class DashBoardActivity extends BaseActivity {
     };
 
     private void findFamily() {
-        request = Volley.newRequestQueue(this);
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetMember);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -355,7 +385,7 @@ public class DashBoardActivity extends BaseActivity {
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
-        request.add(family);
+        mRequestQueue.add(family);
     }
 
     private void showSubScriptionDialog(String message) {

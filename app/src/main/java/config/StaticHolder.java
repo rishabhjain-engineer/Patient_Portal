@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class StaticHolder {
 
 
-    public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
-    public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL1 = "https://api.healthscion.com/"; //TODO commented by ayaz LIVE
+    //public final String BASE_URL = "https://api.healthscion.com/WebServices/LabService.asmx/"; //TODO commented by ayaz LIVE
 
 
-    //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+    public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
+    public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
     //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
     //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
@@ -508,6 +508,34 @@ public class StaticHolder {
             case saveHealthDetailMod:
                 url = BASE_URL + "saveHealthDetailMod";
                 break;
+            case UpdateALId:
+                url = BASE_URL + "UpdateALId";
+                break;
+
+            case AddDoctorPrescription:
+                url = BASE_URL + "AddDoctorPrescription";
+                break;
+
+            case GetAllConsultTestName:
+                url = BASE_URL + "GetAllConsultTestName";
+                break;
+
+            case GetAllSymptoms:
+                url = BASE_URL + "GetAllSymptoms";
+                break;
+
+            case AddConsultantPayment:
+                url = BASE_URL + "AddConsultantPayment";
+                break;
+
+            case UploadImageS3:
+                url = BASE_URL + "UploadImageS3";
+                break;
+
+            case AddPatientSymptoms:
+                url = BASE_URL + "AddPatientSymptoms";
+                break;
+
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -543,7 +571,7 @@ public class StaticHolder {
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
-        saveHealthDetailMod
+        saveHealthDetailMod, UpdateALId, GetAllSymptoms, AddDoctorPrescription, GetAllConsultTestName, AddConsultantPayment, UploadImageS3, AddPatientSymptoms
     }
 
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,20 +35,33 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import adapters.SymptomsAdapter;
+import config.StaticHolder;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 6/6/17.
@@ -68,25 +82,27 @@ public class SymptomsActivity extends BaseActivity {
     private String selectedPath;
     private SymptomsDialog mSymptomsDialog;
     private TextView mSymptomsTextView;
-    private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
-            "Skin Rash", "Swelling", "Stress", "Fever", "Weight Loss", "Common Cold", "Diarrhea", "Allergy", "Vomiting", "Dizziness", "Abdominal Pain", "Itch",
-            "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Asthma", "Sore Throat", "HyperTension", "Hair Loss",
-            "Migraine", "Blood Pressure", "Blindness"};
+    /* private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
+             "Skin Rash", "Swelling", "Stress", "Fever", "Weight Loss", "Common Cold", "Diarrhea", "Allergy", "Vomiting", "Dizziness", "Abdominal Pain", "Itch",
+             "Joint pain", "Constipation", "Chest pain", "Weight Gain", "Muscle Pain", "Bleeding", "Asthma", "Sore Throat", "HyperTension", "Hair Loss",
+             "Migraine", "Blood Pressure", "Blindness"};*/
     private List<Symptoms> mSymptomsList = new ArrayList<>();
     private String symptomsList = "";
     private EditText mNoteEditText;
+    private static RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
+        mRequestQueue = Volley.newRequestQueue(this);
 
-        Arrays.sort(symptomsArry);
-        for (int i = 0; i < symptomsArry.length; i++) {
+        // Arrays.sort(symptomsArry);
+        /*for (int i = 0; i < symptomsArry.length; i++) {
             Symptoms symptoms = new Symptoms();
             symptoms.setName(symptomsArry[i]);
             mSymptomsList.add(symptoms);
-        }
+        }*/
 
         setupActionBar();
         mActionBar.hide();
@@ -126,6 +142,14 @@ public class SymptomsActivity extends BaseActivity {
             mSymptomsTextView.setText(list);
         }*/
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+            getAllSymptoms();
+        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -133,7 +157,8 @@ public class SymptomsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.continue_button) {
-               if (mCoversationType.equalsIgnoreCase("audio")) {
+                addPatientSymptoms();
+                if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
                     startActivity(audioCallIntent);
@@ -170,7 +195,7 @@ public class SymptomsActivity extends BaseActivity {
                     uploadFile();
                 }
             } else if (id == R.id.symptoms_tv) {
-                mSymptomsDialog = new SymptomsDialog(SymptomsActivity.this, symptomsArry);
+                mSymptomsDialog = new SymptomsDialog(SymptomsActivity.this);
                 mSymptomsDialog.show();
             } else if (R.id.back_image == id) {
                 finish();
@@ -418,7 +443,7 @@ public class SymptomsActivity extends BaseActivity {
         private SymptomsAdapter symptomsAdapter = null;
         private Button mOkButton;
 
-        public SymptomsDialog(Context context, String[] cityList) {
+        public SymptomsDialog(Context context) {
             super(context);
 
             /** Design the dialog in main.xml file */
@@ -491,6 +516,83 @@ public class SymptomsActivity extends BaseActivity {
         public void onStop() {
             filterText.removeTextChangedListener(filterTextWatcher);
         }
+    }
+
+    private ProgressDialog mProgressDialog;
+
+    private void getAllSymptoms() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetAllSymptoms);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String name = jsonObject1.optString("SymptomName");
+                        Symptoms symptoms = new Symptoms();
+                        symptoms.setName(name);
+                        mSymptomsList.add(symptoms);
+                    }
+                    mProgressDialog.dismiss();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
+    private void addPatientSymptoms() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.AddPatientSymptoms);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("symptoms", mSymptomsTextView.getText());
+            data.put("patientNotes", mNoteEditText.getEditableText().toString());
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.i("GetMember", "Received Data: " + response);
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    String consultId = jsonObject.optString("d");
+                    mProgressDialog.dismiss();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
     }
 
 }
