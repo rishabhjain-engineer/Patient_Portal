@@ -94,7 +94,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.llPDF.setAlpha(.3f);
             holder.tvPdfLabel.setTextColor(Color.parseColor("#e5e5e5"));
 
-            orderListAdapter = new OrderListAdapter(orderListTouchedListener, ((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
+            orderListAdapter = new OrderListAdapter((OrderDetailsModel) listofAllObjects.get(position),orderListTouchedListener, ((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
             holder.lvTestList.setLayoutManager(layoutManager);
             holder.lvTestList.setHasFixedSize(true);
             holder.lvTestList.setAdapter(orderListAdapter);

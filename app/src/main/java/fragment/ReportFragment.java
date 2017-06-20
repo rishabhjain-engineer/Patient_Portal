@@ -1883,8 +1883,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
         }
 
     @Override
-    public void orderListTouched() {
-
+    public void orderListTouched(OrderDetailsModel object) {
+        
     }
 
 }

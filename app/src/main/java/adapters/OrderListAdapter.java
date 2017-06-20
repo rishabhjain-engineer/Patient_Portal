@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hs.userportal.OrderDetailsModel;
 import com.hs.userportal.R;
 
 /**
@@ -17,10 +18,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
 
     private String testname ;
     private OrderListTouched listener ;
+    private OrderDetailsModel orderDetailsModelObject ;
 
-    public OrderListAdapter(OrderListTouched listener , String testname) {
+    public OrderListAdapter(OrderDetailsModel object, OrderListTouched listener , String testname) {
         this.testname = testname ;
         this.listener = listener ;
+        orderDetailsModelObject = object ;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
         holder.llRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.orderListTouched();
+                listener.orderListTouched(orderDetailsModelObject);
             }
         });
     }
@@ -62,6 +65,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
     }
 
     public interface OrderListTouched {
-        public void orderListTouched() ;
+        public void orderListTouched(OrderDetailsModel object) ;
     }
 }
