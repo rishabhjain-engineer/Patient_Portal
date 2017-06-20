@@ -160,7 +160,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
                 mCustomAlertDialog.show();
             } else if (id == R.id.ok_button) {
-                ConsultAdd();
+                consultAdd();
                 finish();
             }
         }
@@ -329,7 +329,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
 
-    private void ConsultAdd() {
+    private void consultAdd() {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAdd);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
