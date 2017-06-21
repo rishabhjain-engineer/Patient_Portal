@@ -1915,7 +1915,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
     @Override
     public void orderListTouched(OrderDetailsModel object, String testName, int position) {
-
+        String samplePickupStatus ;
         Intent i = new Intent(mActivity, OrderDetails.class);
 
 
@@ -1954,10 +1954,16 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             e.printStackTrace();
         }
         String orderStatus = String.valueOf(object.getOrderStatus());
+        if(object.getSamplePickUpStatus()){
+             samplePickupStatus = "1";
+        }else {
+             samplePickupStatus = "0";
+        }
+
         i.putExtra("TestName", testName);
         i.putExtra("perTextActualPrice_str", "₹"+object.getOrderActualAmount() );                 // pastVisitArray.get(arg2).get("perTextActualPrice_str")
         i.putExtra("OrderStatus",orderStatus );          // pastVisitArray.get(arg2).get("OrderStatus")
-        i.putExtra("SamplePickupstatus",object.getSamplePickUpStatus() );                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
+        i.putExtra("SamplePickupstatus",samplePickupStatus );                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
         i.putExtra("scroll_position", String.valueOf(position));
 
         startActivity(i);
