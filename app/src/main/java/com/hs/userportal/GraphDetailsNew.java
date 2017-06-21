@@ -65,6 +65,7 @@ import ui.BmiActivity;
 import ui.DashBoardActivity;
 import ui.GraphHandlerActivity;
 import ui.HealthCommonActivity;
+import ui.SignInActivity;
 import utils.AppConstant;
 import utils.MyMarkerView;
 import utils.PreferenceHelper;
@@ -78,6 +79,7 @@ import static com.hs.userportal.R.id.weight;
 public class GraphDetailsNew extends GraphHandlerActivity {
 
     private LineChart linechart;
+    private JSONArray subArray1;
     private PieChart pi_chart;
     private ScrollView scroll;
     private ArrayList<String> chartvakueList;
@@ -89,7 +91,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private String caseindex = "";
     private Group_testAdapter adapter;
     private String RangeFrom = null, RangeTo = null, UnitCode = "" ,  mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
-    private Services service;
     private ListView graph_listview_id;
     private int maxYrange = 0 , mRotationAngle = 0;
     private WebView mWebView;
@@ -105,6 +106,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<String> mDateList = new ArrayList<>();
     private ProgressDialog progress;
     private boolean isLoadNvd3 = true;
+    private Services services;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -112,6 +114,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graphdetails_new);
         setupActionBar();
+        services = new Services(this);
         title = getIntent().getStringExtra("chartNames");
         mActionBar.setTitle(title);
 
@@ -232,20 +235,55 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         graph_listview_id.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 caseindex = casecodes.get(position);
                 System.out.println(caseindex);
-                Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
+
+                Log.e("Rishabh", "caseID := "+caseIds.get(position)) ;
+                getDataFromCaseID(caseIds.get(position));
+
+                Intent intent = new Intent(GraphDetailsNew.this, ReportStatus.class);
+                intent.putExtra("index", 0);
+                intent.putExtra("array", subArray1.toString());
+                intent.putExtra("USER_ID", id);
+                intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
+
+               /* Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
                 in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);
                 finish();
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             }
         });
 
 
         setData();
+    }
+
+
+    private void getDataFromCaseID(String case_id) {
+        JSONObject sendData = new JSONObject();
+        JSONObject receiveData = new JSONObject();
+        JSONArray subArray= new JSONArray(new ArrayList());
+        subArray1 = new JSONArray(new ArrayList<String>());
+        try {
+            sendData.put("CaseId", case_id);
+            System.out.println(sendData);
+            receiveData = services.patientinvestigation(sendData);
+            String data = receiveData.getString("d");
+            JSONObject cut = new JSONObject(data);
+            subArray = cut.getJSONArray("Table");
+            subArray1 = subArray.getJSONArray(0);
+            Log.e("Rishabh", "subarray1 response := "+subArray1.toString()) ;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -903,12 +903,9 @@ public class ReportStatus extends BaseActivity {
             // TODO Auto-generated method stub
             sendData = new JSONObject();
             try {
-                sendData.put("sCaseId",
-                        jarray.getJSONObject(index).getString("CaseId"));
-                sendData.put("investigationid", jarray.getJSONObject(index)
-                        .getString("InvestigationId"));
-                sendData.put("testid",
-                        jarray.getJSONObject(index).getString("TestId"));
+                sendData.put("sCaseId", jarray.getJSONObject(index).getString("CaseId"));
+                sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
+                sendData.put("testid", jarray.getJSONObject(index).getString("TestId"));
                 sendData.put("PatientCode", phcode);
             } catch (JSONException e) {
 
