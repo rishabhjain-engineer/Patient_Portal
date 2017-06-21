@@ -355,7 +355,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             innerJsonObject2.put("InvestigationId", "99587328-a719-411a-aae7-15df20f43f0f");
             innerJsonObject2.put("TestName", "MONTOUX TEST (C)");
             jsonArray2.put(innerJsonObject2);
-            data.put("ConTestDetails", jsonArray2);
+            data.put("testDetails", jsonArray2);
 
         } catch (JSONException je) {
             je.printStackTrace();

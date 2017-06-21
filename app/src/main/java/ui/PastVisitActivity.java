@@ -1,6 +1,7 @@
 package ui;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +15,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -22,21 +29,46 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import config.StaticHolder;
+import models.DoctorDetails;
+import models.PastVisitFirstModel;
+import networkmngr.NetworkChangeListener;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 13/6/17.
  */
 
 public class PastVisitActivity extends BaseActivity {
+    private RequestQueue mRequestQueue;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_visit);
+        mRequestQueue = Volley.newRequestQueue(this);
+
+        Intent intent1 = getIntent();
+        PastVisitFirstModel pastVisitFirstModel = (PastVisitFirstModel) intent1.getSerializableExtra("pastDocotor");
+
+        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+            pastVisitDetails(pastVisitFirstModel.getConsultId());
+        }
         setupActionBar();
         mActionBar.hide();
 
@@ -55,6 +87,7 @@ public class PastVisitActivity extends BaseActivity {
         TextView doctorLocation = (TextView) findViewById(R.id.city);
         TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
         ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
 
         doctorName.setText("Sajat");
         doctorLocation.setText("Sector 22, Noida");
@@ -121,7 +154,7 @@ public class PastVisitActivity extends BaseActivity {
         });
 
         String mCoversationType = getIntent().getStringExtra("chatType");
-        if(!TextUtils.isEmpty(mCoversationType)){
+        if (!TextUtils.isEmpty(mCoversationType)) {
             Intent intent = null;
             if (mCoversationType.equalsIgnoreCase("audio")) {
                 intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
@@ -144,5 +177,52 @@ public class PastVisitActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    private void pastVisitDetails(String consultId) {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.PastVisitDetails);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("consultId", "99587328-A719-411A-AAE7-15DF20F43F0F");  //TODO Ayaz
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
+                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
+                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        //mPastVisitFirstModels.add(pastVisitFirstModel);
+                    }
+                    // mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
+                    mProgressDialog.dismiss();
+                    // mListView.setAdapter(mPastVisitFirstAdapter);
+                    // mPastVisitFirstAdapter.notifyDataSetChanged();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
     }
 }

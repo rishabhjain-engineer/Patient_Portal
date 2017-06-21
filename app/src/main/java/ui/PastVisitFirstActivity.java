@@ -79,9 +79,9 @@ public class PastVisitFirstActivity extends BaseActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                DoctorDetails doctorDetails = (DoctorDetails) mListView.getItemAtPosition(position);
+                PastVisitFirstModel pastVisitFirstModel = (PastVisitFirstModel) mListView.getItemAtPosition(position);
                 Intent intent = new Intent(PastVisitFirstActivity.this, PastVisitActivity.class);
-                intent.putExtra("doctorDetail", doctorDetails);
+                intent.putExtra("pastDocotor", pastVisitFirstModel);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
@@ -107,11 +107,11 @@ public class PastVisitFirstActivity extends BaseActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.optString("ConsultId"));
+                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
+                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
+                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
                         mPastVisitFirstModels.add(pastVisitFirstModel);
                     }
                     mPastVisitFirstAdapter.setData(mPastVisitFirstModels);

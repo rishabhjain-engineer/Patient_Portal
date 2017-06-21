@@ -29,5 +29,5 @@ public class AppConstant {
 
     public static boolean isToRefereshVaccine = true;
     public static boolean isPatient = true;
-    public static String CONSULT_MODE = null;
+    public static String CONSULT_MODE = "video";
 }
