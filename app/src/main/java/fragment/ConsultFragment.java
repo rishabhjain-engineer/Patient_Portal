@@ -113,13 +113,13 @@ public class ConsultFragment extends Fragment {
         doctorDetails3.setDoctorName("Sajat");
         doctorDetails3.setLocation("Sector 22, Noida");
         doctorDetails3.setMedicineType("Family Medicine");
-        doctorDetails3.setDoctorImage(R.drawable.update);
+        doctorDetails3.setDoctorImage(R.drawable.ayaz);
         doctorDetails3.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
         mDoctorDetailsList.add(doctorDetails3);
 
-        DoctorDetails doctorDetails1 = new DoctorDetails();
+       /* DoctorDetails doctorDetails1 = new DoctorDetails();
         doctorDetails1.setDoctorName("Ayaz");
         doctorDetails1.setLocation("Aminabad, Lucknow");
         doctorDetails1.setMedicineType("Family Medicine");
@@ -137,7 +137,8 @@ public class ConsultFragment extends Fragment {
         doctorDetails2.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
-        mDoctorDetailsList.add(doctorDetails2);
+        mDoctorDetailsList.add(doctorDetails2);*/
+
         mConsultFragmentAdapter.setData(mDoctorDetailsList);
         mListView.setAdapter(mConsultFragmentAdapter);
 
