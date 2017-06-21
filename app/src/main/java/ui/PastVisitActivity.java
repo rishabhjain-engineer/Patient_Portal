@@ -195,6 +195,37 @@ public class PastVisitActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject jsonObject = new JSONObject(data);
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
+
+                    /*{
+                        "Table": [
+                        {
+                            "DoctorName": null,
+                                "SignImage": null,
+                                "ClinicName": null,
+                                "Address": null,
+                                "City": null,
+                                "Pincode": null,
+                                "ConsultTime": null,
+                                "Symptoms": "Abnormal Weight Gain, Fever, Nervousness",
+                                "PatientNotes": "hi",
+                                "DoctorComments": null,
+                                "Diagnosis": null,
+                                "Files": null
+                        }
+  ],
+                        "Table1": [
+                        {
+                            "MedicineName": "Disprin",
+                                "Dose": "",
+                                "Days": ""
+                        }
+  ],
+                        "Table2": [
+                        {
+                            "TestName": "MONTOUX TEST (C)"
+                        }
+  ]
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
