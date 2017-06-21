@@ -1,7 +1,7 @@
 package networkmngr;
 
 /**
- * Created by android1 on 9/1/17.
+ * Created by ayaz on 9/1/17.
  */
 import android.content.BroadcastReceiver;
 import android.content.Context;

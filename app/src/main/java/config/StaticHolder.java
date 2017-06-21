@@ -536,8 +536,15 @@ public class StaticHolder {
                 url = BASE_URL + "ConsultAddSymptoms";
                 break;
 
+            case PastVisitList:
+                url = BASE_URL + "PastVisitList";
+                break;
+
+            case PastVisitDetails:
+                url = BASE_URL + "PastVisitDetails";
+                break;
+
             default:
-                System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
         }
         return url;
@@ -571,7 +578,8 @@ public class StaticHolder {
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
-        saveHealthDetailMod, UpdateALId, ConsultSymptomsList, ConsultAdd, ConsultTestList, ConsultPayment, ConsultS3Records, ConsultAddSymptoms
+        saveHealthDetailMod, UpdateALId, ConsultSymptomsList, ConsultAdd, ConsultTestList, ConsultPayment, ConsultS3Records, ConsultAddSymptoms,
+        PastVisitList, PastVisitDetails
     }
 
 }

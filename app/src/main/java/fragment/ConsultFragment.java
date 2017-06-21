@@ -25,6 +25,7 @@ import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
 import ui.DoctorPrescriptionActivity;
 import ui.PastVisitActivity;
+import ui.PastVisitFirstActivity;
 import utils.AppConstant;
 
 /**
@@ -50,7 +51,7 @@ public class ConsultFragment extends Fragment {
         past_visits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PastVisitActivity.class);
+                Intent intent = new Intent(getActivity(), PastVisitFirstActivity.class);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
