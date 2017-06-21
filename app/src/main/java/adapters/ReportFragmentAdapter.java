@@ -72,7 +72,11 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.tvReferredBy.setText(((CaseCodeModel) listofAllObjects.get(position)).getReferrerName());
             holder.tvCaseCode.setText(((CaseCodeModel) listofAllObjects.get(position)).getCaseCode());
             holder.lvTestList.setHasFixedSize(true);
+            holder.tvCaseCodeLabel.setText("Case Code");
             holder.lvTestList.setLayoutManager(layoutManager);
+            holder.llPDF.setClickable(true);
+            holder.llPDF.setAlpha(1);
+            holder.tvPdfLabel.setTextColor(Color.parseColor("#0eafe6"));
             testNamesArrayList = ((CaseCodeModel) listofAllObjects.get(position)).getListOfTestNamesInCaseCode();
             testListAdapter = new TestListAdapter(testNamesArrayList, listener, ((CaseCodeModel) listofAllObjects.get(position)).getCaseID());
             holder.lvTestList.setAdapter(testListAdapter);
@@ -83,6 +87,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
                     onPdfTouchListener.onPdfTouch(((CaseCodeModel) listofAllObjects.get(position)));
                 }
             });
+
         } else if (listofAllObjects.get(position) instanceof OrderDetailsModel) {
 
 
