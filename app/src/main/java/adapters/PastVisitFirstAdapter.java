@@ -1,6 +1,7 @@
 package adapters;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,10 +71,19 @@ public class PastVisitFirstAdapter extends BaseAdapter {
 
         PastVisitFirstModel pastVisitFirstModel = mPastVisitFirstModels.get(position);
 
-        holder.doctorName.setText(pastVisitFirstModel.getDoctorName());
-        holder.consultTime.setText(pastVisitFirstModel.getConsultTime());
-        holder.payment.setText(pastVisitFirstModel.getPayment());
-        holder.prescription.setText(pastVisitFirstModel.getPrescription());
+        if (!TextUtils.isEmpty(pastVisitFirstModel.getDoctorName())) {
+            holder.doctorName.setText(pastVisitFirstModel.getDoctorName());
+        }
+
+        if (!TextUtils.isEmpty(pastVisitFirstModel.getConsultTime())) {
+            holder.consultTime.setText(pastVisitFirstModel.getConsultTime());
+        }
+        if (!TextUtils.isEmpty(pastVisitFirstModel.getPayment())) {
+            holder.consultTime.setText(pastVisitFirstModel.getPayment());
+        }
+        if (!TextUtils.isEmpty(pastVisitFirstModel.getPrescription())) {
+            holder.consultTime.setText(pastVisitFirstModel.getPrescription());
+        }
         // holder.doctorPic.setImageResource(pastVisitFirstModel.getD());
 
         return convertView;

@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/doctor_image_view"
         android:orientation="vertical">
@@ -36,6 +37,7 @@
             android:id="@+id/consult_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/doctor_name"
             android:layout_centerInParent="true"
             android:textColor="@color/black"
             android:textSize="15dp" />
@@ -44,7 +46,7 @@
             android:id="@+id/payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/city"
+            android:layout_below="@id/consult_time"
             android:textColor="@color/black"
             android:textSize="15dp" />
 
