@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,7 +50,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.AppAplication;
 import com.hs.userportal.CaseCodeModel;
-import com.hs.userportal.Constants;
 import com.hs.userportal.OrderDetails;
 import com.hs.userportal.OrderDetailsModel;
 import com.hs.userportal.OrderList;
@@ -85,13 +83,11 @@ import adapters.OrderListAdapter;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
 import adapters.ReportFragmentAdapter;
-import adapters.ReportTestAdapter;
 import adapters.TestListAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import utils.AppConstant;
-import utils.NestedListHelper;
 import utils.PreferenceHelper;
 
 /**
@@ -168,8 +164,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     private ReportFragmentAdapter mAdapterReportFragment;
 
     private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
-    private List<OrderDetailsModel> listOfOrderDetailsModelObjects = new ArrayList<>() ;
-    private List<Object> listOfAllObjects = new ArrayList<>() ;
+    private List<OrderDetailsModel> listOfOrderDetailsModelObjects = new ArrayList<>();
+    private List<Object> listOfAllObjects = new ArrayList<>();
     private ProgressDialog mProgressDialog;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -521,8 +517,6 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     }
 
 
-
-
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -590,7 +584,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
             }
 
-            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects , ReportFragment.this, ReportFragment.this, ReportFragment.this);
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects, ReportFragment.this, ReportFragment.this, ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
 
 
@@ -734,8 +728,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             }
             sendDataList = new JSONObject();
             try {
-              //   sendDataList.put("ApplicationId", "");
-             //    sendDataList.put("DoctorId", "");
+                //   sendDataList.put("ApplicationId", "");
+                //    sendDataList.put("DoctorId", "");
                 sendDataList.put("PatientId", id);   // TODO id replace "48fc92e1-419f-4903-9619-ff0265678cf7"
 
             } catch (JSONException e) {
@@ -759,7 +753,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 dataList = receiveDataList.getString("d");
                 JSONObject cut = new JSONObject(dataList);
                 subArrayList = cut.getJSONArray("Table");
-            //    subArrayList = new JSONArray(new Constants().Response);
+                //    subArrayList = new JSONArray(new Constants().Response);
                 Log.e("Rishabh", "received response := " + subArrayList.toString());
 
                 for (int i = 0; i < subArrayList.length(); i++) {
@@ -1029,8 +1023,6 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     }
 
 
-
-
     private boolean chunk(int ia, int taa, int tpa, int da) {
 
         int value;
@@ -1047,6 +1039,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
         }
         return false;
     }
+
     private CaseCodeModel checkCaseCodeExistInList(CaseCodeModel casecodeObject) {
 
         for (CaseCodeModel tempOject : listOfCaseCodeModelObjects) {
@@ -1135,7 +1128,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             }
             StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
             String url = sttc_holdr.request_Url();
-            jr = new JsonObjectRequest(Request.Method.POST, url, sendData,  new Response.Listener<JSONObject>() {
+            jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject response) {
@@ -1482,21 +1475,21 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     }
 
     @Override
-    public void onTestNameTouched(String caseId , int position, String color) {
+    public void onTestNameTouched(String caseId, int position, String color) {
 
-        new ReportRecordsBackgroundProcess(caseId,position,color).execute() ;
+        new ReportRecordsBackgroundProcess(caseId, position, color).execute();
 
     }
 
     private class ReportRecordsBackgroundProcess extends AsyncTask<Void, Void, Void> {
 
-        String case_id , color;
-        int position ;
+        String case_id, color;
+        int position;
 
-        protected ReportRecordsBackgroundProcess(String caseId, int position,String color) {
-            case_id = caseId ;
-            this.position = position ;
-            this.color = color ;
+        protected ReportRecordsBackgroundProcess(String caseId, int position, String color) {
+            case_id = caseId;
+            this.position = position;
+            this.color = color;
 
         }
 
@@ -1554,11 +1547,11 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 progress.dismiss();
             }
             return null;
-       }
+        }
     }
 
     @Override
-    public void onPdfTouch(CaseCodeModel caseCodeObject ) {
+    public void onPdfTouch(CaseCodeModel caseCodeObject) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //Show Information about why you need the permission
@@ -1613,16 +1606,16 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, true);
             editor.commit();
         } else {
-            new pdfprocess(caseCodeObject).execute() ;
+            new pdfprocess(caseCodeObject).execute();
         }
     }
 
     private class pdfprocess extends AsyncTask<Void, String, Void> {
 
-        private CaseCodeModel caseCodeModelObject ;
+        private CaseCodeModel caseCodeModelObject;
 
         public pdfprocess(CaseCodeModel caseCodeObject) {
-            caseCodeModelObject = caseCodeObject ;
+            caseCodeModelObject = caseCodeObject;
         }
 
         @Override
@@ -1647,14 +1640,14 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             }
 
             pdfobject = new JSONObject();
-            int lengthOfTests = caseCodeModelObject.getListOfTestNamesInCaseCode().size() ;
+            int lengthOfTests = caseCodeModelObject.getListOfTestNamesInCaseCode().size();
             for (int i = 0; i < lengthOfTests; i++) {
                 try {
                     int ia = caseCodeModelObject.getInitialAmount();
                     int da = caseCodeModelObject.getDiscountAmount();
                     int taa = caseCodeModelObject.getTotalActualAmount();
                     int tpa = caseCodeModelObject.getTotalPaidAmount();
-                    if (caseCodeModelObject.getTestNamesObject().isPublished().equals(true) && chunk(ia,taa,tpa,da)) {
+                    if (caseCodeModelObject.getTestNamesObject().isPublished().equals(true) && chunk(ia, taa, tpa, da)) {
                         pdfobject = new JSONObject();
                         pdfobject.put("InvestigationId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getInvestigationID());
                         pdfobject.put("TestId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getTestID());
@@ -1662,7 +1655,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                     }
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
-                   Log.e("Rishabh", "JSON EXCEPTION := "+e);
+                    Log.e("Rishabh", "JSON EXCEPTION := " + e);
                 }
 
             }
@@ -1677,9 +1670,9 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 sendData.put("UserId", id);
 
             } catch (JSONException e) {
-                Log.e("Rishabh", "JSON EXCEPTION := "+e);
+                Log.e("Rishabh", "JSON EXCEPTION := " + e);
             }
-           // Log.e("Rishabh","Send Data for PDF process := "+sendData);
+            // Log.e("Rishabh","Send Data for PDF process := "+sendData);
             ptname = caseCodeModelObject.getPatientName();
             ptname.replaceAll(" ", "_");
 
@@ -1693,8 +1686,8 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                 } catch (UnsupportedEncodingException e1) {
                     e1.printStackTrace();
                 }
-               // Log.e("Rishabh","View & result==null : "+reportFile.getAbsolutePath());
-               // Log.e("Rishabh","Content of PDF :"+temp);
+                // Log.e("Rishabh","View & result==null : "+reportFile.getAbsolutePath());
+                // Log.e("Rishabh","Content of PDF :"+temp);
                 OutputStream out;
                 try {
                     InputStream input = new ByteArrayInputStream(result);
@@ -1712,9 +1705,9 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                     out.flush();
                     out.close();
                 } catch (FileNotFoundException e) {
-                    Log.e("Rishabh", "File Not Found EXCEPTION := "+e);
+                    Log.e("Rishabh", "File Not Found EXCEPTION := " + e);
                 } catch (IOException e) {
-                    Log.e("Rishabh", "I/O EXCEPTION := "+e);
+                    Log.e("Rishabh", "I/O EXCEPTION := " + e);
                 }
             }
             return null;
@@ -1811,43 +1804,45 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
     private void OrderDetailsBackgroundProcess() {
 
-            listOfAllObjects.clear();
-            listOfOrderDetailsModelObjects.clear();
+        listOfAllObjects.clear();
+        listOfOrderDetailsModelObjects.clear();
 
-            sendData = new JSONObject();
-            try {
-                sendData.put("userId", id);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.e("Rishabh", "JSON EXCEPTION : "+e) ;
-            }
-            StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
-            String url = sttc_holdr.request_Url();
+        sendData = new JSONObject();
+        try {
+            sendData.put("userId", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("Rishabh", "JSON EXCEPTION : " + e);
+        }
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
+        String url = sttc_holdr.request_Url();
 
-            Log.e("Rishabh", "send data orderList  : "+sendData) ;
+        Log.e("Rishabh", "send data orderList  : " + sendData);
 
-            jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject jsonObject) {
+        jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
 
-                    String response ;
-                    JSONObject jsonObject1 ;
-                    try {
-                        response = jsonObject.getString("d") ;
-                        jsonObject1 = new JSONObject(response) ;
-                        JSONArray jsonArray = jsonObject1.getJSONArray("Table") ;
+                String response;
+                JSONObject jsonObject1;
+                try {
+                    response = jsonObject.getString("d");
+                    jsonObject1 = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject1.getJSONArray("Table");
 
-                        Log.e("Rishabh", "jsonArray response order list : "+jsonArray.toString()) ;
-                        if(jsonArray.length() != 0) {
+                    Log.e("Rishabh", "jsonArray response order list : " + jsonArray.toString());
+                    if (jsonArray.length() != 0) {
 
-                            for(int i = 0 ; i<jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String OrderId = jsonArray.getJSONObject(i).getString("OrderId");
+                            OrderDetailsModel orderDetailsModel = new OrderDetailsModel(OrderId);
+                            OrderDetailsModel check = checkOrderDetailObjectExistInList(orderDetailsModel);
 
-                                OrderDetailsModel orderDetailsModel = new OrderDetailsModel() ;
-                                orderDetailsModel.setOrderID(jsonArray.getJSONObject(i).optString("OrderId"));
-                                orderDetailsModel.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime")) ;
+                            if (check == null) {
+
+                                orderDetailsModel.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime"));
                                 orderDetailsModel.setCentreName(jsonArray.getJSONObject(i).optString("CentreName"));
                                 orderDetailsModel.setBillingAddress(jsonArray.getJSONObject(i).optString("BillingAddress"));
-                                orderDetailsModel.setTestName(jsonArray.getJSONObject(i).optString("TestName"));
                                 orderDetailsModel.setTestID(jsonArray.getJSONObject(i).optString("TestId"));
                                 orderDetailsModel.setSamplePickUpStatus(jsonArray.getJSONObject(i).optBoolean("SamplePickupstatus"));
                                 orderDetailsModel.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
@@ -1856,35 +1851,71 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optInt("PromoCodeDiscount"));
                                 orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optInt("DiscountInPercentage"));
 
+                                orderDetailsModel.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
+
                                 listOfOrderDetailsModelObjects.add(orderDetailsModel);
-                                listOfAllObjects.add(orderDetailsModel) ;
+                                listOfAllObjects.add(orderDetailsModel);
+
+                                Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
+                            } else {
+
+                                check.createNewTestNameObject();
+
+
+                                check.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime"));
+                                check.setCentreName(jsonArray.getJSONObject(i).optString("CentreName"));
+                                check.setBillingAddress(jsonArray.getJSONObject(i).optString("BillingAddress"));
+                                check.setTestID(jsonArray.getJSONObject(i).optString("TestId"));
+                                check.setSamplePickUpStatus(jsonArray.getJSONObject(i).optBoolean("SamplePickupstatus"));
+                                check.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
+                                check.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
+                                check.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
+                                check.setPromoCodeDiscount(jsonArray.getJSONObject(i).optInt("PromoCodeDiscount"));
+                                check.setDiscountPercentage(jsonArray.getJSONObject(i).optInt("DiscountInPercentage"));
+
+                                check.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
+
+                                Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
                             }
+
                         }
-                        new ReportFragment.BackgroundProcess().execute();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.e("Rishabh", "JSON EXCEPTION : "+e) ;
                     }
-
-
+                    new ReportFragment.BackgroundProcess().execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("Rishabh", "JSON EXCEPTION : " + e);
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    Log.e("Rishabh", "VolleyError : "+volleyError) ;
-                }
-            });
-            int socketTimeout1 = 30000;
-            RetryPolicy policy1 = new DefaultRetryPolicy(socketTimeout1, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-            jr.setRetryPolicy(policy1);
-            queue.add(jr);
 
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh", "VolleyError : " + volleyError);
+            }
+        });
+        int socketTimeout1 = 30000;
+        RetryPolicy policy1 = new DefaultRetryPolicy(socketTimeout1, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jr.setRetryPolicy(policy1);
+        queue.add(jr);
+
+    }
+
+    private OrderDetailsModel checkOrderDetailObjectExistInList(OrderDetailsModel orderDetailObject) {
+
+        for (OrderDetailsModel tempOject : listOfOrderDetailsModelObjects) {
+
+            if (tempOject.getOrderID().equals(orderDetailObject.getOrderID())) {
+                return tempOject;
+            }
         }
+        return null;
+    }
 
     @Override
     public void orderListTouched(OrderDetailsModel object) {
-        
+
     }
 
 }

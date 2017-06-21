@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.OrderDetailsModel;
+import com.hs.userportal.OrderTestNames;
 import com.hs.userportal.R;
 import com.hs.userportal.TestNames;
 
@@ -32,6 +33,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     private RecyclerView recyclerViewTestList;
     private RecyclerView.LayoutManager layoutManager;
     private List<TestNames> testNamesArrayList = new ArrayList<>();
+    private List<OrderTestNames> orderTestNamesArrayList = new ArrayList<>() ;
     private TestListAdapter.OnRowTouchAction listener;
     private OrderListAdapter orderListAdapter;
     private OnPdfTouch onPdfTouchListener;
@@ -94,7 +96,9 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
             holder.llPDF.setAlpha(.3f);
             holder.tvPdfLabel.setTextColor(Color.parseColor("#e5e5e5"));
 
-            orderListAdapter = new OrderListAdapter((OrderDetailsModel) listofAllObjects.get(position),orderListTouchedListener, ((OrderDetailsModel) listofAllObjects.get(position)).getTestName());
+            orderTestNamesArrayList = ((OrderDetailsModel) listofAllObjects.get(position)).getListOfOrderTestNames() ;
+
+            orderListAdapter = new OrderListAdapter((OrderDetailsModel) listofAllObjects.get(position),orderListTouchedListener, orderTestNamesArrayList);
             holder.lvTestList.setLayoutManager(layoutManager);
             holder.lvTestList.setHasFixedSize(true);
             holder.lvTestList.setAdapter(orderListAdapter);

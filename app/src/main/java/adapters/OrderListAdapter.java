@@ -8,7 +8,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hs.userportal.OrderDetailsModel;
+import com.hs.userportal.OrderTestNames;
 import com.hs.userportal.R;
+
+import java.util.List;
 
 /**
  * Created by rishabh on 20/6/17.
@@ -16,12 +19,12 @@ import com.hs.userportal.R;
 
 public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyViewHolder> {
 
-    private String testname ;
+    private List<OrderTestNames> orderTestNames;
     private OrderListTouched listener ;
     private OrderDetailsModel orderDetailsModelObject ;
 
-    public OrderListAdapter(OrderDetailsModel object, OrderListTouched listener , String testname) {
-        this.testname = testname ;
+    public OrderListAdapter(OrderDetailsModel object, OrderListTouched listener , List<OrderTestNames> orderTestNames) {
+    this. orderTestNames = orderTestNames ;
         this.listener = listener ;
         orderDetailsModelObject = object ;
     }
@@ -37,7 +40,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
     @Override
     public void onBindViewHolder(OrderListAdapter.MyViewHolder holder, int position) {
 
-        holder.tvOrderTestName.setText(testname);
+        holder.tvOrderTestName.setText(orderTestNames.get(position).getOrderTestNames());
         holder.llRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +51,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return 1;
+        return orderTestNames.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

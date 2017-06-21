@@ -1,5 +1,8 @@
 package com.hs.userportal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by rishabh on 20/6/17.
  */
@@ -9,8 +12,17 @@ public class OrderDetailsModel {
     private String orderID , centreName, testID , testName , billingAddress , orderDateTime;
     private int orderActualAmount , orderBillingAmount , orderDiscountAmount , orderStatus, promoCodeDiscount, discountPercentage ;
     private Boolean samplePickUpStatus ;
+    private List<OrderTestNames> listOfOrderTestNames = new ArrayList<>() ;
+    private OrderTestNames orderTestNamesObject ;
 
-    public OrderDetailsModel() {
+    public OrderTestNames getOrderTestNames() {
+        return orderTestNamesObject;
+    }
+
+    public OrderDetailsModel(String orderID) {
+        this.orderID = orderID ;
+        orderTestNamesObject = new OrderTestNames() ;
+        listOfOrderTestNames.add(orderTestNamesObject) ;
 
     }
 
@@ -18,9 +30,6 @@ public class OrderDetailsModel {
         return orderID;
     }
 
-    public void setOrderID(String orderID) {
-        this.orderID = orderID;
-    }
 
     public String getCentreName() {
         return centreName;
@@ -38,12 +47,9 @@ public class OrderDetailsModel {
         this.testID = testID;
     }
 
-    public String getTestName() {
-        return testName;
-    }
 
-    public void setTestName(String testName) {
-        this.testName = testName;
+    public List<OrderTestNames> getListOfOrderTestNames() {
+        return listOfOrderTestNames;
     }
 
     public String getBillingAddress() {
@@ -112,6 +118,11 @@ public class OrderDetailsModel {
 
     public String getOrderDateTime() {
         return orderDateTime;
+    }
+
+    public void createNewTestNameObject(){
+        orderTestNamesObject = new OrderTestNames();
+        listOfOrderTestNames.add(orderTestNamesObject) ;
     }
 
     public void setOrderDateTime(String orderDateTime) {
