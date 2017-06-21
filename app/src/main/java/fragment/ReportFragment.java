@@ -1850,7 +1850,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 orderDetailsModel.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
                                 orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
                                 orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
-
+                                orderDetailsModel.setOrderStatus(jsonArray.getJSONObject(i).optInt("OrderStatus"));
                                 orderDetailsModel.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
 
                                 listOfOrderDetailsModelObjects.add(orderDetailsModel);
@@ -1872,7 +1872,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 check.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
                                 check.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
                                 check.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
-
+                                check.setOrderStatus(jsonArray.getJSONObject(i).optInt("OrderStatus"));
                                 check.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
 
                               //  Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
