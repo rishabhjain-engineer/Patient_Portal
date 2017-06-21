@@ -38,13 +38,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(OrderListAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(OrderListAdapter.MyViewHolder holder, final int position) {
 
         holder.tvOrderTestName.setText(orderTestNames.get(position).getOrderTestNames());
         holder.llRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.orderListTouched(orderDetailsModelObject);
+                listener.orderListTouched(orderDetailsModelObject, orderTestNames.get(position).getOrderTestNames(), position);
             }
         });
     }
@@ -68,6 +68,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.MyVi
     }
 
     public interface OrderListTouched {
-        public void orderListTouched(OrderDetailsModel object) ;
+        public void orderListTouched(OrderDetailsModel object, String testname, int position) ;
     }
 }

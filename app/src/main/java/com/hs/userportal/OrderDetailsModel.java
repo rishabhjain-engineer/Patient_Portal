@@ -9,8 +9,8 @@ import java.util.List;
 
 public class OrderDetailsModel {
 
-    private String orderID , centreName, testID , testName , billingAddress , orderDateTime;
-    private int orderActualAmount , orderBillingAmount , orderDiscountAmount , orderStatus, promoCodeDiscount, discountPercentage ;
+    private String orderID , centreName, testID , testName , billingAddress , orderDateTime, discountPercentage, promoCodeDiscount;
+    private int orderActualAmount , orderBillingAmount , orderDiscountAmount , orderStatus ;
     private Boolean samplePickUpStatus ;
     private List<OrderTestNames> listOfOrderTestNames = new ArrayList<>() ;
     private OrderTestNames orderTestNamesObject ;
@@ -92,19 +92,19 @@ public class OrderDetailsModel {
         this.orderStatus = orderStatus;
     }
 
-    public int getPromoCodeDiscount() {
+    public String getPromoCodeDiscount() {
         return promoCodeDiscount;
     }
 
-    public void setPromoCodeDiscount(int promoCodeDiscount) {
+    public void setPromoCodeDiscount(String promoCodeDiscount) {
         this.promoCodeDiscount = promoCodeDiscount;
     }
 
-    public int getDiscountPercentage() {
+    public String getDiscountPercentage() {
         return discountPercentage;
     }
 
-    public void setDiscountPercentage(int discountPercentage) {
+    public void setDiscountPercentage(String discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 

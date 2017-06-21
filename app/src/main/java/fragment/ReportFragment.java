@@ -1848,15 +1848,15 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 orderDetailsModel.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
                                 orderDetailsModel.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
                                 orderDetailsModel.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
-                                orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optInt("PromoCodeDiscount"));
-                                orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optInt("DiscountInPercentage"));
+                                orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
+                                orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
 
                                 orderDetailsModel.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
 
                                 listOfOrderDetailsModelObjects.add(orderDetailsModel);
                                 listOfAllObjects.add(orderDetailsModel);
 
-                                Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
+                               // Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
                             } else {
 
                                 check.createNewTestNameObject();
@@ -1870,12 +1870,12 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 check.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
                                 check.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
                                 check.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
-                                check.setPromoCodeDiscount(jsonArray.getJSONObject(i).optInt("PromoCodeDiscount"));
-                                check.setDiscountPercentage(jsonArray.getJSONObject(i).optInt("DiscountInPercentage"));
+                                check.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
+                                check.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
 
                                 check.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
 
-                                Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
+                              //  Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
                             }
 
                         }
@@ -1914,8 +1914,54 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
     }
 
     @Override
-    public void orderListTouched(OrderDetailsModel object) {
+    public void orderListTouched(OrderDetailsModel object, String testName, int position) {
 
+        Intent i = new Intent(mActivity, OrderDetails.class);
+
+
+        i.putExtra("OrderId",object.getOrderID() );          // pastVisitArray.get(arg2).get("OrderId")
+        i.putExtra("OrderDate", object.getOrderDateTime());    // pastVisitArray.get(arg2).get("TimeStamp")
+        i.putExtra("LabName", object.getCentreName());                               // pastVisitArray.get(arg2).get("CentreName")
+        i.putExtra("Address", object.getBillingAddress());                              // pastVisitArray.get(arg2).get("BillingAddress")
+        try {
+
+            i.putExtra("GrandTotal", (object.getOrderBillingAmount()));             // pastVisitArray.get(arg2).get("OrderBillingAmount")
+
+            i.putExtra("SubTotal", (object.getOrderActualAmount()));
+
+            i.putExtra("Discount", (object.getOrderDiscountAmount()));
+
+            if (!"null".equalsIgnoreCase(object.getPromoCodeDiscount())) {
+
+                int promoDiscount = Integer.parseInt(object.getPromoCodeDiscount());
+
+                double bilingamnt = (object.getOrderBillingAmount() - promoDiscount);
+                i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                i.putExtra("promo_codeDiscount", promoDiscount);
+
+            } else if (!"null".equalsIgnoreCase(object.getDiscountPercentage())) {
+                int discountPercentage = Integer.parseInt(object.getDiscountPercentage());
+
+                double bilingamnt = ((object.getOrderBillingAmount()) * (1 - (discountPercentage)) / 100);
+                i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                i.putExtra("promo_codeDiscount",( object.getOrderBillingAmount() * (discountPercentage )/ 100));
+            } else {
+                i.putExtra("YourPrice",object.getOrderBillingAmount() );   // (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
+                i.putExtra("promo_codeDiscount", 0);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String orderStatus = String.valueOf(object.getOrderStatus());
+        i.putExtra("TestName", testName);
+        i.putExtra("perTextActualPrice_str", "₹"+object.getOrderActualAmount() );                 // pastVisitArray.get(arg2).get("perTextActualPrice_str")
+        i.putExtra("OrderStatus",orderStatus );          // pastVisitArray.get(arg2).get("OrderStatus")
+        i.putExtra("SamplePickupstatus",object.getSamplePickUpStatus() );                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
+        i.putExtra("scroll_position", String.valueOf(position));
+
+        startActivity(i);
+        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
 }
