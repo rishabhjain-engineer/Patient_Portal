@@ -79,10 +79,10 @@ public class PastVisitFirstAdapter extends BaseAdapter {
             holder.consultTime.setText(pastVisitFirstModel.getConsultTime());
         }
         if (!TextUtils.isEmpty(pastVisitFirstModel.getPayment())) {
-            holder.consultTime.setText(pastVisitFirstModel.getPayment());
+            holder.payment.setText(pastVisitFirstModel.getPayment());
         }
         if (!TextUtils.isEmpty(pastVisitFirstModel.getPrescription())) {
-            holder.consultTime.setText(pastVisitFirstModel.getPrescription());
+            holder.prescription.setText(pastVisitFirstModel.getPrescription());
         }
         // holder.doctorPic.setImageResource(pastVisitFirstModel.getD());
 
