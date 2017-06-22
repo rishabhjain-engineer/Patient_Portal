@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -25,23 +26,45 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.applozic.audiovideo.GetDoctorCredentials;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.twilio.video.CameraCapturer;
 import com.twilio.video.VideoView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import applozic.com.audiovideo.R;
+
 
 public class VideoActivity extends AudioCallActivityV2 {
     private static final String TAG = VideoActivity.class.getName();
     private LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
     private ImageView showFilesIv;
+    private JSONArray values;
+    public static String hoja = "";
     private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
     public VideoActivity() {
@@ -59,6 +82,10 @@ public class VideoActivity extends AudioCallActivityV2 {
             @Override
             public void onClick(View v) {
                 File fileReport = new File("/storage/emulated/0/Lab Pdf/Mr. Sunil  Raireport.pdf");
+
+                new GetFileFromAWS().execute();
+
+              //  String pathName = "https://files.healthscion.com/file";
 
                 PackageManager packageManager = getPackageManager();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -497,5 +524,59 @@ public class VideoActivity extends AudioCallActivityV2 {
         }
         return true;
     }*/
+
+   private class GetFileFromAWS extends AsyncTask<Void,Void,Void>{
+
+       @Override
+       protected Void doInBackground(Void... params) {
+
+           postData();
+           return null;
+       }
+   }
+
+    public void postData() {
+
+        // Create a new HttpClient and Post Header
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://192.168.1.11/WebServices/LabService.asmx/GetPatientInfo");
+        httppost.setHeader("Content-type", "application/json");
+        httppost.setHeader("Accept", "application/json");
+        httppost.setHeader("Cookie", hoja);
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            String getDoctorID = GetDoctorCredentials.getDoctorID() ;
+            Log.e("Rishabh", "getDocID in app := "+getDoctorID);
+            nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+
+            JSONObject receiveData = new JSONObject(new String(sb));
+
+            // Log.i("TEST DETAILS", receiveData.toString());
+
+            String p = receiveData.get("d").toString();
+            Log.e("Rishabh","p := "+p);
+            JSONObject temp = new JSONObject(p);
+            values = temp.getJSONArray("Table");
+            Log.e("Rishabh","values  "+values.toString() );
+
+        }  catch (IOException e) {
+            Log.e("Rishabh","e io:= "+e);
+        } catch (JSONException e) {
+            Log.e("Rishabh","je io:= "+e);
+        }
+    }
 
 }
