@@ -95,6 +95,7 @@ public class PastVisitFirstActivity extends BaseActivity {
     }
 
     private void pastVisitList() {
+        mPastVisitFirstModels.clear();
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.PastVisitList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();

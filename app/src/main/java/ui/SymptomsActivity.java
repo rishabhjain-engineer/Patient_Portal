@@ -609,6 +609,7 @@ public class SymptomsActivity extends BaseActivity {
     private ProgressDialog mProgressDialog;
 
     private void getAllSymptoms() {
+        mSymptomsList.clear();
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultSymptomsList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();

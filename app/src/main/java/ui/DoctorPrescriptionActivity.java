@@ -293,6 +293,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     }
 
     private void getConsultTestList() {
+        mTestList.clear();
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultTestList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
