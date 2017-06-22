@@ -158,22 +158,22 @@ public class DoctorDetailsActivity extends BaseActivity {
 
     private void videoCall() {
         Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-        videoCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+        videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
         startActivity(videoCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void audioCall() {
         Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-        audioCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+        audioCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
         startActivity(audioCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void chat() {
         Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.USER_ID, "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
-        intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
+        intent.putExtra(ConversationUIService.USER_ID, "372fd208-69b7-44e7-a097-0015f26bd433");
+        intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         startActivity(intent);
     }
