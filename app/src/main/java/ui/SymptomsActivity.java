@@ -191,7 +191,13 @@ public class SymptomsActivity extends BaseActivity {
                 if(TextUtils.isEmpty(mConsultID)){
 
                 }
-                addPatientSymptoms();
+                mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
+                if(TextUtils.isEmpty(mConsultID)) {
+                    addPatientSymptoms();
+                }else {
+                    uploadFileToAWS();
+                }
+
 
                 if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
@@ -641,10 +647,11 @@ public class SymptomsActivity extends BaseActivity {
     }
 
     private void addPatientSymptoms() {
-        mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
+
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
+        Log.e("Rishabh", "data"+data);
         try {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
@@ -807,8 +814,8 @@ public class SymptomsActivity extends BaseActivity {
 
         JSONObject data = new JSONObject();
         try {
-            data.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
-            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
             JSONArray jsonArray = new JSONArray();
             JSONObject innerJsonObject = new JSONObject();
             innerJsonObject.put("ImageName", file.getName());
