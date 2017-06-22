@@ -162,8 +162,11 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
                 mCustomAlertDialog.show();
             } else if (id == R.id.ok_button) {
-                consultAdd();
-                finish();
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    consultAdd();
+                } else {
+                    Toast.makeText(DoctorPrescriptionActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -377,6 +380,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                         mTestList.add(symptoms);
                     }
                     mProgressDialog.dismiss();
+                    finish();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
