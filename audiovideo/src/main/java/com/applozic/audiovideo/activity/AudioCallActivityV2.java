@@ -73,6 +73,9 @@ public class AudioCallActivityV2 extends AppCompatActivity implements TokenGener
     public static final long IN_COMING_CALL_TIMEOUT = 30 * 1000L;
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "AudioCallActivityV2";
+    private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
+    private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
+    public static final boolean isPatient = false;
 
     /*
      * The Video Client allows a client to connect to a room
@@ -342,6 +345,18 @@ public class AudioCallActivityV2 extends AppCompatActivity implements TokenGener
         LocalBroadcastManager.getInstance(this).unregisterReceiver(applozicBroadCastReceiver);
         super.onDestroy();
         setOpenStatus(false);
+
+        if (isPatient) {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(OPEN_PATIENT_PAST_VISIT);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(OPEN_DOCTOR_PRESCRIPTION);
+            startActivity(intent);
+        }
 
     }
 

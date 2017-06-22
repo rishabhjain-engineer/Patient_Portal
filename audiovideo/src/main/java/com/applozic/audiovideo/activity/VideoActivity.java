@@ -38,17 +38,17 @@ import applozic.com.audiovideo.R;
 
 public class VideoActivity extends AudioCallActivityV2 {
     private static final String TAG = VideoActivity.class.getName();
-    private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
-    private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
     private LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
     private ImageView showFilesIv;
-
+    private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
+    private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
+    public static final boolean isPatient = false;
     public VideoActivity() {
         super(true);
     }
 
-    public static final boolean isPatient = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
