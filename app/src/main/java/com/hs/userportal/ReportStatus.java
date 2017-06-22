@@ -180,10 +180,7 @@ public class ReportStatus extends BaseActivity {
 
             System.out.println(sendarray);
 
-            if (!jarray.getJSONObject(index).getString("IsSampleReceived")
-                    .equals("true")
-                    && jarray.getJSONObject(index).getString("LabNo")
-                    .equals("null")
+            if (!jarray.getJSONObject(index).getString("IsSampleReceived").equals("true") && jarray.getJSONObject(index).getString("LabNo").equals("null")
                     && jarray.getJSONObject(index).getString("IsTestCompleted")
                     .equals("null")) {
                 breport.setVisibility(View.GONE);
@@ -866,9 +863,7 @@ public class ReportStatus extends BaseActivity {
     }
 
 
-    class graphprocess extends AsyncTask<Void, Void, Void>
-
-    {
+    class graphprocess extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -906,9 +901,10 @@ public class ReportStatus extends BaseActivity {
                 sendData.put("sCaseId", jarray.getJSONObject(index).getString("CaseId"));
                 sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
                 sendData.put("testid", jarray.getJSONObject(index).getString("TestId"));
-                sendData.put("PatientCode", phcode);
+                sendData.put("PatientCode", jarray.getJSONObject(index).getString("PatientCode"));
             } catch (JSONException e) {
 
+                Log.e("Rishabh","Json exception := "+e);
                 e.printStackTrace();
             }
 
@@ -985,214 +981,18 @@ public class ReportStatus extends BaseActivity {
 
                     if (reportarray.getJSONObject(z).getString("ResultType")
                             .equals("Numerical")) {
-                /*	if(z>1){
-
-						if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-						{
-					TextView profile = new TextView(ReportStatus.this);
-					profile.setText(reportarray.getJSONObject(z).getString(
-							"NewProfileName"));
-					profile.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					profile.setTypeface(null, Typeface.BOLD);
-					profile.setGravity(Gravity.CENTER);
-					parentLayout.addView(profile);
-						}
-					}
-					
-					
-					LinearLayout lLayout;
-
-					lLayout = new LinearLayout(ReportStatus.this);
-
-					lLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					parent.leftMargin = 15;
-					lp.topMargin = 10;
-					parent.rightMargin = 15;
-					parent.bottomMargin = 20;
-					lLayout.setWeightSum(100f);
-					lLayout.setLayoutParams(lp);
-					parentLayout.setLayoutParams(parent);
-
-					TextView test = new TextView(ReportStatus.this);
-					test.setText(reportarray.getJSONObject(z).getString(
-							"Description"));
-					test.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 50f));
-
-					lLayout.addView(test);
-
-					TextView range = new TextView(ReportStatus.this);
-					range.setText(reportarray.getJSONObject(z).getString(
-							"RangeFrom")+"-"+reportarray.getJSONObject(z).getString(
-									"RangeTo"));
-					range.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-					range.setGravity(Gravity.LEFT);
-					lLayout.addView(range);
-
-					TextView patient = new TextView(ReportStatus.this);
-					patient.setText(reportarray.getJSONObject(z).getString(
-							"ResultValue"));
-					patient.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-
-					 
-					   float m,n,q;
-					   
-					   if(!reportarray.getJSONObject(z).getString("Description").equals("ALKALINE PHOSPHATASE"))
-					   { 
-						m = Float.parseFloat(reportarray.getJSONObject(z).getString("ResultValue"));
-						n = Float.parseFloat(reportarray.getJSONObject(z).getString("RangeFrom"));
-					    q = Float.parseFloat(reportarray.getJSONObject(z).getString("RangeTo"));
-
-						if(m<n||m>q)
-					{
-						patient.setTextColor(Color.RED);
-						patient.setTypeface(null, Typeface.BOLD);
-					}
-					
-					   }	
-					
-					patient.setGravity(Gravity.CENTER);
-					lLayout.setPadding(0, 10, 0, 10);
-					lLayout.addView(patient);
-
-					parentLayout.addView(lLayout);*/
 
 
                     } else if (reportarray.getJSONObject(z).getString("ResultType")
                             .equals("Words")) {
 
 
-					/*if(z>1){
-
-						if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-						{
-					TextView profile = new TextView(ReportStatus.this);
-					profile.setText(reportarray.getJSONObject(z).getString(
-							"NewProfileName"));
-					profile.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					profile.setTypeface(null, Typeface.BOLD);
-					profile.setGravity(Gravity.CENTER);
-					parentLayout.addView(profile);
-						}
-					}
-					
-
-					LinearLayout lLayout;
-
-					lLayout = new LinearLayout(ReportStatus.this);
-
-					lLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					parent.leftMargin = 15;
-					lp.topMargin = 10;
-					parent.rightMargin = 15;
-					parent.bottomMargin = 20;
-					lLayout.setWeightSum(100f);
-					lLayout.setLayoutParams(lp);
-					parentLayout.setLayoutParams(parent);
-
-					TextView test = new TextView(ReportStatus.this);
-					test.setText(reportarray.getJSONObject(z).getString(
-							"Description"));
-					test.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 50f));
-					test.setGravity(Gravity.LEFT);
-					lLayout.addView(test);
-
-					TextView range = new TextView(ReportStatus.this);
-					String rangesad=reportarray.getJSONObject(z).getString("RangeValue");
-					String resultDS=reportarray.getJSONObject(z).getString("ResultValue");
-					if(!reportarray.getJSONObject(z).getString(
-							"RangeValue").equals("null")){
-						range.setText("fdsdsds");
-						range.setVisibility(View.INVISIBLE);
-					}else{
-						range.setText(rangesad);
-					}
-
-					range.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-					range.setGravity(Gravity.LEFT);
-					lLayout.addView(range);
-					TextView patient = new TextView(ReportStatus.this);
-
-					patient.setText(reportarray.getJSONObject(z).getString(
-							"ResultValue"));
-
-					// change by me-----------------------------------------------------------------------------------------------------------------------------------------
-					if(!reportarray.getJSONObject(z).getString(
-							"RangeValue").equalsIgnoreCase(reportarray.getJSONObject(z).getString(
-							"ResultValue"))&&reportarray.getJSONObject(z).getString(
-							"RangeValue")!="null"){
-						patient.setTextColor(Color.parseColor("#FF0000"));
-					}else{
-						patient.setTextColor(Color.parseColor("#1E1E1E"));
-					}
-					patient.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-
-											 						
-					patient.setGravity(Gravity.RIGHT);
-					lLayout.setPadding(0, 10, 10, 10);
-					lLayout.addView(patient);
-
-					parentLayout.addView(lLayout);*/
 
                     } else {
-                       /* list_view.setVisibility(View.GONE);
-                        parentLayout = (LinearLayout) findViewById(R.id.dynamic);
-                        parentLayout.setVisibility(View.VISIBLE);
-                        parentLayout.setOrientation(LinearLayout.VERTICAL);
 
-                        LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-                                LayoutParams.MATCH_PARENT,
-                                LayoutParams.WRAP_CONTENT);
-                        parent.leftMargin = 15;
-                        parent.topMargin = 30;
-                        parent.rightMargin = 15;
-                        parent.bottomMargin = 10;
-
-                        TextView desc = new TextView(ReportStatus.this);
-                        desc.setText(reportarray.getJSONObject(z).getString(
-                                "Description"));
-                        desc.setLayoutParams(parent);
-                        desc.setTextSize(15);
-                        desc.setTypeface(null, Typeface.BOLD);
-                        parentLayout.addView(desc);
-
-                        String htmldata = reportarray.getJSONObject(z).getString(
-                                "ResultValue");
-                        WebView web = new WebView(ReportStatus.this);
-                        web.loadData(htmldata, "text/html", "UTF-8");
-
-                        parentLayout.addView(web);*/
                     }
 
-                   /* TextView line = new TextView(ReportStatus.this);
-                    line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
-                    line.setBackgroundColor(Color.parseColor("#d3d3d3"));
-                    parentLayout.addView(line);*/
+
 
                 }
 

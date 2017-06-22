@@ -236,10 +236,19 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+               if(position == 0) {
+                   position = 3;
+               }else if(position == 1){
+                   position = 2;
+               }else if(position == 2){
+                   position = 1;
+               }else{
+                   position = 0;
+               }
+
                 caseindex = casecodes.get(position);
                 System.out.println(caseindex);
 
-                Log.e("Rishabh", "caseID := "+caseIds.get(position)) ;
                 getDataFromCaseID(caseIds.get(position));
 
                 Intent intent = new Intent(GraphDetailsNew.this, ReportStatus.class);
@@ -312,7 +321,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 //String dateArray[] = dateInString.split(" ");
                 //dateInString = dateArray[0];
                 String chartValueInString = chartValues.get(i);
-                String caseCode = chartValues.get(i);
+                String caseCode = casecodes.get(i);
                 mDateList.add(dateInString);
 
                 GraphDetailValueAndDate graphDetailValueAndDate = new GraphDetailValueAndDate();
@@ -320,9 +329,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 graphDetailValueAndDate.setValue(chartValueInString);
                 graphDetailValueAndDate.setCaseCode(caseCode);
 
+
                 graphDetailValueAndDateList.add(graphDetailValueAndDate);
 
             }
+
+
 
 
 

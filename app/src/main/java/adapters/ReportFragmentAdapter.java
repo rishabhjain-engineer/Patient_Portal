@@ -113,7 +113,6 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
 
     @Override
     public int getItemCount() {
-        Log.e("Rishabh", "size:= " + listofAllObjects.size());
         return listofAllObjects.size();
     }
 
