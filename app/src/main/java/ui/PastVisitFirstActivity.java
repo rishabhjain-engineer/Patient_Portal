@@ -79,11 +79,15 @@ public class PastVisitFirstActivity extends BaseActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                PastVisitFirstModel pastVisitFirstModel = (PastVisitFirstModel) mListView.getItemAtPosition(position);
-                Intent intent = new Intent(PastVisitFirstActivity.this, PastVisitActivity.class);
-                intent.putExtra("pastDocotor", pastVisitFirstModel);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(PastVisitFirstActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    PastVisitFirstModel pastVisitFirstModel = (PastVisitFirstModel) mListView.getItemAtPosition(position);
+                    Intent intent = new Intent(PastVisitFirstActivity.this, PastVisitActivity.class);
+                    intent.putExtra("pastDocotor", pastVisitFirstModel);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
             }
         });
     }

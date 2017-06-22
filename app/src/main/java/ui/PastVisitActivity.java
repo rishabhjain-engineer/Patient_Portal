@@ -68,6 +68,8 @@ public class PastVisitActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             pastVisitDetails(pastVisitFirstModel.getConsultId());
+        }else{
+            Toast.makeText(PastVisitActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
         setupActionBar();
         mActionBar.hide();

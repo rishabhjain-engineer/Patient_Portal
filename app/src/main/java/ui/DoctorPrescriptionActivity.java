@@ -138,6 +138,8 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             getConsultTestList();
+        } else {
+            Toast.makeText(DoctorPrescriptionActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
     }
 

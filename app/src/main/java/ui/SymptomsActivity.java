@@ -136,8 +136,6 @@ public class SymptomsActivity extends BaseActivity {
         mPatientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
 
 
-
-
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
         headerTitleTv.setText("Symptoms");
@@ -180,6 +178,8 @@ public class SymptomsActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             getAllSymptoms();
+        } else {
+            Toast.makeText(SymptomsActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -188,37 +188,33 @@ public class SymptomsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.continue_button) {
-                if(TextUtils.isEmpty(mConsultID)){
-
-                }
-                mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
-                if(TextUtils.isEmpty(mConsultID)) {
-                    addPatientSymptoms();
-                }else {
-                    uploadFileToAWS();
-                }
-
-
-                if (mCoversationType.equalsIgnoreCase("audio")) {
-                    Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                    audioCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
-                    startActivity(audioCallIntent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                } else if (mCoversationType.equalsIgnoreCase("video")) {
-                    Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
-                    videoCallIntent.putExtra("symptoms", symptomsList);
-                    videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
-                    startActivity(videoCallIntent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                    Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                    intent.putExtra(ConversationUIService.USER_ID, "372fd208-69b7-44e7-a097-0015f26bd433");
-                    intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
-                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                }
+                if (NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
+                    if (TextUtils.isEmpty(mConsultID)) {
+                        addPatientSymptoms();
+                    } else {
+                        uploadFileToAWS();
+                    }
+                    if (mCoversationType.equalsIgnoreCase("audio")) {
+                        Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
+                        audioCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
+                        startActivity(audioCallIntent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    } else if (mCoversationType.equalsIgnoreCase("video")) {
+                        Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
+                        videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
+                        videoCallIntent.putExtra("symptoms", symptomsList);
+                        videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
+                        startActivity(videoCallIntent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    } else if (mCoversationType.equalsIgnoreCase("chat")) {
+                        Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
+                        intent.putExtra(ConversationUIService.USER_ID, "372fd208-69b7-44e7-a097-0015f26bd433");
+                        intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
+                        intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    }
                 /*//Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
                 Intent intent = null;
                 if (AppConstant.isPatient) {
@@ -229,6 +225,9 @@ public class SymptomsActivity extends BaseActivity {
                 intent.putExtra("chatType", mCoversationType);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
+                } else {
+                    Toast.makeText(SymptomsActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                }
             } else if (id == R.id.attach_button) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -651,14 +650,14 @@ public class SymptomsActivity extends BaseActivity {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
-        Log.e("Rishabh", "data"+data);
+        Log.e("Rishabh", "data" + data);
         try {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
             data.put("patientNotes", mNoteEditText.getEditableText().toString());
-            if(TextUtils.isEmpty(mConsultID)){
+            if (TextUtils.isEmpty(mConsultID)) {
                 data.put("consultId", JSONObject.NULL);
-            }else{
+            } else {
                 data.put("consultId", mConsultID);
             }
 
@@ -672,7 +671,7 @@ public class SymptomsActivity extends BaseActivity {
                 try {
                     Log.i("GetMember", "Received Data: " + response);
                     String consultId = response.getString("d");
-                    consultId =  consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
+                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
                     Log.e("Rishabh", "consultID := " + consultId);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
@@ -704,7 +703,7 @@ public class SymptomsActivity extends BaseActivity {
 
         AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
         String tempConsultId = "8c66e551-a66a-430a-a316-c8139a496e68";
-        String key = mPatientId + "/" + "Consult/" + mConsultID ;   // PatientId/Consult/ConsultId/
+        String key = mPatientId + "/" + "Consult/" + mConsultID;   // PatientId/Consult/ConsultId/
         new TransferAsynctask(s3Client, listOfFilesToUpload, key).execute();
 
     }
@@ -723,15 +722,13 @@ public class SymptomsActivity extends BaseActivity {
         }
 
 
-
-
         @Override
         protected Void doInBackground(Void... params) {
 
             for (int h = 0; h < listoffiles.size(); h++) {
                 File file = listoffiles.get(h);
 
-                key = key + "/"+file.getName();
+                key = key + "/" + file.getName();
 
                 Log.e("Rishabh", "file path (KEY) : " + key);
 
@@ -780,7 +777,7 @@ public class SymptomsActivity extends BaseActivity {
 
                     CompleteMultipartUploadResult completeMultipartUploadResult = new CompleteMultipartUploadResult();
 
-                    updateDataBase(file , key) ;
+                    updateDataBase(file, key);
 
                 } catch (Exception e) {
                     s3Client.abortMultipartUpload(new AbortMultipartUploadRequest(
@@ -798,15 +795,14 @@ public class SymptomsActivity extends BaseActivity {
             // updating HealthScion dataBase ;
 
 
-
         }
     }
 
 
-    private void updateDataBase(File file , String path) {
+    private void updateDataBase(File file, String path) {
 
-        Log.e("Rishabh", "file name : "+file.getName()) ;
-        Log.e("Rishabh", "file path : "+path) ;
+        Log.e("Rishabh", "file name : " + file.getName());
+        Log.e("Rishabh", "file path : " + path);
 
 
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultS3Records);
@@ -828,20 +824,20 @@ public class SymptomsActivity extends BaseActivity {
             je.printStackTrace();
         }
 
-        Log.e("Rishabh", "send data to upload path in database := "+data) ;
+        Log.e("Rishabh", "send data to upload path in database := " + data);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
-                Log.e("Rishabh", "response := "+response) ;
+                Log.e("Rishabh", "response := " + response);
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Rishabh", "VolleyError := "+error) ;
+                Log.e("Rishabh", "VolleyError := " + error);
             }
-        }) ;
+        });
         mRequestQueue.add(jsonObjectRequest);
     }
 
