@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.twilio.video.CameraCapturer;
 import com.twilio.video.VideoView;
@@ -387,7 +388,7 @@ public class VideoActivity extends AudioCallActivityV2 {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isPatient) {
+        if (ConversationActivity.isPatient) {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction(OPEN_PATIENT_PAST_VISIT);

@@ -43,6 +43,7 @@ import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -75,7 +76,6 @@ public class AudioCallActivityV2 extends AppCompatActivity implements TokenGener
     private static final String TAG = "AudioCallActivityV2";
     private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
-    public static final boolean isPatient = false;
 
     /*
      * The Video Client allows a client to connect to a room
@@ -346,7 +346,7 @@ public class AudioCallActivityV2 extends AppCompatActivity implements TokenGener
         super.onDestroy();
         setOpenStatus(false);
 
-        if (isPatient) {
+        if (ConversationActivity.isPatient) {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction(OPEN_PATIENT_PAST_VISIT);
