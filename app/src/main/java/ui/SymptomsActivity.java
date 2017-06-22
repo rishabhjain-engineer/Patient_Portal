@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +13,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -35,6 +40,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadResult;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
+import com.amazonaws.services.s3.model.PartETag;
+import com.amazonaws.services.s3.model.UploadPartRequest;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,16 +60,22 @@ import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.google.gson.JsonObject;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 import adapters.SymptomsAdapter;
@@ -80,6 +102,7 @@ public class SymptomsActivity extends BaseActivity {
     private String mCoversationType;
     private Uri selectedImageUri;
     private String selectedPath;
+    private String mCurrentPhotoPath = null, mPatientId, mConsultID;
     private SymptomsDialog mSymptomsDialog;
     private TextView mSymptomsTextView;
     /* private String symptomsArry[] = {"Pain", "Anxiety", "Fatigue", "Headache", "Infection", "Depression", "Diabtees mellitus", "Shortnes of breath",
@@ -90,12 +113,14 @@ public class SymptomsActivity extends BaseActivity {
     private String symptomsList = "";
     private EditText mNoteEditText;
     private static RequestQueue mRequestQueue;
+    private List<File> listOfFilesToUpload = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptoms);
         mRequestQueue = Volley.newRequestQueue(this);
+
 
         // Arrays.sort(symptomsArry);
         /*for (int i = 0; i < symptomsArry.length; i++) {
@@ -106,6 +131,12 @@ public class SymptomsActivity extends BaseActivity {
 
         setupActionBar();
         mActionBar.hide();
+
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPatientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+
+
+
 
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
@@ -125,7 +156,7 @@ public class SymptomsActivity extends BaseActivity {
 
         mSymptomsTextView = (TextView) findViewById(R.id.symptoms_tv);
         mSymptomsTextView.setOnClickListener(mOnClickListener);
-        mSymptomsTextView.setText("Please choose symptoms.");
+        mSymptomsTextView.setText("");
 
        /* String list = "";
         for (Symptoms symptoms : mSymptomsList) {
@@ -157,7 +188,11 @@ public class SymptomsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.continue_button) {
+                if(TextUtils.isEmpty(mConsultID)){
+
+                }
                 addPatientSymptoms();
+
                 if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
@@ -378,49 +413,97 @@ public class SymptomsActivity extends BaseActivity {
 
     private void openGallery(int req_code) {
 
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         intent.setType("image/*");
-
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+        //  intent.setAction(Intent.ACTION_GET_CONTENT);
 
         startActivityForResult(Intent.createChooser(intent, "Select file to upload "), req_code);
 
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
+        listOfFilesToUpload.clear();
+        File file = null;
+        ArrayList<Uri> multipleUri = new ArrayList<>();
         if (resultCode == RESULT_OK) {
-            if (data.getData() != null) {
-                selectedImageUri = data.getData();
-            } else {
-                Log.d("selectedPath1 : ", "Came here its null !");
-                Toast.makeText(getApplicationContext(), "failed to get Image!", Toast.LENGTH_LONG).show();
-            }
-
             if (requestCode == 100 && resultCode == RESULT_OK) {
+                if (data.getData() != null) {
+                    selectedImageUri = data.getData();
+                } else {
+                    Toast.makeText(getApplicationContext(), "failed to get Image!", Toast.LENGTH_LONG).show();
+                }
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 selectedPath = getPath(selectedImageUri);
-                //preview.setImageURI(selectedImageUri);
                 Log.d("selectedPath1 : ", selectedPath);
 
             }
 
-            if (requestCode == 10)
+            if (requestCode == 10) {
 
-            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ClipData clipData = data.getClipData();
+                    Log.e("Rishabh", "clip data := " + clipData.toString());
+                    if (clipData.getItemCount() > 5) {
+                        showAlertMessage("you cannot upload more than 5 files");
+                        return;
+                    }
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        multipleUri.add(clipData.getItemAt(i).getUri());
+                    }
 
-                selectedPath = getPath(selectedImageUri);
-                //preview.setImageURI(selectedImageUri);
-                Log.d("selectedPath1 : ", selectedPath);
 
+                } else {
+                    selectedImageUri = data.getData();
+                    multipleUri.add(selectedImageUri);
+                }
+
+                for (int i = 0; i < multipleUri.size(); i++) {
+                    selectedImageUri = data.getData();
+                    InputStream is = null;
+                    if (selectedImageUri.getAuthority() != null) {
+
+                        try {
+                            is = getContentResolver().openInputStream(selectedImageUri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(is);
+                            if (bitmap != null) {
+                                file = createImageFile();
+                                OutputStream outputStream = new FileOutputStream(file);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+                                outputStream.flush();
+                                outputStream.close();
+                                Log.e("Rishabh", "file name := " + file.getName());
+                                Log.e("Rishabh", "file name := " + file.getAbsolutePath());
+                                listOfFilesToUpload.add(file);
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
             }
-
         }
-
     }
 
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
 
     private String getPath(Uri uri) {
 
@@ -558,6 +641,7 @@ public class SymptomsActivity extends BaseActivity {
     }
 
     private void addPatientSymptoms() {
+        mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -565,19 +649,29 @@ public class SymptomsActivity extends BaseActivity {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
             data.put("patientNotes", mNoteEditText.getEditableText().toString());
+            if(TextUtils.isEmpty(mConsultID)){
+                data.put("consultId", JSONObject.NULL);
+            }else{
+                data.put("consultId", mConsultID);
+            }
+
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        Log.e("Rishabh", "send data := " + data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     Log.i("GetMember", "Received Data: " + response);
-                    String data = response.getString("d");
-                    JSONObject jsonObject = new JSONObject(data);
-                    String consultId = jsonObject.optString("d");
+                    String consultId = response.getString("d");
+                    consultId =  consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
+                    Log.e("Rishabh", "consultID := " + consultId);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
+                    mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
+                    Log.e("Rishabh", "consultID going in path := " + consultId);
                     mProgressDialog.dismiss();
+                    uploadFileToAWS();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
@@ -588,12 +682,160 @@ public class SymptomsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh", "Volley error : " + error);
+                error.printStackTrace();
                 onBackPressed();
                 mProgressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
         mRequestQueue.add(symptomsJsonObjectRequest);
+
+    }
+
+    private void uploadFileToAWS() {
+
+        AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+        String tempConsultId = "8c66e551-a66a-430a-a316-c8139a496e68";
+        String key = mPatientId + "/" + "Consult/" + mConsultID ;   // PatientId/Consult/ConsultId/
+        new TransferAsynctask(s3Client, listOfFilesToUpload, key).execute();
+
+    }
+
+    private class TransferAsynctask extends AsyncTask<Void, Void, Void> {
+
+        private AmazonS3 s3Client;
+        List<File> listoffiles = new ArrayList<>();
+        String s3BucketName = getString(R.string.s3_bucket);
+        String key;
+
+        public TransferAsynctask(AmazonS3Client s3Client, List<File> listOfFilesToUpload, String Key) {
+            this.s3Client = s3Client;
+            listoffiles = listOfFilesToUpload;
+            this.key = Key;
+        }
+
+
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            for (int h = 0; h < listoffiles.size(); h++) {
+                File file = listoffiles.get(h);
+
+                key = key + "/"+file.getName();
+
+                Log.e("Rishabh", "file path (KEY) : " + key);
+
+                // Create a list of UploadPartResponse objects. You get one of these for
+                // each part upload.
+                List<PartETag> partETags = new ArrayList<PartETag>();
+
+                // Step 1: Initialize.
+                InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(s3BucketName, key);
+                // configureInitiateRequest(initRequest);
+                InitiateMultipartUploadResult initResponse = s3Client.initiateMultipartUpload(initRequest);
+
+
+                long contentLength = file.length();
+                long partSize = 5 * 1024 * 1024; // Set part size to 5 MB.
+
+                try {
+                    // Step 2: Upload parts.
+                    long filePosition = 0;
+                    for (int i = 1; filePosition < contentLength; i++) {
+                        // Last part can be less than 5 MB. Adjust part size.
+                        partSize = Math.min(partSize, (contentLength - filePosition));
+
+                        // Create request to upload a part.
+                        UploadPartRequest uploadRequest = new UploadPartRequest()
+                                .withBucketName(s3BucketName).withKey(key)
+                                .withUploadId(initResponse.getUploadId()).withPartNumber(i)
+                                .withFileOffset(filePosition)
+                                .withFile(file)
+                                .withPartSize(partSize);
+
+                        // Upload part and add response to our list.
+                        partETags.add(s3Client.uploadPart(uploadRequest).getPartETag());
+
+                        filePosition += partSize;
+                    }
+
+                    // Step 3: Complete.
+                    CompleteMultipartUploadRequest compRequest = new
+                            CompleteMultipartUploadRequest(s3BucketName, key, initResponse.getUploadId(), partETags);
+
+                    s3Client.completeMultipartUpload(compRequest);
+
+                    Log.e("Rishabh", "SUCCESS := upload complete for " + initResponse.getUploadId());
+
+
+                    CompleteMultipartUploadResult completeMultipartUploadResult = new CompleteMultipartUploadResult();
+
+                    updateDataBase(file , key) ;
+
+                } catch (Exception e) {
+                    s3Client.abortMultipartUpload(new AbortMultipartUploadRequest(
+                            s3BucketName, key, initResponse.getUploadId()));
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            // updating HealthScion dataBase ;
+
+
+
+        }
+    }
+
+
+    private void updateDataBase(File file , String path) {
+
+        Log.e("Rishabh", "file name : "+file.getName()) ;
+        Log.e("Rishabh", "file path : "+path) ;
+
+
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultS3Records);
+        String url = static_holder.request_Url();
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
+            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            JSONArray jsonArray = new JSONArray();
+            JSONObject innerJsonObject = new JSONObject();
+            innerJsonObject.put("ImageName", file.getName());
+            innerJsonObject.put("ImageUrl", path);
+            innerJsonObject.put("ThumbPath", "");
+            jsonArray.put(innerJsonObject);
+            data.put("imageDetails", jsonArray);
+
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+
+        Log.e("Rishabh", "send data to upload path in database := "+data) ;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                Log.e("Rishabh", "response := "+response) ;
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh", "VolleyError := "+error) ;
+            }
+        }) ;
+        mRequestQueue.add(jsonObjectRequest);
     }
 
 }
