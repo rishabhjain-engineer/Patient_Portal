@@ -44,7 +44,6 @@ public class VideoActivity extends AudioCallActivityV2 {
     private ImageView showFilesIv;
     private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
-    public static final boolean isPatient = false;
     public VideoActivity() {
         super(true);
     }

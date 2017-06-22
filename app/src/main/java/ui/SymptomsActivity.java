@@ -197,20 +197,20 @@ public class SymptomsActivity extends BaseActivity {
                     }
                     if (mCoversationType.equalsIgnoreCase("audio")) {
                         Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                        audioCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+                        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
                         startActivity(audioCallIntent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else if (mCoversationType.equalsIgnoreCase("video")) {
                         Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                        videoCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+                        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
                         videoCallIntent.putExtra("symptoms", symptomsList);
                         videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
                         startActivity(videoCallIntent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else if (mCoversationType.equalsIgnoreCase("chat")) {
                         Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                        intent.putExtra(ConversationUIService.USER_ID, "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
-                        intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
+                        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getpatienDoctorId());
+                        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
                         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

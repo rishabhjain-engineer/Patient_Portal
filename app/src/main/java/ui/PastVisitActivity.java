@@ -42,6 +42,7 @@ import config.StaticHolder;
 import models.DoctorDetails;
 import models.PastVisitFirstModel;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -160,14 +161,14 @@ public class PastVisitActivity extends BaseActivity {
             Intent intent = null;
             if (mCoversationType.equalsIgnoreCase("audio")) {
                 intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
-                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
             } else if (mCoversationType.equalsIgnoreCase("video")) {
                 intent = new Intent(PastVisitActivity.this, VideoActivity.class);
-                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
             } else if (mCoversationType.equalsIgnoreCase("chat")) {
                 intent = new Intent(PastVisitActivity.this, ConversationActivity.class);
-                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
-                intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
+                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+                intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
             }
             startActivity(intent);

@@ -76,19 +76,19 @@ public class DoctorDetailsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (R.id.audio_call == id) {
-                if (VideoActivity.isPatient) {
+                if (ConversationActivity.isPatient) {
                     decesionAlertDialog("audio");
                 } else {
                     audioCall();
                 }
             } else if (R.id.video_call == id) {
-                if (VideoActivity.isPatient) {
+                if (ConversationActivity.isPatient) {
                     decesionAlertDialog("video");
                 } else {
                     videoCall();
                 }
             } else if (R.id.chat == id) {
-                if (VideoActivity.isPatient) {
+                if (ConversationActivity.isPatient) {
                     decesionAlertDialog("chat");
                 } else {
                     chat();
@@ -158,22 +158,22 @@ public class DoctorDetailsActivity extends BaseActivity {
 
     private void videoCall() {
         Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-        videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
+        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
         startActivity(videoCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void audioCall() {
         Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-        audioCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
+        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
         startActivity(audioCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void chat() {
         Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.USER_ID, "372fd208-69b7-44e7-a097-0015f26bd433");
-        intent.putExtra(ConversationUIService.DISPLAY_NAME, "Shalza Thakur"); //put it for displaying the title.
+        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getpatienDoctorId());
+        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         startActivity(intent);
     }

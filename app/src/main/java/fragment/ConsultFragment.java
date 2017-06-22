@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.VideoActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.Authentication;
 import com.hs.userportal.R;
 
@@ -71,7 +72,7 @@ public class ConsultFragment extends Fragment {
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
         mActivity = getActivity();
-        if (VideoActivity.isPatient) {
+        if (ConversationActivity.isPatient) {
             past_visits.setVisibility(View.VISIBLE);
         } else {
             past_visits.setVisibility(View.GONE);
@@ -207,7 +208,7 @@ public class ConsultFragment extends Fragment {
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
                     mProgressDialog.dismiss();
                     Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
+                    videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
                     startActivity(videoCallIntent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } catch (JSONException je) {

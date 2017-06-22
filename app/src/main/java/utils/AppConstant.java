@@ -1,5 +1,8 @@
 package utils;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicommons.people.channel.Conversation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,4 +32,24 @@ public class AppConstant {
 
     public static boolean isToRefereshVaccine = true;
     public static String CONSULT_MODE = "video";
+
+    public static final String getpatienDoctorId() {
+        if (ConversationActivity.isPatient) {
+            //372fd208-69b7-44e7-a097-0015f26bd433            2907 Shailza Thakur   Doctor
+            return "372fd208-69b7-44e7-a097-0015f26bd433";
+        } else {
+            //97e9496b-8630-4d61-9f13-d7e95c0ad6a7            4903   Balveer  Patient
+            return "97e9496b-8630-4d61-9f13-d7e95c0ad6a7";
+        }
+    }
+
+    public static final String getpatienDoctorName() {
+        if (ConversationActivity.isPatient) {
+            //372fd208-69b7-44e7-a097-0015f26bd433            2907 Shailza Thakur   Doctor
+            return "Shailza Thakur";
+        } else {
+            //97e9496b-8630-4d61-9f13-d7e95c0ad6a7            4903   Balveer  Patient
+            return "Balveer";
+        }
+    }
 }
