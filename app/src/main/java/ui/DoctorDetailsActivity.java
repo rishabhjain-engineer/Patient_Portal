@@ -76,14 +76,23 @@ public class DoctorDetailsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (R.id.audio_call == id) {
-                audioCall();
-                // decesionAlertDialog("audio");
+                if (VideoActivity.isPatient) {
+                    decesionAlertDialog("audio");
+                } else {
+                    audioCall();
+                }
             } else if (R.id.video_call == id) {
-                videoCall();
-                // decesionAlertDialog("video");
+                if (VideoActivity.isPatient) {
+                    decesionAlertDialog("video");
+                } else {
+                    videoCall();
+                }
             } else if (R.id.chat == id) {
-                chat();
-                // decesionAlertDialog("chat");
+                if (VideoActivity.isPatient) {
+                    decesionAlertDialog("chat");
+                } else {
+                    chat();
+                }
             } else if (R.id.back_image == id) {
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

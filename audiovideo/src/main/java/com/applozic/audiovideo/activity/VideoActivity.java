@@ -38,13 +38,17 @@ import applozic.com.audiovideo.R;
 
 public class VideoActivity extends AudioCallActivityV2 {
     private static final String TAG = VideoActivity.class.getName();
-    private  static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
+    private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
+    private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
     private LinearLayout videoOptionlayout;
     private TextView mSymptomsTextView, mNoteTextView;
     private ImageView showFilesIv;
+
     public VideoActivity() {
         super(true);
     }
+
+    public static final boolean isPatient = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +125,15 @@ public class VideoActivity extends AudioCallActivityV2 {
 
         if (TextUtils.isEmpty(symptoms)) {
             mSymptomsTextView.setText("Symptoms:");
-        }else{
+        } else {
             mSymptomsTextView.setText("Symptoms: \n" + symptoms);
         }
 
         if (TextUtils.isEmpty(notes)) {
             mNoteTextView.setText("Notes:");
-        }else{
+        } else {
             mNoteTextView.setText("Notes: \n" + notes);
         }
-
 
 
         contactName.setText(contactToCall.getDisplayName());
@@ -384,10 +387,17 @@ public class VideoActivity extends AudioCallActivityV2 {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent ();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(OPEN_DOCTOR_PRESCRIPTION);
-        startActivity(intent);
+        if (isPatient) {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(OPEN_PATIENT_PAST_VISIT);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(OPEN_DOCTOR_PRESCRIPTION);
+            startActivity(intent);
+        }
     }
 
     /*

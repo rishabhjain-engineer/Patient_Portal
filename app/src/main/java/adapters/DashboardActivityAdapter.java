@@ -8,12 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.applozic.audiovideo.activity.VideoActivity;
 import com.hs.userportal.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ui.DashBoardActivity;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -28,24 +30,28 @@ public class DashboardActivityAdapter extends BaseAdapter {
     public DashboardActivityAdapter(Activity dashBoardActivity) {
         mActivity = dashBoardActivity;
 
-        mList.add("Consults");
-        mList.add("Reports");
-        mList.add("Vitals");
-        mList.add("Repository");
-        mList.add("Family");
+        if (VideoActivity.isPatient) {
+            mList.add("Consults");
+            mList.add("Reports");
+            mList.add("Vitals");
+            mList.add("Repository");
+            mList.add("Family");
 
+            mImageList.add(R.drawable.ic);
+            mImageList.add(R.drawable.homepage_reports);
+            mImageList.add(R.drawable.homepage_vital_green);
+            mImageList.add(R.drawable.homepage_repository);
+            mImageList.add(R.drawable.homepage_family);
 
-        mImageList.add(R.drawable.ic);
-        mImageList.add(R.drawable.homepage_reports);
-        mImageList.add(R.drawable.homepage_vital_green);
-        mImageList.add(R.drawable.homepage_repository);
-        mImageList.add(R.drawable.homepage_family);
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
-        if ("3".equalsIgnoreCase(preferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG))) {
-            mList.add("School");
-            mImageList.add(R.drawable.school_icon);
+            PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+            if ("3".equalsIgnoreCase(preferenceHelper.getString(PreferenceHelper.PreferenceKey.PATIENT_BUSINESS_FLAG))) {
+                mList.add("School");
+                mImageList.add(R.drawable.school_icon);
+            }
+        } else {
+            mList.add("Consults");
+            mImageList.add(R.drawable.ic);
         }
-
     }
 
 
