@@ -47,7 +47,7 @@ public class ConsultFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.consult_doctor_list);
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
-        past_visits.setVisibility(View.VISIBLE);
+        past_visits.setVisibility(View.GONE);
         past_visits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
