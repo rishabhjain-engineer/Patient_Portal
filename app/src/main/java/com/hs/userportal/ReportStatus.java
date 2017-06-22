@@ -78,7 +78,7 @@ public class ReportStatus extends BaseActivity {
             dob, sample, profname, history_text, pdf_text;
     private Button breport;
     private LinearLayout bgraph, bpdf;
-    private String patientId;
+    private String patientId, investifgationIDFromGraphNewDetails;
     private SharedPreferences sharedPreferences;
     private Services service;
     private JSONArray jarray, sendarray, results, pdfdata, reportarray;
@@ -97,8 +97,10 @@ public class ReportStatus extends BaseActivity {
     private List<String> intentdate = new ArrayList<String>();
     private List<String> intentcase = new ArrayList<String>();
     private List<String> intentcaseId = new ArrayList<String>();
+    private List<String > sendInvestigationID1List  = new ArrayList<>() ;
     private List<String> piechartvalue = new ArrayList<String>();
     private graphprocess mTask;
+    private boolean mIsFromGraphNewDetails ;
     private byte[] result = null;
     private int index, singlechartposition;
     private String phcode;
@@ -140,6 +142,8 @@ public class ReportStatus extends BaseActivity {
         index = z.getIntExtra("index", 10);
         String jarr = z.getStringExtra("array");
         phcode = z.getStringExtra("code");
+        investifgationIDFromGraphNewDetails = z.getStringExtra("investigationID1");
+        mIsFromGraphNewDetails = z.getBooleanExtra("fromGraphNewDetails",false);
         patientId = z.getStringExtra("USER_ID");
         progress = new ProgressDialog(ReportStatus.this);
         sendarray = new JSONArray();
@@ -429,6 +433,7 @@ public class ReportStatus extends BaseActivity {
                                         Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
+                                        intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
                                         intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                                         if (chartNames.size() != 0)
@@ -863,7 +868,7 @@ public class ReportStatus extends BaseActivity {
     }
 
 
-    class graphprocess extends AsyncTask<Void, Void, Void> {
+    class graphprocess extends AsyncTask<Void, Void, Void>  {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -898,9 +903,16 @@ public class ReportStatus extends BaseActivity {
             // TODO Auto-generated method stub
             sendData = new JSONObject();
             try {
-                sendData.put("sCaseId", jarray.getJSONObject(index).getString("CaseId"));
-                sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
-                sendData.put("testid", jarray.getJSONObject(index).getString("TestId"));
+                //sendData.put("sCaseId", jarray.getJSONObject(index).getString("CaseId"));
+
+                if(mIsFromGraphNewDetails){
+                    sendData.put("investigationid", investifgationIDFromGraphNewDetails);
+                }else {
+                    sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
+                }
+
+
+               // sendData.put("testid", jarray.getJSONObject(index).getString("TestId"));
                 sendData.put("PatientCode", jarray.getJSONObject(index).getString("PatientCode"));
             } catch (JSONException e) {
 
@@ -909,8 +921,9 @@ public class ReportStatus extends BaseActivity {
             }
 
             System.out.println(sendData);
-
+            Log.e("Rishabh","sendData GetPatientTestRangeDataMobile := "+sendData);
             results = service.graphreport(sendData);
+            Log.e("Rishabh","results GetPatientTestRangeDataMobile := "+results);
             System.out.println("graphreport" + results);
             return null;
         }
@@ -928,6 +941,8 @@ public class ReportStatus extends BaseActivity {
 
                 try {
 
+                    String investigationID1 = results.getJSONObject(i).getString("InvestigationId1");
+                    sendInvestigationID1List.add(investigationID1);
 
                     if (results.getJSONObject(i).getString("CaseId").equals(jarray.getJSONObject(index).getString("CaseId"))) {
                         reportarray.put(results.getJSONObject(i));

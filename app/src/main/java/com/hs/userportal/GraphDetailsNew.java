@@ -88,6 +88,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<String> casecodes = new ArrayList<String>();
     private List<String> caseIds = new ArrayList<String>();
     private List<String> chartunitList;
+    private List<String> investigationID1 ;
     private String caseindex = "";
     private Group_testAdapter adapter;
     private String RangeFrom = null, RangeTo = null, UnitCode = "" ,  mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
@@ -214,6 +215,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         chartValues = getIntent().getStringArrayListExtra("values");
         casecodes = getIntent().getStringArrayListExtra("case");
         caseIds = getIntent().getStringArrayListExtra("caseIds");
+        investigationID1 = getIntent().getStringArrayListExtra("investigationID1");
         chartunitList = getIntent().getStringArrayListExtra("unitList");
         if (chartunitList == null) {
             chartunitList = new ArrayList<>();
@@ -255,6 +257,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 intent.putExtra("index", 0);
                 intent.putExtra("array", subArray1.toString());
                 intent.putExtra("USER_ID", id);
+                intent.putExtra("fromGraphNewDetails", true);
+                intent.putExtra("investigationID1",investigationID1.get(position));
                 intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

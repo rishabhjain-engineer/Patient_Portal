@@ -1513,6 +1513,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                         intent.putExtra("index", position);
                         intent.putExtra("array", subArray1.toString());
                         intent.putExtra("USER_ID", id);
+                        intent.putExtra("fromGraphNewDetails", false);
                         intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
                         startActivity(intent);
                         mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
