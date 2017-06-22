@@ -509,7 +509,13 @@
         <activity
             android:name="ui.PastVisitFirstActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.hs.userportal.ui.PastVisitActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="ui.ConsultPaymentActivity"
