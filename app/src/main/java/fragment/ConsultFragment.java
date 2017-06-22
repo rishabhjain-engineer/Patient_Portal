@@ -186,36 +186,26 @@ public class ConsultFragment extends Fragment {
     private String mConsultID;
 
     private void getConsultId() {
-        mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
-        Log.e("Rishabh", "data" + data);
         try {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", "");
             data.put("patientNotes", "");
-            if (TextUtils.isEmpty(mConsultID)) {
-                data.put("consultId", JSONObject.NULL);
-            } else {
-                data.put("consultId", mConsultID);
-            }
-
+            data.put("consultId", JSONObject.NULL);
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.e("Rishabh", "send data := " + data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     Log.i("GetMember", "Received Data: " + response);
                     String consultId = response.getString("d");
-                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
-                    Log.e("Rishabh", "consultID := " + consultId);
+                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
-                    Log.e("Rishabh", "consultID going in path := " + consultId);
                     mProgressDialog.dismiss();
                     Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
                     videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
@@ -230,7 +220,6 @@ public class ConsultFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Rishabh", "Volley error : " + error);
                 error.printStackTrace();
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
