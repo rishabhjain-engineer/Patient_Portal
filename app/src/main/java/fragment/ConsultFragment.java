@@ -50,7 +50,7 @@ public class ConsultFragment extends Fragment {
         if (VideoActivity.isPatient) {
             past_visits.setVisibility(View.VISIBLE);
         } else {
-            past_visits.setVisibility(View.VISIBLE);
+            past_visits.setVisibility(View.GONE);
         }
         past_visits.setOnClickListener(new View.OnClickListener() {
             @Override

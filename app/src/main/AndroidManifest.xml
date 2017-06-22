@@ -499,11 +499,6 @@
             android:name="ui.PastVisitActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.hs.userportal.ui.PastVisitActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity
