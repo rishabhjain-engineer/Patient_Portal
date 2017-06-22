@@ -158,13 +158,13 @@ public class PastVisitActivity extends BaseActivity {
             Intent intent = null;
             if (mCoversationType.equalsIgnoreCase("audio")) {
                 intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
-                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
             } else if (mCoversationType.equalsIgnoreCase("video")) {
                 intent = new Intent(PastVisitActivity.this, VideoActivity.class);
-                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
             } else if (mCoversationType.equalsIgnoreCase("chat")) {
                 intent = new Intent(PastVisitActivity.this, ConversationActivity.class);
-                intent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                intent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
                 intent.putExtra(ConversationUIService.DISPLAY_NAME, "shalini"); //put it for displaying the title.
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
             }
@@ -195,6 +195,37 @@ public class PastVisitActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject jsonObject = new JSONObject(data);
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
+
+                    /*{
+                        "Table": [
+                        {
+                            "DoctorName": null,
+                                "SignImage": null,
+                                "ClinicName": null,
+                                "Address": null,
+                                "City": null,
+                                "Pincode": null,
+                                "ConsultTime": null,
+                                "Symptoms": "Abnormal Weight Gain, Fever, Nervousness",
+                                "PatientNotes": "hi",
+                                "DoctorComments": null,
+                                "Diagnosis": null,
+                                "Files": null
+                        }
+  ],
+                        "Table1": [
+                        {
+                            "MedicineName": "Disprin",
+                                "Dose": "",
+                                "Days": ""
+                        }
+  ],
+                        "Table2": [
+                        {
+                            "TestName": "MONTOUX TEST (C)"
+                        }
+  ]
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();

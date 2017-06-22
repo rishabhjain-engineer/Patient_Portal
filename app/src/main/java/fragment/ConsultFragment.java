@@ -47,7 +47,7 @@ public class ConsultFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.consult_doctor_list);
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
-        past_visits.setVisibility(View.VISIBLE);
+        past_visits.setVisibility(View.GONE);
         past_visits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +72,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                videoCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
+                videoCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
                 startActivity(videoCallIntent);
                 getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
@@ -113,13 +113,13 @@ public class ConsultFragment extends Fragment {
         doctorDetails3.setDoctorName("Sajat");
         doctorDetails3.setLocation("Sector 22, Noida");
         doctorDetails3.setMedicineType("Family Medicine");
-        doctorDetails3.setDoctorImage(R.drawable.update);
+        doctorDetails3.setDoctorImage(R.drawable.ayaz);
         doctorDetails3.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
         mDoctorDetailsList.add(doctorDetails3);
 
-        DoctorDetails doctorDetails1 = new DoctorDetails();
+       /* DoctorDetails doctorDetails1 = new DoctorDetails();
         doctorDetails1.setDoctorName("Ayaz");
         doctorDetails1.setLocation("Aminabad, Lucknow");
         doctorDetails1.setMedicineType("Family Medicine");
@@ -137,7 +137,8 @@ public class ConsultFragment extends Fragment {
         doctorDetails2.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
-        mDoctorDetailsList.add(doctorDetails2);
+        mDoctorDetailsList.add(doctorDetails2);*/
+
         mConsultFragmentAdapter.setData(mDoctorDetailsList);
         mListView.setAdapter(mConsultFragmentAdapter);
 
