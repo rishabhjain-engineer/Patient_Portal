@@ -48,7 +48,7 @@ public class VideoActivity extends AudioCallActivityV2 {
         super(true);
     }
 
-    public static final boolean isPatient = true;
+    public static final boolean isPatient = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

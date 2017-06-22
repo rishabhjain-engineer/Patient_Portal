@@ -99,13 +99,17 @@ public class ConsultFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
-
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Loading...");
+        mProgressDialog.setIndeterminate(true);
         mConsultNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
+                    mProgressDialog.show();
                     getConsultId();
                 }
                /* Intent intent = null;
@@ -133,13 +137,6 @@ public class ConsultFragment extends Fragment {
             }
         });
         hederTitle.setText("Find a doctor");
-        if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.show();
-        }
         return view;
     }
 
@@ -208,7 +205,7 @@ public class ConsultFragment extends Fragment {
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
                     mProgressDialog.dismiss();
                     Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", "372fd208-69b7-44e7-a097-0015f26bd433");
+                    videoCallIntent.putExtra("CONTACT_ID", "97e9496b-8630-4d61-9f13-d7e95c0ad6a7");
                     startActivity(videoCallIntent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } catch (JSONException je) {
