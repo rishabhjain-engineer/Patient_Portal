@@ -50,6 +50,7 @@ import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.model.UploadPartRequest;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -59,6 +60,7 @@ import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.google.gson.JsonObject;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -80,6 +82,7 @@ import adapters.SymptomsAdapter;
 import config.StaticHolder;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -189,7 +192,7 @@ public class SymptomsActivity extends BaseActivity {
 
                 }
                 addPatientSymptoms();
-               // uploadFileToAWS();
+
                 if (mCoversationType.equalsIgnoreCase("audio")) {
                     Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
                     audioCallIntent.putExtra("CONTACT_ID", "be2ce808-6250-4874-a239-31d60d1d8567");
@@ -639,7 +642,6 @@ public class SymptomsActivity extends BaseActivity {
 
     private void addPatientSymptoms() {
         mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
-        Log.e("Rishabh", "prefrencehelper consultif := " + mConsultID);
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -663,9 +665,13 @@ public class SymptomsActivity extends BaseActivity {
                 try {
                     Log.i("GetMember", "Received Data: " + response);
                     String consultId = response.getString("d");
+                    consultId =  consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
                     Log.e("Rishabh", "consultID := " + consultId);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
+                    mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
+                    Log.e("Rishabh", "consultID going in path := " + consultId);
                     mProgressDialog.dismiss();
+                    uploadFileToAWS();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
@@ -708,6 +714,8 @@ public class SymptomsActivity extends BaseActivity {
             listoffiles = listOfFilesToUpload;
             this.key = Key;
         }
+
+
 
 
         @Override
@@ -765,8 +773,7 @@ public class SymptomsActivity extends BaseActivity {
 
                     CompleteMultipartUploadResult completeMultipartUploadResult = new CompleteMultipartUploadResult();
 
-                    Log.e("Rishabh", "Etag := " + completeMultipartUploadResult.getETag());
-                    Log.e("Rishabh", "KEy := " + completeMultipartUploadResult.getKey());
+                    updateDataBase(file , key) ;
 
                 } catch (Exception e) {
                     s3Client.abortMultipartUpload(new AbortMultipartUploadRequest(
@@ -776,7 +783,59 @@ public class SymptomsActivity extends BaseActivity {
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            // updating HealthScion dataBase ;
+
+
+
+        }
     }
 
+
+    private void updateDataBase(File file , String path) {
+
+        Log.e("Rishabh", "file name : "+file.getName()) ;
+        Log.e("Rishabh", "file path : "+path) ;
+
+
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultS3Records);
+        String url = static_holder.request_Url();
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
+            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            JSONArray jsonArray = new JSONArray();
+            JSONObject innerJsonObject = new JSONObject();
+            innerJsonObject.put("ImageName", file.getName());
+            innerJsonObject.put("ImageUrl", path);
+            innerJsonObject.put("ThumbPath", "");
+            jsonArray.put(innerJsonObject);
+            data.put("ImageDetails", jsonArray);
+
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+
+        Log.e("Rishabh", "send data to upload path in database := "+data) ;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                Log.e("Rishabh", "response := "+response) ;
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh", "VolleyError := "+error) ;
+            }
+        }) ;
+        mRequestQueue.add(jsonObjectRequest);
+    }
 
 }
