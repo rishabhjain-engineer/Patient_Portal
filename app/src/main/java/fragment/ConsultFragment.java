@@ -110,6 +110,7 @@ public class ConsultFragment extends Fragment {
                     Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
                     mProgressDialog.show();
+                    mConsultNow.setClickable(false);
                     getConsultId();
                 }
                /* Intent intent = null;
@@ -198,6 +199,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    mConsultNow.setClickable(true);
                     Log.i("GetMember", "Received Data: " + response);
                     String consultId = response.getString("d");
                     consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
@@ -218,6 +220,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                mConsultNow.setClickable(true);
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }

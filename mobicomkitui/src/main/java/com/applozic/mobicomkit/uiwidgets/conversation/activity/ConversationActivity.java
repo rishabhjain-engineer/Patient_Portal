@@ -163,6 +163,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private Calendar calendar;
     private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
+    public static final boolean isPatient = false;
 
     public ConversationActivity() {
 

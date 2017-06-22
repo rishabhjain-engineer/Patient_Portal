@@ -163,7 +163,8 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                 mCustomAlertDialog.show();
             } else if (id == R.id.ok_button) {
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    consultAdd();
+                    getPatientInfo();
+                   // consultAdd();
                 } else {
                     Toast.makeText(DoctorPrescriptionActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
@@ -334,6 +335,49 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
 
+    private void getPatientInfo() {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetPatientInfo);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("doctorId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        String name = jsonObject1.optString("SymptomName");
+                        Symptoms symptoms = new Symptoms();
+                        symptoms.setName(name);
+                        mTestList.add(symptoms);
+                    }
+                    mProgressDialog.dismiss();
+                    finish();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    onBackPressed();
+                    Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onBackPressed();
+                mProgressDialog.dismiss();
+                Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
     private void consultAdd() {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAdd);
         String url = static_holder.request_Url();
@@ -398,4 +442,5 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         });
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
+
 }
