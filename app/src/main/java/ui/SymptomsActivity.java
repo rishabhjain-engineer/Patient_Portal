@@ -815,7 +815,7 @@ public class SymptomsActivity extends BaseActivity {
             innerJsonObject.put("ImageUrl", path);
             innerJsonObject.put("ThumbPath", "");
             jsonArray.put(innerJsonObject);
-            data.put("ImageDetails", jsonArray);
+            data.put("imageDetails", jsonArray);
 
         } catch (JSONException je) {
             je.printStackTrace();
