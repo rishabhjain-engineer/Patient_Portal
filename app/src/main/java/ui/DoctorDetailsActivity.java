@@ -158,21 +158,21 @@ public class DoctorDetailsActivity extends BaseActivity {
 
     private void videoCall() {
         Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getPatientID());
         startActivity(videoCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void audioCall() {
         Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getPatientID());
         startActivity(audioCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void chat() {
         Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getpatienDoctorId());
+        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getPatientID());
         intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         startActivity(intent);
