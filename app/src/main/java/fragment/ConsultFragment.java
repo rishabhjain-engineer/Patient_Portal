@@ -28,6 +28,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.hs.userportal.Authentication;
 import com.hs.userportal.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,8 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapters.ConsultFragmentAdapter;
+import adapters.PastVisitFirstAdapter;
 import config.StaticHolder;
 import models.DoctorDetails;
+import models.PastVisitFirstModel;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
@@ -60,6 +63,7 @@ public class ConsultFragment extends Fragment {
     protected PreferenceHelper mPreferenceHelper;
     private ProgressDialog mProgressDialog;
     private Activity mActivity;
+    private PastVisitFirstAdapter mPastVisitFirstAdapter;
 
     @Nullable
     @Override
@@ -72,6 +76,7 @@ public class ConsultFragment extends Fragment {
         mConsultNow = (Button) view.findViewById(R.id.consult_now);
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
         mActivity = getActivity();
+        mPastVisitFirstAdapter = new PastVisitFirstAdapter(mActivity);
         if (ConversationActivity.isPatient) {
             past_visits.setVisibility(View.VISIBLE);
         } else {
@@ -230,4 +235,102 @@ public class ConsultFragment extends Fragment {
         mRequestQueue.add(symptomsJsonObjectRequest);
 
     }
+
+    private List<PastVisitFirstModel> mPastVisitedPatientList = new ArrayList<>();
+    private void getPastVisitedPatientList() {
+        mPastVisitedPatientList.clear();
+        StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastPatientList);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("doctorId", AppConstant.getDoctorId());
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
+                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
+                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        mPastVisitedPatientList.add(pastVisitFirstModel);
+                    }
+                    mPastVisitFirstAdapter.setData(mPastVisitedPatientList);
+                    mProgressDialog.dismiss();
+                    mListView.setAdapter(mPastVisitFirstAdapter);
+                    mPastVisitFirstAdapter.notifyDataSetChanged();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
+    private List<PastVisitFirstModel> mPastVisitFirstModels = new ArrayList<>();
+    private void getPastVisitedDoctorList() {
+        mPastVisitFirstModels.clear();
+        StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastVisitList);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("patientId", AppConstant.getPatientID());
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String data = response.getString("d");
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
+                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
+                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        mPastVisitFirstModels.add(pastVisitFirstModel);
+                    }
+                    mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
+                    mProgressDialog.dismiss();
+                    mListView.setAdapter(mPastVisitFirstAdapter);
+                    mPastVisitFirstAdapter.notifyDataSetChanged();
+                } catch (JSONException je) {
+                    mProgressDialog.dismiss();
+                    je.printStackTrace();
+                    Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgressDialog.dismiss();
+                Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
+
 }

@@ -552,6 +552,14 @@ public class StaticHolder {
                 url = BASE_URL + "GetPrescriptionReport";
                 break;
 
+            case PastPatientList:
+                url = BASE_URL + "PastPatientList";
+                break;
+
+            case PastPatientDetails:
+                url = BASE_URL + "PastPatientDetails";
+                break;
+
             default:
                 break;
         }
@@ -587,7 +595,7 @@ public class StaticHolder {
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
         saveHealthDetailMod, UpdateALId, ConsultSymptomsList, ConsultAdd, ConsultTestList, ConsultPayment, ConsultS3Records, ConsultAddSymptoms,
-        PastVisitList, PastVisitDetails, GetPatientInfo, GetPrescriptionReport
+        PastVisitList, PastVisitDetails, GetPatientInfo, GetPrescriptionReport, PastPatientList, PastPatientDetails
     }
 
 }
