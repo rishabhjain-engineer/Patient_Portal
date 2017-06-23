@@ -86,7 +86,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<Long> mEpocList = new ArrayList<Long>();
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
-    private String title;
+    private String title, mPatientID;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
     private List<String> mDateList = new ArrayList<>();
     private ProgressDialog progress;
@@ -102,7 +102,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         services = new Services(this);
         title = getIntent().getStringExtra("chartNames");
         mActionBar.setTitle(title);
-
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPatientID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         //line chart graph
         linechart = (LineChart) findViewById(R.id.linechart);
         pi_chart = (PieChart) findViewById(R.id.pi_chart);
@@ -222,11 +223,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Collections.reverse(casecodes);
                 Collections.reverse(caseIds);
+                Collections.reverse(investigationID1);
                 getDataFromCaseID(caseIds.get(position));
                 Intent intent = new Intent(GraphDetailsNew.this, ReportStatus.class);
                 intent.putExtra("index", 0);
                 intent.putExtra("array", subArray1.toString());
-                intent.putExtra("USER_ID", id);
+                intent.putExtra("USER_ID", mPatientID);
                 intent.putExtra("fromGraphNewDetails", true);
                 intent.putExtra("investigationID1", investigationID1.get(position));
                 intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));

@@ -913,8 +913,10 @@ public class ReportStatus extends BaseActivity {
 
                 if(mIsFromGraphNewDetails){
                     sendData.put("investigationid", investifgationIDFromGraphNewDetails);
+
                 }else {
                     sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
+
                 }
 
 
@@ -1086,11 +1088,20 @@ public class ReportStatus extends BaseActivity {
                 dir.mkdirs();
             }
             pdfobject = new JSONObject();
+            Log.e("Rishabh", "patient ID := "+patientId) ;
             try {
-                pdfobject.put("InvestigationId", jarray.getJSONObject(index)
-                        .getString("InvestigationId"));
-                pdfobject.put("TestId",
-                        jarray.getJSONObject(index).getString("TestId"));
+
+                if(mIsFromGraphNewDetails){
+                    pdfobject.put("InvestigationId", investifgationIDFromGraphNewDetails);
+                    Log.e("Rishabh", "investigation ID := "+investifgationIDFromGraphNewDetails) ;
+                }else {
+                    pdfobject.put("InvestigationId", jarray.getJSONObject(index).getString("InvestigationId"));
+                    Log.e("Rishabh", "investigation ID := "+jarray.getJSONObject(index).getString("InvestigationId")) ;
+                }
+
+               // pdfobject.put("InvestigationId", jarray.getJSONObject(index).getString("InvestigationId"));
+                pdfobject.put("TestId", jarray.getJSONObject(index).getString("TestId"));
+                Log.e("Rishabh", "Test ID := "+jarray.getJSONObject(index).getString("TestId")) ;
 
             } catch (JSONException e) {
 
@@ -1101,14 +1112,13 @@ public class ReportStatus extends BaseActivity {
 
             sendData = new JSONObject();
             try {
-                sendData.put("CaseId",
-                        jarray.getJSONObject(index).getString("CaseId"));
-                sendData.put("LocationId", jarray.getJSONObject(index)
-                        .getString("TestLocationId"));
+                sendData.put("CaseId", jarray.getJSONObject(index).getString("CaseId"));
+                sendData.put("LocationId", jarray.getJSONObject(index).getString("TestLocationId"));
                 sendData.put("Role", "Patient");
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfdata);
                 sendData.put("UserId", patientId);
+                Log.e("Rishabh", "sendData := "+sendData) ;
             } catch (JSONException e) {
 
                 e.printStackTrace();
