@@ -526,7 +526,7 @@ public class VideoActivity extends AudioCallActivityV2 {
     /*public void postData() {
 
 
-        String getDoctorID = "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD";
+        String getDoctorID = "dfdf";
 
 
         JSONObject data = new JSONObject();
@@ -595,7 +595,7 @@ public class VideoActivity extends AudioCallActivityV2 {
                 URL url = new URL("http://apidemo.healthscion.com/WebServices/LabService.asmx/GetPatientInfo"); // here is your URL path
 
                 JSONObject postDataParams = new JSONObject();
-                postDataParams.put("doctorId", "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD");
+                postDataParams.put("doctorId", "1233443");
                 //postDataParams.put("email", "abc@gmail.com");
                 Log.e("Rishabh", postDataParams.toString());
 
