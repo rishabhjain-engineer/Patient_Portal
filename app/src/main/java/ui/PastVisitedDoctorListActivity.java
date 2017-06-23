@@ -27,7 +27,7 @@ import java.util.List;
 
 import adapters.PastVisitFirstAdapter;
 import config.StaticHolder;
-import models.PastVisitDoctorModel;
+import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 
@@ -39,7 +39,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private PastVisitFirstAdapter mPastVisitFirstAdapter;
-    private List<PastVisitDoctorModel> mPastVisitFirstModels = new ArrayList<>();
+    private List<PastVisitDoctorListModel> mPastVisitDoctorListModelList = new ArrayList<>();
     private ListView mListView;
 
     @Override
@@ -81,7 +81,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(PastVisitedDoctorListActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
-                    PastVisitDoctorModel pastVisitFirstModel = (PastVisitDoctorModel) mListView.getItemAtPosition(position);
+                    PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) mListView.getItemAtPosition(position);
                     Intent intent = new Intent(PastVisitedDoctorListActivity.this, PastVisitDoctorDetailActivity.class);
                     intent.putExtra("pastDocotor", pastVisitFirstModel);
                     startActivity(intent);
@@ -92,7 +92,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
     }
 
     private void pastVisitList() {
-        mPastVisitFirstModels.clear();
+        mPastVisitDoctorListModelList.clear();
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.PastVisitList);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -110,15 +110,15 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
+                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
                         pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
                         pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
-                        mPastVisitFirstModels.add(pastVisitFirstModel);
+                        mPastVisitDoctorListModelList.add(pastVisitFirstModel);
                     }
-                    mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
+                    mPastVisitFirstAdapter.setData(mPastVisitDoctorListModelList);
                     mProgressDialog.dismiss();
                     mListView.setAdapter(mPastVisitFirstAdapter);
                     mPastVisitFirstAdapter.notifyDataSetChanged();

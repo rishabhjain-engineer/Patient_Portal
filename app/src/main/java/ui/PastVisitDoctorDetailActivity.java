@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import config.StaticHolder;
-import models.PastVisitDoctorModel;
+import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 
@@ -56,7 +56,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
         mRequestQueue = Volley.newRequestQueue(this);
 
         Intent intent1 = getIntent();
-        PastVisitDoctorModel pastVisitFirstModel = (PastVisitDoctorModel) intent1.getSerializableExtra("pastDocotor");
+        PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) intent1.getSerializableExtra("pastDocotor");
 
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
             mProgressDialog = new ProgressDialog(this);
@@ -227,7 +227,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
+                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
