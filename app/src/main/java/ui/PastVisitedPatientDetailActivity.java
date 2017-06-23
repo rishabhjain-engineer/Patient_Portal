@@ -42,17 +42,17 @@ import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 
 /**
- * Created by ayaz on 13/6/17.
+ * Created by ayaz on 23/6/17.
  */
 
-public class PastVisitActivity extends BaseActivity {
+public class PastVisitedPatientDetailActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_past_visit);
+        setContentView(R.layout.activity_past_visited_patient_detail);
         mRequestQueue = Volley.newRequestQueue(this);
 
         Intent intent1 = getIntent();
@@ -65,8 +65,8 @@ public class PastVisitActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             pastVisitDetails(pastVisitFirstModel.getConsultId());
-        }else{
-            Toast.makeText(PastVisitActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(PastVisitedPatientDetailActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
         setupActionBar();
         mActionBar.hide();
@@ -134,7 +134,7 @@ public class PastVisitActivity extends BaseActivity {
                 } else if (!fileReport.isFile()) {
                     Log.v("ERROR!!!!", "OOPS2");
                 } else if (list.size() <= 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(PastVisitActivity.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(PastVisitedPatientDetailActivity.this);
                     dialog.setTitle("PDF Reader not found");
                     dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at " + fileReport.getAbsolutePath());
                     dialog.setCancelable(false);
@@ -156,13 +156,13 @@ public class PastVisitActivity extends BaseActivity {
         if (!TextUtils.isEmpty(mCoversationType)) {
             Intent intent = null;
             if (mCoversationType.equalsIgnoreCase("audio")) {
-                intent = new Intent(PastVisitActivity.this, AudioCallActivityV2.class);
+                intent = new Intent(PastVisitedPatientDetailActivity.this, AudioCallActivityV2.class);
                 intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
             } else if (mCoversationType.equalsIgnoreCase("video")) {
-                intent = new Intent(PastVisitActivity.this, VideoActivity.class);
+                intent = new Intent(PastVisitedPatientDetailActivity.this, VideoActivity.class);
                 intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
             } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                intent = new Intent(PastVisitActivity.this, ConversationActivity.class);
+                intent = new Intent(PastVisitedPatientDetailActivity.this, ConversationActivity.class);
                 intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
                 intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
