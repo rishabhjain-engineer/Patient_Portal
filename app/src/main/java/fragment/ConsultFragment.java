@@ -41,7 +41,7 @@ import models.PastVisitDoctorModel;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
-import ui.PastVisitFirstActivity;
+import ui.PastVisitedDoctorListActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -84,7 +84,7 @@ public class ConsultFragment extends Fragment {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(getActivity(), PastVisitFirstActivity.class);
+                    Intent intent = new Intent(getActivity(), PastVisitedDoctorListActivity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
@@ -117,7 +117,7 @@ public class ConsultFragment extends Fragment {
                 }
                /* Intent intent = null;
                 if (AppConstant.isPatient) {
-                    intent = new Intent(getActivity(), PastVisitActivity.class);
+                    intent = new Intent(getActivity(), PastVisitDoctorDetailActivity.class);
                 } else {
                     intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
                 }

@@ -35,7 +35,7 @@ import utils.AppConstant;
  * Created by ayaz on 20/6/17.
  */
 
-public class PastVisitFirstActivity extends BaseActivity {
+public class PastVisitedDoctorListActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private PastVisitFirstAdapter mPastVisitFirstAdapter;
@@ -72,17 +72,17 @@ public class PastVisitFirstActivity extends BaseActivity {
             mProgressDialog.show();
             pastVisitList();
         } else {
-            Toast.makeText(PastVisitFirstActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PastVisitedDoctorListActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                    Toast.makeText(PastVisitFirstActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PastVisitedDoctorListActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
                     PastVisitDoctorModel pastVisitFirstModel = (PastVisitDoctorModel) mListView.getItemAtPosition(position);
-                    Intent intent = new Intent(PastVisitFirstActivity.this, PastVisitActivity.class);
+                    Intent intent = new Intent(PastVisitedDoctorListActivity.this, PastVisitDoctorDetailActivity.class);
                     intent.putExtra("pastDocotor", pastVisitFirstModel);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

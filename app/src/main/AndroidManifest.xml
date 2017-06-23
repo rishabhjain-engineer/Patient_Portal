@@ -496,13 +496,13 @@
         </activity>
 
         <activity
-            android:name="ui.PastVisitActivity"
+            android:name="ui.PastVisitDoctorDetailActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name="ui.PastVisitFirstActivity"
+            android:name="ui.PastVisitedDoctorListActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
