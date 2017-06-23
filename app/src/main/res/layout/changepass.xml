@@ -1,4 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -15,7 +15,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
-            android:text="The password: \n-should contain 8-16 characters\n-should be alphanumeric\n-must not start with a number"
+            android:text="The password: \n-should contain 8-16 characters.\n-should be alphanumeric."
             android:textColor="#000000" />
 
         <TextView
@@ -98,4 +98,4 @@
             android:textColor="@color/white"/>
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>

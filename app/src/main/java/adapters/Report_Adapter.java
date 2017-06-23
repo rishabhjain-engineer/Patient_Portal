@@ -125,17 +125,7 @@ public class Report_Adapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
-           /* for (int z = 0; z < reportarray.length(); z++) {*/
-            if (test_list.get(position).get("ResultType")
-                    .equals("Numerical")) {
-                   /* if(z>1){
-
-                       *//* if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-                        {
-                            holder.test_name.setText(reportarray.getJSONObject(z).getString(
-                                    "NewProfileName"));
-                        }*//*
-                    }*/
+            if (test_list.get(position).get("ResultType").equals("Numerical")) {
                 if (test_list.get(position).get("View_Part").equalsIgnoreCase("First")) {
                     holder.webview.setVisibility(View.GONE);
                     holder.test_name.setVisibility(View.VISIBLE);
@@ -224,27 +214,17 @@ public class Report_Adapter extends BaseAdapter {
                         }
                     }
                 }
-            } else if (test_list.get(position).get("ResultType")
-                    .equals("Words")) {
-                   /* if(z>1){
-                       *//* if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-                        {
-                            holder.test_name.setText(reportarray.getJSONObject(z).getString(
-                                    "NewProfileName"));
-                        }*//*
-                    }*/
+            } else if (test_list.get(position).get("ResultType").equals("Words")) {
                 if (test_list.get(position).get("View_Part").equalsIgnoreCase("First")) {
                     holder.webview.setVisibility(View.GONE);
                     holder.test_name.setVisibility(View.VISIBLE);
                     holder.result_value.setVisibility(View.VISIBLE);
                     holder.reference_range.setVisibility(View.VISIBLE);
                     holder.secondary.setVisibility(View.GONE);
-                    holder.test_name.setText(test_list.get(position).get(
-                            "Description"));
+                    holder.test_name.setText(test_list.get(position).get("Description"));
                     String rangesad = test_list.get(position).get("RangeValue");
                     String resultDS = test_list.get(position).get("ResultValue");
-                    if (test_list.get(position).get(
-                            "RangeValue").equals("null")) {
+                    if (test_list.get(position).get("RangeValue").equals("null")) {
                         holder.reference_range.setText("");
                         holder.reference_range.setVisibility(View.GONE);
                     } else {
@@ -252,15 +232,10 @@ public class Report_Adapter extends BaseAdapter {
                         holder.reference_range.setText("Reference Range: " + rangesad);
                     }
                     holder.result_value.setVisibility(View.VISIBLE);
-                    String check_range = test_list.get(position).get(
-                            "ResultValue");
-                    holder.result_value.setText(test_list.get(position).get(
-                            "ResultValue"));
-                    if (!test_list.get(position).get(
-                            "RangeValue").equalsIgnoreCase(test_list.get(position).get(
-                            "ResultValue")) && test_list.get(position).get(
-                            "ResultValue") != "null") {
-                        holder.result_value.setTextColor(Color.parseColor("#FF0000"));
+                    String check_range = test_list.get(position).get("ResultValue");
+                    holder.result_value.setText(test_list.get(position).get("ResultValue"));
+                    if (!test_list.get(position).get("RangeValue").equalsIgnoreCase(test_list.get(position).get("ResultValue")) && test_list.get(position).get("ResultValue") != "null") {
+                        //holder.result_value.setTextColor(Color.parseColor("#FF0000"));
                     } else {
                         holder.result_value.setTextColor(Color.parseColor("#1E1E1E"));
                     }
@@ -281,19 +256,13 @@ public class Report_Adapter extends BaseAdapter {
 
                     }
 
-                    holder.test_name.setText(test_list.get(position).get(
-                            "Description"));
-                    if (test_list.get(position)
-                            .get("RangeFrom").equalsIgnoreCase("null")) {
+                    holder.test_name.setText(test_list.get(position).get("Description"));
+                    if (test_list.get(position).get("RangeFrom").equalsIgnoreCase("null")) {
                         holder.reference_range.setVisibility(View.GONE);
-                    } else if (test_list.get(position).
-                            get("RangeTo").equalsIgnoreCase("null")) {
-                        holder.reference_range.setText("Ref. Range: " + test_list.get(position)
-                                .get("RangeFrom"));
+                    } else if (test_list.get(position).get("RangeTo").equalsIgnoreCase("null")) {
+                        holder.reference_range.setText("Ref. Range: " + test_list.get(position).get("RangeFrom"));
                     } else {
-                        holder.reference_range.setText("Ref. Range: " + test_list.get(position)
-                                .get("RangeFrom") + "-" + test_list.get(position).
-                                get("RangeTo"));
+                        holder.reference_range.setText("Ref. Range: " + test_list.get(position).get("RangeFrom") + "-" + test_list.get(position).get("RangeTo"));
                     }
                     if (test_list.get(position).get("UnitCode").equalsIgnoreCase("null")) {
                         holder.result_value.setText(test_list.get(position).get("ResultValue"));
@@ -302,8 +271,7 @@ public class Report_Adapter extends BaseAdapter {
                     }
                     String rangesad = test_list.get(position).get("RangeValue");
                     String resultDS = test_list.get(position).get("ResultValue");
-                    if (test_list.get(position).get(
-                            "RangeValue").equals("null")) {
+                    if (test_list.get(position).get("RangeValue").equals("null")) {
                         holder.reference_range.setText("");
                         holder.reference_range.setVisibility(View.GONE);
                     } else {
@@ -311,15 +279,10 @@ public class Report_Adapter extends BaseAdapter {
                         holder.reference_range.setText("Reference Range: " + rangesad);
                     }
                     holder.result_value.setVisibility(View.VISIBLE);
-                    String check_range = test_list.get(position).get(
-                            "ResultValue");
-                    holder.result_value.setText(test_list.get(position).get(
-                            "ResultValue"));
-                    if (!test_list.get(position).get(
-                            "RangeValue").equalsIgnoreCase(test_list.get(position).get(
-                            "ResultValue")) && test_list.get(position).get(
-                            "ResultValue") != "null") {
-                        holder.result_value.setTextColor(Color.parseColor("#FF0000"));
+                    String check_range = test_list.get(position).get("ResultValue");
+                    holder.result_value.setText(test_list.get(position).get("ResultValue"));
+                    if (!test_list.get(position).get("RangeValue").equalsIgnoreCase(test_list.get(position).get("ResultValue")) && test_list.get(position).get("ResultValue") != "null") {
+                       // holder.result_value.setTextColor(Color.parseColor("#FF0000"));
                     } else {
                         holder.result_value.setTextColor(Color.parseColor("#1E1E1E"));
                     }

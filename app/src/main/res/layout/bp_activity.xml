@@ -13,7 +13,7 @@
             android:id="@+id/weight_graphView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="3dp"
             android:background="#ffffff"></WebView>
 
         <com.github.mikephil.charting.charts.LineChart
@@ -22,6 +22,14 @@
             android:layout_height="0dp"
             android:layout_margin="10dp"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/header_color"
+            android:clickable="false"
+            android:orientation="vertical"></LinearLayout>
 
         <RelativeLayout
             android:id="@+id/header"

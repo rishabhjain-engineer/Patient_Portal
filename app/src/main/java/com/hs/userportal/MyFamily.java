@@ -1,5 +1,6 @@
 package com.hs.userportal;
 
+import android.accounts.Account;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,8 +50,12 @@ import java.util.HashMap;
 import adapters.Myfamily_Adapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import ui.AccountActivity;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
+import utils.AppConstant;
 import utils.DataHolder;
+import utils.PreferenceHelper;
 
 /**
  * Created by ashish on 4/19/2016.
@@ -75,24 +82,43 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
     private static ArrayList<HashMap<String, String>> family_object;
     private static ArrayList<HashMap<String, String>> family_test_object;
     private ArrayList<HashMap<String, String>> sorted_list;
-    private ArrayList<HashMap<String, String>> members = new ArrayList<>();
+  //  private ArrayList<HashMap<String, String>> members = new ArrayList<>();
     private Services service;
     private Menu menu1;
     private String check_userids = "";
     private DataHolder[] dataholderlist;
     private int k = 0;
     private String msg_action = "";
-    private ArrayList<HashMap<String, String>> final_memberlist;
+   private ArrayList<HashMap<String, String>> final_memberlist;
     private int check_commas =0;
+
+    private LinearLayout mFooterDashBoard , mFooterReports, mFooterRepository , mFooterAccount ;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myfamily);
         setupActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(false);
         family_list = (ListView) findViewById(R.id.family_list);
         empty_msg = (TextView) findViewById(R.id.empty_msg);
         service = new Services(MyFamily.this);
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterRepository = (LinearLayout) findViewById(R.id.footer_repository_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        ImageView familyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        familyImageView.setImageResource(R.drawable.family_active);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterRepository.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
+
         repeat = 0;
         revoke = new ArrayList<>();
         resend = new ArrayList<>();
@@ -102,8 +128,9 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         resend.add("Cancel Request");
         remove.add("Remove Member");
         Intent i = getIntent();
-        User_ID = i.getStringExtra("id");
-        members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
+      /*  User_ID = i.getStringExtra("id");*/
+        User_ID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+      //   members = (ArrayList<HashMap<String, String>>) i.getSerializableExtra("family");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(MyFamily.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -115,14 +142,19 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String HM = family_object.get(position).get("HM");
                 if (family_object.get(position).get("IsApproved").equals("true") && HM.equals("2")) {
-                    Intent i = new Intent(MyFamily.this, lablistdetails.class);
-                    logout.id = family_object.get(position).get("FamilyMemberId");
-                    i.putExtra("id", family_object.get(position).get("FamilyMemberId"));
-                    i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
-                            + family_object.get(position).get("LastName"));
-                    i.putExtra("family", members);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    /*if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP))){
+                        showSubScriptionDialog(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.MESSAGE_AT_SIGN_IN_UP));
+                    }else{*/
+                        Intent i = new Intent(MyFamily.this, lablistdetails.class);
+                        DashBoardActivity.id = family_object.get(position).get("FamilyMemberId");
+                        i.putExtra("id", id);
+                        i.putExtra("fromFamilyClass" , true) ;
+                        i.putExtra("Member_Name", family_object.get(position).get("FirstName") + " "
+                                + family_object.get(position).get("LastName"));
+                        i.putExtra("family",  family_object);
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    //}
                 } else {
                     //Toast.makeText(getBaseContext(), "Not a family member yet.", Toast.LENGTH_SHORT).show();
                 }
@@ -130,6 +162,26 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
         });
     }
 
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                intent = new Intent(MyFamily.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                intent = new Intent(MyFamily.this , lablistdetails.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_repository_container){
+        //        intent = new Intent(MyFamily.this , Filevault.class);                               // TODO check intent class ..
+         //       startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                intent = new Intent(MyFamily.this , AccountActivity.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     public void LoadFamilyMembers() {
         request = Volley.newRequestQueue(this);
@@ -808,5 +860,30 @@ public class MyFamily extends BaseActivity implements Myfamily_Adapter.action_bu
             finish();
         }
         super.onResume();
+    }
+
+    protected void showSubScriptionDialog(String message) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.unsaved_alert_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView okBTN = (TextView)dialog.findViewById(R.id.btn_ok);
+        TextView stayButton = (TextView)dialog.findViewById(R.id.stay_btn);
+        stayButton.setVisibility(View.GONE);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.message);
+        messageTextView.setText(message);
+
+        okBTN.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

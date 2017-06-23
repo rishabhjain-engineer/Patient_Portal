@@ -11,9 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.hs.userportal.MainActivity;
 import com.hs.userportal.R;
-import com.hs.userportal.logout;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 
@@ -49,7 +47,7 @@ public class QuestionireActivity extends BaseActivity {
                     finish();
                 }else{
                     Log.w("QuestionireFragment", "QuestionireActivity opening  DashBoard");
-                    Intent intentMain = new Intent(QuestionireActivity.this, logout.class);
+                    Intent intentMain = new Intent(QuestionireActivity.this, DashBoardActivity.class);
                     startActivity(intentMain);
                     finish();
                 }

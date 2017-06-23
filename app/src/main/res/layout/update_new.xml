@@ -23,7 +23,7 @@
                 android:layout_weight="1"
                 android:gravity="center">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/dp"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -31,7 +31,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/update" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/dpChange"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -275,10 +275,39 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/L3_3"
+            android:id="@+id/L6_0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/L5_0"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="35"
+                android:text="Occupation"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/occupation_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="65"
+                android:drawableRight="@drawable/down_arrow"
+                android:ems="10"
+                android:hint="Occupation"
+                android:nextFocusDown="@+id/editTextHome" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/L3_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/L6_0"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
@@ -387,6 +416,7 @@
                 android:id="@+id/bSend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:layout_weight="1"
                 android:text="SAVE" />
         </LinearLayout>

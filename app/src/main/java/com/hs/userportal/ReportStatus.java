@@ -52,6 +52,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,8 +62,10 @@ import java.util.List;
 import java.util.Set;
 
 import adapters.Report_Adapter;
+import fragment.VitalFragment;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.NestedListHelper;
 import utils.NestedListHelper1;
 
@@ -70,7 +74,8 @@ import utils.NestedListHelper1;
 public class ReportStatus extends BaseActivity {
 
     private BufferedReader reader;
-    private TextView advice, /*refer,*/dob, sample, profname, history_text, pdf_text;
+    private TextView advice, /*refer,*/
+            dob, sample, profname, history_text, pdf_text;
     private Button breport;
     private LinearLayout bgraph, bpdf;
     private String patientId;
@@ -98,10 +103,9 @@ public class ReportStatus extends BaseActivity {
     private int index, singlechartposition;
     private String phcode;
     private String unit, resultvalue, description = null, dateadvise = null, casecode = null, RangeFrom = null, RangeTo = null, UnitCode = null, ResultValue = null, criticalhigh = null, criticallow = null;
-    private int iscomment=0;
+    private int iscomment = 0;
 
 
-    public static ProgressBar progress_bar;
     public static ProgressDialog progress;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -131,10 +135,6 @@ public class ReportStatus extends BaseActivity {
         list_view = (ListView) findViewById(R.id.list_view);
         list_view.setFocusable(false);
         bgraph = (LinearLayout) findViewById(R.id.bGraph);
-        progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
-        progress_bar.setProgress(0);
-        progress_bar.setSecondaryProgress(2);
-        progress_bar.setMax(100);
         misc = new MiscellaneousTasks(ReportStatus.this);
         Intent z = getIntent();
         index = z.getIntExtra("index", 10);
@@ -188,14 +188,13 @@ public class ReportStatus extends BaseActivity {
                     .equals("null")) {
                 breport.setVisibility(View.GONE);
                 // bpdf.setVisibility(View.GONE);
-              //  bgraph.setVisibility(View.GONE);
+                //  bgraph.setVisibility(View.GONE);
                 history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
 
             }
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -203,22 +202,30 @@ public class ReportStatus extends BaseActivity {
 
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                new pdfprocess().execute();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    new pdfprocess().execute();
+                }
             }
         });
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(ReportStatus.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-
-            new Authentication().execute();
+            if (isSessionExist()) {
+                mTask = new graphprocess();
+                if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                    Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mTask.execute();
+                }
+            }
         }
         bgraph.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
 
                 int currentapiVersion = Build.VERSION.SDK_INT;
                 int count = 0;
@@ -264,6 +271,7 @@ public class ReportStatus extends BaseActivity {
                                         grouptest.class);
                                 intent.putExtra("group", results.toString());
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 for (int i = 0; i < results.length(); i++) {
@@ -385,8 +393,8 @@ public class ReportStatus extends BaseActivity {
                                                                 .getString("ResultValue"),
                                                         tempObject
                                                                 .getString("CriticalLow"),
-                                                        RangeFrom=  tempObject.getString("RangeFrom"),
-                                                        RangeTo= tempObject.getString("RangeTo"),
+                                                        RangeFrom = tempObject.getString("RangeFrom"),
+                                                        RangeTo = tempObject.getString("RangeTo"),
                                                         tempObject
                                                                 .getString("CriticalHigh"));
                                             }
@@ -421,14 +429,12 @@ public class ReportStatus extends BaseActivity {
                                                 + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                                 + "</div></body></html>";
 
-                                        Intent intent = new Intent(
-                                                ReportStatus.this,
-                                                GraphDetailsNew.class);
+                                        Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
                                         intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
-                                        if(chartNames.size()!=0)
+                                        if (chartNames.size() != 0)
                                             intent.putExtra("chartNames",
                                                     chartNames.get(0));
                                         else
@@ -438,23 +444,23 @@ public class ReportStatus extends BaseActivity {
                                                 (ArrayList<String>) intentcase);
                                         intent.putStringArrayListExtra("caseIds",
                                                 (ArrayList<String>) intentcaseId);
-                                        if(RangeFrom==null || RangeFrom.equals(null)){
-                                            RangeFrom="";
+                                        if (RangeFrom == null || RangeFrom.equals(null)) {
+                                            RangeFrom = "";
                                         }
-                                        if(RangeTo==null || RangeTo.equals(null)){
-                                            RangeTo="";
+                                        if (RangeTo == null || RangeTo.equals(null)) {
+                                            RangeTo = "";
                                         }
-                                        if(UnitCode==null || UnitCode.equals(null)){
-                                            UnitCode="";
+                                        if (UnitCode == null || UnitCode.equals(null)) {
+                                            UnitCode = "";
                                         }
-                                        if(ResultValue==null || ResultValue.equals(null)){
-                                            ResultValue="";
+                                        if (ResultValue == null || ResultValue.equals(null)) {
+                                            ResultValue = "";
                                         }
-                                        if(criticalhigh==null || criticalhigh.equals(null)){
-                                            criticalhigh="";
+                                        if (criticalhigh == null || criticalhigh.equals(null)) {
+                                            criticalhigh = "";
                                         }
-                                        if(criticallow==null || criticallow.equals(null)){
-                                            criticallow="";
+                                        if (criticallow == null || criticallow.equals(null)) {
+                                            criticallow = "";
                                         }
                                         intent.putExtra("RangeFrom", RangeFrom);
                                         intent.putExtra("RangeTo", RangeTo);
@@ -465,6 +471,7 @@ public class ReportStatus extends BaseActivity {
                                         intent.putExtra("from_activity", "grouptest");
 
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                                     } else {
                                         callSingleGraph(singlechartposition);
                                     }
@@ -565,6 +572,7 @@ public class ReportStatus extends BaseActivity {
                                     intent.putExtra("chartNames", chartNames.get(0));
                                     intent.putExtra("from_activity", "grouptest");
                                     startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
                                 }
 
@@ -722,11 +730,10 @@ public class ReportStatus extends BaseActivity {
                                         + ".history td.item{line-height: 65px;width: 20px;text-align: right;padding-bottom: 22px;}.chart-wrapper{width: 450px;height: 350px;}</style>"
                                         + "</div></body></html>";
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
-                                if(chartNames.size()!=0)
+                                if (chartNames.size() != 0)
                                     intent.putExtra("chartNames",
                                             chartNames.get(0));
                                 else
@@ -743,12 +750,13 @@ public class ReportStatus extends BaseActivity {
                                         (ArrayList<String>) intentcaseId);
                                 intent.putExtra("RangeFrom", "");
                                 intent.putExtra("RangeTo", "");
-                                intent.putExtra("UnitCode","");
+                                intent.putExtra("UnitCode", "");
                                 intent.putExtra("ResultValue", "");
-                                intent.putExtra("CriticalHigh","");
+                                intent.putExtra("CriticalHigh", "");
                                 intent.putExtra("CriticalLow", "");
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 int i = 0;
@@ -823,8 +831,7 @@ public class ReportStatus extends BaseActivity {
                                 startActivity(intent);
                                 finish();*/
 
-                                Intent intent = new Intent(ReportStatus.this,
-                                        GraphDetailsNew.class);
+                                Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                 intent.putExtra("chart_type", "Pie");
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -844,6 +851,7 @@ public class ReportStatus extends BaseActivity {
                                 intent.putExtra("chartNames", chartNames.get(0));
                                 intent.putExtra("from_activity", "grouptest");
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -962,15 +970,15 @@ public class ReportStatus extends BaseActivity {
                 for (int i = 0; i < reportarray.length(); i++) {
                     try {
                         if (reportarray.getJSONObject(i).getString("ResultType").equalsIgnoreCase("Comment")) {
-                            iscomment=1;
+                            iscomment = 1;
                         }
                     } catch (JSONException jse) {
                         jse.printStackTrace();
                     }
                 }
-                if(iscomment!=1) {
+                if (iscomment != 1) {
                     NestedListHelper.setListViewHeightBasedOnChildren(list_view);
-                }else{
+                } else {
                     NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
                 }
                 list_view.setVisibility(View.VISIBLE);
@@ -1224,7 +1232,7 @@ public class ReportStatus extends BaseActivity {
             }
 
             if (j == results.length()) {
-              //  bgraph.setVisibility(View.GONE);
+                //  bgraph.setVisibility(View.GONE);
                 history_text.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.disable_history, 0, 0);
                 history_text.setTextColor(Color.parseColor("#b2b2b2"));
             }
@@ -1236,43 +1244,28 @@ public class ReportStatus extends BaseActivity {
 
     }
 
+    private ProgressDialog mProgressDialog;
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-           /* progress = new ProgressDialog(ReportStatus.this);
-            progress.setCancelable(false);
-            progress.setMessage("Loading...");
-            progress.setIndeterminate(true);*/
-           /* ReportStatus.this.runOnUiThread(new Runnable() {
-
-                public void run() {
-                    if (progress != null)
-                       // progress.show();
-                }
-            });*/
-            progress_bar.setVisibility(View.VISIBLE);
-            progress_bar.setProgress(0);
+            bpdf.setClickable(false);
+            mProgressDialog = new ProgressDialog(ReportStatus.this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            int count ;
+            int count;
             File reportFile = null;
             File sdCard = Environment.getExternalStorageDirectory();
             File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
-            ReportStatus.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress_bar.setProgress(2);
-                    progress_bar.setSecondaryProgress(3);
-                }
-            });
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-
-
             pdfobject = new JSONObject();
             try {
                 pdfobject.put("InvestigationId", jarray.getJSONObject(index)
@@ -1297,18 +1290,10 @@ public class ReportStatus extends BaseActivity {
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfdata);
                 sendData.put("UserId", patientId);
-                ReportStatus.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        progress_bar.setProgress(6);
-                        progress_bar.setSecondaryProgress(7);
-                    }
-                });
             } catch (JSONException e) {
 
                 e.printStackTrace();
             }
-
-            System.out.println(sendData);
             try {
                 ptname = jarray.getJSONObject(index).getString("PatientName");
                 ptname.replaceAll(" ", "_");
@@ -1316,191 +1301,137 @@ public class ReportStatus extends BaseActivity {
                 // TODO Auto-generated catch block
                 e2.printStackTrace();
             }
-            ReportStatus.this.runOnUiThread(new Runnable() {
-                public void run() {
-                    progress_bar.setProgress(9);
-                    progress_bar.setSecondaryProgress(10);
-                }
-            });
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(sendData,"Report Status");
-            int lenghtOfFile = result.length;
-            String temp = null;
-            try {
-                temp = new String(result, "UTF-8");
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            }
-            Log.v("View & result==null",
-                    reportFile.getAbsolutePath());
-            Log.v("Content of PDF", temp);
-            OutputStream out;
-            try {
-                out = new FileOutputStream(reportFile);
-                InputStream input = new ByteArrayInputStream(result);
-                out = new FileOutputStream(reportFile);
-
-                byte data[] = new byte[1024];
-
-                long total = 15;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-                    out.write(result);
+            result = service.pdf(sendData, "Report Status");
+            int lenghtOfFile = 1;
+            if (result != null) {
+                lenghtOfFile = result.length;
+                String temp = null;
+                try {
+                    if(result != null && result.length >0){
+                        temp = new String(result, "UTF-8");
+                    }
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
                 }
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                OutputStream out;
+                try {
+                    out = new FileOutputStream(reportFile);
+                    InputStream input = new ByteArrayInputStream(result);
+                    out = new FileOutputStream(reportFile);
+
+                    byte data[] = new byte[1024];
+
+                    long total = 15;
+
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                        out.write(result);
+                    }
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-
-//			
-//			
-//			pdfobject = new JSONObject();
-//			try {
-//				pdfobject.put("InvestigationId", jarray.getJSONObject(index)
-//						.getString("InvestigationId"));
-//				pdfobject.put("TestId",
-//						jarray.getJSONObject(index).getString("TestId"));
-//
-//			}
-//
-//			catch (JSONException e) {
-//
-//				e.printStackTrace();
-//			}
-//			
-//
-//			pdfdata.put(pdfobject);
-//
-//			sendData = new JSONObject();
-//			try {
-//				sendData.put("CaseId",
-//						jarray.getJSONObject(index).getString("CaseId"));
-//				sendData.put("LocationId", jarray.getJSONObject(index)
-//						.getString("TestLocationId"));
-//				sendData.put("TestData", pdfdata);
-//
-//			}
-//
-//			catch (JSONException e) {
-//
-//				e.printStackTrace();
-//			}
-//
-//			System.out.println(sendData);
-//
-//			receiveData = service.pdfreport(sendData);
-//			System.out.println(receiveData);
-
             return null;
 
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
+        protected void onPostExecute(Void aaa) {
+            super.onPostExecute(aaa);
+            if(mProgressDialog != null && mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
+            if(result != null){
+                try {
 
-            /*if (progress != null)
-                progress.dismiss();*/
-            progress_bar.setVisibility(View.GONE);
+                    File sdCard = Environment.getExternalStorageDirectory();
+                    File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+                    File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
 
-            try {
+                    PackageManager packageManager = getPackageManager();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setType("application/pdf");
 
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+                    @SuppressWarnings("rawtypes")
+                    List list = packageManager.queryIntentActivities(intent,
+                            PackageManager.MATCH_DEFAULT_ONLY);
 
+                    if (list.size() > 0 && fileReport.isFile()) {
+                        Log.v("post", "execute");
 
-                File fileReport = new File(dir.getAbsolutePath(),
-                        ptname + "report.pdf");
+                        Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                        ///////
+                        Uri uri = null;
+                        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Method m = null;
+                        try {
+                            m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                            m.invoke(null);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        uri = Uri.fromFile(fileReport);
+                    /*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*/
+                        /////
+                        objIntent.setDataAndType(uri, "application/pdf");
+                        objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(objIntent);//Staring the pdf viewer
 
-                PackageManager packageManager = getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setType("application/pdf");
+                    } else if (!fileReport.isFile()) {
+                        Log.v("ERROR!!!!", "OOPS2");
+                    } else if (list.size() <= 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                ReportStatus.this);
+                        dialog.setTitle("PDF Reader not found");
+                        dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                                + fileReport.getAbsolutePath());
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
 
-                @SuppressWarnings("rawtypes")
-                List list = packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        dialog.dismiss();
+                                    }
+                                });
+                        dialog.show();
+                    }
 
-                if (list.size() > 0 && fileReport.isFile()) {
-                    Log.v("post", "execute");
-
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_VIEW);
-                    Uri uri = Uri.fromFile(fileReport);
-                    i.setDataAndType(uri, "application/pdf");
-                    startActivity(i);
-
-                } else if (!fileReport.isFile()) {
-                    Log.v("ERROR!!!!", "OOPS2");
-                } else if (list.size() <= 0) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(
+                } catch (OutOfMemoryError e) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(
                             ReportStatus.this);
-                    dialog.setTitle("PDF Reader not found");
-                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
-                            + fileReport.getAbsolutePath());
-                    dialog.setCancelable(false);
-                    dialog.setPositiveButton("OK",
+                    dlg.setTitle("Not enough memory");
+                    dlg.setMessage("There is not enough memory on this device.");
+                    dlg.setPositiveButton("Ok",
                             new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    // TODO Auto-generated method stub
-                                    dialog.dismiss();
+                                    ReportStatus.this.finish();
                                 }
                             });
-                    dialog.show();
+                    e.printStackTrace();
                 }
-
-            } catch (OutOfMemoryError e) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(
-                        ReportStatus.this);
-                dlg.setTitle("Not enough memory");
-                dlg.setMessage("There is not enough memory on this device.");
-                dlg.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                ReportStatus.this.finish();
-                            }
-                        });
-                e.printStackTrace();
+            }else{
+                Toast.makeText(ReportStatus.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
-
-
-//			String pdfintent = "";
-//			try {
-//				pdfintent = receiveData.getString("d");
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			Intent i = new Intent(getApplicationContext(), viewpdf.class);
-//			i.putExtra("pdf", pdfintent);
-//			startActivity(i);
-//			progress.dismiss();
-
+            bpdf.setClickable(true);
         }
-
-        /**
-         * Updating progress bar
-         */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            progress_bar.setIndeterminate(false);
-            progress_bar.setMax(100);
-            progress_bar.setProgress(Integer.parseInt(progress[0]));
-            progress_bar.setSecondaryProgress(Integer.parseInt(progress[0]) + 5);
-        }
-
     }
 
     @Override
@@ -1523,15 +1454,15 @@ public class ReportStatus extends BaseActivity {
 //			startActivity(backNav);
 
                 finish();
-
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.action_home:
 
-                Intent intent = new Intent(getApplicationContext(), logout.class);
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             default:
@@ -1542,8 +1473,9 @@ public class ReportStatus extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
     }
 
 
@@ -1569,84 +1501,6 @@ public class ReportStatus extends BaseActivity {
             finish();
         }
     }
-
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            try {
-
-                if (!authentication.equals("true")) {
-
-                    AlertDialog dialog = new AlertDialog.Builder(ReportStatus.this)
-                            .create();
-                    dialog.setTitle("Session timed out!");
-                    dialog.setMessage("Session expired. Please login again.");
-                    dialog.setCancelable(false);
-                    dialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    // TODO Auto-generated method stub
-
-                                    SharedPreferences sharedpreferences = getSharedPreferences(
-                                            "MyPrefs", MODE_PRIVATE);
-                                    Editor editor = sharedpreferences.edit();
-                                    editor.clear();
-                                    editor.commit();
-                                    dialog.dismiss();
-                                    Helper.authentication_flag = true;
-                                    finish();
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left);
-
-                                }
-                            });
-                    dialog.show();
-
-                } else {
-
-                    mTask = new graphprocess();
-                    mTask.execute();
-                }
-
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
-        }
-    }
-
 
     private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -1683,7 +1537,7 @@ public class ReportStatus extends BaseActivity {
     };
 
     public void callSingleGraph(int position) {
-        String result_type="";
+        String result_type = "";
         try {
             chartValues.clear();
             intentcase.clear();
@@ -1738,7 +1592,7 @@ public class ReportStatus extends BaseActivity {
         intentcase.add(casecode);
         piechartvalue.add(resultvalue);
         chartNames.add(description);
-        if(result_type.equalsIgnoreCase("Words")) {
+        if (result_type.equalsIgnoreCase("Words")) {
             int i = 0;
             List<String> uniquepie = new ArrayList<String>();
             float[] uniqueval = new float[100];
@@ -1792,8 +1646,7 @@ public class ReportStatus extends BaseActivity {
 
            /* intent.putExtra("data", db);
             intent.putExtra("from_activity", "grouptest");*/
-            Intent intent1 = new Intent(ReportStatus.this,
-                    GraphDetailsNew.class);
+            Intent intent1 = new Intent(ReportStatus.this, GraphDetailsNew.class);
             intent1.putExtra("chart_type", "Pie");
             intent1.putExtra("data", db);
             intent1.putStringArrayListExtra("dates",
@@ -1813,7 +1666,8 @@ public class ReportStatus extends BaseActivity {
             intent1.putExtra("chartNames", chartNames.get(0));
             intent1.putExtra("from_activity", "grouptest");
             startActivity(intent1);
-        }else{
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        } else {
             Intent intent = new Intent(
                     ReportStatus.this,
                     GraphDetails.class);
@@ -1832,8 +1686,9 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("ResultValue", ResultValue);
             intent.putExtra("CriticalHigh", criticalhigh);
             intent.putExtra("CriticalLow", criticallow);
-            intent.putExtra("ActionTitle",description);
+            intent.putExtra("ActionTitle", description);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
 }

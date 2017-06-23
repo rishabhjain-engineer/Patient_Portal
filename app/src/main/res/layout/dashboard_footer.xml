@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/footer_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@color/dashboard_footer_background"
+    android:orientation="horizontal"
+    android:padding="05dp">
+
+
+    <LinearLayout
+        android:id="@+id/footer_dashboard_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/footer_dashboard_imageview"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
+            android:src="@drawable/dashboard_inactive" />
+
+        <TextView
+            android:id="@+id/footer_dashboard_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="@dimen/footer_text_size"
+            android:text="Home"
+            android:textColor="@color/dashboard_footer_textcolor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer_reports_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/footer_reports_imageview"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
+            android:src="@drawable/reports_inactive" />
+
+        <TextView
+            android:id="@+id/footer_reports_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Reports"
+            android:textSize="@dimen/footer_text_size"
+            android:textColor="@color/dashboard_footer_textcolor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer_repository_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/footer_repository_imageview"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
+            android:src="@drawable/repository_inactive" />
+
+        <TextView
+            android:id="@+id/footer_repository_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Repository"
+            android:textSize="@dimen/footer_text_size"
+            android:textColor="@color/dashboard_footer_textcolor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer_family_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/footer_family_imageview"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
+            android:src="@drawable/family_inactive" />
+
+        <TextView
+            android:id="@+id/footer_family_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Family"
+            android:textSize="@dimen/footer_text_size"
+            android:textColor="@color/dashboard_footer_textcolor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer_account_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/footer_account_imageview"
+            android:layout_width="@dimen/footer_image_height"
+            android:layout_height="@dimen/footer_image_height"
+            android:src="@drawable/account_inactive" />
+
+        <TextView
+            android:id="@+id/footer_account_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Account"
+            android:textSize="@dimen/footer_text_size"
+            android:textColor="@color/dashboard_footer_textcolor" />
+    </LinearLayout>
+
+</LinearLayout>

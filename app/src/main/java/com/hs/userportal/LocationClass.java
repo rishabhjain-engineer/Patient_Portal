@@ -120,6 +120,8 @@ import me.kaede.tagview.OnTagDeleteListener;
 import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
 import networkmngr.ConnectionDetector;
+import ui.SignInActivity;
+import ui.SignUpActivity;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class LocationClass extends ActionBarActivity
@@ -1362,7 +1364,7 @@ public class LocationClass extends ActionBarActivity
         Intent check = getIntent();
         if (check.hasExtra("from")) {
             if (check.getStringExtra("from").equals("walk")) {
-                Intent backNav = new Intent(LocationClass.this, MainActivity.class);
+                Intent backNav = new Intent(LocationClass.this, SignInActivity.class);
                 // backNav.putExtra("walk", "walk");
                 // backNav.putExtra("pos", 3);
                 startActivity(backNav);
@@ -2711,7 +2713,7 @@ public class LocationClass extends ActionBarActivity
                 dialog.dismiss();
                 // finish();
                 // showLoginDialog();
-                Intent main = new Intent(LocationClass.this, MainActivity.class);
+                Intent main = new Intent(LocationClass.this, SignInActivity.class);
                 main.putExtra("fromActivity", "signinMaplab");
                 LocationClass.this.from_widget = from_widget;
                 startActivity(main);
@@ -2724,7 +2726,7 @@ public class LocationClass extends ActionBarActivity
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Intent i = new Intent(LocationClass.this, Register.class);
+                Intent i = new Intent(LocationClass.this, SignUpActivity.class);
                 i.putExtra("FromLocation", true);
                 LocationClass.this.from_widget = from_widget;
                 startActivity(i);

@@ -1,5 +1,7 @@
 package com.hs.userportal;
 
+import android.Manifest;
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,9 +29,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +55,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -71,17 +81,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import adapters.Folder_adapter;
 import adapters.Vault_adapter;
 import adapters.Vault_delete_adapter;
 import config.StaticHolder;
+import fragment.RepositoryFragment;
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import utils.NavFolder;
+import utils.PreferenceHelper;
 
 /**
  * Created by ashish on 2/15/2016.
@@ -118,7 +134,7 @@ public class Filevault2 extends BaseActivity {
     private Activity activity = Filevault2.this;
     private static Menu menu_toggle;
     private ArrayList<String> imageId = new ArrayList<String>();
-    private String imageIdsToBeSent = "";
+    private String imageIdsToBeSent = "", mCurrentPhotoPath = null;
     private static RequestQueue queue;
     private RequestQueue queue2;
     private RequestQueue queue3;
@@ -129,19 +145,19 @@ public class Filevault2 extends BaseActivity {
     private GridView gridView;
     private String[] rem_dup_folder;
     private boolean check_load;
-    private int check = 0;
+    private int check = 0, MY_PERMISSIONS_REQUEST =1;
     private ProgressDialog progress;
     private RelativeLayout list_header, list_header2;
     private byte[] byteArray;
     private static boolean view_list = false;
     private SharedPreferences sharedPreferences;
-    private String list_operation, patientId, Folder_Clicked, HashKey, Folder_Clicked_folder;
+    private String list_operation, Folder_Clicked, HashKey, Folder_Clicked_folder;
     private static Vault_adapter vault_adapter;
     private Vault_delete_adapter vault_delete_adapter;
     private ProgressBar bar;
     private String path_folder = "";
     private String first_timefolderclicked = "";
-    private String hash_keyvalue;
+    private String hash_keyvalue, patientId;
     private static String view_show;
     private static ArrayList<String> folder_path = new ArrayList<String>();
     private NotificationHandler nHandler;
@@ -170,9 +186,15 @@ public class Filevault2 extends BaseActivity {
     private Helper mhelper;
     private String[] path_back_nav = new String[thumbImage.size()];
     private boolean path_cleared = false;
-    private boolean start_navigate = false;
+    private boolean start_navigate = false, mPermissionGranted, mIsSdkLessThanM = true;
     private int check_para = 0, select_times = 0, show_menu1 = 0, show_menu = 0, root_reached = 0;
     private int position_scroll = 0;
+    private static final int REQUEST_CAMERA = 0;
+
+    private EditText mSearchBarEditText ;
+
+    private ImageView mSearchBarImageView , mFooterDashBoardImageView ,mFooterReportsImageView,mFooterFamilyImageView,mFooterAccountImageView;
+    private LinearLayout mFooterDashBoard , mFooterReports, mFooterFamily , mFooterAccount ;
 
     public static final String path = Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_DCIM + "/Patient Portal";
     public static Uri Imguri;
@@ -182,7 +204,8 @@ public class Filevault2 extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filevault2);
         setupActionBar();
-
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         mhelper = new Helper();
         Intent i = getIntent();
         mContext = Filevault2.this;
@@ -203,14 +226,34 @@ public class Filevault2 extends BaseActivity {
         vault_list = (ListView) findViewById(R.id.vault_list);
         list_header = (RelativeLayout) findViewById(R.id.list_header);
         list_header2 = (RelativeLayout) findViewById(R.id.list_header2);
+        mSearchBarImageView = (ImageView) findViewById(R.id.imageview_searchbar_icon);
+        mSearchBarEditText = (EditText) findViewById(R.id.et_searchbar);
+
+
+        mFooterDashBoard = (LinearLayout) findViewById(R.id.footer_dashboard_container);
+        mFooterReports = (LinearLayout) findViewById(R.id.footer_reports_container);
+        mFooterFamily = (LinearLayout) findViewById(R.id.footer_family_container);
+        mFooterAccount = (LinearLayout) findViewById(R.id.footer_account_container);
+
+        mFooterDashBoardImageView = (ImageView) findViewById(R.id.footer_dashboard_imageview);
+        mFooterReportsImageView = (ImageView) findViewById(R.id.footer_reports_imageview);
+        mFooterFamilyImageView = (ImageView) findViewById(R.id.footer_family_imageview);
+        mFooterAccountImageView = (ImageView) findViewById(R.id.footer_account_imageview);
+
+
+        mFooterDashBoard.setOnClickListener(mOnClickListener);
+        mFooterReports.setOnClickListener(mOnClickListener);
+        mFooterFamily.setOnClickListener(mOnClickListener);
+        mFooterAccount.setOnClickListener(mOnClickListener);
+
         sendData = new JSONObject();
         service = new Services(Filevault2.this);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
+     /*   sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        patientId = sharedPreferences.getString("ke", "");*/
         warning_msg = (TextView) findViewById(R.id.warning_msg);
         path_indicator = (TextView) findViewById(R.id.path_indicator);
         try {
-            sendData.put("PatientId", id);
+            sendData.put("PatientId", patientId);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -222,6 +265,23 @@ public class Filevault2 extends BaseActivity {
         queue = Volley.newRequestQueue(this);
         queue3 = Volley.newRequestQueue(this);
         req = Volley.newRequestQueue(this);
+        mSearchBarEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                vault_adapter.filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         upload.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -259,6 +319,7 @@ public class Filevault2 extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        askRunTimePermissions() ;
                         chooseimage();
 
                     }
@@ -270,7 +331,7 @@ public class Filevault2 extends BaseActivity {
             Toast.makeText(Filevault2.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
        /* if(!check_load){*/
-            new Authentication(Filevault2.this, "Filevault2", "").execute();
+ //           new Authentication(Filevault2.this, "Filevault2", "").execute();
         }
 
 
@@ -428,6 +489,7 @@ public class Filevault2 extends BaseActivity {
                         // Log.e("Viewer not installed on your device.", e.getMessage());
                     }
                 } else {
+                    Log.e("Rishabh"  , "Opening jpg image ");
                     Intent i = new Intent(Filevault2.this, ExpandImage.class);
                     String removeonejpg = thumbImage.get(position).get("Personal3");
                     if (thumbImage.get(position).get("Personal3").endsWith(".jpg")) {
@@ -444,17 +506,21 @@ public class Filevault2 extends BaseActivity {
     } else {
         i.putExtra("image", "https://files.healthscion.com/" + patientId + "/FileVault/" + image_url);
     }*/
+                        Log.e("Rishabh" ,"Image name := "+image_name ) ;
                         if (thumbImage.get(position).get("Personal3").startsWith(patientId + "/FileVault/Personal/" + path_buffer)) {
+                            Log.e("Rishabh" ,"loop 1") ;
                             image_url = thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         } else if (thumbImage.get(position).get("Personal3").contains(patientId + "/FileVault/Personal/")) {
+                            Log.e("Rishabh" ,"loop 2 ") ;
                             image_url = path_buffer.toString() + "/" + thumbImage.get(position).get("Personal3").replace("_thumb", "");
+                            Log.e("Rishabh ", "image url := "+image_url) ;
                         } else {
+                            Log.e("Rishabh" ,"loop 3 ") ;
                             image_url = patientId + "/FileVault/Personal/" + path_buffer.toString() + "/" + thumbImage.get(position).get("Personal3").replace("_thumb", "");
                         }
                         i.putExtra("image", "https://files.healthscion.com/" + image_url.replaceAll(" ", "%20"));
                         i.putExtra("imagename", /*imageNamewithpdf.get(position)*/image_name);
                         startActivity(i);
-
                     }
                 }
             }
@@ -478,6 +544,31 @@ public class Filevault2 extends BaseActivity {
             }
         });
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int viewId = v.getId();
+            Intent intent = null ;
+            if(viewId == R.id.footer_dashboard_container) {
+                mFooterDashBoardImageView.setImageResource(R.drawable.dashboard_active);
+                intent = new Intent(Filevault2.this , DashBoardActivity.class);                       // TODO check intent class ..
+                startActivity(intent);
+            }else if (viewId == R.id.footer_reports_container){
+                mFooterReportsImageView.setImageResource(R.drawable.reports_active);
+                intent = new Intent(Filevault2.this , lablistdetails.class);                      // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_family_container){
+                mFooterFamilyImageView.setImageResource(R.drawable.family_active);
+                intent = new Intent(Filevault2.this , MyFamily.class);                               // TODO check intent class ..
+                startActivity(intent);
+            }else if(viewId == R.id.footer_account_container){
+                mFooterAccountImageView.setImageResource(R.drawable.account_active);
+                intent = new Intent(Filevault2.this , Account.class);                                // TODO check intent class ..
+                startActivity(intent);
+            }
+        }
+    };
 
     protected boolean onLongListItemClick(View v, int pos, long id) {
         Log.i("long_press", "onLongListItemClick id=" + id + "position=" + pos);
@@ -512,6 +603,7 @@ public class Filevault2 extends BaseActivity {
                 } else if (!view_list) {
                     list_header.setVisibility(View.VISIBLE);
                     list_header2.setVisibility(View.GONE);
+                    Log.e("Rishabh", "vault adapter called from HOME section of onOptionsMenuItem");
                     vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, "");
                     vault_list.setAdapter(vault_adapter);
                     toggle_move = false;
@@ -629,9 +721,9 @@ public class Filevault2 extends BaseActivity {
                 // Toast.LENGTH_SHORT).show();
                 // }
 
-                Intent intent = new Intent(getApplicationContext(), Filevault.class);
+                /*Intent intent = new Intent(getApplicationContext(), Filevault.class);               // TODO change FILEVAULT class  to Repository Fragment
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
+                startActivity(intent);*/
                 finish();
                 return true;
 
@@ -1076,8 +1168,8 @@ public class Filevault2 extends BaseActivity {
                             dialog.setCanceledOnTouchOutside(false);
                             TextView messageTv = (TextView) dialog.findViewById(R.id.message);
                             TextView titleTv = (TextView) dialog.findViewById(R.id.title);
-                            Button okBTN = (Button) dialog.findViewById(R.id.btn_ok);
-                            Button cancelButton = (Button) dialog.findViewById(R.id.stay_btn);
+                            TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                            TextView cancelButton = (TextView) dialog.findViewById(R.id.stay_btn);
                             titleTv.setText("Delete");
                             messageTv.setText("Are you sure you want to delete the selected file(s)?");
 
@@ -1263,7 +1355,7 @@ public class Filevault2 extends BaseActivity {
                                                             .show();
                                                     // S3Objects.clear();
                                                     pd.dismiss();
-                                                    Filevault.refresh();
+                                                    RepositoryFragment.refresh();
 
                                                     handler.postDelayed(new Runnable() {
                                                         @Override
@@ -1533,7 +1625,7 @@ public class Filevault2 extends BaseActivity {
                                                     .show();
                                             toggle_move = false;
                                             // S3Objects.clear();
-                                            Filevault.refresh();
+                                            RepositoryFragment.refresh();
 
                                             handler.postDelayed(new Runnable() {
                                                 @Override
@@ -1658,6 +1750,7 @@ public class Filevault2 extends BaseActivity {
                     } else {
                         list_header.setVisibility(View.VISIBLE);
                         list_header2.setVisibility(View.GONE);
+                        Log.e("Rishabh", "On Option Item Selected ; by default listview calling adapter : #1738");
                         vault_adapter = new Vault_adapter(Filevault2.this, thumbImage, false, patientId, path_buffer.toString());
                         vault_list.setAdapter(vault_adapter);
                         vault_list.setVisibility(View.VISIBLE);
@@ -2812,7 +2905,7 @@ public class Filevault2 extends BaseActivity {
                 for (int k = 0; k < mhelper.folder_path.size(); k++) {
                     buffer.append(mhelper.folder_path.get(k) + "/");
                 }
-                Log.v("buffer", buffer.toString());
+                Log.e("Rishabh","buffer"+buffer.toString());
               /*  show_dialog(buffer.toString());*/
                 String path_finder = first_timefolderclicked + "/" + buffer;
                 File imageFile = new File(path);
@@ -2825,7 +2918,7 @@ public class Filevault2 extends BaseActivity {
                         path_buffer.append(make_path[i] + "/");
                     }
                 }
-                Log.v("buffer_upload", path_buffer.toString());
+                Log.e("Rishabh", "path buffer := "+path_buffer.toString());
                 long check = ((imageFile.length() / 1024));
                 String splitfo_lenthcheck[] = path.split("/");
                 int filenamelength = splitfo_lenthcheck[splitfo_lenthcheck.length - 1].length();
@@ -2911,10 +3004,28 @@ public class Filevault2 extends BaseActivity {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PICK_FROM_CAMERA) {
 
-                Uri selectedImageUri = Imguri;
+                File imageFile = null ;
+                Uri selectedImageUri;
+
+                if(mIsSdkLessThanM == true){
+                    selectedImageUri = Imguri;
+                    imageFile = new File(selectedImageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (LOW SDK) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+
+                }else {
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    selectedImageUri = imageUri;
+                    imageFile = new File(imageUri.getPath());
+                    Log.e("Rishabh ", "PICKED FROM CAMERA onActivityResult (M or N) ");
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile :=  "+imageFile);
+                    Log.e("Rishabh ", "onActivityResult (Camera) : imageFile Path :=  "+imageFile.getPath());
+                }
+
                 String path = getPathFromContentUri(selectedImageUri);
                 System.out.println(path);
-                File imageFile = new File(path);
+
                 long check = ((imageFile.length() / 1024));
 
                 if (check < 10000) {
@@ -3067,8 +3178,12 @@ public class Filevault2 extends BaseActivity {
                                 break;
 
                             case 1:
-
-                                // Intent takePictureIntent = new
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                               /* // Intent takePictureIntent = new
                                 // Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // if
                                 // (takePictureIntent.resolveActivity(getPackageManager())
@@ -3093,7 +3208,7 @@ public class Filevault2 extends BaseActivity {
                                     intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
                                     Imguri = Uri.fromFile(photo);
                                     startActivityForResult(intent1, PICK_FROM_CAMERA);
-                                }
+                                }*/
 
                                 break;
 
@@ -3111,6 +3226,8 @@ public class Filevault2 extends BaseActivity {
             folder_path.remove(folder_path.size() - 1);
         }*/
         if (!toggle_move) {
+            thumbImage.clear();
+            vault_list.setAdapter(null);
             if (mhelper.folder_path.size() != 0) {
                 mhelper.folder_path.remove(mhelper.folder_path.size() - 1);
             }
@@ -3142,9 +3259,7 @@ public class Filevault2 extends BaseActivity {
     public void startBackgroundprocess() {
         S3Objects = new ArrayList<HashMap<String, String>>();
         S3Objects.clear();
-        thumbImage.clear();
         S3Objects = new NavFolder(Folder_Clicked, getIntent().getStringExtra("hash_keyvalue")).onFolderClickListener();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -3158,6 +3273,7 @@ public class Filevault2 extends BaseActivity {
     }
 
     public void Show_Data(ArrayList<HashMap<String, String>> list) {
+        thumbImage.clear();
         HashMap<String, String> hmap1;
         String duplicate_folder = "";
         for (int i = 0; i < list.size(); i++) {
@@ -3222,8 +3338,8 @@ public class Filevault2 extends BaseActivity {
             vault_list.setVisibility(View.GONE);
             gridView.setVisibility(View.GONE);
             warning_msg.setVisibility(View.VISIBLE);
-            menu_toggle.findItem(R.id.action_listview).setVisible(false);
-            menu_toggle.findItem(R.id.select_all).setVisible(false);
+            menu_toggle.findItem(R.id.action_listview).setVisible(true);
+            menu_toggle.findItem(R.id.select_all).setVisible(true);
             menu_toggle.findItem(R.id.action_move).setVisible(false);
             menu_toggle.findItem(R.id.action_delete).setVisible(false);
             menu_toggle.findItem(R.id.save).setVisible(false);
@@ -3315,6 +3431,11 @@ public class Filevault2 extends BaseActivity {
                         sendData.put("FolderName", folder);
                         sendData.put("Path", path_buffer.toString());
                         sendData.put("patientId", patientId);
+
+                        Log.e("Rishabh", "Folder Name := "+folder.length());
+                        Log.e("Rishabh", "Folder path := "+path_buffer.toString());
+                        Log.e("Rishabh", "patient id := "+patientId);
+
                     } catch (JSONException EX) {
                         EX.printStackTrace();
                     }
@@ -3328,6 +3449,7 @@ public class Filevault2 extends BaseActivity {
 
                             try {
                                 String packagedata = response.getString("d");
+                                Log.e("Rishabh", "response of create folder := "+packagedata );
                                 if (packagedata.equalsIgnoreCase("Error")) {
                                     progress.dismiss();
                                     Toast.makeText(getApplicationContext(), "An error occurred while creating folder.", Toast.LENGTH_SHORT).show();
@@ -3337,7 +3459,7 @@ public class Filevault2 extends BaseActivity {
                                 } else if (packagedata.equalsIgnoreCase("Added")) {
                                     progress.dismiss();
                                     Toast.makeText(getApplicationContext(), "Folder created successfully.", Toast.LENGTH_LONG).show();
-                                    Filevault.refresh();
+                                    RepositoryFragment.refresh();
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -3360,7 +3482,7 @@ public class Filevault2 extends BaseActivity {
                                             startActivity(i);
 
                                             finish();*/
-
+                                            Log.e("Rishabh", "start background process called from show dialog");
                                             startBackgroundprocess();
 
                                             /*S3Objects.clear();
@@ -3589,7 +3711,7 @@ public class Filevault2 extends BaseActivity {
                     }
                     pd.dismiss();
                     //  S3Objects.clear();
-                    Filevault.refresh();
+                    RepositoryFragment.refresh();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -3606,6 +3728,7 @@ public class Filevault2 extends BaseActivity {
                             }
                             startActivity(i);
                             finish();*/
+                            Log.e("Rishabh", "start background process called from move to folder");
                             startBackgroundprocess();
 
                         }
@@ -3666,6 +3789,7 @@ public class Filevault2 extends BaseActivity {
                 }
                 mContext.startActivity(i);
                 ((Filevault2) mContext).finish();*/
+                Log.e("Rishabh", "start background process called from refresh class");
                 ((Filevault2) mContext).startBackgroundprocess();
             }
         }, 1000);
@@ -3749,7 +3873,7 @@ public class Filevault2 extends BaseActivity {
             Folder_Clicked_folder = "Root";
             folder_root.setEnabled(false);
             if (mhelper.main_S3Objects.size() == 0) {
-                ((Filevault) Filevault.file_vaultcontxt).foldername();
+     //           ((RepositoryFragment) RepositoryFragment.file_vaultcontxt).foldername();     // TODO replace filevault class to repository fragment
             }
             S3Objects_folder = new ArrayList<HashMap<String, String>>();
             S3Objects_folder.addAll(mhelper.main_S3Objects);
@@ -3987,7 +4111,7 @@ public class Filevault2 extends BaseActivity {
                             if (HashKey.equalsIgnoreCase("Personal2") || HashKey
                                     .equalsIgnoreCase("Personal1")) {
                                 HashKey = "Personal3";
-                                ((Filevault) Filevault.file_vaultcontxt).foldername();
+             //                   ((Filevault) RepositoryFragment.file_vaultcontxt).foldername();   // TODO replace filevault class to repository fragment
                                 if (mhelper.main_S3Objects.size() == 0) {
                                     folder_list.setVisibility(View.GONE);
                                     empty_text.setVisibility(View.VISIBLE);
@@ -4105,7 +4229,7 @@ public class Filevault2 extends BaseActivity {
                     folder_root.setEnabled(true);
                 } else if (path_back_nav.length == 1 && !(folder_vault2_path.size() > 1)) {
                     if (mhelper.main_S3Objects.size() == 0) {
-                        ((Filevault) Filevault.file_vaultcontxt).foldername();
+   //                     ((Filevault) Filevault.file_vaultcontxt).foldername();  // TODO replace filevault class to repository fragment
                     }
                     if (mhelper.main_S3Objects.size() == 0) {
                         folder_list.setVisibility(View.GONE);
@@ -4189,7 +4313,7 @@ public class Filevault2 extends BaseActivity {
                     } else if (folderpath_size == 1) {
                         //Folder_Clicked_folder = folder_vault2_path.get(folderpath_size-1);
                         if (mhelper.main_S3Objects.size() == 0) {
-                            ((Filevault) Filevault.file_vaultcontxt).foldername();
+       //                     ((Filevault) Filevault.file_vaultcontxt).foldername();  // // TODO replace filevault class to repository fragment
                         }
                         if (mhelper.main_S3Objects.size() == 0) {
                             folder_list.setVisibility(View.GONE);
@@ -4527,6 +4651,7 @@ public class Filevault2 extends BaseActivity {
         if (Helper.authentication_flag == true) {
             finish();
         } else {
+            Log.e("Rishabh", "Start Background Process called from onResume() ");
             startBackgroundprocess();
         }
         super.onResume();
@@ -4541,5 +4666,131 @@ public class Filevault2 extends BaseActivity {
             }
         }
         return check;
+    }
+
+    private void takePhoto() {
+        mIsSdkLessThanM = true ;
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(Filevault2.this.getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
+
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            startCamera() ;
+        }else {
+            takePhoto();
+        }
+    }
+    /**
+     * Method to check permission
+     */
+  /*  void checkCameraPermission() {
+        boolean isGranted;
+        if (ActivityCompat.checkSelfPermission(Filevault2.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Camera permission has not been granted.
+            requestCameraPermission();
+        } else {
+            takePhoto();
+        }
+    }*/
+
+    /**
+     * Method to request permission for camera
+     */
+    private void requestCameraPermission() {
+        // Camera permission has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(Filevault2.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        /*if (requestCode == REQUEST_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                takePhoto();
+            } else {
+                //Permission not granted
+                Toast.makeText(Filevault2.this, "You need to grant camera permission to use camera", Toast.LENGTH_LONG).show();
+            }
+        }*/
+        if (requestCode == MY_PERMISSIONS_REQUEST) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mPermissionGranted = true ;
+                Log.e("Rishabh", "Permissions are Granted .");
+            } else {
+                mPermissionGranted = false ;
+                Log.e("Rishabh", "Permissions are not granted .");
+            }
+        }
+    }
+
+    void askRunTimePermissions() {
+
+        int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionCAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (writePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
+        }
+
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false ;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e("Rishabh ", "IO Exception := " + ex);
+                // Error occurred while creating the File
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(Filevault2.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }

@@ -8,10 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -39,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import config.StaticHolder;
+import ui.SignInActivity;
+import utils.PreferenceHelper;
 
 public class UploadProfileService extends IntentService {
 
@@ -59,6 +59,7 @@ public class UploadProfileService extends IntentService {
     private NotificationManager nm;
     private final Handler handler = new Handler();
     private String fname, afterDecode, uplodfrm,oldimage,oldthumbimage;
+    protected PreferenceHelper mPreferenceHelper;
 
     public UploadProfileService() {
         super("simpl3r-example-upload");
@@ -67,8 +68,7 @@ public class UploadProfileService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        s3Client = new AmazonS3Client(
-                new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
+        s3Client = new AmazonS3Client(new BasicAWSCredentials(getString(R.string.s3_access_key), getString(R.string.s3_secret)));
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         IntentFilter f = new IntentFilter();
@@ -78,16 +78,18 @@ public class UploadProfileService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        patientId = sharedPreferences.getString("ke", "");
+       // SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+       // patientId = sharedPreferences.getString("ke", "");
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        patientId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         String filePath = intent.getStringExtra(ARG_FILE_PATH);
         uplodfrm = intent.getStringExtra(uploadfrom);
         oldimage=intent.getStringExtra("oldimage");
         oldthumbimage=intent.getStringExtra("oldthumbimage");
-        if(oldimage.equals("null")||oldimage==null){
+        if(oldimage==null || oldimage.equals("null")){
             oldimage="";
         }
-        if(oldthumbimage.equals("null")||oldthumbimage==null){
+        if(oldthumbimage==null || oldthumbimage.equals("null")){
             oldthumbimage="";
         }
         String add_path = intent.getStringExtra("add_path");
@@ -174,30 +176,16 @@ public class UploadProfileService extends IntentService {
 //			String url1 = "http://192.168.1.122:8084/PatientModule/PatientService.asmx/PatientFileVault";
             StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.UploadProfilePic);
             final String url = sttc_holdr.request_Url();
-            jr1 = new JsonObjectRequest(
-                    Request.Method.POST, url, sendData,
+            jr1 = new JsonObjectRequest(Request.Method.POST, url, sendData,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-
-                            System.out.println(response);
                             try {
-
-
-
-                                    Toast.makeText(getApplicationContext(),
-                                           "Successfully uploaded",
-                                            Toast.LENGTH_SHORT).show();
-
-                               ((update)update.mcontext).refresh();
-
-
-
+                                Toast.makeText(getApplicationContext(), "Successfully uploaded", Toast.LENGTH_SHORT).show();
+                                ((update) update.mcontext).refresh();
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -332,7 +320,7 @@ public class UploadProfileService extends IntentService {
         builder.setOngoing(true);
         builder.setProgress(100, progress, false);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, SignInActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         builder.setContentIntent(contentIntent);

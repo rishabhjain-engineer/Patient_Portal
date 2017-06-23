@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" rel="stylesheet" href="nvd3.css" />
+    <script data-require="d3@3.3.11" data-semver="3.3.11" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.js"></script>
+    <script data-require="nvd3@1.1.14-beta" data-semver="1.1.14-beta" src="nv.js"></script>
+    <script src="jquery.js"></script>
+</head>
+<style>
+body { margin-left:-15px;}
+.nv-point {stroke-opacity: 1 !important;stroke-width: 10px;fill-opacity: 1 !important;}
+.bullet { font: 10px sans-serif; }
+.bullet .marker { stroke: #000; stroke-width: 2px; }
+.bullet .tick line { stroke: #666; stroke-width: .5px; }
+.bullet .range.s0 { fill: #eee; }
+.bullet .range.s1 { fill: #ddd; }
+.bullet .range.s2 { fill: #ccc; }
+.bullet .measure.s0 { fill: steelblue; }
+.bullet .title { font-size: 14px; font-weight: bold; }
+.bullet .subtitle { fill: #999;}
+
+.nvd3.nv-wrap.nv-lineChart {
+    float: left;
+    width: 76% !important;
+}
+
+</style>
+   
+<body>
+  <div id="chart" style="height:350px; marign-left:-100px !important;">
+    <svg></svg>
+  </div>    
+  <script>   
+      var data1 = [
+  {
+
+      "key": "Blood Sugar Random",
+      "values": [
+       [1399787880000, 4900],
+       [1407781800000, 5100],
+       [1418291820000, 5400],
+       [1427251500000, 5200],
+       [1447046040000, 4900],
+       [1447669500000, 35300],
+       [1448085600000, 26400],
+       [1448504100000, 2800],
+       [1450418400000, 5800],
+       [1452229200000, 4800],
+       [1454559095000, 5000],
+       [1468195946000, 5400],
+       [1481531373000, 5100]
+      ]
+  }];
+
+  var values = JSON.parse(Interface.passDataToHtml());
+  var max = Interface.getMaxData();
+  var angle = Interface.getRotationAngle();
+  var dateformat = Interface.getDateFormat();
+  var ticket = JSON.parse(Interface.getTickValues());
+  var startdate = Interface.minDateValue();
+  var enddate = Interface.maxDateValue();
+  var rangeto = Interface.getRangeTo();
+  var rangefrom = Interface.getRangeFrom();
+  var useInteractiveGuideline = Interface.getUserInteractiveGuidline();
+          
+    		nv.addGraph(function () {
+              var chart = nv.models.lineChart()//.interpolate('monotone')              
+                .x(function (d) {
+                    return d[0];
+                })
+                .y(function (d) {
+                    return d[1]
+                })  
+                .color(d3.scale.category10().range())
+                //.transitionDuration(300)
+                .useInteractiveGuideline(useInteractiveGuideline)    //Tooltips which show all data points. Very nice!
+                .showLegend(true)
+                .showYAxis(true)
+                //.forceY([50, 500])
+                .forceY([0, max])
+                .forceX([startdate,enddate])
+                .tooltipContent(
+                function (key, x, y, e) {
+                var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                return '<div id="tooltipcustom">' + '<p id="head">' 
+                + days[new Date(e.point[0]).getDay()] + ', ' + new Date(e.point[0]).getDate() + ' ' + months[new Date(e.point[0]).getMonth()] + ' ' + new Date(e.point[0]).getFullYear() 
+                + '</p>' + '<p> <strong>' 
+                + y 
+            	//+ ' ' + new Date(e.point[0]).getHours().toString() + ':' + new Date(e.point[0]).getMinutes().toString() + ':' + (new Date(e.point[0]).getSeconds().toString() == '0' ? '00' : new Date(e.point[0]).getSeconds().toString())
+                + '</strong> </p></div>'
+                });                
+
+              chart.xAxis
+                //.tickValues([1078030800000, 1122782400000, 1167541200000, 1251691200000])
+                  .tickValues(ticket)
+                .tickFormat(function (d) { return d3.time.format(dateformat)(new Date(d)) });
+				// To plot all X values
+                //.tickFormat(d3.format(',r'));
+              chart.xAxis.rotateLabels(angle);
+              chart.yAxis
+             // .tickFormat(d3.format('.2f'))
+                .tickFormat(function (d) {
+                    return d3.format('.2f')(d)
+                });
+        
+              d3.select('#chart svg')
+                .datum(values)
+                .call(chart);
+                 
+              nv.utils.windowResize(chart.update);
+
+              return chart;
+
+          },
+          
+          function (chart) {
+
+              x = chart;
+              var x1 = chart.xScale()(1122782400000);
+              var x2 = chart.xScale()(1251691200000);
+              var height = chart.yAxis.range()[0];
+              var y2 = chart.yScale()(rangefrom);
+              var y1 = chart.yScale()(rangeto);
+              var width = chart.xAxis.range()[1];
+              d3.select('.nv-wrap')
+                .append('rect')
+                .attr('y', y1)
+                .attr('height', y2 - y1)
+                .style('fill', '#2b8811')
+                .style('opacity', 0.2)
+                .attr('x', 0)
+                .attr('width', 850);
+          }
+        );   
+
+	$(document).ready(function () {
+         var child1 = $(document.getElementsByTagName('svg')).children().children()[0]
+         var child2 = $(document.getElementsByTagName('svg')).children().children()[1]
+         $(document.getElementsByTagName('svg')).children().children().remove()
+         $(document.getElementsByTagName('svg')).children().append(child2)
+         $(document.getElementsByTagName('svg')).children().append(child1)
+     })
+		  
+  </script>
+</body>
+</html>

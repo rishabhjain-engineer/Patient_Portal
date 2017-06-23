@@ -1,6 +1,5 @@
 package com.hs.userportal;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -9,6 +8,7 @@ import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,14 +16,18 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -34,10 +38,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,23 +55,26 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
 import adapters.Custom_profile_adapter;
 import networkmngr.NetworkChangeListener;
+import ui.BaseActivity;
+import utils.Utils;
 
-public class residence extends FragmentActivity {
+public class residence extends BaseActivity {
 
-    private String checkedit="";
-    private ArrayList<String> patienthistorylist=new ArrayList<String>();
+    private String checkedit = "";
+    private ArrayList<String> patienthistorylist = new ArrayList<String>();
     private ArrayList<String> m_listItems = new ArrayList<String>();
-    private ArrayList<HashMap<String,String >> toeditFieldlist=new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> toeditFieldlist = new ArrayList<HashMap<String, String>>();
     private CheckBox present;
     private Custom_profile_adapter m_adapter;
     private int i = 0;
-    private EditText city, country, state,add, pincode, house;
-    private static EditText from,to;
+    private EditText city, country, state, add, pincode, house;
+    private static EditText from, to;
     private ListView l;
     private AlertDialog alertDialog;
     private AlertDialog alert;
@@ -74,7 +84,7 @@ public class residence extends FragmentActivity {
     private ScrollView scroll_id;
     private Services service;
     private JSONArray subArray, temparray, subArray1, newarray, newarray1, newarray2;
-    private String[] nationlist ;
+    private String[] nationlist;
     private JSONArray residearray;
     private ArrayAdapter<String> adapter1;
     private ArrayList<String> areaa = new ArrayList<String>();
@@ -88,26 +98,39 @@ public class residence extends FragmentActivity {
     private SharedPreferences sharedPreferences;
     private String showlist, id, countryval = "", stateval = "", cityval = "", patientId;
     private ArrayAdapter<String> adapter;
-    private Date date1, date2,datecurrent;
-    private String PatientHistoryId="", Address, cityName, stateName, CountryName, Pincode, dates, Name;
-    private static int stno,month2,year2,day2,month1,year1,day1;
+    private Date date1, date2, datecurrent;
+    private String PatientHistoryId = "", Address, cityName, stateName, CountryName, Pincode, dates, Name;
+    private static int stno, month2, year2, day2, month1, year1, day1;
     private Calendar c;
     private int selection;
+    private String mFromMonthValue, mToMonthValue, mFromYearValue, mToYearValue, mFinalFromDate = null, mFinalToDate = null;
+    private String[] monthArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+    private ArrayList<String> years = new ArrayList<String>();
+    ArrayList<String> years1 = new ArrayList<String>();
+    private static String mFromCompValue = null, mToCompValue = null , mTempFromMonthValue   , mTempFromMonthYearValue , mTempToMonthYearValue , mTempToMonthValue;
+    private static int mTempFromYearValue , mTempToYearValue ;
+    private TextView mFromDateNotRemembered , mToDateNotRemembered;
+    private boolean mIsNotRemembered = false, mIsDateValid = true, mIsPresentDateCheck = true ,  mIsFromDateSpinnerVisible = false , mIsToDateSpinnerVisible = false;
+    boolean case1 = false,  case2 = false,  case3 = false, case4 = false ;  // Rishabh : KINDLY ,See Detail of these variable in  ' add.setOnClickListener Section ' .
+    private LinearLayout  mEditBoxContainer;
+    private RelativeLayout mDateEditTextContainerRL , mSpinnerContainerRL , mFromDateSpinnerContainer , mToDateSpinnerContainer;
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.residencenew);
-       // nationlist = getResources().getStringArray(R.array.national_list);
+        setupActionBar();
+        mActionBar.setTitle("Residence");
+        // nationlist = getResources().getStringArray(R.array.national_list);
       /*  for(int i=0;i<nationlist.length;i++){
            // countrylist.add(nationlist[i]);
         }*/
-         c = Calendar.getInstance();
-         year2 = c.get(Calendar.YEAR);
-         month2 = c.get(Calendar.MONTH);
-         day2 = c.get(Calendar.DAY_OF_MONTH);
+        c = Calendar.getInstance();
+        year2 = c.get(Calendar.YEAR);
+        month2 = c.get(Calendar.MONTH);
+        day2 = c.get(Calendar.DAY_OF_MONTH);
         year1 = c.get(Calendar.YEAR);
         month1 = c.get(Calendar.MONTH);
         day1 = c.get(Calendar.DAY_OF_MONTH);
@@ -120,10 +143,20 @@ public class residence extends FragmentActivity {
         StrictMode.setThreadPolicy(policy);
         id = z.getStringExtra("id");
         addbtn = (Button) findViewById(R.id.bSend);
-        scroll_id=(ScrollView)findViewById(R.id.scroll_id);
-      //  back = (Button) findViewById(R.id.bBack);
-      //  next = (Button) findViewById(R.id.bNext);
-       // b1 = (Button) findViewById(R.id.bFin);
+
+        mFromDateNotRemembered = (TextView) findViewById(R.id.tv_fromdate_not_remember);
+        mToDateNotRemembered = (TextView) findViewById(R.id.tv_todate_not_remember);
+
+        mFromDateSpinnerContainer = (RelativeLayout) findViewById(R.id.rl_fromdateSpinner_container);
+        mToDateSpinnerContainer = (RelativeLayout) findViewById(R.id.rl_todateSpinner_container);
+
+
+        mEditBoxContainer = (LinearLayout) findViewById(R.id.edit_box_container);
+
+        scroll_id = (ScrollView) findViewById(R.id.scroll_id);
+        //  back = (Button) findViewById(R.id.bBack);
+        //  next = (Button) findViewById(R.id.bNext);
+        // b1 = (Button) findViewById(R.id.bFin);
         house = (EditText) findViewById(R.id.etHouseNo);
         add = (EditText) findViewById(R.id.etSubject);
         //area = (AutoCompleteTextView) findViewById(R.id.etContact);
@@ -131,16 +164,119 @@ public class residence extends FragmentActivity {
         state = (EditText) findViewById(R.id.editText5);
         country = (EditText) findViewById(R.id.editText6);
         pincode = (EditText) findViewById(R.id.editText7);
-        from = (EditText) findViewById(R.id.editText8);
-        to = (EditText) findViewById(R.id.etName);
+        from = (EditText) findViewById(R.id.et_fromdate);
+        to = (EditText) findViewById(R.id.et_todate);
         l = (ListView) findViewById(R.id.listView1);
-        present = (CheckBox) findViewById(R.id.cbPresentWork);
+    //    present = (CheckBox) findViewById(R.id.cbPresentWork);
         service = new Services(residence.this);
         update.arrayres = new JSONArray();
 
+
+        mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mIsFromDateSpinnerVisible) {   // Rishabh :  " From Date " spinner is VISIBLE ;
+                    mFromDateNotRemembered.setText(R.string.not_remembered);
+                    from.setVisibility(View.VISIBLE);
+                    mFromDateSpinnerContainer.setVisibility(View.GONE);
+                    mIsFromDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " From Date " spinner is  NOT VISIBLE ;
+
+                    mFromDateNotRemembered.setText(R.string.remembered);
+                    from.setVisibility(View.GONE);
+                    mFromDateSpinnerContainer.setVisibility(View.VISIBLE);
+                    mIsFromDateSpinnerVisible = true ;
+                }
+
+            }
+        });
+
+        mToDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mIsToDateSpinnerVisible) {   // Rishabh :  " To Date " spinner is VISIBLE ;
+                    mToDateNotRemembered.setText(R.string.not_remembered);
+                    to.setVisibility(View.VISIBLE);
+                    mToDateSpinnerContainer.setVisibility(View.GONE);
+                    mIsToDateSpinnerVisible = false ;
+                }
+                else {   // Rishabh :  " To Date " spinner is  NOT VISIBLE ;
+
+                    mToDateNotRemembered.setText(R.string.remembered);
+                    to.setVisibility(View.GONE);
+                    mToDateSpinnerContainer.setVisibility(View.VISIBLE);
+                    mIsToDateSpinnerVisible = true ;
+                }
+
+            }
+        });
+
+       /* mFromDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsNotRemembered) {
+                    mIsNotRemembered = false;
+                    mFromDateNotRemembered.setText(R.string.not_remembered);
+                    from.setVisibility(View.VISIBLE);
+                    mFromDateSpinnerContainer.setVisibility(View.GONE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerRL.setVisibility(View.GONE);*//*
+
+
+                } else {
+                    mFromDateNotRemembered.setText(R.string.remembered);
+                    mIsNotRemembered = true;
+                    from.setVisibility(View.GONE);
+                    mFromDateSpinnerContainer.setVisibility(View.VISIBLE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.GONE);
+                    mSpinnerContainerRL.setVisibility(View.VISIBLE);*//*
+                }
+
+            }
+        });
+
+        mToDateNotRemembered.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsNotRemembered) {
+                    mIsNotRemembered = false;
+                    mToDateNotRemembered.setText(R.string.not_remembered);
+                    to.setVisibility(View.VISIBLE);
+                    mToDateSpinnerContainer.setVisibility(View.GONE);
+
+                    *//*mDateEditTextContainerRL.setVisibility(View.VISIBLE);
+                    mSpinnerContainerRL.setVisibility(View.GONE);*//*
+
+
+                } else {
+                    mToDateNotRemembered.setText(R.string.remembered);
+                    mIsNotRemembered = true;
+                    to.setVisibility(View.GONE);
+                    mToDateSpinnerContainer.setVisibility(View.VISIBLE);
+
+                   *//* mDateEditTextContainerRL.setVisibility(View.GONE);
+                    mSpinnerContainerRL.setVisibility(View.VISIBLE);*//*
+                }
+
+            }
+        });
+*/
+
+        long currentTimeMillis = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(new Date(currentTimeMillis));
+        to.setText(dateString);
+        mToCompValue = dateString;
+
+
        /* m_adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, m_listItems);*/
-        m_adapter=new Custom_profile_adapter(this,toeditFieldlist,"Residence");
+        m_adapter = new Custom_profile_adapter(this, toeditFieldlist, "Residence");
 
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(residence.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
@@ -148,6 +284,134 @@ public class residence extends FragmentActivity {
             new Authentication(residence.this, "residence", "").execute();
             // new BackgroundProcess().execute();
         }
+
+
+        Spinner fromMonthSpinner = (Spinner) findViewById(R.id.from_month);
+        Spinner fromYearSpinner = (Spinner) findViewById(R.id.from_year);
+
+
+        Spinner toMonthSpinner = (Spinner) findViewById(R.id.to_month);
+        Spinner toYearSpinner = (Spinner) findViewById(R.id.to_year);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // FROM MONTH
+
+
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        Collections.reverse(years);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years);
+        adapter.setDropDownViewResource(R.layout.spinner_appearence);
+        fromYearSpinner.setAdapter(adapter);
+
+
+        ArrayAdapter monthAdapter = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
+        monthAdapter.setDropDownViewResource(R.layout.spinner_appearence);
+        fromMonthSpinner.setAdapter(monthAdapter);
+
+        fromMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := " + mFromMonthValue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        fromYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mFromYearValue = years.get(position);
+                Log.e("rishabh", "mfinal fromdate := " + mFromYearValue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // To Month
+
+
+        int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear1; i++) {
+            years1.add(Integer.toString(i));
+        }
+        Collections.reverse(years1);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.spinner_appearence, years1);
+        adapter1.setDropDownViewResource(R.layout.spinner_appearence);
+        toYearSpinner.setAdapter(adapter1);
+
+
+        ArrayAdapter monthAdapter1 = new ArrayAdapter(residence.this, R.layout.spinner_appearence, monthArray);
+        monthAdapter1.setDropDownViewResource(R.layout.spinner_appearence);
+        toMonthSpinner.setAdapter(monthAdapter1);
+
+        toMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToMonthValue = monthArray[position];
+                Log.e("rishabh", "mfinal fromdate := " + mToMonthValue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        toYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mToYearValue = years1.get(position);
+                Log.e("rishabh", "mfinal fromdate := " + mToYearValue);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+       /* ArrayAdapter yearArrayAdapter = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        yearArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromMonthSpinner.setAdapter(yearArrayAdapter);
+
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        fromYearSpinner.setAdapter(adapter);
+
+
+
+
+        Spinner toMonthSpinner = (Spinner)findViewById(R.id.to_month);
+        Spinner toYesrSpinner = (Spinner)findViewById(R.id.to_year);
+
+        ArrayAdapter monthArrayAdapter1 = new ArrayAdapter(residence.this, android.R.layout.simple_spinner_item, monthArray);
+        monthArrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        toMonthSpinner.setAdapter(monthArrayAdapter1);
+        ArrayList<String> years1 = new ArrayList<String>();
+        int thisYear1 = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear1; i++) {
+            years1.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, years);
+        toYesrSpinner.setAdapter(adapter1);
+*/
+
+
         country.setInputType(InputType.TYPE_NULL);
         country.setOnTouchListener(new View.OnTouchListener() {
 
@@ -171,7 +435,7 @@ public class residence extends FragmentActivity {
                                     dialog.dismiss();
                                     /*InputMethodManager imm = (InputMethodManager) residence.this.getSystemService(Service.INPUT_METHOD_SERVICE);
                                     imm.showSoftInput(pincode, 0);*/
-                                    InputMethodManager inputMethodManager =  (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                     inputMethodManager.toggleSoftInputFromWindow(pincode.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
 
                                     pincode.requestFocus();
@@ -231,148 +495,140 @@ public class residence extends FragmentActivity {
             }
         });
 
-        present.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*present.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO Auto-generated method stub
                 if (present.isChecked()) {
-                   // to.setTextColor(Color.parseColor("#D3D3D3"));
+                    // to.setTextColor(Color.parseColor("#D3D3D3"));
 
                     to.setText("");
                     to.setVisibility(View.INVISIBLE);
                     year2 = c.get(Calendar.YEAR);
-                    month2 = c.get(Calendar.MONTH)-1;
-                    day2 = c.get(Calendar.DAY_OF_MONTH);
+                    month2 = c.get(Calendar.MONTH) - 1;
+                    day2 = c.get(Calendar.DAY_OF_MONTH);L3
                 } else {
                     to.setVisibility(View.VISIBLE);
-                   to.setText("");
-                   // to.setTextColor(Color.parseColor("#000000"));
+                    to.setText("");
+                    // to.setTextColor(Color.parseColor("#000000"));
                 }
             }
-        });
+        });*/
         l.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     final int arg2, long arg3) {
                 // TODO Auto-generated method stub
+                final Dialog dialog = new Dialog(residence.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.alertdialog_allbutton);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+                TextView editButton = (TextView) dialog.findViewById(R.id.edit_btn);
 
-                alert = new AlertDialog.Builder(residence.this).create();
+                dialog.setTitle("Alert");
 
+                stayButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
 
-                alert.setTitle("Alert");
-                alert.setMessage("Please select an Option.");
-
-                alert.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-
-                                PatientHistoryId = patienthistorylist.get(arg2);
-                                patienthistorylist.remove(arg2);
-                                toeditFieldlist.remove(arg2);
-                                m_listItems.remove(arg2);
-                                Utility.setListViewHeightBasedOnChildren(l);
-                                m_adapter.notifyDataSetChanged();
-                                m_adapter.notifyDataSetInvalidated();
-                                checkedit = "delete";
-                                new BackgroundProcess().execute();
-
-                            }
-                        });
-
-                alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                dialog.dismiss();
-
-                            }
-                        });
-
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL, "Edit",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-                                PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
-                                String ad = toeditFieldlist.get(arg2).get("address");
-                                house.setText(toeditFieldlist.get(arg2).get("name"));
+                okBTN.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        PatientHistoryId = patienthistorylist.get(arg2);
+                        patienthistorylist.remove(arg2);
+                        toeditFieldlist.remove(arg2);
+                        m_listItems.remove(arg2);
+                        Utility.setListViewHeightBasedOnChildren(l);
+                        m_adapter.notifyDataSetChanged();
+                        m_adapter.notifyDataSetInvalidated();
+                        checkedit = "delete";
+                        new BackgroundProcess().execute();
+                    }
+                });
 
 
-                                String add1=toeditFieldlist.get(arg2).get("address");
+                editButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (mEditBoxContainer.getVisibility() == View.GONE) {
+                            mEditBoxContainer.setVisibility(View.VISIBLE);
+                        }
+                        dialog.dismiss();
+                        PatientHistoryId = patienthistorylist.get(arg2);//city, country, state,add, pincode, house,from,to
+                        String ad = toeditFieldlist.get(arg2).get("address");
+                        house.setText(toeditFieldlist.get(arg2).get("name"));
+
+
+                        String add1 = toeditFieldlist.get(arg2).get("address");
                                /* add1=add1.replace("-", "");*/
-                                add1=add1.replace("\n", "");
+                        add1 = add1.replace("\n", "");
+                        add.setText(add1.trim());
+                        String city1 = toeditFieldlist.get(arg2).get("city");
+                        city1 = city1.replace("-", "");
+                        city1 = city1.replace(",", "");
+                        city1 = city1.replace("\n", "");
+                        city.setText(city1.trim());
+                        String state1 = toeditFieldlist.get(arg2).get("state");
+                        state1 = state1.replace("-", "");
+                        state1 = state1.replace(",", "");
+                        state1 = state1.replace("\n", "");
+                        state.setText(state1.trim());
+                        String pin = toeditFieldlist.get(arg2).get("postaladdress");
+                        pin = pin.replace("-", "");
+                        pin = pin.replace(",", "");
+                        pin = pin.replace("\n", "");
+                        pin = pin.replace(" ", "");
+                        pincode.setText(pin);
+                        if (toeditFieldlist.get(arg2).get("to").contains("PRESENT")) {
+                            to.setText("");
+                        } else {
+                            to.setText(toeditFieldlist.get(arg2).get("to"));
+                        }
+                        from.setText(toeditFieldlist.get(arg2).get("from"));
+                        String cont = toeditFieldlist.get(arg2).get("country");
+                        cont = cont.replace("-", "");
+                        cont = cont.replace(",", "");
+                        cont = cont.replace("\n", "");
 
-                                add.setText(add1.trim());
+                        country.setText(cont.trim());
+                        checkedit = "edit";
+                        addbtn.setText("UPDATE");
+                        try {
+                            String[] fromdialog = toeditFieldlist.get(arg2).get("from").split("/");
+                            year1 = Integer.parseInt(fromdialog[2]);
+                            month1 = Integer.parseInt(fromdialog[1]) - 1;
+                            day1 = Integer.parseInt(fromdialog[0]);
 
-                                String city1=toeditFieldlist.get(arg2).get("city");
-                                city1=city1.replace("-","");
-                                city1=city1.replace(",","");
-                                city1=city1.replace("\n", "");
-
-                                city.setText(city1.trim());
-
-
-                                String state1=toeditFieldlist.get(arg2).get("state");
-                                state1=state1.replace("-","");
-                                state1=state1.replace(",","");
-                                state1=state1.replace("\n", "");
-
-                                state.setText(state1.trim());
-
-
-
-
-                                String pin=toeditFieldlist.get(arg2).get("postaladdress");
-                                pin=pin.replace("-","");
-                                pin=pin.replace(",","");
-                                pin=pin.replace("\n","");
-                                pin=pin.replace(" ","");
-                                pincode.setText(pin);
-
-
-                                if(toeditFieldlist.get(arg2).get("to").contains("PRESENT")){
-                                    to.setText("");
-                                }else {
-                                    to.setText(toeditFieldlist.get(arg2).get("to"));
-                                }
-                                from.setText(toeditFieldlist.get(arg2).get("from"));
-                                String cont=toeditFieldlist.get(arg2).get("country");
-                                cont=cont.replace("-", "");
-                                cont=cont.replace(",","");
-                                cont=cont.replace("\n", "");
-
-                                country.setText(cont.trim());
-                                checkedit = "edit";
-                                addbtn.setText("UPDATE");
-                                try {
-                                    String [] fromdialog=toeditFieldlist.get(arg2).get("from").split("/");
-                                    year1=Integer.parseInt(fromdialog[2]);
-                                    month1=Integer.parseInt(fromdialog[1])-1;
-                                    day1=Integer.parseInt(fromdialog[0]);
-
-                                    String [] fromdialog1=toeditFieldlist.get(arg2).get("to").split("/");
-                                    year2=Integer.parseInt(fromdialog1[2]);
-                                    month2=Integer.parseInt(fromdialog1[1])-1;
-                                    day2=Integer.parseInt(fromdialog1[0]);
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }catch (ArrayIndexOutOfBoundsException ex){
-                                    ex.printStackTrace();
-                                }
-                                scroll_id.post(new Runnable() {
-                                    public void run() {
-                                        // scroll_id.scrollTo(0, scroll_id.getBottom());
-                                        scroll_id.fullScroll(ScrollView.FOCUS_UP);
-                                    }
-                                });
+                            String[] fromdialog1 = toeditFieldlist.get(arg2).get("to").split("/");
+                            year2 = Integer.parseInt(fromdialog1[2]);
+                            month2 = Integer.parseInt(fromdialog1[1]) - 1;
+                            day2 = Integer.parseInt(fromdialog1[0]);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        } catch (ArrayIndexOutOfBoundsException ex) {
+                            ex.printStackTrace();
+                        }
+                        scroll_id.post(new Runnable() {
+                            public void run() {
+                                // scroll_id.scrollTo(0, scroll_id.getBottom());
+                                scroll_id.fullScroll(ScrollView.FOCUS_UP);
                             }
                         });
 
-                alert.show();
+                    }
+                });
+                dialog.show();
 
             }
 
@@ -383,149 +639,144 @@ public class residence extends FragmentActivity {
 
             public void onClick(View v) {
 
-                try {
+                mIsDateValid = true ;
+                mIsPresentDateCheck = true ;
+                case1 = false;  case2 = false;  case3 = false; case4 = false ;
 
-                    final Calendar c = Calendar.getInstance();
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH);
-                    int day = c.get(Calendar.DAY_OF_MONTH);
-                    month = month + 1;
-                    String formattedMonth = "" + month;
-                    String formattedDayOfMonth = "" + day;
+                mFinalFromDate = mFromMonthValue + "/" + mFromYearValue;
+                mFinalToDate = mToMonthValue + "/" + mToYearValue;
 
-                    if (month < 10) {
 
-                        formattedMonth = "0" + month;
-                    }
-                    if (day < 10) {
+                    mFromCompValue = from.getText().toString() ;
+                    mToCompValue = to.getText().toString() ;
 
-                        formattedDayOfMonth = "0" + day;
-                    }
-                    String currentdate=String.valueOf(day)+"/"+String.valueOf(month)+"/"+String.valueOf(year);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    date1 = sdf.parse(from.getText().toString());
-                    datecurrent=sdf.parse(currentdate);
-                    if(to.getText().toString().equals("")){
-                        date2=null;
-                    }else {
-                        date2 = sdf.parse(to.getText().toString());
+                if(mFromCompValue != null) {
+                    String[] test  = mFromCompValue.split("/") ;
+                    if(test.length >= 2){
+                        String test1 = test[1] ;
+                        String test2 = test[2] ;
+                        mTempFromMonthYearValue = test1 + "/" + test2 ;
                     }
 
-                } catch (Exception e) {
+
                 }
 
-//city, country, state,add, pincode, house,from,to
-                if (from.getText().toString().equals("")
-                        ||city.getText().toString().equals("")||country.getText().toString().equals("")||state.getText().toString().equals("")||add.getText().toString().equals("")
-                        ||house.getText().toString().equals("")  ||to.getText().toString().equals("")  ) {
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
+                if(mToCompValue != null) {
+                    String[] abc  = mToCompValue.split("/") ;
+                    if(abc.length >=2) {
+                        String abc1 = abc[1] ;
+                        String abc2 = abc[2] ;
+                        mTempToMonthYearValue = abc1 + "/" + abc2 ;
+                    }
+                }
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
 
-                    // Setting Dialog Message
-                    alertDialog.setMessage("No field can be left Blank");
 
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
 
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                } else if (date2 != null && (date1.compareTo(date2) > 0
-                        || date1.compareTo(date2) == 0)) {
 
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
+                Log.e("Rishabh " ," from date value: = "+mFromCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempFromMonthValue) ;
+                Log.e("Rishabh " ," from date value: = "+mToCompValue) ;
+                Log.e("Rishabh " ," from date value: = "+mTempToMonthValue) ;
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
 
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("From-Date cannot be equal or greater than To-Date.");
+                if( mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == false) {        // Both Spinner Not Visible        ;  CASE 1
+                    String dateFormat = "dd/MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mFromCompValue, mToCompValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  dateFormat);
+                    case1 = true ;
+                    Log.e("Rishabh" , " Both Spinner Not  Visible ") ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," Both Spinner Not visible, present date check : =  "+ mIsPresentDateCheck) ;
+                }
 
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
+                else if ( mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == true) {   // Both Spinner Visible          : CASE 2
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mFinalFromDate, mFinalToDate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  dateFormat);
+                    case2 = true ;
+                    Log.e("Rishabh" , "Both Spinner Visible ") ;
+                    Log.e ("Rishabh " ," start end date check : =  "+ mIsDateValid) ;
+                    Log.e ("Rishabh " ," present date check : =  "+ mIsPresentDateCheck) ;
+                }
 
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
+                else if (mIsFromDateSpinnerVisible == true && mIsToDateSpinnerVisible == false) {    // fromdate spinner Visible and todate spinner not Visible     : CASE 3
+                    String dateFormat = "MM/yyyy" ;
 
-                }else if(date1.compareTo(datecurrent)>=0){
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
+                    mIsDateValid =  Utils.isDateValid(mFinalFromDate, mTempToMonthYearValue, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  dateFormat);
+                    case3 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
+                else if (mIsFromDateSpinnerVisible == false && mIsToDateSpinnerVisible == true) {   // fromdate spinner Not Visible and todate spinner Visible   : CASE 4
+                    String dateFormat = "MM/yyyy" ;
+                    mIsDateValid =  Utils.isDateValid(mTempFromMonthYearValue, mFinalToDate, dateFormat);
+                    mIsPresentDateCheck = Utils.isFromDateValid(mTempFromMonthYearValue,  dateFormat);
+                    case4 = true ;
+                    Log.e("Rishabh " , " Fromdate Spinner Visible and todate spinner not visible ") ;
+                    Log.e("Rishabh " , " start end date check : =  "+ mIsDateValid) ;
+                    Log.e("Rishabh " , " present date check : =  "+ mIsPresentDateCheck) ;
+                }
 
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("From-Date cannot be equal or greater than Current Date.");
+                /*if (mIsNotRemembered == false) {
+                    isValid = Utils.isDateValid(mFromCompValue, mToCompValue, "dd/MM/yyyy");
+                    if (isValid == false) {
+                        mIsDateValid = false ;
+                       *//* showAlertMessage("Start date must be smaller than End date.");*//*
+                    }
+                } else {
+                    isValid = Utils.isDateValid(mFinalFromDate, mFinalToDate, "MM/yyyy");
+                    if (isValid == false) {
+                        mIsDateValid = false ;
+                        *//*showAlertMessage("Start date must be smaller than End date.");*//*
+                    }
+                }
 
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
 
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                }else if(date2!=null&&date2.compareTo(datecurrent)>0){
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
+                if (mIsNotRemembered == false) {
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFromCompValue,  "dd/MM/yyyy");
+                    if (mIsPresentDateCheck == false) {
+                        mIsPresentDateCheck = false ;
+                      *//*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*//*
+                    }
+                } else if(mIsNotRemembered == true){
+                    mIsPresentDateCheck = Utils.isFromDateValid(mFinalFromDate,  "MM/yyyy");
+                    if (mIsPresentDateCheck == false) {
+                        mIsPresentDateCheck = false ;
+                      *//*  mIsDateValid = false;
+                        showAlertMessage("From Date cannot be greater than Present Date");*//*
+                    }
+                }*/
 
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("To-Date cannot be greater than Current Date.");
 
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
-                } else if(!pincode.getText().toString().equals("")&&pincode.getText().toString().length()<4) {
-                    alertDialog = new AlertDialog.Builder(residence.this).create();
-
-                    // Setting Dialog Title
-                    alertDialog.setTitle("Message");
-
-                    // Setting Dialog Message
-                    alertDialog
-                            .setMessage("Postal code should be greater than three digits.");
-
-                    // Setting OK Button
-                    alertDialog.setButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-
-                                    // TODO Add your code for the button here.
-                                }
-                            });
-                    // Showing Alert Message
-                    alertDialog.show();
+                if (city.getText().toString().equals("") || country.getText().toString().equals("") || house.getText().toString().equals("") || TextUtils.isEmpty(add.getEditableText().toString())) {
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if (case1 && (from.getText().toString().equals("") || to.getText().toString().equals(""))) {
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if(case3 && to.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                else if(case4 && from.getText().toString().equals("")){
+                    showAlertMessage("Mandatory fields can not be left Blank !");
+                }
+                 else if (mIsDateValid == false) {
+                    showAlertMessage("Start date must be smaller than End date");
+                } else if (!pincode.getText().toString().equals("") && pincode.getText().toString().length() < 4) {
+                    showAlertMessage("Postal code should be greater than three digits");
+                }else if(mIsPresentDateCheck == false){
+                    showAlertMessage("From date cannot be greater than Present date");
                 }
                 else {
+                    mFinalFromDate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                    mFinalToDate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
+
                    /* l.setAdapter(m_adapter);
                     //  String education=educationspinner.getSelectedItem().toString();
 //city, country, state,add, pincode, house,from,to
@@ -540,16 +791,16 @@ public class residence extends FragmentActivity {
                     hmap.put("to", to.getText().toString());
                     toeditFieldlist.add(hmap);*/
                     String input;
-                    if(to.getText().toString().equals("")) {
-                        input = house.getText().toString() + "\n"
-                                + add.getText().toString() + "\n"
-                                + city.getText().toString() + ","
-                                + state.getText().toString() +
-                                "\n"+country.getText().toString()
-                                + "-"
-                                + pincode.getText().toString() + "\n"
-                                + from.getText().toString();
-                    }else{
+                    //if(to.getText().toString().equals("")) {
+                    input = house.getText().toString() + "\n"
+                            + add.getText().toString() + "\n"
+                            + city.getText().toString() + ","
+                            + state.getText().toString() +
+                            "\n" + country.getText().toString()
+                            + "-"
+                            + pincode.getText().toString() + "\n"
+                            + 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                   /* }else{
                         input = house.getText().toString() + "\n"
                                 + add.getText().toString() + "\n"
                                 + city.getText().toString() + ","
@@ -558,7 +809,7 @@ public class residence extends FragmentActivity {
                                 + pincode.getText().toString() + "\n"
                                 + from.getText().toString() + "-"
                                 + to.getText().toString();
-                    }
+                    }*/
                     if (null != input && input.length() > 0) {
 
                         if (m_listItems.size() == 0) {
@@ -569,16 +820,16 @@ public class residence extends FragmentActivity {
                         } else {
                             int value = 0;
                             for (i = 0; i < m_listItems.size(); i++) {
-                                String item=m_listItems.get(i).trim().replace(" ","");
-                                String input1=input.trim().replace(" ","");
-                                item=item.replace("-","");
-                                input1=input1.replace("-","");
-                                item=item.replace("PRESENT","");
-                                input1=input1.replace("PRESENT","");
-                                item=item.replace(",","");
-                                input1=input1.replace(",","");
-                                item=item.replace("\n","");
-                                input1=input1.replace("\n","");
+                                String item = m_listItems.get(i).trim().replace(" ", "");
+                                String input1 = input.trim().replace(" ", "");
+                                item = item.replace("-", "");
+                                input1 = input1.replace("-", "");
+                                item = item.replace("PRESENT", "");
+                                input1 = input1.replace("PRESENT", "");
+                                item = item.replace(",", "");
+                                input1 = input1.replace(",", "");
+                                item = item.replace("\n", "");
+                                input1 = input1.replace("\n", "");
                                 try {
                                     if (input1.equalsIgnoreCase(item)
                                             ) {
@@ -594,8 +845,8 @@ public class residence extends FragmentActivity {
                             if (value == 0) {
 
                                 new submitchange().execute();
-                            }else{
-                                Toast.makeText(getApplicationContext(),"Duplicate entries not allowed!",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Duplicate entries not allowed!", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -604,8 +855,6 @@ public class residence extends FragmentActivity {
                 Utility.setListViewHeightBasedOnChildren(l);
             }
         });
-
-
 
 
         from.setOnClickListener(new OnClickListener() {
@@ -662,15 +911,16 @@ public class residence extends FragmentActivity {
 
     }
 
-    public  static class DatePickerFragment extends DialogFragment implements
+    public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
 
-
-            // Create a new instance of DatePickerDialog and return it
+            if(day1 == 0) {
+                day1 = day1 + 1 ;
+            }
             return new DatePickerDialog(getActivity(), this, year1, month1, day1);
         }
 
@@ -692,16 +942,25 @@ public class residence extends FragmentActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
-            from.setText(formattedDayOfMonth + "/" + formattedMonth + "/"
-                    + year);
 
-           // to.requestFocus();
+            mTempFromMonthValue = formattedMonth ;
+            mTempFromYearValue = year ;
+            mTempFromMonthYearValue = mTempFromMonthValue + "/" + mTempFromYearValue ;
+
+            Log.e("Rishabh " ,  " m temp from moth year value ; == " +mTempFromMonthYearValue) ;
+
+            from.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+
+            mFromCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+
+            // to.requestFocus();
         }
     }
 
     class submitchange extends AsyncTask<Void, Void, Void> {
 
-        String Name,address1,cityName,stateName,CountryName,Pincode,fromdate,todate,message;
+        String Name, address1, cityName, stateName, CountryName, Pincode, fromdate, todate, message;
+
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -710,26 +969,53 @@ public class residence extends FragmentActivity {
             ghoom.setCancelable(false);
             ghoom.setMessage("Loading...");
             ghoom.setIndeterminate(true);
-            Name=house.getText().toString();
-            address1=add.getText().toString();
-            cityName=city.getText().toString();
-            stateName=state.getText().toString();
-            CountryName=country.getText().toString();
-            Pincode=pincode.getText().toString();
-            fromdate=from.getText().toString();
-            todate=to.getText().toString();
+            Name = house.getText().toString();
+            address1 = add.getText().toString();
+            cityName = city.getText().toString();
+            stateName = state.getText().toString();
+            CountryName = country.getText().toString();
+            Pincode = pincode.getText().toString();
+
+
+            /*if (mIsNotRemembered == false) {
+                fromdate = mFromCompValue;
+                todate = mToCompValue;
+            } else if (mIsNotRemembered == true) {
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToYearValue;
+            }*/
+
+            if (case1){
+                fromdate = mFromCompValue;
+                todate = mToCompValue;
+            }else if(case2) {
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToMonthValue;
+            }else if (case3) {
+                fromdate = 00 + "/" + mFromMonthValue + "/" + mFromYearValue;
+                todate = mToCompValue;
+            }else if (case4) {
+                fromdate = mFromCompValue;
+                todate = 00 + "/" + mToMonthValue + "/" + mToMonthValue;
+            }
+
+
+            //todate=to.getText().toString();
+
+
 //city, country, state,add, pincode, house,from,to
             ghoom.show();
-			/*Work.this.runOnUiThread(new Runnable() {
-				public void run() {
+            /*Work.this.runOnUiThread(new Runnable() {
+                public void run() {
 
 				}
 			});*/
         }
 
         protected void onPostExecute(Void result) {
+
             super.onPostExecute(result);
-            if(checkedit.equals("edit")) {
+            if (checkedit.equals("edit")) {
                 if (message.equals("success")) {
                     ghoom.dismiss();
                     Toast.makeText(getApplicationContext(), "Your changes have been saved!", Toast.LENGTH_SHORT).show();
@@ -742,9 +1028,8 @@ public class residence extends FragmentActivity {
                     pincode.setText("");
                     from.setText("");
                     to.setText("");
-
                     checkedit = "";
-                    PatientHistoryId="";
+                    PatientHistoryId = "";
                     addbtn.setText("ADD");
                     year2 = c.get(Calendar.YEAR);
                     month2 = c.get(Calendar.MONTH);
@@ -752,7 +1037,10 @@ public class residence extends FragmentActivity {
                     year1 = c.get(Calendar.YEAR);
                     month1 = c.get(Calendar.MONTH);
                     day1 = c.get(Calendar.DAY_OF_MONTH);
-                    present.setChecked(false);
+//                    present.setChecked(false);
+                    mIsDateValid = false;
+
+
                     new BackgroundProcess().execute();
                 } else {
                     String data;
@@ -760,29 +1048,29 @@ public class residence extends FragmentActivity {
 
                         data = receiveData1.getString("d");
                         JSONObject cut = new JSONObject(data);
-                        JSONArray	workarray = cut.getJSONArray("Table");
+                        JSONArray workarray = cut.getJSONArray("Table");
                         if (workarray.length() > 0) {
                             patienthistorylist.clear();
                             toeditFieldlist.clear();
                         }
-                        HashMap<String,String> hmap;
+                        HashMap<String, String> hmap;
                         for (i = 0; i < workarray.length(); i++)
 
                         {
                             //PatientHistoryId,CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
-                          //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
+                            //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
                             String todatenull = workarray.getJSONObject(i).getString("todate");
                             if (todatenull.equals("null")) {
                                 todatenull = "";
                             }
-                            hmap=new HashMap<String, String>();
-                            hmap.put("name",workarray.getJSONObject(i).getString("Name"));
+                            hmap = new HashMap<String, String>();
+                            hmap.put("name", workarray.getJSONObject(i).getString("Name"));
                             hmap.put("address", workarray.getJSONObject(i).getString(
                                     "Address"));
-                            hmap.put("city",workarray.getJSONObject(i).getString("cityName"));
-                            hmap.put("state",workarray.getJSONObject(i).getString("stateName"));
-                            hmap.put("country",workarray.getJSONObject(i).getString("CountryName"));
-                            hmap.put("postaladdress",workarray.getJSONObject(i).getString(
+                            hmap.put("city", workarray.getJSONObject(i).getString("cityName"));
+                            hmap.put("state", workarray.getJSONObject(i).getString("stateName"));
+                            hmap.put("country", workarray.getJSONObject(i).getString("CountryName"));
+                            hmap.put("postaladdress", workarray.getJSONObject(i).getString(
                                     "Pincode"));
                             hmap.put("PatientHistoryId", workarray.getJSONObject(i).getString("PatientHistoryId"));
                             hmap.put("from", workarray.getJSONObject(i).getString(
@@ -795,7 +1083,7 @@ public class residence extends FragmentActivity {
 
                         {
                             patienthistorylist.add(toeditFieldlist.get(i).get("PatientHistoryId"));
-                            String todatenull=toeditFieldlist.get(i).get("to");
+                            String todatenull = toeditFieldlist.get(i).get("to");
                             if (todatenull != "") {
                                 m_listItems.add(toeditFieldlist.get(i).get("name")
                                         + "\n"
@@ -804,13 +1092,13 @@ public class residence extends FragmentActivity {
 
                                         + toeditFieldlist.get(i).get("city")
                                         + ", "
-                                        +  toeditFieldlist.get(i).get("state")
+                                        + toeditFieldlist.get(i).get("state")
 
-                                        +"\n"+toeditFieldlist.get(i).get("country")
-                                        +", "
+                                        + "\n" + toeditFieldlist.get(i).get("country")
+                                        + ", "
                                         + toeditFieldlist.get(i).get("postaladdress")
                                         + "\n"
-                                        +toeditFieldlist.get(i).get("from")
+                                        + toeditFieldlist.get(i).get("from")
                                         + "-"
                                         + todatenull);
                             }
@@ -843,14 +1131,13 @@ public class residence extends FragmentActivity {
                     ghoom.dismiss();
                     checkedit = "";
                 }
-            }
-            else	if (message.equals("success")) {
+            } else if (message.equals("success")) {
                 ghoom.dismiss();
                 Toast.makeText(getApplicationContext(),
                         "Your changes have been saved!", Toast.LENGTH_SHORT)
                         .show();
-                checkedit="";
-                PatientHistoryId="";
+                checkedit = "";
+                PatientHistoryId = "";
                 house.setText("");
                 add.setText("");
                 city.setText("");
@@ -859,6 +1146,7 @@ public class residence extends FragmentActivity {
                 pincode.setText("");
                 from.setText("");
                 to.setText("");
+                mIsDateValid = false;
                 year2 = c.get(Calendar.YEAR);
                 month2 = c.get(Calendar.MONTH);
                 day2 = c.get(Calendar.DAY_OF_MONTH);
@@ -867,14 +1155,12 @@ public class residence extends FragmentActivity {
                 day1 = c.get(Calendar.DAY_OF_MONTH);
                 new BackgroundProcess().execute();
                 //finish();
-            }
-
-            else {
+            } else {
                 ghoom.dismiss();
                 Toast.makeText(getApplicationContext(),
                         "Your changes could not be saved!", Toast.LENGTH_SHORT)
                         .show();
-                checkedit="";
+                checkedit = "";
             }
 
 
@@ -886,11 +1172,11 @@ public class residence extends FragmentActivity {
             /*countryids.clear();
             countrylist.clear();*/
             JSONObject sendwork = new JSONObject();
-            JSONObject senddata=new JSONObject();
-            String country_id="";
-            for(int i=0;i<countrylist.size();i++){
-                if(CountryName.equals(countrylist.get(i))) {
-                    country_id=countryids.get(i);
+            JSONObject senddata = new JSONObject();
+            String country_id = "";
+            for (int i = 0; i < countrylist.size(); i++) {
+                if (CountryName.equals(countrylist.get(i))) {
+                    country_id = countryids.get(i);
                 }
             }
 
@@ -899,9 +1185,9 @@ public class residence extends FragmentActivity {
                     sendwork.put("Name", Name);
                     sendwork.put("Address", address1);
                     sendwork.put("cityName", cityName);
-                    sendwork.put("stateName",  stateName);
+                    sendwork.put("stateName", stateName);
 
-                    sendwork.put("CountryId",country_id);
+                    sendwork.put("CountryId", country_id);
                     sendwork.put("Pincode", Pincode);
                     sendwork.put("fromdate", fromdate);
                     /*if(todate.equals("")){
@@ -910,37 +1196,37 @@ public class residence extends FragmentActivity {
                     sendwork.put("todate", todate);
                     // }
 
-                    sendwork.put("profileParameter","residence");
-                    sendwork.put("PatientHistoryId",PatientHistoryId);
-                    JSONArray jarray=new JSONArray();
+                    sendwork.put("profileParameter", "residence");
+                    sendwork.put("PatientHistoryId", PatientHistoryId);
+                    JSONArray jarray = new JSONArray();
                     jarray.put(sendwork);
 
-                    senddata.put("otherDetails",jarray);
-                    senddata.put("UserId",id);
-                    senddata.put("typeselect","residence");
-                    senddata.put("statusType","edit");
-                }else{
+                    senddata.put("otherDetails", jarray);
+                    senddata.put("UserId", id);
+                    senddata.put("typeselect", "residence");
+                    senddata.put("statusType", "edit");
+                } else {
                     sendwork.put("Name", Name);
                     sendwork.put("Address", address1);
                     sendwork.put("cityName", cityName);
-                    sendwork.put("stateName",  stateName);
-                    sendwork.put("CountryId",country_id);
+                    sendwork.put("stateName", stateName);
+                    sendwork.put("CountryId", country_id);
                     sendwork.put("Pincode", Pincode);
                     sendwork.put("fromdate", fromdate);
                     sendwork.put("todate", todate);
-                    sendwork.put("profileParameter","residence");
-                    sendwork.put("PatientHistoryId","");
-                    JSONArray jarray=new JSONArray();
+                    sendwork.put("profileParameter", "residence");
+                    sendwork.put("PatientHistoryId", "");
+                    JSONArray jarray = new JSONArray();
                     jarray.put(sendwork);
 
-                    senddata.put("otherDetails",jarray);
-                    senddata.put("UserId",id);
-                    senddata.put("typeselect","residence");
-                    senddata.put("statusType","");
+                    senddata.put("otherDetails", jarray);
+                    senddata.put("UserId", id);
+                    senddata.put("typeselect", "residence");
+                    senddata.put("statusType", "");
                 }
                 receiveData1 = service.saveOtherDetail(senddata);
                 message = receiveData1.getString("d");
-            }  catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -960,8 +1246,8 @@ public class residence extends FragmentActivity {
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
             progress.show();
-			/*Work.this.runOnUiThread(new Runnable() {
-				public void run() {
+            /*Work.this.runOnUiThread(new Runnable() {
+                public void run() {
 
 				}
 			});*/
@@ -985,30 +1271,30 @@ public class residence extends FragmentActivity {
                         toeditFieldlist.clear();
                         m_listItems.clear();
                     }
-                    HashMap<String,String> hmap;
+                    HashMap<String, String> hmap;
 
                     for (i = 0; i < workarray.length(); i++)
 
                     {
                         //PatientHistoryId,CategoryId,Name,Address,cityName,stateName,CountryName,Pincode,fromdate,todate;
-                      //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
+                        //  patienthistorylist.add(workarray.getJSONObject(i).getString("PatientHistoryId"));
                         String todatenull = workarray.getJSONObject(i).getString("todate").trim();
                         if (todatenull.equals("null")) {
                             todatenull = "PRESENT";
                         }
-                        String postal_null= workarray.getJSONObject(i).getString("Pincode").trim();
-                        if(postal_null.equalsIgnoreCase("null")){
-                            postal_null="";
+                        String postal_null = workarray.getJSONObject(i).getString("Pincode").trim();
+                        if (postal_null.equalsIgnoreCase("null")) {
+                            postal_null = "";
                         }
-                        hmap=new HashMap<String, String>();
-                        hmap.put("name",workarray.getJSONObject(i).getString("Name").trim());
+                        hmap = new HashMap<String, String>();
+                        hmap.put("name", workarray.getJSONObject(i).getString("Name").trim());
                         hmap.put("address", workarray.getJSONObject(i).getString(
                                 "Address").trim());
-                        hmap.put("city",workarray.getJSONObject(i).getString("cityName").trim());
-                        hmap.put("state",workarray.getJSONObject(i).getString("stateName").trim());
-                        hmap.put("country",workarray.getJSONObject(i).getString("CountryName").trim());
-                        hmap.put("PatientHistoryId",workarray.getJSONObject(i).getString("PatientHistoryId").trim());
-                        hmap.put("postaladdress",postal_null);
+                        hmap.put("city", workarray.getJSONObject(i).getString("cityName").trim());
+                        hmap.put("state", workarray.getJSONObject(i).getString("stateName").trim());
+                        hmap.put("country", workarray.getJSONObject(i).getString("CountryName").trim());
+                        hmap.put("PatientHistoryId", workarray.getJSONObject(i).getString("PatientHistoryId").trim());
+                        hmap.put("postaladdress", postal_null);
                         hmap.put("from", workarray.getJSONObject(i).getString(
                                 "fromdate"));
                         hmap.put("to", todatenull);
@@ -1019,7 +1305,7 @@ public class residence extends FragmentActivity {
 
                     {
                         patienthistorylist.add(toeditFieldlist.get(i).get("PatientHistoryId"));
-                        String todatenull=toeditFieldlist.get(i).get("to");
+                        String todatenull = toeditFieldlist.get(i).get("to");
                         if (todatenull != "") {
                             m_listItems.add(toeditFieldlist.get(i).get("name")
                                     + "\n"
@@ -1028,13 +1314,13 @@ public class residence extends FragmentActivity {
 
                                     + toeditFieldlist.get(i).get("city")
                                     + ", "
-                                    +  toeditFieldlist.get(i).get("state")
+                                    + toeditFieldlist.get(i).get("state")
 
-                                    +"\n"+toeditFieldlist.get(i).get("country")
-                                    +", "
+                                    + "\n" + toeditFieldlist.get(i).get("country")
+                                    + ", "
                                     + toeditFieldlist.get(i).get("postaladdress")
                                     + "\n"
-                                    +toeditFieldlist.get(i).get("from")
+                                    + toeditFieldlist.get(i).get("from")
                                     + "-"
                                     + todatenull);
                         }/*else{
@@ -1063,7 +1349,7 @@ public class residence extends FragmentActivity {
                     m_adapter.notifyDataSetChanged();
 
                 }
-            }catch(JSONException e1){
+            } catch (JSONException e1) {
 
                 e1.printStackTrace();
 
@@ -1077,7 +1363,7 @@ public class residence extends FragmentActivity {
             if (checkedit.equals("delete")) {
                 sendData = new JSONObject();
                 try {
-                    sendData.put("patientHistoryId",PatientHistoryId);
+                    sendData.put("patientHistoryId", PatientHistoryId);
                     receiveData1 = service.deleteSingularDetails(sendData);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1162,7 +1448,7 @@ public class residence extends FragmentActivity {
         }
     }
 
-    public static  class DatePickerFragment1 extends DialogFragment implements
+    public static class DatePickerFragment1 extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 
         @Override
@@ -1193,17 +1479,20 @@ public class residence extends FragmentActivity {
 
                 formattedDayOfMonth = "0" + dayOfMonth;
             }
+
+            mTempToMonthValue = formattedMonth ;
+            mTempToYearValue = year ;
+            mTempToMonthYearValue = mTempToMonthValue + "/" + mTempToYearValue ;
+
+            Log.e("Rishabh " , " to date kaa  month year value ;;;  " +mTempToMonthYearValue) ;
+
             to.setText(formattedDayOfMonth + "/" + formattedMonth + "/" + year);
+            mToCompValue = (formattedDayOfMonth + "/" + formattedMonth + "/" + year);
 
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        this.getParent().onBackPressed();
-    }
-
-    public void startBackgroundprocess(){
+    public void startBackgroundprocess() {
         new BackgroundProcess().execute();
     }
     /*@Override
@@ -1214,4 +1503,55 @@ public class residence extends FragmentActivity {
         }
 
     }*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                /*Intent backNav = new Intent(getApplicationContext(), ProfileContainerActivity.class);
+                backNav.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(backNav);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+
+            case R.id.action_home:
+                finish();
+                //showUnsavedAlertDialog();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+            case R.id.add:
+
+                //finish();
+                //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                if (mEditBoxContainer.getVisibility() == View.VISIBLE) {
+                    mEditBoxContainer.setVisibility(View.GONE);
+                } else {
+                    mEditBoxContainer.setVisibility(View.VISIBLE);
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
 }

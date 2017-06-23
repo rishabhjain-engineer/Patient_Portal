@@ -10,249 +10,337 @@
         android:layout_margin="17dp"
         android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="House Name*:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/etHouseNo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textCapWords"
-            android:nextFocusDown="@+id/etSubject"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/adtxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Address:"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/etSubject"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:ems="10"
-            android:gravity="top"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLines="4" />
-
         <LinearLayout
-            android:id="@+id/hed"
+            android:id="@+id/edit_box_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="City*:"
-                android:textColor="@android:color/black"
-
-                />
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="State*:"
-
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L1"
-            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/editText4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textCapWords"
-                android:nextFocusDown="@+id/editText5"
-                android:singleLine="true"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/editText5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textCapWords"
-                android:nextFocusDown="@+id/editText6"
-                android:singleLine="true"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/h2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            android:layout_marginTop="5dp">
-
             <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="Country*:"
-                android:textColor="@android:color/black"
-
-                />
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:text="Postal code:"
-
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-
-            >
-
-            <EditText
-                android:id="@+id/editText6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/down_arrow"
-                android:ems="10"
-
-                android:singleLine="true"
-                android:textColor="#000000" />
-
-            <EditText
-                android:id="@+id/editText7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="10"
-                android:nextFocusDown="@+id/editText8"
-                android:singleLine="true"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/h3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/L2"
-
-            android:layout_marginTop="5dp">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-
-                android:text="From Date*:"
-
-                android:textColor="@android:color/black" />
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:text="To Date*:"
-                android:textColor="@android:color/black" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:text="Present"
-
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/L3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/L2"
-
-            >
-
-            <EditText
-                android:id="@+id/editText8"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-
-                android:inputType="date" />
-
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="date" />
-
-            <CheckBox
-                android:id="@+id/cbPresentWork"
+                android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/editText9"
-                android:text="Present"
+                android:text="House Name*:"
                 android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/etHouseNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textCapWords"
+                android:nextFocusDown="@+id/etSubject"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/adtxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Address*:"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/etSubject"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:gravity="top"
+                android:inputType="textMultiLine|textCapWords"
+                android:maxLines="4" />
+
+            <LinearLayout
+                android:id="@+id/hed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+
+                android:orientation="horizontal">
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="City*:"
+                    android:textColor="@android:color/black"
+
+                    />
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="State:"
+
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editText4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:nextFocusDown="@+id/editText5"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/editText5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textCapWords"
+                    android:nextFocusDown="@+id/editText6"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/h2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:layout_marginTop="5dp">
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="Country*:"
+                    android:textColor="@android:color/black"
+
+                    />
+
+                <TextView
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="Postal code:"
+
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editText6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/down_arrow"
+                    android:ems="10"
+
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+
+                <EditText
+                    android:id="@+id/editText7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:nextFocusDown="@+id/editText8"
+                    android:singleLine="true"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/midContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:id="@+id/ll_fromDateContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_fromdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="From Date*:"
+                        android:textColor="@android:color/black"/>
+
+                    <EditText
+                        android:id="@+id/et_fromdate"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_height="wrap_content"
+                        android:ems="7"
+                        android:gravity="center"
+                        android:inputType="date" />
+
+
+                    <RelativeLayout
+                        android:id="@+id/rl_fromdateSpinner_container"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/from_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+
+                            <Spinner
+                                android:id="@+id/from_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_fromdate_not_remember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_remembered"
+                        android:textColor="@color/text_color_blue"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_margin="7dp"/>
+
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_toDateContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:text="To Date*:"
+                        android:textColor="@android:color/black" />
+
+
+                    <EditText
+                        android:id="@+id/et_todate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="7"
+                        android:inputType="date"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_todateSpinner_container"
+                        android:layout_marginLeft="15dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <Spinner
+                                android:id="@+id/to_month"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+                            <Spinner
+                                android:id="@+id/to_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:spinnerMode="dropdown"
+                                android:textColor="@color/black"
+                                android:textSize="14dp" />
+
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_todate_not_remember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_remembered"
+                        android:textColor="@color/text_color_blue"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_margin="7dp"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/bSend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:background="@color/header_color"
+                android:layout_marginTop="10dp"
+                android:text="ADD" />
+
         </LinearLayout>
-
-        <Button
-            android:id="@+id/bSend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:background="@color/header_color"
-            android:layout_marginTop="10dp"
-            android:text="ADD" />
 
         <ListView
             android:id="@+id/listView1"

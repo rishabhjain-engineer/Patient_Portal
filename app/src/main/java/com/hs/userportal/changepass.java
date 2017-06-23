@@ -2,6 +2,8 @@ package com.hs.userportal;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +27,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -37,6 +41,8 @@ import java.util.regex.Pattern;
 
 import networkmngr.NetworkChangeListener;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
+import utils.PreferenceHelper;
 
 
 public class changepass extends BaseActivity {
@@ -59,7 +65,7 @@ public class changepass extends BaseActivity {
         setupActionBar();
         service = new Services(changepass.this);
         Intent i = getIntent();
-        id = i.getStringExtra("id");
+        id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         old = (EditText) findViewById(R.id.etSubject);
         pass = (EditText) findViewById(R.id.etContact);
         cpass = (EditText) findViewById(R.id.editText4);
@@ -98,67 +104,62 @@ public class changepass extends BaseActivity {
 
             @Override
             public void onClick(View arg0) {
-                mChangePassowrdBtn.setClickable(false);
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     mOldPassword = old.getEditableText().toString();
                     mNewPassword = pass.getEditableText().toString();
                     mConfirmPassword = cpass.getEditableText().toString();
 
                     if (TextUtils.isEmpty(mOldPassword) || TextUtils.isEmpty(mNewPassword) || TextUtils.isEmpty(mConfirmPassword)) {
-                        Toast.makeText(getApplicationContext(), "No field can be left blank", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "No field can be left blank", Toast.LENGTH_SHORT).show();
+                        showAlertMessage("No field can be left blank");
                     } else if (!mNewPassword.equals(mConfirmPassword)) {
-                        alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Message");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Password and confirm password field should be same!");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
-                    }else if (mNewPassword.equals(mOldPassword)) {
-                        alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Message");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Old and new password should not be same.");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
-                    }else if(!isValidPassword(mNewPassword)){
-                        final AlertDialog alertDialog = new AlertDialog.Builder(changepass.this).create();
-                        alertDialog.setTitle("Alert!");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setMessage("Password is not satisfying mentioned condition.");
-                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mChangePassowrdBtn.setClickable(true);
-                                alertDialog.dismiss();
-                            }
-                        });
-                        alertDialog.show();
+                        showAlertMessage("Password and confirm password field should be same!");
+                    } else if (mNewPassword.equals(mOldPassword)) {
+                        showAlertMessage("Old and new password should not be same.");
+                    } else if (!isValidPassword(mNewPassword)) {
+                        showAlertMessage("Password is not satisfying mentioned condition.");
                     } else {
-                        new Authentication().execute();
+                        mChangePassowrdBtn.setClickable(false);
+                        if (isSessionExist()) {
+                            JSONObject sendData = new JSONObject();
+                            try {
+                                sendData.put("UserId", id);
+                                sendData.put("Password", mOldPassword);
+                                sendData.put("NewPassword", mNewPassword);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            new ChangePasswordAsyncTask(sendData).execute();
+                        }
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No Internet Connection, Please check", Toast.LENGTH_LONG).show();
+                    showAlertMessage("No Internet Connection, Please check");
+                    //Toast.makeText(getApplicationContext(), "No Internet Connection, Please check", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
+        isSessionExist();
     }
 
-    class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void> {
+    private ProgressDialog mProgressDialog;
+
+    private class ChangePasswordAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private JSONObject dataToSend, receiveChangPassData;
 
         public ChangePasswordAsyncTask(JSONObject sendData) {
             dataToSend = sendData;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(changepass.this);
+            mProgressDialog.setTitle("Alert!");
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Changing Passowrd...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
         }
 
         @Override
@@ -170,6 +171,11 @@ public class changepass extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            mProgressDialog.dismiss();
+            mChangePassowrdBtn.setClickable(true);
+            old.setText("");
+            pass.setText("");
+            cpass.setText("");
             String str = "Some Server Error";
             try {
                 str = receiveChangPassData.getString("d");
@@ -184,7 +190,14 @@ public class changepass extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
+        menu.findItem(R.id.action_home).setVisible(false);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     @Override
@@ -194,72 +207,14 @@ public class changepass extends BaseActivity {
 
             case android.R.id.home:
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.action_home:
-                Intent intent = new Intent(getApplicationContext(), logout.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
+                finish();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    class Authentication extends AsyncTask<Void, Void, Void> {
-        JSONObject sendData, receiveData;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            try {
-                sendData = new JSONObject();
-                receiveData = service.IsUserAuthenticated(sendData);
-                System.out.println("IsUserAuthenticated: " + receiveData);
-                authentication = receiveData.getString("d");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            mChangePassowrdBtn.setClickable(true);
-            if (!authentication.equals("true")) {
-                AlertDialog dialog = new AlertDialog.Builder(changepass.this).create();
-                dialog.setTitle("Session timed out!");
-                dialog.setMessage("Session expired. Please login again.");
-                dialog.setCancelable(false);
-                dialog.setButton("OK",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                SharedPreferences sharedpreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                                Editor editor = sharedpreferences.edit();
-                                editor.clear();
-                                editor.commit();
-                                dialog.dismiss();
-                                finish();
-
-                            }
-                        });
-                dialog.show();
-
-            } else {
-                sendData = new JSONObject();
-                try {
-                    sendData.put("UserId", id);
-                    sendData.put("Password", mOldPassword);
-                    sendData.put("NewPassword", mNewPassword);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new ChangePasswordAsyncTask(sendData).execute();
-            }
         }
     }
 
@@ -276,4 +231,5 @@ public class changepass extends BaseActivity {
         matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
 }

@@ -27,7 +27,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class ExpandImage extends ActionBarActivity {
+import ui.BaseActivity;
+
+public class ExpandImage extends BaseActivity {
     private TouchImageView image;
     private String imgname = "", imgnamereceived = "";
     private final String path = Environment.getExternalStorageDirectory()
@@ -44,12 +46,7 @@ public class ExpandImage extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expandimage);
 
-        ActionBar action = getSupportActionBar();
-        action.setDisplayHomeAsUpEnabled(true);
-        action.setBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#000000")));
-        action.setStackedBackgroundDrawable(new ColorDrawable(Color
-                .parseColor("#000000")));
+        setupActionBar();
 
         z = getIntent();
         imgname = z.getStringExtra("image");
@@ -59,10 +56,10 @@ public class ExpandImage extends ActionBarActivity {
         System.out.println(imgname);
 
         if(image_namereceived[len-1]!= null){
-            action.setTitle(image_namereceived[len-1]);
+            mActionBar.setTitle(image_namereceived[len-1]);
             imgnamereceived = image_namereceived[len-1];
         }else{
-            action.setTitle(imgnamereceived);
+            mActionBar.setTitle(imgnamereceived);
         }
 
 

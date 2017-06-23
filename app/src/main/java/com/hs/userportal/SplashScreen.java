@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -32,9 +33,12 @@ import java.util.Locale;
 
 import networkmngr.ConnectionDetector;
 import ui.BaseActivity;
+import ui.DashBoardActivity;
 import ui.QuestionireActivity;
+import ui.SignInActivity;
+import utils.PreferenceHelper;
 
-public class SplashScreen extends Activity {
+public class SplashScreen extends BaseActivity {
 
 
     private static final String MyPREFERENCES = "MyPrefs";
@@ -53,26 +57,36 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
+        setupActionBar();
+        mActionBar.hide();
         sharedpreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         packageAlllist = new ArrayList<HashMap<String, String>>();
         packageHome_list = new ArrayList<HashMap<String, String>>();
         queue = Volley.newRequestQueue(this);
         sendData = new JSONObject();
-        ConnectionDetector con = new ConnectionDetector(SplashScreen.this);
-        if (!con.isConnectingToInternet()) {
-            Toast.makeText(getApplicationContext(), "No internet connection.Please connect to internet.", Toast.LENGTH_LONG).show();
-        }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if(!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.SESSION_ID))){
+            Intent intent = new Intent(this, DashBoardActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            finish();
+        }else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+                    ////////////////////////////////////////////////////////////////////////////////////
+                    ////  Uncommment this section to introduce walk through pages  /////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////
+
+
+                /*sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedpreferences.contains(name)) {
                     if (sharedpreferences.contains(pass)) {
-                        Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                        intentMain.putExtra("isComingFromSplash", true);
                         startActivity(intentMain);
                         finish();
                     }
@@ -83,8 +97,16 @@ public class SplashScreen extends Activity {
                     startActivity(intentWalk);
                     overridePendingTransition(R.anim.pull_up_from_bottom, R.anim.push_out_to_bottom);
                     finish();
+                }*/
+
+                    Intent intentMain = new Intent(getApplicationContext(), SignInActivity.class);
+                    startActivity(intentMain);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    finish();
+
+
                 }
-            }
-        }, 900);
+            },400);
+        }
     }
 }

@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,9 +32,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Allergy extends FragmentActivity {
+import ui.BaseActivity;
 
-    private TextView weighttxtid,heighttxt_id,alergytxtid;
+public class Allergy extends BaseActivity {
+
+    private TextView weighttxtid, heighttxt_id, alergytxtid;
     private ListView listView;
     private String id;
     private Services service;
@@ -40,23 +44,24 @@ public class Allergy extends FragmentActivity {
     private ArrayAdapter<String> m_adapter;
     private ImageButton back_pic;
     private TextView allergy_title;
-    private String submitstatus="",onSubmitAllergiesName="";
+    private String submitstatus = "", onSubmitAllergiesName = "";
     private ArrayList<String> selectedItems;
     private String[] splitAllergies;
     private ArrayList<String> m_listItems = new ArrayList<String>();
     private Dialog filterDialog;
-    private ArrayList<HashMap<String,String>> weight_contentlists=new ArrayList<HashMap<String, String>>();
-    private ArrayList<HashMap<String,String>> allergiesName_list=new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> allergiesName_list = new ArrayList<HashMap<String, String>>();
 
     @Override
     protected void onCreate(Bundle avedInstanceState) {
         super.onCreate(avedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.allergy);
-        listView = (ListView)findViewById(R.id.listView);
-        add_allergy = (Button)findViewById(R.id.add_allergy);
-        back_pic=(ImageButton)findViewById(R.id.back_pic);
-        allergy_title=(TextView)findViewById(R.id.allergy_title);
+        setupActionBar();
+        listView = (ListView) findViewById(R.id.listView);
+        add_allergy = (Button) findViewById(R.id.add_allergy);
+        back_pic = (ImageButton) findViewById(R.id.back_pic);
+        allergy_title = (TextView) findViewById(R.id.allergy_title);
         allergy_title.setTextColor(getResources().getColor(R.color.white));
         Intent z = getIntent();
         id = z.getStringExtra("id");
@@ -85,17 +90,14 @@ public class Allergy extends FragmentActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 final String itemstring = splitAllergies[position];
-               final AlertDialog alert = new AlertDialog.Builder(Allergy.this).create();
-
-
+                final AlertDialog alert = new AlertDialog.Builder(Allergy.this).create();
                 alert.setTitle("Options");
                 alert.setMessage("Delete Allergy");
-
                 alert.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
                         new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                                onSubmitAllergiesName="";
+                                onSubmitAllergiesName = "";
                                 for (int i = 0; i < splitAllergies.length; i++) {
                                     if (!splitAllergies[i].equals(itemstring)) {
                                         if (splitAllergies.length == 1)
@@ -105,19 +107,17 @@ public class Allergy extends FragmentActivity {
                                         else
                                             onSubmitAllergiesName = onSubmitAllergiesName + splitAllergies[i] + ",";
                                     }
+
                                 }
                                 if (onSubmitAllergiesName.endsWith(",")) {
-                                    onSubmitAllergiesName=onSubmitAllergiesName.substring(0,onSubmitAllergiesName.length()-2);
+                                    onSubmitAllergiesName = onSubmitAllergiesName.substring(0, onSubmitAllergiesName.length() - 1);
                                 }
                                 submitstatus = "delete";
                                 new BackgroundProcess().execute();
                                 alert.dismiss();
 
-
                             }
                         });
-
-
                 alert.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
                         new DialogInterface.OnClickListener() {
 
@@ -127,7 +127,6 @@ public class Allergy extends FragmentActivity {
 
                             }
                         });
-
                 alert.show();
 
 
@@ -137,21 +136,21 @@ public class Allergy extends FragmentActivity {
         add_allergy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               final String[] aleergies=new String[allergiesName_list.size()];
-                for(int i=0;i<allergiesName_list.size();i++){
-                aleergies[i]=allergiesName_list.get(i).get("AlertName");
+                final String[] aleergies = new String[allergiesName_list.size()];
+                for (int i = 0; i < allergiesName_list.size(); i++) {
+                    aleergies[i] = allergiesName_list.get(i).get("AlertName");
                 }
                 filterDialog = new Dialog(Allergy.this, R.style.DialogSlideAnim);
                 filterDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 filterDialog.setCancelable(true);
                 filterDialog.setContentView(R.layout.allergi_dialog);
-               final ListView allergy_idlist=(ListView)filterDialog.findViewById(R.id.allergy_idlist);
-               final ArrayAdapter<String>  adapter_multi = new ArrayAdapter<String>(Allergy.this,
+                final ListView allergy_idlist = (ListView) filterDialog.findViewById(R.id.allergy_idlist);
+                final ArrayAdapter<String> adapter_multi = new ArrayAdapter<String>(Allergy.this,
                         android.R.layout.simple_list_item_multiple_choice, android.R.id.text1,
                         aleergies);
                 allergy_idlist.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 allergy_idlist.setAdapter(adapter_multi);
-               final Button submitallergies=(Button)filterDialog.findViewById(R.id.submitallergies);
+                final Button submitallergies = (Button) filterDialog.findViewById(R.id.submitallergies);
 
                 allergy_idlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -160,15 +159,15 @@ public class Allergy extends FragmentActivity {
 
 
                         SparseBooleanArray checked = allergy_idlist.getCheckedItemPositions();
-                         selectedItems =new ArrayList<String>();
+                        selectedItems = new ArrayList<String>();
 
                         for (int i = 0; i < checked.size(); i++) {
                             // Item position in adapter
                             try {
-                               int  position1 = checked.keyAt(i);
+                                int position1 = checked.keyAt(i);
                                 // Add sport if it is checked i.e.) == TRUE!
                                 if (checked.valueAt(i)) {
-                                    String ca=adapter_multi.getItem(position1);
+                                    String ca = adapter_multi.getItem(position1);
                                     selectedItems.add(adapter_multi.getItem(position1));
                                     // searchTestNameList(adapter_multi.getItem(position));
                                 }
@@ -188,7 +187,7 @@ public class Allergy extends FragmentActivity {
                 submitallergies.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onSubmitAllergiesName="";
+                        onSubmitAllergiesName = "";
                         for (int i = 0; i < selectedItems.size(); i++) {
                             boolean flag = true;
                             try {
@@ -210,13 +209,13 @@ public class Allergy extends FragmentActivity {
                                     onSubmitAllergiesName = onSubmitAllergiesName + selectedItems.get(i) + ",";
                             }
                         }
-                        if(onSubmitAllergiesName!=""){
-                            if(onSubmitAllergiesName.endsWith(",")){
-                                onSubmitAllergiesName=onSubmitAllergiesName.substring(0,onSubmitAllergiesName.length()-2);
+                        if (onSubmitAllergiesName != "") {
+                            if (onSubmitAllergiesName.endsWith(",")) {
+                                onSubmitAllergiesName = onSubmitAllergiesName.substring(0, onSubmitAllergiesName.length() - 2);
                             }
-                            submitstatus="add";
+                            submitstatus = "add";
                             new BackgroundProcess().execute();
-                        }else{
+                        } else {
                             filterDialog.dismiss();
                         }
                     }
@@ -229,11 +228,24 @@ public class Allergy extends FragmentActivity {
 
     }
 
-    class BackgroundProcess extends AsyncTask<Void, Void, Void>
-    {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
         String message;
+
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
@@ -251,32 +263,29 @@ public class Allergy extends FragmentActivity {
             super.onPostExecute(result);
             if (submitstatus == "add") {
                 filterDialog.dismiss();
-                submitstatus="";
-                if(message.equals("success")){
-                    Toast.makeText(getApplicationContext(),"Successfully Added",Toast.LENGTH_LONG).show();
+                submitstatus = "";
+                if (message.equals("success")) {
+                    Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_LONG).show();
                     new BackgroundProcess().execute();
 
                 }
 
-            }else if(submitstatus == "delete"){
-               // filterDialog.dismiss();
-                submitstatus="";
-                if(message.equals("success")){
-                    Toast.makeText(getApplicationContext(),"Successfully Deleted",Toast.LENGTH_LONG).show();
+            } else if (submitstatus == "delete") {
+                // filterDialog.dismiss();
+                submitstatus = "";
+                if (message.equals("success")) {
+                    Toast.makeText(getApplicationContext(), "Successfully Deleted", Toast.LENGTH_LONG).show();
                     new BackgroundProcess().execute();
 
                 }
-            }
-
-            else {
+            } else {
                 try {
                     splitAllergies = weight_contentlists.get(0).get("allergiesName").split(",");
-           /* for(int i=0;i<splitAllergies.length;i++){
-
-            }*/
                     m_adapter = new ArrayAdapter<String>(Allergy.this, android.R.layout.simple_list_item_1, splitAllergies);
                     listView.setAdapter(m_adapter);
                 } catch (Exception e) {
+                    m_adapter = new ArrayAdapter<String>(Allergy.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+                    listView.setAdapter(m_adapter);
                     e.printStackTrace();
                 }
             }
@@ -286,34 +295,34 @@ public class Allergy extends FragmentActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            JSONObject  sendData1 = new JSONObject();
-            String PatientHistoryId1="",type="";
-            if(weight_contentlists.size()>0) {
-                 PatientHistoryId1 = weight_contentlists.get(0).get("PatientHistoryId");
-                type="edit";
+            JSONObject sendData1 = new JSONObject();
+            String PatientHistoryId1 = "", type = "";
+            if (weight_contentlists.size() > 0) {
+                PatientHistoryId1 = weight_contentlists.get(0).get("PatientHistoryId");
+                type = "edit";
             }
             try {
-                if (submitstatus == "add"||submitstatus == "delete") {
-                    if(splitAllergies!=null&&submitstatus.equals("add")&&splitAllergies.length>0){
-                    for (int j = 0; j < splitAllergies.length; j++) {
-                        onSubmitAllergiesName=onSubmitAllergiesName+","+splitAllergies[j];
+                if (submitstatus == "add" || submitstatus == "delete") {
+                    if (splitAllergies != null && submitstatus.equals("add") && splitAllergies.length > 0) {
+                        for (int j = 0; j < splitAllergies.length; j++) {
+                            onSubmitAllergiesName = onSubmitAllergiesName + "," + splitAllergies[j];
                         }
                     }
                     sendData1.put("weight", "");
                     sendData1.put("height", "");
-                    sendData1.put("allergy",onSubmitAllergiesName );
+                    sendData1.put("allergy", onSubmitAllergiesName);
                     sendData1.put("fromdate", "");
                     sendData1.put("todate", "");
                     sendData1.put("PatientHistoryId", PatientHistoryId1);
-                    JSONArray jsonArray=new JSONArray();
+                    JSONArray jsonArray = new JSONArray();
                     jsonArray.put(sendData1);
-                    JSONObject jsonObject=new JSONObject();
-                    jsonObject.put("healthDetails",jsonArray);
-                    jsonObject.put("UserId",id);
-                    jsonObject.put("statusType",type);
-                    jsonObject.put("htype","allergy");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("healthDetails", jsonArray);
+                    jsonObject.put("UserId", id);
+                    jsonObject.put("statusType", type);
+                    jsonObject.put("htype", "allergy");
                     receiveData1 = service.saveHealthDetail(jsonObject);
-                   message=receiveData1.getString("d");
+                    message = receiveData1.getString("d");
 
 
                 } else {
@@ -356,7 +365,6 @@ public class Allergy extends FragmentActivity {
                         String PatientHistoryId = obj.getString("PatientHistoryId");
                         String allergiesName = obj.getString("allergiesName");
                         String ID = obj.getString("ID");
-
                         hmap.put("PatientHistoryId", PatientHistoryId);
                         hmap.put("allergiesName", allergiesName);
                         hmap.put("ID", ID);
@@ -367,8 +375,7 @@ public class Allergy extends FragmentActivity {
 
                 }
             }
-/*{"d":"{\"Table\":[{\"PatientHistoryId\":\"34e9b796-81d9-421e-8268-b00f34c7da4b\",\"ID\":1,\"allergiesName\":\"Balsam Allergy,Cat Allergy,Allergic\"}]}"}*/
-            catch (JSONException e) {
+/*{"d":"{\"Table\":[{\"PatientHistoryId\":\"34e9b796-81d9-421e-8268-b00f34c7da4b\",\"ID\":1,\"allergiesName\":\"Balsam Allergy,Cat Allergy,Allergic\"}]}"}*/ catch (JSONException e) {
 
                 e.printStackTrace();
             }
@@ -380,6 +387,7 @@ public class Allergy extends FragmentActivity {
         }
 
     }
+
     public static class Utility {
         public static void setListViewHeightBasedOnChildren(ListView listView) {
             ListAdapter listAdapter = listView.getAdapter();
@@ -412,7 +420,7 @@ public class Allergy extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-       super.onBackPressed();
+        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

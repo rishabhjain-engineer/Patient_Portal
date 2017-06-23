@@ -1,17 +1,23 @@
 package ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -20,6 +26,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +37,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
+import com.hs.userportal.AddGraphDetails;
 import com.hs.userportal.AddWeight;
 import com.hs.userportal.Authentication;
+import com.hs.userportal.Height;
+import com.hs.userportal.Helper;
 import com.hs.userportal.MiscellaneousTasks;
 import com.hs.userportal.R;
 import com.hs.userportal.Services;
@@ -52,17 +62,20 @@ import java.util.List;
 import adapters.MyHealthsAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
+import utils.PreferenceHelper;
+import utils.Utils;
 
 /**
  * Created by Rishabh on 15/2/17.
  */
 
-public class BpActivity extends BaseActivity {
+public class BpActivity extends GraphHandlerActivity {
 
     private WebView weight_graphView;
     private ListView weight_listId;
     private Button bsave;
-    private String id;
+    private String id, mDateFormat = "%b '%y", mFormDate, mToDate, mIntervalMode;
     private TextView wt_heading;
     private JSONObject sendData;
     private String parenthistory_ID;
@@ -77,15 +90,22 @@ public class BpActivity extends BaseActivity {
     private MyHealthsAdapter adapter;
     private ArrayList<HashMap<String, String>> weight_contentlists = new ArrayList<HashMap<String, String>>();
     private LineChart linechart;
-    private int maxYrange = 0;
+    private int maxYrange = 0, mRotationAngle = 0;
     private double mMaxWeight = 0;
-    private JSONArray mJsonArrayToSend = new JSONArray();
+    private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
+    private long mFormEpocDate = 0, mEpocToDate = 0;
+    private boolean mIsToAddMaxMinValue = true;
+    private long mDateMaxValue, mDateMinValue;
+    private RelativeLayout mListViewHeaderRl;
+    private double mRangeToInDouble =0 , mRangeFromInDouble = 0 ;
 
+    private List<String> mDateList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bp_activity);
+        mListViewHeaderRl = (RelativeLayout) findViewById(R.id.header);
         setupActionBar();
         mActionBar.setTitle("Blood Pressure");
         weight_graphView = (WebView) findViewById(R.id.weight_graphView);
@@ -107,10 +127,7 @@ public class BpActivity extends BaseActivity {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(BpActivity.this, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             new Authentication(BpActivity.this, "bp", "").execute();
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         weight_listId = (ListView) findViewById(R.id.weight_listId);
         bsave = (Button) findViewById(R.id.bsave);
@@ -131,24 +148,32 @@ public class BpActivity extends BaseActivity {
         weight_listId.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 parenthistory_ID = weight_contentlists.get(position).get("PatientHistoryId");
-                AlertDialog dialog = new AlertDialog.Builder(BpActivity.this).create();
-                dialog.setTitle("Delete Weight");
-                dialog.setMessage("Are you sure you want to delete the Weight?");
 
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
+                final Dialog dialog = new Dialog(BpActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.unsaved_alert_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView messageTv = (TextView) dialog.findViewById(R.id.message);
+                TextView titleTv = (TextView) dialog.findViewById(R.id.title);
+                titleTv.setText("Delete Bp Value");
+                TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
+                TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+                messageTv.setText("Are you sure you want to delete the selected file(s)?");
+                stayButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         dialog.dismiss();
-
                     }
                 });
 
-                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-
+                okBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
+                        dialog.dismiss();
                         deleteWeight();
                     }
                 });
@@ -160,212 +185,223 @@ public class BpActivity extends BaseActivity {
         new BackgroundProcess().execute();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            weight_listId.setVisibility(View.GONE);
+            mListViewHeaderRl.setVisibility(View.GONE);
+            mActionBar.hide();
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            weight_listId.setVisibility(View.VISIBLE);
+            mListViewHeaderRl.setVisibility(View.VISIBLE);
+            mActionBar.show();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new BackgroundProcess().execute();
+    }
 
     class BackgroundProcess extends AsyncTask<Void, Void, Void> {
         ProgressDialog progress;
         JSONObject receiveData1;
+        boolean isDataAvailable = false;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
+            isDataAvailable = false;
             progress = new ProgressDialog(BpActivity.this);
             progress.setCancelable(false);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
-
             progress.show();
-
-
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
-
-            adapter = new MyHealthsAdapter(BpActivity.this, weight_contentlists);
-            weight_listId.setAdapter(adapter);
-            Weight.Utility.setListViewHeightBasedOnChildren(weight_listId);
-            String db = null;
-            try {
-
-                db = "<!DOCTYPE html> <html> <head>" +
-                        " <title></title>" +
-                        " <link rel='stylesheet' href='kendo.common.min.css' />" +
-                        " <link rel='stylesheet' href='kendo.default.min.css' />"
-
-                        + "  <script src='jquery.min.js'></script>"
-                        + "  <script src='kendo.all.min.js'></script>"
-                        + " </head>"
-                        + " <body>"
-                        + " <div id='example'>"
-                        + "  <div class='demo-section k-content wide'>"
-                        + " <div id='chart' style='background: center no-repeat url('../content/shared/styles/world-map.png');'></div>"
-                        + " </div> \n" +
-                        "    <script>\n" +
-                        "        function createChart() {\n" +
-                        "            $(\"#chart\").kendoChart({\n" +
-                        "                title: {\n" +
-                        "                    text: \"Weight in kg\"\n" +
-                        "                },\n" +
-                        "                legend: {\n" +
-                        "                    position: \"bottom\"\n" +
-                        "                },\n" +
-                        "                chartArea: {\n" +
-                        "                    background: \"\"\n" +
-                        "                },\n" +
-                        "                seriesDefaults: {\n" +
-                        "                    type: \"line\",\n" +
-                        "                    style: \"smooth\"\n" +
-                        "                },\n" +
-                        "                series: [{\n" +
-                        "                    name: \"Weight\",\n" +
-                        "                    data: " + chartValues + "\n" +
-                        "                }  ],\n" +
-                        "                valueAxis: {\n" +
-                        "                    labels: {\n" +
-                        "                        format: \"{0}\"\n" +
-                        "                    },\n" +
-                        "                    line: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    axisCrossingValue: -10\n" +
-                        "                },\n" +
-                        "                categoryAxis: {\n" +
-                        "                    categories: " + chartDates + ",\n" +
-                        "                    majorGridLines: {\n" +
-                        "                        visible: false\n" +
-                        "                    },\n" +
-                        "                    labels: {\n" +
-                        "                        rotation: \"auto\"\n" +
-                        "                    }\n" +
-                        "                },\n" +
-                        "                tooltip: {\n" +
-                        "                    visible: true,\n" +
-                        "                    format: \"{0}%\",\n" +
-                        "                    template: \"#= series.name #: #= value #\"\n" +
-                        "                }\n" +
-                        "            });\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        $(document).ready(createChart);\n" +
-                        "        $(document).bind(\"kendo:skinChange\", createChart);\n" +
-                        "    </script>\n" +
-                        "</div>\n" +
-                        "\n" +
-                        "\n" +
-                        "</body>\n" +
-                        "</html>";
-
-              /*  db = "<!DOCTYPE html><html><head><title></title><link data-require=\"nvd3@1.1.14-beta\" " +
-                        "data-semver=\"1.1.14-beta\" rel=\"stylesheet\" href=\"nv.d3.css\"/>" +
-                        "<script data-require=\"d3@3.3.11\" data-semver=\"3.3.11\" src=\"d3.js\">" +
-                        "</script><script data-require=\"nvd3@1.1.14-beta\" data-semver=\"1.1.14-beta\" src=\"nv.d3.js\">" +
-                        "</script><script src=\"jquery.js\"></script></head>" +
-                        "<style>.nv-point {stroke-opacity: 1 !important;stroke-width: 5px;fill-opacity: 1 !important}.bullet" +
-                        " { font: 10px sans-serif; }.bullet .marker { stroke: #000; stroke-width: 2px; }.bullet .tick line " +
-                        "{ stroke: #666; stroke-width: .5px; }.bullet .range.s0 { fill: #eee; }.bullet .range.s1 { fill: #ddd; }" +
-                        ".bullet .range.s2 { fill: #ccc; }.bullet .measure.s0 { fill: steelblue; }.bullet .title { font-size: 14px; " +
-                        "font-weight: bold; }.bullet .subtitle { fill: #999; }</style><body><div id=\"chart\" style=\"height:254px\">" +
-                        "<svg height=\"354 \" width=\"375\"></svg></div><script>" +
-                        "var data1 = [{\"key\":\"Weight (kg)\",\"values\": " +
-                        jsonArrayToSend +
-                        "nv.addGraph(function () {var chart = nv.models.lineChart().x(function (d) {return d[0];}).y(function (d) {return d[1]})." +
-                        "color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, 45.000000])." +
-                        "tooltipContent(function (key, x, y, e) {return '<div id=\"tooltipcustom\">' + '<p>' + y+\" (kg)\" + ' on ' + " +
-                        "new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() +'-' + " +
-                        "new Date(e.point[0]).getFullYear().toString() + '</p></div>'});chart.xAxis.tickValues([]).tickFormat(function (d)" +
-                        " {return d3.time.format(\"%d-%m-%Y\")(new Date(d))});chart.yAxis.tickFormat(function (d) {return d3.format('.2f')" +
-                        "(d)});d3.select('#chart svg').datum(data1).call(chart);nv.utils.windowResize(chart.update);return chart;}, " +
-                        "function (chart) {x = chart;var x1 = chart.xScale()();var x2 = chart.xScale()();var height = chart.yAxis." +
-                        "range()[0];var y2 = chart.yScale()();var y1 = chart.yScale()();var width = chart.xAxis.range()[1];" +
-                        "d3.select('.nv-wrap').append('rect').attr('y', y1).attr('height', y2 - y1).style('fill', '#2b8811 ').style" +
-                        "('opacity', 0.2).attr('x', 0).attr('width', width);});</script></body></html>";
-
-
-*/
-                progress.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
-                progress.dismiss();
+            if (isDataAvailable) {
+                setDateList(mDateList);
+                if (adapter == null) {
+                    adapter = new MyHealthsAdapter(BpActivity.this);
+                    adapter.setListData(weight_contentlists);
+                    weight_listId.setAdapter(adapter);
+                } else {
+                    adapter.setListData(weight_contentlists);
+                    adapter.notifyDataSetChanged();
+                }
+                Height.Utility.setListViewHeightBasedOnChildren(weight_listId);
+                weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
+                if (progress != null && progress.isShowing()) {
+                    progress.dismiss();
+                }
+            } else {
+                Intent i = new Intent(BpActivity.this, AddWeight.class);
+                i.putExtra("id", id);
+                i.putExtra("htype", "bp");
+                startActivity(i);
+                finish();
             }
-            weight_graphView.loadUrl("file:///android_asset/html/bp2linechart.html");
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            // SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat simpleDateFormatDash = new SimpleDateFormat("yyyy-MM-dd"); //Removed hour minute second
             JSONObject sendData1 = new JSONObject();
+            mDateList.clear();
             try {
 
                 sendData1.put("UserId", id);
                 sendData1.put("profileParameter", "health");
-                sendData1.put("htype", "weight");
+                sendData1.put("htype", "bp");
                 receiveData1 = service.patienBasicDetails(sendData1);
                 String data = receiveData1.getString("d");
                 JSONObject cut = new JSONObject(data);
                 JSONArray jsonArray = cut.getJSONArray("Table");
 
-
                 HashMap<String, String> hmap;
                 weight_contentlists.clear();
 
-                JSONArray jsonArray1 = new JSONArray();
+
+                JSONArray jsonArrayLowerBp = new JSONArray();
+                JSONArray jsonArrayTopBp = new JSONArray();
                 for (int i = 0; i < jsonArray.length(); i++) {
+                    isDataAvailable = true;
                     hmap = new HashMap<String, String>();
                     JSONObject obj = jsonArray.getJSONObject(i);
-                    String PatientHistoryId = obj.getString("PatientHistoryId");
-                    String ID = obj.getString("ID");
-                    String weight = obj.getString("weight");
-                    if (!TextUtils.isEmpty(weight)) {
-                        double weightInDouble = Double.parseDouble(weight);
-                        if (mMaxWeight <= weightInDouble) {
-                            mMaxWeight = weightInDouble;
-                        }
-                    }
-                    String fromdate = obj.getString("fromdate");
+                    String PatientHistoryId = obj.optString("PatientHistoryId");
+                    String ID = obj.optString("ID");
+                    String bp = obj.optString("bp");
+
+
+                    String fromdate = obj.optString("fromdate");
+                    String dateWithoutHour[] = fromdate.split("T");
+                    String onlyDate = dateWithoutHour[0];
+                    String correctDate = Utils.correctDateFormat(onlyDate);
+                    mDateList.add(correctDate);
                     hmap.put("PatientHistoryId", PatientHistoryId);
                     hmap.put("ID", ID);
-                    hmap.put("weight", weight);
-                    hmap.put("fromdate", fromdate);
-                    weight_contentlists.add(hmap);
-                    chartValues.add(weight);
-                    // chartDates.add("'" + fromdate + "'");
-                    chartDates.add("");
+                    hmap.put("weight", bp);
+                    hmap.put("fromdate", onlyDate);
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     Date date = null;
                     try {
-                        date = simpleDateFormat.parse(fromdate);
+                        date = simpleDateFormatDash.parse(onlyDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     long epoch = date.getTime();
-                    JSONArray innerJsonArray = new JSONArray();
-                    innerJsonArray.put(epoch);
-                    innerJsonArray.put(weight);
 
-                    jsonArray1.put(innerJsonArray);
+                    if (mFormEpocDate > 0) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                            weight_contentlists.add(hmap);
+                        }
+                    } else {
+                        weight_contentlists.add(hmap);
+                    }
+
+
                 }
-                JSONObject outerJsonObject = new JSONObject();
-                outerJsonObject.put("key", "Weight(kg)");
-                outerJsonObject.put("values", jsonArray1);
-                mJsonArrayToSend.put(outerJsonObject);
-                Collections.reverse(chartValues);
 
-             /* new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
+
+                Helper.sortHealthListByDate(weight_contentlists);
+
+                for (int i = 0; i < weight_contentlists.size(); i++) {
+
+                    Date date = null;
+                    HashMap<String, String> mapValue = weight_contentlists.get(i);
+                    try {
+                        String fromdate = mapValue.get("fromdate");
+                        date = simpleDateFormatDash.parse(fromdate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long epoch = date.getTime();
+
+                    if (mIsToAddMaxMinValue && i == 0) {
+                        mDateMinValue = epoch;
+                    }
+                    if (mIsToAddMaxMinValue && i == (weight_contentlists.size() - 1)) {
+                        mDateMaxValue = epoch;
+                    }
+
+                    if (mFormEpocDate > 0) {
+                        if (epoch <= mEpocToDate && epoch >= mFormEpocDate) {
+                            JSONArray innerJsonArray = new JSONArray();
+                            String bp = mapValue.get("weight");
+                            String bpArray[] = bp.split(",");
+                            innerJsonArray.put(epoch);
+                            innerJsonArray.put(mapValue.get("weight"));
+
+                            JSONArray innerJsonArrayLowerBp = new JSONArray();
+                            JSONArray innerJsonArrayTopBP = new JSONArray();
+                            innerJsonArrayLowerBp.put(epoch);
+                            innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                            jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+
+                            innerJsonArrayTopBP.put(epoch);
+                            innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                            jsonArrayTopBp.put(innerJsonArrayTopBP);
+
+
+                            double bpInDouble = Double.parseDouble(bpArray[0]);
+                            if (mMaxWeight <= bpInDouble) {
+                                mMaxWeight = bpInDouble;
+                            }
+
+                        }
+                    } else {
+                        JSONArray innerJsonArray = new JSONArray();
+                        String bp = mapValue.get("weight");
+                        String bpArray[] = bp.split(",");
+                        innerJsonArray.put(epoch);
+                        innerJsonArray.put(mapValue.get("weight"));
+
+                        JSONArray innerJsonArrayLowerBp = new JSONArray();
+                        JSONArray innerJsonArrayTopBP = new JSONArray();
+                        innerJsonArrayLowerBp.put(epoch);
+                        innerJsonArrayLowerBp.put(Integer.parseInt(bpArray[1]));
+                        jsonArrayLowerBp.put(innerJsonArrayLowerBp);
+
+                        innerJsonArrayTopBP.put(epoch);
+                        innerJsonArrayTopBP.put(Integer.parseInt(bpArray[0]));
+                        jsonArrayTopBp.put(innerJsonArrayTopBP);
+
+
+                        double bpInDouble = Double.parseDouble(bpArray[0]);
+                        if (mMaxWeight <= bpInDouble) {
+                            mMaxWeight = bpInDouble;
+                        }
+
+                    }
+                }
+
+                mJsonArrayToSend = new JSONArray();
+                JSONObject outerJsonObjectUpperBp = new JSONObject();
+                outerJsonObjectUpperBp.put("key", "systolic");
+                outerJsonObjectUpperBp.put("values", jsonArrayTopBp);
+                mJsonArrayToSend.put(outerJsonObjectUpperBp);
+
+                JSONObject outerJsonObjectLowerBp = new JSONObject();
+                outerJsonObjectLowerBp.put("key", "daistolic");
+                outerJsonObjectLowerBp.put("values", jsonArrayLowerBp);
+                mJsonArrayToSend.put(outerJsonObjectLowerBp);
+
+                /*Collections.reverse(chartValues);
+
+                new Helper(). sortHashListByDate(weight_contentlists,"fromdate");
                 for(int i=0;i<weight_contentlists.size();i++){
                     chartValues.add(weight_contentlists.get(i).get("weight"));
                     chartDates.add(String.valueOf(i+1));
                 }
                 Collections.reverse(chartValues);*/
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
-
-
-            System.out.println(receiveData1);// TODO Auto-generated method stub
-
             return null;
         }
 
@@ -373,7 +409,7 @@ public class BpActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.weightmenu, menu);
+        getMenuInflater().inflate(R.menu.graphheader, menu);
 
         return true;
     }
@@ -397,9 +433,12 @@ public class BpActivity extends BaseActivity {
                 i.putExtra("htype", "bp");
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 startActivity(i);
-                finish();
+                //finish();
                 return true;
 
+            case R.id.option:
+                Intent addGraphDetailsIntent = new Intent(BpActivity.this, AddGraphDetails.class);
+                startActivityForResult(addGraphDetailsIntent, AppConstant.BMI_REQUEST_CODE);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -409,6 +448,17 @@ public class BpActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, "");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, "");
+
+        SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
+        mEditor.putInt("userChoiceSpinner", 0);
+        mEditor.commit();
     }
 
     public static class Utility {
@@ -463,8 +513,9 @@ public class BpActivity extends BaseActivity {
                     if (response.getString("d").equalsIgnoreCase("success")) {
                         progress.dismiss();
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
-                        finish();
-                        startActivity(getIntent());
+                        //finish();
+                        //startActivity(getIntent());
+                        new BackgroundProcess().execute();
                     } else {
                         Toast.makeText(BpActivity.this, response.getString("d").toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -490,16 +541,133 @@ public class BpActivity extends BaseActivity {
         queue.add(jr);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstant.BMI_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFormDate = data.getStringExtra("fromDate");
+            mToDate = data.getStringExtra("toDate");
+            mIsToAddMaxMinValue = false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = null, date2 = null;
+
+            try {
+                date1 = simpleDateFormat.parse(mFormDate);
+                date2 = simpleDateFormat.parse(mToDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mFormEpocDate = date1.getTime();
+            mEpocToDate = date2.getTime();
+            mIntervalMode = data.getStringExtra("intervalMode");
+            mRotationAngle = 90;
+
+            if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[0])) {
+                //Daily
+                mDateFormat = "%d %b '%y";
+                mTckValuesJsonArray = getJsonForDaily(mFormDate, mToDate);
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[1])) {
+                //Weekly
+                mTckValuesJsonArray = getJsonForWeekly(mFormDate, mToDate);
+                mDateFormat = "%d %b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[2])) {
+                //Monthly
+                mTckValuesJsonArray = getJsonForMonthly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[3])) {
+                //Quarterly
+                mTckValuesJsonArray = getJsonForQuaterly(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[4])) {
+                //Semi-Annually
+                mTckValuesJsonArray = getJsonForSemiAnnually(mFormDate, mToDate);
+                mDateFormat = "%b '%y";
+            } else if (mIntervalMode.equalsIgnoreCase(AppConstant.mDurationModeArray[5])) {
+                //Annually
+                mTckValuesJsonArray = getJsonForYearly(mFormDate, mToDate);
+                mDateFormat = "%Y";
+                mRotationAngle = 0;
+            }
+            for (int i = 0; i < mTckValuesJsonArray.length(); i++) {
+                if (i == 0) {
+                    try {
+                        Object a = mTckValuesJsonArray.get(0);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMinValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (i == (mTckValuesJsonArray.length() - 1)) {
+                    try {
+                        int pos = ((mTckValuesJsonArray.length() - 1));
+                        Object a = mTckValuesJsonArray.get(pos);
+                        String stringToConvert = String.valueOf(a);
+                        mDateMaxValue = Long.parseLong(stringToConvert);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     public class MyJavaScriptInterface {
         @JavascriptInterface
         public String passDataToHtml() {
+            Log.e("ayaz", "Jsonarraytosend  bp " + mJsonArrayToSend.toString());
             return mJsonArrayToSend.toString();
         }
 
         @JavascriptInterface
-        public int getDouble() {
+        public int getMaxData() {
             int i = (int) mMaxWeight;
             return (i + 20);
+        }
+
+        @JavascriptInterface
+        public int getRotationAngle() {
+            return mRotationAngle;
+        }
+
+        @JavascriptInterface
+        public String getTickValues() {
+            if (mTckValuesJsonArray == null) {
+                return "null";
+            } else {
+                Log.e("ayaz", "Tick Values  ( bp )  " + mTckValuesJsonArray.toString());
+                return mTckValuesJsonArray.toString();
+            }
+        }
+
+        @JavascriptInterface
+        public String getDateFormat() {
+            return mDateFormat;
+        }
+
+        @JavascriptInterface
+        public long minDateValue() {
+            Log.e("ayaz", "min bp: " + mDateMinValue);
+            return mDateMinValue;
+        }
+
+        @JavascriptInterface
+        public long maxDateValue() {
+            Log.e("ayaz", "max bp: " + mDateMaxValue);
+            return mDateMaxValue;
+        }
+
+        @JavascriptInterface
+        public int getRangeTo() {
+            return (int)mRangeToInDouble;
+        }
+
+
+        @JavascriptInterface
+        public int getRangeFrom() {
+            return (int)mRangeFromInDouble;
         }
     }
 

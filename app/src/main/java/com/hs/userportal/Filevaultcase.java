@@ -42,6 +42,7 @@ import java.util.Map;
 import config.StaticHolder;
 import dev.dworks.libs.astickyheader.SimpleSectionedGridAdapter;
 import dev.dworks.libs.astickyheader.SimpleSectionedGridAdapter.Section;
+import ui.DashBoardActivity;
 
 public class Filevaultcase extends ActionBarActivity {
 
@@ -348,7 +349,7 @@ public class Filevaultcase extends ActionBarActivity {
 
 		case R.id.action_home:
 
-			Intent intent = new Intent(getApplicationContext(), logout.class);
+			Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			startActivity(intent);
 			return true;

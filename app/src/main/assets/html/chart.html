@@ -85,7 +85,7 @@
             }).y(function(d) {
                 return d[1]
             }).color(d3.scale.category10().range()).transitionDuration(300).showLegend(true).showYAxis(true).forceY([0, max]).tooltipContent(function(key, x, y, e) {
-                return '<div id="tooltipcustom">' + '<p>' + y + " (kg)" + ' on ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() + '-' + new Date(e.point[0]).getFullYear().toString() + '</p></div>'
+                return '<div id="tooltipcustom">' + '<p>' + y + " " + ' on ' + new Date(e.point[0]).getDate().toString() + '-' + (new Date(e.point[0]).getMonth() + 1).toString() + '-' + new Date(e.point[0]).getFullYear().toString() + '</p></div>'
             });
             chart.xAxis.tickValues([]).tickFormat(function(d) {
                 return d3.time.format("%d-%m-%Y")(new Date(d))
