@@ -189,7 +189,7 @@ public class ConsultFragment extends Fragment {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("patientId", AppConstant.getpatienDoctorId());
+            data.put("patientId", AppConstant.getPatientID());
             data.put("symptoms", "");
             data.put("patientNotes", "");
             data.put("consultId", JSONObject.NULL);

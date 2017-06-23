@@ -101,7 +101,7 @@ public class PastVisitFirstActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("patientId", AppConstant.getpatienDoctorId());
+            data.put("patientId", AppConstant.getPatientID());
         } catch (JSONException je) {
             je.printStackTrace();
         }

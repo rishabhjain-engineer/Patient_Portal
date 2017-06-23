@@ -850,7 +850,7 @@ public class SymptomsActivity extends BaseActivity {
 
         JSONObject data = new JSONObject();
         try {
-            data.put("PatientId", AppConstant.getpatienDoctorId());
+            data.put("PatientId", AppConstant.getPatientID());
             data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
             JSONArray jsonArray = new JSONArray();
             JSONObject innerJsonObject = new JSONObject();
