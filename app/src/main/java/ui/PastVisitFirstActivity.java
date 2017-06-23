@@ -74,7 +74,7 @@ public class PastVisitFirstActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             pastVisitList();
-        }else{
+        } else {
             Toast.makeText(PastVisitFirstActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
 
