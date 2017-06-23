@@ -48,6 +48,9 @@ import utils.AppConstant;
 public class PastVisitDoctorDetailActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
+    private TextView mDoctorNameTextView, mDoctorAdressTv, mDoctorCityTv, mClinicNameTv, mPincodeTv, mConsultTimeTv, mSymptomsTv, mPatientNotesTv,
+            mDoctorCommentsTv, mDiagnosisTv, mFiles;
+    private ImageView mSignImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
             pastVisitDetails(pastVisitFirstModel.getConsultId());
-        }else{
+        } else {
             Toast.makeText(PastVisitDoctorDetailActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
         setupActionBar();
@@ -82,15 +85,15 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             }
         });
 
-        TextView doctorName = (TextView) findViewById(R.id.doctor_name);
-        TextView doctorLocation = (TextView) findViewById(R.id.city);
-        TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
+        mDoctorNameTextView = (TextView) findViewById(R.id.doctor_name);
+        mDoctorCityTv = (TextView) findViewById(R.id.city);
+        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
         ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
 
 
-        doctorName.setText("Sajat");
-        doctorLocation.setText("Sector 22, Noida");
-        doctorMedicineType.setText("Family Medicine");
+        mDoctorNameTextView.setText(pastVisitFirstModel.getDoctorName());
+        mDoctorCityTv.setText("Sector 22, Noida");
+        mClinicNameTv.setText("Family Medicine");
         doctorPic.setImageResource(R.drawable.ayaz);
 
         ImageView showFiles = (ImageView) findViewById(R.id.show_files);
