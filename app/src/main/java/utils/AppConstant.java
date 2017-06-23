@@ -34,14 +34,15 @@ public class AppConstant {
     public static String CONSULT_MODE = "video";
 
     public static final String getpatienDoctorId() {
-        if (ConversationActivity.isPatient) {
+        return "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD";
+       /* if (ConversationActivity.isPatient) {
             //372fd208-69b7-44e7-a097-0015f26bd433            2907 Shailza Thakur   Doctor
             return "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD";
         } else {
             //97e9496b-8630-4d61-9f13-d7e95c0ad6a7            4903   Balveer  Patient
             return "be2ce808-6250-4874-a239-31d60d1d8567";
 
-        }
+        }*/
     }
 
     public static final String getPatientID() {
@@ -51,7 +52,7 @@ public class AppConstant {
     public static final String getpatienDoctorName() {
         if (ConversationActivity.isPatient) {
             //372fd208-69b7-44e7-a097-0015f26bd433            2907 Shailza Thakur   Doctor
-            return "Tej";
+            return "Rahul Sharma";
 
         } else {
             //97e9496b-8630-4d61-9f13-d7e95c0ad6a7            4903   Balveer  Patient
