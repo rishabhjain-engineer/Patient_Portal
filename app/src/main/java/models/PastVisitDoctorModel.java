@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by ayaz on 21/6/17.
  */
 
-public class PastVisitFirstModel implements Serializable{
+public class PastVisitDoctorModel implements Serializable{
     private String doctorName;
     private String consultTime;
     private String payment;

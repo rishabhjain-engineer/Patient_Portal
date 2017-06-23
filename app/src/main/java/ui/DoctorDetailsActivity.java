@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
@@ -38,6 +39,7 @@ public class DoctorDetailsActivity extends BaseActivity {
         TextView doctorLocation = (TextView) findViewById(R.id.city);
         TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
         ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
 
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);

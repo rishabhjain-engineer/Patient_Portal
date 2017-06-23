@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -28,12 +27,9 @@ import java.util.List;
 
 import adapters.PastVisitFirstAdapter;
 import config.StaticHolder;
-import models.DoctorDetails;
-import models.PastVisitFirstModel;
-import models.Symptoms;
+import models.PastVisitDoctorModel;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
-import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 20/6/17.
@@ -43,7 +39,7 @@ public class PastVisitFirstActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private PastVisitFirstAdapter mPastVisitFirstAdapter;
-    private List<PastVisitFirstModel> mPastVisitFirstModels = new ArrayList<>();
+    private List<PastVisitDoctorModel> mPastVisitFirstModels = new ArrayList<>();
     private ListView mListView;
 
     @Override
@@ -85,7 +81,7 @@ public class PastVisitFirstActivity extends BaseActivity {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(PastVisitFirstActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
-                    PastVisitFirstModel pastVisitFirstModel = (PastVisitFirstModel) mListView.getItemAtPosition(position);
+                    PastVisitDoctorModel pastVisitFirstModel = (PastVisitDoctorModel) mListView.getItemAtPosition(position);
                     Intent intent = new Intent(PastVisitFirstActivity.this, PastVisitActivity.class);
                     intent.putExtra("pastDocotor", pastVisitFirstModel);
                     startActivity(intent);
@@ -114,7 +110,7 @@ public class PastVisitFirstActivity extends BaseActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));

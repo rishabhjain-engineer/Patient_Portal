@@ -14,7 +14,7 @@ import com.hs.userportal.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.PastVisitFirstModel;
+import models.PastVisitDoctorModel;
 
 /**
  * Created by ayaz on 20/6/17.
@@ -22,7 +22,7 @@ import models.PastVisitFirstModel;
 
 public class PastVisitFirstAdapter extends BaseAdapter {
     private Activity mActivity;
-    private List<PastVisitFirstModel> mPastVisitFirstModels = new ArrayList<PastVisitFirstModel>();
+    private List<PastVisitDoctorModel> mPastVisitFirstModels = new ArrayList<PastVisitDoctorModel>();
 
     public PastVisitFirstAdapter(Activity activity) {
         mActivity = activity;
@@ -69,7 +69,7 @@ public class PastVisitFirstAdapter extends BaseAdapter {
             holder = (PastVisitFirstAdapter.ViewHolder) convertView.getTag();
         }
 
-        PastVisitFirstModel pastVisitFirstModel = mPastVisitFirstModels.get(position);
+        PastVisitDoctorModel pastVisitFirstModel = mPastVisitFirstModels.get(position);
 
         if (!TextUtils.isEmpty(pastVisitFirstModel.getDoctorName())) {
             holder.doctorName.setText(pastVisitFirstModel.getDoctorName());
@@ -89,7 +89,7 @@ public class PastVisitFirstAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(List<PastVisitFirstModel> pastVisitFirstModels) {
+    public void setData(List<PastVisitDoctorModel> pastVisitFirstModels) {
         mPastVisitFirstModels = pastVisitFirstModels;
     }
 }

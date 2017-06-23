@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
-import com.hs.userportal.Authentication;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -39,12 +37,10 @@ import adapters.ConsultFragmentAdapter;
 import adapters.PastVisitFirstAdapter;
 import config.StaticHolder;
 import models.DoctorDetails;
-import models.PastVisitFirstModel;
+import models.PastVisitDoctorModel;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
-import ui.DoctorPrescriptionActivity;
-import ui.PastVisitActivity;
 import ui.PastVisitFirstActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
@@ -236,7 +232,7 @@ public class ConsultFragment extends Fragment {
 
     }
 
-    private List<PastVisitFirstModel> mPastVisitedPatientList = new ArrayList<>();
+    private List<PastVisitDoctorModel> mPastVisitedPatientList = new ArrayList<>();
     private void getPastVisitedPatientList() {
         mPastVisitedPatientList.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastPatientList);
@@ -256,7 +252,7 @@ public class ConsultFragment extends Fragment {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
@@ -284,7 +280,7 @@ public class ConsultFragment extends Fragment {
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
 
-    private List<PastVisitFirstModel> mPastVisitFirstModels = new ArrayList<>();
+    private List<PastVisitDoctorModel> mPastVisitFirstModels = new ArrayList<>();
     private void getPastVisitedDoctorList() {
         mPastVisitFirstModels.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastVisitList);
@@ -304,7 +300,7 @@ public class ConsultFragment extends Fragment {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitFirstModel pastVisitFirstModel = new PastVisitFirstModel();
+                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
