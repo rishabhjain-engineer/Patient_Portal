@@ -72,8 +72,7 @@
                 android:textColor="@color/header_color"
                 android:textStyle="bold" />
 
-
-            <TextView
+            <EditText
                 android:id="@+id/medicine_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,11 +80,14 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/bg_parent_round_sumary_corner"
-                android:clickable="true"
-                android:gravity="center"
-                android:minHeight="50dp"
-                android:padding="8dp"
-                android:textSize="20dp" />
+                android:cursorVisible="true"
+                android:gravity="left|top"
+                android:imeOptions="flagNoEnterAction"
+                android:inputType="textNoSuggestions|textMultiLine"
+                android:minHeight="100dp"
+                android:padding="5dp"
+                android:textColor="@color/create_account_tv_color" />
+
 
 
             <TextView

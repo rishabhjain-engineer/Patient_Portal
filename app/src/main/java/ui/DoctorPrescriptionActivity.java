@@ -51,7 +51,7 @@ import utils.PreferenceHelper;
 
 public class DoctorPrescriptionActivity extends BaseActivity {
     private String mCoversationType;
-    private TextView mMedicineTv, mTestTv;
+    private TextView mTestTv;
     private String medicineArray[] = {"Korosine", "Combiflam", "Fluconazole", "Paracetamol"};
     private List<Symptoms> mMedicineList = new ArrayList<>();
     private String medicineList = "";
@@ -64,7 +64,13 @@ public class DoctorPrescriptionActivity extends BaseActivity {
     private CustomAlertDialog mCustomAlertDialog;
     private static RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
-    private EditText mDiagnosisEt, mCommentEt;
+    private EditText mDiagnosisEt, mCommentEt, mMedicineEt;
+    /* "ConsultId": "bcfc7299-5fec-499c-9ee1-24b88d5a07a2",
+             "Symptoms": "Cold, Dizziness",
+             "PatientNotes": "feeling fever",
+             "Files": null,
+             "PatientId": "be2ce808-6250-4874-a239-31d60d1d8567"*/
+    private String mConsultId, mSymptoms, mPatientNotes, mFiles, mPatientId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,7 +113,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
 
-        mMedicineTv = (TextView) findViewById(R.id.medicine_tv);
+        mMedicineEt = (EditText) findViewById(R.id.medicine_tv);
         mTestTv = (TextView) findViewById(R.id.test_tv);
         Button okButton = (Button) findViewById(R.id.ok_button);
 
@@ -125,9 +131,6 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             mTestList.add(symptoms);
         }*/
 
-
-        mMedicineTv.setOnClickListener(mOnClickListener);
-        mMedicineTv.setText("Please choose medicine.");
 
         mTestTv.setOnClickListener(mOnClickListener);
         mTestTv.setText("Please choose test.");
@@ -156,9 +159,9 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.medicine_tv) {
-                mIsTest = false;
+               /* mIsTest = false;
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
-                mCustomAlertDialog.show();
+                mCustomAlertDialog.show();*/
             } else if (id == R.id.test_tv) {
                 mIsTest = true;
                 mCustomAlertDialog = new CustomAlertDialog(DoctorPrescriptionActivity.this, medicineArray);
@@ -238,7 +241,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                         if (medicineList.length() > 0) {
                             medicineList = medicineList.substring(0, medicineList.length() - 2);
                         }
-                        mMedicineTv.setText(medicineList);
+                        //mMedicineTv.setText(medicineList);
                     }
 
                 }
@@ -343,7 +346,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("doctorId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -356,13 +359,14 @@ public class DoctorPrescriptionActivity extends BaseActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        String name = jsonObject1.optString("SymptomName");
-                        Symptoms symptoms = new Symptoms();
-                        symptoms.setName(name);
-                        mTestList.add(symptoms);
+                        mConsultId = jsonObject1.optString("ConsultId");
+                        mSymptoms = jsonObject1.optString("Symptoms");
+                        mPatientNotes = jsonObject1.optString("PatientNotes");
+                        mFiles = jsonObject1.optString("Files");
+                        mPatientId = jsonObject1.optString("PatientId");
                     }
                     mProgressDialog.dismiss();
-                    finish();
+                    consultAdd();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
@@ -386,16 +390,16 @@ public class DoctorPrescriptionActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
-            data.put("doctorId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("consultId", mConsultId);
+            data.put("doctorId", AppConstant.getDoctorId());
             data.put("consultMode", AppConstant.CONSULT_MODE);
-            data.put("diagnosis", "");
+            data.put("diagnosis", mDiagnosisEt.getEditableText().toString());
             data.put("docComments", mCommentEt.getEditableText().toString());
 
             JSONArray jsonArray = new JSONArray();
             JSONObject innerJsonObject = new JSONObject();
-            innerJsonObject.put("MedId", "");
-            innerJsonObject.put("MedicineName", "");
+            innerJsonObject.put("MedId", JSONObject.NULL);
+            innerJsonObject.put("MedicineName", mMedicineEt.getEditableText().toString());
             innerJsonObject.put("Dose", "");
             innerJsonObject.put("Days", "");
             jsonArray.put(innerJsonObject);
@@ -403,7 +407,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
 
             JSONArray jsonArray2 = new JSONArray();
             JSONObject innerJsonObject2 = new JSONObject(); //99587328-a719-411a-aae7-15df20f43f0f
-            innerJsonObject2.put("ConsultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
+            innerJsonObject2.put("ConsultId", mConsultId);
             innerJsonObject2.put("InvestigationId", "99587328-a719-411a-aae7-15df20f43f0f");
             innerJsonObject2.put("TestName", "MONTOUX TEST (C)");
             jsonArray2.put(innerJsonObject2);

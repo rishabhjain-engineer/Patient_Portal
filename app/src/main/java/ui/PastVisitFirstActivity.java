@@ -32,6 +32,7 @@ import models.DoctorDetails;
 import models.PastVisitFirstModel;
 import models.Symptoms;
 import networkmngr.NetworkChangeListener;
+import utils.AppConstant;
 import utils.PreferenceHelper;
 
 /**
@@ -100,7 +101,7 @@ public class PastVisitFirstActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("patientId", AppConstant.getpatienDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }

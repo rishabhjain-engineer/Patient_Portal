@@ -184,7 +184,7 @@ public class DashBoardActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("PatientId", id);
+            data.put("PatientId", AppConstant.getpatienDoctorId());
             data.put("ALId", true);
         } catch (JSONException je) {
             je.printStackTrace();
