@@ -76,9 +76,9 @@ public class VideoActivity extends AudioCallActivityV2 {
             @Override
             public void onClick(View v) {
                 File fileReport = new File("/storage/emulated/0/Lab Pdf/Mr. Sunil  Raireport.pdf");
-                new SendPostRequest().execute();
+                //new SendPostRequest().execute();
                 //  String pathName = "";
-                openImage();
+              //  openImage();
                 PackageManager packageManager = getPackageManager();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setType("application/pdf");
