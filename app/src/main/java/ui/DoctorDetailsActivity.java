@@ -134,7 +134,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                 }
                 /*Intent intent = null;
                 if (AppConstant.isPatient) {
-                    intent = new Intent(DoctorDetailsActivity.this, PastVisitActivity.class);
+                    intent = new Intent(DoctorDetailsActivity.this, PastVisitDoctorDetailActivity.class);
                 } else {
                     intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
                 }

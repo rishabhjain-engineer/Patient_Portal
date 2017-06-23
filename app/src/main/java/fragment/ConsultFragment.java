@@ -37,11 +37,11 @@ import adapters.ConsultFragmentAdapter;
 import adapters.PastVisitFirstAdapter;
 import config.StaticHolder;
 import models.DoctorDetails;
-import models.PastVisitDoctorModel;
+import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import ui.DoctorDetailsActivity;
-import ui.PastVisitFirstActivity;
+import ui.PastVisitedDoctorListActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -84,7 +84,7 @@ public class ConsultFragment extends Fragment {
                 if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
                     Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(getActivity(), PastVisitFirstActivity.class);
+                    Intent intent = new Intent(getActivity(), PastVisitedDoctorListActivity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 }
@@ -117,7 +117,7 @@ public class ConsultFragment extends Fragment {
                 }
                /* Intent intent = null;
                 if (AppConstant.isPatient) {
-                    intent = new Intent(getActivity(), PastVisitActivity.class);
+                    intent = new Intent(getActivity(), PastVisitDoctorDetailActivity.class);
                 } else {
                     intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
                 }
@@ -232,7 +232,7 @@ public class ConsultFragment extends Fragment {
 
     }
 
-    private List<PastVisitDoctorModel> mPastVisitedPatientList = new ArrayList<>();
+    private List<PastVisitDoctorListModel> mPastVisitedPatientList = new ArrayList<>();
     private void getPastVisitedPatientList() {
         mPastVisitedPatientList.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastPatientList);
@@ -252,7 +252,7 @@ public class ConsultFragment extends Fragment {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
+                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
@@ -280,7 +280,7 @@ public class ConsultFragment extends Fragment {
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
 
-    private List<PastVisitDoctorModel> mPastVisitFirstModels = new ArrayList<>();
+    private List<PastVisitDoctorListModel> mPastVisitFirstModels = new ArrayList<>();
     private void getPastVisitedDoctorList() {
         mPastVisitFirstModels.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastVisitList);
@@ -300,7 +300,7 @@ public class ConsultFragment extends Fragment {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorModel pastVisitFirstModel = new PastVisitDoctorModel();
+                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
