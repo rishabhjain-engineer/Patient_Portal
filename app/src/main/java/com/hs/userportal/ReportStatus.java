@@ -994,9 +994,9 @@ public class ReportStatus extends BaseActivity {
                     }
                 }
                 if (iscomment != 1) {
-                    NestedListHelper.setListViewHeightBasedOnChildren(list_view);
+             //       NestedListHelper.setListViewHeightBasedOnChildren(list_view);
                 } else {
-                    NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
+            //        NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
                 }
                 list_view.setVisibility(View.VISIBLE);
                 // parentLayout.setVisibility(View.GONE);
