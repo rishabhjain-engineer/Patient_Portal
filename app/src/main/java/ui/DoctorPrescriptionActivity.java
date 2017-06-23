@@ -83,6 +83,8 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                Intent intent = new Intent(DoctorPrescriptionActivity.this, DashBoardActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
@@ -164,7 +166,7 @@ public class DoctorPrescriptionActivity extends BaseActivity {
             } else if (id == R.id.ok_button) {
                 if (NetworkChangeListener.getNetworkStatus().isConnected()) {
                     getPatientInfo();
-                   // consultAdd();
+                    // consultAdd();
                 } else {
                     Toast.makeText(DoctorPrescriptionActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
