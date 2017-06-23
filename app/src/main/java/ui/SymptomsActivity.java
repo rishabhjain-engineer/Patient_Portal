@@ -691,7 +691,7 @@ public class SymptomsActivity extends BaseActivity {
         JSONObject data = new JSONObject();
         Log.e("Rishabh", "data" + data);
         try {
-            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("patientId", AppConstant.getpatienDoctorId());
             data.put("symptoms", mSymptomsTextView.getText());
             data.put("patientNotes", mNoteEditText.getEditableText().toString());
             data.put("doctorId", AppConstant.getDoctorId());
@@ -850,7 +850,7 @@ public class SymptomsActivity extends BaseActivity {
 
         JSONObject data = new JSONObject();
         try {
-            data.put("PatientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("PatientId", AppConstant.getpatienDoctorId());
             data.put("consultId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID));
             JSONArray jsonArray = new JSONArray();
             JSONObject innerJsonObject = new JSONObject();

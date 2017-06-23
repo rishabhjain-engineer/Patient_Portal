@@ -44,6 +44,10 @@ public class AppConstant {
         }
     }
 
+    public static final String getPatientID() {
+        return "be2ce808-6250-4874-a239-31d60d1d8567";
+    }
+
     public static final String getpatienDoctorName() {
         if (ConversationActivity.isPatient) {
             //372fd208-69b7-44e7-a097-0015f26bd433            2907 Shailza Thakur   Doctor
