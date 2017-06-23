@@ -1025,12 +1025,6 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
-
-        String doctorID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
-Log.e("Rishabh","set   doc id := "+doctorID);
-        GetDoctorCredentials.setDoctorID(doctorID);
-
-
         AppConstant.EMAIL = mEmail;
         AppConstant.CONTACT_NO = mContactNo;
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);

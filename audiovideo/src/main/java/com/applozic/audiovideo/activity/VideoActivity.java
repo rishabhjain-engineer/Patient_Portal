@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,36 +23,39 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.applozic.audiovideo.GetDoctorCredentials;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.twilio.video.CameraCapturer;
 import com.twilio.video.VideoView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import applozic.com.audiovideo.R;
 
@@ -68,10 +69,11 @@ public class VideoActivity extends AudioCallActivityV2 {
     public static String hoja = "";
     private static final String OPEN_DOCTOR_PRESCRIPTION = "com.hs.userportal.ui.DoctorPrescriptionActivity";
     private static final String OPEN_PATIENT_PAST_VISIT = "com.hs.userportal.ui.PastVisitActivity";
+    private static final String AMAZON_URL = "https://files.healthscion.com/";
+
     public VideoActivity() {
         super(true);
     }
-
 
 
     @Override
@@ -83,11 +85,9 @@ public class VideoActivity extends AudioCallActivityV2 {
             @Override
             public void onClick(View v) {
                 File fileReport = new File("/storage/emulated/0/Lab Pdf/Mr. Sunil  Raireport.pdf");
-
-                new GetFileFromAWS().execute();
-
-              //  String pathName = "https://files.healthscion.com/file";
-
+                new SendPostRequest().execute();
+                //  String pathName = "";
+                openImage();
                 PackageManager packageManager = getPackageManager();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setType("application/pdf");
@@ -320,6 +320,12 @@ public class VideoActivity extends AudioCallActivityV2 {
 
     }
 
+    private void openImage() {
+        Intent i = new Intent(VideoActivity.this, OpenImageActivity.class);
+        // i.putExtra("ImagePath", AMAZON_URL + file.getKey());
+        startActivity(i);
+    }
+
     private void hideShowWithAnimation() {
 
         //Camera Actions
@@ -526,25 +532,15 @@ public class VideoActivity extends AudioCallActivityV2 {
         return true;
     }*/
 
-   private class GetFileFromAWS extends AsyncTask<Void,Void,Void>{
-
-       @Override
-       protected Void doInBackground(Void... params) {
-
-           postData();
-           return null;
-       }
-   }
-
     public void postData() {
 
 
-        String getDoctorID = GetDoctorCredentials.getDoctorID() ;
-        Log.e("Rishabh", "getDocID in app := "+getDoctorID);
+        String getDoctorID = "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD";
 
-       JSONObject data = new JSONObject();
+
+        JSONObject data = new JSONObject();
         try {
-            data.put("doctorId",getDoctorID);
+            data.put("doctorId", getDoctorID);
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -564,10 +560,10 @@ public class VideoActivity extends AudioCallActivityV2 {
         }
         try {
             // Add your data
-           // List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            // List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-         ///   nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
-         //   httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            ///   nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
+            //   httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
@@ -576,7 +572,7 @@ public class VideoActivity extends AudioCallActivityV2 {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                sb.append(line+ "\n");
+                sb.append(line + "\n");
             }
 
             JSONObject receiveData = new JSONObject(sb.toString());
@@ -584,16 +580,113 @@ public class VideoActivity extends AudioCallActivityV2 {
             // Log.i("TEST DETAILS", receiveData.toString());
 
             String p = receiveData.get("d").toString();
-            Log.e("Rishabh","p := "+p);
+            Log.e("Rishabh", "p := " + p);
             JSONObject temp = new JSONObject(p);
             values = temp.getJSONArray("Table");
-            Log.e("Rishabh","values  "+values.toString() );
+            Log.e("Rishabh", "values  " + values.toString());
 
-        }  catch (IOException e) {
-            Log.e("Rishabh","e io:= "+e);
+        } catch (IOException e) {
+            Log.e("Rishabh", "e io:= " + e);
         } catch (JSONException e) {
-            Log.e("Rishabh","je io:= "+e);
+            Log.e("Rishabh", "je io:= " + e);
         }
+    }
+
+    public class SendPostRequest extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute() {
+        }
+
+        protected String doInBackground(String... arg0) {
+
+            try {
+
+                URL url = new URL("http://apidemo.healthscion.com/WebServices/LabService.asmx/GetPatientInfo"); // here is your URL path
+
+                JSONObject postDataParams = new JSONObject();
+                postDataParams.put("doctorId", "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD");
+                //postDataParams.put("email", "abc@gmail.com");
+                Log.e("Rishabh", postDataParams.toString());
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(15000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(getPostDataString(postDataParams));
+
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+                    BufferedReader in = new BufferedReader(new
+                            InputStreamReader(
+                            conn.getInputStream()));
+
+                    StringBuffer sb = new StringBuffer("");
+                    String line = "";
+                    Log.e("Rishabh", "sb" + sb.toString());
+                    while ((line = in.readLine()) != null) {
+
+                        sb.append(line);
+                        break;
+                    }
+
+                    in.close();
+                    Log.e("Rishabh", "sb append" + sb.toString());
+                    return sb.toString();
+
+                } else {
+                    Log.e("Rishabh", "responseCode" + responseCode);
+                    return new String("false : " + responseCode);
+                }
+            } catch (Exception e) {
+                Log.e("Rishabh", "Exception" + e.toString());
+                return new String("Exception: " + e.getMessage());
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getApplicationContext(), result,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public String getPostDataString(JSONObject params) throws Exception {
+
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        Iterator<String> itr = params.keys();
+
+        while (itr.hasNext()) {
+
+            String key = itr.next();
+            Object value = params.get(key);
+
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(key, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+
+        }
+        Log.e("Rishabh", "result" + result.toString());
+        return result.toString();
     }
 
 }
