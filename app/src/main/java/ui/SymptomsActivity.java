@@ -25,6 +25,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -86,6 +87,7 @@ import models.Symptoms;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
 import utils.PreferenceHelper;
+import utils.RepositoryUtils;
 
 /**
  * Created by ayaz on 6/6/17.
@@ -116,6 +118,8 @@ public class SymptomsActivity extends BaseActivity {
     private EditText mNoteEditText;
     private static RequestQueue mRequestQueue;
     private List<File> listOfFilesToUpload = new ArrayList<>();
+    private Uri Imguri;
+    private boolean mIsSdkLessThanM = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -405,8 +409,15 @@ public class SymptomsActivity extends BaseActivity {
                                 break;
                             case 1:
 
-                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                               /* Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                                 startActivityForResult(cameraIntent, 100);
+                                break;*/
+
+                                try {
+                                    checkCameraPermission();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
 
                             default:
@@ -437,15 +448,40 @@ public class SymptomsActivity extends BaseActivity {
         File file = null;
         ArrayList<Uri> multipleUri = new ArrayList<>();
         if (resultCode == RESULT_OK) {
-            if (requestCode == 100 && resultCode == RESULT_OK) {
-                if (data.getData() != null) {
-                    selectedImageUri = data.getData();
+            if (requestCode == PICK_FROM_CAMERA) {
+                File downloadedFile = null;
+                Uri selectedImageUri;
+                if (mIsSdkLessThanM == true) {
+                    InputStream is = null;
+                    if (Imguri.getAuthority() != null) {
+
+                        try {
+                            is = getContentResolver().openInputStream(Imguri);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        if (bmp != null) {
+
+                            try {
+                                downloadedFile = createImageFile();
+
+                                OutputStream outStream = new FileOutputStream(downloadedFile);
+                                //compressing image to 90 percent quality to reduce size
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+                                outStream.flush();
+                                outStream.close();
+                                listOfFilesToUpload.add(downloadedFile);
+
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
                 } else {
-                    Toast.makeText(getApplicationContext(), "failed to get Image!", Toast.LENGTH_LONG).show();
+                    Uri imageUri = Uri.parse(mCurrentPhotoPath);
+                    downloadedFile = new File(imageUri.getPath());
+                    listOfFilesToUpload.add(downloadedFile);
                 }
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                selectedPath = getPath(selectedImageUri);
-                Log.d("selectedPath1 : ", selectedPath);
 
             }
 
@@ -852,4 +888,44 @@ public class SymptomsActivity extends BaseActivity {
 
     }
 
+    void checkCameraPermission() throws IOException {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startCamera();
+        } else {
+            takePhoto();
+        }
+    }
+
+    void startCamera() throws IOException {
+        mIsSdkLessThanM = false;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                return;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(mActivity, "com.hs.userportal.provider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, PICK_FROM_CAMERA);
+            }
+        }
+    }
+
+    private void takePhoto() {
+        File photo = null;
+        Intent intent1 = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            photo = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+        } else {
+            photo = new File(mActivity.getCacheDir(), "test.jpg");
+        }
+        if (photo != null) {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+            Imguri = Uri.fromFile(photo);
+            startActivityForResult(intent1, PICK_FROM_CAMERA);
+        }
+    }
 }

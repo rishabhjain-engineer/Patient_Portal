@@ -542,32 +542,32 @@ public class VideoActivity extends AudioCallActivityV2 {
         String getDoctorID = GetDoctorCredentials.getDoctorID() ;
         Log.e("Rishabh", "getDocID in app := "+getDoctorID);
 
-       /* JSONObject data = new JSONObject();
+       JSONObject data = new JSONObject();
         try {
             data.put("doctorId",getDoctorID);
         } catch (JSONException je) {
             je.printStackTrace();
-        }*/
+        }
 
 
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://192.168.1.11/WebServices/LabService.asmx/GetPatientInfo");
+        HttpPost httppost = new HttpPost("http://apidemo.healthscion.com/WebServices/LabService.asmx/GetPatientInfo");
         httppost.setHeader("Content-type", "application/json");
         httppost.setHeader("Accept", "application/json");
         httppost.setHeader("Cookie", hoja);
 
-        /*try {
+        try {
             httppost.setEntity(new StringEntity(data.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }*/
+        }
         try {
             // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+           // List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-            nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+         ///   nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
+         //   httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
