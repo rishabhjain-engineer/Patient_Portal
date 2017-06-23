@@ -271,6 +271,7 @@ public class ReportStatus extends BaseActivity {
                                 Intent intent = new Intent(getApplicationContext(),
                                         grouptest.class);
                                 intent.putExtra("group", results.toString());
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
@@ -555,6 +556,7 @@ public class ReportStatus extends BaseActivity {
                                     startActivity(intent);
                                     finish();*/
                                     Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                    intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                     intent.putExtra("chart_type", "Pie");
                                     intent.putExtra("data", db);
                                     intent.putStringArrayListExtra("dates",
@@ -733,6 +735,7 @@ public class ReportStatus extends BaseActivity {
                                         + "</div></body></html>";
 
                                 Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
                                 if (chartNames.size() != 0)
@@ -834,6 +837,7 @@ public class ReportStatus extends BaseActivity {
                                 finish();*/
 
                                 Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 intent.putExtra("chart_type", "Pie");
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -873,6 +877,8 @@ public class ReportStatus extends BaseActivity {
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+
+            sendInvestigationID1List.clear();
             progress = new ProgressDialog(ReportStatus.this);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
@@ -933,6 +939,7 @@ public class ReportStatus extends BaseActivity {
         protected void onPostExecute(Void result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
+
 
 
             int k = 0;
@@ -1460,6 +1467,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("from_activity", "grouptest");*/
             Intent intent1 = new Intent(ReportStatus.this, GraphDetailsNew.class);
             intent1.putExtra("chart_type", "Pie");
+            intent1.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
             intent1.putExtra("data", db);
             intent1.putStringArrayListExtra("dates",
                     (ArrayList<String>) intentdate);

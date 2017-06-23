@@ -48,6 +48,7 @@ public class grouptest extends BaseActivity {
     private List<String> chartValues = new ArrayList<String>();
     private List<String> chartunitList = new ArrayList<String>();
     private List<String> piechartvalue = new ArrayList<String>();
+    private List<String > sendInvestigationID1List  = new ArrayList<>() ;
     private ArrayList<String> desc = new ArrayList<String>();
     private ArrayList<HashMap<String, String>> jarr_info = new ArrayList<HashMap<String, String>>();
     private int singlechartposition;
@@ -60,6 +61,7 @@ public class grouptest extends BaseActivity {
         setupActionBar();
         Intent z = getIntent();
         String jarr = z.getStringExtra("group");
+        sendInvestigationID1List = getIntent().getStringArrayListExtra("investigationID1");
         Bundle extras = getIntent().getExtras();
 
 
@@ -291,6 +293,7 @@ public class grouptest extends BaseActivity {
                         }
                     }
                     Intent intent1 = new Intent(grouptest.this, GraphDetailsNew.class);
+                    intent1.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                     intent1.putExtra("chart_type", "Pie");
                     intent1.putExtra("data", db);
                     intent1.putStringArrayListExtra("dates",
@@ -336,6 +339,7 @@ public class grouptest extends BaseActivity {
                                 + "</div></body></html>";
 
                         Intent intent = new Intent(grouptest.this, GraphDetailsNew.class);
+                        intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                         intent.putExtra("data", db);
                         intent.putExtra("chart_type", "line");
                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
