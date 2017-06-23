@@ -46,6 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.applozic.audiovideo.GetDoctorCredentials;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
 import com.applozic.mobicomkit.feed.ApiResponse;
@@ -1024,6 +1025,12 @@ public class SignInActivity extends BaseActivity {
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER, mSingnInUserEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.PASS, mSingnInPasswordEt.getEditableText().toString());
         mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.USER_NAME, mFirstName + " " + mLastName);
+
+        String doctorID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
+Log.e("Rishabh","set   doc id := "+doctorID);
+        GetDoctorCredentials.setDoctorID(doctorID);
+
+
         AppConstant.EMAIL = mEmail;
         AppConstant.CONTACT_NO = mContactNo;
         Intent intent = new Intent(SignInActivity.this, DashBoardActivity.class);

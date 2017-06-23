@@ -39,6 +39,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -537,6 +538,18 @@ public class VideoActivity extends AudioCallActivityV2 {
 
     public void postData() {
 
+
+        String getDoctorID = GetDoctorCredentials.getDoctorID() ;
+        Log.e("Rishabh", "getDocID in app := "+getDoctorID);
+
+       /* JSONObject data = new JSONObject();
+        try {
+            data.put("doctorId",getDoctorID);
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }*/
+
+
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://192.168.1.11/WebServices/LabService.asmx/GetPatientInfo");
@@ -544,11 +557,15 @@ public class VideoActivity extends AudioCallActivityV2 {
         httppost.setHeader("Accept", "application/json");
         httppost.setHeader("Cookie", hoja);
 
+        /*try {
+            httppost.setEntity(new StringEntity(data.toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }*/
         try {
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            String getDoctorID = GetDoctorCredentials.getDoctorID() ;
-            Log.e("Rishabh", "getDocID in app := "+getDoctorID);
+
             nameValuePairs.add(new BasicNameValuePair("doctorId", getDoctorID));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -559,10 +576,10 @@ public class VideoActivity extends AudioCallActivityV2 {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line+ "\n");
             }
 
-            JSONObject receiveData = new JSONObject(new String(sb));
+            JSONObject receiveData = new JSONObject(sb.toString());
 
             // Log.i("TEST DETAILS", receiveData.toString());
 

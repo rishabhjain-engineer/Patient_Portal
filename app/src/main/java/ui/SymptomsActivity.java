@@ -44,6 +44,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
+import com.amazonaws.services.s3.model.AccessControlList;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadResult;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
@@ -739,7 +741,7 @@ public class SymptomsActivity extends BaseActivity {
 
                 // Step 1: Initialize.
                 InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(s3BucketName, key);
-                // configureInitiateRequest(initRequest);
+                 configureInitiateRequest(initRequest);
                 InitiateMultipartUploadResult initResponse = s3Client.initiateMultipartUpload(initRequest);
 
 
@@ -840,6 +842,13 @@ public class SymptomsActivity extends BaseActivity {
             }
         });
         mRequestQueue.add(jsonObjectRequest);
+    }
+
+    protected void configureInitiateRequest(InitiateMultipartUploadRequest initRequest) {
+
+
+        initRequest.setCannedACL(CannedAccessControlList.PublicRead);
+
     }
 
 }
