@@ -31,13 +31,13 @@ public class DashboardActivityAdapter extends BaseAdapter {
         mActivity = dashBoardActivity;
 
 
-        mList.add("Consults");
+        mList.add("Consult");
         mList.add("Reports");
         mList.add("Vitals");
         mList.add("Repository");
         mList.add("Family");
 
-        mImageList.add(R.drawable.ic);
+        mImageList.add(R.drawable.consult);
         mImageList.add(R.drawable.homepage_reports);
         mImageList.add(R.drawable.homepage_vital_green);
         mImageList.add(R.drawable.homepage_repository);

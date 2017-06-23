@@ -193,6 +193,7 @@ public class ConsultFragment extends Fragment {
             data.put("symptoms", "");
             data.put("patientNotes", "");
             data.put("consultId", JSONObject.NULL);
+            data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }

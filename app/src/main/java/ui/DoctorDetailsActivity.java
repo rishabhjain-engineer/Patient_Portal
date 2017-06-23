@@ -177,5 +177,4 @@ public class DoctorDetailsActivity extends BaseActivity {
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         startActivity(intent);
     }
-
 }

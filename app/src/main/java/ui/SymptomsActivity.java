@@ -658,6 +658,7 @@ public class SymptomsActivity extends BaseActivity {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
             data.put("patientNotes", mNoteEditText.getEditableText().toString());
+            data.put("doctorId", AppConstant.getDoctorId());
             if (TextUtils.isEmpty(mConsultID)) {
                 data.put("consultId", JSONObject.NULL);
             } else {
