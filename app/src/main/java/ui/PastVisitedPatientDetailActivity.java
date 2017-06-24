@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,10 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.applozic.audiovideo.activity.AudioCallActivityV2;
-import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -39,7 +34,6 @@ import java.util.List;
 import config.StaticHolder;
 import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
-import utils.AppConstant;
 
 /**
  * Created by ayaz on 23/6/17.
@@ -48,12 +42,33 @@ import utils.AppConstant;
 public class PastVisitedPatientDetailActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
+    private TextView mDoctorNameTextView, mDoctorAdressTv, mDoctorCityTv, mClinicNameTv, mPincodeTv, mConsultTimeTv, mSymptomsTv, mPatientNotesTv,
+            mDoctorCommentsTv, mDiagnosisTv, mFiles;
+    private ImageView mSignImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_past_visited_patient_detail);
+        setContentView(R.layout.activity_past_visit);
         mRequestQueue = Volley.newRequestQueue(this);
+
+        mDoctorNameTextView = (TextView) findViewById(R.id.doctor_name);
+        mDoctorCityTv = (TextView) findViewById(R.id.city);
+        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
+        ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
+        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
+        mConsultTimeTv = (TextView) findViewById(R.id.aapointment_time);
+        mSymptomsTv = (TextView) findViewById(R.id.symptoms);
+        mPatientNotesTv = (TextView) findViewById(R.id.notes);
+
+        mDoctorCommentsTv = (TextView) findViewById(R.id.comments);
+        mDiagnosisTv = (TextView) findViewById(R.id.diagnosis);
+        //prescription = (TextView) findViewById(R.id.prescription);
+        //test = (TextView) findViewById(R.id.test);
+        ImageView showFiles = (ImageView) findViewById(R.id.show_files);
+        TextView prescriptionReportTv = (TextView) findViewById(R.id.past_visits_tv);
+        prescriptionReportTv.setVisibility(View.GONE);
 
         Intent intent1 = getIntent();
         PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) intent1.getSerializableExtra("pastDocotor");
@@ -64,7 +79,7 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
             mProgressDialog.setMessage("Loading...");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
-            pastVisitDetails(pastVisitFirstModel.getConsultId());
+            pastPatientDetails(pastVisitFirstModel.getConsultId());
         } else {
             Toast.makeText(PastVisitedPatientDetailActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
@@ -82,18 +97,11 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
             }
         });
 
-        TextView doctorName = (TextView) findViewById(R.id.doctor_name);
-        TextView doctorLocation = (TextView) findViewById(R.id.city);
-        TextView doctorMedicineType = (TextView) findViewById(R.id.medicine_type);
-        ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
-
-
-        doctorName.setText("Sajat");
-        doctorLocation.setText("Sector 22, Noida");
-        doctorMedicineType.setText("Family Medicine");
+        mDoctorNameTextView.setText(pastVisitFirstModel.getDoctorName());
+        mDoctorCityTv.setText("Sector 22, Noida");
+        mClinicNameTv.setText("Family Medicine");
         doctorPic.setImageResource(R.drawable.ayaz);
 
-        ImageView showFiles = (ImageView) findViewById(R.id.show_files);
         showFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,24 +160,6 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
             }
         });
 
-        String mCoversationType = getIntent().getStringExtra("chatType");
-        if (!TextUtils.isEmpty(mCoversationType)) {
-            Intent intent = null;
-            if (mCoversationType.equalsIgnoreCase("audio")) {
-                intent = new Intent(PastVisitedPatientDetailActivity.this, AudioCallActivityV2.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-            } else if (mCoversationType.equalsIgnoreCase("video")) {
-                intent = new Intent(PastVisitedPatientDetailActivity.this, VideoActivity.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-            } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                intent = new Intent(PastVisitedPatientDetailActivity.this, ConversationActivity.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-                intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
-                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-            }
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-        }
     }
 
     @Override
@@ -178,8 +168,8 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void pastVisitDetails(String consultId) {
-        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.PastVisitDetails);
+    private void pastPatientDetails(String consultId) {
+        StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.PastPatientDetails);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
@@ -194,37 +184,6 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject jsonObject = new JSONObject(data);
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
-
-                    /*{
-                        "Table": [
-                        {
-                            "DoctorName": null,
-                                "SignImage": null,
-                                "ClinicName": null,
-                                "Address": null,
-                                "City": null,
-                                "Pincode": null,
-                                "ConsultTime": null,
-                                "Symptoms": "Abnormal Weight Gain, Fever, Nervousness",
-                                "PatientNotes": "hi",
-                                "DoctorComments": null,
-                                "Diagnosis": null,
-                                "Files": null
-                        }
-  ],
-                        "Table1": [
-                        {
-                            "MedicineName": "Disprin",
-                                "Dose": "",
-                                "Days": ""
-                        }
-  ],
-                        "Table2": [
-                        {
-                            "TestName": "MONTOUX TEST (C)"
-                        }
-  ]
-                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();

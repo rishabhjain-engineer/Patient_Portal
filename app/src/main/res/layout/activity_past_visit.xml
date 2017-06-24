@@ -44,6 +44,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/aapointment_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -69,6 +70,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/symptoms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -94,6 +96,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -119,6 +122,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -144,6 +148,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/diagnosis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -169,6 +174,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/prescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -194,6 +200,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/test"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"

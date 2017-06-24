@@ -58,6 +58,31 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_past_visit);
         mRequestQueue = Volley.newRequestQueue(this);
 
+        mDoctorNameTextView = (TextView) findViewById(R.id.doctor_name);
+        mDoctorCityTv = (TextView) findViewById(R.id.city);
+        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
+        ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
+
+        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
+        mConsultTimeTv = (TextView) findViewById(R.id.aapointment_time);
+        mSymptomsTv = (TextView) findViewById(R.id.symptoms);
+        mPatientNotesTv = (TextView) findViewById(R.id.notes);
+
+        mDoctorCommentsTv = (TextView) findViewById(R.id.comments);
+        mDiagnosisTv = (TextView) findViewById(R.id.diagnosis);
+        //prescription = (TextView) findViewById(R.id.prescription);
+        //test = (TextView) findViewById(R.id.test);
+        ImageView showFiles = (ImageView) findViewById(R.id.show_files);
+        TextView prescriptionReportTv = (TextView) findViewById(R.id.past_visits_tv);
+        prescriptionReportTv.setText("Prescription Report");
+        prescriptionReportTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PastVisitDoctorDetailActivity.this, PrescriptionReportActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Intent intent1 = getIntent();
         PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) intent1.getSerializableExtra("pastDocotor");
 
@@ -85,18 +110,11 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             }
         });
 
-        mDoctorNameTextView = (TextView) findViewById(R.id.doctor_name);
-        mDoctorCityTv = (TextView) findViewById(R.id.city);
-        mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
-        ImageView doctorPic = (ImageView) findViewById(R.id.doctor_image_view);
-
-
         mDoctorNameTextView.setText(pastVisitFirstModel.getDoctorName());
         mDoctorCityTv.setText("Sector 22, Noida");
         mClinicNameTv.setText("Family Medicine");
         doctorPic.setImageResource(R.drawable.ayaz);
 
-        ImageView showFiles = (ImageView) findViewById(R.id.show_files);
         showFiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
