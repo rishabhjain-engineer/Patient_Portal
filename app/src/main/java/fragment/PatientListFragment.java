@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -33,15 +30,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapters.ConsultFragmentAdapter;
 import adapters.PastVisitFirstAdapter;
+import adapters.PastVisitedPatientAdapter;
 import config.StaticHolder;
-import models.DoctorDetails;
-import models.PastVisitDoctorListModel;
-import networkmngr.NetworkChangeListener;
+import models.PastVisitedPatientModel;
 import ui.DashBoardActivity;
-import ui.DoctorDetailsActivity;
-import ui.PastVisitedDoctorListActivity;
+import ui.PastVisitedPatientDetailActivity;
 import utils.AppConstant;
 import utils.PreferenceHelper;
 
@@ -51,26 +45,22 @@ import utils.PreferenceHelper;
 
 public class PatientListFragment extends Fragment {
     private ListView mListView;
-    private ConsultFragmentAdapter mConsultFragmentAdapter;
-    private List<DoctorDetails> mDoctorDetailsList = new ArrayList<>();
     private Button mConsultNow;
     private TextView past_visits;
     private static RequestQueue mRequestQueue;
     protected PreferenceHelper mPreferenceHelper;
     private ProgressDialog mProgressDialog;
     private Activity mActivity;
-    private PastVisitFirstAdapter mPastVisitFirstAdapter;
+    private PastVisitedPatientAdapter mPastVisitedPatientAdapter;
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_consult, null);
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
-        if (ConversationActivity.isPatient) {
-            past_visits.setVisibility(View.VISIBLE);
-        } else {
-            past_visits.setVisibility(View.GONE);
-        }
+        past_visits.setVisibility(View.GONE);
+        mConsultNow = (Button) view.findViewById(R.id.consult_now);
+        mConsultNow.setVisibility(View.GONE);
         mActivity = getActivity();
         mRequestQueue = Volley.newRequestQueue(getActivity());
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -92,152 +82,23 @@ public class PatientListFragment extends Fragment {
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Loading...");
         mProgressDialog.setIndeterminate(true);
-
-        if (ConversationActivity.isPatient) {
-            mConsultNow = (Button) view.findViewById(R.id.consult_now);
-            mPastVisitFirstAdapter = new PastVisitFirstAdapter(mActivity);
-            past_visits.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(getActivity(), PastVisitedDoctorListActivity.class);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    }
-                }
-            });
-            mConsultNow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        mProgressDialog.show();
-                        mConsultNow.setClickable(false);
-                        getConsultId();
-                    }
-                }
-            });
-
-            mConsultFragmentAdapter = new ConsultFragmentAdapter(getActivity());
-
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                    DoctorDetails doctorDetails = (DoctorDetails) mListView.getItemAtPosition(position);
-                    Intent intent = new Intent(getActivity(), DoctorDetailsActivity.class);
-                    intent.putExtra("doctorDetail", doctorDetails);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                }
-            });
-
-
-            DoctorDetails doctorDetails3 = new DoctorDetails();
-            doctorDetails3.setDoctorName("Sajat");
-            doctorDetails3.setLocation("Sector 22, Noida");
-            doctorDetails3.setMedicineType("Family Medicine");
-            doctorDetails3.setDoctorImage(R.drawable.ayaz);
-            doctorDetails3.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
-                    "State University of New York, Downstate Medical Center (Residency)\n" +
-                    "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
-            mDoctorDetailsList.add(doctorDetails3);
-
-       /* DoctorDetails doctorDetails1 = new DoctorDetails();
-        doctorDetails1.setDoctorName("Ayaz");
-        doctorDetails1.setLocation("Aminabad, Lucknow");
-        doctorDetails1.setMedicineType("Family Medicine");
-        doctorDetails1.setDoctorImage(R.drawable.ayaz);
-        doctorDetails1.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
-                "State University of New York, Downstate Medical Center (Residency)\n" +
-                "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
-        mDoctorDetailsList.add(doctorDetails1);
-
-        DoctorDetails doctorDetails2 = new DoctorDetails();
-        doctorDetails2.setDoctorName("Rishabh");
-        doctorDetails2.setLocation("GTB Nagar, Delhi");
-        doctorDetails2.setMedicineType("Family Medicine");
-        doctorDetails2.setDoctorImage(R.drawable.update);
-        doctorDetails2.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
-                "State University of New York, Downstate Medical Center (Residency)\n" +
-                "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
-        mDoctorDetailsList.add(doctorDetails2);*/
-
-            mConsultFragmentAdapter.setData(mDoctorDetailsList);
-            mListView.setAdapter(mConsultFragmentAdapter);
-        } else {
-            mPastVisitFirstAdapter = new PastVisitFirstAdapter(mActivity);
-
-            past_visits.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
-                        Toast.makeText(mActivity, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent intent = new Intent(getActivity(), PastVisitedDoctorListActivity.class);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    }
-                }
-            });
-        }
-
+        mProgressDialog.show();
+        getPastVisitedPatientList();
+        mPastVisitedPatientAdapter = new PastVisitedPatientAdapter(mActivity);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
+                PastVisitedPatientModel pastVisitedPatientModel = (PastVisitedPatientModel) mListView.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(), PastVisitedPatientDetailActivity.class);
+                intent.putExtra("patientDetail", pastVisitedPatientModel);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
         return view;
     }
 
-
-    private String mConsultID;
-
-    private void getConsultId() {
-        StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.ConsultAddSymptoms);
-        String url = static_holder.request_Url();
-        JSONObject data = new JSONObject();
-        String consultId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
-        try {
-            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
-            data.put("symptoms", "");
-            data.put("patientNotes", "");
-            data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
-            data.put("doctorId", AppConstant.getDoctorId());
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
-        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    mConsultNow.setClickable(true);
-                    String consultId = response.getString("d");
-                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
-                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
-                    mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
-                    mProgressDialog.dismiss();
-                    Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
-                    startActivity(videoCallIntent);
-                    getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                } catch (JSONException je) {
-                    mProgressDialog.dismiss();
-                    je.printStackTrace();
-                    Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                mConsultNow.setClickable(true);
-                mProgressDialog.dismiss();
-                Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mRequestQueue.add(symptomsJsonObjectRequest);
-
-    }
-
-    private List<PastVisitDoctorListModel> mPastVisitedPatientList = new ArrayList<>();
+    private List<PastVisitedPatientModel> mPastVisitedPatientList = new ArrayList<>();
 
     private void getPastVisitedPatientList() {
         mPastVisitedPatientList.clear();
@@ -258,18 +119,18 @@ public class PatientListFragment extends Fragment {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
-                        mPastVisitedPatientList.add(pastVisitFirstModel);
+                        PastVisitedPatientModel pastVisitedPatientModel = new PastVisitedPatientModel();
+                        pastVisitedPatientModel.setPatientName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
+                        pastVisitedPatientModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        pastVisitedPatientModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
+                        pastVisitedPatientModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+                        pastVisitedPatientModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        mPastVisitedPatientList.add(pastVisitedPatientModel);
                     }
-                    mPastVisitFirstAdapter.setData(mPastVisitedPatientList);
+                    mPastVisitedPatientAdapter.setData(mPastVisitedPatientList);
                     mProgressDialog.dismiss();
-                    mListView.setAdapter(mPastVisitFirstAdapter);
-                    mPastVisitFirstAdapter.notifyDataSetChanged();
+                    mListView.setAdapter(mPastVisitedPatientAdapter);
+                    mPastVisitedPatientAdapter.notifyDataSetChanged();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
@@ -285,55 +146,5 @@ public class PatientListFragment extends Fragment {
         });
         mRequestQueue.add(symptomsJsonObjectRequest);
     }
-
-    private List<PastVisitDoctorListModel> mPastVisitFirstModels = new ArrayList<>();
-
-    private void getPastVisitedDoctorList() {
-        mPastVisitFirstModels.clear();
-        StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastVisitList);
-        String url = static_holder.request_Url();
-        JSONObject data = new JSONObject();
-        try {
-            data.put("patientId", AppConstant.getPatientID());
-        } catch (JSONException je) {
-            je.printStackTrace();
-        }
-        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String data = response.getString("d");
-                    JSONObject jsonObject = new JSONObject(data);
-                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
-                        mPastVisitFirstModels.add(pastVisitFirstModel);
-                    }
-                    mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
-                    mProgressDialog.dismiss();
-                    mListView.setAdapter(mPastVisitFirstAdapter);
-                    mPastVisitFirstAdapter.notifyDataSetChanged();
-                } catch (JSONException je) {
-                    mProgressDialog.dismiss();
-                    je.printStackTrace();
-                    Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mProgressDialog.dismiss();
-                Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mRequestQueue.add(symptomsJsonObjectRequest);
-    }
-
 
 }

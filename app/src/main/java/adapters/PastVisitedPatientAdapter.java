@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.DoctorDetails;
+import models.PastVisitedPatientModel;
 
 /**
  * Created by ayaz on 25/6/17.
@@ -21,7 +22,7 @@ import models.DoctorDetails;
 
 public class PastVisitedPatientAdapter extends BaseAdapter {
     private Activity mActivity;
-    private List<DoctorDetails> mDoctorDetailsList = new ArrayList<DoctorDetails>();
+    private List<PastVisitedPatientModel> mPastVisitedPatientModelList = new ArrayList<PastVisitedPatientModel>();
 
     public PastVisitedPatientAdapter(Activity activity) {
         mActivity = activity;
@@ -30,12 +31,12 @@ public class PastVisitedPatientAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mDoctorDetailsList.size();
+        return mPastVisitedPatientModelList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mDoctorDetailsList.get(position);
+        return mPastVisitedPatientModelList.get(position);
     }
 
     @Override
@@ -68,18 +69,18 @@ public class PastVisitedPatientAdapter extends BaseAdapter {
             holder = (PastVisitedPatientAdapter.ViewHolder) convertView.getTag();
         }
 
-        DoctorDetails doctorDetails = mDoctorDetailsList.get(position);
+        PastVisitedPatientModel pastVisitedPatientModel = mPastVisitedPatientModelList.get(position);
 
-        holder.patientName.setText(doctorDetails.getDoctorName());
-        holder.patientLocation.setText(doctorDetails.getLocation());
-        holder.patientMedicineType.setText(doctorDetails.getMedicineType());
-        holder.patientPic.setImageResource(doctorDetails.getDoctorImage());
+        holder.patientName.setText(pastVisitedPatientModel.getPatientName());
+        /*holder.patientLocation.setText(pastVisitedPatientModel.get());
+        holder.patientMedicineType.setText(pastVisitedPatientModel.getMedicineType());
+        holder.patientPic.setImageResource(pastVisitedPatientModel.getDoctorImage());*/
 
         return convertView;
     }
 
-    public void setData(List<DoctorDetails> doctorDetailsList) {
-        mDoctorDetailsList = doctorDetailsList;
+    public void setData(List<PastVisitedPatientModel> pastVisitedPatientModelList) {
+        mPastVisitedPatientModelList = pastVisitedPatientModelList;
     }
 }
 

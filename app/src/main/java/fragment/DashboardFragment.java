@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.AppAplication;
 import com.hs.userportal.MyHealth;
 import com.hs.userportal.R;
@@ -100,7 +101,11 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                 if (position == 0) {
-                    ((DashBoardActivity) mActivity).openConsultFragment();
+                    if (ConversationActivity.isPatient) {
+                        ((DashBoardActivity) mActivity).openConsultFragment();
+                    } else {
+                        ((DashBoardActivity) mActivity).openPatientListFragment();
+                    }
                 } else if (position == 1) {
                     ((DashBoardActivity) mActivity).openReportFragment();
                 } else if (position == 2) {
