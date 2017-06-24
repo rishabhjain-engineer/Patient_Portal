@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,15 +116,6 @@ public class ConsultFragment extends Fragment {
                     mConsultNow.setClickable(false);
                     getConsultId();
                 }
-               /* Intent intent = null;
-                if (AppConstant.isPatient) {
-                    intent = new Intent(getActivity(), PastVisitDoctorDetailActivity.class);
-                } else {
-                    intent = new Intent(getActivity(), DoctorPrescriptionActivity.class);
-                }
-                intent.putExtra("chatType", "video");
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             }
         });
 
@@ -140,12 +132,7 @@ public class ConsultFragment extends Fragment {
             }
         });
         hederTitle.setText("Find a doctor");
-        return view;
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
         DoctorDetails doctorDetails3 = new DoctorDetails();
         doctorDetails3.setDoctorName("Sajat");
@@ -179,9 +166,9 @@ public class ConsultFragment extends Fragment {
 
         mConsultFragmentAdapter.setData(mDoctorDetailsList);
         mListView.setAdapter(mConsultFragmentAdapter);
-
-
+        return view;
     }
+
 
     private String mConsultID;
 
@@ -189,11 +176,12 @@ public class ConsultFragment extends Fragment {
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
+        String consultId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         try {
-            data.put("patientId", AppConstant.getPatientID());
+            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", "");
             data.put("patientNotes", "");
-            data.put("consultId", JSONObject.NULL);
+            data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
             data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
@@ -203,14 +191,13 @@ public class ConsultFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     mConsultNow.setClickable(true);
-                    Log.i("GetMember", "Received Data: " + response);
                     String consultId = response.getString("d");
                     consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
                     mProgressDialog.dismiss();
                     Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
-                    videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+                    videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
                     startActivity(videoCallIntent);
                     getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 } catch (JSONException je) {
@@ -233,6 +220,7 @@ public class ConsultFragment extends Fragment {
     }
 
     private List<PastVisitDoctorListModel> mPastVisitedPatientList = new ArrayList<>();
+
     private void getPastVisitedPatientList() {
         mPastVisitedPatientList.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastPatientList);
@@ -281,6 +269,7 @@ public class ConsultFragment extends Fragment {
     }
 
     private List<PastVisitDoctorListModel> mPastVisitFirstModels = new ArrayList<>();
+
     private void getPastVisitedDoctorList() {
         mPastVisitFirstModels.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastVisitList);

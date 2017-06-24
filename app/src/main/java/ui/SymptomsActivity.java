@@ -203,34 +203,24 @@ public class SymptomsActivity extends BaseActivity {
                     }
                     if (mCoversationType.equalsIgnoreCase("audio")) {
                         Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+                        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
                         startActivity(audioCallIntent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else if (mCoversationType.equalsIgnoreCase("video")) {
                         Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
+                        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
                         videoCallIntent.putExtra("symptoms", symptomsList);
                         videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
                         startActivity(videoCallIntent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     } else if (mCoversationType.equalsIgnoreCase("chat")) {
                         Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getpatienDoctorId());
-                        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
+                        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getDoctorId());
+                        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getDoctorName()); //put it for displaying the title.
                         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     }
-                /*//Intent intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
-                Intent intent = null;
-                if (AppConstant.isPatient) {
-                    intent = new Intent(SymptomsActivity.this, PastVisitDoctorDetailActivity.class);
-                } else {
-                    intent = new Intent(SymptomsActivity.this, DoctorPrescriptionActivity.class);
-                }
-                intent.putExtra("chatType", mCoversationType);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
                 } else {
                     Toast.makeText(SymptomsActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
@@ -691,7 +681,7 @@ public class SymptomsActivity extends BaseActivity {
         JSONObject data = new JSONObject();
         Log.e("Rishabh", "data" + data);
         try {
-            data.put("patientId", AppConstant.getpatienDoctorId());
+            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
             data.put("patientNotes", mNoteEditText.getEditableText().toString());
             data.put("doctorId", AppConstant.getDoctorId());

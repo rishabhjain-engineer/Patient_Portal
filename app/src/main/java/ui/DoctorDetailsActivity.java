@@ -9,12 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
@@ -78,23 +75,11 @@ public class DoctorDetailsActivity extends BaseActivity {
         public void onClick(View v) {
             int id = v.getId();
             if (R.id.audio_call == id) {
-                if (ConversationActivity.isPatient) {
-                    decesionAlertDialog("audio");
-                } else {
-                    audioCall();
-                }
+                decesionAlertDialog("audio");
             } else if (R.id.video_call == id) {
-                if (ConversationActivity.isPatient) {
-                    decesionAlertDialog("video");
-                } else {
-                    videoCall();
-                }
+                decesionAlertDialog("video");
             } else if (R.id.chat == id) {
-                if (ConversationActivity.isPatient) {
-                    decesionAlertDialog("chat");
-                } else {
-                    chat();
-                }
+                decesionAlertDialog("chat");
             } else if (R.id.back_image == id) {
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -132,16 +117,6 @@ public class DoctorDetailsActivity extends BaseActivity {
                     chat();
                     dialog.dismiss();
                 }
-                /*Intent intent = null;
-                if (AppConstant.isPatient) {
-                    intent = new Intent(DoctorDetailsActivity.this, PastVisitDoctorDetailActivity.class);
-                } else {
-                    intent = new Intent(DoctorDetailsActivity.this, DoctorPrescriptionActivity.class);
-                }
-                intent.putExtra("chatType", string);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                dialog.dismiss();*/
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {
@@ -160,22 +135,22 @@ public class DoctorDetailsActivity extends BaseActivity {
 
     private void videoCall() {
         Intent videoCallIntent = new Intent(DoctorDetailsActivity.this, VideoActivity.class);
-        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getPatientID());
+        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
         startActivity(videoCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void audioCall() {
         Intent audioCallIntent = new Intent(DoctorDetailsActivity.this, AudioCallActivityV2.class);
-        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getPatientID());
+        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
         startActivity(audioCallIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     private void chat() {
         Intent intent = new Intent(DoctorDetailsActivity.this, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getPatientID());
-        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
+        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getDoctorId());
+        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getDoctorName()); //put it for displaying the title.
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         startActivity(intent);
     }

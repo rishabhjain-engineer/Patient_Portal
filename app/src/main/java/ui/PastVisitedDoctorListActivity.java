@@ -30,6 +30,7 @@ import config.StaticHolder;
 import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 20/6/17.
@@ -97,7 +98,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("patientId", AppConstant.getPatientID());
+            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
         } catch (JSONException je) {
             je.printStackTrace();
         }

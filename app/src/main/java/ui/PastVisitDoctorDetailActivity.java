@@ -172,25 +172,6 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
 
             }
         });
-
-        String mCoversationType = getIntent().getStringExtra("chatType");
-        if (!TextUtils.isEmpty(mCoversationType)) {
-            Intent intent = null;
-            if (mCoversationType.equalsIgnoreCase("audio")) {
-                intent = new Intent(PastVisitDoctorDetailActivity.this, AudioCallActivityV2.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-            } else if (mCoversationType.equalsIgnoreCase("video")) {
-                intent = new Intent(PastVisitDoctorDetailActivity.this, VideoActivity.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-            } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                intent = new Intent(PastVisitDoctorDetailActivity.this, ConversationActivity.class);
-                intent.putExtra("CONTACT_ID", AppConstant.getpatienDoctorId());
-                intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getpatienDoctorName()); //put it for displaying the title.
-                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-            }
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-        }
     }
 
     @Override
@@ -204,7 +185,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("consultId", "99587328-A719-411A-AAE7-15DF20F43F0F");  //TODO Ayaz
+            data.put("consultId", consultId);  //TODO Ayaz "99587328-A719-411A-AAE7-15DF20F43F0F"
         } catch (JSONException je) {
             je.printStackTrace();
         }
