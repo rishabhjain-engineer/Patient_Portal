@@ -201,26 +201,6 @@ public class SymptomsActivity extends BaseActivity {
                     } else {
                         uploadFileToAWS();
                     }
-                    if (mCoversationType.equalsIgnoreCase("audio")) {
-                        Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
-                        audioCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
-                        startActivity(audioCallIntent);
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    } else if (mCoversationType.equalsIgnoreCase("video")) {
-                        Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
-                        videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
-                        videoCallIntent.putExtra("symptoms", symptomsList);
-                        videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
-                        startActivity(videoCallIntent);
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    } else if (mCoversationType.equalsIgnoreCase("chat")) {
-                        Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
-                        intent.putExtra(ConversationUIService.USER_ID, AppConstant.getDoctorId());
-                        intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getDoctorName()); //put it for displaying the title.
-                        intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    }
                 } else {
                     Toast.makeText(SymptomsActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
                 }
@@ -768,7 +748,7 @@ public class SymptomsActivity extends BaseActivity {
 
                 // Step 1: Initialize.
                 InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(s3BucketName, key);
-                 configureInitiateRequest(initRequest);
+                configureInitiateRequest(initRequest);
                 InitiateMultipartUploadResult initResponse = s3Client.initiateMultipartUpload(initRequest);
 
 
@@ -821,10 +801,26 @@ public class SymptomsActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            // updating HealthScion dataBase ;
-
-
+            if (mCoversationType.equalsIgnoreCase("audio")) {
+                Intent audioCallIntent = new Intent(SymptomsActivity.this, AudioCallActivityV2.class);
+                audioCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
+                startActivity(audioCallIntent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            } else if (mCoversationType.equalsIgnoreCase("video")) {
+                Intent videoCallIntent = new Intent(SymptomsActivity.this, VideoActivity.class);
+                videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
+                videoCallIntent.putExtra("symptoms", symptomsList);
+                videoCallIntent.putExtra("notes", mNoteEditText.getEditableText().toString());
+                startActivity(videoCallIntent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            } else if (mCoversationType.equalsIgnoreCase("chat")) {
+                Intent intent = new Intent(SymptomsActivity.this, ConversationActivity.class);
+                intent.putExtra(ConversationUIService.USER_ID, AppConstant.getDoctorId());
+                intent.putExtra(ConversationUIService.DISPLAY_NAME, AppConstant.getDoctorName()); //put it for displaying the title.
+                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
         }
     }
 
