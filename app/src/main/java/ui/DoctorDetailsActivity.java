@@ -5,30 +5,46 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.applozic.audiovideo.activity.AudioCallActivityV2;
 import com.applozic.audiovideo.activity.VideoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import config.StaticHolder;
 import models.DoctorDetails;
 import utils.AppConstant;
+import utils.PreferenceHelper;
 
 /**
  * Created by ayaz on 5/6/17.
  */
 
 public class DoctorDetailsActivity extends BaseActivity {
+    private static RequestQueue mRequestQueue;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_doctor_detail);
+        mRequestQueue = Volley.newRequestQueue(this);
         setupActionBar();
         mActionBar.hide();
 
@@ -99,24 +115,15 @@ public class DoctorDetailsActivity extends BaseActivity {
         dialog.setCanceledOnTouchOutside(true);
         TextView okBTN = (TextView) dialog.findViewById(R.id.btn_ok);
         okBTN.setText("Later");
-        TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
+        final TextView stayButton = (TextView) dialog.findViewById(R.id.stay_btn);
         stayButton.setText("Yes");
 
         okBTN.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                if (string.equalsIgnoreCase("audio")) {
-                    audioCall();
-                    dialog.dismiss();
-                } else if (string.equalsIgnoreCase("video")) {
-                    videoCall();
-                    dialog.dismiss();
-                } else if (string.equalsIgnoreCase("chat")) {
-                    chat();
-                    dialog.dismiss();
-                }
+                getConsultId(string);
+                dialog.dismiss();
             }
         });
         stayButton.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +138,50 @@ public class DoctorDetailsActivity extends BaseActivity {
             }
         });
         dialog.show();
+    }
+
+    private void getConsultId(String consultId) {
+        StaticHolder static_holder = new StaticHolder(DoctorDetailsActivity.this, StaticHolder.Services_static.ConsultAddSymptoms);
+        String url = static_holder.request_Url();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
+            data.put("symptoms", "");
+            data.put("patientNotes", "");
+            data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
+            data.put("doctorId", AppConstant.getDoctorId());
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String consultId = response.getString("d");
+                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
+
+                    if (consultId.equalsIgnoreCase("audio")) {
+                        audioCall();
+                    } else if (consultId.equalsIgnoreCase("video")) {
+                        videoCall();
+                    } else if (consultId.equalsIgnoreCase("chat")) {
+                        chat();
+                    }
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                    Toast.makeText(DoctorDetailsActivity.this, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(DoctorDetailsActivity.this, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRequestQueue.add(symptomsJsonObjectRequest);
+
     }
 
     private void videoCall() {

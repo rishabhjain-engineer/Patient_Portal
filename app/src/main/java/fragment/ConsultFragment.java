@@ -74,11 +74,7 @@ public class ConsultFragment extends Fragment {
         past_visits = (TextView) view.findViewById(R.id.past_visits_tv);
         mActivity = getActivity();
         mPastVisitFirstAdapter = new PastVisitFirstAdapter(mActivity);
-        if (ConversationActivity.isPatient) {
-            past_visits.setVisibility(View.VISIBLE);
-        } else {
-            past_visits.setVisibility(View.GONE);
-        }
+        past_visits.setVisibility(View.VISIBLE);
         past_visits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,9 +165,6 @@ public class ConsultFragment extends Fragment {
         return view;
     }
 
-
-    private String mConsultID;
-
     private void getConsultId() {
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
@@ -194,7 +187,6 @@ public class ConsultFragment extends Fragment {
                     String consultId = response.getString("d");
                     consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
-                    mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
                     mProgressDialog.dismiss();
                     Intent videoCallIntent = new Intent(getActivity(), VideoActivity.class);
                     videoCallIntent.putExtra("CONTACT_ID", AppConstant.getDoctorId());
