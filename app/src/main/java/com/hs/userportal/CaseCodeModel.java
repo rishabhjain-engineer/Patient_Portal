@@ -3,14 +3,21 @@ package com.hs.userportal;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import utils.DateSorter;
 
 /**
  * Created by rishabh on 15/6/17.
  */
 
-public class CaseCodeModel {
+public class CaseCodeModel implements DateSorter{
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss a");
 
     private String caseCode;
     private String locationName;  // Name of lab , where patient visited for sample
@@ -25,9 +32,16 @@ public class CaseCodeModel {
     private int totalActualAmount ;
     private int initialAmount ;
     private int discountAmount ;
+    private Date caseCodeDate;
 
 
+    public Date getCaseCodeDate() {
+        return caseCodeDate;
+    }
 
+    public void setCaseCodeDate(Date caseCodeDate) {
+        this.caseCodeDate = caseCodeDate;
+    }
 
     public CaseCodeModel(String caseCode) {
         this.caseCode = caseCode;
@@ -129,6 +143,11 @@ public class CaseCodeModel {
 
     public void setDateandTime(String dateandTime) {
         this.dateandTime = dateandTime;
+        try {
+            caseCodeDate = formatter.parse(dateandTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getPatientName() {
@@ -137,5 +156,10 @@ public class CaseCodeModel {
 
     public void setPatientName(String patientName) {
         this.patientName = patientName;
+    }
+
+    @Override
+    public Date getDate() {
+        return caseCodeDate;
     }
 }

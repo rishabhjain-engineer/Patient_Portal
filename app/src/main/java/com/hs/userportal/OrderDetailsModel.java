@@ -1,19 +1,35 @@
 package com.hs.userportal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import utils.DateSorter;
 
 /**
  * Created by rishabh on 20/6/17.
  */
 
-public class OrderDetailsModel {
+public class OrderDetailsModel implements DateSorter{
+
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss a");
 
     private String orderID , centreName, testID , testName , billingAddress , orderDateTime, discountPercentage, promoCodeDiscount;
     private int orderActualAmount , orderBillingAmount , orderDiscountAmount , orderStatus ;
     private Boolean samplePickUpStatus ;
     private List<OrderTestNames> listOfOrderTestNames = new ArrayList<>() ;
     private OrderTestNames orderTestNamesObject ;
+    private Date orderIdDate;
+
+    public Date getOrderIdDate() {
+        return orderIdDate;
+    }
+
+    public void setOrderIdDate(Date orderIdDate) {
+        this.orderIdDate = orderIdDate;
+    }
 
     public OrderTestNames getOrderTestNames() {
         return orderTestNamesObject;
@@ -117,7 +133,9 @@ public class OrderDetailsModel {
     }
 
     public String getOrderDateTime() {
+
         return orderDateTime;
+
     }
 
     public void createNewTestNameObject(){
@@ -127,5 +145,15 @@ public class OrderDetailsModel {
 
     public void setOrderDateTime(String orderDateTime) {
         this.orderDateTime = orderDateTime;
+        try {
+            orderIdDate = formatter.parse(orderDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Date getDate() {
+        return orderIdDate;
     }
 }

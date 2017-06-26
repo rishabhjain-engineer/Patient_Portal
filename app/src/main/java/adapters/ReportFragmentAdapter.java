@@ -20,6 +20,8 @@ import com.hs.userportal.TestNames;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.DateSorter;
+
 /**
  * Created by rishabh on 16/6/17.
  */
@@ -27,7 +29,7 @@ import java.util.List;
 public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAdapter.MyViewHolder> {
 
     private List<CaseCodeModel> adapterCaseCodeObjectList = new ArrayList<>();
-    private List<Object> listofAllObjects = new ArrayList<>();
+    private List<DateSorter> listofAllObjects = new ArrayList<>();
     private Context context;
     private TestListAdapter testListAdapter;
     private RecyclerView recyclerViewTestList;
@@ -40,7 +42,7 @@ public class ReportFragmentAdapter extends RecyclerView.Adapter<ReportFragmentAd
     private OrderListAdapter.OrderListTouched orderListTouchedListener;
 
 
-    public ReportFragmentAdapter(Context context, List<Object> list, TestListAdapter.OnRowTouchAction listener, OnPdfTouch onPdfTouchListener, OrderListAdapter.OrderListTouched order) {
+    public ReportFragmentAdapter(Context context, List<DateSorter> list, TestListAdapter.OnRowTouchAction listener, OnPdfTouch onPdfTouchListener, OrderListAdapter.OrderListTouched order) {
 
         this.context = context;
         this.listener = listener;

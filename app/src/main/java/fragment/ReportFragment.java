@@ -75,6 +75,8 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +90,7 @@ import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import utils.AppConstant;
+import utils.DateSorter;
 import utils.PreferenceHelper;
 
 /**
@@ -165,7 +168,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
     private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
     private List<OrderDetailsModel> listOfOrderDetailsModelObjects = new ArrayList<>();
-    private List<Object> listOfAllObjects = new ArrayList<>();
+    private List<DateSorter> listOfAllObjects = new ArrayList<>();
     private ProgressDialog mProgressDialog;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -584,6 +587,29 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
             }
 
+            Collections.sort(listOfAllObjects, new Comparator<DateSorter>() {
+                @Override
+                public int compare(DateSorter o1, DateSorter o2) {
+                    return o1.getDate().compareTo(o2.getDate());
+                }
+            });
+
+            /*listOfAllObjects.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    if(o1 instanceof CaseCodeModel && o2 instanceof OrderDetailsModel){
+                        return ((CaseCodeModel) o1).getCaseCodeDate().compareTo(((OrderDetailsModel) o2).getOrderIdDate());
+                    } else if(o1 instanceof CaseCodeModel && o2 instanceof CaseCodeModel){
+                        return ((CaseCodeModel) o1).getCaseCodeDate().compareTo(((CaseCodeModel) o2).getCaseCodeDate());
+                    } else if(o1 instanceof OrderDetailsModel && o2 instanceof CaseCodeModel){
+                        return ((OrderDetailsModel) o1).getOrderIdDate().compareTo(((CaseCodeModel) o2).getCaseCodeDate());
+                    } else if(o1 instanceof OrderDetailsModel && o2 instanceof OrderDetailsModel){
+                        return ((OrderDetailsModel) o1).getOrderIdDate().compareTo(((OrderDetailsModel) o2).getOrderIdDate());
+                    }
+
+                    return 0;
+                }
+            });*/
             mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects, ReportFragment.this, ReportFragment.this, ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
 
