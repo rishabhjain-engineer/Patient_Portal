@@ -41,7 +41,7 @@
         <LinearLayout
             android:id="@+id/middle_container_left_part"
             android:layout_width="0dp"
-            android:layout_weight="15"
+            android:layout_weight="12"
             android:orientation="vertical"
             android:layout_marginLeft="15dp"
             android:layout_height="wrap_content">
@@ -56,7 +56,7 @@
                 android:gravity="left"
                 android:text="Adviced Date"
                 android:textColor="#737373"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Referred By"
                 android:textColor="#737373"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -90,15 +90,15 @@
                 android:gravity="left"
                 android:text="Case Code"
                 android:textColor="#737373"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
         </LinearLayout>
         <LinearLayout
             android:id="@+id/middle_container_right_part"
             android:layout_width="0dp"
-            android:layout_weight="16"
+            android:layout_weight="19"
             android:orientation="vertical"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="2.5dp"
             android:layout_marginRight="15dp"
             android:layout_height="wrap_content">
 
@@ -106,19 +106,19 @@
             <TextView
                 android:id="@+id/advice_date_value_tv"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:text="Date"
                 android:textStyle="bold"
                 android:textColor="#262626"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:background="#e5e5e5"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="2dp"
                 android:layout_height="0.7dp"></View>
 
             <TextView
@@ -131,11 +131,12 @@
                 android:text="Referred By"
                 android:textColor="#262626"
                 android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
+
             <View
                 android:layout_width="match_parent"
                 android:background="#e5e5e5"
-                android:layout_marginTop="4.8dp"
+                android:layout_marginTop="5dp"
                 android:layout_height="0.7dp"></View>
 
             <TextView
@@ -148,7 +149,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:textColor="#262626"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
         </LinearLayout>
 
