@@ -612,7 +612,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             });*/
             mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects, ReportFragment.this, ReportFragment.this, ReportFragment.this);
             mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
-
+            progress.dismiss();
 
            /* if (image.size() == 0) {
                 // images.setBackgroundResource(R.drawable.grey_button);
@@ -1831,6 +1831,12 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
     private void OrderDetailsBackgroundProcess() {
 
+        progress = new ProgressDialog(mActivity);
+        progress.setCancelable(false);
+        progress.setMessage("Loading your test records ...");
+        progress.setIndeterminate(true);
+        progress.show();
+
         listOfAllObjects.clear();
         listOfOrderDetailsModelObjects.clear();
 
@@ -1883,7 +1889,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 listOfOrderDetailsModelObjects.add(orderDetailsModel);
                                 listOfAllObjects.add(orderDetailsModel);
 
-                               // Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
+                                // Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
                             } else {
 
                                 check.createNewTestNameObject();
@@ -1902,7 +1908,7 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
                                 check.setOrderStatus(jsonArray.getJSONObject(i).optInt("OrderStatus"));
                                 check.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
 
-                              //  Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
+                                //  Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
                             }
 
                         }
@@ -1942,11 +1948,11 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
     @Override
     public void orderListTouched(OrderDetailsModel object, String testName, int position) {
-        String samplePickupStatus ;
+        String samplePickupStatus;
         Intent i = new Intent(mActivity, OrderDetails.class);
 
 
-        i.putExtra("OrderId",object.getOrderID() );          // pastVisitArray.get(arg2).get("OrderId")
+        i.putExtra("OrderId", object.getOrderID());          // pastVisitArray.get(arg2).get("OrderId")
         i.putExtra("OrderDate", object.getOrderDateTime());    // pastVisitArray.get(arg2).get("TimeStamp")
         i.putExtra("LabName", object.getCentreName());                               // pastVisitArray.get(arg2).get("CentreName")
         i.putExtra("Address", object.getBillingAddress());                              // pastVisitArray.get(arg2).get("BillingAddress")
@@ -1971,9 +1977,9 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
 
                 double bilingamnt = ((object.getOrderBillingAmount()) * (1 - (discountPercentage)) / 100);
                 i.putExtra("YourPrice", (int) Math.round(bilingamnt));
-                i.putExtra("promo_codeDiscount",( object.getOrderBillingAmount() * (discountPercentage )/ 100));
+                i.putExtra("promo_codeDiscount", (object.getOrderBillingAmount() * (discountPercentage) / 100));
             } else {
-                i.putExtra("YourPrice",object.getOrderBillingAmount() );   // (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
+                i.putExtra("YourPrice", object.getOrderBillingAmount());   // (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
                 i.putExtra("promo_codeDiscount", 0);
             }
 
@@ -1981,16 +1987,16 @@ public class ReportFragment extends Fragment implements TestListAdapter.OnRowTou
             e.printStackTrace();
         }
         String orderStatus = String.valueOf(object.getOrderStatus());
-        if(object.getSamplePickUpStatus()){
-             samplePickupStatus = "1";
-        }else {
-             samplePickupStatus = "0";
+        if (object.getSamplePickUpStatus()) {
+            samplePickupStatus = "1";
+        } else {
+            samplePickupStatus = "0";
         }
 
         i.putExtra("TestName", testName);
-        i.putExtra("perTextActualPrice_str", "₹"+object.getOrderActualAmount() );                 // pastVisitArray.get(arg2).get("perTextActualPrice_str")
-        i.putExtra("OrderStatus",orderStatus );          // pastVisitArray.get(arg2).get("OrderStatus")
-        i.putExtra("SamplePickupstatus",samplePickupStatus );                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
+        i.putExtra("perTextActualPrice_str", "₹" + object.getOrderActualAmount());                 // pastVisitArray.get(arg2).get("perTextActualPrice_str")
+        i.putExtra("OrderStatus", orderStatus);          // pastVisitArray.get(arg2).get("OrderStatus")
+        i.putExtra("SamplePickupstatus", samplePickupStatus);                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
         i.putExtra("scroll_position", String.valueOf(position));
 
         startActivity(i);
