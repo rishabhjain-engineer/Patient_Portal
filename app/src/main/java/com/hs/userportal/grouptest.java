@@ -124,6 +124,7 @@ public class grouptest extends BaseActivity {
                 intentcase.clear();
                 intentdate.clear();
                 chartValues.clear();
+                sendInvestigationID1List.clear();
                 resulttype.clear();
                 chartunitList.clear();
                 divDataBullet = "";
@@ -167,6 +168,7 @@ public class grouptest extends BaseActivity {
                                 && tempObject.getString("Description").equals(
                                 description)) {
                             chartValues.add(tempObject.getString("ResultValue"));
+                            sendInvestigationID1List.add(tempObject.getString("InvestigationId1"));
                             if (tempObject.getString("UnitCode").equals("null")) {
                                 chartunitList.add("");
                             } else {
@@ -405,6 +407,7 @@ public class grouptest extends BaseActivity {
         String description = "", dateadvise = "", casecode = "";
         try {
             chartValues.clear();
+            sendInvestigationID1List.clear();
             intentcase.clear();
             intentcaseId.clear();
             intentdate.clear();
@@ -439,6 +442,7 @@ public class grouptest extends BaseActivity {
                 CriticalLow = "0";
             }
             chartValues.add(ResultValue);
+            sendInvestigationID1List.add(jarray.getJSONObject(position).getString("InvestigationId1"));
 
         } catch (JSONException e) {
             e.printStackTrace();

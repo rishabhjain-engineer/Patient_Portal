@@ -255,6 +255,7 @@ public class ReportStatus extends BaseActivity {
                     intentcase.clear();
                     intentcaseId.clear();
                     chartValues.clear();
+                    sendInvestigationID1List.clear();
                     divDataBullet = "";
 
                     if (results != null && results.length() == 1) {
@@ -263,13 +264,11 @@ public class ReportStatus extends BaseActivity {
                     } else if (results != null && results.length() > 1) {
 
                         try {
-                            if ((results.getJSONObject(0)
-                                    .getString("isprofile").equals("P")))
+                            if ((results.getJSONObject(0).getString("isprofile").equals("P")))
 
                             {
 
-                                Intent intent = new Intent(getApplicationContext(),
-                                        grouptest.class);
+                                Intent intent = new Intent(getApplicationContext(), grouptest.class);
                                 intent.putExtra("group", results.toString());
                                 intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 startActivity(intent);
@@ -278,8 +277,7 @@ public class ReportStatus extends BaseActivity {
 
                                 for (int i = 0; i < results.length(); i++) {
                                     try {
-                                        JSONObject tempObject = results
-                                                .getJSONObject(i);
+                                        JSONObject tempObject = results.getJSONObject(i);
                                         UnitCode = tempObject.getString("UnitCode");
                                         if (tempObject.getString("ResultType") // new
                                                 // code
@@ -371,8 +369,8 @@ public class ReportStatus extends BaseActivity {
                                                         ""))
                                                     chartValues.add("0");
                                                 else
-                                                    chartValues.add(tempObject
-                                                            .getString("ResultValue"));
+                                                    chartValues.add(tempObject.getString("ResultValue"));
+                                                sendInvestigationID1List.add(tempObject.getString("InvestigationId1"));
                                                 singlechartposition = i;
                                             }
                                             if (tempObject
@@ -674,8 +672,8 @@ public class ReportStatus extends BaseActivity {
                                                 .equals(""))
                                             chartValues.add("0");
                                         else
-                                            chartValues.add(tempObject
-                                                    .getString("ResultValue"));
+                                            chartValues.add(tempObject.getString("ResultValue"));
+                                        sendInvestigationID1List.add(tempObject.getString("InvestigationId1"));
 
                                     }
                                     if (tempObject.getString("CaseId").equals(
@@ -950,11 +948,12 @@ public class ReportStatus extends BaseActivity {
 
                 try {
 
-                    String investigationID1 = results.getJSONObject(i).getString("InvestigationId1");
-                    sendInvestigationID1List.add(investigationID1);
+                   /* String investigationID1 = results.getJSONObject(i).getString("InvestigationId1");
+                    sendInvestigationID1List.add(investigationID1);*/
 
                     if (results.getJSONObject(i).getString("CaseId").equals(jarray.getJSONObject(index).getString("CaseId"))) {
                         reportarray.put(results.getJSONObject(i));
+
                     }
 
                     if (results.getJSONObject(i).getString("ResultType")
@@ -972,6 +971,9 @@ public class ReportStatus extends BaseActivity {
             }
 
             System.out.println("For report:" + reportarray);
+
+            Log.e("Rishabh", "report array := "+reportarray);
+
 
 
             // ////////////////////////////////////////////////////////////
@@ -1369,6 +1371,7 @@ public class ReportStatus extends BaseActivity {
         String result_type = "";
         try {
             chartValues.clear();
+            sendInvestigationID1List.clear();
             intentcase.clear();
             intentcaseId.clear();
             intentdate.clear();
@@ -1403,7 +1406,7 @@ public class ReportStatus extends BaseActivity {
                 criticallow = "0";
             }
             chartValues.add(ResultValue);
-
+            sendInvestigationID1List.add(results.getJSONObject(position).getString("InvestigationId1"));
         } catch (JSONException e) {
             e.printStackTrace();
             unit = null;
