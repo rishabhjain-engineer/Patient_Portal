@@ -508,6 +508,11 @@ public class StaticHolder {
             case saveHealthDetailMod:
                 url = BASE_URL + "saveHealthDetailMod";
                 break;
+
+            case GetAllPatientCase:
+                url = BASE_URL + "GetAllPatientCase";
+                break;
+
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -543,7 +548,7 @@ public class StaticHolder {
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
-        saveHealthDetailMod
+        saveHealthDetailMod, GetAllPatientCase
     }
 
 }
