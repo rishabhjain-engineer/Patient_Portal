@@ -175,10 +175,13 @@ public class ConsultFragment extends Fragment {
             data.put("symptoms", "");
             data.put("patientNotes", "");
             data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
-            data.put("doctorId", "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD ");  // AppConstant.getDoctorId()
+            data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }
+
+        Log.e("Rishabh","consultFragment send data := "+data);
+
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -108,7 +108,7 @@ public class PatientListFragment extends Fragment {
         Log.e("Rishabh","url patientlist fragmennt: "+url);
         JSONObject data = new JSONObject();
         try {
-            data.put("doctorId", "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD"); // AppConstant.getDoctorId()
+            data.put("doctorId", AppConstant.getDoctorId() );
         } catch (JSONException je) {
             je.printStackTrace();
         }
