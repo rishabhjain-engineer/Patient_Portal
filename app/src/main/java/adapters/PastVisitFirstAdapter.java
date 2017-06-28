@@ -75,8 +75,11 @@ public class PastVisitFirstAdapter extends BaseAdapter {
             holder.doctorName.setText(pastVisitFirstModel.getDoctorName());
         }
 
-        if (!TextUtils.isEmpty(pastVisitFirstModel.getConsultTime())) {
-            holder.consultTime.setText(pastVisitFirstModel.getConsultTime());
+        String consultTime = pastVisitFirstModel.getConsultTime();
+        if (!TextUtils.isEmpty(consultTime)) {
+            String consultArray[] = consultTime.split("T");
+            consultTime = consultArray[0];
+            holder.consultTime.setText("Consult time : " + consultTime);
         }
         if (!TextUtils.isEmpty(pastVisitFirstModel.getPayment())) {
             holder.payment.setText(pastVisitFirstModel.getPayment());
@@ -85,7 +88,6 @@ public class PastVisitFirstAdapter extends BaseAdapter {
             holder.prescription.setText(pastVisitFirstModel.getPrescription());
         }
         // holder.doctorPic.setImageResource(pastVisitFirstModel.getD());
-
         return convertView;
     }
 

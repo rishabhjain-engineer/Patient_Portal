@@ -42,6 +42,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
     private PastVisitFirstAdapter mPastVisitFirstAdapter;
     private List<PastVisitDoctorListModel> mPastVisitDoctorListModelList = new ArrayList<>();
     private ListView mListView;
+    private String temporaryConsulId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +51,20 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
 
         setupActionBar();
         mActionBar.hide();
+
+        TextView pastVisitsTv = (TextView) findViewById(R.id.past_visits_tv);
+        pastVisitsTv.setText("Prescription Report");
+        pastVisitsTv.setVisibility(View.VISIBLE);
+        pastVisitsTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PastVisitedDoctorListActivity.this, PrescriptionReportActivity.class);
+                intent.putExtra("temporary", temporaryConsulId);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
 
         ImageView backImage = (ImageView) findViewById(R.id.back_image);
         TextView headerTitleTv = (TextView) findViewById(R.id.header_title_tv);
@@ -114,6 +129,7 @@ public class PastVisitedDoctorListActivity extends BaseActivity {
                         PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
                         pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
                         pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
+                        temporaryConsulId = jsonObject1.optString("ConsultId");
                         pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
                         pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
                         pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));

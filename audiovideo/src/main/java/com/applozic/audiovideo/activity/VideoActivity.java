@@ -414,7 +414,7 @@ public class VideoActivity extends AudioCallActivityV2 {
         super.onDestroy();
         if (ConversationActivity.isPatient) {
             Intent intent = new Intent();
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setAction(OPEN_PATIENT_PAST_VISIT);
             startActivity(intent);
         } else {
