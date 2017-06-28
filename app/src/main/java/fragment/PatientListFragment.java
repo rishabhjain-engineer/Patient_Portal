@@ -105,14 +105,12 @@ public class PatientListFragment extends Fragment {
         mPastVisitedPatientList.clear();
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.PastPatientList);
         String url = static_holder.request_Url();
-        Log.e("Rishabh","url patientlist fragmennt: "+url);
         JSONObject data = new JSONObject();
         try {
             data.put("doctorId", AppConstant.getDoctorId() );
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.e("Rishabh","Send DAta patientlist fragmennt: "+data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -135,7 +133,6 @@ public class PatientListFragment extends Fragment {
                     mListView.setAdapter(mPastVisitedPatientAdapter);
                     mPastVisitedPatientAdapter.notifyDataSetChanged();
                 } catch (JSONException je) {
-                    Log.e("Rishabh","JSONException patientlist fragmennt: "+je);
                     mProgressDialog.dismiss();
                     je.printStackTrace();
                     Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
@@ -144,7 +141,6 @@ public class PatientListFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Rishabh","VolleyError patientlist fragmennt: "+error);
                 mProgressDialog.dismiss();
                 Toast.makeText(mActivity, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }

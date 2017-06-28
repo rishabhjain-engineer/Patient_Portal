@@ -518,6 +518,16 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="ui.PastVisitedPatientDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="ui.PrescriptionReportActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="ui.SymptomsActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />

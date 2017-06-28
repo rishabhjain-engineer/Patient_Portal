@@ -134,7 +134,7 @@ public class ConsultFragment extends Fragment {
         doctorDetails3.setDoctorName("Sajat");
         doctorDetails3.setLocation("Sector 22, Noida");
         doctorDetails3.setMedicineType("Family Medicine");
-        doctorDetails3.setDoctorImage(R.drawable.ayaz);
+        doctorDetails3.setDoctorImage(R.drawable.doctor);
         doctorDetails3.setAboutDoctor("Medical School - State University of New York, Downstate Medical Center, Doctor of Medicine\n" +
                 "State University of New York, Downstate Medical Center (Residency)\n" +
                 "State University of New York, Downstate Medical Center, Fellowship in Gastroenterology\n");
