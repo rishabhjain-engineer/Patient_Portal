@@ -142,10 +142,10 @@ public class DoctorDetailsActivity extends BaseActivity {
         dialog.show();
     }
 
-    private void getConsultId(String consultId) {
+    private void getConsultId(final String consultId) {
         mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         StaticHolder static_holder = new StaticHolder(DoctorDetailsActivity.this, StaticHolder.Services_static.ConsultAddSymptoms);
-        String url = static_holder.request_Url();
+        final String url = static_holder.request_Url();
         Log.e("Rishabh","DoctorDetailsActivity GetCOnsultID url : "+url);
         JSONObject data = new JSONObject();
         try {
@@ -162,9 +162,9 @@ public class DoctorDetailsActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String consultId = response.getString("d");
-                    consultId = consultId.replaceAll("^\"|\"$", ""); // replacing consultID ""
-                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
+                    String consultID = response.getString("d");
+                    consultID = consultID.replaceAll("^\"|\"$", ""); // replacing consultID ""
+                    mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultID);
 
                     if (consultId.equalsIgnoreCase("audio")) {
                         audioCall();

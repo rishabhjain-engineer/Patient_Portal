@@ -166,8 +166,8 @@ public class DashBoardActivity extends BaseActivity {
         };
 
         User user = new User();
-        user.setUserId(AppConstant.getDoctorId());
-        user.setDisplayName("Rahul Sharma");
+        user.setUserId(AppConstant.getPatientID());
+        user.setDisplayName(AppConstant.getPatientName());
         /*user.setUserId(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID)); //userId it can be any unique user identifier
         if (!TextUtils.isEmpty(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME))) {
             user.setDisplayName(mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME)); //displayName is the name of the user which will be shown in chat messages
