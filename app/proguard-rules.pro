@@ -63,7 +63,6 @@ public *;
 -keep class org.webrtc.** { *; }
 -keep class com.twilio.** { *; }
 
--dontwarn com.fasterxml.jackson.core.*
 
 
 
