@@ -20,11 +20,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.applozic.audiovideo.activity.AudioCallActivityV2;
-import com.applozic.audiovideo.activity.VideoActivity;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -34,12 +31,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import config.StaticHolder;
 import models.PastVisitDoctorListModel;
 import networkmngr.NetworkChangeListener;
-import utils.AppConstant;
 
 /**
  * Created by ayaz on 13/6/17.
@@ -51,6 +48,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
     private TextView mDoctorNameTextView, mDoctorAdressTv, mDoctorCityTv, mClinicNameTv, mPincodeTv, mConsultTimeTv, mSymptomsTv, mPatientNotesTv,
             mDoctorCommentsTv, mDiagnosisTv, mFiles;
     private ImageView mSignImage;
+    private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis;
+    private File mFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,9 +109,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             }
         });
 
-        mDoctorNameTextView.setText(pastVisitFirstModel.getDoctorName());
-        mDoctorCityTv.setText("Sector 22, Noida");
-        mClinicNameTv.setText("Family Medicine");
+
+
         doctorPic.setImageResource(R.drawable.ayaz);
 
         showFiles.setOnClickListener(new View.OnClickListener() {
@@ -197,8 +195,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(data);
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
 
-                    /*{
-                        "Table": [
+
+                    /*{ "Table": [
                         {
                             "DoctorName": null,
                                 "SignImage": null,
@@ -213,31 +211,41 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                                 "Diagnosis": null,
                                 "Files": null
                         }
-  ],
+ ],
                         "Table1": [
                         {
                             "MedicineName": "Disprin",
                                 "Dose": "",
                                 "Days": ""
                         }
-  ],
+ ],
                         "Table2": [
                         {
                             "TestName": "MONTOUX TEST (C)"
                         }
-  ]
+ ]
                     }*/
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
-                        //mPastVisitFirstModels.add(pastVisitFirstModel);
+                        mDoctorName = jsonObject1.optString("DoctorName");
+                        mClinicName = jsonObject1.optString("ClinicName");
+                        mAddress = jsonObject1.optString("Address");
+                        mCity = jsonObject1.optString("City");
+                        mPincode = jsonObject1.optString("Pincode");
+                        mConsultTime = jsonObject1.optString("ConsultTime");
+                        mSymptoms = jsonObject1.optString("Symptoms");
+                        mSymptoms = convertStringIntoVertical(mSymptoms);
+                        mPatientNotes = jsonObject1.optString("PatientNotes");
+                        mDoctorComments = jsonObject1.optString("DoctorComments");
+                        mDiagnosis = jsonObject1.optString("Diagnosis");
+                        mDiagnosis = convertStringIntoVertical(mDiagnosis);
+
+
                     }
                     // mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
+                    setAllUIFields() ;
+
                     mProgressDialog.dismiss();
                     // mListView.setAdapter(mPastVisitFirstAdapter);
                     // mPastVisitFirstAdapter.notifyDataSetChanged();
@@ -248,6 +256,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -256,5 +266,30 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             }
         });
         mRequestQueue.add(symptomsJsonObjectRequest);
+    }
+
+    private void setAllUIFields() {
+        mDoctorNameTextView.setText(mDoctorName);
+        mDoctorCityTv.setText(mCity);
+        mClinicNameTv.setText(mClinicName);
+        mConsultTimeTv.setText("null".equalsIgnoreCase(mConsultTime) || TextUtils.isEmpty(mConsultTime) ? "" : mConsultTime);
+        mSymptomsTv.setText(mSymptoms);
+        mPatientNotesTv.setText(mPatientNotes);
+        mDoctorCommentsTv.setText("null".equalsIgnoreCase(mDoctorComments) || TextUtils.isEmpty(mDoctorComments) ? "" : mDoctorComments);
+        mDiagnosisTv.setText(mDiagnosis);
+    }
+
+    private String convertStringIntoVertical(String string) {
+        if(TextUtils.isEmpty(string) || "null".equalsIgnoreCase(string)){
+            return "";
+        }else {
+            String temp ="";
+            List<String> symptomsList = Arrays.asList(string.split(","));
+            for(int i=0; i<symptomsList.size();i++) {
+                int position = i+1 ;
+                temp = temp + position+"."+symptomsList.get(i)+"\n";
+            }
+            return temp;
+        }
     }
 }
