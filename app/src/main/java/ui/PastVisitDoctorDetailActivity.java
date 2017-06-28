@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.hs.userportal.R;
 
 import org.json.JSONArray;
@@ -46,9 +47,9 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private TextView mDoctorNameTextView, mDoctorAdressTv, mDoctorCityTv, mClinicNameTv, mPincodeTv, mConsultTimeTv, mSymptomsTv, mPatientNotesTv,
-            mDoctorCommentsTv, mDiagnosisTv, mFiles;
+            mDoctorCommentsTv, mDiagnosisTv, mFiles, mPrescriptionTv,mTestNamesTv;
     private ImageView mSignImage;
-    private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis;
+    private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis, mPrescription , mTestNames;
     private File mFile;
 
     @Override
@@ -69,8 +70,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
 
         mDoctorCommentsTv = (TextView) findViewById(R.id.comments);
         mDiagnosisTv = (TextView) findViewById(R.id.diagnosis);
-        //prescription = (TextView) findViewById(R.id.prescription);
-        //test = (TextView) findViewById(R.id.test);
+        mPrescriptionTv = (TextView) findViewById(R.id.prescription);
+        mTestNamesTv = (TextView) findViewById(R.id.test);
         ImageView showFiles = (ImageView) findViewById(R.id.show_files);
         TextView prescriptionReportTv = (TextView) findViewById(R.id.past_visits_tv);
         prescriptionReportTv.setText("Prescription Report");
@@ -194,7 +195,22 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     String data = response.getString("d");
                     JSONObject jsonObject = new JSONObject(data);
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
+                    JSONArray jsonArrayPres = jsonObject.getJSONArray("Table1");
+                    JSONArray jsonArrayTest = jsonObject.getJSONArray("Table2");
 
+                    for(int k=0; k<jsonArrayPres.length();k++) {
+                        JSONObject jsObject = jsonArray.getJSONObject(k);
+                        mPrescription = jsObject.getString("MedicineName");
+                        mPrescription = convertStringIntoVertical(mPrescription) ;
+                    }
+
+
+                    for(int l=0; l<jsonArrayTest.length();l++) {
+                        JSONObject jsObject = jsonArray.getJSONObject(l);
+                        mTestNames = jsObject.getString("TestName");
+                        mTestNames = convertStringIntoVertical(mTestNames) ;
+
+                    }
 
                     /*{ "Table": [
                         {
@@ -277,6 +293,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
         mPatientNotesTv.setText(mPatientNotes);
         mDoctorCommentsTv.setText("null".equalsIgnoreCase(mDoctorComments) || TextUtils.isEmpty(mDoctorComments) ? "" : mDoctorComments);
         mDiagnosisTv.setText(mDiagnosis);
+        mPrescriptionTv.setText(mPrescription);
+        mTestNamesTv.setText(mTestNames);
     }
 
     private String convertStringIntoVertical(String string) {
