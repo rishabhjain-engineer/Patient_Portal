@@ -209,25 +209,28 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String data = response.getString("d");
+                    String data = response.optString("d");
                     JSONObject jsonObject = new JSONObject(data);
-                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
-                    JSONArray jsonArrayPres = jsonObject.getJSONArray("Table1");
-                    JSONArray jsonArrayTest = jsonObject.getJSONArray("Table2");
+                    JSONArray jsonArray = jsonObject.optJSONArray("Table");
+                    JSONArray jsonArrayPres = jsonObject.optJSONArray("Table1");
+                    JSONArray jsonArrayTest = jsonObject.optJSONArray("Table2");
 
-                    for (int k = 0; k < jsonArrayPres.length(); k++) {
-                        JSONObject jsObject = jsonArray.getJSONObject(k);
-                        mPrescription = jsObject.getString("MedicineName");
-                        mPrescription = convertStringIntoVertical(mPrescription);
+                    if(jsonArrayPres != null && jsonArrayPres.length() >= 1){
+                        for (int k = 0; k < 1 ; k++) {
+                            JSONObject jsObject = jsonArrayPres.optJSONObject(k);
+                            mPrescription = jsObject.optString("MedicineName");
+                            mPrescription = convertStringIntoVertical(mPrescription);
+                        }
                     }
 
+                   if(jsonArrayTest != null && jsonArrayTest.length() >= 1){
+                       for (int l = 0; l < 1 ; l++) {
+                           JSONObject jsObject = jsonArrayTest.optJSONObject(l);
+                           mTestNames = jsObject.optString("TestName");
+                           mTestNames = convertStringIntoVertical(mTestNames);
 
-                    for (int l = 0; l < jsonArrayTest.length(); l++) {
-                        JSONObject jsObject = jsonArray.getJSONObject(l);
-                        mTestNames = jsObject.getString("TestName");
-                        mTestNames = convertStringIntoVertical(mTestNames);
-
-                    }
+                       }
+                   }
 
                     /*{ "Table": [
                         {
@@ -260,7 +263,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     }*/
 
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        JSONObject jsonObject1 = jsonArray.optJSONObject(i);
                         mDoctorName = jsonObject1.optString("DoctorName");
                         mClinicName = jsonObject1.optString("ClinicName");
                         mAddress = jsonObject1.optString("Address");

@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hs.userportal.ReportStatus;
+import com.hs.userportal.Services;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -57,12 +58,17 @@ public class PrescriptionReportActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private String mConsultId;
+    private String ptname;
+    private Services mServices;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         mActionBar.hide();
+        mServices = new Services(PrescriptionReportActivity.this);
+        ptname = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_NAME);
+        ptname.replaceAll(" ", "_");
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
@@ -72,13 +78,14 @@ public class PrescriptionReportActivity extends BaseActivity {
         mConsultId = intent.getStringExtra("consultId");
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
             mProgressDialog.show();
-            getPrescriptionReport();
+            //getPrescriptionReport();
+            new pdfprocess().execute();
         } else {
             Toast.makeText(PrescriptionReportActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void getPrescriptionReport() {
+    /*private void getPrescriptionReport() {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetPrescriptionReport);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
@@ -92,17 +99,15 @@ public class PrescriptionReportActivity extends BaseActivity {
             public void onResponse(JSONObject response) {
                 try {
                     String data = response.getString("d");
-                    JSONObject jsonObject = new JSONObject(data);
-                    JSONArray jsonArray = jsonObject.getJSONArray("Table");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                   /*     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));*/
+                    String p = data.toString();
+                    String[] byteValues = p.substring(1, p.length() - 1).split(",");
+                    byte[] bytes = new byte[byteValues.length];
+                    Log.i("byteValues", byteValues.toString());
+                    for (int i = 0, len = bytes.length; i < len; i++) {
+                        bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
                     }
+                    openReport(bytes);
+                    mProgressDialog.dismiss();
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
@@ -118,11 +123,87 @@ public class PrescriptionReportActivity extends BaseActivity {
             }
         });
         mRequestQueue.add(symptomsJsonObjectRequest);
-    }
+    }*/
 
-    private String ptname;
+   /* private void openReport(byte[] result) {
+        if (result != null) {
+            try {
+
+                File sdCard = Environment.getExternalStorageDirectory();
+                File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+                File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
+
+                PackageManager packageManager = getPackageManager();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setType("application/pdf");
+
+                @SuppressWarnings("rawtypes")
+                List list = packageManager.queryIntentActivities(intent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+
+                if (list.size() > 0 && fileReport.isFile()) {
+                    Log.v("post", "execute");
+
+                    Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                    ///////
+                    Uri uri = null;
+                    //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    Method m = null;
+                    try {
+                        m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    uri = Uri.fromFile(fileReport);
+                    *//*} else {
+                        uri = FileProvider.getUriForFile(ReportRecords.this, getApplicationContext().getPackageName() + ".provider", fileReport);
+                    }*//*
+                    objIntent.setDataAndType(uri, "application/pdf");
+                    objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(objIntent);//Staring the pdf viewer
+                } else if (!fileReport.isFile()) {
+                    Log.v("ERROR!!!!", "OOPS2");
+                } else if (list.size() <= 0) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(PrescriptionReportActivity.this);
+                    dialog.setTitle("PDF Reader not found");
+                    dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                            + fileReport.getAbsolutePath());
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    dialog.show();
+                }
+
+            } catch (OutOfMemoryError e) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(PrescriptionReportActivity.this);
+                dlg.setTitle("Not enough memory");
+                dlg.setMessage("There is not enough memory on this device.");
+                dlg.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PrescriptionReportActivity.this.finish();
+                    }
+                });
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(PrescriptionReportActivity.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
     private byte[] result = null;
-
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
@@ -144,13 +225,13 @@ public class PrescriptionReportActivity extends BaseActivity {
 
             JSONObject dataToSend = new JSONObject();
             try {
-                dataToSend.put("consultId", "");
+                dataToSend.put("consultId", mConsultId);
             } catch (JSONException je) {
                 je.printStackTrace();
             }
 
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            //  result = service.pdf(dataToSend, "Report Status");
+             result = mServices.pdfPrescriptionReport(dataToSend, "Report Status"); //TODO ayaz
             int lenghtOfFile = 1;
             if (result != null) {
                 lenghtOfFile = result.length;

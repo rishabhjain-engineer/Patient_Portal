@@ -1153,6 +1153,90 @@ public class Services {
         return fileContents;
     }
 
+    public byte[] pdfPrescriptionReport(JSONObject sendData, String actName) {
+       /* if(actName.equalsIgnoreCase("ReportRecords")) {
+            ReportRecords.progress_bar.setProgress(7);
+            ReportRecords.progress_bar.setSecondaryProgress(10);
+        }*/
+        /*if(actName.equalsIgnoreCase("Report Status")) {
+            ReportStatus.progress_bar.setProgress(11);
+            ReportStatus.progress_bar.setSecondaryProgress(13);
+        }*/
+        byte[] fileContents = null;
+        //url =  "https://l141702.cloudchowk.com/LaboratoryModule/LISService.asmx/GetpatienttestReportAndroid";
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetPrescriptionReport);
+        String url = sttc_holdr.request_Url();
+        //String url = "https://patient.cloudchowk.com:8081/WebServices/HTMLReports.asmx/GetpatienttestReportHTMLAndroid";
+        request = new HttpPost(url);
+        request.setHeader("Content-type", "application/json");
+        request.setHeader("Accept", "application/octet-stream");
+        request.setHeader("Cookie", hoja);
+        String cookieData = "";
+
+        for (int i = 0; i < cookies.length; i++) {
+            cookieData += cookies[i].getValue() + ";";
+        }
+
+        request.addHeader("Cookie", cookieData);
+
+        try {
+            request.setEntity(new StringEntity(sendData.toString(), "UTF-8"));
+            response = client.execute(request);
+
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+
+            receiveData = new JSONObject(new String(sb));
+            Log.i("REPORT DETAILS", receiveData.toString());
+
+            String p = receiveData.get("d").toString();
+            String[] byteValues = p.substring(1, p.length() - 1).split(",");
+            byte[] bytes = new byte[byteValues.length];
+            Log.i("byteValues", byteValues.toString());
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
+                ReportRecords.progress_bar.setProgress(11);
+                ReportRecords.progress_bar.setSecondaryProgress(13);
+            }*/
+            /*if(actName.equalsIgnoreCase("Report Status")) {
+                ReportStatus.progress_bar.setProgress(14);
+                ReportStatus.progress_bar.setSecondaryProgress(14);
+            }*/
+            for (int i = 0, len = bytes.length; i < len; i++) {
+                bytes[i] = (byte) Integer.valueOf(byteValues[i].trim()).byteValue();
+            }
+
+            Log.i("adksa", p);
+
+            fileContents = bytes;
+            Log.v("contents!!", fileContents.toString());
+           /* if(actName.equalsIgnoreCase("ReportRecords")) {
+                ReportRecords.progress_bar.setProgress(14);
+                ReportRecords.progress_bar.setSecondaryProgress(14);
+            }*/
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException ex) {
+            if(ReportStatus.progress != null){
+                ReportStatus.progress.dismiss();
+            }
+            ReportStatus.progress = null;
+        }
+       /* if(actName.equalsIgnoreCase("Report Status")) {
+            ReportStatus.progress_bar.setProgress(15);
+            ReportStatus.progress_bar.setSecondaryProgress(15);
+        }*/
+        return fileContents;
+    }
+
     public JSONObject uploadUmage(JSONObject sendData) {
 
 	/*	url = init + "/PatientModule/PatientService.asmx/PatientFileVault";*/
