@@ -252,7 +252,7 @@ public class update extends BaseActivity {
 
         cont = (EditText) findViewById(R.id.etName);
         religion = (EditText) findViewById(R.id.editText9);
-        finishbtn = (Button) findViewById(R.id.bSend);
+      //  finishbtn = (Button) findViewById(R.id.bSend);
 
         dp = (ImageView) findViewById(R.id.dp);
         dpchange = (ImageView) findViewById(R.id.dpChange);
@@ -385,7 +385,7 @@ public class update extends BaseActivity {
 
         });
 
-        finishbtn.setOnClickListener(new OnClickListener() {
+       /* finishbtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -451,7 +451,7 @@ public class update extends BaseActivity {
                 }
 
             }
-        });
+        });*/
 
 
        /* em.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -1861,7 +1861,7 @@ public class update extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
@@ -1876,11 +1876,15 @@ public class update extends BaseActivity {
                 startActivity(backNav);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);*/
                 //finish();
-                showUnsavedAlertDialog();
+               // showUnsavedAlertDialog();
+                update.Imguri = null;
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
 
             case R.id.action_home:
-                showUnsavedAlertDialog();
+               // showUnsavedAlertDialog();
+                saveButtonOnOptionMenu();
                 return true;
 
             default:
@@ -1890,7 +1894,10 @@ public class update extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        showUnsavedAlertDialog();
+      //  showUnsavedAlertDialog();
+        update.Imguri = null;
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void showUnsavedAlertDialog() {
@@ -2434,6 +2441,70 @@ public class update extends BaseActivity {
             Imguri = Uri.fromFile(photo);
             startActivityForResult(intent1, PICK_FROM_CAMERA);
         }
+    }
+
+    void saveButtonOnOptionMenu() {
+
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        month = month + 1;
+        String formattedMonth = "" + month;
+        String formattedDayOfMonth = "" + day;
+
+        if (month < 10) {
+            formattedMonth = "0" + month;
+        }
+        if (day < 10) {
+            formattedDayOfMonth = "0" + day;
+        }
+        String currentdate = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year);
+        Date date1 = null, datecurrent = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            date1 = sdf.parse(etDOB.getText().toString());
+            datecurrent = sdf.parse(currentdate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(em.getText().toString().trim());
+        if (fn.getText().toString().equals("") || fn.getText().toString() == "") {
+            Toast.makeText(getBaseContext(), Html.fromHtml("Enter your first name"), Toast.LENGTH_SHORT).show();
+        } else if (ln.getText().toString().equals("") || ln.getText().toString() == "") {
+            Toast.makeText(getBaseContext(), Html.fromHtml("Enter your last name"), Toast.LENGTH_SHORT).show();
+        } else if (un.getText().toString() == "" || un.getText().toString().equals("")) {
+            un.setError("Username should not be empty!");
+        } else if (un.getText().toString() != "" && (!isAlphaNumeric(un.getText().toString()))) {
+            un.setError("Username should be alphanumeric!");
+        } else if (aliascheck != null && aliascheck.equals("already exists")) {
+            un.requestFocus();
+            un.setError(un.getText().toString() + " already exists.");
+        } else if (!matcher.matches()) {
+            em.setError(Html.fromHtml("Enter correct Email address"));
+            Toast.makeText(getBaseContext(), Html.fromHtml("Enter correct Email address"), Toast.LENGTH_SHORT).show();
+
+        } else if (date1 != null && datecurrent != null && date1.compareTo(datecurrent) > 0) {
+            etDOB.setError(Html.fromHtml("DOB should  be less than or equal to current date"));
+            Toast.makeText(getBaseContext(), Html.fromHtml("DOB should  be less than or equal to current date"), Toast.LENGTH_SHORT).show();
+        } else if (cont.getText().toString().length() != 10) {
+            cont.setError(Html.fromHtml("Please fill valid Mobile Number"));
+        } else {
+            if (!Email.equalsIgnoreCase(em.getText().toString())) {
+                if (TextUtils.isEmpty(em.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
+                } else {
+                    new VerifyEmail().execute();
+                }
+            } else if (!mPreviousNumber.equalsIgnoreCase(cont.getText().toString())) {
+                checkContactNoExistAPI();
+            } else {
+                new submitchange().execute();
+            }
+        }
+
     }
 
 }

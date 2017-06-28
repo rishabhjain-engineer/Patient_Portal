@@ -529,8 +529,12 @@ public class Services {
 
 		/*url = init + "/PatientModule/PatientService.asmx/GetAllLisPatientCaseDetailMobile";*/
 
-        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
+      //  StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllLisPatientCaseDetailMobileNew);
+        StaticHolder sttc_holdr = new StaticHolder(StaticHolder.Services_static.GetAllPatientCase);
         String url = sttc_holdr.request_Url();
+       // String url = "http://192.168.1.11/WebServices/LabService.asmx/GetAllPatientCase";
+    //    String url = "https://apidemo.healthscion.com/WebServices/LabService.asmx/GetAllPatientCase";
+
         request = new HttpPost(url);
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "application/json");
@@ -579,6 +583,7 @@ public class Services {
             e.printStackTrace();
         }
 
+        Log.e("Rishabh", "receiveData := "+receiveData.toString());
         return receiveData;
 
     }
@@ -1106,7 +1111,7 @@ public class Services {
             }
 
             receiveData = new JSONObject(new String(sb));
-            Log.i("REPORT DETAILS", receiveData.toString());
+            Log.e("Rishabh","REPORT DETAILS : "+receiveData.toString());
 
             String p = receiveData.get("d").toString();
             String[] byteValues = p.substring(1, p.length() - 1).split(",");
@@ -1133,14 +1138,19 @@ public class Services {
                 ReportRecords.progress_bar.setSecondaryProgress(14);
             }*/
         } catch (UnsupportedEncodingException e) {
+            Log.e("Rishabh","services UnsupportedEncodingException "+e);
             e.printStackTrace();
         } catch (ClientProtocolException e) {
+            Log.e("Rishabh","services ClientProtocolException "+e);
             e.printStackTrace();
         } catch (IOException e) {
+            Log.e("Rishabh","services IOException "+e);
             e.printStackTrace();
         } catch (JSONException e) {
+            Log.e("Rishabh","services JSONException "+e);
             e.printStackTrace();
         } catch (NumberFormatException ex) {
+            Log.e("Rishabh","services NumberFormatException "+ex);
             if(ReportStatus.progress != null){
                 ReportStatus.progress.dismiss();
             }
