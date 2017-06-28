@@ -37,7 +37,7 @@ public class AppConstant {
         return "Shalini";
     }
     public static final String getPatientID() {
-        return "ewrrt";
+        return "be2ce808-6250-4874-a239-31d60d1d8567"; //    shalini
     }
 
 
@@ -46,7 +46,7 @@ public class AppConstant {
         return "Rahul Sharma";
     }
     public static final String getDoctorId() {
-        return "dfsdf";
+        return "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD";  // suniltest33 --> DOctor
     }
 
 }

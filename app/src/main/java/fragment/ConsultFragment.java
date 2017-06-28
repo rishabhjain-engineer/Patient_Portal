@@ -179,6 +179,9 @@ public class ConsultFragment extends Fragment {
         } catch (JSONException je) {
             je.printStackTrace();
         }
+
+        Log.e("Rishabh","consultFragment send data := "+data);
+
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -195,6 +198,7 @@ public class ConsultFragment extends Fragment {
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
+                    Log.e("Rishabh", "JSON Exception : "+je);
                     Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -202,6 +206,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                Log.e("Rishabh", "Volley Exception : "+error);
                 mConsultNow.setClickable(true);
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
