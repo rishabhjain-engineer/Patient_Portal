@@ -185,24 +185,30 @@ public class DashBoardActivity extends BaseActivity {
     private void UpdateALId() {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.UpdateALId);
         String url = static_holder.request_Url();
+        Log.e("Rishabh","data url := "+url);
         JSONObject data = new JSONObject();
         try {
-            data.put("PatientId", AppConstant.getPatientID());
+            data.put("PatientId",AppConstant.getPatientID() ); //AppConstant.getPatientID() --> todo by ayaz
             data.put("ALId", true);
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        Log.e("Rishabh","data send := "+data);
         JsonObjectRequest family = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     String data = response.getString("d");
+                    Log.e("Rishabh","data response := "+data);
                 } catch (JSONException je) {
+
+                    Log.e("Rishabh","JSON EXCEPTION UPDATEALID : "+je);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh","VolleyError EXCEPTION UPDATEALID : "+error);
                 onBackPressed();
                 mProgressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
@@ -424,6 +430,7 @@ public class DashBoardActivity extends BaseActivity {
         } else {
 
             if (mIsHomeFragmentOpen) {
+                Log.e("Rishabh", "ON backpress calllled :");
                 confirmDialog();
             } else {
                 openDashBoardFragment();

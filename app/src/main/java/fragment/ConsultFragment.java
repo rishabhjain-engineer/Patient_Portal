@@ -175,7 +175,7 @@ public class ConsultFragment extends Fragment {
             data.put("symptoms", "");
             data.put("patientNotes", "");
             data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
-            data.put("doctorId", AppConstant.getDoctorId());
+            data.put("doctorId", "E276CC08-BEAF-4E65-BFFA-95F035CBEEFD ");  // AppConstant.getDoctorId()
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -195,6 +195,7 @@ public class ConsultFragment extends Fragment {
                 } catch (JSONException je) {
                     mProgressDialog.dismiss();
                     je.printStackTrace();
+                    Log.e("Rishabh", "JSON Exception : "+je);
                     Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -202,6 +203,7 @@ public class ConsultFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                Log.e("Rishabh", "Volley Exception : "+error);
                 mConsultNow.setClickable(true);
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
