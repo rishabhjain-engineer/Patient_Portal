@@ -107,7 +107,7 @@ public class PatientListFragment extends Fragment {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("doctorId", AppConstant.getDoctorId() );
+            data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -121,11 +121,21 @@ public class PatientListFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                         PastVisitedPatientModel pastVisitedPatientModel = new PastVisitedPatientModel();
-                        pastVisitedPatientModel.setPatientName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitedPatientModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitedPatientModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitedPatientModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
+
+                        pastVisitedPatientModel.setPatientName(jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName"));
+                        pastVisitedPatientModel.setRequestTime(jsonObject1.isNull("RequestTime") ? "" : jsonObject1.optString("RequestTime"));
                         pastVisitedPatientModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        pastVisitedPatientModel.setConsultMode(jsonObject1.isNull("ConsultMode") ? "" : jsonObject1.optString("ConsultMode"));
+                        pastVisitedPatientModel.setPatientId(jsonObject1.isNull("PatientId") ? "" : jsonObject1.optString("PatientId"));
+                        pastVisitedPatientModel.setAmount(jsonObject1.isNull("Amount") ? "" : jsonObject1.optString("Amount"));
+                        pastVisitedPatientModel.setCoupon(jsonObject1.isNull("Coupon") ? "" : jsonObject1.optString("Coupon"));
+                        pastVisitedPatientModel.setDiscount(jsonObject1.isNull("Discount") ? "" : jsonObject1.optString("Discount"));
+                        pastVisitedPatientModel.setTax(jsonObject1.isNull("Tax") ? "" : jsonObject1.optString("Tax"));
+                        pastVisitedPatientModel.setPaymentMode(jsonObject1.isNull("PaymentMode") ? "" : jsonObject1.optString("PaymentMode"));
+                        pastVisitedPatientModel.setGateway(jsonObject1.isNull("Gateway") ? "" : jsonObject1.optString("Gateway"));
+                        pastVisitedPatientModel.setReferenceId(jsonObject1.isNull("ReferenceId") ? "" : jsonObject1.optString("ReferenceId"));
+                        pastVisitedPatientModel.setServiceFees(jsonObject1.isNull("ServiceFees") ? "" : jsonObject1.optString("ServiceFees"));
+                        pastVisitedPatientModel.setPaymentStatus(jsonObject1.isNull("PaymentStatus") ? "" : jsonObject1.optString("PaymentStatus"));
                         mPastVisitedPatientList.add(pastVisitedPatientModel);
                     }
                     mPastVisitedPatientAdapter.setData(mPastVisitedPatientList);

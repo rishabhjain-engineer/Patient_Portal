@@ -1,6 +1,7 @@
 package adapters;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,9 @@ public class PastVisitedPatientAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView patientName;
-        TextView patientLocation;
-        TextView patientMedicineType;
-        ImageView patientPic;
+        TextView requestTime;
+        TextView consultTime;
+        TextView consultMode;
 
 
     }
@@ -58,12 +59,12 @@ public class PastVisitedPatientAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         PastVisitedPatientAdapter.ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mActivity).inflate(R.layout.consult_single_item_list_view, parent, false);
+            convertView = LayoutInflater.from(mActivity).inflate(R.layout.patient_single_row_view, parent, false);
             holder = new PastVisitedPatientAdapter.ViewHolder();
-            holder.patientName = (TextView) convertView.findViewById(R.id.doctor_name);
-            holder.patientLocation = (TextView) convertView.findViewById(R.id.city);
-            holder.patientMedicineType = (TextView) convertView.findViewById(R.id.medicine_type);
-            holder.patientPic = (ImageView) convertView.findViewById(R.id.doctor_image_view);
+            holder.patientName = (TextView) convertView.findViewById(R.id.patient_name);
+            holder.requestTime = (TextView) convertView.findViewById(R.id.request_time);
+            holder.consultTime = (TextView) convertView.findViewById(R.id.consult_time);
+            holder.consultMode = (TextView) convertView.findViewById(R.id.consult_mode);
             convertView.setTag(holder);
         } else {
             holder = (PastVisitedPatientAdapter.ViewHolder) convertView.getTag();
@@ -72,10 +73,24 @@ public class PastVisitedPatientAdapter extends BaseAdapter {
         PastVisitedPatientModel pastVisitedPatientModel = mPastVisitedPatientModelList.get(position);
 
         holder.patientName.setText(pastVisitedPatientModel.getPatientName());
-        /*holder.patientLocation.setText(pastVisitedPatientModel.get());
-        holder.patientMedicineType.setText(pastVisitedPatientModel.getMedicineType());
-        holder.patientPic.setImageResource(pastVisitedPatientModel.getDoctorImage());*/
-
+        String requestTime = pastVisitedPatientModel.getRequestTime();
+        if (!TextUtils.isEmpty(requestTime)) {
+            String timeArray[] = requestTime.split("T");
+            requestTime = timeArray[0];
+        }
+        holder.requestTime.setText(requestTime);
+        if (TextUtils.isEmpty(pastVisitedPatientModel.getConsultTime())) {
+            holder.consultTime.setVisibility(View.GONE);
+        } else {
+            holder.consultTime.setVisibility(View.VISIBLE);
+            holder.consultTime.setText(pastVisitedPatientModel.getConsultTime());
+        }
+        if (TextUtils.isEmpty(pastVisitedPatientModel.getConsultMode())) {
+            holder.consultMode.setVisibility(View.GONE);
+        } else {
+            holder.consultMode.setVisibility(View.VISIBLE);
+            holder.consultMode.setText(pastVisitedPatientModel.getConsultMode());
+        }
         return convertView;
     }
 
