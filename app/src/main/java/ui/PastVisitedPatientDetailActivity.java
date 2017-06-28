@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.util.List;
 
 import config.StaticHolder;
 import models.PastVisitDoctorListModel;
+import models.PastVisitedPatientModel;
 import networkmngr.NetworkChangeListener;
 
 /**
@@ -52,6 +54,8 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_past_visit);
         mRequestQueue = Volley.newRequestQueue(this);
 
+        LinearLayout onlineViewContainer = (LinearLayout) findViewById(R.id.online_view_container);
+        onlineViewContainer.setVisibility(View.GONE);
         mDoctorNameTextView = (TextView) findViewById(R.id.doctor_name);
         mDoctorCityTv = (TextView) findViewById(R.id.city);
         mClinicNameTv = (TextView) findViewById(R.id.medicine_type);
@@ -71,7 +75,7 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
         prescriptionReportTv.setVisibility(View.GONE);
 
         Intent intent1 = getIntent();
-        PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) intent1.getSerializableExtra("pastDocotor");
+        PastVisitedPatientModel pastVisitedPatientModel = (PastVisitedPatientModel) intent1.getSerializableExtra("patientDetail");
 
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
             mProgressDialog = new ProgressDialog(this);
@@ -79,7 +83,7 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
             mProgressDialog.setMessage("Loading...");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
-            pastPatientDetails(pastVisitFirstModel.getConsultId());
+            pastPatientDetails(pastVisitedPatientModel.getConsultId());
         } else {
             Toast.makeText(PastVisitedPatientDetailActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
@@ -97,10 +101,10 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
             }
         });
 
-        mDoctorNameTextView.setText(pastVisitFirstModel.getDoctorName());
+       /* mDoctorNameTextView.setText(pastVisitedPatientModel.getPatientName());
         mDoctorCityTv.setText("Sector 22, Noida");
         mClinicNameTv.setText("Family Medicine");
-        doctorPic.setImageResource(R.drawable.ayaz);
+        doctorPic.setImageResource(R.drawable.ayaz);*/
 
         showFiles.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +177,7 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("consultId", "99587328-A719-411A-AAE7-15DF20F43F0F");  //TODO Ayaz
+            data.put("consultId", consultId);  //TODO Ayaz
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -186,12 +190,41 @@ public class PastVisitedPatientDetailActivity extends BaseActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("Table");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                        PastVisitDoctorListModel pastVisitFirstModel = new PastVisitDoctorListModel();
-                        pastVisitFirstModel.setDoctorName(jsonObject1.isNull("DoctorName") ? "" : jsonObject1.optString("DoctorName"));
-                        pastVisitFirstModel.setConsultTime(jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime"));
-                        pastVisitFirstModel.setPayment(jsonObject1.isNull("Payment") ? "" : jsonObject1.optString("Payment"));
-                        pastVisitFirstModel.setPrescription(jsonObject1.isNull("Prescription") ? "" : jsonObject1.optString("Prescription"));
-                        pastVisitFirstModel.setConsultId(jsonObject1.isNull("ConsultId") ? "" : jsonObject1.optString("ConsultId"));
+                        /*"PatientName": "Ms. Shalini ",
+                                "PatientId": "be2ce808-6250-4874-a239-31d60d1d8567",
+                                "ConsultTime": "2017-06-23T11:37:01.693",
+                                "Symptoms": "Cold, Dizziness",
+                                "PatientNotes": "feeling fever",
+                                "DoctorComments": "hi",
+                                "Diagnosis": "fever ",
+                                "Files": null,
+                                "RequestTime": "2017-06-23T10:08:50.083",
+                                "ConsultMode": "video",
+                                "FollowUp": "2017-06-23T11:37:01.693",
+                                "PaymentId": null,
+                                "Coupon": null,
+                                "Amount": null,
+                                "ServiceFees": null,
+                                "Tax": null,
+                                "Gateway": null,
+                                "ReferenceId": null,
+                                "PaymentMode": null,
+                                "Discount": null,
+                                "PaymentStatus": "Unpaid"*/
+                       /* String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String ConsultTime = jsonObject1.isNull("ConsultTime") ? "" : jsonObject1.optString("ConsultTime");
+                        String Symptoms = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");
+                        String PatientName = jsonObject1.isNull("PatientName") ? "" : jsonObject1.optString("PatientName");*/
                         //mPastVisitFirstModels.add(pastVisitFirstModel);
                     }
                     // mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
