@@ -56,31 +56,34 @@ import utils.PreferenceHelper;
 public class PrescriptionReportActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
+    private String mConsultId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupActionBar();
+        mActionBar.hide();
         mRequestQueue = Volley.newRequestQueue(this);
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Loading...");
         mProgressDialog.setIndeterminate(true);
         Intent intent = getIntent();
-        String consultId = intent.getStringExtra("temporary");
+        mConsultId = intent.getStringExtra("consultId");
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
             mProgressDialog.show();
-            getPrescriptionReport(consultId);
+            getPrescriptionReport();
         } else {
             Toast.makeText(PrescriptionReportActivity.this, "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void getPrescriptionReport(String consultId) {
+    private void getPrescriptionReport() {
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.GetPrescriptionReport);
         String url = static_holder.request_Url();
         JSONObject data = new JSONObject();
         try {
-            data.put("consultId", consultId);
+            data.put("consultId", mConsultId);
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -119,6 +122,7 @@ public class PrescriptionReportActivity extends BaseActivity {
 
     private String ptname;
     private byte[] result = null;
+
     class pdfprocess extends AsyncTask<Void, String, Void> {
         @Override
         protected void onPreExecute() {
@@ -146,13 +150,13 @@ public class PrescriptionReportActivity extends BaseActivity {
             }
 
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-          //  result = service.pdf(dataToSend, "Report Status");
+            //  result = service.pdf(dataToSend, "Report Status");
             int lenghtOfFile = 1;
             if (result != null) {
                 lenghtOfFile = result.length;
                 String temp = null;
                 try {
-                    if(result != null && result.length >0){
+                    if (result != null && result.length > 0) {
                         temp = new String(result, "UTF-8");
                     }
                 } catch (UnsupportedEncodingException e1) {
@@ -188,10 +192,10 @@ public class PrescriptionReportActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Void aaa) {
             super.onPostExecute(aaa);
-            if(mProgressDialog != null && mProgressDialog.isShowing()){
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
-            if(result != null){
+            if (result != null) {
                 try {
 
                     File sdCard = Environment.getExternalStorageDirectory();
@@ -257,14 +261,14 @@ public class PrescriptionReportActivity extends BaseActivity {
                     dlg.setTitle("Not enough memory");
                     dlg.setMessage("There is not enough memory on this device.");
                     dlg.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    PrescriptionReportActivity.this.finish();
-                                }
-                            });
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            PrescriptionReportActivity.this.finish();
+                        }
+                    });
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 Toast.makeText(PrescriptionReportActivity.this, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
             }
         }

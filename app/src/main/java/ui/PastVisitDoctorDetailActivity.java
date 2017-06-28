@@ -48,11 +48,12 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog mProgressDialog;
     private TextView mDoctorNameTextView, mDoctorAdressTv, mDoctorCityTv, mClinicNameTv, mPincodeTv, mConsultTimeTv, mSymptomsTv, mPatientNotesTv,
-            mDoctorCommentsTv, mDiagnosisTv, mFiles, mPrescriptionTv,mTestNamesTv;
+            mDoctorCommentsTv, mDiagnosisTv, mFiles, mPrescriptionTv, mTestNamesTv;
     private ImageView mSignImage;
-    private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis, mPrescription , mTestNames;
-    private Button btnOpenReport ;
+    private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis, mPrescription, mTestNames;
+    private Button btnOpenReport;
     private File mFile;
+    private String mConsultId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +89,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
 
         Intent intent1 = getIntent();
         PastVisitDoctorListModel pastVisitFirstModel = (PastVisitDoctorListModel) intent1.getSerializableExtra("pastDocotor");
+        mConsultId = pastVisitFirstModel.getConsultId();
 
         if (NetworkChangeListener.getNetworkStatus().isConnected()) {
             mProgressDialog = new ProgressDialog(this);
@@ -182,8 +184,8 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
     }
 
     private void openPrescriptionReport() {
-
-        Intent openReportIntent = new Intent(PastVisitDoctorDetailActivity.this ,  PrescriptionReportActivity.class) ;
+        Intent openReportIntent = new Intent(PastVisitDoctorDetailActivity.this, PrescriptionReportActivity.class);
+        openReportIntent.putExtra("consultId", mConsultId);
         startActivity(openReportIntent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
@@ -213,17 +215,17 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
                     JSONArray jsonArrayPres = jsonObject.getJSONArray("Table1");
                     JSONArray jsonArrayTest = jsonObject.getJSONArray("Table2");
 
-                    for(int k=0; k<jsonArrayPres.length();k++) {
+                    for (int k = 0; k < jsonArrayPres.length(); k++) {
                         JSONObject jsObject = jsonArray.getJSONObject(k);
                         mPrescription = jsObject.getString("MedicineName");
-                        mPrescription = convertStringIntoVertical(mPrescription) ;
+                        mPrescription = convertStringIntoVertical(mPrescription);
                     }
 
 
-                    for(int l=0; l<jsonArrayTest.length();l++) {
+                    for (int l = 0; l < jsonArrayTest.length(); l++) {
                         JSONObject jsObject = jsonArray.getJSONObject(l);
                         mTestNames = jsObject.getString("TestName");
-                        mTestNames = convertStringIntoVertical(mTestNames) ;
+                        mTestNames = convertStringIntoVertical(mTestNames);
 
                     }
 
@@ -275,7 +277,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
 
                     }
                     // mPastVisitFirstAdapter.setData(mPastVisitFirstModels);
-                    setAllUIFields() ;
+                    setAllUIFields();
 
                     mProgressDialog.dismiss();
                     // mListView.setAdapter(mPastVisitFirstAdapter);
@@ -313,14 +315,14 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
     }
 
     private String convertStringIntoVertical(String string) {
-        if(TextUtils.isEmpty(string) || "null".equalsIgnoreCase(string)){
+        if (TextUtils.isEmpty(string) || "null".equalsIgnoreCase(string)) {
             return "";
-        }else {
-            String temp ="";
+        } else {
+            String temp = "";
             List<String> symptomsList = Arrays.asList(string.split(","));
-            for(int i=0; i<symptomsList.size();i++) {
-                int position = i+1 ;
-                temp = temp + position+"."+symptomsList.get(i)+"\n";
+            for (int i = 0; i < symptomsList.size(); i++) {
+                int position = i + 1;
+                temp = temp + position + "." + symptomsList.get(i) + "\n";
             }
             return temp;
         }
