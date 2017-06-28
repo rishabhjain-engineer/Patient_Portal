@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -38,6 +39,7 @@ import utils.PreferenceHelper;
 
 public class DoctorDetailsActivity extends BaseActivity {
     private static RequestQueue mRequestQueue;
+    private String mConsultID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,18 +143,21 @@ public class DoctorDetailsActivity extends BaseActivity {
     }
 
     private void getConsultId(String consultId) {
+        mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         StaticHolder static_holder = new StaticHolder(DoctorDetailsActivity.this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
+        Log.e("Rishabh","DoctorDetailsActivity GetCOnsultID url : "+url);
         JSONObject data = new JSONObject();
         try {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", "");
             data.put("patientNotes", "");
-            data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : consultId);
+            data.put("consultId", TextUtils.isEmpty(consultId) ? JSONObject.NULL : mConsultID);
             data.put("doctorId", AppConstant.getDoctorId());
         } catch (JSONException je) {
             je.printStackTrace();
         }
+        Log.e("Rishabh","DoctorDetailsActivity GetCOnsultID data : "+data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -169,6 +174,7 @@ public class DoctorDetailsActivity extends BaseActivity {
                         chat();
                     }
                 } catch (JSONException je) {
+                    Log.e("Rishabh","DoctorDetailsActivity GetCOnsultID JSONException : "+je);
                     je.printStackTrace();
                     Toast.makeText(DoctorDetailsActivity.this, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
                 }
@@ -176,6 +182,7 @@ public class DoctorDetailsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh","DoctorDetailsActivity GetCOnsultID VolleyError : "+error);
                 error.printStackTrace();
                 Toast.makeText(DoctorDetailsActivity.this, "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
             }

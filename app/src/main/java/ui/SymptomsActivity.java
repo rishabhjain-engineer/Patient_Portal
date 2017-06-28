@@ -620,7 +620,9 @@ public class SymptomsActivity extends BaseActivity {
         mSymptomsList.clear();
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultSymptomsList);
         String url = static_holder.request_Url();
+        Log.e("Rishabh", "SymptomsActivity getAllSymptoms url : "+url);
         JSONObject data = new JSONObject();
+        Log.e("Rishabh", "SymptomsActivity getAllSymptoms data : "+data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -637,6 +639,7 @@ public class SymptomsActivity extends BaseActivity {
                     }
                     mProgressDialog.dismiss();
                 } catch (JSONException je) {
+                    Log.e("Rishabh", "SymptomsActivity getAllSymptoms JSONException : "+je);
                     mProgressDialog.dismiss();
                     je.printStackTrace();
                     onBackPressed();
@@ -646,6 +649,7 @@ public class SymptomsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("Rishabh", "SymptomsActivity getAllSymptoms VolleyError : "+error);
                 onBackPressed();
                 mProgressDialog.dismiss();
                 Toast.makeText(getBaseContext(), "Some error occurred.Please try again later.", Toast.LENGTH_SHORT).show();
@@ -658,8 +662,9 @@ public class SymptomsActivity extends BaseActivity {
 
         StaticHolder static_holder = new StaticHolder(this, StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
+        Log.e("Rishabh", "SymptomsActivity addPatientSymptoms url" + url);
         JSONObject data = new JSONObject();
-        Log.e("Rishabh", "data" + data);
+
         try {
             data.put("patientId", mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID));
             data.put("symptoms", mSymptomsTextView.getText());
@@ -674,21 +679,22 @@ public class SymptomsActivity extends BaseActivity {
         } catch (JSONException je) {
             je.printStackTrace();
         }
-        Log.e("Rishabh", "send data := " + data);
+        Log.e("Rishabh", "SymptomsActivity addPatientSymptoms data" + data);
         JsonObjectRequest symptomsJsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.i("GetMember", "Received Data: " + response);
+                    Log.i("GetMember", "SymptomsActivity Received Data: " + response);
                     String consultId = response.getString("d");
                     consultId = consultId.replaceAll("^\"|\"$", ""); // replacing onsultID " " sdsds" " double qoutes
-                    Log.e("Rishabh", "consultID := " + consultId);
+                    Log.e("Rishabh", "SymptomsActivity consultID := " + consultId);
                     mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.CONSULT_ID, consultId);
                     mConsultID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
                     Log.e("Rishabh", "consultID going in path := " + consultId);
                     mProgressDialog.dismiss();
                     uploadFileToAWS();
                 } catch (JSONException je) {
+                    Log.e("Rishabh", "SymptomsActivity addPatientSymptoms JSONException" + je);
                     mProgressDialog.dismiss();
                     je.printStackTrace();
                     onBackPressed();
@@ -698,7 +704,7 @@ public class SymptomsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Rishabh", "Volley error : " + error);
+                Log.e("Rishabh", "SymptomsActivity addPatientSymptoms Volley error : " + error);
                 error.printStackTrace();
                 onBackPressed();
                 mProgressDialog.dismiss();
