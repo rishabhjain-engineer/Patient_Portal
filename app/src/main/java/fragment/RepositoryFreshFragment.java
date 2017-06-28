@@ -1285,9 +1285,6 @@ public class RepositoryFreshFragment extends Fragment implements RepositoryAdapt
                                     File thumbnailFile = RepositoryUtils.getThumbnailFile(downloadedFile, mActivity);
                                     listOfFilesToUpload.add(thumbnailFile);
                                 }
-
-
-                                listOfFilesToUpload.add(downloadedFile);
                             } catch (Exception e) {
                             }
                         }

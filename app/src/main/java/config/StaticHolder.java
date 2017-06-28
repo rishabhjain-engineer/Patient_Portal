@@ -18,10 +18,10 @@ public class StaticHolder {
 
 
     //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
-    //public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
-    //public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
+   // public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
+   // public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
 
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
@@ -508,6 +508,11 @@ public class StaticHolder {
             case saveHealthDetailMod:
                 url = BASE_URL + "saveHealthDetailMod";
                 break;
+
+            case GetAllPatientCase:
+                url = BASE_URL + "GetAllPatientCase";
+                break;
+
             default:
                 System.out.println("Google - biggest search giant.. ATT - my carrier provider..");
                 break;
@@ -543,7 +548,7 @@ public class StaticHolder {
         Updatepatientbloodgroup, patientbussinessModel, GetQuizData, GetVaccineDetails, InsertIntoPatientVaccineDetails,
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
-        saveHealthDetailMod
+        saveHealthDetailMod, GetAllPatientCase
     }
 
 }

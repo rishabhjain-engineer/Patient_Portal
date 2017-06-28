@@ -7,25 +7,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,9 +33,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -51,40 +48,56 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hs.userportal.Helper;
+import com.hs.userportal.AppAplication;
+import com.hs.userportal.CaseCodeModel;
 import com.hs.userportal.OrderDetails;
+import com.hs.userportal.OrderDetailsModel;
 import com.hs.userportal.OrderList;
 import com.hs.userportal.R;
 import com.hs.userportal.ReportRecords;
+import com.hs.userportal.ReportStatus;
 import com.hs.userportal.Services;
-import com.hs.userportal.lablistdetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import adapters.OrderListAdapter;
 import adapters.Order_family_adapter;
 import adapters.PastVisitAdapter;
+import adapters.ReportFragmentAdapter;
+import adapters.TestListAdapter;
 import config.StaticHolder;
 import networkmngr.NetworkChangeListener;
 import ui.DashBoardActivity;
 import utils.AppConstant;
+import utils.DateSorter;
 import utils.PreferenceHelper;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by android1 on 3/4/17.
  */
 
-public class ReportFragment extends Fragment {
+public class ReportFragment extends Fragment implements TestListAdapter.OnRowTouchAction, ReportFragmentAdapter.OnPdfTouch, OrderListAdapter.OrderListTouched {
 
     private String id, caseid;
     private byte[] result = null;
@@ -149,6 +162,15 @@ public class ReportFragment extends Fragment {
     private boolean sentToSettings = false;
     private int mItemClickedPosition = -1;
 
+    private RecyclerView mRecyclerViewReportList;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ReportFragmentAdapter mAdapterReportFragment;
+
+    private List<CaseCodeModel> listOfCaseCodeModelObjects = new ArrayList<>();
+    private List<OrderDetailsModel> listOfOrderDetailsModelObjects = new ArrayList<>();
+    private List<DateSorter> listOfAllObjects = new ArrayList<>();
+    private ProgressDialog mProgressDialog;
+
     @TargetApi(Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -176,6 +198,11 @@ public class ReportFragment extends Fragment {
         select_member_lab = (EditText) view.findViewById(R.id.select_member_lab);
         select_member_lab.setInputType(InputType.TYPE_NULL);
         past_visits = (ListView) view.findViewById(R.id.past_visits);
+
+        mRecyclerViewReportList = (RecyclerView) view.findViewById(R.id.report_records_listview);
+        mRecyclerViewReportList.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mActivity);
+        mRecyclerViewReportList.setLayoutManager(mLayoutManager);
 
         //  buttonbar = (LinearLayout) findViewById(R.id.buttonbar);
       /*  lv.setOnTouchListener(new ListView.OnTouchListener() {
@@ -211,7 +238,6 @@ public class ReportFragment extends Fragment {
 
         // id = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         //
-
 
 
         Bundle bundle = getArguments();
@@ -275,15 +301,19 @@ public class ReportFragment extends Fragment {
         if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
             Toast.makeText(mActivity, "No internet connection. Please retry", Toast.LENGTH_SHORT).show();
         } else {
-            new ReportFragment.BackgroundProcess().execute();
+            OrderDetailsBackgroundProcess();
+
         }
-        past_visits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+
+       /* past_visits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 mItemClickedPosition = position;
-                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         //Show Information about why you need the permission
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                         builder.setTitle("Need Storage Permission");
@@ -292,7 +322,7 @@ public class ReportFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
-                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                             }
                         });
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -302,7 +332,7 @@ public class ReportFragment extends Fragment {
                             }
                         });
                         builder.show();
-                    } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,false)) {
+                    } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, false)) {
                         //Previously Permission Request was cancelled with 'Dont Ask Again',
                         // Redirect to Settings after showing Information about why you need the permission
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
@@ -327,19 +357,19 @@ public class ReportFragment extends Fragment {
                             }
                         });
                         builder.show();
-                    }  else {
+                    } else {
                         //just request the permission
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                     }
 
                     SharedPreferences.Editor editor = permissionStatus.edit();
-                    editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE,true);
+                    editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, true);
                     editor.commit();
                 } else {
-                  proceedAfterPermission(position);
+                    proceedAfterPermission(position);
                 }
             }
-        });
+        });*/
 
       /*  images.setOnClickListener(new OnClickListener() {
 
@@ -459,7 +489,7 @@ public class ReportFragment extends Fragment {
                             @Override
                             public void run() {
                                 toast.cancel();
-                            }
+                            }192.1
                         }, 2000);
                     }
                 } catch (JSONException e) {
@@ -479,7 +509,7 @@ public class ReportFragment extends Fragment {
             }
         });
         setHasOptionsMenu(true);
-        permissionStatus = getActivity().getSharedPreferences("permissionStatus",getActivity().MODE_PRIVATE);
+        permissionStatus = getActivity().getSharedPreferences("permissionStatus", getActivity().MODE_PRIVATE);
         return view;
     }
 
@@ -489,27 +519,102 @@ public class ReportFragment extends Fragment {
         progress.dismiss();
     }
 
+
     private class BackgroundProcess extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            progress = new ProgressDialog(mActivity);
+          /*  progress = new ProgressDialog(mActivity);
             progress.setCancelable(false);
             progress.setMessage("Syncing test records ...");
-            progress.setIndeterminate(true);
+            progress.setIndeterminate(true);*/
             // buttonbar.setVisibility(View.VISIBLE);
             subArrayList = new JSONArray(new ArrayList<String>());
             subArray1 = new JSONArray(new ArrayList<String>());
             check = 0;
-            progress.show();
+            listOfCaseCodeModelObjects.clear();
+            // progress.show();
         }
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-            if (image.size() == 0) {
+            // logic for setting up color for each test in a particular caseCode
+
+            int initialAmount, totalActualAmount, totalPaidAmount, discountAmount;
+            String labNo = null, color;
+            Boolean isSampleReceived = false, isPublished = false, isTestCompleted = false;
+
+            for (int i = 0; i < listOfCaseCodeModelObjects.size(); i++) {
+
+                initialAmount = listOfCaseCodeModelObjects.get(i).getInitialAmount();
+                totalActualAmount = listOfCaseCodeModelObjects.get(i).getTotalActualAmount();
+                totalPaidAmount = listOfCaseCodeModelObjects.get(i).getTotalPaidAmount();
+                discountAmount = listOfCaseCodeModelObjects.get(i).getDiscountAmount();
+
+                int noOfTestsInCaseCode = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().size();
+
+                for (int j = 0; j < noOfTestsInCaseCode; j++) {
+
+                    labNo = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).getLabNo();
+                    isPublished = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isPublished();
+                    isSampleReceived = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isSampleReceived();
+                    isTestCompleted = listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).isTestCompleted();
+
+
+                    // writing logic for setting up for color ; required variables we fetched ;
+                    if (!isSampleReceived && !isTestCompleted && "null".equalsIgnoreCase(labNo)) {
+                        //set color Blue
+                        listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Blue");
+
+                    } else if (isSampleReceived && !isTestCompleted && !TextUtils.isEmpty(labNo)) {
+                        // set color pink
+                        listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
+                    } else if (isSampleReceived && isTestCompleted && !TextUtils.isEmpty(labNo)) {
+
+                        if (isPublished && chunk(initialAmount, totalActualAmount, totalPaidAmount, discountAmount)) {
+                            // set color green
+                            listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Green");
+                        } else {
+                            // set color pink
+                            listOfCaseCodeModelObjects.get(i).getListOfTestNamesInCaseCode().get(j).setColor("Pink");
+                        }
+                    }
+                }
+
+
+            }
+
+            Collections.sort(listOfAllObjects, new Comparator<DateSorter>() {
+                @Override
+                public int compare(DateSorter o1, DateSorter o2) {
+                    return o2.getDate().compareTo(o1.getDate());
+                }
+            });
+
+            /*listOfAllObjects.sort(new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    if(o1 instanceof CaseCodeModel && o2 instanceof OrderDetailsModel){
+                        return ((CaseCodeModel) o1).getCaseCodeDate().compareTo(((OrderDetailsModel) o2).getOrderIdDate());
+                    } else if(o1 instanceof CaseCodeModel && o2 instanceof CaseCodeModel){
+                        return ((CaseCodeModel) o1).getCaseCodeDate().compareTo(((CaseCodeModel) o2).getCaseCodeDate());
+                    } else if(o1 instanceof OrderDetailsModel && o2 instanceof CaseCodeModel){
+                        return ((OrderDetailsModel) o1).getOrderIdDate().compareTo(((CaseCodeModel) o2).getCaseCodeDate());
+                    } else if(o1 instanceof OrderDetailsModel && o2 instanceof OrderDetailsModel){
+                        return ((OrderDetailsModel) o1).getOrderIdDate().compareTo(((OrderDetailsModel) o2).getOrderIdDate());
+                    }
+
+                    return 0;
+                }
+            });*/
+            mAdapterReportFragment = new ReportFragmentAdapter(mActivity, listOfAllObjects, ReportFragment.this, ReportFragment.this, ReportFragment.this);
+            mRecyclerViewReportList.setAdapter(mAdapterReportFragment);
+            progress.dismiss();
+
+           /* if (image.size() == 0) {
                 // images.setBackgroundResource(R.drawable.grey_button);
                 //  images.setEnabled(false);
             } else {
@@ -562,13 +667,13 @@ public class ReportFragment extends Fragment {
                 System.out.println("Discount:" + disc);
 
                 if (paid <= 0) {
-                   /* bal.setTextColor(Color.parseColor("#347C17"));
-                    bal.setText("PAID");*/
+                   *//* bal.setTextColor(Color.parseColor("#347C17"));
+                    bal.setText("PAID");*//*
                     bal = "PAID";
                 } else {
 
-                 /*   bal.setTextColor(Color.RED);
-                    bal.setText("DUE");*/
+                 *//*   bal.setTextColor(Color.RED);
+                    bal.setText("DUE");*//*
                     bal = "DUE";
 
                 }
@@ -597,12 +702,12 @@ public class ReportFragment extends Fragment {
                 }
 
             } catch (JSONException e) {
-                /*pat.setText("");
+                *//*pat.setText("");
                 nam.setText("");
                 blg.setText("");
                 tvreferral.setText("");
                 blg.setText("");
-                bal.setText("");*/
+                bal.setText("");*//*
                 Toast.makeText(mActivity, "No cases.", Toast.LENGTH_SHORT).show();
                 Log.e("Rishabh", "JSONException error messgae := " + e);
                 //  buttonbar.setVisibility(View.GONE);
@@ -611,13 +716,13 @@ public class ReportFragment extends Fragment {
 
             try {
                 if (check == subArray1.length()) {
-                 /*   all.setEnabled(false);
+                 *//*   all.setEnabled(false);
                     all.setBackgroundResource(R.drawable.grey_button);
                     images.setBackgroundResource(R.drawable.grey_button);
-                    images.setEnabled(false);*/
+                    images.setEnabled(false);*//*
                 } else {
-                    /*all.setEnabled(true);
-                    all.setBackgroundResource(R.drawable.button_selector);*/
+                    *//*all.setEnabled(true);
+                    all.setBackgroundResource(R.drawable.button_selector);*//*
                 }
                 // lv.setAdapter(adapter);
                 // Utility.setListViewHeightBasedOnChildren(lv);
@@ -629,12 +734,12 @@ public class ReportFragment extends Fragment {
             }
 
             //===========================getting order list=============================//
-            if(!mIsComingFromMyFamilyClass){
+            if (!mIsComingFromMyFamilyClass) {
                 getOrderList();
             }
             if (progress != null && progress.isShowing()) {
                 progress.dismiss();
-            }
+            }*/
         }
 
         @Override
@@ -649,9 +754,9 @@ public class ReportFragment extends Fragment {
             }
             sendDataList = new JSONObject();
             try {
-                sendDataList.put("ApplicationId", "");
-                sendDataList.put("DoctorId", "");
-                sendDataList.put("PatientId", id);
+                //   sendDataList.put("ApplicationId", "");
+                //    sendDataList.put("DoctorId", "");
+                sendDataList.put("PatientId", id);   // TODO id replace "48fc92e1-419f-4903-9619-ff0265678cf7"
 
             } catch (JSONException e) {
 
@@ -661,6 +766,7 @@ public class ReportFragment extends Fragment {
 
             receiveDataList = service.patientstatus(sendDataList);
 
+
             System.out.println(receiveDataList);
 
 
@@ -669,10 +775,83 @@ public class ReportFragment extends Fragment {
 
                 casecode.clear();
                 dated.clear();
+
                 dataList = receiveDataList.getString("d");
                 JSONObject cut = new JSONObject(dataList);
                 subArrayList = cut.getJSONArray("Table");
-                if (subArrayList.length() == 0) {
+                //    subArrayList = new JSONArray(new Constants().Response);
+                Log.e("Rishabh", "received response := " + subArrayList.toString());
+
+                for (int i = 0; i < subArrayList.length(); i++) {
+
+                    String caseCode = subArrayList.getJSONObject(i).getString("CaseCode");
+                    CaseCodeModel caseCodeModelObject = new CaseCodeModel(caseCode);
+                    CaseCodeModel check = checkCaseCodeExistInList(caseCodeModelObject);
+
+                    if (check == null) {
+                        // New Case Code
+
+
+                        caseCodeModelObject.setLocationName(subArrayList.getJSONObject(i).optString("LocationName"));
+                        caseCodeModelObject.setReferrerName(subArrayList.getJSONObject(i).optString("ReferrerName"));
+                        caseCodeModelObject.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
+                        caseCodeModelObject.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
+                        caseCodeModelObject.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
+                        caseCodeModelObject.setTotalPaidAmount(subArrayList.getJSONObject(i).optInt("TotalPaidAmount"));
+                        caseCodeModelObject.setTotalActualAmount(subArrayList.getJSONObject(i).optInt("TotalActualAmount"));
+                        caseCodeModelObject.setInitialAmount(subArrayList.getJSONObject(i).optInt("InitialAmount"));
+                        caseCodeModelObject.setDiscountAmount(subArrayList.getJSONObject(i).optInt("DiscountAmount"));
+                        caseCodeModelObject.setPatientName(subArrayList.getJSONObject(i).optString("PatientName"));
+
+                        caseCodeModelObject.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
+                        caseCodeModelObject.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).optBoolean("IsPublish"));
+                        caseCodeModelObject.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).optBoolean("IsSampleReceived"));
+                        caseCodeModelObject.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
+                        caseCodeModelObject.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
+                        caseCodeModelObject.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
+                        caseCodeModelObject.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
+
+
+                        // Add this new object to ListOf CaseCode objects
+
+
+                        listOfCaseCodeModelObjects.add(caseCodeModelObject);
+                        listOfAllObjects.add(caseCodeModelObject);
+                        //   Log.e("Rishabh", "objbects new case code:= "+listOfCaseCodeModelObjects.size()) ;
+
+                    } else {
+
+                        // Case Code Exist ;
+
+                        check.createNewTestNameObject();
+                        check.setLocationName(subArrayList.getJSONObject(i).optString("LocationName"));
+                        check.setReferrerName(subArrayList.getJSONObject(i).optString("ReferrerName"));
+                        check.setDateandTime(subArrayList.getJSONObject(i).optString("AdviseDate"));
+                        check.setCaseID(subArrayList.getJSONObject(i).optString("CaseId"));
+                        check.settestLocationID(subArrayList.getJSONObject(i).optString("TestLocationId"));
+                        check.setTotalPaidAmount(subArrayList.getJSONObject(i).optInt("TotalPaidAmount"));
+                        check.setTotalActualAmount(subArrayList.getJSONObject(i).optInt("TotalActualAmount"));
+                        check.setInitialAmount(subArrayList.getJSONObject(i).optInt("InitialAmount"));
+                        check.setDiscountAmount(subArrayList.getJSONObject(i).optInt("DiscountAmount"));
+                        check.setPatientName(subArrayList.getJSONObject(i).optString("PatientName"));
+
+
+                        check.getTestNamesObject().setDescription(subArrayList.getJSONObject(i).optString("Description"));
+                        check.getTestNamesObject().setPublished(subArrayList.getJSONObject(i).optBoolean("IsPublish"));
+                        check.getTestNamesObject().setSampleReceived(subArrayList.getJSONObject(i).optBoolean("IsSampleReceived"));
+                        check.getTestNamesObject().setTestCompleted(subArrayList.getJSONObject(i).optBoolean("IsTestCompleted"));
+                        check.getTestNamesObject().setInvestigationID(subArrayList.getJSONObject(i).optString("InvestigationId"));
+                        check.getTestNamesObject().setTestID(subArrayList.getJSONObject(i).optString("TestId"));
+                        check.getTestNamesObject().setLabNo(subArrayList.getJSONObject(i).optString("LabNo"));
+
+                        //  Log.e("Rishabh", "objbects casecode exist := "+listOfCaseCodeModelObjects.size()) ;
+                    }
+
+                }
+
+
+
+   /*             if (subArrayList.length() == 0) {
                     caseid = "";
                 }
                 HashMap<String, String> hmap;
@@ -732,15 +911,15 @@ public class ReportFragment extends Fragment {
                 } else {
 
                 }
-
+*/
 
             } catch (JSONException e) {
 
-                e.printStackTrace();
+                Log.e("Rishabh", "JSON Exception := " + e);
             }
 
 
-            sendData = new JSONObject();
+         /*   sendData = new JSONObject();
             try {
                 sendData.put("CaseId", caseid);
 
@@ -862,11 +1041,40 @@ public class ReportFragment extends Fragment {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
+            }*/
             return null;
+            // End of background method
         }
 
+    }
 
+
+    private boolean chunk(int ia, int taa, int tpa, int da) {
+
+        int value;
+
+        if (da == 0) {
+
+            value = taa - ia;
+        } else {
+            value = taa - ia - da;
+        }
+
+        if (value <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private CaseCodeModel checkCaseCodeExistInList(CaseCodeModel casecodeObject) {
+
+        for (CaseCodeModel tempOject : listOfCaseCodeModelObjects) {
+
+            if (tempOject.getCaseCode().equals(casecodeObject.getCaseCode())) {
+                return tempOject;
+            }
+        }
+        return null;
     }
 
     private static class Utility {
@@ -1176,11 +1384,11 @@ public class ReportFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == PERMISSION_CALLBACK_CONSTANT){
+        if (requestCode == PERMISSION_CALLBACK_CONSTANT) {
             //check if all permissions are granted
             boolean allgranted = false;
-            for(int i=0;i<grantResults.length;i++){
-                if(grantResults[i]==PackageManager.PERMISSION_GRANTED){
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     allgranted = true;
                 } else {
                     allgranted = false;
@@ -1188,9 +1396,9 @@ public class ReportFragment extends Fragment {
                 }
             }
 
-            if(allgranted){
+            if (allgranted) {
                 //proceedAfterPermission(mItemClickedPosition);
-            } else if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                 builder.setTitle("Need Storage Permission");
                 builder.setMessage("This app needs phone permission.");
@@ -1198,7 +1406,7 @@ public class ReportFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_CALLBACK_CONSTANT);
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1209,7 +1417,7 @@ public class ReportFragment extends Fragment {
                 });
                 builder.show();
             } else {
-                Toast.makeText(getActivity(),"Unable to get Permission",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Unable to get Permission", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -1289,13 +1497,510 @@ public class ReportFragment extends Fragment {
             startActivity(i);
             mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
-        //  slidingMenu.toggle();
-        //  new BackgroundProcess().execute();
 
-        // Intent intt = new Intent(getApplicationContext(),
-        // lablistdetails.class);
-        // intt.putExtra("caseid", idsent);
-        // intt.putExtra("id", id);
-        // startActivity(intt);
     }
+
+    @Override
+    public void onTestNameTouched(String caseId, int position, String color) {
+
+        new ReportRecordsBackgroundProcess(caseId, position, color).execute();
+
+    }
+
+    private class ReportRecordsBackgroundProcess extends AsyncTask<Void, Void, Void> {
+
+        String case_id, color;
+        int position;
+
+        protected ReportRecordsBackgroundProcess(String caseId, int position, String color) {
+            case_id = caseId;
+            this.position = position;
+            this.color = color;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            subArray1 = new JSONArray(new ArrayList<String>());
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            try {
+                if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && color.equalsIgnoreCase("Green")) {
+
+                    if (!NetworkChangeListener.getNetworkStatus().isConnected()) {
+                        Toast.makeText(AppAplication.getAppContext(), "No internet connection. Please retry.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(mActivity.getApplicationContext(), ReportStatus.class);
+                        intent.putExtra("index", position);
+                        intent.putExtra("array", subArray1.toString());
+                        intent.putExtra("USER_ID", id);
+                        intent.putExtra("fromGraphNewDetails", false);
+                        intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
+                        startActivity(intent);
+                        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    }
+                } else if (subArray1.getJSONObject(position).getString("IsPublish").equalsIgnoreCase("true") && !color.equalsIgnoreCase("Green")) {
+                    Toast.makeText(mActivity.getApplicationContext(), "Balance due", Toast.LENGTH_SHORT).show();
+                } else if (subArray1.getJSONObject(position).getString("IsSampleReceived").equals("true")) {
+                    Toast.makeText(mActivity.getApplicationContext(), "Result awaited", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mActivity.getApplicationContext(), "Sample not collected", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            JSONObject sendData = new JSONObject();
+            JSONObject receiveData, receiveImageData;
+            JSONArray subArray;
+            try {
+                sendData.put("CaseId", case_id);
+                System.out.println(sendData);
+                receiveData = service.patientinvestigation(sendData);
+                String data = receiveData.getString("d");
+                JSONObject cut = new JSONObject(data);
+                subArray = cut.getJSONArray("Table");
+                subArray1 = subArray.getJSONArray(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                progress.dismiss();
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public void onPdfTouch(CaseCodeModel caseCodeObject) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                //Show Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Need Storage Permission");
+                builder.setMessage("This app needs phone permission.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else if (permissionStatus.getBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, false)) {
+                //Previously Permission Request was cancelled with 'Dont Ask Again',
+                // Redirect to Settings after showing Information about why you need the permission
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Need Storage Permission");
+                builder.setMessage("This app needs storage permission.");
+                builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        sentToSettings = true;
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                        Toast.makeText(getActivity(), "Go to Permissions to Grant Phone", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            } else {
+                //just request the permission
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CALLBACK_CONSTANT);
+            }
+
+            SharedPreferences.Editor editor = permissionStatus.edit();
+            editor.putBoolean(Manifest.permission.WRITE_EXTERNAL_STORAGE, true);
+            editor.commit();
+        } else {
+            new pdfprocess(caseCodeObject).execute();
+        }
+    }
+
+    private class pdfprocess extends AsyncTask<Void, String, Void> {
+
+        private CaseCodeModel caseCodeModelObject;
+
+        public pdfprocess(CaseCodeModel caseCodeObject) {
+            caseCodeModelObject = caseCodeObject;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            int count;
+            File reportFile = null;
+            File sdCard = Environment.getExternalStorageDirectory();
+            File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            pdfobject = new JSONObject();
+            int lengthOfTests = caseCodeModelObject.getListOfTestNamesInCaseCode().size();
+            for (int i = 0; i < lengthOfTests; i++) {
+                try {
+                    int ia = caseCodeModelObject.getInitialAmount();
+                    int da = caseCodeModelObject.getDiscountAmount();
+                    int taa = caseCodeModelObject.getTotalActualAmount();
+                    int tpa = caseCodeModelObject.getTotalPaidAmount();
+                    if (caseCodeModelObject.getTestNamesObject().isPublished().equals(true) && chunk(ia, taa, tpa, da)) {
+                        pdfobject = new JSONObject();
+                        pdfobject.put("InvestigationId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getInvestigationID());
+                        pdfobject.put("TestId", caseCodeModelObject.getListOfTestNamesInCaseCode().get(i).getTestID());
+                        pdfarray.put(pdfobject);
+                    }
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    Log.e("Rishabh", "JSON EXCEPTION := " + e);
+                }
+
+            }
+
+            JSONObject sendData = new JSONObject();
+            try {
+                sendData.put("CaseId", caseCodeModelObject.getCaseID());
+                sendData.put("LocationId", caseCodeModelObject.gettestLocationID());
+                sendData.put("Role", "Patient");
+                sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
+                sendData.put("TestData", pdfarray);
+                sendData.put("UserId", id);
+
+            } catch (JSONException e) {
+                Log.e("Rishabh", "JSON EXCEPTION := " + e);
+            }
+            // Log.e("Rishabh","Send Data for PDF process := "+sendData);
+            ptname = caseCodeModelObject.getPatientName();
+            ptname.replaceAll(" ", "_");
+
+            reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
+            result = service.pdf(sendData, "ReportRecords");
+            if (result != null) {
+                int lenghtOfFile = result.length;
+                String temp = null;
+                try {
+                    temp = new String(result, "UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
+                // Log.e("Rishabh","View & result==null : "+reportFile.getAbsolutePath());
+                // Log.e("Rishabh","Content of PDF :"+temp);
+                OutputStream out;
+                try {
+                    InputStream input = new ByteArrayInputStream(result);
+                    out = new FileOutputStream(reportFile);
+
+                    byte data[] = new byte[1024];
+
+                    long total = 14;
+
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                        out.write(result);
+                    }
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    Log.e("Rishabh", "File Not Found EXCEPTION := " + e);
+                } catch (IOException e) {
+                    Log.e("Rishabh", "I/O EXCEPTION := " + e);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aaa) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(aaa);
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+            if (result != null) {
+                try {
+                    //  progress.dismiss();
+                    // progress_bar.setVisibility(View.GONE);
+                    File sdCard = Environment.getExternalStorageDirectory();
+                    File dir = new File(sdCard.getAbsolutePath() + "/Lab Pdf/");
+
+                    File fileReport = new File(dir.getAbsolutePath(), ptname + "report.pdf");
+
+                    PackageManager packageManager = mActivity.getPackageManager();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setType("application/pdf");
+                    List list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                    if (list.size() > 0 && fileReport.isFile()) {
+                        Log.v("post", "execute");
+
+                        Intent objIntent = new Intent(Intent.ACTION_VIEW);
+                        ///////
+                        Uri uri = null;
+                        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                        Method m = null;
+                        try {
+                            m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                            m.invoke(null);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        uri = Uri.fromFile(fileReport);
+
+                        objIntent.setDataAndType(uri, "application/pdf");
+                        objIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(objIntent);//Staring the pdf viewer
+                    } else if (!fileReport.isFile()) {
+                        Log.v("ERROR!!!!", "OOPS2");
+                    } else if (list.size() <= 0) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                                mActivity);
+                        dialog.setTitle("PDF Reader not found");
+                        dialog.setMessage("A PDF Reader was not found on your device. The Report is saved at "
+                                + fileReport.getAbsolutePath());
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        dialog.dismiss();
+                                    }
+                                });
+                        dialog.show();
+                    }
+
+                } catch (OutOfMemoryError e) {
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(mActivity);
+                    dlg.setTitle("Not enough memory");
+                    dlg.setMessage("There is not enough memory on this device.");
+                    dlg.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    mActivity.finish();
+                                }
+                            });
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(mActivity, "An error occured, Please try after some time.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private void OrderDetailsBackgroundProcess() {
+
+        progress = new ProgressDialog(mActivity);
+        progress.setCancelable(false);
+        progress.setMessage("Loading your test records ...");
+        progress.setIndeterminate(true);
+        progress.show();
+
+        listOfAllObjects.clear();
+        listOfOrderDetailsModelObjects.clear();
+
+        sendData = new JSONObject();
+        try {
+            sendData.put("userId", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("Rishabh", "JSON EXCEPTION : " + e);
+        }
+        StaticHolder sttc_holdr = new StaticHolder(mActivity, StaticHolder.Services_static.GetOrderHistoryDetails);
+        String url = sttc_holdr.request_Url();
+
+        Log.e("Rishabh", "send data orderList  : " + sendData);
+
+        jr = new JsonObjectRequest(Request.Method.POST, url, sendData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+                String response;
+                JSONObject jsonObject1;
+                try {
+                    response = jsonObject.getString("d");
+                    jsonObject1 = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject1.getJSONArray("Table");
+
+                    Log.e("Rishabh", "jsonArray response order list : " + jsonArray.toString());
+                    if (jsonArray.length() != 0) {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            String OrderId = jsonArray.getJSONObject(i).getString("OrderId");
+                            OrderDetailsModel orderDetailsModel = new OrderDetailsModel(OrderId);
+                            OrderDetailsModel check = checkOrderDetailObjectExistInList(orderDetailsModel);
+
+                            if (check == null) {
+
+                                orderDetailsModel.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime"));
+                                orderDetailsModel.setCentreName(jsonArray.getJSONObject(i).optString("CentreName"));
+                                orderDetailsModel.setBillingAddress(jsonArray.getJSONObject(i).optString("BillingAddress"));
+                                orderDetailsModel.setTestID(jsonArray.getJSONObject(i).optString("TestId"));
+                                orderDetailsModel.setSamplePickUpStatus(jsonArray.getJSONObject(i).optBoolean("SamplePickupstatus"));
+                                orderDetailsModel.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
+                                orderDetailsModel.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
+                                orderDetailsModel.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
+                                orderDetailsModel.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
+                                orderDetailsModel.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
+                                orderDetailsModel.setOrderStatus(jsonArray.getJSONObject(i).optInt("OrderStatus"));
+                                orderDetailsModel.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
+
+                                listOfOrderDetailsModelObjects.add(orderDetailsModel);
+                                listOfAllObjects.add(orderDetailsModel);
+
+                                // Log.e("Rishabh", "objbects ordercode new := "+listOfOrderDetailsModelObjects.size()) ;
+                            } else {
+
+                                check.createNewTestNameObject();
+
+
+                                check.setOrderDateTime(jsonArray.getJSONObject(i).optString("OrderDateTime"));
+                                check.setCentreName(jsonArray.getJSONObject(i).optString("CentreName"));
+                                check.setBillingAddress(jsonArray.getJSONObject(i).optString("BillingAddress"));
+                                check.setTestID(jsonArray.getJSONObject(i).optString("TestId"));
+                                check.setSamplePickUpStatus(jsonArray.getJSONObject(i).optBoolean("SamplePickupstatus"));
+                                check.setOrderBillingAmount(jsonArray.getJSONObject(i).optInt("OrderBillingAmount"));
+                                check.setOrderActualAmount(jsonArray.getJSONObject(i).optInt("OrderActualAmount"));
+                                check.setOrderDiscountAmount(jsonArray.getJSONObject(i).optInt("OrderDiscount"));
+                                check.setPromoCodeDiscount(jsonArray.getJSONObject(i).optString("PromoCodeDiscount"));
+                                check.setDiscountPercentage(jsonArray.getJSONObject(i).optString("DiscountInPercentage"));
+                                check.setOrderStatus(jsonArray.getJSONObject(i).optInt("OrderStatus"));
+                                check.getOrderTestNames().setOrderTestNames(jsonArray.getJSONObject(i).optString("TestName"));
+
+                                //  Log.e("Rishabh", "objbects ordercode exist := "+listOfOrderDetailsModelObjects.size()) ;
+                            }
+
+                        }
+                    }
+                    new ReportFragment.BackgroundProcess().execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("Rishabh", "JSON EXCEPTION : " + e);
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Rishabh", "VolleyError : " + volleyError);
+            }
+        });
+        int socketTimeout1 = 30000;
+        RetryPolicy policy1 = new DefaultRetryPolicy(socketTimeout1, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jr.setRetryPolicy(policy1);
+        queue.add(jr);
+
+    }
+
+    private OrderDetailsModel checkOrderDetailObjectExistInList(OrderDetailsModel orderDetailObject) {
+
+        for (OrderDetailsModel tempOject : listOfOrderDetailsModelObjects) {
+
+            if (tempOject.getOrderID().equals(orderDetailObject.getOrderID())) {
+                return tempOject;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void orderListTouched(OrderDetailsModel object, String testName, int position) {
+        String samplePickupStatus;
+        Intent i = new Intent(mActivity, OrderDetails.class);
+
+
+        i.putExtra("OrderId", object.getOrderID());          // pastVisitArray.get(arg2).get("OrderId")
+        i.putExtra("OrderDate", object.getOrderDateTime());    // pastVisitArray.get(arg2).get("TimeStamp")
+        i.putExtra("LabName", object.getCentreName());                               // pastVisitArray.get(arg2).get("CentreName")
+        i.putExtra("Address", object.getBillingAddress());                              // pastVisitArray.get(arg2).get("BillingAddress")
+        try {
+
+            i.putExtra("GrandTotal", (object.getOrderBillingAmount()));             // pastVisitArray.get(arg2).get("OrderBillingAmount")
+
+            i.putExtra("SubTotal", (object.getOrderActualAmount()));
+
+            i.putExtra("Discount", (object.getOrderDiscountAmount()));
+
+            if (!"null".equalsIgnoreCase(object.getPromoCodeDiscount())) {
+
+                int promoDiscount = Integer.parseInt(object.getPromoCodeDiscount());
+
+                double bilingamnt = (object.getOrderBillingAmount() - promoDiscount);
+                i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                i.putExtra("promo_codeDiscount", promoDiscount);
+
+            } else if (!"null".equalsIgnoreCase(object.getDiscountPercentage())) {
+                int discountPercentage = Integer.parseInt(object.getDiscountPercentage());
+
+                double bilingamnt = ((object.getOrderBillingAmount()) * (1 - (discountPercentage)) / 100);
+                i.putExtra("YourPrice", (int) Math.round(bilingamnt));
+                i.putExtra("promo_codeDiscount", (object.getOrderBillingAmount() * (discountPercentage) / 100));
+            } else {
+                i.putExtra("YourPrice", object.getOrderBillingAmount());   // (int) Math.round(Double.parseDouble(pastVisitArray.get(arg2).get("OrderBillingAmount")))
+                i.putExtra("promo_codeDiscount", 0);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String orderStatus = String.valueOf(object.getOrderStatus());
+        if (object.getSamplePickUpStatus()) {
+            samplePickupStatus = "1";
+        } else {
+            samplePickupStatus = "0";
+        }
+
+        i.putExtra("TestName", testName);
+        i.putExtra("perTextActualPrice_str", "₹" + object.getOrderActualAmount());                 // pastVisitArray.get(arg2).get("perTextActualPrice_str")
+        i.putExtra("OrderStatus", orderStatus);          // pastVisitArray.get(arg2).get("OrderStatus")
+        i.putExtra("SamplePickupstatus", samplePickupStatus);                         //pastVisitArray.get(arg2).get("SamplePickupstatus")
+        i.putExtra("scroll_position", String.valueOf(position));
+
+        startActivity(i);
+        mActivity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
 }
