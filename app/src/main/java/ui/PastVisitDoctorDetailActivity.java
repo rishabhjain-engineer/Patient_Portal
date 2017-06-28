@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             mDoctorCommentsTv, mDiagnosisTv, mFiles, mPrescriptionTv,mTestNamesTv;
     private ImageView mSignImage;
     private String mDoctorName, mClinicName, mAddress, mCity, mPincode, mConsultTime, mSymptoms, mPatientNotes, mDoctorComments, mDiagnosis, mPrescription , mTestNames;
+    private Button btnOpenReport ;
     private File mFile;
 
     @Override
@@ -71,6 +73,7 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
         mDoctorCommentsTv = (TextView) findViewById(R.id.comments);
         mDiagnosisTv = (TextView) findViewById(R.id.diagnosis);
         mPrescriptionTv = (TextView) findViewById(R.id.prescription);
+        btnOpenReport = (Button) findViewById(R.id.open_pres_report);
         mTestNamesTv = (TextView) findViewById(R.id.test);
         ImageView showFiles = (ImageView) findViewById(R.id.show_files);
         TextView prescriptionReportTv = (TextView) findViewById(R.id.past_visits_tv);
@@ -110,7 +113,12 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
             }
         });
 
-
+        btnOpenReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPrescriptionReport();
+            }
+        });
 
         doctorPic.setImageResource(R.drawable.ayaz);
 
@@ -171,6 +179,13 @@ public class PastVisitDoctorDetailActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void openPrescriptionReport() {
+
+        Intent openReportIntent = new Intent(PastVisitDoctorDetailActivity.this ,  PrescriptionReportActivity.class) ;
+        startActivity(openReportIntent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     @Override

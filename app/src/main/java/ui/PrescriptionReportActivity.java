@@ -140,13 +140,13 @@ public class PrescriptionReportActivity extends BaseActivity {
 
             JSONObject dataToSend = new JSONObject();
             try {
-                dataToSend.put("consultId", consultId);
+                dataToSend.put("consultId", "");
             } catch (JSONException je) {
                 je.printStackTrace();
             }
 
             reportFile = new File(dir.getAbsolutePath(), ptname + "report.pdf");
-            result = service.pdf(dataToSend, "Report Status");
+          //  result = service.pdf(dataToSend, "Report Status");
             int lenghtOfFile = 1;
             if (result != null) {
                 lenghtOfFile = result.length;
