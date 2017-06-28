@@ -78,7 +78,7 @@ public class ReportStatus extends BaseActivity {
             dob, sample, profname, history_text, pdf_text;
     private Button breport;
     private LinearLayout bgraph, bpdf;
-    private String patientId;
+    private String patientId, investifgationIDFromGraphNewDetails;
     private SharedPreferences sharedPreferences;
     private Services service;
     private JSONArray jarray, sendarray, results, pdfdata, reportarray;
@@ -97,8 +97,10 @@ public class ReportStatus extends BaseActivity {
     private List<String> intentdate = new ArrayList<String>();
     private List<String> intentcase = new ArrayList<String>();
     private List<String> intentcaseId = new ArrayList<String>();
+    private List<String > sendInvestigationID1List  = new ArrayList<>() ;
     private List<String> piechartvalue = new ArrayList<String>();
     private graphprocess mTask;
+    private boolean mIsFromGraphNewDetails ;
     private byte[] result = null;
     private int index, singlechartposition;
     private String phcode;
@@ -140,6 +142,8 @@ public class ReportStatus extends BaseActivity {
         index = z.getIntExtra("index", 10);
         String jarr = z.getStringExtra("array");
         phcode = z.getStringExtra("code");
+        investifgationIDFromGraphNewDetails = z.getStringExtra("investigationID1");
+        mIsFromGraphNewDetails = z.getBooleanExtra("fromGraphNewDetails",false);
         patientId = z.getStringExtra("USER_ID");
         progress = new ProgressDialog(ReportStatus.this);
         sendarray = new JSONArray();
@@ -157,7 +161,7 @@ public class ReportStatus extends BaseActivity {
         System.out.println("Data Received:" + jarray);
 
         try {
-            advice.setText(jarray.getJSONObject(index).getString("AdviseDate"));
+         //   advice.setText(jarray.getJSONObject(index).getString("AdviseDate"));
 
 
             if (!jarray.getJSONObject(index).getString("ReferrerName").matches(((".*[a-kA-Zo-t]+.*")))) {
@@ -169,9 +173,9 @@ public class ReportStatus extends BaseActivity {
                     || jarray.getJSONObject(index).getString("CollectionTime").equalsIgnoreCase("null")) {
 
             } else {
-                sample.setText(jarray.getJSONObject(index).getString("CollectionTime"));
+          //      sample.setText(jarray.getJSONObject(index).getString("CollectionTime"));
             }
-            dob.setText(jarray.getJSONObject(index).getString("DateOfReport"));
+          //  dob.setText(jarray.getJSONObject(index).getString("DateOfReport"));
             j.put("InvestigationId",
                     jarray.getJSONObject(index).getString("InvestigationId"));
             j.put("TestId", jarray.getJSONObject(index).getString("TestId"));
@@ -180,10 +184,7 @@ public class ReportStatus extends BaseActivity {
 
             System.out.println(sendarray);
 
-            if (!jarray.getJSONObject(index).getString("IsSampleReceived")
-                    .equals("true")
-                    && jarray.getJSONObject(index).getString("LabNo")
-                    .equals("null")
+            if (!jarray.getJSONObject(index).getString("IsSampleReceived").equals("true") && jarray.getJSONObject(index).getString("LabNo").equals("null")
                     && jarray.getJSONObject(index).getString("IsTestCompleted")
                     .equals("null")) {
                 breport.setVisibility(View.GONE);
@@ -254,6 +255,7 @@ public class ReportStatus extends BaseActivity {
                     intentcase.clear();
                     intentcaseId.clear();
                     chartValues.clear();
+                    sendInvestigationID1List.clear();
                     divDataBullet = "";
 
                     if (results != null && results.length() == 1) {
@@ -262,22 +264,20 @@ public class ReportStatus extends BaseActivity {
                     } else if (results != null && results.length() > 1) {
 
                         try {
-                            if ((results.getJSONObject(0)
-                                    .getString("isprofile").equals("P")))
+                            if ((results.getJSONObject(0).getString("isprofile").equals("P")))
 
                             {
 
-                                Intent intent = new Intent(getApplicationContext(),
-                                        grouptest.class);
+                                Intent intent = new Intent(getApplicationContext(), grouptest.class);
                                 intent.putExtra("group", results.toString());
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                             } else {
 
                                 for (int i = 0; i < results.length(); i++) {
                                     try {
-                                        JSONObject tempObject = results
-                                                .getJSONObject(i);
+                                        JSONObject tempObject = results.getJSONObject(i);
                                         UnitCode = tempObject.getString("UnitCode");
                                         if (tempObject.getString("ResultType") // new
                                                 // code
@@ -369,8 +369,8 @@ public class ReportStatus extends BaseActivity {
                                                         ""))
                                                     chartValues.add("0");
                                                 else
-                                                    chartValues.add(tempObject
-                                                            .getString("ResultValue"));
+                                                    chartValues.add(tempObject.getString("ResultValue"));
+                                                sendInvestigationID1List.add(tempObject.getString("InvestigationId1"));
                                                 singlechartposition = i;
                                             }
                                             if (tempObject
@@ -432,6 +432,7 @@ public class ReportStatus extends BaseActivity {
                                         Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
                                         intent.putExtra("data", db);
                                         intent.putExtra("chart_type", "line");
+                                        intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                         intent.putStringArrayListExtra("dates", (ArrayList<String>) intentdate);
                                         intent.putStringArrayListExtra("values", (ArrayList<String>) chartValues);
                                         if (chartNames.size() != 0)
@@ -553,6 +554,7 @@ public class ReportStatus extends BaseActivity {
                                     startActivity(intent);
                                     finish();*/
                                     Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                    intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                     intent.putExtra("chart_type", "Pie");
                                     intent.putExtra("data", db);
                                     intent.putStringArrayListExtra("dates",
@@ -670,8 +672,8 @@ public class ReportStatus extends BaseActivity {
                                                 .equals(""))
                                             chartValues.add("0");
                                         else
-                                            chartValues.add(tempObject
-                                                    .getString("ResultValue"));
+                                            chartValues.add(tempObject.getString("ResultValue"));
+                                        sendInvestigationID1List.add(tempObject.getString("InvestigationId1"));
 
                                     }
                                     if (tempObject.getString("CaseId").equals(
@@ -731,6 +733,7 @@ public class ReportStatus extends BaseActivity {
                                         + "</div></body></html>";
 
                                 Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 intent.putExtra("chart_type", "line");
                                 intent.putExtra("data", db);
                                 if (chartNames.size() != 0)
@@ -832,6 +835,7 @@ public class ReportStatus extends BaseActivity {
                                 finish();*/
 
                                 Intent intent = new Intent(ReportStatus.this, GraphDetailsNew.class);
+                                intent.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
                                 intent.putExtra("chart_type", "Pie");
                                 intent.putExtra("data", db);
                                 intent.putStringArrayListExtra("dates",
@@ -866,13 +870,13 @@ public class ReportStatus extends BaseActivity {
     }
 
 
-    class graphprocess extends AsyncTask<Void, Void, Void>
-
-    {
+    class graphprocess extends AsyncTask<Void, Void, Void>  {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+
+            sendInvestigationID1List.clear();
             progress = new ProgressDialog(ReportStatus.this);
             progress.setMessage("Loading...");
             progress.setIndeterminate(true);
@@ -903,21 +907,29 @@ public class ReportStatus extends BaseActivity {
             // TODO Auto-generated method stub
             sendData = new JSONObject();
             try {
-                sendData.put("sCaseId",
-                        jarray.getJSONObject(index).getString("CaseId"));
-                sendData.put("investigationid", jarray.getJSONObject(index)
-                        .getString("InvestigationId"));
-                sendData.put("testid",
-                        jarray.getJSONObject(index).getString("TestId"));
-                sendData.put("PatientCode", phcode);
+                //sendData.put("sCaseId", jarray.getJSONObject(index).getString("CaseId"));
+
+                if(mIsFromGraphNewDetails){
+                    sendData.put("investigationid", investifgationIDFromGraphNewDetails);
+
+                }else {
+                    sendData.put("investigationid", jarray.getJSONObject(index).getString("InvestigationId"));
+
+                }
+
+
+               // sendData.put("testid", jarray.getJSONObject(index).getString("TestId"));
+                sendData.put("PatientCode", jarray.getJSONObject(index).getString("PatientCode"));
             } catch (JSONException e) {
 
+                Log.e("Rishabh","Json exception := "+e);
                 e.printStackTrace();
             }
 
             System.out.println(sendData);
-
+            Log.e("Rishabh","sendData GetPatientTestRangeDataMobile := "+sendData);
             results = service.graphreport(sendData);
+            Log.e("Rishabh","results GetPatientTestRangeDataMobile := "+results);
             System.out.println("graphreport" + results);
             return null;
         }
@@ -929,15 +941,19 @@ public class ReportStatus extends BaseActivity {
             super.onPostExecute(result);
 
 
+
             int k = 0;
 
             for (int i = 0; i < results.length(); i++) {
 
                 try {
 
+                   /* String investigationID1 = results.getJSONObject(i).getString("InvestigationId1");
+                    sendInvestigationID1List.add(investigationID1);*/
 
                     if (results.getJSONObject(i).getString("CaseId").equals(jarray.getJSONObject(index).getString("CaseId"))) {
                         reportarray.put(results.getJSONObject(i));
+
                     }
 
                     if (results.getJSONObject(i).getString("ResultType")
@@ -955,6 +971,9 @@ public class ReportStatus extends BaseActivity {
             }
 
             System.out.println("For report:" + reportarray);
+
+            Log.e("Rishabh", "report array := "+reportarray);
+
 
 
             // ////////////////////////////////////////////////////////////
@@ -977,9 +996,9 @@ public class ReportStatus extends BaseActivity {
                     }
                 }
                 if (iscomment != 1) {
-                    NestedListHelper.setListViewHeightBasedOnChildren(list_view);
+             //       NestedListHelper.setListViewHeightBasedOnChildren(list_view);
                 } else {
-                    NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
+            //        NestedListHelper1.setListViewHeightBasedOnChildren(list_view);
                 }
                 list_view.setVisibility(View.VISIBLE);
                 // parentLayout.setVisibility(View.GONE);
@@ -988,214 +1007,18 @@ public class ReportStatus extends BaseActivity {
 
                     if (reportarray.getJSONObject(z).getString("ResultType")
                             .equals("Numerical")) {
-                /*	if(z>1){
-
-						if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-						{
-					TextView profile = new TextView(ReportStatus.this);
-					profile.setText(reportarray.getJSONObject(z).getString(
-							"NewProfileName"));
-					profile.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					profile.setTypeface(null, Typeface.BOLD);
-					profile.setGravity(Gravity.CENTER);
-					parentLayout.addView(profile);
-						}
-					}
-					
-					
-					LinearLayout lLayout;
-
-					lLayout = new LinearLayout(ReportStatus.this);
-
-					lLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					parent.leftMargin = 15;
-					lp.topMargin = 10;
-					parent.rightMargin = 15;
-					parent.bottomMargin = 20;
-					lLayout.setWeightSum(100f);
-					lLayout.setLayoutParams(lp);
-					parentLayout.setLayoutParams(parent);
-
-					TextView test = new TextView(ReportStatus.this);
-					test.setText(reportarray.getJSONObject(z).getString(
-							"Description"));
-					test.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 50f));
-
-					lLayout.addView(test);
-
-					TextView range = new TextView(ReportStatus.this);
-					range.setText(reportarray.getJSONObject(z).getString(
-							"RangeFrom")+"-"+reportarray.getJSONObject(z).getString(
-									"RangeTo"));
-					range.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-					range.setGravity(Gravity.LEFT);
-					lLayout.addView(range);
-
-					TextView patient = new TextView(ReportStatus.this);
-					patient.setText(reportarray.getJSONObject(z).getString(
-							"ResultValue"));
-					patient.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-
-					 
-					   float m,n,q;
-					   
-					   if(!reportarray.getJSONObject(z).getString("Description").equals("ALKALINE PHOSPHATASE"))
-					   { 
-						m = Float.parseFloat(reportarray.getJSONObject(z).getString("ResultValue"));
-						n = Float.parseFloat(reportarray.getJSONObject(z).getString("RangeFrom"));
-					    q = Float.parseFloat(reportarray.getJSONObject(z).getString("RangeTo"));
-
-						if(m<n||m>q)
-					{
-						patient.setTextColor(Color.RED);
-						patient.setTypeface(null, Typeface.BOLD);
-					}
-					
-					   }	
-					
-					patient.setGravity(Gravity.CENTER);
-					lLayout.setPadding(0, 10, 0, 10);
-					lLayout.addView(patient);
-
-					parentLayout.addView(lLayout);*/
 
 
                     } else if (reportarray.getJSONObject(z).getString("ResultType")
                             .equals("Words")) {
 
 
-					/*if(z>1){
-
-						if(!reportarray.getJSONObject(z).getString("NewProfileName").equals(reportarray.getJSONObject(z-1).getString("NewProfileName")))
-						{
-					TextView profile = new TextView(ReportStatus.this);
-					profile.setText(reportarray.getJSONObject(z).getString(
-							"NewProfileName"));
-					profile.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					profile.setTypeface(null, Typeface.BOLD);
-					profile.setGravity(Gravity.CENTER);
-					parentLayout.addView(profile);
-						}
-					}
-					
-
-					LinearLayout lLayout;
-
-					lLayout = new LinearLayout(ReportStatus.this);
-
-					lLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.WRAP_CONTENT);
-
-					parent.leftMargin = 15;
-					lp.topMargin = 10;
-					parent.rightMargin = 15;
-					parent.bottomMargin = 20;
-					lLayout.setWeightSum(100f);
-					lLayout.setLayoutParams(lp);
-					parentLayout.setLayoutParams(parent);
-
-					TextView test = new TextView(ReportStatus.this);
-					test.setText(reportarray.getJSONObject(z).getString(
-							"Description"));
-					test.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 50f));
-					test.setGravity(Gravity.LEFT);
-					lLayout.addView(test);
-
-					TextView range = new TextView(ReportStatus.this);
-					String rangesad=reportarray.getJSONObject(z).getString("RangeValue");
-					String resultDS=reportarray.getJSONObject(z).getString("ResultValue");
-					if(!reportarray.getJSONObject(z).getString(
-							"RangeValue").equals("null")){
-						range.setText("fdsdsds");
-						range.setVisibility(View.INVISIBLE);
-					}else{
-						range.setText(rangesad);
-					}
-
-					range.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-					range.setGravity(Gravity.LEFT);
-					lLayout.addView(range);
-					TextView patient = new TextView(ReportStatus.this);
-
-					patient.setText(reportarray.getJSONObject(z).getString(
-							"ResultValue"));
-
-					// change by me-----------------------------------------------------------------------------------------------------------------------------------------
-					if(!reportarray.getJSONObject(z).getString(
-							"RangeValue").equalsIgnoreCase(reportarray.getJSONObject(z).getString(
-							"ResultValue"))&&reportarray.getJSONObject(z).getString(
-							"RangeValue")!="null"){
-						patient.setTextColor(Color.parseColor("#FF0000"));
-					}else{
-						patient.setTextColor(Color.parseColor("#1E1E1E"));
-					}
-					patient.setLayoutParams(new LinearLayout.LayoutParams(0,
-							LayoutParams.WRAP_CONTENT, 25f));
-
-											 						
-					patient.setGravity(Gravity.RIGHT);
-					lLayout.setPadding(0, 10, 10, 10);
-					lLayout.addView(patient);
-
-					parentLayout.addView(lLayout);*/
 
                     } else {
-                       /* list_view.setVisibility(View.GONE);
-                        parentLayout = (LinearLayout) findViewById(R.id.dynamic);
-                        parentLayout.setVisibility(View.VISIBLE);
-                        parentLayout.setOrientation(LinearLayout.VERTICAL);
 
-                        LinearLayout.LayoutParams parent = new LinearLayout.LayoutParams(
-                                LayoutParams.MATCH_PARENT,
-                                LayoutParams.WRAP_CONTENT);
-                        parent.leftMargin = 15;
-                        parent.topMargin = 30;
-                        parent.rightMargin = 15;
-                        parent.bottomMargin = 10;
-
-                        TextView desc = new TextView(ReportStatus.this);
-                        desc.setText(reportarray.getJSONObject(z).getString(
-                                "Description"));
-                        desc.setLayoutParams(parent);
-                        desc.setTextSize(15);
-                        desc.setTypeface(null, Typeface.BOLD);
-                        parentLayout.addView(desc);
-
-                        String htmldata = reportarray.getJSONObject(z).getString(
-                                "ResultValue");
-                        WebView web = new WebView(ReportStatus.this);
-                        web.loadData(htmldata, "text/html", "UTF-8");
-
-                        parentLayout.addView(web);*/
                     }
 
-                   /* TextView line = new TextView(ReportStatus.this);
-                    line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
-                    line.setBackgroundColor(Color.parseColor("#d3d3d3"));
-                    parentLayout.addView(line);*/
+
 
                 }
 
@@ -1267,11 +1090,20 @@ public class ReportStatus extends BaseActivity {
                 dir.mkdirs();
             }
             pdfobject = new JSONObject();
+            Log.e("Rishabh", "patient ID := "+patientId) ;
             try {
-                pdfobject.put("InvestigationId", jarray.getJSONObject(index)
-                        .getString("InvestigationId"));
-                pdfobject.put("TestId",
-                        jarray.getJSONObject(index).getString("TestId"));
+
+                if(mIsFromGraphNewDetails){
+                    pdfobject.put("InvestigationId", investifgationIDFromGraphNewDetails);
+                    Log.e("Rishabh", "investigation ID := "+investifgationIDFromGraphNewDetails) ;
+                }else {
+                    pdfobject.put("InvestigationId", jarray.getJSONObject(index).getString("InvestigationId"));
+                    Log.e("Rishabh", "investigation ID := "+jarray.getJSONObject(index).getString("InvestigationId")) ;
+                }
+
+               // pdfobject.put("InvestigationId", jarray.getJSONObject(index).getString("InvestigationId"));
+                pdfobject.put("TestId", jarray.getJSONObject(index).getString("TestId"));
+                Log.e("Rishabh", "Test ID := "+jarray.getJSONObject(index).getString("TestId")) ;
 
             } catch (JSONException e) {
 
@@ -1282,14 +1114,13 @@ public class ReportStatus extends BaseActivity {
 
             sendData = new JSONObject();
             try {
-                sendData.put("CaseId",
-                        jarray.getJSONObject(index).getString("CaseId"));
-                sendData.put("LocationId", jarray.getJSONObject(index)
-                        .getString("TestLocationId"));
+                sendData.put("CaseId", jarray.getJSONObject(index).getString("CaseId"));
+                sendData.put("LocationId", jarray.getJSONObject(index).getString("TestLocationId"));
                 sendData.put("Role", "Patient");
                 sendData.put("BranchID", "00000000-0000-0000-0000-000000000000");
                 sendData.put("TestData", pdfdata);
                 sendData.put("UserId", patientId);
+                Log.e("Rishabh", "sendData := "+sendData) ;
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -1540,6 +1371,7 @@ public class ReportStatus extends BaseActivity {
         String result_type = "";
         try {
             chartValues.clear();
+            sendInvestigationID1List.clear();
             intentcase.clear();
             intentcaseId.clear();
             intentdate.clear();
@@ -1574,7 +1406,7 @@ public class ReportStatus extends BaseActivity {
                 criticallow = "0";
             }
             chartValues.add(ResultValue);
-
+            sendInvestigationID1List.add(results.getJSONObject(position).getString("InvestigationId1"));
         } catch (JSONException e) {
             e.printStackTrace();
             unit = null;
@@ -1648,6 +1480,7 @@ public class ReportStatus extends BaseActivity {
             intent.putExtra("from_activity", "grouptest");*/
             Intent intent1 = new Intent(ReportStatus.this, GraphDetailsNew.class);
             intent1.putExtra("chart_type", "Pie");
+            intent1.putStringArrayListExtra("investigationID1", (ArrayList<String>) sendInvestigationID1List);
             intent1.putExtra("data", db);
             intent1.putStringArrayListExtra("dates",
                     (ArrayList<String>) intentdate);

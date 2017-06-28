@@ -18,10 +18,15 @@ public class StaticHolder {
 
 
     //public final String BASE_URL = "http://192.168.1.11/WebServices/LabService.asmx/"; //TODO opened by ayaz LOCAL
-    //public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
+   // public final String BASE_URL1 = "http://192.168.1.11/";//TODO opened by ayaz LOCAL
 
+<<<<<<< HEAD
     public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
     public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
+=======
+   // public final String BASE_URL = "https://apidemo.healthscion.com/WebServices/LabService.asmx/"; //TODO opened by ayaz Demo
+   // public final String BASE_URL1 = "https://apidemo.healthscion.com/";//TODO opened by ayaz Demo
+>>>>>>> 8d12e08a21386fa92360a3bae9c8d5159ef9ca0d
 
 
     public static ArrayList<HashMap<String, String>> allPackageslist = new ArrayList<HashMap<String, String>>();
@@ -505,9 +510,11 @@ public class StaticHolder {
             case UploadImage_New:
                 url = BASE_URL + "UploadImage_New";
                 break;
+
             case saveHealthDetailMod:
                 url = BASE_URL + "saveHealthDetailMod";
                 break;
+
             case UpdateALId:
                 url = BASE_URL + "UpdateALId";
                 break;
@@ -558,6 +565,11 @@ public class StaticHolder {
 
             case PastPatientDetails:
                 url = BASE_URL + "PastPatientDetails";
+
+
+            case GetAllPatientCase:
+                url = BASE_URL + "GetAllPatientCase";
+
                 break;
 
             default:
@@ -595,7 +607,7 @@ public class StaticHolder {
         UpdatePatientVaccineDetails, GetLatestVersionInfo, NewFacebookLoginMod, CheckContactNoExist, CheckDupUserName, NewSignUpByPatientMod,
         LogInUser_facebookMod, NewSignUpByPatientFacebookMod, GetUserGrade, SaveUserDevice, GetSchoolDoctorList, getSchoolStudentDetails, UploadImage_New, GetUserFact,
         saveHealthDetailMod, UpdateALId, ConsultSymptomsList, ConsultAdd, ConsultTestList, ConsultPayment, ConsultS3Records, ConsultAddSymptoms,
-        PastVisitList, PastVisitDetails, GetPatientInfo, GetPrescriptionReport, PastPatientList, PastPatientDetails
+        PastVisitList, PastVisitDetails, GetPatientInfo, GetPrescriptionReport, PastPatientList, PastPatientDetails, GetAllPatientCase
     }
 
 }

@@ -38,27 +38,30 @@
 
         </RelativeLayout>
 
+        <EditText
+            android:id="@+id/select_member_lab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/quiz_container"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/edittext_corner"
+            android:drawablePadding="15dp"
+            android:drawableRight="@drawable/down_arrow"
+            android:ellipsize="start"
+            android:hint="Select Member"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="14dp" />
+
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/select_member_lab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/header_container"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/edittext_corner"
-        android:drawablePadding="15dp"
-        android:drawableRight="@drawable/down_arrow"
-        android:ellipsize="start"
-        android:hint="Select Member"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="@android:color/black"
-        android:textSize="14dp" />
+
 
     <LinearLayout
         android:id="@+id/header"
@@ -97,11 +100,22 @@
 
     </LinearLayout>
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/report_records_listview"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/header_container"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:drawSelectorOnTop="true"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
     <ListView
+        android:visibility="gone"
         android:id="@+id/past_visits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/select_member_lab"
+        android:layout_below="@+id/header_container"
         android:layout_margin="10dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="10dp"
