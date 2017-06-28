@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/common_header_2" />
+    <include layout="@layout/common_header_2"
+        android:id="@+id/header"/>
 
     <View
+        android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@+id/header"
         android:background="@color/gray" />
 
     <ScrollView
+        android:layout_below="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_above="@+id/open_pres_report"
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -237,7 +241,16 @@
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:text="Report"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:id="@+id/open_pres_report"
+        android:textColor="@color/white"
+        android:background="@color/header_color"
+        android:layout_height="50dp" />
+</RelativeLayout>
 
 
 
