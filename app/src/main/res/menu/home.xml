@@ -3,8 +3,7 @@
 
     <item
         android:id="@+id/action_home"
-        android:icon="@drawable/ic_menu_home"
-        android:title="Home"
+        android:title="SAVE"
         hs:showAsAction="always"/>
 
 </menu>

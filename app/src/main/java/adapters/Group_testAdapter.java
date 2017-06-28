@@ -90,9 +90,13 @@ public class Group_testAdapter extends BaseAdapter {
            GraphDetailValueAndDate graphDetailValueAndDate = graphDetailValueAndDateList.get(position);
 
             test_name.setText(String.valueOf(position+1)+".  "+graphDetailValueAndDate.getDate());
+
             if(chartunitlist.size()!=0 && chartunitlist.get(position)!=null) {
+
                 result_value.setText(graphDetailValueAndDate.getValue() + " " + chartunitlist.get(position));
+
             }else{
+
                 result_value.setText(graphDetailValueAndDate.getValue());
             }
             try {
@@ -105,7 +109,7 @@ public class Group_testAdapter extends BaseAdapter {
            /* if(check_result_color==true){
                 result_value.setTextColor(Color.parseColor("#FF2D2D"));
             }*/
-            reference_range.setText("Case code: "+casecodeslist.get(position));
+            reference_range.setText("Case code: "+graphDetailValueAndDate.getCaseCode());
 
         }else{
             test_name.setText(String.valueOf(position+1)+".  "+chartDates.get(position));
