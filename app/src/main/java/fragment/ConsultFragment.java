@@ -168,6 +168,7 @@ public class ConsultFragment extends Fragment {
     private void getConsultId() {
         StaticHolder static_holder = new StaticHolder(getActivity(), StaticHolder.Services_static.ConsultAddSymptoms);
         String url = static_holder.request_Url();
+        Log.e("Rishabh","consultFragment getconsultid url := "+url);
         JSONObject data = new JSONObject();
         String consultId = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.CONSULT_ID);
         try {
