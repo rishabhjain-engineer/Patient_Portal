@@ -32,8 +32,8 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text=""
-        android:textSize="14dp"
-        android:textColor="@android:color/black" />
+        android:textSize="13sp"
+        android:textColor="#262626" />
 
     <TextView
         android:id="@+id/result_value"
@@ -42,10 +42,10 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/secondary"
         android:layout_marginRight="18dp"
+        android:textColor="#262626"
         android:layout_marginTop="5dp"
         android:text=""
-        android:textSize="14dp"
-        android:textStyle="bold" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/reference_range"
@@ -57,7 +57,7 @@
         android:layout_marginBottom="2.5dp"
         android:text=""
         android:textSize="10dp"
-        android:textColor="#6C6C6C" />
+        android:textColor="#737373" />
 
     <WebView
         android:id="@+id/webview"

@@ -7,11 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -29,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -55,22 +50,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import adapters.Group_testAdapter;
-import adapters.MyHealthsAdapter;
-import ui.BaseActivity;
-import ui.BmiActivity;
-import ui.DashBoardActivity;
 import ui.GraphHandlerActivity;
-import ui.HealthCommonActivity;
 import utils.AppConstant;
-import utils.MyMarkerView;
 import utils.PreferenceHelper;
-
-import static com.hs.userportal.R.id.member_name;
-import static com.hs.userportal.R.id.weight;
 
 /**
  * Created by rahul2 on 7/15/2016.
@@ -78,6 +63,7 @@ import static com.hs.userportal.R.id.weight;
 public class GraphDetailsNew extends GraphHandlerActivity {
 
     private LineChart linechart;
+    private JSONArray subArray1;
     private PieChart pi_chart;
     private ScrollView scroll;
     private ArrayList<String> chartvakueList;
@@ -86,12 +72,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<String> casecodes = new ArrayList<String>();
     private List<String> caseIds = new ArrayList<String>();
     private List<String> chartunitList;
+    private List<String> investigationID1;
     private String caseindex = "";
     private Group_testAdapter adapter;
-    private String RangeFrom = null, RangeTo = null, UnitCode = "" ,  mDateFormat =  "%b '%y", mFormDate, mToDate, mIntervalMode;
-    private Services service;
+    private String RangeFrom = null, RangeTo = null, UnitCode = "", mDateFormat = "%b '%y", mFormDate, mToDate, mIntervalMode;
     private ListView graph_listview_id;
-    private int maxYrange = 0 , mRotationAngle = 0;
+    private int maxYrange = 0, mRotationAngle = 0;
     private WebView mWebView;
     private double mRangeFromInDouble = 0, mRangeToInDouble = 0, mMaxValue = 0;
     private JSONArray mJsonArrayToSend = null, mTckValuesJsonArray = null;
@@ -100,11 +86,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     private List<Long> mEpocList = new ArrayList<Long>();
     private List<String> mValueList = new ArrayList<String>();
     private long mFormEpocDate = 0, mEpocToDate = 0;
-    private String title;
+    private String title, mPatientID;
     private List<GraphDetailValueAndDate> mFilteredGraphDetailValueAndDateList = new ArrayList<>();
     private List<String> mDateList = new ArrayList<>();
     private ProgressDialog progress;
     private boolean isLoadNvd3 = true;
+    private Services services;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -112,9 +99,11 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graphdetails_new);
         setupActionBar();
+        services = new Services(this);
         title = getIntent().getStringExtra("chartNames");
         mActionBar.setTitle(title);
-
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPatientID = mPreferenceHelper.getString(PreferenceHelper.PreferenceKey.USER_ID);
         //line chart graph
         linechart = (LineChart) findViewById(R.id.linechart);
         pi_chart = (PieChart) findViewById(R.id.pi_chart);
@@ -142,14 +131,14 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         mWebView.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(WebView view, String url) {
-                if(progress != null && progress.isShowing()){
+                if (progress != null && progress.isShowing()) {
                     progress.dismiss();
                 }
-                if(adapter == null){
+                if (adapter == null) {
                     adapter = new Group_testAdapter(GraphDetailsNew.this, chartDates, casecodes, chartunitList, RangeFrom, RangeTo, true);
                     adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
                     graph_listview_id.setAdapter(adapter);
-                }else{
+                } else {
                     adapter.setChartValuesList(mFilteredGraphDetailValueAndDateList, true);
                     adapter.notifyDataSetChanged();
                 }
@@ -157,7 +146,6 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 Utility.setListViewHeightBasedOnChildren(graph_listview_id);
             }
         });
-
 
 
         // finding screen width and height--------------------------------------
@@ -171,8 +159,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             pi_chart.setVisibility(View.GONE);
             mWebView.setVisibility(View.VISIBLE);
             isLoadNvd3 = true;
-           // LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
-           // params.height = Math.round(height / 2);
+            // LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linechart.getLayoutParams();
+            // params.height = Math.round(height / 2);
             //    linechart.setLayoutParams(params);     //TODO for displaying line chart; un comment it.
             //MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
             // set the marker to the chart
@@ -182,7 +170,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
             //nvd3 graph is used now instead of line
 
             //setLinechart();
-        } else if (getIntent().getStringExtra("chart_type").equals("Pie")){
+        } else if (getIntent().getStringExtra("chart_type").equals("Pie")) {
             // linechart.setVisibility(View.VISIBLE);  //TODO for displaying line chart; un comment it.
             isLoadNvd3 = false;
             mWebView.setVisibility(View.GONE);
@@ -211,6 +199,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         chartValues = getIntent().getStringArrayListExtra("values");
         casecodes = getIntent().getStringArrayListExtra("case");
         caseIds = getIntent().getStringArrayListExtra("caseIds");
+        investigationID1 = getIntent().getStringArrayListExtra("investigationID1");
         chartunitList = getIntent().getStringArrayListExtra("unitList");
         if (chartunitList == null) {
             chartunitList = new ArrayList<>();
@@ -232,20 +221,51 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         graph_listview_id.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                caseindex = casecodes.get(position);
-                System.out.println(caseindex);
-                Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
+                Collections.reverse(casecodes);
+                Collections.reverse(caseIds);
+                Collections.reverse(investigationID1);
+                getDataFromCaseID(caseIds.get(position));
+                Intent intent = new Intent(GraphDetailsNew.this, ReportStatus.class);
+                intent.putExtra("index", 0);
+                intent.putExtra("array", subArray1.toString());
+                intent.putExtra("USER_ID", mPatientID);
+                intent.putExtra("fromGraphNewDetails", true);
+                intent.putExtra("investigationID1", investigationID1.get(position));
+                intent.putExtra("code", subArray1.optJSONObject(0).optString("PatientCode"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+               /* Intent in = new Intent(GraphDetailsNew.this, ReportRecords.class);
                 in.putExtra("id", DashBoardActivity.id);
                 in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 in.putExtra("caseId", caseIds.get(position));
                 startActivity(in);
                 finish();
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);*/
             }
         });
 
 
         setData();
+    }
+
+
+    private void getDataFromCaseID(String case_id) {
+        JSONObject sendData = new JSONObject();
+        JSONObject receiveData = new JSONObject();
+        JSONArray subArray = new JSONArray(new ArrayList());
+        subArray1 = new JSONArray(new ArrayList<String>());
+        try {
+            sendData.put("CaseId", case_id);
+            System.out.println(sendData);
+            receiveData = services.patientinvestigation(sendData);
+            String data = receiveData.getString("d");
+            JSONObject cut = new JSONObject(data);
+            subArray = cut.getJSONArray("Table");
+            subArray1 = subArray.getJSONArray(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -256,25 +276,25 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
     List<GraphDetailValueAndDate> graphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>();
 
-    private void setData(){
+    private void setData() {
         progress = new ProgressDialog(GraphDetailsNew.this);
         progress.setCancelable(false);
         progress.setMessage("Loading...");
         progress.setIndeterminate(true);
         progress.show();
-         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         graphDetailValueAndDateList.clear();
-        if (chartValues != null &&  chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
+        if (chartValues != null && chartDates != null && chartValues.size() > 0 && chartDates.size() > 0) {
             mDateList.clear();
-            for (int i=0 ; i < chartValues.size(); i++) {
+            for (int i = 0; i < chartValues.size(); i++) {
 
                 String dateInString = chartDates.get(i);
                 //String dateArray[] = dateInString.split(" ");
                 //dateInString = dateArray[0];
                 String chartValueInString = chartValues.get(i);
-                String caseCode = chartValues.get(i);
+                String caseCode = casecodes.get(i);
                 mDateList.add(dateInString);
 
                 GraphDetailValueAndDate graphDetailValueAndDate = new GraphDetailValueAndDate();
@@ -282,16 +302,16 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 graphDetailValueAndDate.setValue(chartValueInString);
                 graphDetailValueAndDate.setCaseCode(caseCode);
 
+
                 graphDetailValueAndDateList.add(graphDetailValueAndDate);
 
             }
 
 
-
             mFilteredGraphDetailValueAndDateList.clear();
 
             if (mFormEpocDate > 0) {
-                for(GraphDetailValueAndDate graphDetailValueAndDate : graphDetailValueAndDateList){
+                for (GraphDetailValueAndDate graphDetailValueAndDate : graphDetailValueAndDateList) {
                     Date date = null;
                     try {
                         date = simpleDateFormat.parse(graphDetailValueAndDate.getDate());
@@ -305,7 +325,7 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                         }
                     }
                 }
-            }else{
+            } else {
                 mFilteredGraphDetailValueAndDateList = new ArrayList<GraphDetailValueAndDate>(graphDetailValueAndDateList);
             }
         }
@@ -313,21 +333,21 @@ public class GraphDetailsNew extends GraphHandlerActivity {
         //Collections.sort(mFilteredGraphDetailValueAndDateList, new GraphDetailValueAndDate.GraphDetailValueAndDateComparator());
         sortListByDate(mFilteredGraphDetailValueAndDateList);
         JSONArray jsonArray1 = new JSONArray();
-        for(int i=0; i< mFilteredGraphDetailValueAndDateList.size(); i++){
+        for (int i = 0; i < mFilteredGraphDetailValueAndDateList.size(); i++) {
 
             GraphDetailValueAndDate graphDetailValueAndDateObj = mFilteredGraphDetailValueAndDateList.get(i);
 
             String chartValueInString = graphDetailValueAndDateObj.getValue();
             String dateInString = graphDetailValueAndDateObj.getDate();
 
-            if(!TextUtils.isEmpty(chartValueInString)){
+            if (!TextUtils.isEmpty(chartValueInString)) {
                 double value = 0;
                 try {
                     value = Double.parseDouble(chartValueInString);
-                }catch (NumberFormatException exc){
-                    Log.e("crash", "GraphDetailNew Numberformat exception "+exc);
+                } catch (NumberFormatException exc) {
+                    Log.e("crash", "GraphDetailNew Numberformat exception " + exc);
                 }
-                if(mMaxValue <= value){
+                if (mMaxValue <= value) {
                     mMaxValue = value;
                 }
 
@@ -338,10 +358,10 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                     e.printStackTrace();
                 }
                 long epoch = date.getTime();
-                if(mIsToAddMaxMinValue && i == 0){
+                if (mIsToAddMaxMinValue && i == 0) {
                     mDateMinValue = epoch;
                 }
-                if(mIsToAddMaxMinValue && i == (mFilteredGraphDetailValueAndDateList.size() -1)){
+                if (mIsToAddMaxMinValue && i == (mFilteredGraphDetailValueAndDateList.size() - 1)) {
                     mDateMaxValue = epoch;
                 }
 
@@ -381,12 +401,12 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-           // weight_listId.setVisibility(View.GONE);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // weight_listId.setVisibility(View.GONE);
             graph_listview_id.setVisibility(View.GONE);
             mActionBar.hide();
-        }else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-           // weight_listId.setVisibility(View.VISIBLE);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // weight_listId.setVisibility(View.VISIBLE);
             graph_listview_id.setVisibility(View.VISIBLE);
             mActionBar.show();
         }
@@ -656,8 +676,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE,"");
-        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE,"");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.FROM_DATE, "");
+        mPreferenceHelper.setString(PreferenceHelper.PreferenceKey.TO_DATE, "");
 
         SharedPreferences.Editor mEditor = mAddGraphDetailSharedPreferences.edit();
         mEditor.putInt("userChoiceSpinner", 0);
@@ -713,8 +733,8 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                 mDateFormat = "'%Y";
                 mRotationAngle = 0;
             }
-            for(int i = 0; i< mTckValuesJsonArray.length() ; i++){
-                if(i==0){
+            for (int i = 0; i < mTckValuesJsonArray.length(); i++) {
+                if (i == 0) {
                     try {
                         Object a = mTckValuesJsonArray.get(0);
                         String stringToConvert = String.valueOf(a);
@@ -724,9 +744,9 @@ public class GraphDetailsNew extends GraphHandlerActivity {
                     }
                 }
 
-                if(i == (mTckValuesJsonArray.length() -1)){
+                if (i == (mTckValuesJsonArray.length() - 1)) {
                     try {
-                        int pos = ((mTckValuesJsonArray.length() -1));
+                        int pos = ((mTckValuesJsonArray.length() - 1));
                         Object a = mTckValuesJsonArray.get(pos);
                         String stringToConvert = String.valueOf(a);
                         mDateMaxValue = Long.parseLong(stringToConvert);
@@ -746,23 +766,23 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public int getMaxData() {
-            if(mMaxValue < mRangeToInDouble){
+            if (mMaxValue < mRangeToInDouble) {
                 mMaxValue = mRangeToInDouble;
             }
             double valueToadd = mMaxValue * .1;
-            return (int)(mMaxValue + valueToadd);
+            return (int) (mMaxValue + valueToadd);
         }
 
         @JavascriptInterface
         public int getRangeTo() {
-            return (int)mRangeToInDouble;
+            return (int) mRangeToInDouble;
         }
 
 
         @JavascriptInterface
         public int getRangeFrom() {
 
-            return (int)mRangeFromInDouble;
+            return (int) mRangeFromInDouble;
         }
 
         @JavascriptInterface
@@ -772,9 +792,9 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public String getTickValues() {
-            if(mTckValuesJsonArray == null){
+            if (mTckValuesJsonArray == null) {
                 return "null";
-            }else{
+            } else {
                 return mTckValuesJsonArray.toString();
             }
         }
@@ -786,20 +806,20 @@ public class GraphDetailsNew extends GraphHandlerActivity {
 
         @JavascriptInterface
         public long minDateValue() {
-            Log.e("ayaz", "min: graphdetail "+mDateMinValue);
+            Log.e("ayaz", "min: graphdetail " + mDateMinValue);
             return mDateMinValue;
         }
 
         @JavascriptInterface
         public long maxDateValue() {
-            Log.e("ayaz", "max: graphdetail "+mDateMaxValue);
+            Log.e("ayaz", "max: graphdetail " + mDateMaxValue);
             return mDateMaxValue;
         }
 
         @JavascriptInterface
         public boolean getUserInteractiveGuidline() {
-                return false;
-            }
+            return false;
+        }
     }
 
     private static List<GraphDetailValueAndDate> sortListByDate(List<GraphDetailValueAndDate> list) {
